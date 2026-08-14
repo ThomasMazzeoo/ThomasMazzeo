@@ -267,11 +267,12 @@ int main() {
 
 <script>
 function runCode() {
-  const code = document.getElementById('code-editor').value;
+  let rawCode = document.getElementById('code-editor').value;
   const term = document.getElementById('term-out');
   term.innerHTML = '<span style="color:#556;">Compilazione in corso...</span><br><br>';
   
-  // Simulazione compilatore basica (regex e includes)
+  // Rimuovi i commenti per evitare falsi positivi
+  const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
   
   // 1. Controllo direttiva include
   if (!code.includes('<iostream>')) {
@@ -286,28 +287,31 @@ function runCode() {
   }
   
   // 3. Estrazione dei comandi cout
-  const coutRegex = /cout\s*<<\s*"([^"]*)"/g;
+  // Gestisce cout oppure std::cout
+  const coutRegex = /(?:std::)?cout\s*<<\s*"([^"]*)"/g;
   let match = coutRegex.exec(code);
   
   if (match) {
     let outputText = match[1];
     
     // Controlliamo il punto e virgola
-    const rigaCout = code.substring(code.indexOf(match[0]), code.indexOf('\n', code.indexOf(match[0])));
-    if(rigaCout.indexOf(';') === -1 && code.indexOf(';', code.indexOf(match[0])) > code.indexOf('return', code.indexOf(match[0]))) {
-        term.innerHTML += '<span class="err">SYNTAX ERROR:</span> expected \';\' before return statement.<br>Hai dimenticato il punto e virgola!';
+    const afterCout = code.substring(match.index + match[0].length);
+    const statementEnd = afterCout.indexOf(';');
+    const newlineEnd = afterCout.indexOf('\n');
+    
+    if(statementEnd === -1 || (newlineEnd !== -1 && newlineEnd < statementEnd && !afterCout.substring(0, newlineEnd).includes('<<'))) {
+        term.innerHTML += '<span class="err">SYNTAX ERROR:</span> expected \';\' at the end of declaration.<br>Hai dimenticato il punto e virgola!';
         return;
     }
 
-    term.innerHTML += `[OUTPUT]:\n${outputText}\n\n`;
+    term.innerHTML += `[OUTPUT]:\\n${outputText}\\n\\n`;
     
     if (outputText === "Ciao, C++!") {
       term.innerHTML += '<span class="ok">✓ TEST SUPERATO! Complimenti, hai completato il Livello 0!</span>';
     } else {
-      term.innerHTML += '<span class="warn">⚠️ Il programma funziona, ma il testo stampato non è corretto. L\'esercizio richiede esattamente "Ciao, C++!"</span>';
+      term.innerHTML += '<span class="warn">⚠️ Il programma funziona, ma il testo stampato non è corretto. L\\'esercizio richiede esattamente "Ciao, C++!"</span>';
     }
   } else {
-    // Forse ha usato std::cout?
     if (code.includes('cout')) {
         term.innerHTML += '<span class="err">ERROR:</span> Sintassi di cout non corretta o stringa non compresa tra virgolette doppie (" ").';
     } else {

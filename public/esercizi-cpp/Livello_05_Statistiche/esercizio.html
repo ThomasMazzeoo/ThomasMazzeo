@@ -98,28 +98,30 @@ int main() {
   </main>
 
 <script>
-function runCode() {
-  const code = document.getElementById('code-editor').value;
-  const term = document.getElementById('term-out');
-  term.innerHTML = '<span style="color:#556;">Compilazione in corso...</span><br><br>';
+  function runCode() {
+    const rawCode = document.getElementById('code-editor').value;
+    const term = document.getElementById('term-out');
+    term.innerHTML = '<span style="color:#556;">Compilazione in corso...</span><br><br>';
+    
+    const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+    
+    if (!code.includes('do') && !code.includes('while')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato l\'istruzione `do` o `while`.<br>'; return; }
+    if (code.includes('do') && !code.match(/while\s*\([^)]+\)\s*;/)) { term.innerHTML += '<span class="err">Errore Sintassi:</span> Il do-while deve chiudersi con `while (condizione);` (Ricorda il punto e virgola!).<br>'; return; }
+    if (!code.includes('+=') && !code.includes('+')) { term.innerHTML += '<span class="err">Errore Logico:</span> Non hai aggiornato l\'accumulatore totaleOro.<br>Suggerimento: usa `totaleOro += oroTrovato;`.<br>'; return; }
+    if (!code.includes('++') && !code.includes('numeroBauli = numeroBauli + 1') && !code.includes('+= 1')) { term.innerHTML += '<span class="err">Errore Logico:</span> Non hai incrementato il contatore numeroBauli.<br>Suggerimento: usa `numeroBauli++;`.<br>'; return; }
+    
+    if (code.includes('+=') && code.includes('++')) {
+      term.innerHTML += '<span style="color:var(--cyan)">[SCORCIATOIE RILEVATE]</span> Ottimo! Hai usato gli operatori `+=` e `++`.\n\n';
+    }
   
-  if (!code.includes('do')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato l\'istruzione `do`.<br>'; return; }
-  if (!code.match(/while\s*\([^)]+\)\s*;/)) { term.innerHTML += '<span class="err">Errore Sintassi:</span> Il do-while deve chiudersi con `while (condizione);` (Ricorda il punto e virgola!).<br>'; return; }
-  if (!code.includes('+=') && !code.includes('totaleOro = totaleOro +')) { term.innerHTML += '<span class="err">Errore Logico:</span> Non hai aggiornato l\'accumulatore totaleOro.<br>Suggerimento: usa `totaleOro += oroTrovato;`.<br>'; return; }
-  if (!code.includes('++') && !code.includes('numeroBauli = numeroBauli + 1') && !code.includes('+= 1')) { term.innerHTML += '<span class="err">Errore Logico:</span> Non hai incrementato il contatore numeroBauli.<br>Suggerimento: usa `numeroBauli++;`.<br>'; return; }
-  
-  if (code.includes('+=') && code.includes('++')) {
-    term.innerHTML += '<span style="color:var(--cyan)">[SCORCIATOIE RILEVATE]</span> Ottimo! Hai usato gli operatori `+=` e `++`.\n\n';
+    term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">50</span>\n';
+    term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">20</span>\n';
+    term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">0</span>\n\n';
+    term.innerHTML += 'Bauli aperti: 2\n';
+    term.innerHTML += 'Oro totale: 70\n';
+    
+    term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 5!</span>';
   }
-
-  term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">50</span>\n';
-  term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">20</span>\n';
-  term.innerHTML += '> Monete trovate nel baule (0 per uscire): <span style="color:yellow">0</span>\n\n';
-  term.innerHTML += 'Bauli aperti: 2\n';
-  term.innerHTML += 'Oro totale: 70\n';
-  
-  term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 5!</span>';
-}
 </script>
 </body>
 </html>

@@ -86,34 +86,36 @@ int main() {
   </main>
 
 <script>
-function runCode() {
-  const code = document.getElementById('code-editor').value;
-  const term = document.getElementById('term-out');
-  term.innerHTML = '<span style="color:#556;">Esecuzione Ciclo...</span><br><br>';
-  
-  if (!code.includes('while')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato la parola chiave `while`.<br>'; return; }
-  
-  // Controllo decremeto
-  if (!code.includes('- 1') && !code.includes('--')) { 
-    term.innerHTML += '<span class="err">ALLARME LOOP INFINITO!</span><br>Non hai diminuito il valore della variabile all\'interno del ciclo. Il browser si bloccherebbe per sempre!'; 
-    return; 
+  function runCode() {
+    const rawCode = document.getElementById('code-editor').value;
+    const term = document.getElementById('term-out');
+    term.innerHTML = '<span style="color:#556;">Esecuzione Ciclo...</span><br><br>';
+    
+    const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+    
+    if (!code.includes('while') && !code.includes('for')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato la parola chiave `while` o `for`.<br>'; return; }
+    
+    // Controllo decremento
+    if (!code.includes('- 1') && !code.includes('--') && !code.includes('-= 1')) { 
+      term.innerHTML += '<span class="err">ALLARME LOOP INFINITO!</span><br>Non hai diminuito il valore della variabile all\'interno del ciclo. Il browser si bloccherebbe per sempre!'; 
+      return; 
+    }
+    
+    // Controllo stampa fuori dal ciclo
+    const afterWhilePart = code.substring(code.lastIndexOf('}'));
+    if (!afterWhilePart.includes('PARTENZA') && !afterWhilePart.includes('cout')) {
+        term.innerHTML += '<span class="err">Errore:</span> Ti sei dimenticato di stampare "PARTENZA!" fuori dal ciclo.<br>';
+        return;
+    }
+    
+    term.innerHTML += '[OUTPUT]\n';
+    term.innerHTML += '3...\n';
+    term.innerHTML += '2...\n';
+    term.innerHTML += '1...\n';
+    term.innerHTML += '<span style="color:orange; font-weight:bold;">PARTENZA!</span>\n';
+    
+    term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 4! Il ciclo funziona correttamente.</span>';
   }
-  
-  // Controllo stampa fuori dal ciclo
-  const afterWhilePart = code.substring(code.lastIndexOf('}'));
-  if (!afterWhilePart.includes('PARTENZA') && !afterWhilePart.includes('cout')) {
-      term.innerHTML += '<span class="err">Errore:</span> Ti sei dimenticato di stampare "PARTENZA!" fuori dal ciclo.<br>';
-      return;
-  }
-  
-  term.innerHTML += '[OUTPUT]\n';
-  term.innerHTML += '3...\n';
-  term.innerHTML += '2...\n';
-  term.innerHTML += '1...\n';
-  term.innerHTML += '<span style="color:orange; font-weight:bold;">PARTENZA!</span>\n';
-  
-  term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 4! Il ciclo funziona correttamente.</span>';
-}
 </script>
 </body>
 </html>

@@ -89,25 +89,27 @@ int main() {
   </main>
 
 <script>
-function runCode() {
-  const code = document.getElementById('code-editor').value;
-  const term = document.getElementById('term-out');
-  term.innerHTML = '<span style="color:#556;">Esecuzione Logica...</span><br><br>';
-  
-  if (!code.includes('cin') || !code.includes('>>')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato std::cin o l\'operatore &gt;&gt; per leggere i dati.<br>'; return; }
-  if (!code.includes('+')) { term.innerHTML += '<span class="err">Errore Matematico:</span> Non hai usato l\'operatore di addizione (+).<br>'; return; }
-  
-  term.innerHTML += '> Inserisci attacco base: <span style="color:yellow">15</span>\n';
-  term.innerHTML += '> Inserisci bonus arma: <span style="color:yellow">5</span>\n';
-  term.innerHTML += '\n[SIMULAZIONE]: Calcolo eseguito (15 + 5 = 20)\n';
-  
-  if (!code.includes('cout') || !code.includes('<<')) {
-    term.innerHTML += '<span class="err">Errore:</span> Ti sei dimenticato di stampare il risultato finale con cout!';
-    return;
+  function runCode() {
+    const rawCode = document.getElementById('code-editor').value;
+    const term = document.getElementById('term-out');
+    term.innerHTML = '<span style="color:#556;">Esecuzione Logica...</span><br><br>';
+    
+    const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+    
+    if (!code.includes('cin') || !code.includes('>>')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato std::cin o l\'operatore &gt;&gt; per leggere i dati.<br>'; return; }
+    if (!code.includes('+')) { term.innerHTML += '<span class="err">Errore Matematico:</span> Non hai usato l\'operatore di addizione (+).<br>'; return; }
+    
+    term.innerHTML += '> Inserisci attacco base: <span style="color:yellow">15</span>\n';
+    term.innerHTML += '> Inserisci bonus arma: <span style="color:yellow">5</span>\n';
+    term.innerHTML += '\n[SIMULAZIONE]: Calcolo eseguito (15 + 5 = 20)\n';
+    
+    if (!code.includes('cout') || !code.includes('<<')) {
+      term.innerHTML += '<span class="err">Errore:</span> Ti sei dimenticato di stampare il risultato finale con cout!';
+      return;
+    }
+    
+    term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 2!</span>';
   }
-  
-  term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 2!</span>';
-}
 </script>
 </body>
 </html>

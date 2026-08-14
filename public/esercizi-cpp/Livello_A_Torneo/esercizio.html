@@ -100,29 +100,31 @@ int main() {
   </main>
 
 <script>
-function runCode() {
-  const code = document.getElementById('code-editor').value;
-  const term = document.getElementById('term-out');
-  term.innerHTML = '<span style="color:#556;">Avvio Simulazione Logica...</span><br><br>';
-  
-  let issues = [];
-  if (!code.includes('if')) issues.push("Non hai usato nessuna istruzione 'if' per calcolare le penalità/bonus.");
-  if (!code.includes('while')) issues.push("Il ciclo while/do-while non è presente o è stato cancellato.");
-  
-  if(issues.length > 0) {
-      term.innerHTML += '<span class="err">Errori Rilevati:</span><br>' + issues.join('<br>') + '<br><br>';
-      return;
+  function runCode() {
+    const rawCode = document.getElementById('code-editor').value;
+    const term = document.getElementById('term-out');
+    term.innerHTML = '<span style="color:#556;">Avvio Simulazione Logica...</span><br><br>';
+    
+    const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+    
+    let issues = [];
+    if (!code.includes('if')) issues.push("Non hai usato nessuna istruzione 'if' per calcolare le penalità/bonus.");
+    if (!code.includes('while') && !code.includes('do')) issues.push("Il ciclo while/do-while non è presente o è stato cancellato.");
+    
+    if(issues.length > 0) {
+        term.innerHTML += '<span class="err">Errori Rilevati:</span><br>' + issues.join('<br>') + '<br><br>';
+        return;
+    }
+    
+    term.innerHTML += '<span style="color:var(--cyan)">[SIMULATORE]</span> Eseguo il tuo codice per 2 squadre fittizie:\n';
+    term.innerHTML += '1. Tigri (Punti: 55, Falli: 6, Tipo: 2 - Semifinale)\n';
+    term.innerHTML += '   Atteso: 55 (base) - 3 (falli) + 2 (semi) + 4 (extra >50) = 58 pt torneo.\n';
+    term.innerHTML += '2. Leoni (Punti: 40, Falli: 2, Tipo: 1 - Girone)\n';
+    term.innerHTML += '   Atteso: 40 (base) = 40 pt torneo.\n\n';
+    
+    term.innerHTML += 'Controlla che il tuo codice implementi questa logica matematica.\nEssendo il Livello A (Boss), il simulatore non valuta riga per riga, ma ti lascia libero di sperimentare!\n';
+    term.innerHTML += '\n<span class="ok">Se hai scritto tutte le regole, COMPLIMENTI! Hai superato la sfida finale.</span>';
   }
-  
-  term.innerHTML += '<span style="color:var(--cyan)">[SIMULATORE]</span> Eseguo il tuo codice per 2 squadre fittizie:\n';
-  term.innerHTML += '1. Tigri (Punti: 55, Falli: 6, Tipo: 2 - Semifinale)\n';
-  term.innerHTML += '   Atteso: 55 (base) - 3 (falli) + 2 (semi) + 4 (extra >50) = 58 pt torneo.\n';
-  term.innerHTML += '2. Leoni (Punti: 40, Falli: 2, Tipo: 1 - Girone)\n';
-  term.innerHTML += '   Atteso: 40 (base) = 40 pt torneo.\n\n';
-  
-  term.innerHTML += 'Controlla che il tuo codice implementi questa logica matematica.\nEssendo il Livello A (Boss), il simulatore non valuta riga per riga, ma ti lascia libero di sperimentare!\n';
-  term.innerHTML += '\n<span class="ok">Se hai scritto tutte le regole, COMPLIMENTI! Hai superato la sfida finale.</span>';
-}
 </script>
 </body>
 </html>

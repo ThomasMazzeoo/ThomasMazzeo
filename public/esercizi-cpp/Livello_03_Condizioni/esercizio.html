@@ -80,22 +80,24 @@ int main() {
   </main>
 
 <script>
-function runCode() {
-  const code = document.getElementById('code-editor').value;
-  const term = document.getElementById('term-out');
-  term.innerHTML = '<span style="color:#556;">Esecuzione Unit Tests...</span><br><br>';
-  
-  if (!code.includes('if')) { term.innerHTML += '<span class="err">Errore:</span> Manca l\'istruzione `if`.<br>'; return; }
-  if (!code.includes('else')) { term.innerHTML += '<span class="err">Errore:</span> Manca l\'istruzione `else`. Non stai gestendo entrambi i casi.<br>'; return; }
-  if (!code.includes('<= 0') && !code.includes('< 1')) { term.innerHTML += '<span class="err">Attenzione logica:</span> Non stai controllando correttamente se la salute è minore o uguale a zero (<= 0).<br>'; return; }
-  
-  term.innerHTML += '[TEST 1]: Input Salute = 0\n';
-  term.innerHTML += '> Game Over (Stampato correttamente)\n\n';
-  term.innerHTML += '[TEST 2]: Input Salute = 50\n';
-  term.innerHTML += '> Messaggio di sopravvivenza (Stampato correttamente)\n';
-  
-  term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 3!</span>';
-}
+  function runCode() {
+    const rawCode = document.getElementById('code-editor').value;
+    const term = document.getElementById('term-out');
+    term.innerHTML = '<span style="color:#556;">Esecuzione Unit Tests...</span><br><br>';
+    
+    const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+    
+    if (!code.includes('if')) { term.innerHTML += '<span class="err">Errore:</span> Manca l\'istruzione `if`.<br>'; return; }
+    if (!code.includes('else')) { term.innerHTML += '<span class="err">Errore:</span> Manca l\'istruzione `else`. Non stai gestendo entrambi i casi.<br>'; return; }
+    if (!code.includes('<= 0') && !code.includes('< 1') && !code.includes('== 0')) { term.innerHTML += '<span class="err">Attenzione logica:</span> Non stai controllando correttamente se la salute è minore o uguale a zero (<= 0).<br>'; return; }
+    
+    term.innerHTML += '[TEST 1]: Input Salute = 0\n';
+    term.innerHTML += '> Game Over (Stampato correttamente)\n\n';
+    term.innerHTML += '[TEST 2]: Input Salute = 50\n';
+    term.innerHTML += '> Messaggio di sopravvivenza (Stampato correttamente)\n';
+    
+    term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 3!</span>';
+  }
 </script>
 </body>
 </html>

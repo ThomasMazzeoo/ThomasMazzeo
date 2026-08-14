@@ -87,14 +87,16 @@ int main() {
 
 <script>
 function runCode() {
-  const code = document.getElementById('code-editor').value;
+  const rawCode = document.getElementById('code-editor').value;
   const term = document.getElementById('term-out');
   term.innerHTML = '<span style="color:#556;">Analisi del codice in corso...</span><br><br>';
+  
+  const code = rawCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
   
   if (!code.includes('<string>')) { term.innerHTML += '<span class="err">Errore:</span> libreria &lt;string&gt; non inclusa.<br>'; return; }
   
   let errors = [];
-  if (!code.match(/string\s+\w+/)) errors.push("Variabile di tipo 'string' non trovata o scritta male.");
+  if (!code.match(/(?:std::)?string\s+\w+/)) errors.push("Variabile di tipo 'string' non trovata o scritta male.");
   if (!code.match(/int\s+\w+/)) errors.push("Variabile di tipo 'int' non trovata.");
   if (!code.match(/float\s+\w+/)) errors.push("Variabile di tipo 'float' non trovata.");
   if (!code.match(/char\s+\w+/)) errors.push("Variabile di tipo 'char' non trovata.");
