@@ -145,7 +145,6 @@ const MATERIE = [
             title: "Livello 0 — Basi (Hello C++)",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_00_Basi/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_00_Basi/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_00_Basi/soluzione.html" }
             ]
           },
@@ -153,7 +152,6 @@ const MATERIE = [
             title: "Livello 1 — Variabili",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_01_Variabili/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_01_Variabili/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_01_Variabili/soluzione.html" }
             ]
           },
@@ -161,7 +159,6 @@ const MATERIE = [
             title: "Livello 2 — Input & Math",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_02_Input_Math/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_02_Input_Math/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_02_Input_Math/soluzione.html" }
             ]
           },
@@ -169,7 +166,6 @@ const MATERIE = [
             title: "Livello 3 — Condizioni",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_03_Condizioni/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_03_Condizioni/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_03_Condizioni/soluzione.html" }
             ]
           },
@@ -177,7 +173,6 @@ const MATERIE = [
             title: "Livello 4 — Cicli (While)",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_04_Cicli_While/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_04_Cicli_While/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_04_Cicli_While/soluzione.html" }
             ]
           },
@@ -185,7 +180,6 @@ const MATERIE = [
             title: "Livello 5 — Statistiche",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_05_Statistiche/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_05_Statistiche/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_05_Statistiche/soluzione.html" }
             ]
           },
@@ -193,7 +187,6 @@ const MATERIE = [
             title: "Livello A — Torneo (Avanzato)",
             topics: [
               { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
-              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_A_Torneo/esercizio.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A_Torneo/soluzione.html" }
             ]
           }
