@@ -136,22 +136,6 @@ const MATERIE = [
     desc: "Metodo di studio, risorse utili, strumenti e guide varie.",
     sections: [
       {
-        id: "studio",
-        title: "Metodo di Studio",
-        icon: "🧠",
-        desc: "Tecniche e strategie per uno studio efficace.",
-        chapters: [
-          {
-            title: "Capitolo 1 — Fondamenti",
-            topics: [
-              { title: "Active Recall", desc: "La tecnica del recupero attivo: testare sé stessi per memorizzare meglio." },
-              { title: "Spaced Repetition", desc: "Ripetizione dilazionata con Anki e flashcard per la memoria a lungo termine." },
-              { title: "Tecnica del Pomodoro", desc: "Sessioni di 25 minuti di focus, pause, e gestione dell'energia mentale." },
-            ]
-          }
-        ]
-      },
-      {
         id: "cpp-basi",
         title: "Le basi del C++",
         icon: "⌨️",
