@@ -150,6 +150,70 @@ const MATERIE = [
             ]
           }
         ]
+      },
+      {
+        id: "cpp-basi",
+        title: "Le basi del C++",
+        icon: "⌨️",
+        desc: "Esercizi pratici e simulatori interattivi di codice.",
+        chapters: [
+          {
+            title: "Livello 0 — Basi (Hello C++)",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_00_Basi/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_00_Basi/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_00_Basi/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello 1 — Variabili",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_01_Variabili/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_01_Variabili/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_01_Variabili/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello 2 — Input & Math",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_02_Input_Math/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_02_Input_Math/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_02_Input_Math/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello 3 — Condizioni",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_03_Condizioni/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_03_Condizioni/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_03_Condizioni/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello 4 — Cicli (While)",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_04_Cicli_While/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_04_Cicli_While/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_04_Cicli_While/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello 5 — Statistiche",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_05_Statistiche/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_05_Statistiche/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_05_Statistiche/soluzione.html" }
+            ]
+          },
+          {
+            title: "Livello A — Torneo (Avanzato)",
+            topics: [
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
+              { title: "Esercizio", desc: "Scrivi il tuo codice.", url: "/esercizi-cpp/Livello_A_Torneo/esercizio.html" },
+              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A_Torneo/soluzione.html" }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -440,8 +504,14 @@ function renderChaptersView() {
     topicsContainer.className = 'chapter__topics';
 
     chapter.topics.forEach((topic, ti) => {
-      const topicEl = document.createElement('div');
+      const topicEl = document.createElement(topic.url ? 'a' : 'div');
       topicEl.className = 'topic';
+      if (topic.url) {
+        topicEl.href = topic.url;
+        topicEl.target = '_blank';
+        topicEl.rel = 'noopener noreferrer';
+        topicEl.classList.add('topic--link');
+      }
       topicEl.style.setProperty('--card-color', selectedMateria.color);
       topicEl.style.setProperty('--card-color-rgb', selectedMateria.colorRgb);
 
@@ -451,6 +521,7 @@ function renderChaptersView() {
           <h4 class="topic__title">${topic.title}</h4>
           <p class="topic__desc">${topic.desc}</p>
         </div>
+        ${topic.url ? `<div class="topic__action" style="color:${selectedMateria.color}">APRI 🚀</div>` : ''}
       `;
 
       topicsContainer.appendChild(topicEl);

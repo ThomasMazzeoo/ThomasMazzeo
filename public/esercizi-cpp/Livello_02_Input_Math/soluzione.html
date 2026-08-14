@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello 2: Input e Matematica</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: #0d1424;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --orange: #ff8c00;
+    --purple: #bb44ff;
+    --yellow: #ffd700;
+    --white: #e8f0ff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* HEADER */
+  header {
+    background-color: #04070d;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+  header h1 {
+    font-family: var(--font-title);
+    color: var(--cyan);
+    margin: 0;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+  }
+  .step-counter {
+    font-family: var(--font-mono);
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: rgba(255, 140, 0, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+  }
+
+  /* PHASE BAR */
+  .phase-bar {
+    background-color: var(--panel);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    padding: 0.5rem 2rem;
+    display: flex;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    z-index: 9;
+  }
+  .phase-name { color: var(--purple); font-weight: bold; }
+  .phase-state { color: var(--yellow); }
+  .phase-action { color: var(--green); }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* LEFT PANEL - Visualization */
+  .vis-panel {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0, 212, 255, 0.1);
+  }
+
+  .code-container {
+    background-color: #03050a;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .code-line {
+    display: flex;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+  }
+
+  .code-line .line-num {
+    color: #445577;
+    width: 30px;
+    user-select: none;
+  }
+  .code-line .line-content {
+    color: #a0b0c0;
+    transition: color 0.3s;
+  }
+
+  .code-line.active {
+    background-color: rgba(0, 212, 255, 0.1);
+    border-left: 3px solid var(--cyan);
+    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+  }
+  .code-line.active .line-content {
+    color: var(--white);
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+  }
+
+  /* RAM MEMORY VISUALIZATION */
+  .ram-container {
+    background-color: #000;
+    border: 1px solid rgba(187, 68, 255, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8) inset;
+    min-height: 120px;
+  }
+  .ram-container::before {
+    content: "MEMORIA (RAM)";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background-color: var(--bg);
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: var(--purple);
+    font-family: var(--font-mono);
+  }
+
+  .ram-cell {
+    border: 2px solid #334;
+    border-radius: 6px;
+    width: 140px;
+    background-color: #0a0d16;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.3;
+    transition: all 0.5s ease;
+  }
+  .ram-cell.allocated {
+    opacity: 1;
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  }
+  .ram-cell.just-written {
+    animation: writeCell 0.5s ease-out;
+    border-color: var(--green);
+    box-shadow: 0 0 15px var(--green);
+  }
+
+  .ram-type {
+    font-size: 0.75rem;
+    color: var(--yellow);
+    background: rgba(255, 215, 0, 0.1);
+    width: 100%;
+    text-align: center;
+    padding: 2px 0;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-family: var(--font-mono);
+  }
+  .ram-name {
+    font-family: var(--font-mono);
+    color: var(--cyan);
+    padding: 4px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #334;
+    width: 100%;
+    text-align: center;
+  }
+  .ram-value {
+    font-family: var(--font-mono);
+    color: var(--green);
+    padding: 10px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  @keyframes writeCell {
+    0% { transform: scale(1.1); background-color: rgba(0, 255, 136, 0.2); }
+    100% { transform: scale(1); background-color: #0a0d16; }
+  }
+
+  .terminal-container {
+    background-color: #000;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 8px;
+    min-height: 120px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8) inset;
+    white-space: pre-wrap;
+  }
+  .terminal-container::before {
+    content: "TERMINALE / OUTPUT";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background-color: var(--bg);
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+
+  .term-input { color: var(--yellow); font-weight: bold; }
+
+  /* RIGHT PANEL - Explanation */
+  .exp-panel {
+    width: 380px;
+    background-color: var(--panel);
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .exp-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    animation: fadeSlide 0.4s ease-out forwards;
+  }
+  
+  .exp-card.card-what { border-top: 3px solid var(--cyan); }
+  .exp-card.card-why { border-top: 3px solid var(--yellow); }
+  .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card.card-alert { border-top: 3px solid var(--orange); }
+
+  .exp-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-title);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    letter-spacing: 1px;
+  }
+  .card-what .exp-card-header { color: var(--cyan); }
+  .card-why .exp-card-header { color: var(--yellow); }
+  .card-logic .exp-card-header { color: var(--purple); }
+  .card-alert .exp-card-header { color: var(--orange); }
+
+  .exp-card-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #ccd6f6;
+  }
+
+  .keyword { color: var(--orange); font-family: var(--font-mono); }
+  .val-highlight { color: var(--green); font-weight: bold; font-family: var(--font-mono); }
+
+  /* CONTROLS */
+  .controls {
+    background-color: #04070d;
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: var(--font-title);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  .btn:hover:not(:disabled) {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+  .btn:disabled {
+    border-color: #334;
+    color: #556;
+    cursor: not-allowed;
+  }
+  
+  .btn.btn-play { border-color: var(--green); color: var(--green); }
+  .btn.btn-play:hover:not(:disabled) { background: rgba(0, 255, 136, 0.1); box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+
+  .progress-container { display: flex; gap: 8px; align-items: center; }
+  .pip { width: 12px; height: 12px; border-radius: 50%; background: #334; cursor: pointer; transition: all 0.3s; }
+  .pip.done { background: rgba(0, 255, 136, 0.4); }
+  .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); transform: scale(1.2); }
+
+  .speed-control { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.8rem; color: #889; }
+
+  @media (max-width: 900px) {
+    main { flex-direction: column; overflow-y: auto; }
+    .exp-panel { width: 100%; border-top: 1px solid rgba(0, 212, 255, 0.2); }
+    .vis-panel { overflow: visible; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE C++ /&gt; Livello 2: Input & Matematica</h1>
+    <div class="step-counter" id="step-counter">STEP 0 / X</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container"></div>
+      
+      <!-- Vis RAM -->
+      <div class="ram-container" id="ram-container">
+        <!-- Generato via JS -->
+        <div class="ram-cell" id="ram-attacco"><div class="ram-type">???</div><div class="ram-name">---</div><div class="ram-value">?</div></div>
+        <div class="ram-cell" id="ram-bonus"><div class="ram-type">???</div><div class="ram-name">---</div><div class="ram-value">?</div></div>
+        <div class="ram-cell" id="ram-totale"><div class="ram-type">???</div><div class="ram-name">---</div><div class="ram-value">?</div></div>
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="animation: blink 1s step-end infinite; color: var(--green);">_</span>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <div class="speed-control">
+      Lento <input type="range" id="speed-slider" min="1" max="5" value="3"> Veloce
+    </div>
+    <button class="btn btn-play" id="btn-auto" onclick="toggleAuto()">▶ AUTO</button>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = [
+  "#include &lt;iostream&gt;",
+  "",
+  "int main() {",
+  "    int attacco;",
+  "    int bonus;",
+  "",
+  "    std::cout << \"Inserisci l'attacco base: \";",
+  "    std::cin >> attacco;",
+  "",
+  "    std::cout << \"Inserisci il bonus arma: \";",
+  "    std::cin >> bonus;",
+  "",
+  "    int totale = attacco + bonus;",
+  "    std::cout << \"Danno finale: \" << totale << std::endl;",
+  "",
+  "    return 0;",
+  "}"
+];
+
+const steps = [
+  {
+    phase: "STEP 0 — INTRO",
+    state: "Inizio",
+    action: "Teoria su Input",
+    codeLine: -1, 
+    ram: {}, 
+    terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Ora permettiamo all'utente di inserire dei dati da tastiera mentre il programma sta girando." },
+      { type: "logic", icon: "⚙️", label: "IL FLUSSO", html: "Useremo l'oggetto <span class='keyword'>std::cin</span> (Character INput). Funziona all'opposto di <code>cout</code>. Anziché sputare dati verso lo schermo, <i>aspira</i> dati dalla tastiera per metterli nella RAM." }
+    ]
+  },
+  {
+    phase: "STEP 1 — DICHIARAZIONE VUOTA",
+    state: "Allocazione",
+    action: "Riservo celle in RAM",
+    codeLine: 3,
+    ram: { 
+      attacco: { type: "int", val: "? (Spazzatura)", justWritten: true },
+      bonus: { type: "int", val: "? (Spazzatura)", justWritten: true }
+    },
+    terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Dichiariamo due variabili intere (righe 4 e 5), ma questa volta NON assegniamo un valore iniziale con l'uguale <code>=</code>." },
+      { type: "alert", icon: "⚠️", label: "ATTENZIONE", html: "In C++, se crei una variabile senza inizializzarla, essa conterrà un valore casuale (spazzatura) lasciato in RAM dai programmi precedenti! Ecco perché c'è un punto interrogativo." }
+    ]
+  },
+  {
+    phase: "STEP 2 — PROMPT UTENTE",
+    state: "Stampa Testo",
+    action: "Chiedo i dati",
+    codeLine: 6,
+    ram: { 
+      attacco: { type: "int", val: "?" },
+      bonus: { type: "int", val: "?" }
+    },
+    terminal: "Inserisci l'attacco base: ",
+    terminalUpdate: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Usiamo <span class='keyword'>cout</span> per stampare una semplice stringa. Questo si chiama 'prompt' (suggerimento)." },
+      { type: "why", icon: "💡", label: "PERCHÉ", html: "Se usassimo direttamente <code>cin</code>, il programma si bloccherebbe su uno schermo nero e l'utente non saprebbe cosa deve digitare!" }
+    ]
+  },
+  {
+    phase: "STEP 3 — LETTURA (CIN)",
+    state: "Attesa Tastiera",
+    action: "Leggo input utente",
+    codeLine: 7,
+    ram: { 
+      attacco: { type: "int", val: "15", justWritten: true },
+      bonus: { type: "int", val: "?" }
+    },
+    terminal: "Inserisci l'attacco base: <span class='term-input'>15</span>\n",
+    terminalUpdate: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Il programma si ferma (pausa). L'utente digita <span class='term-input'>15</span> e preme INVIO. <span class='keyword'>cin</span> cattura il numero 15 e lo inietta direttamente nella cella 'attacco' nella RAM (guarda il riquadro memoria!)." },
+      { type: "logic", icon: "⚙️", label: "DIREZIONE FRECCE", html: "Nota le frecce <code>>></code>. Puntano <strong>verso</strong> la variabile: <i>tastiera >> attacco</i>." }
+    ]
+  },
+  {
+    phase: "STEP 4 — SECONDO PROMPT",
+    state: "Stampa e Lettura",
+    action: "Bonus arma",
+    codeLine: 10,
+    ram: { 
+      attacco: { type: "int", val: "15" },
+      bonus: { type: "int", val: "7", justWritten: true }
+    },
+    terminal: "Inserisci l'attacco base: 15\nInserisci il bonus arma: <span class='term-input'>7</span>\n",
+    terminalUpdate: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Ripetiamo il processo per la variabile 'bonus' (saltiamo per brevità al momento in cui l'utente ha appena digitato <span class='term-input'>7</span>)." }
+    ]
+  },
+  {
+    phase: "STEP 5 — MATEMATICA E CPU",
+    state: "Calcolo ALU",
+    action: "Somma matematica",
+    codeLine: 12,
+    ram: { 
+      attacco: { type: "int", val: "15" },
+      bonus: { type: "int", val: "7" },
+      totale: { type: "int", val: "22", justWritten: true }
+    },
+    terminal: "Inserisci l'attacco base: 15\nInserisci il bonus arma: 7\n",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "La CPU preleva 'attacco' (15) e 'bonus' (7) dalla RAM, li somma (<span class='val-highlight'>15 + 7 = 22</span>). Poi crea una nuova variabile 'totale' in RAM e ci salva il risultato (22)." },
+      { type: "logic", icon: "⚙️", label: "OPERATORE DI ASSEGNAZIONE", html: "Il simbolo <code>=</code> in C++ NON significa 'uguale a' matematico, significa 'PRENDI il calcolo a destra e METTILO nella scatola a sinistra'." },
+      { type: "why", icon: "💡", label: "ALTRI CALCOLI", html: "Oltre al <code>+</code>, possiamo usare <code>-</code> (sottrazione), <code>*</code> (moltiplicazione, l'asterisco) e <code>/</code> (divisione)." }
+    ]
+  },
+  {
+    phase: "STEP 6 — STAMPA RISULTATO",
+    state: "Output Finale",
+    action: "Stampa stringa + variabile",
+    codeLine: 13,
+    ram: { 
+      attacco: { type: "int", val: "15" },
+      bonus: { type: "int", val: "7" },
+      totale: { type: "int", val: "22" }
+    },
+    terminal: "Inserisci l'attacco base: 15\nInserisci il bonus arma: 7\nDanno finale: 22\n",
+    terminalUpdate: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Infine, concateniamo una stringa di testo fissa (\"Danno finale: \") con il contenuto calcolato che si trova nella variabile 'totale' (22)." }
+    ]
+  }
+];
+
+/* MOTORE DEL SIMULATORE */
+let currentStep = 0;
+let autoPlayInterval = null;
+
+function renderCodeBlock(activeLineIndex) {
+  const container = document.getElementById('code-container');
+  container.innerHTML = '';
+  codeLines.forEach((line, index) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${index === activeLineIndex ? 'active' : ''}`;
+    div.innerHTML = `<span class="line-num">${index + 1}</span><span class="line-content">${line}</span>`;
+    container.appendChild(div);
+  });
+}
+
+function updateRam(ramData) {
+  const vars = ['attacco', 'bonus', 'totale'];
+  
+  vars.forEach(v => {
+    const el = document.getElementById(`ram-${v}`);
+    const data = ramData[v];
+    
+    el.classList.remove('allocated', 'just-written');
+    void el.offsetWidth; 
+    
+    if (data) {
+      el.classList.add('allocated');
+      if(data.justWritten) el.classList.add('just-written');
+      
+      el.querySelector('.ram-type').innerText = data.type;
+      el.querySelector('.ram-name').innerText = v;
+      el.querySelector('.ram-value').innerText = data.val;
+    } else {
+      el.querySelector('.ram-type').innerText = '???';
+      el.querySelector('.ram-name').innerText = '---';
+      el.querySelector('.ram-value').innerText = '?';
+    }
+  });
+}
+
+function renderExplanation(explainData) {
+  const panel = document.getElementById('exp-panel');
+  panel.innerHTML = '';
+  explainData.forEach((card, index) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${card.type}`;
+    div.style.animationDelay = `${index * 0.15}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${card.icon}</span> ${card.label}</div><div class="exp-card-body">${card.html}</div>`;
+    panel.appendChild(div);
+  });
+}
+
+function renderPips() {
+  const container = document.getElementById('progress-container');
+  container.innerHTML = '';
+  steps.forEach((_, idx) => {
+    const pip = document.createElement('div');
+    pip.className = `pip ${idx < currentStep ? 'done' : ''} ${idx === currentStep ? 'active' : ''}`;
+    pip.onclick = () => goToStep(idx);
+    container.appendChild(pip);
+  });
+}
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx} / ${steps.length - 1}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  renderCodeBlock(step.codeLine);
+  updateRam(step.ram);
+  
+  const term = document.getElementById('terminal-output');
+  term.innerHTML = step.terminal; // using innerHTML to render yellow span
+  if(step.terminalUpdate) {
+    term.style.animation = 'none';
+    term.offsetHeight;
+    term.style.animation = 'writeFlash 0.5s ease-out';
+  }
+  
+  renderExplanation(step.explain);
+  
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  renderPips();
+}
+
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if (idx < 0 || idx >= steps.length) return;
+  currentStep = idx;
+  renderStep(currentStep);
+  if (currentStep === steps.length - 1 && autoPlayInterval) toggleAuto(); 
+}
+
+function toggleAuto() {
+  const btn = document.getElementById('btn-auto');
+  if (autoPlayInterval) {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    btn.innerText = '▶ AUTO';
+    btn.style.color = 'var(--cyan)';
+    btn.style.borderColor = 'var(--cyan)';
+  } else {
+    btn.innerText = '⏸ PAUSA';
+    btn.style.color = 'var(--yellow)';
+    btn.style.borderColor = 'var(--yellow)';
+    if (currentStep === steps.length - 1) goToStep(0);
+    const speedLevel = document.getElementById('speed-slider').value;
+    const delay = 3750 - (speedLevel * 700); 
+    autoPlayInterval = setInterval(() => changeStep(1), delay);
+  }
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1);
+  else if (e.key === 'ArrowLeft') changeStep(-1);
+  else if (e.key === ' ') { e.preventDefault(); toggleAuto(); }
+  else if (e.key.toLowerCase() === 'r') goToStep(0);
+  else if (e.key === 'Home') goToStep(0);
+  else if (e.key === 'End') goToStep(steps.length - 1);
+});
+
+document.getElementById('speed-slider').addEventListener('input', () => {
+  if(autoPlayInterval) { toggleAuto(); toggleAuto(); }
+});
+
+window.onload = () => renderStep(0);
+
+</script>
+<style>
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes writeFlash { 0% { background-color: var(--green); color: black; } 100% { background-color: transparent; color: inherit; } }
+</style>
+</body>
+</html>

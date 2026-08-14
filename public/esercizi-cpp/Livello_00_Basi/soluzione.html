@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello 0: Hello C++</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: #0d1424;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --orange: #ff8c00;
+    --purple: #bb44ff;
+    --yellow: #ffd700;
+    --white: #e8f0ff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* HEADER */
+  header {
+    background-color: #04070d;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+  header h1 {
+    font-family: var(--font-title);
+    color: var(--cyan);
+    margin: 0;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+  }
+  .step-counter {
+    font-family: var(--font-mono);
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: rgba(255, 140, 0, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+  }
+
+  /* PHASE BAR */
+  .phase-bar {
+    background-color: var(--panel);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    padding: 0.5rem 2rem;
+    display: flex;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    z-index: 9;
+  }
+  .phase-name { color: var(--purple); font-weight: bold; }
+  .phase-state { color: var(--yellow); }
+  .phase-action { color: var(--green); }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* LEFT PANEL - Visualization */
+  .vis-panel {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0, 212, 255, 0.1);
+  }
+
+  .code-container {
+    background-color: #03050a;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .code-line {
+    display: flex;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+  }
+
+  .code-line .line-num {
+    color: #445577;
+    width: 30px;
+    user-select: none;
+  }
+  .code-line .line-content {
+    color: #a0b0c0;
+    transition: color 0.3s;
+  }
+
+  .code-line.active {
+    background-color: rgba(0, 212, 255, 0.1);
+    border-left: 3px solid var(--cyan);
+    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+  }
+  
+  .code-line.active .line-content {
+    color: var(--white);
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+  }
+
+  @keyframes stateGlow {
+    0% { box-shadow: 0 0 5px var(--cyan); border-color: rgba(0, 212, 255, 0.5); }
+    100% { box-shadow: 0 0 20px var(--cyan); border-color: var(--cyan); }
+  }
+  @keyframes writeFlash {
+    0% { background-color: var(--green); color: black; }
+    100% { background-color: transparent; color: inherit; }
+  }
+
+  .terminal-container {
+    background-color: #000;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 8px;
+    height: 150px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8) inset;
+  }
+  .terminal-container::before {
+    content: "TERMINALE / OUTPUT";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background-color: var(--bg);
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+
+  /* RIGHT PANEL - Explanation */
+  .exp-panel {
+    width: 380px;
+    background-color: var(--panel);
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .exp-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    animation: fadeSlide 0.4s ease-out forwards;
+  }
+  
+  .exp-card.card-what { border-top: 3px solid var(--cyan); }
+  .exp-card.card-why { border-top: 3px solid var(--yellow); }
+  .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card.card-alert { border-top: 3px solid var(--orange); }
+
+  .exp-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-title);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    letter-spacing: 1px;
+  }
+  .card-what .exp-card-header { color: var(--cyan); }
+  .card-why .exp-card-header { color: var(--yellow); }
+  .card-logic .exp-card-header { color: var(--purple); }
+  .card-alert .exp-card-header { color: var(--orange); }
+
+  .exp-card-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #ccd6f6;
+  }
+
+  .keyword { color: var(--orange); font-family: var(--font-mono); }
+  .val-highlight { color: var(--green); font-weight: bold; font-family: var(--font-mono); }
+
+  /* CONTROLS */
+  .controls {
+    background-color: #04070d;
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: var(--font-title);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  .btn:hover:not(:disabled) {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+  .btn:disabled {
+    border-color: #334;
+    color: #556;
+    cursor: not-allowed;
+  }
+  
+  .btn.btn-play {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn.btn-play:hover:not(:disabled) {
+    background: rgba(0, 255, 136, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  }
+
+  .progress-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .pip {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #334;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .pip.done { background: rgba(0, 255, 136, 0.4); }
+  .pip.active { 
+    background: var(--cyan); 
+    box-shadow: 0 0 10px var(--cyan); 
+    transform: scale(1.2);
+  }
+
+  .speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #889;
+  }
+  input[type="range"] {
+    accent-color: var(--cyan);
+  }
+  
+  .verdict-banner {
+    background: rgba(0, 255, 136, 0.1);
+    border: 2px solid var(--green);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 2rem;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    display: none;
+    animation: fadeSlide 0.5s ease-out;
+  }
+  .verdict-banner h2 {
+    color: var(--green);
+    font-family: var(--font-title);
+    margin-top: 0;
+  }
+
+  @media (max-width: 900px) {
+    main { flex-direction: column; overflow-y: auto; }
+    .exp-panel { width: 100%; border-top: 1px solid rgba(0, 212, 255, 0.2); }
+    .vis-panel { overflow: visible; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE C++ /&gt; Livello 0</h1>
+    <div class="step-counter" id="step-counter">STEP 0 / 6</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Inizializzazione</div>
+    <div class="phase-action" id="phase-action">Attesa...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container">
+        <!-- Generato via JS -->
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="animation: blink 1s step-end infinite; color: var(--green);">_</span>
+      </div>
+      
+      <!-- Banner Finale -->
+      <div class="verdict-banner" id="verdict-banner">
+        <h2>PROGRAMMA TERMINATO CON SUCCESSO!</h2>
+        <p>Hai appena eseguito il tuo primo codice C++ valido.</p>
+        <p>Return Code: <span class="val-highlight">0</span></p>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel">
+      <!-- Generato via JS -->
+    </div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    
+    <div class="progress-container" id="progress-container">
+      <!-- Generato via JS -->
+    </div>
+    
+    <div class="speed-control">
+      Lento <input type="range" id="speed-slider" min="1" max="5" value="3"> Veloce
+    </div>
+    
+    <button class="btn btn-play" id="btn-auto" onclick="toggleAuto()">▶ AUTO</button>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+/* 
+  DATI DELLA SIMULAZIONE
+*/
+const codeLines = [
+  "#include &lt;iostream&gt;",
+  "",
+  "int main() {",
+  "    std::cout << \"Ciao, C++!\" << std::endl;",
+  "    return 0;",
+  "}"
+];
+
+const steps = [
+  {
+    phase: "STEP 0 — INTRO ZERO-KNOWLEDGE",
+    state: "Teoria Base",
+    action: "Analisi della Struttura",
+    codeLine: -1, 
+    terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Oggi impariamo a scrivere un programma C++ funzionante e analizziamo le sue parti." },
+      { type: "why", icon: "💡", label: "PERCHÉ", html: "Il computer è una macchina stupida. Ha bisogno di istruzioni precise e strutturate in un modo specifico che il 'compilatore' possa tradurre in binario (0 e 1)." },
+      { type: "logic", icon: "⚙️", label: "STRUTTURA", html: "A sinistra vedi il codice C++. Ogni riga ha uno scopo ben preciso. Sotto c'è il Terminale, lo schermo nero dove comparirà il risultato del nostro programma." }
+    ]
+  },
+  {
+    phase: "STEP 1 — PREPROCESSORE",
+    state: "Lettura Dipendenze",
+    action: "Inclusione Libreria",
+    codeLine: 0,
+    terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Il compilatore legge la direttiva <span class='keyword'>#include &lt;iostream&gt;</span>. Prende un file chiamato 'iostream' e lo 'incolla' invisibilmente qui." },
+      { type: "why", icon: "💡", label: "PERCHÉ", html: "Il C++ puro non sa fare NULLA, nemmeno scrivere testo su uno schermo. La libreria <span class='keyword'>iostream</span> (Input/Output Stream) fornisce gli strumenti per comunicare col terminale." },
+      { type: "alert", icon: "⚠️", label: "ATTENZIONE", html: "Senza questa riga, il computer non capirebbe il comando <code>cout</code> che useremo più avanti e darebbe un errore." }
+    ]
+  },
+  {
+    phase: "STEP 2 — PUNTO DI INGRESSO",
+    state: "Avvio Esecuzione",
+    action: "Definizione main()",
+    codeLine: 2,
+    terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Incontriamo <span class='keyword'>int main() {</span>. Questo è il punto di partenza ufficiale del programma." },
+      { type: "why", icon: "💡", label: "PERCHÉ", html: "Un programma potrebbe avere migliaia di file e funzioni. Il sistema operativo ha bisogno di sapere esattamente <i>da quale punto iniziare a leggere</i>. Quel punto si chiama SEMPRE <span class='keyword'>main</span>." },
+      { type: "logic", icon: "⚙️", label: "SINTASSI", html: "La parentesi graffa aperta <code>{</code> significa 'inizia il blocco di codice di questa funzione'." }
+    ]
+  },
+  {
+    phase: "STEP 3 — ESECUZIONE (OUTPUT)",
+    state: "Stampa a Schermo",
+    action: "Invio dati allo stream",
+    codeLine: 3,
+    terminal: "Ciao, C++!\n",
+    terminalUpdate: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Eseguiamo l'istruzione di stampa. Il testo <span class='val-highlight'>\"Ciao, C++!\"</span> appare nel Terminale in basso." },
+      { type: "logic", icon: "⚙️", label: "COME FUNZIONA", html: "<ul><li><code>std::cout</code> rappresenta il terminale (output standard).</li><li><code><<</code> (operatore di inserimento) spinge il testo verso cout.</li><li><code>std::endl</code> (end line) manda a capo il cursore.</li></ul>" },
+      { type: "alert", icon: "⚠️", label: "ATTENZIONE", html: "Nota il punto e virgola <code>;</code> alla fine! In C++ è obbligatorio, indica la fine di un'istruzione (come il punto a fine frase in italiano)." }
+    ]
+  },
+  {
+    phase: "STEP 4 — TERMINE",
+    state: "Chiusura Programma",
+    action: "Return Code",
+    codeLine: 4,
+    terminal: "Ciao, C++!\n",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "L'istruzione <span class='keyword'>return 0;</span> invia il numero 0 al sistema operativo (es. Windows o Linux)." },
+      { type: "why", icon: "💡", label: "PERCHÉ", html: "In informatica, ritornare <span class='val-highlight'>0</span> significa 'Tutto è andato bene, nessun errore'. Se ci fosse stato un problema (es. file non trovato), avremmo ritornato un numero diverso da zero (es. 1, 404...)." }
+    ]
+  },
+  {
+    phase: "STEP FINALE — RIEPILOGO",
+    state: "Completato",
+    action: "Fine del blocco",
+    codeLine: 5,
+    terminal: "Ciao, C++!\n[Process exited with code 0]",
+    showVerdict: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "La parentesi graffa chiusa <code>}</code> indica la fine della funzione <span class='keyword'>main</span>. Il programma viene terminato e rimosso dalla memoria RAM." },
+      { type: "logic", icon: "⚙️", label: "RIEPILOGO", html: "Hai imparato a: <ol><li>Includere librerie (<code>#include</code>)</li><li>Creare il punto d'inizio (<code>main</code>)</li><li>Stampare testo (<code>cout</code>)</li><li>Chiudere con successo (<code>return 0;</code>)</li></ol>" }
+    ]
+  }
+];
+
+/* 
+  MOTORE DEL SIMULATORE
+*/
+let currentStep = 0;
+let autoPlayInterval = null;
+
+function renderCodeBlock(activeLineIndex) {
+  const container = document.getElementById('code-container');
+  container.innerHTML = '';
+  
+  codeLines.forEach((line, index) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${index === activeLineIndex ? 'active' : ''}`;
+    
+    // Line number
+    const numSpan = document.createElement('span');
+    numSpan.className = 'line-num';
+    numSpan.innerText = index + 1;
+    
+    // Code content
+    const codeSpan = document.createElement('span');
+    codeSpan.className = 'line-content';
+    codeSpan.innerHTML = line;
+    
+    div.appendChild(numSpan);
+    div.appendChild(codeSpan);
+    container.appendChild(div);
+  });
+}
+
+function renderExplanation(explainData) {
+  const panel = document.getElementById('exp-panel');
+  panel.innerHTML = '';
+  
+  explainData.forEach((card, index) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${card.type}`;
+    div.style.animationDelay = `${index * 0.15}s`;
+    
+    div.innerHTML = `
+      <div class="exp-card-header">
+        <span>${card.icon}</span> ${card.label}
+      </div>
+      <div class="exp-card-body">
+        ${card.html}
+      </div>
+    `;
+    panel.appendChild(div);
+  });
+}
+
+function renderPips() {
+  const container = document.getElementById('progress-container');
+  container.innerHTML = '';
+  
+  steps.forEach((_, idx) => {
+    const pip = document.createElement('div');
+    pip.className = `pip ${idx < currentStep ? 'done' : ''} ${idx === currentStep ? 'active' : ''}`;
+    pip.onclick = () => goToStep(idx);
+    container.appendChild(pip);
+  });
+}
+
+function renderStep(idx) {
+  const step = steps[idx];
+  
+  // Header & Phase
+  document.getElementById('step-counter').innerText = `STEP ${idx} / ${steps.length - 1}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  // Left Panel: Code
+  renderCodeBlock(step.codeLine);
+  
+  // Left Panel: Terminal
+  const term = document.getElementById('terminal-output');
+  term.innerText = step.terminal;
+  if(step.terminalUpdate) {
+    term.style.animation = 'none';
+    term.offsetHeight; /* trigger reflow */
+    term.style.animation = 'writeFlash 0.5s ease-out';
+  }
+  
+  // Verdict banner
+  const banner = document.getElementById('verdict-banner');
+  banner.style.display = step.showVerdict ? 'block' : 'none';
+  
+  // Right Panel: Explanation
+  renderExplanation(step.explain);
+  
+  // Controls state
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  
+  renderPips();
+}
+
+function changeStep(delta) {
+  goToStep(currentStep + delta);
+}
+
+function goToStep(idx) {
+  if (idx < 0 || idx >= steps.length) return;
+  currentStep = idx;
+  renderStep(currentStep);
+  
+  // Se arriviamo alla fine e c'è l'autoplay, lo fermiamo
+  if (currentStep === steps.length - 1 && autoPlayInterval) {
+    toggleAuto(); 
+  }
+}
+
+function toggleAuto() {
+  const btn = document.getElementById('btn-auto');
+  if (autoPlayInterval) {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    btn.innerText = '▶ AUTO';
+    btn.style.color = 'var(--cyan)';
+    btn.style.borderColor = 'var(--cyan)';
+  } else {
+    btn.innerText = '⏸ PAUSA';
+    btn.style.color = 'var(--yellow)';
+    btn.style.borderColor = 'var(--yellow)';
+    
+    // Se eravamo alla fine, ricomincia
+    if (currentStep === steps.length - 1) {
+      goToStep(0);
+    }
+    
+    const speedLevel = document.getElementById('speed-slider').value;
+    // Map slider 1-5 to ms (5 = fast, 1 = slow)
+    // 1 -> 3000ms, 2 -> 2300, 3 -> 1600, 4 -> 900, 5 -> 250
+    const delay = 3750 - (speedLevel * 700); 
+    
+    autoPlayInterval = setInterval(() => {
+      changeStep(1);
+    }, delay);
+  }
+}
+
+// Keyboard navigation
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1);
+  else if (e.key === 'ArrowLeft') changeStep(-1);
+  else if (e.key === ' ') { e.preventDefault(); toggleAuto(); }
+  else if (e.key.toLowerCase() === 'r') goToStep(0);
+  else if (e.key === 'Home') goToStep(0);
+  else if (e.key === 'End') goToStep(steps.length - 1);
+});
+
+// Update autoplay speed on the fly
+document.getElementById('speed-slider').addEventListener('input', () => {
+  if(autoPlayInterval) {
+    toggleAuto(); // ferma
+    toggleAuto(); // riavvia con nuova velocità
+  }
+});
+
+// Init
+window.onload = () => {
+  renderStep(0);
+};
+
+</script>
+<style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
+</body>
+</html>

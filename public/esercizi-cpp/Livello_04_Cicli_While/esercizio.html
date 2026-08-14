@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Pratico - Livello 4</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #070b14; --panel: #0d1424; --cyan: #00d4ff; --green: #00ff88; --red: #ff4466; --orange: #ff8c00; --purple: #bb44ff; --yellow: #ffd700; --white: #e8f0ff; --font-title: 'Orbitron', sans-serif; --font-mono: 'Share Tech Mono', monospace; --font-body: 'IBM Plex Mono', monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background-color: var(--bg); color: var(--white); font-family: var(--font-body); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; }
+  header { background-color: #04070d; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+  header h1 { font-family: var(--font-title); color: var(--cyan); margin: 0; font-size: 1.5rem; }
+  .mode-badge { font-family: var(--font-title); color: var(--orange); border: 2px solid var(--orange); padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.9rem; text-transform: uppercase; }
+  main { flex: 1; display: flex; overflow: hidden; }
+  .instructions-panel { width: 350px; background-color: var(--panel); padding: 2rem; border-right: 1px solid rgba(0, 212, 255, 0.2); overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .instructions-panel h2 { font-family: var(--font-title); color: var(--yellow); font-size: 1.1rem; margin: 0 0 1rem 0; border-bottom: 1px solid rgba(255, 215, 0, 0.2); padding-bottom: 0.5rem; }
+  .instructions-panel p, .instructions-panel li { font-size: 0.95rem; line-height: 1.6; color: #ccd6f6; }
+  .editor-panel { flex: 1; display: flex; flex-direction: column; padding: 2rem; gap: 1rem; position: relative; }
+  .editor-wrapper { flex: 1; display: flex; flex-direction: column; background-color: #03050a; border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; overflow: hidden; }
+  .editor-header { background: #0d1424; padding: 0.5rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--cyan); border-bottom: 1px solid rgba(0, 212, 255, 0.2); display: flex; justify-content: space-between; }
+  textarea { flex: 1; background: transparent; border: none; color: #a0b0c0; font-family: var(--font-mono); font-size: 1.1rem; line-height: 1.6; padding: 1rem; resize: none; outline: none; }
+  .btn-run { background-color: rgba(0, 255, 136, 0.1); border: 2px solid var(--green); color: var(--green); font-family: var(--font-title); padding: 0.8rem 2rem; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: all 0.3s; align-self: flex-end; }
+  .btn-run:hover { background-color: var(--green); color: black; box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+  .terminal-wrapper { height: 200px; background-color: #000; border: 1px solid rgba(187, 68, 255, 0.3); border-radius: 8px; display: flex; flex-direction: column; }
+  .terminal-header { background: #110; padding: 0.3rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--purple); border-bottom: 1px solid rgba(187, 68, 255, 0.2); }
+  .terminal-output { flex: 1; padding: 1rem; font-family: var(--font-mono); font-size: 1rem; color: #ccc; overflow-y: auto; white-space: pre-wrap; }
+  .err { color: var(--red); font-weight: bold; } .ok { color: var(--green); font-weight: bold; }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; C++ EDITOR /&gt; Livello 4: Ciclo While</h1>
+    <div class="mode-badge">Modalità Pratica</div>
+  </header>
+
+  <main>
+    <div class="instructions-panel">
+      <div>
+        <h2>🎯 Obiettivo</h2>
+        <p>Crea un conto alla rovescia automatizzato da 3 a 1, e annuncia la partenza.</p>
+      </div>
+      <div>
+        <h2>📝 Requisiti</h2>
+        <ul>
+          <li>Crea la variabile <code>int conto = 3;</code>.</li>
+          <li>Apri il ciclo <code>while (conto > 0)</code> e ricorda le graffe <code>{ }</code>.</li>
+          <li>Nel ciclo stampa il valore del conto.</li>
+          <li><strong>MOLTO IMPORTANTE:</strong> decrementa <code>conto = conto - 1;</code> nel ciclo!</li>
+          <li>Dopo la chiusura del ciclo, stampa "PARTENZA!".</li>
+        </ul>
+      </div>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px;">
+        <a href="consegna.html" style="color: var(--cyan); text-decoration: none; font-size: 0.9rem; font-family: var(--font-mono);">◀ Torna alla Consegna</a>
+        <a href="soluzione.html" style="color: var(--yellow); text-decoration: none; font-size: 0.9rem; font-family: var(--font-mono);">👀 Vedi Soluzione</a>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="editor-wrapper">
+        <div class="editor-header"><span>main.cpp</span></div>
+        <textarea id="code-editor" spellcheck="false">#include <iostream>
+
+int main() {
+    // 1. Inizializza la variabile del conto alla rovescia
+    
+    // 2. Apri il ciclo while
+    
+    
+        // 3. Stampa e decrementa
+        
+        
+    // 4. Fuori dal ciclo stampa PARTENZA!
+    
+    
+    return 0;
+}</textarea>
+      </div>
+      <button class="btn-run" onclick="runCode()">ESEGUI CODICE ▶</button>
+      <div class="terminal-wrapper">
+        <div class="terminal-header">Terminale Output</div>
+        <div class="terminal-output" id="term-out">Attesa codice...</div>
+      </div>
+    </div>
+  </main>
+
+<script>
+function runCode() {
+  const code = document.getElementById('code-editor').value;
+  const term = document.getElementById('term-out');
+  term.innerHTML = '<span style="color:#556;">Esecuzione Ciclo...</span><br><br>';
+  
+  if (!code.includes('while')) { term.innerHTML += '<span class="err">Errore:</span> Non hai usato la parola chiave `while`.<br>'; return; }
+  
+  // Controllo decremeto
+  if (!code.includes('- 1') && !code.includes('--')) { 
+    term.innerHTML += '<span class="err">ALLARME LOOP INFINITO!</span><br>Non hai diminuito il valore della variabile all\'interno del ciclo. Il browser si bloccherebbe per sempre!'; 
+    return; 
+  }
+  
+  // Controllo stampa fuori dal ciclo
+  const afterWhilePart = code.substring(code.lastIndexOf('}'));
+  if (!afterWhilePart.includes('PARTENZA') && !afterWhilePart.includes('cout')) {
+      term.innerHTML += '<span class="err">Errore:</span> Ti sei dimenticato di stampare "PARTENZA!" fuori dal ciclo.<br>';
+      return;
+  }
+  
+  term.innerHTML += '[OUTPUT]\n';
+  term.innerHTML += '3...\n';
+  term.innerHTML += '2...\n';
+  term.innerHTML += '1...\n';
+  term.innerHTML += '<span style="color:orange; font-weight:bold;">PARTENZA!</span>\n';
+  
+  term.innerHTML += '\n<span class="ok">✓ TEST SUPERATO! Complimenti per aver completato il Livello 4! Il ciclo funziona correttamente.</span>';
+}
+</script>
+</body>
+</html>

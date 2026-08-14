@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello 4: Cicli</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: #0d1424;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --orange: #ff8c00;
+    --purple: #bb44ff;
+    --yellow: #ffd700;
+    --white: #e8f0ff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* HEADER */
+  header {
+    background-color: #04070d;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+  header h1 {
+    font-family: var(--font-title);
+    color: var(--cyan);
+    margin: 0;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+  }
+  .step-counter {
+    font-family: var(--font-mono);
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: rgba(255, 140, 0, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+  }
+
+  /* PHASE BAR */
+  .phase-bar {
+    background-color: var(--panel);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    padding: 0.5rem 2rem;
+    display: flex;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    z-index: 9;
+  }
+  .phase-name { color: var(--purple); font-weight: bold; }
+  .phase-state { color: var(--yellow); }
+  .phase-action { color: var(--green); }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* LEFT PANEL - Visualization */
+  .vis-panel {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0, 212, 255, 0.1);
+  }
+
+  .code-container {
+    background-color: #03050a;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .code-line {
+    display: flex;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+  }
+  .code-line .line-num { color: #445577; width: 30px; user-select: none; }
+  .code-line .line-content { color: #a0b0c0; transition: color 0.3s; }
+
+  .code-line.active {
+    background-color: rgba(0, 212, 255, 0.1);
+    border-left: 3px solid var(--cyan);
+    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+  }
+  .code-line.active .line-content { color: var(--white); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+  
+  /* RAM E ALU LAYOUT Orizzontale */
+  .system-stats {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* LOGIC COMPARISON VISUALIZER */
+  .logic-container {
+    flex: 1;
+    background-color: #000;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8) inset;
+    min-height: 100px;
+  }
+  .logic-container::before {
+    content: "ALU (CONTROLLO CICLO)";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background-color: var(--bg);
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: var(--yellow);
+    font-family: var(--font-mono);
+  }
+
+  .logic-box {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    transition: all 0.3s;
+  }
+  .logic-var { padding: 0.5rem 1rem; border: 2px solid var(--cyan); border-radius: 6px; color: var(--cyan); background: rgba(0, 212, 255, 0.1); }
+  .logic-op { color: var(--yellow); font-weight: bold; }
+  .logic-const { padding: 0.5rem 1rem; border: 2px solid #556; border-radius: 6px; color: #a0b0c0; }
+  .logic-result { 
+    margin-left: 2rem; padding: 0.5rem 1.5rem; font-weight: bold; border-radius: 6px; text-transform: uppercase;
+    transition: all 0.5s;
+    opacity: 0.2;
+    border: 2px solid #334;
+  }
+  
+  .logic-result.true { opacity: 1; background: rgba(0, 255, 136, 0.2); border-color: var(--green); color: var(--green); box-shadow: 0 0 20px var(--green); }
+  .logic-result.false { opacity: 1; background: rgba(255, 68, 102, 0.2); border-color: var(--red); color: var(--red); box-shadow: 0 0 20px var(--red); }
+
+  /* RAM MEMORY VISUALIZATION */
+  .ram-container {
+    background-color: #000;
+    border: 1px solid rgba(187, 68, 255, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0,0,0,0.8) inset;
+    width: 200px;
+  }
+  .ram-container::before {
+    content: "RAM";
+    position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--purple); font-family: var(--font-mono);
+  }
+  .ram-cell {
+    border: 2px solid var(--cyan); border-radius: 6px; width: 120px; background-color: #0a0d16;
+    display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  .ram-cell.just-written {
+    animation: writeCell 0.5s ease-out;
+    border-color: var(--green);
+    box-shadow: 0 0 20px var(--green);
+  }
+  .ram-name { font-family: var(--font-mono); color: var(--cyan); padding: 5px 0; font-size: 1rem; border-bottom: 1px solid #334; width: 100%; text-align: center; }
+  .ram-value { font-family: var(--font-mono); color: var(--green); padding: 10px 0; font-size: 1.5rem; font-weight: bold; }
+
+  @keyframes writeCell {
+    0% { transform: scale(1.1); background-color: rgba(0, 255, 136, 0.2); }
+    100% { transform: scale(1); background-color: #0a0d16; }
+  }
+
+  /* TERMINAL */
+  .terminal-container {
+    background-color: #000; border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px;
+    min-height: 120px; padding: 1rem; font-family: var(--font-mono); color: var(--green);
+    position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8) inset; white-space: pre-wrap;
+  }
+  .terminal-container::before {
+    content: "TERMINALE"; position: absolute; top: -10px; left: 20px; background-color: var(--bg);
+    padding: 0 10px; font-size: 0.8rem; color: var(--green);
+  }
+
+  /* RIGHT PANEL - Explanation */
+  .exp-panel { width: 380px; background-color: var(--panel); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+  .exp-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; animation: fadeSlide 0.4s ease-out forwards; }
+  .exp-card.card-what { border-top: 3px solid var(--cyan); }
+  .exp-card.card-why { border-top: 3px solid var(--yellow); }
+  .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card.card-alert { border-top: 3px solid var(--red); }
+
+  .exp-card-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-title); font-size: 0.9rem; margin-bottom: 0.8rem; letter-spacing: 1px; }
+  .card-what .exp-card-header { color: var(--cyan); }
+  .card-why .exp-card-header { color: var(--yellow); }
+  .card-logic .exp-card-header { color: var(--purple); }
+  .card-alert .exp-card-header { color: var(--red); }
+
+  .exp-card-body { font-size: 0.95rem; line-height: 1.5; color: #ccd6f6; }
+  .keyword { color: var(--orange); font-family: var(--font-mono); }
+  .val-highlight { color: var(--green); font-weight: bold; font-family: var(--font-mono); }
+
+  /* CONTROLS */
+  .controls { background-color: #04070d; border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-title); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-size: 0.9rem; }
+  .btn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+  .btn:disabled { border-color: #334; color: #556; cursor: not-allowed; }
+  .btn.btn-play { border-color: var(--green); color: var(--green); }
+  .btn.btn-play:hover:not(:disabled) { background: rgba(0, 255, 136, 0.1); box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+  .progress-container { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; max-width: 400px; justify-content: center; }
+  .pip { width: 12px; height: 12px; border-radius: 50%; background: #334; cursor: pointer; transition: all 0.3s; margin-bottom: 5px; }
+  .pip.done { background: rgba(0, 255, 136, 0.4); }
+  .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); transform: scale(1.2); }
+  .speed-control { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.8rem; color: #889; }
+  
+  .loop-arrow {
+    position: absolute; left: 10px; top: 120px; height: 85px; width: 30px;
+    border-left: 2px dashed var(--orange); border-bottom: 2px dashed var(--orange); border-top: 2px dashed var(--orange);
+    border-radius: 8px 0 0 8px; opacity: 0; transition: opacity 0.3s; z-index: 5;
+  }
+  
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE C++ /&gt; Livello 4: Il Ciclo While</h1>
+    <div class="step-counter" id="step-counter">STEP 0 / X</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container">
+        <div class="loop-arrow" id="loop-arrow"></div>
+        <div id="code-lines"></div>
+      </div>
+      
+      <div class="system-stats">
+        <!-- Vis RAM -->
+        <div class="ram-container" id="ram-container">
+          <div class="ram-cell" id="ram-conto-box"><div class="ram-name">conto</div><div class="ram-value" id="ram-conto-val">?</div></div>
+        </div>
+        
+        <!-- Vis Logica -->
+        <div class="logic-container">
+          <div class="logic-box" id="logic-box" style="opacity: 0.3;">
+            <div class="logic-var" id="log-var">?</div>
+            <div class="logic-op">&gt;</div>
+            <div class="logic-const">0</div>
+            <div class="logic-result" id="log-res">???</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="animation: blink 1s step-end infinite; color: var(--green);">_</span>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <div class="speed-control">
+      Lento <input type="range" id="speed-slider" min="1" max="5" value="3"> Veloce
+    </div>
+    <button class="btn btn-play" id="btn-auto" onclick="toggleAuto()">▶ AUTO</button>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = [
+  "#include &lt;iostream&gt;",
+  "",
+  "int main() {",
+  "    int conto = 3;",
+  "",
+  "    while (conto > 0) {",
+  "        std::cout << conto << \"...\\n\";",
+  "        conto = conto - 1;",
+  "    }",
+  "",
+  "    std::cout << \"PARTENZA!\\n\";",
+  "    return 0;",
+  "}"
+];
+
+const steps = [
+  {
+    phase: "STEP 0 — INIT", state: "Allocazione RAM", action: "Creo la variabile conto",
+    codeLine: 3, ram: "3", justWritten: true, logicActive: false, terminal: "",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Dichiariamo la variabile <span class='keyword'>conto</span> e le assegniamo il valore iniziale <span class='val-highlight'>3</span>." }
+    ]
+  },
+  
+  // ITERAZIONE 1 (conto = 3)
+  {
+    phase: "ITERAZIONE 1", state: "Test Condizione", action: "Controllo il While",
+    codeLine: 5, ram: "3", justWritten: false, logicActive: true, logicVal: "3", logicRes: "true", terminal: "", showArrow: false,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Arriviamo all'istruzione <span class='keyword'>while</span>. La CPU chiede alla ALU: <em>\"Il conto (3) è maggiore di 0?\"</em>" },
+      { type: "logic", icon: "⚙️", label: "VERDETTO", html: "Poiché 3 > 0 è <span class='val-highlight' style='color:var(--green)'>TRUE</span>, il programma <strong>entra</strong> nel blocco di codice." }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 1", state: "Esecuzione (Output)", action: "Stampa il numero",
+    codeLine: 6, ram: "3", justWritten: false, logicActive: true, logicVal: "3", logicRes: "true", terminal: "3...\n",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Stampiamo il valore attuale della variabile (3) seguito da dei puntini." }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 1", state: "Aggiornamento", action: "Diminuisco il conto",
+    codeLine: 7, ram: "2", justWritten: true, logicActive: true, logicVal: "3", logicRes: "true", terminal: "3...\n",
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Azione FONDAMENTALE! Prendiamo il valore attuale (3), gli sottraiamo 1, e salviamo il nuovo valore (2) nella stessa variabile." },
+      { type: "alert", icon: "⚠️", label: "ATTENZIONE", html: "Se ci dimenticassimo questa riga, 'conto' rimarrebbe sempre a 3 e il ciclo non finirebbe MAI (Loop Infinito!)." }
+    ]
+  },
+  
+  // ITERAZIONE 2 (conto = 2)
+  {
+    phase: "ITERAZIONE 2", state: "Salto all'Indietro", action: "Ricontrollo la condizione",
+    codeLine: 5, ram: "2", justWritten: false, logicActive: true, logicVal: "2", logicRes: "true", terminal: "3...\n", showArrow: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Invece di proseguire sotto, il <span class='keyword'>while</span> forza il programma a <strong>saltare indietro</strong> all'inizio del blocco." },
+      { type: "logic", icon: "⚙️", label: "NUOVO TEST", html: "La ALU testa di nuovo: <em>\"Il conto (che ora è 2) è maggiore di 0?\"</em>. È ancora TRUE! Rientriamo." }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 2", state: "Esecuzione (Output)", action: "Stampa il numero",
+    codeLine: 6, ram: "2", justWritten: false, logicActive: true, logicVal: "2", logicRes: "true", terminal: "3...\n2...\n", showArrow: false,
+    explain: [ { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Il programma si ripete. Questa volta stampa 2." } ]
+  },
+  {
+    phase: "ITERAZIONE 2", state: "Aggiornamento", action: "Diminuisco il conto",
+    codeLine: 7, ram: "1", justWritten: true, logicActive: true, logicVal: "2", logicRes: "true", terminal: "3...\n2...\n",
+    explain: [ { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Sottraiamo 1. Il 'conto' in RAM diventa 1." } ]
+  },
+
+  // ITERAZIONE 3 (conto = 1)
+  {
+    phase: "ITERAZIONE 3", state: "Salto all'Indietro", action: "Ricontrollo la condizione",
+    codeLine: 5, ram: "1", justWritten: false, logicActive: true, logicVal: "1", logicRes: "true", terminal: "3...\n2...\n", showArrow: true,
+    explain: [
+      { type: "logic", icon: "⚙️", label: "TEST", html: "<em>\"1 > 0 ?\"</em> Ancora TRUE. Entriamo per l'ultima volta." }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 3", state: "Esecuzione (Output)", action: "Stampa il numero",
+    codeLine: 6, ram: "1", justWritten: false, logicActive: true, logicVal: "1", logicRes: "true", terminal: "3...\n2...\n1...\n", showArrow: false,
+    explain: [ { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Stampa 1." } ]
+  },
+  {
+    phase: "ITERAZIONE 3", state: "Aggiornamento", action: "Diminuisco il conto",
+    codeLine: 7, ram: "0", justWritten: true, logicActive: true, logicVal: "1", logicRes: "true", terminal: "3...\n2...\n1...\n",
+    explain: [ { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Sottraiamo 1. Il 'conto' ora è 0." } ]
+  },
+
+  // ITERAZIONE 4 (conto = 0) -> EXIT
+  {
+    phase: "USCITA DAL CICLO", state: "Test Condizione", action: "Fallimento della condizione",
+    codeLine: 5, ram: "0", justWritten: false, logicActive: true, logicVal: "0", logicRes: "false", terminal: "3...\n2...\n1...\n", showArrow: true,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Saltiamo indietro. La ALU valuta: <em>\"0 è maggiore di 0?\"</em>" },
+      { type: "why", icon: "💡", label: "IL BLOCCO SI ROMPE", html: "Questa volta il risultato è <span class='term-red'>FALSE</span>! Poiché la condizione non è più vera, il programma salta tutto il blocco e riprende dall'istruzione immediatamente successiva al ciclo." }
+    ]
+  },
+  {
+    phase: "FINE PROGRAMMA", state: "Esecuzione Finale", action: "Stampa Partenza",
+    codeLine: 10, ram: "0", justWritten: false, logicActive: false, logicVal: "?", logicRes: "", terminal: "3...\n2...\n1...\n<span style='color:orange;font-weight:bold;'>PARTENZA!</span>\n", showArrow: false,
+    explain: [
+      { type: "what", icon: "🔍", label: "COSA SUCCEDE", html: "Eseguiamo la stampa finale fuori dal ciclo e terminiamo il programma. Missione compiuta!" }
+    ]
+  }
+];
+
+/* MOTORE */
+let currentStep = 0;
+let autoPlayInterval = null;
+
+function renderCodeBlock(activeLineIndex, showArrow) {
+  const container = document.getElementById('code-lines');
+  container.innerHTML = '';
+  codeLines.forEach((line, index) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${index === activeLineIndex ? 'active' : ''}`;
+    div.innerHTML = `<span class="line-num">${index + 1}</span><span class="line-content">${line}</span>`;
+    container.appendChild(div);
+  });
+  
+  const arrow = document.getElementById('loop-arrow');
+  arrow.style.opacity = showArrow ? '1' : '0';
+}
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx} / ${steps.length - 1}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  renderCodeBlock(step.codeLine, step.showArrow);
+  
+  // RAM
+  const ramBox = document.getElementById('ram-conto-box');
+  document.getElementById('ram-conto-val').innerText = step.ram;
+  ramBox.classList.remove('just-written');
+  void ramBox.offsetWidth;
+  if(step.justWritten) ramBox.classList.add('just-written');
+  
+  // Logic Box
+  const lb = document.getElementById('logic-box');
+  if(step.logicActive) {
+    lb.style.opacity = 1;
+    document.getElementById('log-var').innerText = step.logicVal;
+    const lr = document.getElementById('log-res');
+    lr.innerText = step.logicRes.toUpperCase();
+    lr.className = 'logic-result ' + step.logicRes;
+  } else {
+    lb.style.opacity = 0.3;
+    document.getElementById('log-var').innerText = '?';
+    const lr = document.getElementById('log-res');
+    lr.innerText = '???';
+    lr.className = 'logic-result';
+  }
+  
+  // Terminal
+  document.getElementById('terminal-output').innerHTML = step.terminal;
+  
+  // Explanations
+  const panel = document.getElementById('exp-panel');
+  panel.innerHTML = '';
+  step.explain.forEach((card, index) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${card.type}`;
+    div.style.animationDelay = `${index * 0.15}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${card.icon}</span> ${card.label}</div><div class="exp-card-body">${card.html}</div>`;
+    panel.appendChild(div);
+  });
+  
+  // Controls & Pips
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  const pContainer = document.getElementById('progress-container');
+  pContainer.innerHTML = '';
+  steps.forEach((_, i) => {
+    const pip = document.createElement('div');
+    pip.className = `pip ${i < idx ? 'done' : ''} ${i === idx ? 'active' : ''}`;
+    pip.onclick = () => goToStep(i);
+    pContainer.appendChild(pip);
+  });
+}
+
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if (idx < 0 || idx >= steps.length) return;
+  currentStep = idx; renderStep(currentStep);
+  if (currentStep === steps.length - 1 && autoPlayInterval) toggleAuto(); 
+}
+function toggleAuto() {
+  const btn = document.getElementById('btn-auto');
+  if (autoPlayInterval) {
+    clearInterval(autoPlayInterval); autoPlayInterval = null;
+    btn.innerText = '▶ AUTO'; btn.style.color = 'var(--cyan)'; btn.style.borderColor = 'var(--cyan)';
+  } else {
+    btn.innerText = '⏸ PAUSA'; btn.style.color = 'var(--yellow)'; btn.style.borderColor = 'var(--yellow)';
+    if (currentStep === steps.length - 1) goToStep(0);
+    const delay = 3750 - (document.getElementById('speed-slider').value * 700); 
+    autoPlayInterval = setInterval(() => changeStep(1), delay);
+  }
+}
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1); else if (e.key === 'ArrowLeft') changeStep(-1);
+  else if (e.key === ' ') { e.preventDefault(); toggleAuto(); } else if (e.key.toLowerCase() === 'r') goToStep(0);
+});
+document.getElementById('speed-slider').addEventListener('input', () => { if(autoPlayInterval) { toggleAuto(); toggleAuto(); } });
+window.onload = () => renderStep(0);
+</script>
+<style> @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } } </style>
+</body>
+</html>
