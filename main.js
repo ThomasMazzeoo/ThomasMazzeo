@@ -144,49 +144,139 @@ const MATERIE = [
           {
             title: "Livello 0 — Basi (Hello C++)",
             topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_00_Basi/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_00_Basi/soluzione.html" }
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio: struttura base, main() e std::cout.", url: "/esercizi-cpp/Livello_00_Basi/consegna.html" },
+              { title: "Soluzione", desc: "Simulatore CRT interattivo e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_00_Basi/soluzione.html" }
             ]
           },
           {
             title: "Livello 1 — Variabili",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_01_Variabili/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_01_Variabili/soluzione.html" }
+            variants: [
+              {
+                id: "1.0",
+                badge: "BASE",
+                name: "1.0 — Statistiche Eroe",
+                desc: "Dichiarazione di variabili di diversi tipi di dato (nome, livello, salute).",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo dell'esercizio base con le statistiche dell'eroe.", url: "/esercizi-cpp/Livello_01_Variabili/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore interattivo passo-passo con RAM.", url: "/esercizi-cpp/Livello_01_Variabili/soluzione.html" }
+                ]
+              },
+              {
+                id: "1.1",
+                badge: "VARIANTE 1.1",
+                name: "1.1 — Telemetria Drone Spaziale",
+                desc: "Gestione telemetria con string, int, double e bool (senza char).",
+                topics: [
+                  { title: "Consegna (1.1)", desc: "L'obiettivo della variante 1.1 (Drone Scout-X).", url: "/esercizi-cpp/Livello_01_1_Variabili/consegna.html" },
+                  { title: "Soluzione (1.1)", desc: "Simulatore interattivo passo-passo con RAM e telemetria.", url: "/esercizi-cpp/Livello_01_1_Variabili/soluzione.html" }
+                ]
+              }
             ]
           },
           {
             title: "Livello 2 — Input & Math",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_02_Input_Math/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_02_Input_Math/soluzione.html" }
+            variants: [
+              {
+                id: "2.0",
+                badge: "BASE",
+                name: "2.0 — Danni Eroe",
+                desc: "Lettura da tastiera con cin e calcolo somma dei danni (attacco + bonus).",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo dell'esercizio base (attacco + bonus).", url: "/esercizi-cpp/Livello_02_Input_Math/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore interattivo con RAM e cin.", url: "/esercizi-cpp/Livello_02_Input_Math/soluzione.html" }
+                ]
+              },
+              {
+                id: "2.1",
+                badge: "VARIANTE 2.1",
+                name: "2.1 — Propulsione Iperspaziale",
+                desc: "Calcolo consumo carburante e riserva per salto spaziale (senza char).",
+                topics: [
+                  { title: "Consegna (2.1)", desc: "L'obiettivo della variante 2.1 (Distanza, consumo e riserva).", url: "/esercizi-cpp/Livello_02_1_Input_Math/consegna.html" },
+                  { title: "Soluzione (2.1)", desc: "Simulatore interattivo con formula aritmetica e RAM.", url: "/esercizi-cpp/Livello_02_1_Input_Math/soluzione.html" }
+                ]
+              }
             ]
           },
           {
             title: "Livello 3 — Condizioni",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_03_Condizioni/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_03_Condizioni/soluzione.html" }
+            variants: [
+              {
+                id: "3.0",
+                badge: "BASE",
+                name: "3.0 — Punti Vita Eroe",
+                desc: "Controllo se l'eroe è vivo o morto con if/else sui Punti Vita (HP).",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo dell'esercizio base con HP.", url: "/esercizi-cpp/Livello_03_Condizioni/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore interattivo con ALU e bivi condizionali.", url: "/esercizi-cpp/Livello_03_Condizioni/soluzione.html" }
+                ]
+              },
+              {
+                id: "3.1",
+                badge: "VARIANTE 3.1",
+                name: "3.1 — Monitor Reattore a Fusione",
+                desc: "Diagnostica termica a 3 stati con if, else if ed else (senza char).",
+                topics: [
+                  { title: "Consegna (3.1)", desc: "L'obiettivo della variante 3.1 (Allarme sovraccarico / soglia minima).", url: "/esercizi-cpp/Livello_03_1_Condizioni/consegna.html" },
+                  { title: "Soluzione (3.1)", desc: "Simulatore interattivo con comparatore logico ALU.", url: "/esercizi-cpp/Livello_03_1_Condizioni/soluzione.html" }
+                ]
+              }
             ]
           },
           {
             title: "Livello 4 — Cicli (While)",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_04_Cicli_While/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_04_Cicli_While/soluzione.html" }
+            variants: [
+              {
+                id: "4.0",
+                badge: "BASE",
+                name: "4.0 — Conto alla Rovescia",
+                desc: "Countdown da 3 a 1 e annuncio di partenza con ciclo while.",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo del countdown con while.", url: "/esercizi-cpp/Livello_04_Cicli_While/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore interattivo con loop arrow e decremento.", url: "/esercizi-cpp/Livello_04_Cicli_While/soluzione.html" }
+                ]
+              },
+              {
+                id: "4.1",
+                badge: "VARIANTE 4.1",
+                name: "4.1 — Ricarica Scudi (+20%)",
+                desc: "Ricarica progressiva degli scudi fino al 100% con SOLO ciclo while.",
+                topics: [
+                  { title: "Consegna (4.1)", desc: "L'obiettivo della variante 4.1 (Ricarica a passi di +20).", url: "/esercizi-cpp/Livello_04_1_Cicli_While/consegna.html" },
+                  { title: "Soluzione (4.1)", desc: "Simulatore interattivo con iterazioni del while.", url: "/esercizi-cpp/Livello_04_1_Cicli_While/soluzione.html" }
+                ]
+              }
             ]
           },
           {
             title: "Livello 5 — Statistiche",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_05_Statistiche/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_05_Statistiche/soluzione.html" }
+            variants: [
+              {
+                id: "5.0",
+                badge: "BASE",
+                name: "5.0 — Il Raccoglitore d'Oro",
+                desc: "Accumulatore += e contatore ++ per il conteggio dei bauli aperti.",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo dell'esercizio base sui bauli.", url: "/esercizi-cpp/Livello_05_Statistiche/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore interattivo con accumulatori.", url: "/esercizi-cpp/Livello_05_Statistiche/soluzione.html" }
+                ]
+              },
+              {
+                id: "5.1",
+                badge: "VARIANTE 5.1",
+                name: "5.1 — Scanner Risorse (Solo While)",
+                desc: "Scanner minerario con sentinella 0 usando SOLO ciclo while (senza do-while, senza char).",
+                topics: [
+                  { title: "Consegna (5.1)", desc: "L'obiettivo della variante 5.1 con solo while.", url: "/esercizi-cpp/Livello_05_1_Statistiche/consegna.html" },
+                  { title: "Soluzione (5.1)", desc: "Simulatore interattivo con sentinella e accumulatore nel while.", url: "/esercizi-cpp/Livello_05_1_Statistiche/soluzione.html" }
+                ]
+              }
             ]
           },
           {
             title: "Livello A — Torneo (Avanzato)",
             topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
+              { title: "Consegna", desc: "L'obiettivo dell'esercizio del torneo.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
               { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A_Torneo/soluzione.html" }
             ]
           }
@@ -195,6 +285,16 @@ const MATERIE = [
     ]
   },
 ];
+
+// ══════════════════════════════════════════
+// ── Helper per conteggio topic ──
+// ══════════════════════════════════════════
+function getChapterTopicCount(chapter) {
+  if (chapter.variants && chapter.variants.length > 0) {
+    return chapter.variants.reduce((sum, v) => sum + v.topics.length, 0);
+  }
+  return chapter.topics ? chapter.topics.length : 0;
+}
 
 // ══════════════════════════════════════════
 // ── State ──
@@ -227,7 +327,7 @@ function init() {
 function updateStats() {
   const totalTopics = MATERIE.reduce((sum, m) =>
     sum + m.sections.reduce((s2, sec) =>
-      s2 + sec.chapters.reduce((s3, ch) => s3 + ch.topics.length, 0), 0), 0);
+      s2 + sec.chapters.reduce((s3, ch) => s3 + getChapterTopicCount(ch), 0), 0), 0);
   const totalSections = MATERIE.reduce((sum, m) => sum + m.sections.length, 0);
 
   document.getElementById('stat-total').textContent = totalTopics;
@@ -342,7 +442,7 @@ function renderMaterieView() {
   MATERIE.forEach((materia, i) => {
     const sectionCount = materia.sections.length;
     const topicCount = materia.sections.reduce((s, sec) =>
-      s + sec.chapters.reduce((s2, ch) => s2 + ch.topics.length, 0), 0);
+      s + sec.chapters.reduce((s2, ch) => s2 + getChapterTopicCount(ch), 0), 0);
 
     const card = document.createElement('button');
     card.className = 'materia-card';
@@ -404,7 +504,7 @@ function renderSectionsView() {
 
   selectedMateria.sections.forEach((sec, i) => {
     const chapterCount = sec.chapters.length;
-    const topicCount = sec.chapters.reduce((s, ch) => s + ch.topics.length, 0);
+    const topicCount = sec.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0);
 
     const card = document.createElement('button');
     card.className = 'section-card';
@@ -422,7 +522,7 @@ function renderSectionsView() {
       </div>
       <div class="section-card__meta">
         <span class="section-card__badge">${chapterCount} capitoli</span>
-        <span class="section-card__badge">${topicCount} argomenti</span>
+        <span class="section-card__badge">${topicCount} risorse</span>
         <span class="section-card__arrow">►</span>
       </div>
     `;
@@ -437,6 +537,34 @@ function renderSectionsView() {
   });
 
   risorseContainer.appendChild(grid);
+}
+
+// ── Helper: Render Topics list ──
+function renderTopicsInto(container, topics, color, colorRgb) {
+  container.innerHTML = '';
+  topics.forEach((topic) => {
+    const topicEl = document.createElement(topic.url ? 'a' : 'div');
+    topicEl.className = 'topic';
+    if (topic.url) {
+      topicEl.href = topic.url;
+      topicEl.target = '_blank';
+      topicEl.rel = 'noopener noreferrer';
+      topicEl.classList.add('topic--link');
+    }
+    topicEl.style.setProperty('--card-color', color);
+    topicEl.style.setProperty('--card-color-rgb', colorRgb);
+
+    topicEl.innerHTML = `
+      <div class="topic__marker" style="background:${color}"></div>
+      <div class="topic__content">
+        <h4 class="topic__title">${topic.title}</h4>
+        <p class="topic__desc">${topic.desc}</p>
+      </div>
+      ${topic.url ? `<div class="topic__action" style="color:${color}">APRI 🚀</div>` : ''}
+    `;
+
+    container.appendChild(topicEl);
+  });
 }
 
 // ── View: Chapters accordion ──
@@ -463,6 +591,11 @@ function renderChaptersView() {
     chapterEl.className = 'chapter';
     chapterEl.style.animationDelay = `${ci * 0.08}s`;
 
+    const hasVariants = chapter.variants && chapter.variants.length > 0;
+    const countLabel = hasVariants 
+      ? `${chapter.variants.length} versioni`
+      : `${chapter.topics.length} argomenti`;
+
     // Chapter header (clickable)
     const chapterHeader = document.createElement('button');
     chapterHeader.className = 'chapter__header';
@@ -472,37 +605,63 @@ function renderChaptersView() {
     chapterHeader.innerHTML = `
       <span class="chapter__number" style="color:${selectedMateria.color}">${String(ci + 1).padStart(2, '0')}</span>
       <span class="chapter__title">${chapter.title}</span>
-      <span class="chapter__count">${chapter.topics.length} argomenti</span>
+      <span class="chapter__count">${countLabel}</span>
       <span class="chapter__toggle">▼</span>
     `;
 
-    // Topics container (hidden by default)
-    const topicsContainer = document.createElement('div');
-    topicsContainer.className = 'chapter__topics';
+    // Topics & Variant Container
+    const chapterBody = document.createElement('div');
+    chapterBody.className = 'chapter__topics';
 
-    chapter.topics.forEach((topic, ti) => {
-      const topicEl = document.createElement(topic.url ? 'a' : 'div');
-      topicEl.className = 'topic';
-      if (topic.url) {
-        topicEl.href = topic.url;
-        topicEl.target = '_blank';
-        topicEl.rel = 'noopener noreferrer';
-        topicEl.classList.add('topic--link');
-      }
-      topicEl.style.setProperty('--card-color', selectedMateria.color);
-      topicEl.style.setProperty('--card-color-rgb', selectedMateria.colorRgb);
+    if (hasVariants) {
+      // ── Render Variant Selector Bar ──
+      const variantSelector = document.createElement('div');
+      variantSelector.className = 'chapter__variant-bar';
 
-      topicEl.innerHTML = `
-        <div class="topic__marker" style="background:${selectedMateria.color}"></div>
-        <div class="topic__content">
-          <h4 class="topic__title">${topic.title}</h4>
-          <p class="topic__desc">${topic.desc}</p>
-        </div>
-        ${topic.url ? `<div class="topic__action" style="color:${selectedMateria.color}">APRI 🚀</div>` : ''}
-      `;
+      const variantLabel = document.createElement('span');
+      variantLabel.className = 'variant-bar__label pixel-text';
+      variantLabel.textContent = 'SELEZIONA VARIANTE:';
+      variantSelector.appendChild(variantLabel);
 
-      topicsContainer.appendChild(topicEl);
-    });
+      const variantTabsWrapper = document.createElement('div');
+      variantTabsWrapper.className = 'variant-tabs-wrapper';
+
+      const variantContent = document.createElement('div');
+      variantContent.className = 'chapter__variant-content';
+
+      chapter.variants.forEach((v, vi) => {
+        const tabBtn = document.createElement('button');
+        tabBtn.className = `variant-tab ${vi === 0 ? 'variant-tab--active' : ''}`;
+        tabBtn.style.setProperty('--card-color', selectedMateria.color);
+        tabBtn.style.setProperty('--card-color-rgb', selectedMateria.colorRgb);
+        tabBtn.innerHTML = `
+          <span class="variant-tab__badge">${v.badge}</span>
+          <span class="variant-tab__name">${v.name}</span>
+        `;
+
+        tabBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          variantTabsWrapper.querySelectorAll('.variant-tab').forEach(b => b.classList.remove('variant-tab--active'));
+          tabBtn.classList.add('variant-tab--active');
+          displayVariant(v, variantContent, selectedMateria.color, selectedMateria.colorRgb);
+        });
+
+        variantTabsWrapper.appendChild(tabBtn);
+      });
+
+      variantSelector.appendChild(variantTabsWrapper);
+      chapterBody.appendChild(variantSelector);
+      chapterBody.appendChild(variantContent);
+
+      // Display default first variant
+      displayVariant(chapter.variants[0], variantContent, selectedMateria.color, selectedMateria.colorRgb);
+
+    } else {
+      // Standard topics rendering
+      const standardTopicsContainer = document.createElement('div');
+      renderTopicsInto(standardTopicsContainer, chapter.topics, selectedMateria.color, selectedMateria.colorRgb);
+      chapterBody.appendChild(standardTopicsContainer);
+    }
 
     // Toggle logic
     chapterHeader.addEventListener('click', () => {
@@ -517,7 +676,7 @@ function renderChaptersView() {
     });
 
     chapterEl.appendChild(chapterHeader);
-    chapterEl.appendChild(topicsContainer);
+    chapterEl.appendChild(chapterBody);
     chaptersWrapper.appendChild(chapterEl);
   });
 
@@ -526,6 +685,26 @@ function renderChaptersView() {
   // Auto-open first chapter
   const firstChapter = chaptersWrapper.querySelector('.chapter');
   if (firstChapter) firstChapter.classList.add('chapter--open');
+}
+
+// ── Helper: Display active variant details ──
+function displayVariant(variant, container, color, colorRgb) {
+  container.innerHTML = '';
+
+  const infoBox = document.createElement('div');
+  infoBox.className = 'variant-desc-box';
+  infoBox.style.setProperty('--card-color', color);
+  infoBox.style.setProperty('--card-color-rgb', colorRgb);
+  infoBox.innerHTML = `
+    <span class="variant-desc-badge">${variant.badge}</span>
+    <span class="variant-desc-text">${variant.desc}</span>
+  `;
+  container.appendChild(infoBox);
+
+  const topicsWrap = document.createElement('div');
+  topicsWrap.className = 'variant-topics-wrap';
+  renderTopicsInto(topicsWrap, variant.topics, color, colorRgb);
+  container.appendChild(topicsWrap);
 }
 
 // ══════════════════════════════════════════

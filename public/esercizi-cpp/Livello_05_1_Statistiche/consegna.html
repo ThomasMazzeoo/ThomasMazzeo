@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livello 5.1 - Consegna (Variante Scanner con While)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: #0d1424;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --orange: #ff8c00;
+    --purple: #bb44ff;
+    --yellow: #ffd700;
+    --white: #e8f0ff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 2rem;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 800px;
+    background-color: var(--panel);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .badge-variant {
+    display: inline-block;
+    background: rgba(255, 238, 0, 0.15);
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  h1 {
+    font-family: var(--font-title);
+    color: var(--cyan);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+    padding-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+
+  h2 {
+    font-family: var(--font-title);
+    color: var(--orange);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  p, li {
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .code-block {
+    background-color: #05080f;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-left: 4px solid var(--green);
+    padding: 1rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+  }
+
+  .button-link {
+    display: block;
+    width: fit-content;
+    margin: 2rem auto 0;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    font-family: var(--font-title);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .button-link:hover {
+    background-color: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    text-shadow: 0 0 5px var(--cyan);
+  }
+
+  .page-wrapper {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    align-items: flex-start;
+  }
+  
+  .docs-panel {
+    flex: 0 0 350px;
+    background-color: var(--panel);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .docs-panel h2 {
+    color: var(--green);
+    margin-top: 0;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    padding-bottom: 0.5rem;
+  }
+  
+  .docs-panel h3 {
+    color: var(--yellow);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .docs-panel code {
+    background-color: #05080f;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: var(--font-mono);
+  }
+
+  .docs-panel ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .docs-panel li {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .page-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    .docs-panel {
+      flex: 1;
+      width: 100%;
+      max-width: 800px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+<div class="container">
+  <div style="text-align: center;"><span class="badge-variant">⚡ VARIANTE 5.1</span></div>
+  <h1>Livello 5.1: Scanner Risorse (Solo While & Accumulatori)</h1>
+  
+  <h2>🎯 L'Obiettivo</h2>
+  <p>
+    Un rover esplorativo sta analizzando diversi giacimenti di cristalli di titanio su un asteroide. Il programma deve leggere la quantità di cristalli trovati in ciascun deposito e calcolare il totale accumulato ed il numero complessivo di depositi scansionati, usando <strong>esclusivamente il ciclo <code>while</code></strong>.
+  </p>
+  <p>
+    La scansione termina quando l'operatore inserisce il valore <code>0</code> (valore di arresto / sentinella).
+  </p>
+
+  <h2>📝 Regole & Requisiti</h2>
+  <ul>
+    <li>Inizializza <code>int totaleCristalli = 0;</code> e <code>int numeroDepositi = 0;</code>.</li>
+    <li>Inizializza una variabile <code>int cristalli = -1;</code> (un valore diverso da 0 per avviare il ciclo).</li>
+    <li>Usa un ciclo <code>while (cristalli != 0)</code>.</li>
+    <li>All'interno del ciclo, chiedi il valore con <code>std::cin &gt;&gt; cristalli;</code>.</li>
+    <li>Se il valore inserito è positivo (<code>if (cristalli &gt; 0)</code>), usa l'accumulatore <code>totaleCristalli += cristalli;</code> e incrementa il contatore <code>numeroDepositi++;</code>.</li>
+    <li>Fuori dal ciclo, stampa a schermo il resoconto completo dei depositi e dei cristalli estratti!</li>
+  </ul>
+
+  <h2>💡 Suggerimenti (Il Pattern Sentinella nel While)</h2>
+  <div class="code-block">
+    int totaleCristalli = 0;<br>
+    int numeroDepositi = 0;<br>
+    int cristalli = -1;<br><br>
+    while (cristalli != 0) {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;std::cout << "Inserisci cristalli (0 per fine): ";<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;std::cin >> cristalli;<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;if (cristalli > 0) {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totaleCristalli += cristalli;<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numeroDepositi++;<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    }
+  </div>
+
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+    <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>
+  </div>
+</div>
+
+<div class="docs-panel">
+  <h2>📖 Mini-Libreria C++</h2>
+  <ul>
+    <li>
+      <h3>Ciclo While con Sentinella</h3>
+      <code>while (valore != 0) { ... }</code><br>
+      <span style="color:#aaa;">Continua a richiedere input finché l'utente non inserisce il valore di stop (0).</span>
+    </li>
+    <li>
+      <h3>Accumulatore</h3>
+      <code>totale += x;</code><br>
+      <span style="color:#aaa;">Aggiunge x al totale cumulativo in RAM.</span>
+    </li>
+    <li>
+      <h3>Contatore</h3>
+      <code>conteggio++;</code><br>
+      <span style="color:#aaa;">Conta quante iterazioni valide sono state elaborate.</span>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

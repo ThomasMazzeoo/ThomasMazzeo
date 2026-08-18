@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello 5.1: Scanner Risorse (While)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #070b14; --panel: #0d1424; --cyan: #00d4ff; --green: #00ff88; --red: #ff4466; --orange: #ff8c00; --purple: #bb44ff; --yellow: #ffd700; --white: #e8f0ff; --font-title: 'Orbitron', sans-serif; --font-mono: 'Share Tech Mono', monospace; --font-body: 'IBM Plex Mono', monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background-color: var(--bg); color: var(--white); font-family: var(--font-body); height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; }
+  header { background-color: #04070d; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+  header h1 { font-family: var(--font-title); color: var(--cyan); margin: 0; font-size: 1.4rem; text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+  .step-counter { font-family: var(--font-mono); color: var(--orange); font-size: 1.2rem; background: rgba(255, 140, 0, 0.1); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(255, 140, 0, 0.3); }
+  .phase-bar { background-color: var(--panel); border-bottom: 1px solid rgba(0, 212, 255, 0.1); padding: 0.5rem 2rem; display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.9rem; z-index: 9; }
+  .phase-name { color: var(--purple); font-weight: bold; } .phase-state { color: var(--yellow); } .phase-action { color: var(--green); }
+  main { flex: 1; display: flex; overflow: hidden; }
+  .vis-panel { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; border-right: 1px solid rgba(0, 212, 255, 0.1); }
+  .code-container { background-color: #03050a; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; font-family: var(--font-mono); font-size: 1.05rem; line-height: 1.7; position: relative; }
+  .code-line { display: flex; padding: 0.1rem 0.5rem; border-radius: 4px; transition: all 0.3s; border-left: 3px solid transparent; }
+  .code-line .line-num { color: #445577; width: 30px; user-select: none; }
+  .code-line .line-content { color: #a0b0c0; transition: color 0.3s; }
+  .code-line.active { background-color: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--cyan); box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05); }
+  .code-line.active .line-content { color: var(--white); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+  
+  .ram-container { background-color: #000; border: 1px solid rgba(187, 68, 255, 0.3); border-radius: 8px; padding: 1.5rem; display: flex; gap: 1rem; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.8) inset; }
+  .ram-container::before { content: "RAM"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--purple); font-family: var(--font-mono); }
+  .ram-cell { border: 2px solid var(--cyan); border-radius: 6px; width: 125px; background-color: #0a0d16; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
+  .ram-cell.just-written { animation: writeCell 0.5s ease-out; border-color: var(--green); box-shadow: 0 0 20px var(--green); }
+  .ram-name { font-family: var(--font-mono); color: var(--cyan); padding: 5px 0; font-size: 0.85rem; border-bottom: 1px solid #334; width: 100%; text-align: center; }
+  .ram-value { font-family: var(--font-mono); color: var(--green); padding: 8px 0; font-size: 1.4rem; font-weight: bold; }
+  @keyframes writeCell { 0% { transform: scale(1.1); background-color: rgba(0, 255, 136, 0.2); } 100% { transform: scale(1); background-color: #0a0d16; } }
+
+  .terminal-container { background-color: #000; border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; min-height: 120px; padding: 1rem; font-family: var(--font-mono); color: var(--green); position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8) inset; white-space: pre-wrap; font-size: 1.05rem; }
+  .terminal-container::before { content: "TERMINALE"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--green); }
+  .term-input { color: var(--yellow); font-weight: bold; }
+  
+  .exp-panel { width: 380px; background-color: var(--panel); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .exp-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; animation: fadeSlide 0.4s ease-out forwards; }
+  .exp-card.card-what { border-top: 3px solid var(--cyan); } .exp-card.card-why { border-top: 3px solid var(--yellow); } .exp-card.card-logic { border-top: 3px solid var(--purple); } .exp-card.card-alert { border-top: 3px solid var(--red); }
+  .exp-card-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-title); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .card-what .exp-card-header { color: var(--cyan); } .card-why .exp-card-header { color: var(--yellow); } .card-logic .exp-card-header { color: var(--purple); } .card-alert .exp-card-header { color: var(--red); }
+  .exp-card-body { font-size: 0.95rem; line-height: 1.5; color: #ccd6f6; }
+  .keyword { color: var(--orange); font-family: var(--font-mono); }
+  .val-highlight { color: var(--green); font-weight: bold; font-family: var(--font-mono); }
+  
+  .controls { background-color: #04070d; border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-title); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-size: 0.9rem; }
+  .btn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); } .btn:disabled { border-color: #334; color: #556; cursor: not-allowed; }
+  .progress-container { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; max-width: 400px; justify-content: center; }
+  .pip { width: 12px; height: 12px; border-radius: 50%; background: #334; cursor: pointer; margin-bottom: 5px; } .pip.done { background: rgba(0, 255, 136, 0.4); } .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); transform: scale(1.2); }
+  
+  .loop-arrow { position: absolute; left: 10px; top: 95px; height: 135px; width: 30px; border-left: 2px dashed var(--orange); border-bottom: 2px dashed var(--orange); border-top: 2px dashed var(--orange); border-radius: 8px 0 0 8px; opacity: 0; transition: opacity 0.3s; z-index: 5; }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE C++ /&gt; Livello 5.1: Scanner Risorse (While)</h1>
+    <div class="step-counter" id="step-counter">STEP 0 / X</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <div class="code-container" id="code-container">
+        <div class="loop-arrow" id="loop-arrow"></div>
+        <div id="code-lines"></div>
+      </div>
+      
+      <div class="ram-container" id="ram-container">
+        <div class="ram-cell" id="ram-cristalli-box"><div class="ram-name">cristalli</div><div class="ram-value" id="ram-cristalli-val">?</div></div>
+        <div class="ram-cell" id="ram-totale-box"><div class="ram-name">totaleCristalli</div><div class="ram-value" id="ram-totale-val">0</div></div>
+        <div class="ram-cell" id="ram-depositi-box"><div class="ram-name">numeroDepositi</div><div class="ram-value" id="ram-depositi-val">0</div></div>
+      </div>
+      
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span><span class="cursor" style="color: var(--green);">_</span>
+      </div>
+    </div>
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = [
+  "int totaleCristalli = 0;",
+  "int numeroDepositi = 0;",
+  "int cristalli = -1;",
+  "",
+  "while (cristalli != 0) {",
+  "    std::cout << \"Inserisci cristalli (0 per fine): \";",
+  "    std::cin >> cristalli;",
+  "    if (cristalli > 0) {",
+  "        totaleCristalli += cristalli; // ACCUMULATORE",
+  "        numeroDepositi++;             // CONTATORE",
+  "    }",
+  "}",
+  "std::cout << \"Statistiche completate!\";"
+];
+
+const steps = [
+  {
+    phase: "STEP 0 — INIT", state: "Azzeramento", action: "Inizializzo variabili",
+    codeLine: 2, ram: { cri: "-1", tot: "0", dep: "0" }, justWritten: 'cri', terminal: "", showArrow: false,
+    explain: [
+      { type: "what", icon: "🔍", label: "INIT CONDIZIONE", html: "Impostiamo <code>cristalli = -1</code> in modo che la condizione iniziale <code>cristalli != 0</code> sia VERA al primo ingresso nel ciclo <span class='keyword'>while</span>." }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 1", state: "Test Condizione", action: "Controllo -1 != 0",
+    codeLine: 4, ram: { cri: "-1", tot: "0", dep: "0" }, justWritten: '', terminal: "", showArrow: false,
+    explain: [
+      { type: "logic", icon: "⚙️", label: "WHILE", html: "-1 è diverso da 0, quindi il ciclo parte regolarmente!" }
+    ]
+  },
+  {
+    phase: "ITERAZIONE 1", state: "Input Utente", action: "Leggo 45 cristalli",
+    codeLine: 6, ram: { cri: "45", tot: "0", dep: "0" }, justWritten: 'cri', terminal: "Inserisci cristalli (0 per fine): <span class='term-input'>45</span>\n", showArrow: false,
+    explain: [ { type: "what", icon: "🔍", label: "INPUT", html: "L'utente inserisce 45 unità di titanio." } ]
+  },
+  {
+    phase: "ITERAZIONE 1", state: "Accumulatore & Contatore", action: "totale += 45, depositi++",
+    codeLine: 8, ram: { cri: "45", tot: "45", dep: "1" }, justWritten: 'tot', terminal: "Inserisci cristalli (0 per fine): 45\n", showArrow: false,
+    explain: [
+      { type: "what", icon: "➕", label: "ACCUMULO", html: "<code>totaleCristalli += 45</code> porta il totale a 45. <code>numeroDepositi++</code> lo porta a 1." }
+    ]
+  },
+
+  // ITERAZIONE 2
+  {
+    phase: "ITERAZIONE 2", state: "Salto Indietro", action: "Controllo 45 != 0",
+    codeLine: 4, ram: { cri: "45", tot: "45", dep: "1" }, justWritten: '', terminal: "Inserisci cristalli (0 per fine): 45\n", showArrow: true,
+    explain: [ { type: "logic", icon: "⚙️", label: "WHILE", html: "45 != 0 è TRUE. Si continua con un nuovo deposito." } ]
+  },
+  {
+    phase: "ITERAZIONE 2", state: "Input Utente", action: "Leggo 30 cristalli",
+    codeLine: 6, ram: { cri: "30", tot: "45", dep: "1" }, justWritten: 'cri', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): <span class='term-input'>30</span>\n", showArrow: false,
+    explain: [ { type: "what", icon: "🔍", label: "INPUT", html: "Secondo deposito: 30 cristalli." } ]
+  },
+  {
+    phase: "ITERAZIONE 2", state: "Accumulatore & Contatore", action: "totale += 30 -> 75, dep -> 2",
+    codeLine: 8, ram: { cri: "30", tot: "75", dep: "2" }, justWritten: 'tot', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): 30\n", showArrow: false,
+    explain: [ { type: "what", icon: "📈", label: "STATISTICHE", html: "Totale accumulato = 75. Depositi = 2." } ]
+  },
+
+  // ITERAZIONE 3 (SENTINELLA = 0)
+  {
+    phase: "ITERAZIONE 3", state: "Salto Indietro", action: "Controllo 30 != 0",
+    codeLine: 4, ram: { cri: "30", tot: "75", dep: "2" }, justWritten: '', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): 30\n", showArrow: true,
+    explain: [ { type: "logic", icon: "⚙️", label: "WHILE", html: "Ripetizione." } ]
+  },
+  {
+    phase: "ITERAZIONE 3", state: "Input Sentinella (0)", action: "Inserimento 0",
+    codeLine: 6, ram: { cri: "0", tot: "75", dep: "2" }, justWritten: 'cri', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): 30\nInserisci cristalli (0 per fine): <span class='term-input'>0</span>\n", showArrow: false,
+    explain: [ { type: "what", icon: "🛑", label: "SENTINELLA 0", html: "L'utente digita 0 per indicare che non ci sono altri depositi." } ]
+  },
+  {
+    phase: "ITERAZIONE 3", state: "Salto Indietro", action: "Test 0 != 0 (FALSE)",
+    codeLine: 4, ram: { cri: "0", tot: "75", dep: "2" }, justWritten: '', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): 30\nInserisci cristalli (0 per fine): 0\n", showArrow: true,
+    explain: [
+      { type: "logic", icon: "⚙️", label: "USCITA DAL WHILE", html: "La condizione <code>0 != 0</code> è <span class='val-highlight' style='color:var(--red)'>FALSA</span>! Il ciclo while termina immediatamente." }
+    ]
+  },
+  {
+    phase: "FINE PROGRAMMA", state: "Riepilogo", action: "Stampa Statistiche",
+    codeLine: 12, ram: { cri: "0", tot: "75", dep: "2" }, justWritten: '', terminal: "Inserisci cristalli (0 per fine): 45\nInserisci cristalli (0 per fine): 30\nInserisci cristalli (0 per fine): 0\n\n<span style='color:var(--green);font-weight:bold;'>Depositi scansionati: 2\nTotale cristalli: 75 unita</span>\n", showArrow: false,
+    explain: [ { type: "what", icon: "🏁", label: "SUCCESSO", html: "Calcolo completato usando rigorosamente solo il ciclo while!" } ]
+  }
+];
+
+function renderCodeBlock(activeLineIndex, showArrow) {
+  const c = document.getElementById('code-lines');
+  c.innerHTML = '';
+  codeLines.forEach((line, index) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${index === activeLineIndex ? 'active' : ''}`;
+    div.innerHTML = `<span class="line-num">${index + 1}</span><span class="line-content">${line}</span>`;
+    c.appendChild(div);
+  });
+  document.getElementById('loop-arrow').style.opacity = showArrow ? '1' : '0';
+}
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx} / ${steps.length - 1}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  renderCodeBlock(step.codeLine, step.showArrow);
+  
+  document.getElementById('ram-cristalli-val').innerText = step.ram.cri;
+  document.getElementById('ram-totale-val').innerText = step.ram.tot;
+  document.getElementById('ram-depositi-val').innerText = step.ram.dep;
+  
+  const bCri = document.getElementById('ram-cristalli-box');
+  const bTot = document.getElementById('ram-totale-box');
+  const bDep = document.getElementById('ram-depositi-box');
+  bCri.classList.remove('just-written');
+  bTot.classList.remove('just-written');
+  bDep.classList.remove('just-written');
+  void bCri.offsetWidth;
+  if (step.justWritten === 'cri') bCri.classList.add('just-written');
+  if (step.justWritten === 'tot') { bTot.classList.add('just-written'); bDep.classList.add('just-written'); }
+  
+  document.getElementById('terminal-output').innerHTML = step.terminal;
+  
+  const panel = document.getElementById('exp-panel');
+  panel.innerHTML = '';
+  step.explain.forEach((card, index) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${card.type}`;
+    div.style.animationDelay = `${index * 0.15}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${card.icon}</span> ${card.label}</div><div class="exp-card-body">${card.html}</div>`;
+    panel.appendChild(div);
+  });
+  
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  const pContainer = document.getElementById('progress-container');
+  pContainer.innerHTML = '';
+  steps.forEach((_, i) => {
+    const pip = document.createElement('div');
+    pip.className = `pip ${i < idx ? 'done' : ''} ${i === idx ? 'active' : ''}`;
+    pip.onclick = () => goToStep(i);
+    pContainer.appendChild(pip);
+  });
+}
+
+let currentStep = 0;
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if (idx < 0 || idx >= steps.length) return;
+  currentStep = idx; renderStep(currentStep);
+}
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1); else if (e.key === 'ArrowLeft') changeStep(-1);
+});
+window.onload = () => renderStep(0);
+</script>
+</body>
+</html>
