@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello A1: Gestione Negozio</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #070b14; --panel: #0d1424; --cyan: #00d4ff; --green: #00ff88; --red: #ff4466; --orange: #ff8c00; --purple: #bb44ff; --yellow: #ffd700; --white: #e8f0ff; --font-title: 'Orbitron', sans-serif; --font-mono: 'Share Tech Mono', monospace; --font-body: 'IBM Plex Mono', monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background-color: var(--bg); color: var(--white); font-family: var(--font-body); height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; }
+  header { background-color: #04070d; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+  header h1 { font-family: var(--font-title); color: var(--cyan); margin: 0; font-size: 1.5rem; text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+  .step-counter { font-family: var(--font-mono); color: var(--orange); font-size: 1.2rem; background: rgba(255, 140, 0, 0.1); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(255, 140, 0, 0.3); }
+  .phase-bar { background-color: var(--panel); border-bottom: 1px solid rgba(0, 212, 255, 0.1); padding: 0.5rem 2rem; display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.9rem; z-index: 9; }
+  .phase-name { color: var(--purple); font-weight: bold; } .phase-state { color: var(--yellow); } .phase-action { color: var(--green); }
+  main { flex: 1; display: flex; overflow: hidden; }
+  .vis-panel { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; border-right: 1px solid rgba(0, 212, 255, 0.1); }
+  .code-container { background-color: #03050a; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; font-family: var(--font-mono); font-size: 1rem; line-height: 1.5; }
+  .code-line { display: flex; padding: 0.1rem 0.5rem; border-radius: 4px; transition: all 0.3s; border-left: 3px solid transparent; }
+  .code-line .line-num { color: #445577; width: 30px; user-select: none; }
+  .code-line .line-content { color: #a0b0c0; transition: color 0.3s; }
+  .code-line.active { background-color: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--cyan); box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05); }
+  .code-line.active .line-content { color: var(--white); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+  .code-line.ignored { opacity: 0.3; }
+  
+  .ram-container { background-color: #000; border: 1px solid rgba(187, 68, 255, 0.3); border-radius: 8px; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.8) inset; }
+  .ram-container::before { content: "RAM (STATO)"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--purple); font-family: var(--font-mono); }
+  .ram-cell { border: 1px solid var(--cyan); border-radius: 4px; width: 130px; background-color: #0a0d16; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
+  .ram-cell.just-written { border-color: var(--green); box-shadow: 0 0 15px var(--green); }
+  .ram-name { font-family: var(--font-mono); color: var(--cyan); padding: 2px 0; font-size: 0.75rem; border-bottom: 1px solid #334; width: 100%; text-align: center; }
+  .ram-value { font-family: var(--font-mono); color: var(--green); padding: 5px 0; font-size: 1rem; font-weight: bold; }
+
+  .terminal-container { background-color: #000; border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; min-height: 100px; padding: 1rem; font-family: var(--font-mono); color: var(--green); position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8) inset; white-space: pre-wrap; font-size:0.9rem; }
+  .terminal-container::before { content: "TERMINALE"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--green); }
+  
+  .exp-panel { width: 380px; background-color: var(--panel); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .exp-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; animation: fadeSlide 0.4s ease-out forwards; }
+  .exp-card.card-what { border-top: 3px solid var(--cyan); } .exp-card.card-why { border-top: 3px solid var(--yellow); } .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-title); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .card-what .exp-card-header { color: var(--cyan); } .card-why .exp-card-header { color: var(--yellow); } .card-logic .exp-card-header { color: var(--purple); }
+  .exp-card-body { font-size: 0.9rem; line-height: 1.5; color: #ccd6f6; }
+  
+  .controls { background-color: #04070d; border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-title); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+  .btn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); } .btn:disabled { border-color: #334; color: #556; cursor: not-allowed; }
+  .progress-container { display: flex; gap: 8px; flex-wrap:wrap; max-width: 300px; justify-content:center;} .pip { width: 10px; height: 10px; border-radius: 50%; background: #334; cursor: pointer; margin-bottom:2px;} .pip.done { background: rgba(0, 255, 136, 0.4); } .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE /&gt; Livello A1 (Logica Negozio)</h1>
+    <div class="step-counter" id="step-counter">STEP 0</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container"></div>
+      
+      <!-- Vis RAM -->
+      <div class="ram-container" id="ram-container">
+        <!-- Generato via JS -->
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="color: var(--green);">_</span>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = ["float prezzo = 50.0; int qta = 3; int cat = 2;", "float costo = prezzo * qta;", "", "if (qta > 10) {", "    costo = costo - (costo * 0.05); // Sconto 5%", "}", "", "if (cat == 2) {", "    costo += costo * 0.20; // 20% Tasse Elettronica", "} else if (cat == 3) {", "    costo += costo * 0.10; // 10% Tasse Abbigliamento", "}", "", "if (costo <= 100) {", "    costo += 5.0; // Spedizione 5 euro", "    spedizioniPagate++;", "}", "", "totaleSpeso += costo;", "totaleArticoli += qta;"];
+
+const steps = [{"phase": "INIT", "state": "Dati Oggetto", "action": "Assegno variabili", "codeLine": 0, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": "?", "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "prezzo", "terminal": "Inserimento Oggetto: Tastiera\nPrezzo: 50.0 | Quantit\u00e0: 3 | Categoria: 2 (Elettronica)\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "DATI", "html": "Simuliamo l'acquisto di 3 tastiere a 50 euro l'una (categoria 2)."}]}, {"phase": "BASE", "state": "Calcolo base", "action": "Costo = prezzo * qta", "codeLine": 1, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 150, "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "costo", "terminal": "Costo base = 150\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "MOLTIPLICAZIONE", "html": "Il costo base \u00e8 50 * 3 = 150 euro."}]}, {"phase": "SCONTO", "state": "If Quantit\u00e0", "action": "Controllo Qta > 10", "codeLine": 3, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 150, "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "", "terminal": "Costo base = 150\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "La quantit\u00e0 (3) \u00e8 > 10? FALSO. Nessuno sconto."}]}, {"phase": "TASSE", "state": "If Categoria", "action": "Controllo Tasse", "codeLine": 7, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 150, "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "", "terminal": "Costo base = 150\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "La categoria \u00e8 2? S\u00cc. Si applicano le tasse dell'elettronica (20%)."}]}, {"phase": "TASSE", "state": "Applico Tasse", "action": "+20%", "codeLine": 8, "ignoredLines": [9, 10], "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 180, "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "costo", "terminal": "Costo base = 150\n+30 euro di Tasse (20%)\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "ADDIZIONE", "html": "Il 20% di 150 \u00e8 30. Nuovo costo: 180 euro."}]}, {"phase": "SPEDIZIONE", "state": "If Costo", "action": "Controllo Costo <= 100", "codeLine": 13, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 180, "totaleSpeso": 20.5, "totaleArticoli": 1}, "justWritten": "", "terminal": "Costo base = 150\n+30 euro di Tasse (20%)\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "Il costo (180) \u00e8 <= 100? FALSO. Spedizione gratuita!"}]}, {"phase": "AGGIORNAMENTO TOTALI", "state": "Accumulatore Spesa", "action": "Aggiorno Totale", "codeLine": 18, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 180, "totaleSpeso": 200.5, "totaleArticoli": 1}, "justWritten": "totaleSpeso", "terminal": "Costo base = 150\n+30 euro di Tasse (20%)\nSpedizione: GRATUITA\nSalvataggio statistiche...", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "SOMMA", "html": "Aggiungiamo 180 al 'totaleSpeso' globale."}]}, {"phase": "AGGIORNAMENTO TOTALI", "state": "Accumulatore Articoli", "action": "Aggiorno Quantit\u00e0", "codeLine": 19, "ram": {"prezzo": 50, "qta": 3, "cat": 2, "costo": 180, "totaleSpeso": 200.5, "totaleArticoli": 4}, "justWritten": "totaleArticoli", "terminal": "Statistiche aggiornate.\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "SOMMA", "html": "Aggiungiamo 3 (quantit\u00e0) al 'totaleArticoli' globale. Fine!"}]}];
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  const cCont = document.getElementById('code-container');
+  cCont.innerHTML = '';
+  codeLines.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${i === step.codeLine ? 'active' : ''} ${(step.ignoredLines||[]).includes(i) ? 'ignored' : ''}`;
+    div.innerHTML = `<span class="line-num">${i + 1}</span><span class="line-content">${line}</span>`;
+    cCont.appendChild(div);
+  });
+  
+  const rCont = document.getElementById('ram-container');
+  rCont.innerHTML = '';
+  Object.keys(step.ram).forEach(k => {
+    const div = document.createElement('div');
+    div.className = `ram-cell ${step.justWritten === k ? 'just-written' : ''}`;
+    div.innerHTML = `<div class="ram-name">${k}</div><div class="ram-value">${step.ram[k]}</div>`;
+    rCont.appendChild(div);
+  });
+  
+  document.getElementById('terminal-output').innerText = step.terminal;
+  
+  const pnl = document.getElementById('exp-panel');
+  pnl.innerHTML = '';
+  step.explain.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${c.type}`;
+    div.style.animationDelay = `${i * 0.1}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${c.icon}</span> ${c.label}</div><div class="exp-card-body">${c.html}</div>`;
+    pnl.appendChild(div);
+  });
+  
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  
+  const pc = document.getElementById('progress-container');
+  pc.innerHTML = '';
+  steps.forEach((_, i) => {
+    const p = document.createElement('div');
+    p.className = `pip ${i < idx ? 'done' : ''} ${i === idx ? 'active' : ''}`;
+    p.onclick = () => goToStep(i);
+    pc.appendChild(p);
+  });
+}
+
+let currentStep = 0;
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if(idx < 0 || idx >= steps.length) return;
+  currentStep = idx;
+  renderStep(currentStep);
+}
+window.onload = () => renderStep(0);
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1); else if (e.key === 'ArrowLeft') changeStep(-1);
+});
+</script>
+</body>
+</html>

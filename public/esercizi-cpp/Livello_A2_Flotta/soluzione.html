@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello A2: Flotta Spaziale</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #070b14; --panel: #0d1424; --cyan: #00d4ff; --green: #00ff88; --red: #ff4466; --orange: #ff8c00; --purple: #bb44ff; --yellow: #ffd700; --white: #e8f0ff; --font-title: 'Orbitron', sans-serif; --font-mono: 'Share Tech Mono', monospace; --font-body: 'IBM Plex Mono', monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background-color: var(--bg); color: var(--white); font-family: var(--font-body); height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; }
+  header { background-color: #04070d; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+  header h1 { font-family: var(--font-title); color: var(--cyan); margin: 0; font-size: 1.5rem; text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+  .step-counter { font-family: var(--font-mono); color: var(--orange); font-size: 1.2rem; background: rgba(255, 140, 0, 0.1); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(255, 140, 0, 0.3); }
+  .phase-bar { background-color: var(--panel); border-bottom: 1px solid rgba(0, 212, 255, 0.1); padding: 0.5rem 2rem; display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.9rem; z-index: 9; }
+  .phase-name { color: var(--purple); font-weight: bold; } .phase-state { color: var(--yellow); } .phase-action { color: var(--green); }
+  main { flex: 1; display: flex; overflow: hidden; }
+  .vis-panel { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; border-right: 1px solid rgba(0, 212, 255, 0.1); }
+  .code-container { background-color: #03050a; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; font-family: var(--font-mono); font-size: 1rem; line-height: 1.5; }
+  .code-line { display: flex; padding: 0.1rem 0.5rem; border-radius: 4px; transition: all 0.3s; border-left: 3px solid transparent; }
+  .code-line .line-num { color: #445577; width: 30px; user-select: none; }
+  .code-line .line-content { color: #a0b0c0; transition: color 0.3s; }
+  .code-line.active { background-color: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--cyan); box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05); }
+  .code-line.active .line-content { color: var(--white); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+  .code-line.ignored { opacity: 0.3; }
+  
+  .ram-container { background-color: #000; border: 1px solid rgba(187, 68, 255, 0.3); border-radius: 8px; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.8) inset; }
+  .ram-container::before { content: "RAM (STATO)"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--purple); font-family: var(--font-mono); }
+  .ram-cell { border: 1px solid var(--cyan); border-radius: 4px; width: 130px; background-color: #0a0d16; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
+  .ram-cell.just-written { border-color: var(--green); box-shadow: 0 0 15px var(--green); }
+  .ram-name { font-family: var(--font-mono); color: var(--cyan); padding: 2px 0; font-size: 0.75rem; border-bottom: 1px solid #334; width: 100%; text-align: center; }
+  .ram-value { font-family: var(--font-mono); color: var(--green); padding: 5px 0; font-size: 1rem; font-weight: bold; }
+
+  .terminal-container { background-color: #000; border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; min-height: 100px; padding: 1rem; font-family: var(--font-mono); color: var(--green); position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8) inset; white-space: pre-wrap; font-size:0.9rem; }
+  .terminal-container::before { content: "TERMINALE"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--green); }
+  
+  .exp-panel { width: 380px; background-color: var(--panel); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .exp-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; animation: fadeSlide 0.4s ease-out forwards; }
+  .exp-card.card-what { border-top: 3px solid var(--cyan); } .exp-card.card-why { border-top: 3px solid var(--yellow); } .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-title); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .card-what .exp-card-header { color: var(--cyan); } .card-why .exp-card-header { color: var(--yellow); } .card-logic .exp-card-header { color: var(--purple); }
+  .exp-card-body { font-size: 0.9rem; line-height: 1.5; color: #ccd6f6; }
+  
+  .controls { background-color: #04070d; border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-title); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+  .btn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); } .btn:disabled { border-color: #334; color: #556; cursor: not-allowed; }
+  .progress-container { display: flex; gap: 8px; flex-wrap:wrap; max-width: 300px; justify-content:center;} .pip { width: 10px; height: 10px; border-radius: 50%; background: #334; cursor: pointer; margin-bottom:2px;} .pip.done { background: rgba(0, 255, 136, 0.4); } .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE /&gt; Livello A2 (Logica Flotta)</h1>
+    <div class="step-counter" id="step-counter">STEP 0</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container"></div>
+      
+      <!-- Vis RAM -->
+      <div class="ram-container" id="ram-container">
+        <!-- Generato via JS -->
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="color: var(--green);">_</span>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = ["float carb = 95.0; int tipo = 2; int equi = 60;", "float carbStimato = carb;", "", "if (equi > 50) {", "    carbStimato += 10.0; // Extra peso", "}", "", "if (tipo == 1) {", "    carbStimato -= 5.0; // Esplorazione", "} else if (tipo == 2) {", "    carbStimato += 20.0; // Combattimento", "}", "", "if (carbStimato > 100.0) {", "    carbStimato += carbStimato * 0.10; // Penalit\u00e0 10%", "}", "", "totaleCarburante += carbStimato;", "totaleNavi++;"];
+
+const steps = [{"phase": "INIT", "state": "Dati Nave", "action": "Assegno variabili", "codeLine": 0, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": "?", "totaleCarburante": 0, "totNavi": 0}, "justWritten": "carb", "terminal": "Inserimento Nave: Apollo-X\nCarb Base: 95.0 | Tipo: 2 | Equipaggio: 60\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "DATI", "html": "Simuliamo una nave da combattimento con equipaggio numeroso."}]}, {"phase": "BASE", "state": "Assegnazione", "action": "CarbStimato = Carb", "codeLine": 1, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 95, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "carbStimato", "terminal": "Carburante base = 95.0\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "BASE", "html": "Partiamo con le 95 unit\u00e0 inserite."}]}, {"phase": "REGOLE", "state": "If Equipaggio", "action": "Controllo equi > 50", "codeLine": 3, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 95, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "", "terminal": "Carburante base = 95.0\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "Equipaggio (60) > 50? S\u00cc."}]}, {"phase": "REGOLE", "state": "Applico Peso", "action": "+10 Carb", "codeLine": 4, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 105, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "carbStimato", "terminal": "Carburante base = 95.0\n+10 Extra Peso\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "ADDIZIONE", "html": "Il carburante stimato sale a 105."}]}, {"phase": "REGOLE", "state": "If Tipo", "action": "Controllo Tipo == 2", "codeLine": 9, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 105, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "", "terminal": "Carburante base = 95.0\n+10 Extra Peso\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "Tipo missione \u00e8 2? S\u00cc. Si entra nell'else-if."}]}, {"phase": "REGOLE", "state": "Applico Combattimento", "action": "+20 Carb", "codeLine": 10, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 125, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "carbStimato", "terminal": "Carburante base = 95.0\n+10 Extra Peso\n+20 Scudi Combattimento\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "ADDIZIONE", "html": "Aggiunte 20 unit\u00e0 per gli scudi. Totale parziale: 125."}]}, {"phase": "PENALITA", "state": "If Carb", "action": "Controllo Carb > 100", "codeLine": 13, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 125, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "", "terminal": "Carburante base = 95.0\n+10 Extra Peso\n+20 Scudi Combattimento\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "Il carburante (125) supera 100? S\u00cc."}]}, {"phase": "PENALITA", "state": "Applico Penalit\u00e0", "action": "+10%", "codeLine": 14, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 137.5, "totaleCarburante": 0, "totNavi": 0}, "justWritten": "carbStimato", "terminal": "Carburante base = 95.0\n+10 Extra Peso\n+20 Scudi Combattimento\n+12.5 Penalit\u00e0 inefficienza (10%)\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "PERCENTUALE", "html": "Aggiungiamo il 10% di 125, ovvero 12.5. Totale: 137.5"}]}, {"phase": "TOTALI", "state": "Aggiorno Globali", "action": "+carb, +navi", "codeLine": 17, "ram": {"carb": 95, "tipo": 2, "equi": 60, "carbStimato": 137.5, "totaleCarburante": 137.5, "totNavi": 1}, "justWritten": "totaleCarburante", "terminal": "Statistiche globali aggiornate con 137.5 unit\u00e0.\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "SALVATAGGIO", "html": "La navicella \u00e8 stata processata. I totali vengono aggiornati!"}]}];
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  const cCont = document.getElementById('code-container');
+  cCont.innerHTML = '';
+  codeLines.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${i === step.codeLine ? 'active' : ''} ${(step.ignoredLines||[]).includes(i) ? 'ignored' : ''}`;
+    div.innerHTML = `<span class="line-num">${i + 1}</span><span class="line-content">${line}</span>`;
+    cCont.appendChild(div);
+  });
+  
+  const rCont = document.getElementById('ram-container');
+  rCont.innerHTML = '';
+  Object.keys(step.ram).forEach(k => {
+    const div = document.createElement('div');
+    div.className = `ram-cell ${step.justWritten === k ? 'just-written' : ''}`;
+    div.innerHTML = `<div class="ram-name">${k}</div><div class="ram-value">${step.ram[k]}</div>`;
+    rCont.appendChild(div);
+  });
+  
+  document.getElementById('terminal-output').innerText = step.terminal;
+  
+  const pnl = document.getElementById('exp-panel');
+  pnl.innerHTML = '';
+  step.explain.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${c.type}`;
+    div.style.animationDelay = `${i * 0.1}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${c.icon}</span> ${c.label}</div><div class="exp-card-body">${c.html}</div>`;
+    pnl.appendChild(div);
+  });
+  
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  
+  const pc = document.getElementById('progress-container');
+  pc.innerHTML = '';
+  steps.forEach((_, i) => {
+    const p = document.createElement('div');
+    p.className = `pip ${i < idx ? 'done' : ''} ${i === idx ? 'active' : ''}`;
+    p.onclick = () => goToStep(i);
+    pc.appendChild(p);
+  });
+}
+
+let currentStep = 0;
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if(idx < 0 || idx >= steps.length) return;
+  currentStep = idx;
+  renderStep(currentStep);
+}
+window.onload = () => renderStep(0);
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1); else if (e.key === 'ArrowLeft') changeStep(-1);
+});
+</script>
+</body>
+</html>

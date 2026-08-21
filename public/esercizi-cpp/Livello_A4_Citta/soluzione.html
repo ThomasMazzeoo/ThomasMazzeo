@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluzione - Livello A4: Smart City</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #070b14; --panel: #0d1424; --cyan: #00d4ff; --green: #00ff88; --red: #ff4466; --orange: #ff8c00; --purple: #bb44ff; --yellow: #ffd700; --white: #e8f0ff; --font-title: 'Orbitron', sans-serif; --font-mono: 'Share Tech Mono', monospace; --font-body: 'IBM Plex Mono', monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background-color: var(--bg); color: var(--white); font-family: var(--font-body); height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; }
+  header { background-color: #04070d; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+  header h1 { font-family: var(--font-title); color: var(--cyan); margin: 0; font-size: 1.5rem; text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+  .step-counter { font-family: var(--font-mono); color: var(--orange); font-size: 1.2rem; background: rgba(255, 140, 0, 0.1); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(255, 140, 0, 0.3); }
+  .phase-bar { background-color: var(--panel); border-bottom: 1px solid rgba(0, 212, 255, 0.1); padding: 0.5rem 2rem; display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.9rem; z-index: 9; }
+  .phase-name { color: var(--purple); font-weight: bold; } .phase-state { color: var(--yellow); } .phase-action { color: var(--green); }
+  main { flex: 1; display: flex; overflow: hidden; }
+  .vis-panel { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; border-right: 1px solid rgba(0, 212, 255, 0.1); }
+  .code-container { background-color: #03050a; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; font-family: var(--font-mono); font-size: 1rem; line-height: 1.5; }
+  .code-line { display: flex; padding: 0.1rem 0.5rem; border-radius: 4px; transition: all 0.3s; border-left: 3px solid transparent; }
+  .code-line .line-num { color: #445577; width: 30px; user-select: none; }
+  .code-line .line-content { color: #a0b0c0; transition: color 0.3s; }
+  .code-line.active { background-color: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--cyan); box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05); }
+  .code-line.active .line-content { color: var(--white); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+  .code-line.ignored { opacity: 0.3; }
+  
+  .ram-container { background-color: #000; border: 1px solid rgba(187, 68, 255, 0.3); border-radius: 8px; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.8) inset; }
+  .ram-container::before { content: "RAM (STATO)"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--purple); font-family: var(--font-mono); }
+  .ram-cell { border: 1px solid var(--cyan); border-radius: 4px; width: 130px; background-color: #0a0d16; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
+  .ram-cell.just-written { border-color: var(--green); box-shadow: 0 0 15px var(--green); }
+  .ram-name { font-family: var(--font-mono); color: var(--cyan); padding: 2px 0; font-size: 0.75rem; border-bottom: 1px solid #334; width: 100%; text-align: center; }
+  .ram-value { font-family: var(--font-mono); color: var(--green); padding: 5px 0; font-size: 1rem; font-weight: bold; }
+
+  .terminal-container { background-color: #000; border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; min-height: 100px; padding: 1rem; font-family: var(--font-mono); color: var(--green); position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8) inset; white-space: pre-wrap; font-size:0.9rem; }
+  .terminal-container::before { content: "TERMINALE"; position: absolute; top: -10px; left: 20px; background-color: var(--bg); padding: 0 10px; font-size: 0.8rem; color: var(--green); }
+  
+  .exp-panel { width: 380px; background-color: var(--panel); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .exp-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; animation: fadeSlide 0.4s ease-out forwards; }
+  .exp-card.card-what { border-top: 3px solid var(--cyan); } .exp-card.card-why { border-top: 3px solid var(--yellow); } .exp-card.card-logic { border-top: 3px solid var(--purple); }
+  .exp-card-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-title); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .card-what .exp-card-header { color: var(--cyan); } .card-why .exp-card-header { color: var(--yellow); } .card-logic .exp-card-header { color: var(--purple); }
+  .exp-card-body { font-size: 0.9rem; line-height: 1.5; color: #ccd6f6; }
+  
+  .controls { background-color: #04070d; border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-title); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+  .btn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); } .btn:disabled { border-color: #334; color: #556; cursor: not-allowed; }
+  .progress-container { display: flex; gap: 8px; flex-wrap:wrap; max-width: 300px; justify-content:center;} .pip { width: 10px; height: 10px; border-radius: 50%; background: #334; cursor: pointer; margin-bottom:2px;} .pip.done { background: rgba(0, 255, 136, 0.4); } .pip.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>&lt; SIMULATORE /&gt; Livello A4 (Logica Smart City)</h1>
+    <div class="step-counter" id="step-counter">STEP 0</div>
+  </header>
+
+  <div class="phase-bar">
+    <div class="phase-name" id="phase-name">INTRO</div>
+    <div class="phase-state" id="phase-state">Pronto</div>
+    <div class="phase-action" id="phase-action">...</div>
+  </div>
+
+  <main>
+    <div class="vis-panel">
+      <!-- Vis Codice -->
+      <div class="code-container" id="code-container"></div>
+      
+      <!-- Vis RAM -->
+      <div class="ram-container" id="ram-container">
+        <!-- Generato via JS -->
+      </div>
+      
+      <!-- Vis Terminale -->
+      <div class="terminal-container" id="terminal-container">
+        <span id="terminal-output"></span>
+        <span class="cursor" style="color: var(--green);">_</span>
+      </div>
+    </div>
+
+    <div class="exp-panel" id="exp-panel"></div>
+  </main>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" onclick="changeStep(-1)">◀ INDIETRO</button>
+    <button class="btn" id="btn-reset" onclick="goToStep(0)">↺ RESET</button>
+    <div class="progress-container" id="progress-container"></div>
+    <button class="btn" id="btn-next" onclick="changeStep(1)">AVANTI ▶</button>
+  </div>
+
+<script>
+const codeLines = ["float area = 10.0; int tipo = 1; int pannelli = 1;", "float energia = area * 2.0;", "", "if (tipo == 2) {", "    energia += 50.0;", "} else if (tipo == 3) {", "    energia += 100.0;", "}", "", "if (pannelli == 1) {", "    energia -= 30.0;", "}", "", "if (energia < 0.0) {", "    energia = 0.0;", "    edificiZero++;", "}", "", "totaleEnergia += energia;", "totaleEdifici++;"];
+
+const steps = [{"phase": "INIT", "state": "Dati Edificio", "action": "Assegno variabili", "codeLine": 0, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": "?", "totEnergia": 500, "edifZero": 0}, "justWritten": "area", "terminal": "Edificio: Piccola Casa\nArea: 10mq | Tipo: 1 (Res) | Pannelli: 1 (SI)\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "DATI", "html": "Una piccola casa molto ecologica da 10 mq."}]}, {"phase": "BASE", "state": "Calcolo Base", "action": "Energia = area * 2", "codeLine": 1, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": 20, "totEnergia": 500, "edifZero": 0}, "justWritten": "energia", "terminal": "Energia base = 20.0 kW\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "MOLTIPLICAZIONE", "html": "Consumo base 10 * 2 = 20 kW."}]}, {"phase": "TIPO", "state": "If Tipo > 1", "action": "Controllo Tipo", "codeLine": 3, "ignoredLines": [4, 5, 6], "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": 20, "totEnergia": 500, "edifZero": 0}, "justWritten": "", "terminal": "Energia base = 20.0 kW\nNessun bonus tipo (Residenziale).\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "TEST", "html": "Tipo 2? NO. Tipo 3? NO. Il consumo rimane a 20 kW."}]}, {"phase": "PANNELLI", "state": "If Pannelli", "action": "Sottraggo 30", "codeLine": 10, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": -10, "totEnergia": 500, "edifZero": 0}, "justWritten": "energia", "terminal": "Energia = 20.0 kW\n-30 kW (Pannelli Solari)\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "SOTTRAZIONE", "html": "20 - 30 = -10 kW. Aspetta, l'energia \u00e8 andata sotto zero!"}]}, {"phase": "CONTROLLO ZERO", "state": "If Energia < 0", "action": "Limitatore a 0", "codeLine": 14, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": 0, "totEnergia": 500, "edifZero": 0}, "justWritten": "energia", "terminal": "Energia = -10.0 kW\nLimito consumo a 0!\n", "explain": [{"type": "logic", "icon": "\u2699\ufe0f", "label": "CORREZIONE", "html": "Poich\u00e9 -10 < 0, forziamo l'energia a 0."}]}, {"phase": "CONTROLLO ZERO", "state": "Statistica Zero", "action": "edificiZero++", "codeLine": 15, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": 0, "totEnergia": 500, "edifZero": 1}, "justWritten": "edifZero", "terminal": "Edificio auto-sufficiente registrato.\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "INCREMENTO", "html": "Aggiungiamo 1 al contatore degli edifici a zero emissioni."}]}, {"phase": "TOTALI", "state": "Aggiorno Globali", "action": "+0 Energia", "codeLine": 18, "ram": {"area": 10, "tipo": 1, "pannelli": 1, "energia": 0, "totEnergia": 500, "edifZero": 1}, "justWritten": "totEnergia", "terminal": "Salvataggio completato.\n", "explain": [{"type": "what", "icon": "\ud83d\udd0d", "label": "SALVATAGGIO", "html": "L'edificio non aggiunge consumo energetico (0 kW). Fine!"}]}];
+
+function renderStep(idx) {
+  const step = steps[idx];
+  document.getElementById('step-counter').innerText = `STEP ${idx}`;
+  document.getElementById('phase-name').innerText = step.phase;
+  document.getElementById('phase-state').innerText = step.state;
+  document.getElementById('phase-action').innerText = step.action;
+  
+  const cCont = document.getElementById('code-container');
+  cCont.innerHTML = '';
+  codeLines.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = `code-line ${i === step.codeLine ? 'active' : ''} ${(step.ignoredLines||[]).includes(i) ? 'ignored' : ''}`;
+    div.innerHTML = `<span class="line-num">${i + 1}</span><span class="line-content">${line}</span>`;
+    cCont.appendChild(div);
+  });
+  
+  const rCont = document.getElementById('ram-container');
+  rCont.innerHTML = '';
+  Object.keys(step.ram).forEach(k => {
+    const div = document.createElement('div');
+    div.className = `ram-cell ${step.justWritten === k ? 'just-written' : ''}`;
+    div.innerHTML = `<div class="ram-name">${k}</div><div class="ram-value">${step.ram[k]}</div>`;
+    rCont.appendChild(div);
+  });
+  
+  document.getElementById('terminal-output').innerText = step.terminal;
+  
+  const pnl = document.getElementById('exp-panel');
+  pnl.innerHTML = '';
+  step.explain.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = `exp-card card-${c.type}`;
+    div.style.animationDelay = `${i * 0.1}s`;
+    div.innerHTML = `<div class="exp-card-header"><span>${c.icon}</span> ${c.label}</div><div class="exp-card-body">${c.html}</div>`;
+    pnl.appendChild(div);
+  });
+  
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === steps.length - 1;
+  
+  const pc = document.getElementById('progress-container');
+  pc.innerHTML = '';
+  steps.forEach((_, i) => {
+    const p = document.createElement('div');
+    p.className = `pip ${i < idx ? 'done' : ''} ${i === idx ? 'active' : ''}`;
+    p.onclick = () => goToStep(i);
+    pc.appendChild(p);
+  });
+}
+
+let currentStep = 0;
+function changeStep(delta) { goToStep(currentStep + delta); }
+function goToStep(idx) {
+  if(idx < 0 || idx >= steps.length) return;
+  currentStep = idx;
+  renderStep(currentStep);
+}
+window.onload = () => renderStep(0);
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') changeStep(1); else if (e.key === 'ArrowLeft') changeStep(-1);
+});
+</script>
+</body>
+</html>
