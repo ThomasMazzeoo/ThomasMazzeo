@@ -274,10 +274,58 @@ const MATERIE = [
             ]
           },
           {
-            title: "Livello A — Torneo (Avanzato)",
-            topics: [
-              { title: "Consegna", desc: "L'obiettivo dell'esercizio del torneo.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
-              { title: "Soluzione", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A_Torneo/soluzione.html" }
+            title: "Livello A — Sfide (Avanzate)",
+            variants: [
+              {
+                id: "A.0",
+                badge: "BASE",
+                name: "A.0 — Il Torneo Scolastico",
+                desc: "Gestione di un torneo con regole matematiche.",
+                topics: [
+                  { title: "Consegna (Base)", desc: "L'obiettivo dell'esercizio del torneo.", url: "/esercizi-cpp/Livello_A_Torneo/consegna.html" },
+                  { title: "Soluzione (Base)", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A_Torneo/soluzione.html" }
+                ]
+              },
+              {
+                id: "A.1",
+                badge: "VARIANTE A.1",
+                name: "A.1 — Gestione Negozio",
+                desc: "Sconti e tasse basati sulle quantità e sulle categorie.",
+                topics: [
+                  { title: "Consegna (A.1)", desc: "L'obiettivo dell'esercizio del negozio.", url: "/esercizi-cpp/Livello_A1_Negozio/consegna.html" },
+                  { title: "Soluzione (A.1)", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A1_Negozio/soluzione.html" }
+                ]
+              },
+              {
+                id: "A.2",
+                badge: "VARIANTE A.2",
+                name: "A.2 — Flotta Spaziale",
+                desc: "Calcolo carburante in base a equipaggio e missioni.",
+                topics: [
+                  { title: "Consegna (A.2)", desc: "L'obiettivo dell'esercizio della flotta.", url: "/esercizi-cpp/Livello_A2_Flotta/consegna.html" },
+                  { title: "Soluzione (A.2)", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A2_Flotta/soluzione.html" }
+                ]
+              },
+              {
+                id: "A.3",
+                badge: "VARIANTE A.3",
+                name: "A.3 — Pronto Soccorso",
+                desc: "Attribuzione priorità per il triage ospedaliero.",
+                topics: [
+                  { title: "Consegna (A.3)", desc: "L'obiettivo dell'esercizio del pronto soccorso.", url: "/esercizi-cpp/Livello_A3_Ospedale/consegna.html" },
+                  { title: "Soluzione (A.3)", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A3_Ospedale/soluzione.html" }
+                ]
+              },
+              {
+                id: "A.4",
+                badge: "VARIANTE A.4",
+                name: "A.4 — Smart City",
+                desc: "Calcolo consumi energetici per vari edifici.",
+                topics: [
+                  { title: "Consegna (A.4)", desc: "L'obiettivo dell'esercizio della smart city.", url: "/esercizi-cpp/Livello_A4_Citta/consegna.html" },
+                  { title: "Soluzione (A.4)", desc: "Simulatore e spiegazione passo-passo.", url: "/esercizi-cpp/Livello_A4_Citta/soluzione.html" }
+                ]
+              }
             ]
           }
         ]
