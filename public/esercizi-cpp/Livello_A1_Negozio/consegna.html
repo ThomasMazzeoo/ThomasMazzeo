@@ -83,6 +83,10 @@
   }
 </style>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 </head>
 <body>
 
@@ -162,6 +166,31 @@
     <li>Quanti articoli erano della categoria Elettronica.</li>
     <li>Quante volte è stata pagata la spedizione (non gratuita).</li>
   </ul>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[/Leggi prezzo, qta, cat/]
+    B --> C[costo = prezzo * qta]
+    C --> D{qta > 10?}
+    D -- Sì --> E[Sconto 5%]
+    D -- No --> F{Categoria?}
+    E --> F
+    F -- 1 --> G[+0% Tasse]
+    F -- 2 --> H[+20% Tasse]
+    F -- 3 --> I[+10% Tasse]
+    G --> J{costo <= 100?}
+    H --> J
+    I --> J
+    J -- Sì --> K[+5 Spedizione]
+    J -- No --> L[Spedizione gratuita]
+    K --> M[Aggiorna Totali]
+    L --> M
+    M --> N([Fine])
+
+  </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
     <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>

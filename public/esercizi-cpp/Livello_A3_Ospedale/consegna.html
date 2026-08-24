@@ -83,6 +83,10 @@
   }
 </style>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 </head>
 <body>
 
@@ -162,6 +166,30 @@
     <li>Numero di pazienti con priorità maggiore di 50.</li>
     <li>L'età media di tutti i pazienti.</li>
   </ul>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[/Leggi età, codice/]
+    B --> C[priorità = 10]
+    C --> D{Codice?}
+    D -- 1 --> E[+50]
+    D -- 2 --> F[+20]
+    D -- 3 --> G[+5]
+    E --> H{Età > 75?}
+    F --> H
+    G --> H
+    H -- Sì --> I[+15]
+    H -- No --> J{Età < 10?}
+    I --> K[Aggiorna Statistiche]
+    J -- Sì --> L[+10]
+    J -- No --> K
+    L --> K
+    K --> M([Fine])
+
+  </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
     <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>

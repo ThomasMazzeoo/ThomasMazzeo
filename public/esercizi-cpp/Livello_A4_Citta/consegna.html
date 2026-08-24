@@ -83,6 +83,10 @@
   }
 </style>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 </head>
 <body>
 
@@ -161,6 +165,29 @@
     <li>Quanti edifici possiedono i pannelli solari.</li>
     <li>Quanti edifici hanno consumo pari a 0 kW (totalmente auto-sufficienti).</li>
   </ul>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[/Leggi area, tipo, pannelli/]
+    B --> C[energia = area * 2]
+    C --> D{Tipo?}
+    D -- 2 --> E[energia += 50]
+    D -- 3 --> F[energia += 100]
+    D -- 1 --> G{Pannelli == 1?}
+    E --> G
+    F --> G
+    G -- Sì --> H[energia -= 30]
+    G -- No --> I{energia < 0?}
+    H --> I
+    I -- Sì --> J[energia = 0]
+    I -- No --> K[Aggiorna Totali]
+    J --> K
+    K --> L([Fine])
+
+  </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
     <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>

@@ -181,6 +181,10 @@
     }
   }
 </style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 </head>
 <body>
 
@@ -220,6 +224,23 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numeroDepositi++;<br>
     &nbsp;&nbsp;&nbsp;&nbsp;}<br>
     }
+  </div>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[totaleCristalli = 0, numeroDepositi = 0]
+    B --> C[/Leggi cristalli/]
+    C --> D{cristalli != 0?}
+    D -- Sì --> E{cristalli > 0?}
+    E -- Sì --> F[Somma cristalli, incrementa numeroDepositi]
+    E -- No --> C
+    F --> C
+    D -- No --> G[/Stampa Statistiche/]
+    G --> H([Fine])
+
   </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">

@@ -83,6 +83,10 @@
   }
 </style>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 </head>
 <body>
 
@@ -160,6 +164,29 @@
     <li>Quante navi partiranno per missioni di Combattimento (tipo 2).</li>
     <li>La media del carburante per navicella.</li>
   </ul>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[/Leggi carb, tipo, equi/]
+    B --> C{equi > 50?}
+    C -- Sì --> D[carb += 10]
+    C -- No --> E{Tipo?}
+    D --> E
+    E -- 1 --> F[carb -= 5]
+    E -- 2 --> G[carb += 20]
+    E -- 3 --> H[Nessuna mod]
+    F --> I{carb > 100?}
+    G --> I
+    H --> I
+    I -- Sì --> J[Penalità 10%]
+    I -- No --> K[Aggiorna Totali]
+    J --> K
+    K --> L([Fine])
+
+  </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
     <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>
