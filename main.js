@@ -327,6 +327,12 @@ const MATERIE = [
                 ]
               }
             ]
+          },
+          {
+            title: "Livello Finale — Mega Quiz",
+            topics: [
+              { title: "Esercizio Domande Risposta Multipla", desc: "Mettiti alla prova con 40 domande a risposta multipla interattive.", url: "/esercizi-cpp/Livello_Quiz_Risposte/consegna.html" }
+            ]
           }
         ]
       }
