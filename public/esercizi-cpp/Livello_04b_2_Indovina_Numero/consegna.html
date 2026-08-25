@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livello 4.5.2 - Consegna (Indovina il Numero Segreto)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: #0d1424;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --orange: #ff8c00;
+    --purple: #bb44ff;
+    --yellow: #ffd700;
+    --white: #e8f0ff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 2rem;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 800px;
+    background-color: var(--panel);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .badge-variant {
+    display: inline-block;
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  h1 {
+    font-family: var(--font-title);
+    color: var(--cyan);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+    padding-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+
+  h2 {
+    font-family: var(--font-title);
+    color: var(--orange);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  p, li {
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .code-block {
+    background-color: #05080f;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-left: 4px solid var(--green);
+    padding: 1rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    white-space: pre-wrap;
+  }
+
+  .button-link {
+    display: block;
+    width: fit-content;
+    margin: 2rem auto 0;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    font-family: var(--font-title);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .button-link:hover {
+    background-color: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    text-shadow: 0 0 5px var(--cyan);
+  }
+
+  .page-wrapper {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    align-items: flex-start;
+  }
+  
+  .docs-panel {
+    flex: 0 0 350px;
+    background-color: var(--panel);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .docs-panel h2 {
+    color: var(--green);
+    margin-top: 0;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    padding-bottom: 0.5rem;
+  }
+  
+  .docs-panel h3 {
+    color: var(--yellow);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .docs-panel code {
+    background-color: #05080f;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: var(--font-mono);
+  }
+
+  .docs-panel ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .docs-panel li {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .page-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    .docs-panel {
+      flex: 1;
+      width: 100%;
+      max-width: 800px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+</head>
+<body>
+
+<div class="page-wrapper">
+<div class="container">
+  <div style="text-align: center;"><span class="badge-variant">⚡ VARIANTE 4.5.2</span></div>
+  <h1>Livello 4.5.2: Indovina il Numero Segreto</h1>
+  
+  <h2>🎯 L'Obiettivo</h2>
+  <p>
+    Un sistema di sicurezza richiede un codice di sblocco segreto (es. 42). Dobbiamo continuare a chiederlo in input finché non viene indovinato.
+  </p>
+  <p>
+    Continuare a chiedere un tentativo finché non si indovina il numero.
+  </p>
+
+  <h2>📝 Regole & Requisiti</h2>
+  <ul>
+    <li>Dichiara <code>int segreto = 42;</code> e <code>int tentativo = 0;</code>.</li>\n    <li>Usa un ciclo <code>while (tentativo != segreto)</code>.</li>\n    <li>All'interno, chiedi <em>'Inserisci codice di sblocco: '</em> e leggi il tentativo.</li>\n    <li>Quando l'utente inserisce 42, esci dal ciclo e stampa <em>'Accesso Consentito!'</em>.</li>
+  </ul>
+
+  <h2>💡 Suggerimenti (Iterazioni di un Ciclo While)</h2>
+  <div class="code-block">int segreto = 42;
+int tentativo = 0;
+
+while (tentativo != segreto) {
+    std::cout &lt;&lt; "Inserisci codice di sblocco: ";
+    std::cin &gt;&gt; tentativo;
+}
+std::cout &lt;&lt; "Accesso Consentito!\n";</div>
+
+  
+  <h2 style="color: var(--cyan); margin-top: 2rem;">📊 Diagramma di Flusso</h2>
+  <div class="mermaid" style="background-color: #05080f; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+
+graph TD
+    A([Inizio]) --> B[segreto = 42, tentativo = 0]
+    B --> C{tentativo != segreto?}
+    C -- Sì --> D[/Input tentativo/]
+    D --> C
+    C -- No --> F[/Stampa Accesso Consentito/]
+    F --> G([Fine])
+
+  </div>
+
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+    <a href="soluzione.html" class="button-link" style="margin: 0;">▶ Vai alla Soluzione</a>
+  </div>
+</div>
+
+<div class="docs-panel">
+  <h2>📖 Focus: Il Ciclo While</h2>
+  <ul>
+    <li>
+      <h3>Sintassi</h3>
+      <code>while (condizione) { ... }</code><br>
+      <span style="color:#aaa;">Controlla la condizione all'inizio. Se vera, esegue il blocco e torna a controllare.</span>
+    </li>
+    <li>
+      <h3>Test di ingresso</h3>
+      <span style="color:#aaa;">Se la condizione è falsa fin dall'inizio, il ciclo non verrà MAI eseguito, nemmeno una volta.</span>
+    </li>
+    <li>
+      <h3>Variabile di controllo</h3>
+      <span style="color:#aaa;">Assicurati che la variabile usata nella condizione venga modificata <em>all'interno</em> del ciclo, altrimenti creerai un <strong>loop infinito</strong>.</span>
+    </li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

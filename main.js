@@ -249,6 +249,61 @@ const MATERIE = [
             ]
           },
           {
+            title: "Livello 4.5 — Pratica (While)",
+            variants: [
+              {
+                id: "4.5.1",
+                badge: "PRATICA 1",
+                name: "4.5.1 — Somma fino a Zero",
+                desc: "Continuare a sommare valori in input finché non si inserisce lo 0 (Sentinella).",
+                topics: [
+                  { title: "Consegna (1)", desc: "Somma continua di numeri con blocco allo 0.", url: "/esercizi-cpp/Livello_04b_1_Somma_Zero/consegna.html" },
+                  { title: "Soluzione (1)", desc: "Simulatore interattivo.", url: "/esercizi-cpp/Livello_04b_1_Somma_Zero/soluzione.html" }
+                ]
+              },
+              {
+                id: "4.5.2",
+                badge: "PRATICA 2",
+                name: "4.5.2 — Indovina il Numero Segreto",
+                desc: "Continuare a chiedere un tentativo finché non si indovina il numero.",
+                topics: [
+                  { title: "Consegna (2)", desc: "Trova il codice segreto.", url: "/esercizi-cpp/Livello_04b_2_Indovina_Numero/consegna.html" },
+                  { title: "Soluzione (2)", desc: "Simulatore interattivo.", url: "/esercizi-cpp/Livello_04b_2_Indovina_Numero/soluzione.html" }
+                ]
+              },
+              {
+                id: "4.5.3",
+                badge: "PRATICA 3",
+                name: "4.5.3 — Potenze di Due (< 1000)",
+                desc: "Raddoppiare iterativamente un valore finché è minore di 1000.",
+                topics: [
+                  { title: "Consegna (3)", desc: "Algoritmo per il raddoppio.", url: "/esercizi-cpp/Livello_04b_3_Potenze_Di_Due/consegna.html" },
+                  { title: "Soluzione (3)", desc: "Simulatore interattivo.", url: "/esercizi-cpp/Livello_04b_3_Potenze_Di_Due/soluzione.html" }
+                ]
+              },
+              {
+                id: "4.5.4",
+                badge: "PRATICA 4",
+                name: "4.5.4 — Password Sicura",
+                desc: "Continuare a richiedere l'inserimento finché la stringa non è lunga almeno 8 caratteri.",
+                topics: [
+                  { title: "Consegna (4)", desc: "Controllo lunghezza su input stringa.", url: "/esercizi-cpp/Livello_04b_4_Password_Sicura/consegna.html" },
+                  { title: "Soluzione (4)", desc: "Simulatore interattivo.", url: "/esercizi-cpp/Livello_04b_4_Password_Sicura/soluzione.html" }
+                ]
+              },
+              {
+                id: "4.5.5",
+                badge: "PRATICA 5",
+                name: "4.5.5 — Prelievi dal Bancomat",
+                desc: "Prelevare finché ci sono fondi (saldo > 0).",
+                topics: [
+                  { title: "Consegna (5)", desc: "Sottrazione continua su un saldo limitato.", url: "/esercizi-cpp/Livello_04b_5_Bancomat/consegna.html" },
+                  { title: "Soluzione (5)", desc: "Simulatore interattivo.", url: "/esercizi-cpp/Livello_04b_5_Bancomat/soluzione.html" }
+                ]
+              }
+            ]
+          },
+          {
             title: "Livello 5 — Statistiche",
             variants: [
               {
