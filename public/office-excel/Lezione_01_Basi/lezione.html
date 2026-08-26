@@ -572,6 +572,12 @@ header h1 {
 }
 .nav-btn.prev:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--cyan); }
 .nav-btn.prev:disabled { opacity: 0.3; cursor: default; }
+.nav-btn.replay {
+  background: transparent;
+  color: var(--yellow);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+.nav-btn.replay:hover { background: rgba(255, 215, 0, 0.1); border-color: var(--yellow); }
 .nav-btn.next {
   background: var(--cyan);
   color: #000;
@@ -772,7 +778,10 @@ header h1 {
 <!-- NAVIGATION -->
 <nav class="nav-bar">
   <button class="nav-btn prev" id="btnPrev" onclick="prevStep()" disabled>◄ Indietro</button>
-  <div class="progress-dots" id="progressDots"></div>
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <button class="nav-btn replay" id="btnReplay" onclick="replayStep()" title="Ripeti animazione corrente">↻ Ripeti</button>
+    <div class="progress-dots" id="progressDots"></div>
+  </div>
   <button class="nav-btn next" id="btnNext" onclick="nextStep()">Avanti ►</button>
 </nav>
 
@@ -1335,6 +1344,11 @@ function prevStep() {
     resetGridState();
     updateUI();
   }
+}
+
+function replayStep() {
+  resetGridState();
+  updateUI();
 }
 
 function resetGridState() {
