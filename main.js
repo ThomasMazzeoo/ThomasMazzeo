@@ -400,7 +400,7 @@ const MATERIE = [
           {
             title: "Livello 10 — Mega Quiz",
             topics: [
-              { title: "Esercizio Domande Risposta Multipla", desc: "Mettiti alla prova con 120 domande a risposta multipla interattive.", url: "/esercizi-cpp/Livello_Quiz_Risposte/consegna.html" }
+              { title: "Esercizio Domande Risposta Multipla", desc: "Mettiti alla prova con 80 domande a risposta multipla interattive.", url: "/esercizi-cpp/Livello_Quiz_Risposte/consegna.html" }
             ]
           }
         ]

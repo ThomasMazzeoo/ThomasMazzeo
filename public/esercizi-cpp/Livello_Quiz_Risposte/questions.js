@@ -1055,7 +1055,6 @@ const qDesign = [
 
 
 const questionsData = [
-  ...qOrig,
   ...qCode,
   ...qWhile,
   ...qComp,
