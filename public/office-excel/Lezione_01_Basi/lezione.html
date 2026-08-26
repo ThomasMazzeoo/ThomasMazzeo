@@ -628,6 +628,53 @@ header h1 {
 }
 .completion-overlay p { color: #b0c4d8; font-size: 1.1rem; line-height: 1.6; max-width: 500px; }
 
+/* ZONE HIGHLIGHT ITEMS (hover interaction) */
+.zone-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+.zone-item:hover {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateX(4px);
+}
+.zone-item .zone-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.zone-item .zone-label { font-weight: bold; color: var(--cyan); }
+.zone-item .zone-desc { color: #8899aa; font-size: 0.82rem; }
+
+/* Glow overlays on Excel zones */
+.excel-titlebar.zone-glow {
+  box-shadow: inset 0 0 0 2px #00ffcc, 0 0 20px rgba(0, 255, 204, 0.5);
+  transition: box-shadow 0.3s;
+}
+.excel-ribbon.zone-glow {
+  box-shadow: inset 0 0 0 2px #ff8c00, 0 0 20px rgba(255, 140, 0, 0.5);
+  transition: box-shadow 0.3s;
+}
+.excel-formula-bar.zone-glow {
+  box-shadow: inset 0 0 0 2px #bb44ff, 0 0 20px rgba(187, 68, 255, 0.5);
+  transition: box-shadow 0.3s;
+}
+.excel-grid-wrapper.zone-glow {
+  box-shadow: inset 0 0 0 2px #00d4ff, 0 0 20px rgba(0, 212, 255, 0.5);
+  transition: box-shadow 0.3s;
+}
+.excel-sheet-bar.zone-glow {
+  box-shadow: inset 0 0 0 2px #ffd700, 0 0 20px rgba(255, 215, 0, 0.5);
+  transition: box-shadow 0.3s;
+}
+.excel-status.zone-glow {
+  box-shadow: inset 0 0 0 2px #00ff88, 0 0 15px rgba(0, 255, 136, 0.4);
+  transition: box-shadow 0.3s;
+}
+
 /* RESPONSIVE */
 @media (max-width: 800px) {
   .main-area { flex-direction: column; }
@@ -812,6 +859,7 @@ function clearAllSelections() {
   document.querySelectorAll('.col-resize-handle.glow-handle').forEach(c => c.classList.remove('glow-handle'));
   document.querySelectorAll('.cell .cursor-blink').forEach(c => c.remove());
   document.getElementById('formulaInput').classList.remove('typing');
+  document.querySelectorAll('.zone-glow').forEach(c => c.classList.remove('zone-glow'));
 }
 
 function selectCell(id) {
@@ -922,19 +970,21 @@ const STEPS = [
     badge: "STEP 1 — PANORAMICA",
     html: `
       <p>Benvenuto! Questa è l'interfaccia di <strong>Microsoft Excel</strong>, un programma per creare <em>fogli di calcolo</em>.</p>
-      <p>Osserva la finestra sulla destra. Ha diverse aree:</p>
-      <div class="highlight-box">
-        🟢 <strong>Barra del Titolo</strong> — in alto (verde), mostra il nome del file<br>
-        🎛️ <strong>Ribbon</strong> — la barra degli strumenti con i pulsanti<br>
-        📝 <strong>Barra delle Formule</strong> — mostra il contenuto della cella selezionata<br>
-        📊 <strong>Griglia</strong> — il foglio di calcolo con righe e colonne<br>
-        📑 <strong>Fogli</strong> — le schede in basso (Foglio1, Foglio2...)
+      <p>Osserva la finestra sulla destra. <strong>Passa il mouse</strong> sulle voci qui sotto per evidenziare ogni zona:</p>
+      <div class="highlight-box" style="padding:6px 8px;">
+        <div class="zone-item" data-zone="excel-titlebar"><span class="zone-icon">🟢</span><div><span class="zone-label">Barra del Titolo</span><br><span class="zone-desc">In alto (verde), mostra il nome del file</span></div></div>
+        <div class="zone-item" data-zone="excelRibbon"><span class="zone-icon">🎛️</span><div><span class="zone-label">Barra Multifunzione</span><br><span class="zone-desc">La barra degli strumenti con i pulsanti (Home, Inserisci, ecc.)</span></div></div>
+        <div class="zone-item" data-zone="excel-formula-bar"><span class="zone-icon">📝</span><div><span class="zone-label">Barra delle Formule</span><br><span class="zone-desc">Mostra il contenuto della cella selezionata</span></div></div>
+        <div class="zone-item" data-zone="gridWrapper"><span class="zone-icon">📊</span><div><span class="zone-label">Griglia (Foglio di Lavoro)</span><br><span class="zone-desc">Il foglio di calcolo con righe e colonne</span></div></div>
+        <div class="zone-item" data-zone="excel-sheet-bar"><span class="zone-icon">📑</span><div><span class="zone-label">Schede dei Fogli</span><br><span class="zone-desc">Le schede in basso (Foglio1, Foglio2...)</span></div></div>
+        <div class="zone-item" data-zone="excel-status"><span class="zone-icon">📟</span><div><span class="zone-label">Barra di Stato</span><br><span class="zone-desc">In fondo, mostra lo stato del programma</span></div></div>
       </div>
       <p>Le colonne si chiamano con le <strong>lettere</strong> (A, B, C...) e le righe con i <strong>numeri</strong> (1, 2, 3...).</p>
     `,
     action: async function() {
       clearAllSelections();
       selectCell('A1');
+      setupZoneHover();
     }
   },
   {
@@ -944,7 +994,7 @@ const STEPS = [
       <p>Ogni rettangolo della griglia si chiama <strong>cella</strong>. Ogni cella ha un <em>indirizzo</em> unico fatto dalla <strong>lettera della colonna</strong> + il <strong>numero della riga</strong>.</p>
       <p>Guarda: il cursore si sposterà sulla cella <strong>B2</strong> e la selezionerà.</p>
       <div class="highlight-box">
-        📍 L'indirizzo della cella selezionata appare nella <strong>Name Box</strong> (in alto a sinistra della barra delle formule).
+        📍 L'indirizzo della cella selezionata appare nella <strong>Casella del Nome</strong> (in alto a sinistra della barra delle formule).
       </div>
       <p>Nota come la colonna <strong>B</strong> e la riga <strong>2</strong> si evidenziano in blu!</p>
     `,
@@ -1323,6 +1373,34 @@ function resetGridState() {
   fileTab.style.background = '';
   fileTab.style.color = '';
   fileTab.style.fontWeight = '';
+}
+
+/* ═══════════════════════════════════════════
+   ZONE HOVER HIGHLIGHTING
+   ═══════════════════════════════════════════ */
+function setupZoneHover() {
+  // Map data-zone attribute values to actual DOM elements
+  const zoneMap = {
+    'excel-titlebar': document.querySelector('.excel-titlebar'),
+    'excelRibbon': document.getElementById('excelRibbon'),
+    'excel-formula-bar': document.querySelector('.excel-formula-bar'),
+    'gridWrapper': document.getElementById('gridWrapper'),
+    'excel-sheet-bar': document.querySelector('.excel-sheet-bar'),
+    'excel-status': document.querySelector('.excel-status')
+  };
+
+  document.querySelectorAll('.zone-item[data-zone]').forEach(item => {
+    const zoneKey = item.getAttribute('data-zone');
+    const target = zoneMap[zoneKey];
+    if (!target) return;
+
+    item.addEventListener('mouseenter', () => {
+      target.classList.add('zone-glow');
+    });
+    item.addEventListener('mouseleave', () => {
+      target.classList.remove('zone-glow');
+    });
+  });
 }
 
 // Init
