@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lezione 1 — Le Basi di Excel</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #070b14;
+  --panel: #0d1424;
+  --cyan: #00d4ff;
+  --green: #00ff88;
+  --red: #ff4466;
+  --orange: #ff8c00;
+  --purple: #bb44ff;
+  --yellow: #ffd700;
+  --white: #e8f0ff;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+  /* Excel colors */
+  --excel-green: #217346;
+  --excel-green-light: #33a867;
+  --excel-ribbon-bg: #f3f3f3;
+  --excel-ribbon-active: #ffffff;
+  --excel-grid-border: #d4d4d4;
+  --excel-cell-bg: #ffffff;
+  --excel-header-bg: #f0f0f0;
+  --excel-select: #0078d4;
+  --excel-formula-bg: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  height: 100vh; height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════ */
+header {
+  background-color: #04070d;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  z-index: 10;
+  flex-shrink: 0;
+}
+header h1 {
+  font-family: var(--font-title);
+  color: var(--cyan);
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+.step-counter {
+  font-family: var(--font-mono);
+  color: var(--orange);
+  font-size: 1.1rem;
+  background: rgba(255, 140, 0, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+/* ═══════════════════════════════════════════
+   MAIN LAYOUT
+   ═══════════════════════════════════════════ */
+.main-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* EXPLANATION PANEL (left) */
+.explain-panel {
+  width: 340px;
+  min-width: 280px;
+  background: var(--panel);
+  border-right: 1px solid rgba(0, 212, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.explain-content {
+  padding: 1.5rem;
+  flex: 1;
+}
+.explain-content h2 {
+  font-family: var(--font-title);
+  color: var(--green);
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.explain-content .step-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--bg);
+  background: var(--cyan);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+}
+.explain-content p {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #b0c4d8;
+  margin-bottom: 0.8rem;
+}
+.explain-content .highlight-box {
+  background: rgba(0, 212, 255, 0.08);
+  border-left: 3px solid var(--cyan);
+  padding: 0.7rem 1rem;
+  border-radius: 0 6px 6px 0;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  line-height: 1.5;
+}
+.explain-content .key-hint {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  padding: 0.1rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--yellow);
+}
+
+/* EXCEL AREA (right) */
+.excel-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   EXCEL WINDOW
+   ═══════════════════════════════════════════ */
+.excel-window {
+  width: 100%;
+  max-width: 780px;
+  height: 100%;
+  max-height: 540px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+  position: relative;
+}
+
+/* TITLE BAR */
+.excel-titlebar {
+  height: 32px;
+  background: var(--excel-green);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.excel-titlebar .dots {
+  display: flex;
+  gap: 5px;
+}
+.excel-titlebar .dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+}
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+.excel-titlebar .title-text {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* RIBBON */
+.excel-ribbon {
+  background: var(--excel-ribbon-bg);
+  border-bottom: 1px solid #c8c8c8;
+  flex-shrink: 0;
+}
+.ribbon-tabs {
+  display: flex;
+  height: 28px;
+  border-bottom: 1px solid #ddd;
+  padding: 0 4px;
+}
+.ribbon-tab {
+  padding: 4px 14px;
+  font-size: 11.5px;
+  color: #444;
+  cursor: default;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.ribbon-tab.active {
+  color: var(--excel-green);
+  border-bottom-color: var(--excel-green);
+  background: white;
+}
+.ribbon-tab:hover { background: #e8e8e8; }
+.ribbon-content {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  gap: 2px;
+  height: 40px;
+  background: white;
+}
+.ribbon-btn {
+  width: 28px; height: 28px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+  cursor: default;
+  transition: all 0.15s;
+  position: relative;
+}
+.ribbon-btn:hover { background: #e0e0e0; border-color: #ccc; }
+.ribbon-btn.active-format { background: #d0e8ff; border-color: #80b8e8; }
+.ribbon-sep {
+  width: 1px;
+  height: 24px;
+  background: #ddd;
+  margin: 0 4px;
+}
+.ribbon-btn-text {
+  font-size: 11px;
+  padding: 2px 8px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: #333;
+  cursor: default;
+  white-space: nowrap;
+}
+.ribbon-btn-text:hover { background: #e0e0e0; border-color: #ccc; }
+
+/* Ribbon glow for step highlight */
+.ribbon-btn.glow {
+  animation: ribbonGlow 0.8s ease-in-out infinite alternate;
+}
+@keyframes ribbonGlow {
+  from { box-shadow: 0 0 4px rgba(0, 120, 212, 0.4); background: #d0e8ff; }
+  to { box-shadow: 0 0 12px rgba(0, 120, 212, 0.8); background: #b8d8ff; }
+}
+
+/* FORMULA BAR */
+.excel-formula-bar {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  border-bottom: 1px solid #c8c8c8;
+  background: white;
+  flex-shrink: 0;
+}
+.name-box {
+  width: 60px;
+  text-align: center;
+  font-size: 11px;
+  border-right: 1px solid #c8c8c8;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #333;
+  background: white;
+  transition: all 0.3s;
+}
+.name-box.highlight {
+  background: #d0e8ff;
+  color: var(--excel-select);
+}
+.fx-label {
+  padding: 0 8px;
+  font-size: 12px;
+  font-style: italic;
+  color: #888;
+  border-right: 1px solid #c8c8c8;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.formula-input {
+  flex: 1;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #333;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.formula-input.typing {
+  color: #0066cc;
+}
+
+/* GRID */
+.excel-grid-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: white;
+}
+.excel-grid {
+  display: grid;
+  position: relative;
+}
+/* Column headers */
+.col-header-row {
+  display: flex;
+  border-bottom: 1px solid var(--excel-grid-border);
+  background: var(--excel-header-bg);
+  flex-shrink: 0;
+}
+.row-num-header {
+  width: 36px;
+  min-width: 36px;
+  height: 22px;
+  background: var(--excel-header-bg);
+  border-right: 1px solid var(--excel-grid-border);
+  border-bottom: 1px solid var(--excel-grid-border);
+}
+.col-header {
+  flex: 1;
+  min-width: 80px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+  border-right: 1px solid var(--excel-grid-border);
+  background: var(--excel-header-bg);
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+.col-header.selected {
+  background: #d6e6f5;
+  color: var(--excel-select);
+}
+/* Column resize handle */
+.col-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 2;
+}
+.col-resize-handle.glow-handle {
+  background: rgba(0, 120, 212, 0.5);
+  animation: handlePulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes handlePulse {
+  from { background: rgba(0, 120, 212, 0.3); }
+  to { background: rgba(0, 120, 212, 0.8); }
+}
+
+/* Data rows */
+.data-row {
+  display: flex;
+  border-bottom: 1px solid var(--excel-grid-border);
+}
+.row-num {
+  width: 36px;
+  min-width: 36px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+  border-right: 1px solid var(--excel-grid-border);
+  background: var(--excel-header-bg);
+  transition: background 0.2s, color 0.2s;
+}
+.row-num.selected {
+  background: #d6e6f5;
+  color: var(--excel-select);
+}
+.cell {
+  flex: 1;
+  min-width: 80px;
+  height: 24px;
+  border-right: 1px solid var(--excel-grid-border);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  font-size: 12px;
+  color: #333;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.cell.number { text-align: right; justify-content: flex-end; }
+.cell.bold { font-weight: bold; }
+.cell.selected {
+  outline: 2px solid var(--excel-select);
+  outline-offset: -1px;
+  z-index: 1;
+}
+.cell.range-highlight {
+  background: rgba(0, 120, 212, 0.1);
+  outline: 1px solid rgba(0, 120, 212, 0.4);
+}
+.cell .cursor-blink {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: #333;
+  animation: blink 0.6s step-end infinite;
+  margin-left: 1px;
+  vertical-align: middle;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* SHEET TABS */
+.excel-sheet-bar {
+  height: 24px;
+  background: #e8e8e8;
+  border-top: 1px solid #c8c8c8;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.sheet-tab {
+  padding: 2px 16px;
+  font-size: 11px;
+  color: #333;
+  background: white;
+  border: 1px solid #c0c0c0;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  cursor: default;
+}
+.sheet-tab.active {
+  font-weight: 600;
+  border-bottom: 2px solid white;
+  margin-bottom: -1px;
+}
+.sheet-add {
+  font-size: 14px;
+  color: #888;
+  padding: 0 6px;
+  cursor: default;
+}
+
+/* STATUS BAR */
+.excel-status {
+  height: 22px;
+  background: var(--excel-green);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 10px;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATED CURSOR
+   ═══════════════════════════════════════════ */
+.sim-cursor {
+  position: absolute;
+  width: 18px;
+  height: 22px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  transition: left 0.6s cubic-bezier(.4,0,.2,1), top 0.6s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.4));
+}
+.sim-cursor.visible { opacity: 1; }
+.sim-cursor.clicking { animation: cursorClick 0.25s ease; }
+@keyframes cursorClick {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+.sim-cursor.resize-cursor svg { display: none; }
+.sim-cursor.resize-cursor::after {
+  content: '↔';
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION BAR (bottom)
+   ═══════════════════════════════════════════ */
+.nav-bar {
+  background: #04070d;
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 0.6rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.nav-btn {
+  padding: 0.5rem 1.5rem;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  border: 1px solid;
+  border-radius: 6px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+.nav-btn.prev {
+  background: transparent;
+  color: var(--cyan);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+.nav-btn.prev:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--cyan); }
+.nav-btn.prev:disabled { opacity: 0.3; cursor: default; }
+.nav-btn.next {
+  background: var(--cyan);
+  color: #000;
+  border-color: var(--cyan);
+}
+.nav-btn.next:hover { background: var(--white); box-shadow: 0 0 15px var(--cyan); }
+.progress-dots {
+  display: flex;
+  gap: 8px;
+}
+.progress-dots .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+.progress-dots .dot.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+.progress-dots .dot.done {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+/* ═══════════════════════════════════════════
+   COMPLETION SCREEN
+   ═══════════════════════════════════════════ */
+.completion-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 11, 20, 0.95);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 1.5rem;
+}
+.completion-overlay.visible { display: flex; }
+.completion-overlay .trophy { font-size: 5rem; animation: bounce 1s ease infinite; }
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.completion-overlay h2 {
+  font-family: var(--font-title);
+  color: var(--green);
+  font-size: 1.8rem;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+.completion-overlay p { color: #b0c4d8; font-size: 1.1rem; line-height: 1.6; max-width: 500px; }
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  .main-area { flex-direction: column; }
+  .explain-panel { width: 100%; min-width: unset; max-height: 200px; border-right: none; border-bottom: 1px solid rgba(0, 212, 255, 0.15); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>📊 EXCEL — LEZIONE 1: LE BASI</h1>
+  <span class="step-counter" id="stepCounter">STEP 1 / 10</span>
+</header>
+
+<!-- MAIN -->
+<div class="main-area">
+  <!-- EXPLANATION PANEL -->
+  <div class="explain-panel">
+    <div class="explain-content" id="explainContent">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- EXCEL SIMULATOR -->
+  <div class="excel-area">
+    <div class="excel-window" id="excelWindow">
+      <!-- Title Bar -->
+      <div class="excel-titlebar">
+        <div class="dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="title-text">📊 Cartella1 — Microsoft Excel</span>
+      </div>
+      <!-- Ribbon -->
+      <div class="excel-ribbon" id="excelRibbon">
+        <div class="ribbon-tabs">
+          <div class="ribbon-tab">File</div>
+          <div class="ribbon-tab active">Home</div>
+          <div class="ribbon-tab">Inserisci</div>
+          <div class="ribbon-tab">Layout</div>
+          <div class="ribbon-tab">Formule</div>
+          <div class="ribbon-tab">Dati</div>
+        </div>
+        <div class="ribbon-content" id="ribbonContent">
+          <div class="ribbon-btn" id="btnBold" title="Grassetto"><b>G</b></div>
+          <div class="ribbon-btn" id="btnItalic" title="Corsivo"><i>C</i></div>
+          <div class="ribbon-btn" id="btnUnderline" title="Sottolineato"><u>S</u></div>
+          <div class="ribbon-sep"></div>
+          <div class="ribbon-btn" title="Allinea a Sinistra" style="font-size:10px">≡</div>
+          <div class="ribbon-btn" title="Centra" style="font-size:10px">☰</div>
+          <div class="ribbon-btn" title="Allinea a Destra" style="font-size:10px">≡</div>
+          <div class="ribbon-sep"></div>
+          <div class="ribbon-btn-text" style="font-size:11px">Calibri</div>
+          <div class="ribbon-btn-text" style="font-size:11px; width:36px; justify-content:center;">11</div>
+          <div class="ribbon-sep"></div>
+          <div class="ribbon-btn" title="Colore Testo" style="font-size:11px; color:#333;">A<span style="display:block;height:3px;width:14px;background:red;margin-top:-2px;"></span></div>
+          <div class="ribbon-btn" title="Colore Sfondo" style="font-size:11px">🎨</div>
+          <div class="ribbon-sep"></div>
+          <div class="ribbon-btn" title="Bordi" style="font-size:10px">⊞</div>
+        </div>
+      </div>
+      <!-- Formula Bar -->
+      <div class="excel-formula-bar">
+        <div class="name-box" id="nameBox">A1</div>
+        <div class="fx-label">fx</div>
+        <div class="formula-input" id="formulaInput"></div>
+      </div>
+      <!-- Grid -->
+      <div class="excel-grid-wrapper" id="gridWrapper">
+        <div class="col-header-row" id="colHeaderRow">
+          <div class="row-num-header"></div>
+          <!-- Generated by JS -->
+        </div>
+        <div id="gridBody">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+      <!-- Sheet Tabs -->
+      <div class="excel-sheet-bar">
+        <span class="sheet-add">＋</span>
+        <div class="sheet-tab active">Foglio1</div>
+        <div class="sheet-tab">Foglio2</div>
+      </div>
+      <!-- Status Bar -->
+      <div class="excel-status">
+        <span>Pronto</span>
+      </div>
+    </div>
+    <!-- Animated cursor -->
+    <svg class="sim-cursor" id="simCursor" viewBox="0 0 24 24" fill="none">
+      <path d="M5 3l14 9-6 1.5L10 20z" fill="white" stroke="#333" stroke-width="1.5"/>
+    </svg>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="nav-bar">
+  <button class="nav-btn prev" id="btnPrev" onclick="prevStep()" disabled>◄ Indietro</button>
+  <div class="progress-dots" id="progressDots"></div>
+  <button class="nav-btn next" id="btnNext" onclick="nextStep()">Avanti ►</button>
+</nav>
+
+<!-- COMPLETION -->
+<div class="completion-overlay" id="completionOverlay">
+  <div class="trophy">🏆</div>
+  <h2>LEZIONE 1 COMPLETATA!</h2>
+  <p>Ottimo lavoro! Ora sai riconoscere l'interfaccia di Excel, selezionare le celle, inserire testo e numeri, usare formule come <strong>=SOMMA()</strong>, e formattare il testo in grassetto.</p>
+  <button class="nav-btn next" onclick="location.reload()">RIFAI LA LEZIONE</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   GRID INIT
+   ═══════════════════════════════════════════ */
+const COLS = 6; // A..F
+const ROWS = 10;
+const COL_LETTERS = 'ABCDEFGHIJ'.split('');
+
+// Cell data model
+const cellData = {};
+const cellBold = {};
+
+function cellId(col, row) { return COL_LETTERS[col] + (row + 1); }
+
+function buildGrid() {
+  const headerRow = document.getElementById('colHeaderRow');
+  // keep the row-num-header that already exists
+  for (let c = 0; c < COLS; c++) {
+    const ch = document.createElement('div');
+    ch.className = 'col-header';
+    ch.id = 'colH-' + c;
+    ch.textContent = COL_LETTERS[c];
+    // resize handle
+    const rh = document.createElement('div');
+    rh.className = 'col-resize-handle';
+    rh.id = 'resizeH-' + c;
+    ch.appendChild(rh);
+    headerRow.appendChild(ch);
+  }
+
+  const body = document.getElementById('gridBody');
+  for (let r = 0; r < ROWS; r++) {
+    const row = document.createElement('div');
+    row.className = 'data-row';
+    const rn = document.createElement('div');
+    rn.className = 'row-num';
+    rn.id = 'rowH-' + r;
+    rn.textContent = r + 1;
+    row.appendChild(rn);
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.id = 'cell-' + COL_LETTERS[c] + (r + 1);
+      row.appendChild(cell);
+    }
+    body.appendChild(row);
+  }
+}
+buildGrid();
+
+/* ═══════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════ */
+function getCell(id) { return document.getElementById('cell-' + id); }
+function setNameBox(text) { document.getElementById('nameBox').textContent = text; }
+function setFormula(text) { document.getElementById('formulaInput').textContent = text; }
+function setCellText(id, text) {
+  const c = getCell(id);
+  if (c) { c.textContent = text; cellData[id] = text; }
+}
+function setCellBold(id, bold) {
+  const c = getCell(id);
+  if (c) { bold ? c.classList.add('bold') : c.classList.remove('bold'); cellBold[id] = bold; }
+}
+
+function clearAllSelections() {
+  document.querySelectorAll('.cell.selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.cell.range-highlight').forEach(c => c.classList.remove('range-highlight'));
+  document.querySelectorAll('.col-header.selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.row-num.selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.name-box.highlight').forEach(c => c.classList.remove('highlight'));
+  document.querySelectorAll('.ribbon-btn.glow').forEach(c => c.classList.remove('glow'));
+  document.querySelectorAll('.col-resize-handle.glow-handle').forEach(c => c.classList.remove('glow-handle'));
+  document.querySelectorAll('.cell .cursor-blink').forEach(c => c.remove());
+  document.getElementById('formulaInput').classList.remove('typing');
+}
+
+function selectCell(id) {
+  clearAllSelections();
+  const c = getCell(id);
+  if (c) c.classList.add('selected');
+  setNameBox(id);
+  setFormula(cellData[id] || '');
+  // Highlight col/row
+  const col = id.charAt(0);
+  const row = parseInt(id.substring(1)) - 1;
+  const ci = COL_LETTERS.indexOf(col);
+  const colH = document.getElementById('colH-' + ci);
+  const rowH = document.getElementById('rowH-' + row);
+  if (colH) colH.classList.add('selected');
+  if (rowH) rowH.classList.add('selected');
+  document.getElementById('nameBox').classList.add('highlight');
+}
+
+function highlightRange(startId, endId) {
+  const sc = COL_LETTERS.indexOf(startId.charAt(0));
+  const sr = parseInt(startId.substring(1));
+  const ec = COL_LETTERS.indexOf(endId.charAt(0));
+  const er = parseInt(endId.substring(1));
+  for (let c = sc; c <= ec; c++) {
+    for (let r = sr; r <= er; r++) {
+      const cell = getCell(COL_LETTERS[c] + r);
+      if (cell) cell.classList.add('range-highlight');
+    }
+  }
+}
+
+// Typing animation
+function typeText(elementId, text, speed, callback, isFormula) {
+  const el = document.getElementById(elementId);
+  let i = 0;
+  if (isFormula) el.classList.add('typing');
+  function type() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else {
+      if (callback) callback();
+    }
+  }
+  type();
+}
+
+function typeCellAndFormula(cellId, text, speed, callback) {
+  const cell = getCell(cellId);
+  const fi = document.getElementById('formulaInput');
+  let i = 0;
+  fi.classList.add('typing');
+  // Add cursor blink
+  let cursorEl = document.createElement('span');
+  cursorEl.className = 'cursor-blink';
+  cell.appendChild(cursorEl);
+
+  function type() {
+    if (i < text.length) {
+      // Remove old cursor and re-add after text
+      if (cursorEl.parentNode) cursorEl.remove();
+      cell.textContent = text.substring(0, i + 1);
+      fi.textContent = text.substring(0, i + 1);
+      cell.appendChild(cursorEl);
+      i++;
+      setTimeout(type, speed);
+    } else {
+      if (cursorEl.parentNode) cursorEl.remove();
+      fi.classList.remove('typing');
+      cellData[cellId] = text;
+      if (callback) callback();
+    }
+  }
+  type();
+}
+
+// Cursor animation
+const cursor = document.getElementById('simCursor');
+function moveCursor(targetEl, callback, delay) {
+  cursor.classList.add('visible');
+  const excelArea = document.querySelector('.excel-area');
+  const areaRect = excelArea.getBoundingClientRect();
+  const tRect = targetEl.getBoundingClientRect();
+  cursor.style.left = (tRect.left - areaRect.left + tRect.width / 2) + 'px';
+  cursor.style.top = (tRect.top - areaRect.top + tRect.height / 2) + 'px';
+  setTimeout(() => {
+    cursor.classList.add('clicking');
+    setTimeout(() => {
+      cursor.classList.remove('clicking');
+      if (callback) callback();
+    }, 300);
+  }, delay || 700);
+}
+
+function hideCursor() { cursor.classList.remove('visible'); }
+
+// Wait helper
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ═══════════════════════════════════════════
+   STEPS DATA
+   ═══════════════════════════════════════════ */
+const STEPS = [
+  {
+    title: "L'Interfaccia di Excel",
+    badge: "STEP 1 — PANORAMICA",
+    html: `
+      <p>Benvenuto! Questa è l'interfaccia di <strong>Microsoft Excel</strong>, un programma per creare <em>fogli di calcolo</em>.</p>
+      <p>Osserva la finestra sulla destra. Ha diverse aree:</p>
+      <div class="highlight-box">
+        🟢 <strong>Barra del Titolo</strong> — in alto (verde), mostra il nome del file<br>
+        🎛️ <strong>Ribbon</strong> — la barra degli strumenti con i pulsanti<br>
+        📝 <strong>Barra delle Formule</strong> — mostra il contenuto della cella selezionata<br>
+        📊 <strong>Griglia</strong> — il foglio di calcolo con righe e colonne<br>
+        📑 <strong>Fogli</strong> — le schede in basso (Foglio1, Foglio2...)
+      </div>
+      <p>Le colonne si chiamano con le <strong>lettere</strong> (A, B, C...) e le righe con i <strong>numeri</strong> (1, 2, 3...).</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      selectCell('A1');
+    }
+  },
+  {
+    title: "Selezionare una Cella",
+    badge: "STEP 2 — SELEZIONE",
+    html: `
+      <p>Ogni rettangolo della griglia si chiama <strong>cella</strong>. Ogni cella ha un <em>indirizzo</em> unico fatto dalla <strong>lettera della colonna</strong> + il <strong>numero della riga</strong>.</p>
+      <p>Guarda: il cursore si sposterà sulla cella <strong>B2</strong> e la selezionerà.</p>
+      <div class="highlight-box">
+        📍 L'indirizzo della cella selezionata appare nella <strong>Name Box</strong> (in alto a sinistra della barra delle formule).
+      </div>
+      <p>Nota come la colonna <strong>B</strong> e la riga <strong>2</strong> si evidenziano in blu!</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      const target = getCell('B2');
+      moveCursor(target, () => {
+        selectCell('B2');
+        setTimeout(() => hideCursor(), 600);
+      }, 800);
+    }
+  },
+  {
+    title: "Scrivere nella Cella",
+    badge: "STEP 3 — INSERIMENTO TESTO",
+    html: `
+      <p>Per scrivere in una cella, basta <strong>selezionarla</strong> e <strong>digitare</strong> con la tastiera.</p>
+      <p>Guarda: il cursore selezionerà <strong>A1</strong> e scriverà la parola <em>"Nome"</em>.</p>
+      <div class="highlight-box">
+        ⌨️ Nota come il testo appare sia nella <strong>cella</strong> che nella <strong>barra delle formule</strong> in alto, contemporaneamente.
+      </div>
+      <p>Quando finisci di scrivere, premi <span class="key-hint">Invio ↵</span> per confermare.</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      const target = getCell('A1');
+      moveCursor(target, () => {
+        selectCell('A1');
+        hideCursor();
+        setTimeout(() => {
+          typeCellAndFormula('A1', 'Nome', 120);
+        }, 400);
+      }, 600);
+    }
+  },
+  {
+    title: "Navigare tra le Celle",
+    badge: "STEP 4 — NAVIGAZIONE",
+    html: `
+      <p>Puoi spostarti tra le celle usando le <strong>frecce direzionali</strong> della tastiera o il <strong>mouse</strong>.</p>
+      <p>Guarda: la selezione si sposterà da cella a cella.</p>
+      <div class="highlight-box">
+        ⬆️⬇️⬅️➡️ Le <strong>frecce direzionali</strong> spostano la selezione di una cella alla volta.<br><br>
+        <span class="key-hint">Tab</span> — sposta a destra<br>
+        <span class="key-hint">Invio</span> — sposta in basso
+      </div>
+    `,
+    action: async function() {
+      clearAllSelections();
+      selectCell('A1');
+      setCellText('A1', 'Nome');
+      await wait(800);
+      selectCell('B1');
+      await wait(600);
+      selectCell('C1');
+      await wait(600);
+      selectCell('B2');
+      await wait(600);
+      selectCell('A2');
+    }
+  },
+  {
+    title: "Inserire dei Numeri",
+    badge: "STEP 5 — DATI NUMERICI",
+    html: `
+      <p>Excel è perfetto per lavorare con i <strong>numeri</strong>. Inseriamo dei voti nella colonna B.</p>
+      <p>Guarda l'animazione: scriveremo un'intestazione e tre voti nelle celle.</p>
+      <div class="highlight-box">
+        📌 Dopo aver scritto i dati:<br>
+        • <strong>B1</strong> = "Voto" (intestazione)<br>
+        • <strong>B2</strong> = 8<br>
+        • <strong>B3</strong> = 6<br>
+        • <strong>B4</strong> = 9
+      </div>
+    `,
+    action: async function() {
+      clearAllSelections();
+      // Set A1 for context
+      setCellText('A1', 'Nome');
+      setCellText('A2', 'Mario');
+      setCellText('A3', 'Luca');
+      setCellText('A4', 'Sara');
+
+      selectCell('B1');
+      await wait(400);
+      typeCellAndFormula('B1', 'Voto', 100);
+      await wait(900);
+      selectCell('B2');
+      await wait(300);
+      typeCellAndFormula('B2', '8', 100);
+      await wait(600);
+      selectCell('B3');
+      await wait(300);
+      typeCellAndFormula('B3', '6', 100);
+      await wait(600);
+      selectCell('B4');
+      await wait(300);
+      typeCellAndFormula('B4', '9', 100);
+    }
+  },
+  {
+    title: "La Prima Formula: Somma",
+    badge: "STEP 6 — FORMULE",
+    html: `
+      <p>Il vero potere di Excel è nelle <strong>formule</strong>. Una formula inizia sempre con il segno <strong>=</strong> (uguale).</p>
+      <p>Guarda: nella cella <strong>B5</strong> scriveremo la formula per sommare i tre voti:</p>
+      <div class="highlight-box">
+        <code>=B2+B3+B4</code><br><br>
+        Questa formula dice a Excel: "Prendi il valore di B2, aggiungi B3, aggiungi B4 e mostra il risultato qui."
+      </div>
+      <p>Dopo aver premuto <span class="key-hint">Invio</span>, la cella mostrerà il risultato: <strong>23</strong>.</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      // Ensure prior data
+      setCellText('A1', 'Nome'); setCellText('A2', 'Mario'); setCellText('A3', 'Luca'); setCellText('A4', 'Sara');
+      setCellText('B1', 'Voto'); setCellText('B2', '8'); setCellText('B3', '6'); setCellText('B4', '9');
+
+      selectCell('B5');
+      await wait(500);
+      typeCellAndFormula('B5', '=B2+B3+B4', 100, async () => {
+        await wait(800);
+        // "Press enter" — show result
+        setCellText('B5', '23');
+        getCell('B5').classList.add('number');
+        setFormula('=B2+B3+B4');
+      });
+    }
+  },
+  {
+    title: "La Funzione SOMMA()",
+    badge: "STEP 7 — FUNZIONI",
+    html: `
+      <p>Sommare cella per cella funziona, ma con molti dati diventa scomodo. Excel ha funzioni pronte, come <strong>=SOMMA()</strong>.</p>
+      <p>Guarda: riscriveremo la cella B5 usando la funzione:</p>
+      <div class="highlight-box">
+        <code>=SOMMA(B2:B4)</code><br><br>
+        I due punti <strong>:</strong> significano "da B2 a B4" (un <em>range</em>). Le celle comprese verranno evidenziate in blu.
+      </div>
+      <p>Il risultato è identico: <strong>23</strong>, ma è molto più pratico!</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      setCellText('A1', 'Nome'); setCellText('A2', 'Mario'); setCellText('A3', 'Luca'); setCellText('A4', 'Sara');
+      setCellText('B1', 'Voto'); setCellText('B2', '8'); setCellText('B3', '6'); setCellText('B4', '9');
+
+      selectCell('B5');
+      setCellText('B5', '');
+      await wait(500);
+      typeCellAndFormula('B5', '=SOMMA(B2:B4)', 90, async () => {
+        // Highlight range
+        highlightRange('B2', 'B4');
+        await wait(1200);
+        setCellText('B5', '23');
+        getCell('B5').classList.add('number');
+        setFormula('=SOMMA(B2:B4)');
+        document.querySelectorAll('.cell.range-highlight').forEach(c => c.classList.remove('range-highlight'));
+      });
+    }
+  },
+  {
+    title: "Allargare una Colonna",
+    badge: "STEP 8 — RIDIMENSIONAMENTO",
+    html: `
+      <p>Se il testo è troppo lungo per una cella, puoi <strong>allargare la colonna</strong>.</p>
+      <p>Guarda: il cursore si posizionerà sul <strong>bordo destro</strong> dell'intestazione della colonna A, diventerà una freccia doppia ↔ e trascinerà per allargare.</p>
+      <div class="highlight-box">
+        ↔ Posiziona il mouse sul <strong>bordo tra due intestazioni di colonna</strong> (es. tra A e B) fino a quando il cursore cambia forma, poi <strong>trascina</strong>.
+      </div>
+      <p>💡 Trucco: fai <strong>doppio clic</strong> sul bordo per adattare la colonna al contenuto automaticamente!</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      setCellText('A1', 'Nome'); setCellText('A2', 'Mario'); setCellText('A3', 'Luca'); setCellText('A4', 'Sara');
+      setCellText('B1', 'Voto'); setCellText('B2', '8'); setCellText('B3', '6'); setCellText('B4', '9'); setCellText('B5', '23');
+
+      const handle = document.getElementById('resizeH-0');
+      handle.classList.add('glow-handle');
+
+      moveCursor(handle, async () => {
+        cursor.classList.add('resize-cursor');
+        await wait(600);
+        // Simulate widening column A
+        const allCells = document.querySelectorAll('.col-header, .cell');
+        const colA = document.getElementById('colH-0');
+        colA.style.transition = 'min-width 0.8s ease';
+        colA.style.minWidth = '130px';
+        // Also widen all A cells
+        for (let r = 1; r <= ROWS; r++) {
+          const c = getCell('A' + r);
+          if (c) { c.style.transition = 'min-width 0.8s ease'; c.style.minWidth = '130px'; }
+        }
+        await wait(1000);
+        cursor.classList.remove('resize-cursor');
+        hideCursor();
+        handle.classList.remove('glow-handle');
+      }, 800);
+    }
+  },
+  {
+    title: "Formattare in Grassetto",
+    badge: "STEP 9 — FORMATTAZIONE",
+    html: `
+      <p>Vuoi rendere un testo <strong>più visibile</strong>? Puoi formattarlo in <strong>grassetto</strong>!</p>
+      <p>Guarda: selezioneremo la cella A1 ("Nome") e poi cliccheremo il pulsante <strong>G</strong> nel ribbon.</p>
+      <div class="highlight-box">
+        <strong>G</strong> = Grassetto (Bold)<br>
+        Scorciatoia: <span class="key-hint">Ctrl</span> + <span class="key-hint">G</span>
+      </div>
+      <p>Il testo nella cella diventerà <strong>grassetto</strong> immediatamente!</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      setCellText('A1', 'Nome'); setCellText('A2', 'Mario'); setCellText('A3', 'Luca'); setCellText('A4', 'Sara');
+      setCellText('B1', 'Voto'); setCellText('B2', '8'); setCellText('B3', '6'); setCellText('B4', '9'); setCellText('B5', '23');
+
+      // First select A1
+      const cellA1 = getCell('A1');
+      moveCursor(cellA1, async () => {
+        selectCell('A1');
+        await wait(600);
+        // Now click Bold button
+        const boldBtn = document.getElementById('btnBold');
+        boldBtn.classList.add('glow');
+        moveCursor(boldBtn, async () => {
+          boldBtn.classList.remove('glow');
+          boldBtn.classList.add('active-format');
+          setCellBold('A1', true);
+          await wait(400);
+          // Also bold B1
+          const cellB1 = getCell('B1');
+          moveCursor(cellB1, async () => {
+            selectCell('B1');
+            await wait(400);
+            moveCursor(boldBtn, () => {
+              setCellBold('B1', true);
+              hideCursor();
+            }, 500);
+          }, 500);
+        }, 600);
+      }, 500);
+    }
+  },
+  {
+    title: "Salvare il File",
+    badge: "STEP 10 — SALVATAGGIO",
+    html: `
+      <p>Hai finito di lavorare? Non dimenticare di <strong>salvare</strong>!</p>
+      <div class="highlight-box">
+        💾 La scorciatoia più importante di tutte:<br><br>
+        <span class="key-hint">Ctrl</span> + <span class="key-hint">S</span> = <strong>Salva</strong><br><br>
+        Oppure vai su <strong>File → Salva con nome</strong> per scegliere il nome e la posizione del file.
+      </div>
+      <p>I file Excel si salvano con l'estensione <strong>.xlsx</strong>.</p>
+      <p>🎉 <strong>Complimenti!</strong> Hai completato le basi di Excel! Ora sai:</p>
+      <p>✅ Riconoscere l'interfaccia<br>✅ Selezionare e navigare le celle<br>✅ Inserire testo e numeri<br>✅ Usare formule e funzioni<br>✅ Ridimensionare colonne<br>✅ Formattare in grassetto<br>✅ Salvare il file</p>
+    `,
+    action: async function() {
+      clearAllSelections();
+      setCellText('A1', 'Nome'); setCellBold('A1', true);
+      setCellText('A2', 'Mario'); setCellText('A3', 'Luca'); setCellText('A4', 'Sara');
+      setCellText('B1', 'Voto'); setCellBold('B1', true);
+      setCellText('B2', '8'); setCellText('B3', '6'); setCellText('B4', '9'); setCellText('B5', '23');
+      selectCell('A1');
+
+      // Highlight the File tab
+      const fileTab = document.querySelector('.ribbon-tab');
+      await wait(600);
+      moveCursor(fileTab, async () => {
+        fileTab.style.background = '#e0ffe0';
+        fileTab.style.color = var_excel_green;
+        fileTab.style.fontWeight = 'bold';
+        await wait(400);
+        // Show saved in titlebar
+        document.querySelector('.title-text').textContent = '📊 MieiVoti.xlsx — Microsoft Excel';
+        document.querySelector('.excel-status span').textContent = '✅ File salvato!';
+        hideCursor();
+      }, 700);
+    }
+  }
+];
+const var_excel_green = '#217346';
+
+/* ═══════════════════════════════════════════
+   STEP CONTROLLER
+   ═══════════════════════════════════════════ */
+let currentStep = 0;
+
+function buildDots() {
+  const container = document.getElementById('progressDots');
+  container.innerHTML = '';
+  for (let i = 0; i < STEPS.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    container.appendChild(d);
+  }
+}
+buildDots();
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  // Update counter
+  document.getElementById('stepCounter').textContent = `STEP ${currentStep + 1} / ${STEPS.length}`;
+  // Update explanation
+  const ec = document.getElementById('explainContent');
+  ec.innerHTML = `
+    <span class="step-badge">${step.badge}</span>
+    <h2>${step.title}</h2>
+    ${step.html}
+  `;
+  // Update dots
+  document.querySelectorAll('.progress-dots .dot').forEach((d, i) => {
+    d.className = 'dot';
+    if (i < currentStep) d.classList.add('done');
+    if (i === currentStep) d.classList.add('active');
+  });
+  // Update buttons
+  document.getElementById('btnPrev').disabled = currentStep === 0;
+  document.getElementById('btnNext').textContent = currentStep === STEPS.length - 1 ? 'COMPLETA ✓' : 'Avanti ►';
+  // Run animation
+  hideCursor();
+  step.action();
+}
+
+function nextStep() {
+  if (currentStep < STEPS.length - 1) {
+    currentStep++;
+    resetGridState();
+    updateUI();
+  } else {
+    document.getElementById('completionOverlay').classList.add('visible');
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    currentStep--;
+    resetGridState();
+    updateUI();
+  }
+}
+
+function resetGridState() {
+  clearAllSelections();
+  hideCursor();
+  // Reset formula bar
+  setFormula('');
+  setNameBox('A1');
+  // Reset column widths
+  const colH0 = document.getElementById('colH-0');
+  if (colH0) { colH0.style.minWidth = ''; colH0.style.transition = ''; }
+  for (let r = 1; r <= ROWS; r++) {
+    const c = getCell('A' + r);
+    if (c) { c.style.minWidth = ''; c.style.transition = ''; }
+  }
+  // Clear cells
+  for (let c = 0; c < COLS; c++) {
+    for (let r = 1; r <= ROWS; r++) {
+      const id = COL_LETTERS[c] + r;
+      const cell = getCell(id);
+      if (cell) {
+        cell.textContent = '';
+        cell.className = 'cell';
+      }
+      delete cellData[id];
+      delete cellBold[id];
+    }
+  }
+  // Reset ribbon
+  document.getElementById('btnBold').classList.remove('active-format');
+  // Reset titlebar
+  document.querySelector('.title-text').textContent = '📊 Cartella1 — Microsoft Excel';
+  document.querySelector('.excel-status span').textContent = 'Pronto';
+  // Reset File tab
+  const fileTab = document.querySelector('.ribbon-tab');
+  fileTab.style.background = '';
+  fileTab.style.color = '';
+  fileTab.style.fontWeight = '';
+}
+
+// Init
+updateUI();
+</script>
+</body>
+</html>

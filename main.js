@@ -81,6 +81,20 @@ const MATERIE = [
           },
         ]
       },
+      {
+        id: "excel",
+        title: "Office Excel",
+        icon: "📊",
+        desc: "Dalle basi ai fogli di calcolo avanzati con Microsoft Excel.",
+        chapters: [
+          {
+            title: "Lezione 1 — Le Basi di Excel",
+            topics: [
+              { title: "Tutorial Interattivo", desc: "Impara l'interfaccia, le celle, le formule e la formattazione con un simulatore animato passo-passo.", url: "/office-excel/Lezione_01_Basi/lezione.html" }
+            ]
+          }
+        ]
+      },
       // Puoi aggiungere altre sezioni qui, es:
       // { id: "python", title: "Linguaggio Python", ... }
     ]
