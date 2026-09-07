@@ -153,6 +153,7 @@ const MATERIE = [
         id: "cpp-basi",
         title: "Le basi del C++",
         icon: "⌨️",
+        hidden: true,
         desc: "Esercizi pratici e simulatori interattivi di codice.",
         chapters: [
           {
@@ -472,7 +473,7 @@ function handleHashRoute() {
   if (!rawHash) return;
 
   for (const materia of MATERIE) {
-    const sec = materia.sections.find(s => s.id === rawHash);
+    const sec = materia.sections.find(s => s.id === rawHash && !s.hidden);
     if (sec) {
       selectedMateria = materia;
       selectedSectionObj = sec;
@@ -500,9 +501,9 @@ function init() {
 // ── Stats ──
 function updateStats() {
   const totalTopics = MATERIE.reduce((sum, m) =>
-    sum + m.sections.reduce((s2, sec) =>
+    sum + m.sections.filter(s => !s.hidden).reduce((s2, sec) =>
       s2 + sec.chapters.reduce((s3, ch) => s3 + getChapterTopicCount(ch), 0), 0), 0);
-  const totalSections = MATERIE.reduce((sum, m) => sum + m.sections.length, 0);
+  const totalSections = MATERIE.reduce((sum, m) => sum + m.sections.filter(s => !s.hidden).length, 0);
 
   document.getElementById('stat-total').textContent = totalTopics;
   document.getElementById('stat-subjects').textContent = MATERIE.length;
@@ -614,8 +615,9 @@ function renderMaterieView() {
   grid.className = 'materie-grid';
 
   MATERIE.forEach((materia, i) => {
-    const sectionCount = materia.sections.length;
-    const topicCount = materia.sections.reduce((s, sec) =>
+    const visibleSections = materia.sections.filter(sec => !sec.hidden);
+    const sectionCount = visibleSections.length;
+    const topicCount = visibleSections.reduce((s, sec) =>
       s + sec.chapters.reduce((s2, ch) => s2 + getChapterTopicCount(ch), 0), 0);
 
     const card = document.createElement('button');
@@ -661,7 +663,9 @@ function renderSectionsView() {
   title.textContent = `${selectedMateria.icon} ${selectedMateria.label.toUpperCase()}`;
   risorseContainer.appendChild(title);
 
-  if (selectedMateria.sections.length === 0) {
+  const visibleSections = selectedMateria.sections.filter(sec => !sec.hidden);
+
+  if (visibleSections.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty-state';
     empty.innerHTML = `
@@ -676,7 +680,7 @@ function renderSectionsView() {
   const grid = document.createElement('div');
   grid.className = 'sections-grid';
 
-  selectedMateria.sections.forEach((sec, i) => {
+  visibleSections.forEach((sec, i) => {
     const chapterCount = sec.chapters.length;
     const topicCount = sec.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0);
 
