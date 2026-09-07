@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composizione della Prova — Struttura Verifica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & DESIGN TOKENS
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #070b14;
+  --panel: #0d1424;
+  --cyan: #00d4ff;
+  --cyan-rgb: 0, 212, 255;
+  --green: #00ff88;
+  --green-rgb: 0, 255, 136;
+  --yellow: #ffd700;
+  --yellow-rgb: 255, 215, 0;
+  --white: #e8f0ff;
+  --text-dim: #7d8ea6;
+  --border: rgba(0, 212, 255, 0.2);
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 1rem 1.25rem 1.5rem;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Scanline Overlay */
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.2) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.container {
+  max-width: 1320px;
+  width: 96%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* ═══════════════════════════════════════════
+   COMPACT TOP BAR (Title + Nav integrated)
+   ═══════════════════════════════════════════ */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+}
+
+.back-link:hover {
+  background: rgba(0, 212, 255, 0.22);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.35);
+  transform: translateX(-2px);
+}
+
+.page-title-center {
+  text-align: center;
+  flex: 1;
+}
+
+.page-title-center h1 {
+  font-family: var(--font-title);
+  font-size: 1.45rem;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.35);
+  line-height: 1.2;
+}
+
+.page-title-center p {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  margin-top: 0.15rem;
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  color: var(--yellow);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background-color: var(--yellow);
+  box-shadow: 0 0 8px var(--yellow);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  50%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* ═══════════════════════════════════════════
+   TWO-COLUMN COMPACT LAYOUT (NO-SCROLL)
+   ═══════════════════════════════════════════ */
+.exam-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) 350px;
+  gap: 1.8rem;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .exam-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .callouts-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem !important;
+  }
+  .side-callout {
+    margin-top: 0 !important;
+  }
+  .side-callout::before {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   LEFT COLUMN: THE PAPER (MOCK EXAM SHEET)
+   ═══════════════════════════════════════════ */
+.paper-column {
+  min-width: 0;
+}
+
+.paper {
+  background: #fdfdfd;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.4),
+    0 20px 50px rgba(0,0,0,0.5),
+    inset 0 0 60px rgba(0,0,0,0.02);
+  overflow: hidden;
+  position: relative;
+  color: #1a1a2e;
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  animation: paperSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes paperSlideIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Ruled paper red margin line */
+.paper::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 42px;
+  width: 2px;
+  background: rgba(255, 70, 70, 0.15);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Section highlights when corresponding callout is hovered */
+.paper-section {
+  position: relative;
+  transition: box-shadow 0.22s ease, outline 0.22s ease;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
+.paper-section.is-highlighted {
+  outline: 2px solid var(--cyan) !important;
+  box-shadow: inset 0 0 20px rgba(var(--cyan-rgb), 0.15), 0 0 16px rgba(var(--cyan-rgb), 0.3);
+  z-index: 10;
+}
+
+.paper-section.is-highlighted--yellow {
+  outline: 2px solid var(--yellow) !important;
+  box-shadow: inset 0 0 20px rgba(var(--yellow-rgb), 0.18), 0 0 18px rgba(var(--yellow-rgb), 0.3);
+  z-index: 10;
+}
+
+.paper-section.is-highlighted--green {
+  outline: 2px solid var(--green) !important;
+  box-shadow: inset 0 0 20px rgba(var(--green-rgb), 0.15), 0 0 16px rgba(var(--green-rgb), 0.3);
+  z-index: 10;
+}
+
+/* ── 1. PAPER HEADER ── */
+.paper-header {
+  background: linear-gradient(135deg, #18193a 0%, #0d1326 100%);
+  color: white;
+  padding: 1.1rem 1.6rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.paper-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--yellow), var(--green));
+}
+
+.paper-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.paper-subject {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(var(--cyan-rgb), 0.4);
+}
+
+.paper-type {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.65);
+  font-family: var(--font-mono);
+  letter-spacing: 0.8px;
+  margin-top: 0.15rem;
+}
+
+.paper-logo {
+  font-size: 1.6rem;
+  opacity: 0.8;
+}
+
+.paper-fields {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 0.8fr 1fr;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 0.55rem 0.9rem;
+}
+
+.paper-field {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+}
+
+.paper-field-label {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+}
+
+.paper-field-line {
+  flex: 1;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.4);
+  height: 0.9rem;
+}
+
+.paper-field-value {
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+/* ── 2. RISORSE UTILI SECTION ── */
+.risorse-section {
+  background: linear-gradient(135deg, #fffceb 0%, #fff7d1 100%);
+  border-bottom: 2px solid #ebd982;
+  padding: 0.85rem 1.6rem;
+  position: relative;
+}
+
+.risorse-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.risorse-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.risorse-label-icon {
+  width: 22px; height: 22px;
+  background: #ffd700;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.35);
+}
+
+.risorse-label-text {
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #7b6200;
+}
+
+.risorse-optional-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #945300;
+  background: rgba(255, 170, 0, 0.16);
+  border: 1px dashed rgba(190, 120, 0, 0.45);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.risorse-desc {
+  font-size: 0.76rem;
+  color: #74631e;
+  line-height: 1.45;
+  margin-bottom: 0.55rem;
+}
+
+.risorse-desc strong { color: #554400; }
+.risorse-desc em {
+  font-style: normal;
+  color: #b53800;
+  font-weight: 700;
+}
+
+.keyword-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.keyword-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.22rem 0.55rem;
+  background: rgba(255, 215, 0, 0.18);
+  border: 1px solid rgba(180, 150, 0, 0.3);
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #635000;
+  letter-spacing: 0.4px;
+  user-select: none;
+}
+
+.k-icon { font-size: 0.6rem; }
+
+/* ── 3. EXAM BODY: Section A & B ── */
+.exam-body {
+  padding: 0.9rem 1.6rem 1.1rem;
+}
+
+.section-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: 0.5px;
+  margin: 0.55rem 0 0.5rem;
+}
+
+.section-banner:first-child {
+  margin-top: 0;
+}
+
+.section-banner--open {
+  background: linear-gradient(90deg, rgba(0, 112, 192, 0.12), rgba(0, 160, 232, 0.04));
+  border-left: 3px solid #0070c0;
+  color: #005a9e;
+}
+
+.section-banner--mc {
+  background: linear-gradient(90deg, rgba(0, 153, 78, 0.12), rgba(0, 201, 106, 0.04));
+  border-left: 3px solid #00994e;
+  color: #007a3c;
+  margin-top: 0.9rem;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 3px;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.section-badge--open { background: #0070c0; }
+.section-badge--mc   { background: #00994e; }
+
+.section-pct {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.section-banner--open .section-pct {
+  background: rgba(0, 112, 192, 0.15);
+  color: #005a9e;
+}
+
+.section-banner--mc .section-pct {
+  background: rgba(0, 153, 78, 0.15);
+  color: #007a3c;
+}
+
+/* Question Blocks (Compact) */
+.question-block {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.45rem 0 0.4rem;
+}
+
+.q-number {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #888;
+  width: 1.3rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.q-content {
+  flex: 1;
+}
+
+.q-text {
+  font-size: 0.82rem;
+  color: #333;
+  line-height: 1.45;
+  margin-bottom: 0.35rem;
+}
+
+.answer-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+  padding-left: 0.1rem;
+}
+
+.answer-line {
+  border-bottom: 1px solid #d0d0d0;
+  height: 1.15rem;
+  position: relative;
+}
+
+.answer-line::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, #d0d0d0 0, #d0d0d0 4px, transparent 4px, transparent 8px);
+}
+
+/* Multiple choice 2x2 grid */
+.mc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem 1rem;
+  margin-top: 0.4rem;
+}
+
+.mc-option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.mc-bubble {
+  width: 14px; height: 14px;
+  border: 1.5px solid #aaa;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mc-option-letter {
+  font-weight: 700;
+  color: #888;
+  width: 0.9rem;
+}
+
+/* Summary Chips (indicates further questions) */
+.questions-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  margin-top: 0.4rem;
+}
+
+.questions-summary--open {
+  background: rgba(0, 112, 192, 0.07);
+  color: #005a9e;
+  border-left: 2px dashed rgba(0, 112, 192, 0.4);
+}
+
+.questions-summary--mc {
+  background: rgba(0, 153, 78, 0.07);
+  color: #007a3c;
+  border-left: 2px dashed rgba(0, 153, 78, 0.4);
+}
+
+/* Proportion Bar in Paper */
+.proportion-bar-wrap {
+  padding: 0.55rem 0.85rem 0.45rem;
+  margin-top: 0.8rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+.proportion-bar {
+  display: flex;
+  height: 11px;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.proportion-bar .bar-open {
+  width: 70%;
+  background: linear-gradient(90deg, #0070c0, #00a0e8);
+}
+
+.proportion-bar .bar-mc {
+  width: 30%;
+  background: linear-gradient(90deg, #00994e, #00c96a);
+}
+
+.proportion-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.45rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot--open { background: #0070c0; }
+.legend-dot--mc   { background: #009944; }
+
+
+/* ═══════════════════════════════════════════
+   RIGHT COLUMN: DIRECT ESSENTIAL CALLOUTS
+   ═══════════════════════════════════════════ */
+.callouts-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.side-callout {
+  position: relative;
+  background: rgba(13, 20, 36, 0.95);
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-family: var(--font-mono);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all 0.22s ease;
+  cursor: pointer;
+}
+
+.side-callout::before {
+  content: '◄';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cyan);
+  font-size: 0.8rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.side-callout:hover,
+.side-callout.is-active {
+  border-color: var(--cyan);
+  border-style: solid;
+  box-shadow: 0 0 18px rgba(var(--cyan-rgb), 0.28);
+  transform: translateX(4px);
+}
+
+.side-callout:hover::before,
+.side-callout.is-active::before {
+  transform: translateY(-50%) translateX(-2px);
+  color: var(--cyan);
+}
+
+/* Yellow Callout: Risorse Utili */
+.side-callout--yellow {
+  border-color: rgba(var(--yellow-rgb), 0.4);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.06) 0%, rgba(13, 20, 36, 0.95) 100%);
+}
+
+.side-callout--yellow::before {
+  color: var(--yellow);
+}
+
+.side-callout--yellow:hover,
+.side-callout--yellow.is-active {
+  border-color: var(--yellow);
+  box-shadow: 0 0 20px rgba(var(--yellow-rgb), 0.32);
+}
+
+/* Green Callout: Risposta Multipla */
+.side-callout--green {
+  border-color: rgba(var(--green-rgb), 0.35);
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(13, 20, 36, 0.95) 100%);
+}
+
+.side-callout--green::before {
+  color: var(--green);
+}
+
+.side-callout--green:hover,
+.side-callout--green.is-active {
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(var(--green-rgb), 0.25);
+}
+
+.callout-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--cyan);
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-transform: uppercase;
+}
+
+.callout-tag--yellow { color: var(--yellow); }
+.callout-tag--green  { color: var(--green); }
+
+.callout-title {
+  font-family: var(--font-title);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.callout-title--yellow {
+  color: var(--yellow);
+  font-size: 0.96rem;
+}
+
+.callout-desc {
+  font-size: 0.77rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+.callout-alert {
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed rgba(var(--yellow-rgb), 0.3);
+  font-size: 0.73rem;
+  color: #f0e6b8;
+  line-height: 1.35;
+}
+
+.callout-alert strong {
+  color: var(--yellow);
+}
+
+.callout-alert em {
+  display: block;
+  margin-top: 0.15rem;
+  color: #fff;
+  opacity: 0.92;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Compact Top Navigation & Page Title -->
+  <nav class="top-nav">
+    <a href="/#info-regole" class="back-link">
+      <span>◄</span> INFO &amp; REGOLE
+    </a>
+    <div class="page-title-center">
+      <h1>Composizione della Prova</h1>
+      <p>Simulazione visiva del compito: a sinistra la struttura, a destra le annotazioni essenziali</p>
+    </div>
+    <div class="page-badge">
+      <span class="pulse-dot"></span>
+      STRUTTURA VERIFICA
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       TWO-COLUMN COMPACT LAYOUT (EXAM | CALLOUTS)
+       ═══════════════════════════════════════════ -->
+  <div class="exam-layout">
+
+    <!-- ▬▬ LEFT: THE PAPER MOCK ▬▬ -->
+    <div class="paper-column">
+      <div class="paper-wrapper">
+        <div class="paper">
+
+          <!-- 1. HEADER: Intestazione Dati Alunno -->
+          <div class="paper-section paper-header" id="sec-header" data-callout="callout-header">
+            <div class="paper-title-row">
+              <div>
+                <div class="paper-subject">Verifica di Informatica</div>
+                <div class="paper-type">Prova scritta · Teoria &amp; Architettura del PC</div>
+              </div>
+              <div class="paper-logo">📄</div>
+            </div>
+
+            <div class="paper-fields">
+              <div class="paper-field">
+                <span class="paper-field-label">Nome:</span>
+                <span class="paper-field-line"></span>
+              </div>
+              <div class="paper-field">
+                <span class="paper-field-label">Cognome:</span>
+                <span class="paper-field-line"></span>
+              </div>
+              <div class="paper-field">
+                <span class="paper-field-label">Classe:</span>
+                <span class="paper-field-line"></span>
+                <span class="paper-field-value">(1ªA)</span>
+              </div>
+              <div class="paper-field">
+                <span class="paper-field-label">Data:</span>
+                <span class="paper-field-line"></span>
+                <span class="paper-field-value">__/__/____</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. RISORSE UTILI -->
+          <div class="paper-section risorse-section" id="sec-risorse" data-callout="callout-risorse">
+            <div class="risorse-header-row">
+              <div class="risorse-label">
+                <div class="risorse-label-icon">💡</div>
+                <span class="risorse-label-text">Risorse Utili</span>
+              </div>
+              <span class="risorse-optional-pill">⚠️ Sezione Opzionale · Non sempre presente</span>
+            </div>
+            <p class="risorse-desc">
+              Parole chiave di riferimento. <strong>Promemoria:</strong> <em>non sono le risposte</em> (aiutano solo chi ha studiato!) e <strong>non è detto che siano sempre presenti</strong>: preparati sempre a farne a meno.
+            </p>
+            <div class="keyword-cloud">
+              <span class="keyword-tag"><span class="k-icon">📌</span> CPU (ALU &amp; CU)</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> RAM (Volatile)</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> ROM (BIOS/UEFI)</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> Registri</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> Bus di Sistema</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> SSD / Hard Disk</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> Periferiche I/O</span>
+              <span class="keyword-tag"><span class="k-icon">📌</span> Frequenza Clock (GHz)</span>
+            </div>
+          </div>
+
+          <!-- 3. EXAM BODY: Section A & B -->
+          <div class="exam-body">
+
+            <!-- SECTION A: OPEN QUESTIONS — 70% -->
+            <div class="paper-section" id="sec-open" data-callout="callout-open">
+              <div class="section-banner section-banner--open">
+                <span class="section-badge section-badge--open">A</span>
+                Domande Aperte
+                <span class="section-pct">70%</span>
+              </div>
+
+              <div class="question-block">
+                <span class="q-number">1.</span>
+                <div class="q-content">
+                  <div class="q-text">Descrivi il ruolo della <strong>CPU</strong> e spiega la differenza tra le sue due componenti interne: <strong>ALU</strong> e <strong>CU</strong>.</div>
+                  <div class="answer-lines">
+                    <div class="answer-line"></div>
+                    <div class="answer-line"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="questions-summary-row questions-summary--open">
+                <span>📝</span> Quesiti 1 – 4: architettura di Von Neumann, memorie interne, ciclo macchina e periferiche
+              </div>
+            </div>
+
+            <!-- SECTION B: MULTIPLE CHOICE — 30% -->
+            <div class="paper-section" id="sec-mc" data-callout="callout-mc">
+              <div class="section-banner section-banner--mc">
+                <span class="section-badge section-badge--mc">B</span>
+                Risposta Multipla
+                <span class="section-pct">30%</span>
+              </div>
+
+              <div class="question-block">
+                <span class="q-number">5.</span>
+                <div class="q-content">
+                  <div class="q-text">Quale tra le seguenti memorie perde tutti i dati memorizzati allo spegnimento del computer?</div>
+                  <div class="mc-grid">
+                    <div class="mc-option"><div class="mc-bubble"></div><span class="mc-option-letter">A.</span> ROM</div>
+                    <div class="mc-option"><div class="mc-bubble"></div><span class="mc-option-letter">B.</span> RAM</div>
+                    <div class="mc-option"><div class="mc-bubble"></div><span class="mc-option-letter">C.</span> SSD</div>
+                    <div class="mc-option"><div class="mc-bubble"></div><span class="mc-option-letter">D.</span> Hard Disk</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="questions-summary-row questions-summary--mc">
+                <span>✅</span> Quesiti 5 – 8: test a crocette su componenti hardware, bus e memorie (1 sola corretta)
+              </div>
+            </div>
+
+            <!-- Proportion Indicator Bar -->
+            <div class="paper-section proportion-bar-wrap" id="sec-proportions">
+              <div class="proportion-bar">
+                <div class="bar-open"></div>
+                <div class="bar-mc"></div>
+              </div>
+              <div class="proportion-legend">
+                <div class="legend-item"><span class="legend-dot legend-dot--open"></span> Domande Aperte — 70%</div>
+                <div class="legend-item"><span class="legend-dot legend-dot--mc"></span> Risposta Multipla — 30%</div>
+              </div>
+            </div>
+
+          </div><!-- /exam-body -->
+
+        </div><!-- /paper -->
+      </div><!-- /paper-wrapper -->
+    </div><!-- /paper-column -->
+
+
+    <!-- ▬▬ RIGHT: DIRECT ESSENTIAL CALLOUTS ▬▬ -->
+    <div class="callouts-column">
+
+      <!-- Callout 1: Intestazione -->
+      <div class="side-callout" id="callout-header" data-target="sec-header">
+        <div class="callout-tag">☝️ INTESTAZIONE</div>
+        <div class="callout-title">Dati Alunno</div>
+        <div class="callout-desc">
+          Nome, Cognome, Classe e Data.<br>
+          Compilali subito appena ricevi il compito.
+        </div>
+      </div>
+
+      <!-- Callout 2: Risorse Utili (PROMEMORIA CHIARO E SMART) -->
+      <div class="side-callout side-callout--yellow" id="callout-risorse" data-target="sec-risorse">
+        <div class="callout-tag callout-tag--yellow">💡 PROMEMORIA</div>
+        <div class="callout-title callout-title--yellow">NON SONO LE RISPOSTE!</div>
+        <div class="callout-desc">
+          Parole chiave di supporto per la memoria concettuale: non spiegano i meccanismi hardware al posto tuo!
+        </div>
+        <div class="callout-alert">
+          ⚠️ <strong>Presenza non garantita:</strong> non è detto che ci siano sempre in ogni verifica.<br>
+          <em>Studia a casa come se non ci fossero!</em>
+        </div>
+      </div>
+
+      <!-- Callout 3: Domande Aperte 70% -->
+      <div class="side-callout side-callout--cyan" id="callout-open" data-target="sec-open">
+        <div class="callout-tag">📊 SEZIONE A</div>
+        <div class="callout-title">70% Domande Aperte</div>
+        <div class="callout-desc">
+          Spiegazione teorica del funzionamento del PC, componenti hardware e flussi di dati. Rappresentano la maggior parte del punteggio.
+        </div>
+      </div>
+
+      <!-- Callout 4: Risposta Multipla 30% -->
+      <div class="side-callout side-callout--green" id="callout-mc" data-target="sec-mc">
+        <div class="callout-tag callout-tag--green">✅ SEZIONE B</div>
+        <div class="callout-title">30% Risposta Multipla</div>
+        <div class="callout-desc">
+          Quesiti rapidi a crocette su definizioni hardware, unità di misura e memorie (1 sola opzione corretta).
+        </div>
+      </div>
+
+    </div><!-- /callouts-column -->
+
+  </div><!-- /exam-layout -->
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// ALIGNMENT & INTERACTIVITY (PAPER ⟷ CALLOUTS)
+// ═══════════════════════════════════════════
+function alignCallouts() {
+  if (window.innerWidth < 980) {
+    document.querySelectorAll('.side-callout').forEach(c => c.style.marginTop = '0px');
+    return;
+  }
+
+  const pairs = [
+    ['sec-header', 'callout-header'],
+    ['sec-risorse', 'callout-risorse'],
+    ['sec-open', 'callout-open'],
+    ['sec-mc', 'callout-mc']
+  ];
+
+  let accumulated = 0;
+
+  pairs.forEach(([secId, calloutId]) => {
+    const sec = document.getElementById(secId);
+    const callout = document.getElementById(calloutId);
+    if (!sec || !callout) return;
+
+    const secTop = sec.offsetTop;
+    const secCenter = secTop + (sec.offsetHeight / 2);
+    const desiredTop = Math.max(0, secCenter - (callout.offsetHeight / 2));
+
+    const marginTop = Math.max(12, Math.round(desiredTop - accumulated));
+    callout.style.marginTop = `${marginTop}px`;
+    accumulated += marginTop + callout.offsetHeight;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  alignCallouts();
+  window.addEventListener('resize', alignCallouts);
+
+  const callouts = document.querySelectorAll('.side-callout[data-target]');
+  const paperSections = document.querySelectorAll('.paper-section[data-callout]');
+
+  // Hover & Click on Callouts -> highlight paper section
+  callouts.forEach(callout => {
+    const targetId = callout.getAttribute('data-target');
+    const targetSec = document.getElementById(targetId);
+    if (!targetSec) return;
+
+    callout.addEventListener('mouseenter', () => {
+      const isYellow = callout.classList.contains('side-callout--yellow');
+      const isGreen = callout.classList.contains('side-callout--green');
+      if (isYellow) targetSec.classList.add('is-highlighted--yellow');
+      else if (isGreen) targetSec.classList.add('is-highlighted--green');
+      else targetSec.classList.add('is-highlighted');
+    });
+
+    callout.addEventListener('mouseleave', () => {
+      targetSec.classList.remove('is-highlighted', 'is-highlighted--yellow', 'is-highlighted--green');
+    });
+
+    callout.addEventListener('click', () => {
+      const isYellow = callout.classList.contains('side-callout--yellow');
+      const isGreen = callout.classList.contains('side-callout--green');
+      const cls = isYellow ? 'is-highlighted--yellow' : (isGreen ? 'is-highlighted--green' : 'is-highlighted');
+      targetSec.classList.add(cls);
+      setTimeout(() => targetSec.classList.remove(cls), 1500);
+    });
+  });
+
+  // Hover on Paper Sections -> highlight matching callout
+  paperSections.forEach(sec => {
+    const calloutId = sec.getAttribute('data-callout');
+    const callout = document.getElementById(calloutId);
+    if (!callout) return;
+
+    sec.addEventListener('mouseenter', () => {
+      callout.classList.add('is-active');
+    });
+
+    sec.addEventListener('mouseleave', () => {
+      callout.classList.remove('is-active');
+    });
+  });
+});
+</script>
+
+</body>
+</html>

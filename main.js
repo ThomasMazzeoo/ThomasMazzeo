@@ -404,6 +404,34 @@ const MATERIE = [
             ]
           }
         ]
+      },
+      {
+        id: "info-regole",
+        title: "Info & Regole",
+        icon: "📋",
+        desc: "Informazioni generali, regolamento del corso e struttura delle verifiche.",
+        chapters: [
+          {
+            title: "Struttura verifica",
+            topics: [
+              {
+                title: "Composizione della Prova",
+                desc: "Schema grafico interattivo della verifica di teoria del PC: intestazione, risorse utili, domande aperte (70%) e risposta multipla (30%).",
+                url: "/info-regole/struttura-verifica.html"
+              },
+              {
+                title: "Suggerimenti per la Verifica",
+                desc: "3 suggerimenti fondamentali per la teoria informatica: risposte complete sui componenti del PC, gestione del tempo e tentare sempre.",
+                url: "/info-regole/consigli-verifica.html"
+              },
+              {
+                title: "Il Meccanismo dei +",
+                desc: "Come guadagnare fino a +1 punto bonus sulla verifica di teoria: appunti a mano a fine lezione, 1 '+' a settimana e rispetto delle regole.",
+                url: "/info-regole/meccanismo-piu.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -439,11 +467,34 @@ const breadcrumbContainer = document.getElementById('breadcrumb');
 // ══════════════════════════════════════════
 // ── Initialize ──
 // ══════════════════════════════════════════
+function handleHashRoute() {
+  const rawHash = window.location.hash.replace('#', '');
+  if (!rawHash) return;
+
+  for (const materia of MATERIE) {
+    const sec = materia.sections.find(s => s.id === rawHash);
+    if (sec) {
+      selectedMateria = materia;
+      selectedSectionObj = sec;
+      currentView = 'chapters';
+      switchSection('risorse');
+      renderRisorseView();
+      return;
+    }
+  }
+
+  if (rawHash === 'risorse') {
+    switchSection('risorse');
+  }
+}
+
 function init() {
   updateStats();
   animateStatsOnLoad();
   setupEventListeners();
   renderRisorseView();
+  handleHashRoute();
+  window.addEventListener('hashchange', handleHashRoute);
 }
 
 // ── Stats ──
@@ -653,6 +704,7 @@ function renderSectionsView() {
     card.addEventListener('click', () => {
       selectedSectionObj = sec;
       currentView = 'chapters';
+      history.replaceState(null, '', `#${sec.id}`);
       renderRisorseView();
     });
 
@@ -670,8 +722,7 @@ function renderTopicsInto(container, topics, color, colorRgb) {
     topicEl.className = 'topic';
     if (topic.url) {
       topicEl.href = topic.url;
-      topicEl.target = '_blank';
-      topicEl.rel = 'noopener noreferrer';
+      topicEl.target = '_self';
       topicEl.classList.add('topic--link');
     }
     topicEl.style.setProperty('--card-color', color);

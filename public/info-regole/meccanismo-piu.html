@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Meccanismo dei + — Regolamento Bonus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & DESIGN TOKENS
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #070b14;
+  --panel: #0d1424;
+  --panel-card: #111a2e;
+  --cyan: #00d4ff;
+  --cyan-rgb: 0, 212, 255;
+  --green: #00ff88;
+  --green-rgb: 0, 255, 136;
+  --yellow: #ffd700;
+  --yellow-rgb: 255, 215, 0;
+  --orange: #ff8c00;
+  --orange-rgb: 255, 140, 0;
+  --red: #ff4466;
+  --red-rgb: 255, 68, 102;
+  --white: #e8f0ff;
+  --text-dim: #7d8ea6;
+  --border: rgba(0, 212, 255, 0.2);
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 1rem 1.25rem 1.5rem;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* CRT Scanlines */
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.2) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.container {
+  max-width: 1080px;
+  width: 96%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* ═══════════════════════════════════════════
+   TOP NAVIGATION
+   ═══════════════════════════════════════════ */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  background: rgba(0, 212, 255, 0.22);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.35);
+  transform: translateX(-2px);
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.35);
+  color: var(--green);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background-color: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  50%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* ═══════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════ */
+.page-header {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.page-header h1 {
+  font-family: var(--font-title);
+  font-size: 1.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 14px rgba(var(--green-rgb), 0.35);
+  margin-bottom: 0.25rem;
+}
+
+.page-header h1 span {
+  color: var(--green);
+}
+
+.page-header p {
+  color: var(--text-dim);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDES VIEWPORT & TRACK
+   ═══════════════════════════════════════════ */
+.slides-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.slides-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 440px;
+}
+
+@media (max-width: 840px) {
+  .slide {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .slide-visual {
+    min-height: 300px;
+  }
+}
+
+/* ── LEFT: Text Content ── */
+.slide-text {
+  padding: 2.5rem 2.6rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-num-tag {
+  font-family: var(--font-pixel);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.num-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 5px;
+  font-weight: 900;
+  font-size: 0.82rem;
+}
+
+.slide-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.slide-body {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #bfcce0;
+  max-width: 440px;
+}
+
+.slide-body strong {
+  color: var(--white);
+}
+
+.slide-body em {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.slide-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 1.1rem;
+  align-self: flex-start;
+}
+
+/* ── RIGHT: Graphic Visual Panel ── */
+.slide-visual {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 440px;
+  padding: 2rem;
+}
+
+/* ═══════════════════════════════════════════
+   COLOR SCHEMES PER SLIDE
+   ═══════════════════════════════════════════ */
+/* Slide 1: Cyan (Gli ultimi 5 min & Quaderno) */
+.slide--1 .slide-num-tag { color: var(--cyan); }
+.slide--1 .num-badge { background: rgba(var(--cyan-rgb), 0.15); color: var(--cyan); border: 1px solid rgba(var(--cyan-rgb), 0.4); }
+.slide--1 .slide-title { color: var(--cyan); }
+.slide--1 .slide-body em { color: var(--cyan); }
+.slide--1 .slide-tip { background: rgba(var(--cyan-rgb), 0.1); border: 1px solid rgba(var(--cyan-rgb), 0.35); color: var(--cyan); }
+.slide--1 .slide-visual { background: linear-gradient(135deg, rgba(0, 212, 255, 0.06) 0%, rgba(7, 11, 20, 0.98) 100%); }
+
+/* Slide 2: Yellow (La Settimana & Il "+") */
+.slide--2 .slide-num-tag { color: var(--yellow); }
+.slide--2 .num-badge { background: rgba(var(--yellow-rgb), 0.15); color: var(--yellow); border: 1px solid rgba(var(--yellow-rgb), 0.4); }
+.slide--2 .slide-title { color: var(--yellow); }
+.slide--2 .slide-body em { color: var(--yellow); }
+.slide--2 .slide-tip { background: rgba(var(--yellow-rgb), 0.1); border: 1px solid rgba(var(--yellow-rgb), 0.35); color: var(--yellow); }
+.slide--2 .slide-visual { background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(7, 11, 20, 0.98) 100%); }
+
+/* Slide 3: Green (La Verifica & +1 Punto Bonus) */
+.slide--3 .slide-num-tag { color: var(--green); }
+.slide--3 .num-badge { background: rgba(var(--green-rgb), 0.15); color: var(--green); border: 1px solid rgba(var(--green-rgb), 0.4); }
+.slide--3 .slide-title { color: var(--green); }
+.slide--3 .slide-body em { color: var(--green); }
+.slide--3 .slide-tip { background: rgba(var(--green-rgb), 0.1); border: 1px solid rgba(var(--green-rgb), 0.35); color: var(--green); }
+.slide--3 .slide-visual { background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(7, 11, 20, 0.98) 100%); }
+
+/* Slide 4: Orange / Purple (Comportamento & Precisazione) */
+.slide--4 .slide-num-tag { color: var(--orange); }
+.slide--4 .num-badge { background: rgba(var(--orange-rgb), 0.15); color: var(--orange); border: 1px solid rgba(var(--orange-rgb), 0.4); }
+.slide--4 .slide-title { color: var(--orange); }
+.slide--4 .slide-body em { color: var(--orange); }
+.slide--4 .slide-tip { background: rgba(var(--orange-rgb), 0.1); border: 1px solid rgba(var(--orange-rgb), 0.35); color: var(--orange); }
+.slide--4 .slide-visual { background: linear-gradient(135deg, rgba(255, 140, 0, 0.05) 0%, rgba(7, 11, 20, 0.98) 100%); }
+
+/* ═══════════════════════════════════════════
+   SLIDE 1 GRAPHIC: IL QUADERNO A PENNA (-5 MIN)
+   ═══════════════════════════════════════════ */
+.notebook-mockup {
+  width: 100%;
+  max-width: 330px;
+  background: #fcfbfa;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), -6px 0 0 #c2b59b;
+  border-left: 10px solid #2b4c7e;
+  padding: 1.1rem 1.25rem;
+  color: #1a2238;
+  position: relative;
+  font-family: 'Segoe UI', 'Courier New', monospace;
+}
+
+.notebook-clock-pill {
+  position: absolute;
+  top: -12px;
+  right: 14px;
+  background: #0d1424;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.notebook-header-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #e0dcd5;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  color: #666;
+}
+
+.notebook-stamp {
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #008844;
+  border: 2px solid #008844;
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  transform: rotate(-6deg);
+  letter-spacing: 0.5px;
+}
+
+.notebook-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #112244;
+}
+
+.notebook-line-code {
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 80, 180, 0.08);
+  border-left: 3px solid #005a9e;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  color: #003366;
+}
+
+.notebook-check-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(0, 153, 68, 0.12);
+  color: #008844;
+  border: 1px solid rgba(0, 153, 68, 0.3);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 2 GRAPHIC: SETTIMANA & "+"
+   ═══════════════════════════════════════════ */
+.week-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 330px;
+}
+
+.week-lessons-card {
+  background: var(--panel-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.week-card-title {
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  color: var(--yellow);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.day-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 6px;
+  padding: 0.5rem 0.3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.day-name {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+}
+
+.day-status {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.day-sub {
+  font-size: 0.55rem;
+  color: #aaa;
+}
+
+.arrow-down-divider {
+  text-align: center;
+  color: var(--yellow);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.plus-award-box {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(17, 26, 46, 0.95) 100%);
+  border: 2px solid var(--yellow);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 20px rgba(var(--yellow-rgb), 0.25);
+}
+
+.plus-award-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.plus-award-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--yellow);
+  letter-spacing: 1px;
+}
+
+.plus-award-title {
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  color: var(--white);
+  font-weight: 700;
+}
+
+.plus-symbol-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--yellow);
+  color: #070b14;
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(var(--yellow-rgb), 0.5);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 3 GRAPHIC: VERIFICA & BONUS +1 PT
+   ═══════════════════════════════════════════ */
+.bonus-calc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 330px;
+}
+
+.month-pluses-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.m-plus-chip {
+  flex: 1;
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.2rem;
+  text-align: center;
+}
+
+.m-plus-week {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--text-dim);
+}
+
+.m-plus-icon {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--green);
+  font-weight: 900;
+}
+
+.grade-compare-card {
+  background: #fdfdfd;
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  color: #1a1a2e;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.grade-calc-formula {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 0.5rem;
+}
+
+.grade-box-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.grade-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.grade-num-base {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: #d9534f;
+  font-weight: 700;
+}
+
+.grade-op {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: #009944;
+  font-weight: 900;
+}
+
+.grade-num-bonus {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: #009944;
+  font-weight: 700;
+}
+
+.grade-num-final {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  color: #008844;
+  font-weight: 900;
+}
+
+.grade-verdict-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.grade-status-old {
+  color: #c9302c;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+
+.grade-status-new {
+  color: #008844;
+  font-weight: 700;
+  background: rgba(0, 153, 68, 0.12);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+}
+
+.exam-other-cases {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.exam-other-cases span strong {
+  color: var(--green);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 4 GRAPHIC: COMPORTAMENTO & PRECISAZIONE
+   ═══════════════════════════════════════════ */
+.rules-visual-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 330px;
+}
+
+.condition-box {
+  background: var(--panel-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.condition-box--ok {
+  border-color: rgba(var(--green-rgb), 0.35);
+  background: rgba(0, 255, 136, 0.04);
+}
+
+.condition-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.condition-title {
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  color: var(--white);
+  font-weight: 700;
+}
+
+.condition-sub {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+.disclaimer-card {
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.disclaimer-card-icon {
+  font-size: 1rem;
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.disclaimer-card-text {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #a2bdd8;
+}
+
+.disclaimer-card-text strong {
+  color: var(--white);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE CONTROLS (NAVIGAZIONE TRA LE SLIDE)
+   ═══════════════════════════════════════════ */
+.slide-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.2rem;
+}
+
+.slide-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: rgba(0, 212, 255, 0.06);
+  color: var(--cyan);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  font-family: sans-serif;
+}
+
+.slide-btn:hover {
+  background: rgba(0, 212, 255, 0.18);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.35);
+  transform: scale(1.08);
+}
+
+.slide-btn:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.slide-dots {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.slide-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.slide-dot.is-active { transform: scale(1.3); }
+.slide-dot[data-s="0"].is-active { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.5); }
+.slide-dot[data-s="1"].is-active { background: var(--yellow); border-color: var(--yellow); box-shadow: 0 0 10px rgba(var(--yellow-rgb), 0.5); }
+.slide-dot[data-s="2"].is-active { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(var(--green-rgb), 0.5); }
+.slide-dot[data-s="3"].is-active { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 10px rgba(var(--orange-rgb), 0.5); }
+
+.slide-counter {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER ACTION
+   ═══════════════════════════════════════════ */
+.footer-action {
+  display: flex;
+  justify-content: center;
+  margin: 1.3rem 0 0.3rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.3rem;
+  background: rgba(0, 212, 255, 0.1);
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-title);
+  font-size: 0.76rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--cyan);
+  color: #070b14;
+  box-shadow: 0 0 22px rgba(var(--cyan-rgb), 0.45);
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a href="/#info-regole" class="back-link">
+      <span>◄</span> INFO &amp; REGOLE
+    </a>
+    <div class="page-badge">
+      <span class="pulse-dot"></span>
+      REGOLAMENTO &amp; BONUS
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Il Meccanismo dei <span>+</span></h1>
+    <p>Come guadagnare fino a <strong>+1 punto bonus</strong> sulla verifica grazie alla costanza negli appunti e al rispetto delle regole.</p>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       SLIDES VIEWPORT
+       ═══════════════════════════════════════════ -->
+  <div class="slides-viewport">
+    <div class="slides-track" id="track">
+
+      <!-- ▬▬▬▬▬▬ SLIDE 1: GLI ULTIMI 5 MINUTI & IL QUADERNO ▬▬▬▬▬▬ -->
+      <div class="slide slide--1">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">1</span> REGOLA</div>
+          <div class="slide-title">Gli ultimi 5 minuti<br>&amp; il quaderno</div>
+          <div class="slide-body">
+            Il docente conclude la spiegazione <em>5 minuti prima del suono della campanella</em> per verificare il lavoro svolto.<br><br>
+            Chi ha preso gli <strong>appunti scritti a mano su quaderno a penna</strong>, ordinati, chiari e completi di tutta la lezione, li mostra al docente che appone il suo segno di controllo.
+          </div>
+          <div class="slide-tip">📓 A mano su quaderno · Penna · Tutta l'ora</div>
+        </div>
+        <div class="slide-visual">
+          <div class="notebook-mockup">
+            <div class="notebook-clock-pill">⏱️ -5 MIN FINE LEZIONE</div>
+            <div class="notebook-header-row">
+              <span>Appunti: Architettura del PC</span>
+              <span class="notebook-stamp">APPROVATO ✓</span>
+            </div>
+            <div class="notebook-lines">
+              <div>• <b>CPU</b>: ALU (calcoli), CU (controllo) e Registri</div>
+              <div class="notebook-line-code">Ciclo: Fetch ➔ Decode ➔ Execute</div>
+              <div>• <b>RAM</b>: memoria volatile di lavoro vs <b>SSD/HD</b></div>
+            </div>
+            <div class="notebook-check-badge">
+              <span>✍️</span> Quaderno a penna verificato al banco
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▬▬▬▬▬▬ SLIDE 2: LA SETTIMANA & IL "+" ▬▬▬▬▬▬ -->
+      <div class="slide slide--2">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">2</span> REGOLA</div>
+          <div class="slide-title">La settimana<br>&amp; il meccanismo del "+"</div>
+          <div class="slide-body">
+            Il professore registra la presenza degli appunti ad ogni singola lezione.<br><br>
+            Se gli appunti risultano <em>fatti bene ad ogni lezione della settimana</em>, a fine settimana viene assegnato ufficialmente <strong>un "+" allo studente</strong> nel registro del professore.
+          </div>
+          <div class="slide-tip">📅 Costanza ad ogni lezione = 1 "+" a settimana</div>
+        </div>
+        <div class="slide-visual">
+          <div class="week-flow">
+            <div class="week-lessons-card">
+              <div class="week-card-title">
+                <span>📅</span> SETTIMANA DI TEORIA
+              </div>
+              <div class="days-grid">
+                <div class="day-box">
+                  <span class="day-name">LEZ 1</span>
+                  <span class="day-status">✓</span>
+                  <span class="day-sub">CPU &amp; ALU</span>
+                </div>
+                <div class="day-box">
+                  <span class="day-name">LEZ 2</span>
+                  <span class="day-status">✓</span>
+                  <span class="day-sub">RAM &amp; ROM</span>
+                </div>
+                <div class="day-box">
+                  <span class="day-name">LEZ 3</span>
+                  <span class="day-status">✓</span>
+                  <span class="day-sub">Bus &amp; I/O</span>
+                </div>
+              </div>
+            </div>
+            <div class="arrow-down-divider">▼</div>
+            <div class="plus-award-box">
+              <div class="plus-award-left">
+                <span class="plus-award-tag">TRAGUARDO SETTIMANALE</span>
+                <span class="plus-award-title">1 "+" Registrato</span>
+              </div>
+              <div class="plus-symbol-badge">+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▬▬▬▬▬▬ SLIDE 3: LA VERIFICA & IL PUNTO BONUS ▬▬▬▬▬▬ -->
+      <div class="slide slide--3">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">3</span> REGOLA</div>
+          <div class="slide-title">La verifica mensile<br>&amp; fino a +1 punto</div>
+          <div class="slide-body">
+            Mediamente si svolge <em>una verifica ogni mese</em> (circa 4 settimane di lezione).<br><br>
+            Chi prende sempre gli appunti e si comporta bene parte con la verifica con <strong>fino a 1 punto bonus</strong>:
+            chi ha preso <strong>5 ½ arriva a 6 ½</strong> (sufficiente!), chi ha preso <strong>8 arriva a 9</strong>, e così via.
+          </div>
+          <div class="slide-tip">🚀 4 settimane = fino a +1.0 punto bonus</div>
+        </div>
+        <div class="slide-visual">
+          <div class="bonus-calc-stack">
+            <div class="month-pluses-row">
+              <div class="m-plus-chip"><span class="m-plus-week">SETT 1</span><div class="m-plus-icon">+</div></div>
+              <div class="m-plus-chip"><span class="m-plus-week">SETT 2</span><div class="m-plus-icon">+</div></div>
+              <div class="m-plus-chip"><span class="m-plus-week">SETT 3</span><div class="m-plus-icon">+</div></div>
+              <div class="m-plus-chip"><span class="m-plus-week">SETT 4</span><div class="m-plus-icon">+</div></div>
+            </div>
+            <div class="grade-compare-card">
+              <div class="grade-calc-formula">
+                <div class="grade-box-item">
+                  <span class="grade-label">Verifica PC</span>
+                  <span class="grade-num-base">5 ½</span>
+                </div>
+                <div class="grade-op">+</div>
+                <div class="grade-box-item">
+                  <span class="grade-label">Bonus</span>
+                  <span class="grade-num-bonus">1 pt</span>
+                </div>
+                <div class="grade-op">=</div>
+                <div class="grade-box-item" style="text-align: right;">
+                  <span class="grade-label">Voto Finale</span>
+                  <span class="grade-num-final">6 ½</span>
+                </div>
+              </div>
+              <div class="grade-verdict-row">
+                <span class="grade-status-old">✗ Insufficiente</span>
+                <span class="grade-status-new">✓ Sufficiente!</span>
+              </div>
+            </div>
+            <div class="exam-other-cases">
+              <span>Teoria PC: Voto 8 + 1 pt ➔ <strong>9</strong></span>
+              <span>Teoria PC: Voto 6 + 1 pt ➔ <strong>7</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▬▬▬▬▬▬ SLIDE 4: COMPORTAMENTO & NOTA DIDATTICA ▬▬▬▬▬▬ -->
+      <div class="slide slide--4">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">4</span> REGOLA</div>
+          <div class="slide-title">Comportamento<br>&amp; precisazione</div>
+          <div class="slide-body">
+            Verrà valutato anche il <em>comportamento e l'educazione</em>, elementi che hanno <strong>molto valore</strong> nelle lezioni: un atteggiamento scorretto può invalidare il bonus.<br><br>
+            <span style="font-size: 0.82rem; color: #a4b4cb; line-height: 1.5; display: block; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 0.5rem; margin-top: 0.2rem;">
+              <strong>Nota:</strong> prendere gli appunti non è obbligatorio ma è strettamente consigliato per i diretti benefici nello studio. Chi sceglie di non prenderli non subirà alcuna penalizzazione.
+            </span>
+          </div>
+          <div class="slide-tip">⭐ Rispetto in aula</div>
+        </div>
+        <div class="slide-visual">
+          <div class="rules-visual-card">
+            <div class="condition-box condition-box--ok">
+              <div class="condition-icon">🤝</div>
+              <div>
+                <div class="condition-title">Educazione &amp; Rispetto</div>
+                <div class="condition-sub">Requisito indispensabile: il rispetto delle regole in classe convalida il bonus.</div>
+              </div>
+            </div>
+            <div class="condition-box condition-box--ok">
+              <div class="condition-icon">📓</div>
+              <div>
+                <div class="condition-title">Appunti di Teoria Costanti</div>
+                <div class="condition-sub">Ogni lezione su come è fatto il computer seguita con attenzione a quaderno aperto.</div>
+              </div>
+            </div>
+            <div class="disclaimer-card">
+              <div class="disclaimer-card-icon">ℹ️</div>
+              <div class="disclaimer-card-text">
+                <strong>Libera scelta:</strong> il sistema dei "+" è puramente <em>premiale</em>: nessuna nota né penalizzazione se decidi di non prenderli.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Slide Controls -->
+  <div class="slide-controls">
+    <button class="slide-btn" id="prev" aria-label="Precedente">◄</button>
+    <div class="slide-dots">
+      <div class="slide-dot is-active" data-s="0"></div>
+      <div class="slide-dot" data-s="1"></div>
+      <div class="slide-dot" data-s="2"></div>
+      <div class="slide-dot" data-s="3"></div>
+    </div>
+    <span class="slide-counter" id="cnt">1 / 4</span>
+    <button class="slide-btn" id="next" aria-label="Successiva">►</button>
+  </div>
+
+  <!-- Bottom Navigation Button -->
+  <div class="footer-action">
+    <a href="/#info-regole" class="btn-primary">
+      <span>◄</span> TORNA A INFO &amp; REGOLE
+    </a>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE LOGIC SCRIPT
+     ═══════════════════════════════════════════ -->
+<script>
+(function() {
+  let cur = 0;
+  const N = 4;
+  const track = document.getElementById('track');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const cnt = document.getElementById('cnt');
+  const dots = document.querySelectorAll('.slide-dot');
+
+  function go(i) {
+    cur = Math.max(0, Math.min(N - 1, i));
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+    cnt.textContent = (cur + 1) + ' / ' + N;
+    prev.disabled = cur === 0;
+    next.disabled = cur === N - 1;
+    dots.forEach(function(d) { d.classList.remove('is-active'); });
+    dots[cur].classList.add('is-active');
+  }
+
+  prev.addEventListener('click', function() { go(cur - 1); });
+  next.addEventListener('click', function() { go(cur + 1); });
+  dots.forEach(function(d) {
+    d.addEventListener('click', function() { go(+d.getAttribute('data-s')); });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') go(cur - 1);
+    if (e.key === 'ArrowRight') go(cur + 1);
+  });
+
+  go(0);
+})();
+</script>
+
+</body>
+</html>

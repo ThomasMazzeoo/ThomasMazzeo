@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suggerimenti per la Verifica — Struttura Verifica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+:root {
+  --bg: #070b14;
+  --panel: #0d1424;
+  --cyan: #00d4ff;
+  --cyan-rgb: 0, 212, 255;
+  --green: #00ff88;
+  --green-rgb: 0, 255, 136;
+  --yellow: #ffd700;
+  --yellow-rgb: 255, 215, 0;
+  --red: #ff4466;
+  --red-rgb: 255, 68, 102;
+  --white: #e8f0ff;
+  --text-dim: #7d8ea6;
+  --border: rgba(0, 212, 255, 0.2);
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 1rem 1.25rem 1.5rem;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.2) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.container {
+  max-width: 1100px;
+  width: 96%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+}
+
+.back-link:hover {
+  background: rgba(0,212,255,0.22);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35);
+  transform: translateX(-2px);
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.35);
+  color: var(--yellow);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background-color: var(--yellow);
+  box-shadow: 0 0 8px var(--yellow);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  50%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.page-header h1 {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35);
+  margin-bottom: 0.25rem;
+}
+
+.page-header p {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE PRESENTATION
+   ═══════════════════════════════════════════ */
+.slides-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.slides-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25,1,0.5,1);
+  will-change: transform;
+}
+
+.slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 440px;
+}
+
+@media (max-width: 800px) {
+  .slide { grid-template-columns: 1fr; min-height: auto; }
+  .slide-visual { min-height: 280px; }
+}
+
+/* ── LEFT: Text ── */
+.slide-text {
+  padding: 2.5rem 2.5rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-num-tag {
+  font-family: var(--font-pixel);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.num-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 5px;
+  font-weight: 900;
+  font-size: 0.82rem;
+}
+
+.slide-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.slide-body {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #bfcce0;
+  max-width: 430px;
+}
+
+.slide-body strong { color: var(--white); }
+
+.slide-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+}
+
+/* ── RIGHT: Visual ── */
+.slide-visual {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 440px;
+  padding: 2rem;
+}
+
+/* ── Color Themes per Slide ── */
+.slide--cyan .slide-num-tag { color: var(--cyan); }
+.slide--cyan .num-badge { background: rgba(var(--cyan-rgb),0.15); color: var(--cyan); border: 1px solid rgba(var(--cyan-rgb),0.4); }
+.slide--cyan .slide-title { color: var(--cyan); }
+.slide--cyan .slide-tip { background: rgba(var(--cyan-rgb),0.1); border: 1px solid rgba(var(--cyan-rgb),0.35); color: var(--cyan); }
+.slide--cyan .slide-visual { background: linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(7,11,20,0.98) 100%); }
+
+.slide--yellow .slide-num-tag { color: var(--yellow); }
+.slide--yellow .num-badge { background: rgba(var(--yellow-rgb),0.15); color: var(--yellow); border: 1px solid rgba(var(--yellow-rgb),0.4); }
+.slide--yellow .slide-title { color: var(--yellow); }
+.slide--yellow .slide-tip { background: rgba(var(--yellow-rgb),0.1); border: 1px solid rgba(var(--yellow-rgb),0.35); color: var(--yellow); }
+.slide--yellow .slide-visual { background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, rgba(7,11,20,0.98) 100%); }
+
+.slide--green .slide-num-tag { color: var(--green); }
+.slide--green .num-badge { background: rgba(var(--green-rgb),0.15); color: var(--green); border: 1px solid rgba(var(--green-rgb),0.4); }
+.slide--green .slide-title { color: var(--green); }
+.slide--green .slide-tip { background: rgba(var(--green-rgb),0.1); border: 1px solid rgba(var(--green-rgb),0.35); color: var(--green); }
+.slide--green .slide-visual { background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(7,11,20,0.98) 100%); }
+
+/* ═══════════════════════════════════════════
+   VISUAL PANELS: Paper mock-up style
+   ═══════════════════════════════════════════ */
+.vis-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.exam-card {
+  background: #fdfdfd;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  color: #1a1a2e;
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+.exam-card-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.exam-card-label--bad { color: var(--red); }
+.exam-card-label--good { color: #009944; }
+.exam-card-label--blank { color: #aaa; }
+.exam-card-label--attempt { color: #0070c0; }
+
+.exam-card-q {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #005a9e;
+  margin-bottom: 0.5rem;
+}
+
+.exam-card-a {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.exam-card-a--faded {
+  color: #bbb;
+  font-style: italic;
+}
+
+.exam-card-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  margin-top: 0.5rem;
+}
+
+.verdict--fail {
+  background: rgba(255,68,102,0.12);
+  color: var(--red);
+  border: 1px solid rgba(255,68,102,0.3);
+}
+
+.verdict--pass {
+  background: rgba(0,153,68,0.12);
+  color: #009944;
+  border: 1px solid rgba(0,153,68,0.3);
+}
+
+.verdict--zero {
+  background: rgba(170,170,170,0.12);
+  color: #888;
+  border: 1px solid rgba(170,170,170,0.3);
+}
+
+.verdict--maybe {
+  background: rgba(0,255,136,0.1);
+  color: var(--green);
+  border: 1px solid rgba(0,255,136,0.3);
+}
+
+/* VS divider */
+.vis-vs {
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+}
+
+/* Visual label at bottom of visual panel */
+.vis-label {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  margin-top: 0.6rem;
+  display: inline-block;
+  align-self: center;
+}
+
+.vis-label--cyan  { color: var(--cyan); background: rgba(var(--cyan-rgb),0.1); border: 1px solid rgba(var(--cyan-rgb),0.3); }
+.vis-label--yellow { color: var(--yellow); background: rgba(var(--yellow-rgb),0.1); border: 1px solid rgba(var(--yellow-rgb),0.3); }
+.vis-label--green  { color: var(--green); background: rgba(var(--green-rgb),0.1); border: 1px solid rgba(var(--green-rgb),0.3); }
+
+/* ── Slide 2: Timer visual ── */
+.timer-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.q-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.q-chip {
+  width: 56px;
+  height: 44px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-dim);
+  gap: 0.1rem;
+}
+
+.q-chip-sub {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.q-chip--done {
+  border-color: rgba(var(--green-rgb),0.5);
+  color: var(--green);
+  background: rgba(var(--green-rgb),0.08);
+}
+
+.q-chip--stuck {
+  border-color: rgba(var(--red-rgb),0.5);
+  color: var(--red);
+  background: rgba(var(--red-rgb),0.08);
+}
+
+.q-chip--skip {
+  border-color: rgba(var(--yellow-rgb),0.5);
+  color: var(--yellow);
+  background: rgba(var(--yellow-rgb),0.08);
+}
+
+.q-arrow {
+  font-size: 1.1rem;
+  color: var(--yellow);
+}
+
+.timer-clock {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(var(--yellow-rgb),0.3);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+.clock-icon {
+  font-size: 1.5rem;
+}
+
+.clock-text {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.clock-sub {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.flow-caption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.flow-caption strong {
+  color: var(--yellow);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE CONTROLS
+   ═══════════════════════════════════════════ */
+.slide-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.2rem;
+}
+
+.slide-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: rgba(0,212,255,0.06);
+  color: var(--cyan);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  font-family: sans-serif;
+}
+
+.slide-btn:hover {
+  background: rgba(0,212,255,0.18);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35);
+  transform: scale(1.08);
+}
+
+.slide-btn:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.slide-dots {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.slide-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.slide-dot.is-active { transform: scale(1.3); }
+.slide-dot[data-s="0"].is-active { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 10px rgba(var(--cyan-rgb),0.5); }
+.slide-dot[data-s="1"].is-active { background: var(--yellow); border-color: var(--yellow); box-shadow: 0 0 10px rgba(var(--yellow-rgb),0.5); }
+.slide-dot[data-s="2"].is-active { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(var(--green-rgb),0.5); }
+
+.slide-counter {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* ── Footer ── */
+.footer-action {
+  display: flex;
+  justify-content: center;
+  margin: 1.3rem 0 0.3rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.3rem;
+  background: rgba(0,212,255,0.1);
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-title);
+  font-size: 0.76rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--cyan);
+  color: #070b14;
+  box-shadow: 0 0 22px rgba(var(--cyan-rgb),0.45);
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <nav class="top-nav">
+    <a href="/#info-regole" class="back-link"><span>◄</span> INFO &amp; REGOLE</a>
+    <div class="page-badge"><span class="pulse-dot"></span> SUGGERIMENTI VERIFICA</div>
+  </nav>
+
+  <header class="page-header">
+    <h1>3 Suggerimenti per la Verifica</h1>
+    <p>Tre regole fondamentali per affrontare al meglio ogni prova scritta di informatica.</p>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       SLIDES
+       ═══════════════════════════════════════════ -->
+  <div class="slides-viewport">
+    <div class="slides-track" id="track">
+
+      <!-- ▬▬ SLIDE 1: NON DARE NULLA PER SCONTATO ▬▬ -->
+      <div class="slide slide--cyan">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">1</span> SUGGERIMENTO</div>
+          <div class="slide-title">Non dare nulla<br>per scontato</div>
+          <div class="slide-body">
+            Nelle domande aperte verrà chiesto di <strong>spiegare come funziona</strong> un componente del PC, non solo recitarne la definizione a memoria.<br><br>
+            Dai una <strong>risposta completa</strong> — spiegando il ruolo, il flusso dei dati e le caratteristiche — che non lasci spazi a dubbi. Meglio scrivere un dettaglio in più che in meno.
+          </div>
+          <div class="slide-tip">💡 Risposta completa = punteggio pieno</div>
+        </div>
+        <div class="slide-visual">
+          <div class="vis-stack">
+            <div class="exam-card">
+              <div class="exam-card-label exam-card-label--bad">❌ Risposta insufficiente</div>
+              <div class="exam-card-q">D. Spiega la differenza tra Memoria RAM e SSD/Hard Disk.</div>
+              <div class="exam-card-a">"La RAM è veloce, l'hard disk serve per salvare i file."</div>
+              <div class="exam-card-verdict verdict--fail">✗ Incompleta — 1/4 pt</div>
+            </div>
+            <div class="vis-vs">— VS —</div>
+            <div class="exam-card">
+              <div class="exam-card-label exam-card-label--good">✓ Risposta completa</div>
+              <div class="exam-card-q">D. Spiega la differenza tra Memoria RAM e SSD/Hard Disk.</div>
+              <div class="exam-card-a">
+                "La <b>RAM</b> è la memoria di lavoro, <b>volatile</b> (si cancella spegnendo il PC) e velocissima: la CPU vi carica programmi e dati durante l'esecuzione. La <b>memoria di massa (SSD/HD)</b> è <b>non volatile</b> e permanente, usata per archiviare dati e sistema operativo. Esempio: all'apertura di un'app, i dati passano dall'SSD alla RAM per essere elaborati dalla CPU."
+              </div>
+              <div class="exam-card-verdict verdict--pass">✓ Completa — 4/4 pt</div>
+            </div>
+            <div class="vis-label vis-label--cyan">SPIEGA IL FUNZIONAMENTO, NON SOLO LA DEFINIZIONE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▬▬ SLIDE 2: GESTIRE BENE IL TEMPO ▬▬ -->
+      <div class="slide slide--yellow">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">2</span> SUGGERIMENTO</div>
+          <div class="slide-title">Gestisci bene<br>il tempo</div>
+          <div class="slide-body">
+            Se una domanda complessa di teoria ti blocca, <strong>passa alla successiva</strong> senza esitare: è meglio rispondere a 4 domande bene piuttosto che restare fermi su una sola per metà dell'ora.<br><br>
+            <strong>Tornerai sulla domanda difficile alla fine</strong>, con la mente più lucida e il resto del compito già sicuro.
+          </div>
+          <div class="slide-tip">⏱️ Non restare bloccato, vai avanti!</div>
+        </div>
+        <div class="slide-visual">
+          <div class="timer-scene">
+            <div class="timer-clock">
+              <div class="clock-icon">⏱️</div>
+              <div>
+                <div class="clock-text">50 minuti</div>
+                <div class="clock-sub">Tempo tipico della verifica</div>
+              </div>
+            </div>
+            <div class="q-flow">
+              <div class="q-chip q-chip--done">Q1<span class="q-chip-sub">Cos'è ALU</span></div>
+              <div class="q-chip q-chip--stuck">Q2<span class="q-chip-sub">Ciclo CPU?</span></div>
+              <div class="q-arrow">⟶</div>
+              <div class="q-chip q-chip--skip">Q3<span class="q-chip-sub">Input/Output</span></div>
+              <div class="q-chip q-chip--done">Q4<span class="q-chip-sub">Bus Dati</span></div>
+            </div>
+            <div class="flow-caption">
+              Se la Q2 ti blocca (es. <em>"descrivi nel dettaglio le fasi Fetch-Decode-Execute della CPU"</em>),<br>
+              <strong>salta alla Q3</strong> e tornerai con il tempo rimasto.
+            </div>
+            <div class="q-flow">
+              <div class="q-chip q-chip--done">Q1 ✓</div>
+              <div class="q-chip q-chip--done">Q2 ✓</div>
+              <div class="q-chip q-chip--done">Q3 ✓</div>
+              <div class="q-chip q-chip--done">Q4 ✓</div>
+            </div>
+            <div class="vis-label vis-label--yellow">SKIP → TORNA DOPO → TUTTO FATTO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▬▬ SLIDE 3: PROVACI SEMPRE ▬▬ -->
+      <div class="slide slide--green">
+        <div class="slide-text">
+          <div class="slide-num-tag"><span class="num-badge">3</span> SUGGERIMENTO</div>
+          <div class="slide-title">Provaci,<br>non lasciare in bianco</div>
+          <div class="slide-body">
+            Se sei in dubbio su una domanda di teoria, <strong>tentare è sempre meglio</strong> che lasciare lo spazio vuoto.<br><br>
+            Una risposta bianca vale <strong>sicuramente 0 punti</strong>. Un tentativo, anche parziale, potrebbe portarti qualcosa: <strong>al massimo prendi 0</strong>, come se non avessi scritto nulla.
+          </div>
+          <div class="slide-tip">🎯 0 rischio, solo possibili punti in più</div>
+        </div>
+        <div class="slide-visual">
+          <div class="vis-stack">
+            <div class="exam-card">
+              <div class="exam-card-label exam-card-label--blank">📭 Lasciata in bianco</div>
+              <div class="exam-card-q">D. Che cos'è la memoria Cache della CPU e a cosa serve?</div>
+              <div class="exam-card-a exam-card-a--faded">... nessuna risposta ...</div>
+              <div class="exam-card-verdict verdict--zero">0 / 3 pt — Sicuro</div>
+            </div>
+            <div class="vis-vs">— VS —</div>
+            <div class="exam-card">
+              <div class="exam-card-label exam-card-label--attempt">✍️ Tentativo (anche parziale)</div>
+              <div class="exam-card-q">D. Che cos'è la memoria Cache della CPU e a cosa serve?</div>
+              <div class="exam-card-a">
+                "La <b>memoria Cache</b> è una memoria speciale interna alla CPU, piccolissima ma estremamente veloce. Serve a conservare i dati usati più di frequente per evitare che il processore debba aspettare ogni volta i tempi più lenti della RAM."
+              </div>
+              <div class="exam-card-verdict verdict--maybe">0 ~ 3 pt — Possibili!</div>
+            </div>
+            <div class="vis-label vis-label--green">NON HAI NULLA DA PERDERE</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="slide-controls">
+    <button class="slide-btn" id="prev" aria-label="Precedente">◄</button>
+    <div class="slide-dots">
+      <div class="slide-dot is-active" data-s="0"></div>
+      <div class="slide-dot" data-s="1"></div>
+      <div class="slide-dot" data-s="2"></div>
+    </div>
+    <span class="slide-counter" id="cnt">1 / 3</span>
+    <button class="slide-btn" id="next" aria-label="Successiva">►</button>
+  </div>
+
+  <div class="footer-action">
+    <a href="/#info-regole" class="btn-primary"><span>◄</span> TORNA A INFO &amp; REGOLE</a>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  let cur = 0;
+  const N = 3;
+  const track = document.getElementById('track');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const cnt = document.getElementById('cnt');
+  const dots = document.querySelectorAll('.slide-dot');
+
+  function go(i) {
+    cur = Math.max(0, Math.min(N-1, i));
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+    cnt.textContent = (cur+1) + ' / ' + N;
+    prev.disabled = cur === 0;
+    next.disabled = cur === N-1;
+    dots.forEach(function(d) { d.classList.remove('is-active'); });
+    dots[cur].classList.add('is-active');
+  }
+
+  prev.addEventListener('click', function() { go(cur-1); });
+  next.addEventListener('click', function() { go(cur+1); });
+  dots.forEach(function(d) {
+    d.addEventListener('click', function() { go(+d.getAttribute('data-s')); });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') go(cur-1);
+    if (e.key === 'ArrowRight') go(cur+1);
+  });
+  go(0);
+})();
+</script>
+
+</body>
+</html>
