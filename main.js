@@ -100,41 +100,41 @@ const MATERIE = [
     ]
   },
   {
-    id: "matematica",
-    label: "Matematica",
-    icon: "📐",
-    color: "var(--color-magenta)",
-    colorRgb: "255, 0, 255",
-    desc: "Analisi, algebra lineare, geometria e probabilità.",
+    id: "fisica-laboratorio",
+    label: "Fisica - Laboratorio",
+    icon: "🔬",
+    color: "var(--color-green)",
+    colorRgb: "57, 255, 20",
+    desc: "Esperimenti di laboratorio, misure, circuiti e relazioni scientifiche.",
     sections: [
       {
-        id: "analisi1",
-        title: "Analisi Matematica I",
-        icon: "📈",
-        desc: "Limiti, derivate, integrali e serie numeriche.",
+        id: "lab-fisica",
+        title: "Laboratorio di Fisica",
+        icon: "⚡",
+        desc: "Esperimenti pratici, raccolta dati, analisi degli errori e strumenti.",
         chapters: [
           {
-            title: "Capitolo 1 — Numeri Reali e Funzioni",
+            title: "Modulo 1 — Misure ed Errori",
             topics: [
-              { title: "Insiemi numerici", desc: "Naturali, interi, razionali, reali. Assioma di completezza." },
-              { title: "Funzioni reali", desc: "Dominio, codominio, iniettività, suriettività, biettività, composizione." },
-              { title: "Funzioni elementari", desc: "Polinomiali, esponenziali, logaritmiche, trigonometriche." },
+              { title: "Strumenti di misura", desc: "Sensibilità, portata, calibro ventesimale, micrometro e cronometro." },
+              { title: "Teoria degli errori", desc: "Errori sistematici e casuali, valor medio, incertezza assoluta e percentuale." },
+              { title: "Propagazione degli errori", desc: "Incertezze nelle somme, differenze, prodotti e quozienti." },
             ]
           },
           {
-            title: "Capitolo 2 — Limiti e Continuità",
+            title: "Modulo 2 — Esperimenti di Meccanica",
             topics: [
-              { title: "Definizione di limite", desc: "Limite finito e infinito, limiti destro e sinistro, definizione epsilon-delta." },
-              { title: "Teoremi sui limiti", desc: "Unicità, confronto (carabinieri), operazioni con i limiti." },
-              { title: "Continuità", desc: "Funzioni continue, punti di discontinuità, teoremi di Weierstrass e dei valori intermedi." },
+              { title: "Misure con il piano inclinato", desc: "Accelerazione, forza peso, scomposizione dei vettori e attrito." },
+              { title: "Il moto armonico della molla", desc: "Costante elastica, legge di Hooke e periodo di oscillazione." },
+              { title: "Il pendolo semplice", desc: "Misura del periodo al variare della lunghezza e calcolo di g." },
             ]
           },
           {
-            title: "Capitolo 3 — Derivate",
+            title: "Modulo 3 — Elettricità e Circuiti",
             topics: [
-              { title: "Definizione e significato geometrico", desc: "Rapporto incrementale, retta tangente, derivabilità vs continuità." },
-              { title: "Regole di derivazione", desc: "Somma, prodotto, quoziente, catena. Derivate di funzioni elementari." },
-              { title: "Teoremi del calcolo differenziale", desc: "Fermat, Rolle, Lagrange, Cauchy, de l'Hôpital." },
+              { title: "Uso del multimetro", desc: "Misura di tensione, corrente e resistenza nei circuiti elettrici." },
+              { title: "Leggi di Ohm e resistenze", desc: "Verifica sperimentale delle leggi di Ohm, serie e parallelo." },
+              { title: "Relazione di laboratorio", desc: "Guida alla stesura della relazione: introduzione, dati, grafici e conclusioni." },
             ]
           },
         ]
