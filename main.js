@@ -101,42 +101,28 @@ const MATERIE = [
   },
   {
     id: "fisica-laboratorio",
-    label: "Fisica - Laboratorio",
+    label: "Fisica Lab",
     icon: "🔬",
     color: "var(--color-green)",
     colorRgb: "57, 255, 20",
     desc: "Esperimenti di laboratorio, misure, circuiti e relazioni scientifiche.",
     sections: [
       {
-        id: "lab-fisica",
-        title: "Laboratorio di Fisica",
-        icon: "⚡",
-        desc: "Esperimenti pratici, raccolta dati, analisi degli errori e strumenti.",
+        id: "iss-giordano-bruno",
+        title: "ISS Giordano Bruno",
+        icon: "🏫",
+        desc: "Attività sperimentali, protocolli di laboratorio e relazioni scientifiche.",
         chapters: [
           {
-            title: "Modulo 1 — Misure ed Errori",
+            title: "La Relazione di Laboratorio",
             topics: [
-              { title: "Strumenti di misura", desc: "Sensibilità, portata, calibro ventesimale, micrometro e cronometro." },
-              { title: "Teoria degli errori", desc: "Errori sistematici e casuali, valor medio, incertezza assoluta e percentuale." },
-              { title: "Propagazione degli errori", desc: "Incertezze nelle somme, differenze, prodotti e quozienti." },
+              {
+                title: "Lezione Interattiva & Laboratorio Pratico (1h)",
+                desc: "Workshop pratico per studenti: caccia agli errori, i 6 pilastri scientifici, simulatore live con calcolo incertezze e generatore di relazione in PDF.",
+                url: "/fisica/giordano-bruno/relazione-laboratorio.html"
+              }
             ]
-          },
-          {
-            title: "Modulo 2 — Esperimenti di Meccanica",
-            topics: [
-              { title: "Misure con il piano inclinato", desc: "Accelerazione, forza peso, scomposizione dei vettori e attrito." },
-              { title: "Il moto armonico della molla", desc: "Costante elastica, legge di Hooke e periodo di oscillazione." },
-              { title: "Il pendolo semplice", desc: "Misura del periodo al variare della lunghezza e calcolo di g." },
-            ]
-          },
-          {
-            title: "Modulo 3 — Elettricità e Circuiti",
-            topics: [
-              { title: "Uso del multimetro", desc: "Misura di tensione, corrente e resistenza nei circuiti elettrici." },
-              { title: "Leggi di Ohm e resistenze", desc: "Verifica sperimentale delle leggi di Ohm, serie e parallelo." },
-              { title: "Relazione di laboratorio", desc: "Guida alla stesura della relazione: introduzione, dati, grafici e conclusioni." },
-            ]
-          },
+          }
         ]
       }
     ]
