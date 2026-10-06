@@ -305,6 +305,83 @@ body::after {
   border-left: 3px solid var(--green);
 }
 
+/* Colonna Taccuino Appunti al Banco (Giallo/Ambra) */
+.col-notebook {
+  background: rgba(255, 238, 0, 0.03);
+  border: 1.5px solid rgba(255, 238, 0, 0.35);
+  border-radius: 8px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.col-notebook-header {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--yellow);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid rgba(255, 238, 0, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.notebook-paper {
+  background: #081122;
+  color: #dce7f8;
+  border: 1px solid rgba(255, 238, 0, 0.2);
+  border-radius: 6px;
+  padding: 1.2rem 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+  flex: 1;
+}
+
+.notebook-paper h4 {
+  color: var(--yellow);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px dashed rgba(255, 238, 0, 0.3);
+  padding-bottom: 4px;
+}
+
+/* Scheda Compito per Casa */
+.hw-box {
+  background: #081122;
+  border: 1.5px solid var(--border-cyan);
+  border-radius: 8px;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.hw-badge {
+  display: inline-block;
+  background: rgba(255, 136, 0, 0.15);
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.hw-task-item {
+  background: rgba(0, 245, 255, 0.04);
+  border-left: 3px solid var(--cyan);
+  padding: 0.65rem 0.9rem;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin-bottom: 0.55rem;
+}
+
 /* ═══════════════════════════════════════════
    STEP 3: STRUMENTI
    ═══════════════════════════════════════════ */
@@ -474,7 +551,7 @@ body::after {
       <span>🏫</span> ISS GIORDANO BRUNO — LABORATORIO DI FISICA
     </div>
     <div class="step-indicator" id="stepCounterText">
-      PASSO 1 DI 7
+      PASSO 1 DI 8
     </div>
   </header>
 
@@ -508,6 +585,7 @@ body::after {
         <button class="jump-btn" onclick="goToStep(5)">5</button>
         <button class="jump-btn" onclick="goToStep(6)">6</button>
         <button class="jump-btn" onclick="goToStep(7)">7</button>
+        <button class="jump-btn" onclick="goToStep(8)">8</button>
       </div>
 
       <button class="nav-btn btn-next" id="btnNext" onclick="nextStep()">
@@ -522,7 +600,7 @@ body::after {
 // STATO & DATI DELLA LEZIONE (CONFRONTO AFFIANCATO)
 // ═══════════════════════════════════════════
 let currentStep = 1;
-const totalSteps = 7;
+const totalSteps = 8;
 
 const STEPS = [
   // ── PASSO 1: CONFRONTO GLOBALE AFFIANCATO ──
@@ -810,48 +888,153 @@ const STEPS = [
     `
   },
 
-  // ── PASSO 7: PROTOCOLLO COMPILATO PRONTO ALLA STAMPA ──
+  // ── PASSO 7: DAL BANCO ALLA RELAZIONE (CASO REALE AFFIANCATO) ──
   {
-    badge: "FASE 7 — PROTOCOLLO FINALE",
-    title: "IL MODELLO SCIENTIFICO COMPILATO",
-    rule: "Ecco come appare la tua relazione completa. Compila i dati del tuo gruppo di lavoro e salvala o stampala in PDF per consegnarla.",
+    badge: "FASE 7 — CASO REALE AFFIANCATO",
+    title: "DAL BANCO ALLA RELAZIONE SERIA",
+    rule: "Guarda la trasformazione reale nello stesso frame: a sinistra gli appunti grezzi presi al banco durante le misure, a destra come diventano una relazione seria e formale.",
     render: () => `
-      <div style="margin-bottom: 1rem;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
-          <div>
-            <label style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);">Gruppo di Lavoro:</label>
-            <input type="text" id="repAuthors" value="Rossi Marco, Bianchi Sara" style="width: 100%; background: #050811; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;" oninput="updatePrintDoc()">
+      <div class="compare-frame">
+        <!-- Colonna Sinistra: Taccuino di Laboratorio Reale -->
+        <div class="col-notebook">
+          <div class="col-notebook-header">
+            <span>📋</span> 1. GLI APPUNTI AL BANCO (TACCUINO DI LABORATORIO)
           </div>
-          <div>
-            <label style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);">Classe & Data:</label>
-            <input type="text" id="repClass" value="1ª B Scienze Applicate — 15/10/2026" style="width: 100%; background: #050811; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;" oninput="updatePrintDoc()">
+          <div class="notebook-paper">
+            <h4>BANCO 3 — ESPERIENZA CILINDRO ALLUMINIO</h4>
+            <p style="margin-bottom: 0.5rem;"><strong>Strumenti usati:</strong><br>
+            • Bilancia digitale: portata 500 g, sensibilità 0.1 g.<br>
+            • Calibro a corsoio ventesimale: portata 150 mm, sensibilità 0.05 mm (0.005 cm).</p>
+            
+            <p style="margin-bottom: 0.5rem;"><strong>Come abbiamo misurato:</strong><br>
+            • Azzerata la tara della bilancia ➔ pesato il cilindretto: <strong>m = 54.2 g</strong>.<br>
+            • Per il diametro abbiamo girato il cilindro 3 volte per non beccare parti ovalizzate:<br>
+            &nbsp;&nbsp;d₁ = 20.10 mm (2.010 cm)<br>
+            &nbsp;&nbsp;d₂ = 20.15 mm (2.015 cm)<br>
+            &nbsp;&nbsp;d₃ = 20.10 mm (2.010 cm)<br>
+            • Altezza misurata 3 volte con il calibro lungo il bordo:<br>
+            &nbsp;&nbsp;h₁ = 45.30 mm (4.530 cm)<br>
+            &nbsp;&nbsp;h₂ = 45.35 mm (4.535 cm)<br>
+            &nbsp;&nbsp;h₃ = 45.25 mm (4.525 cm)</p>
+
+            <p style="border-top: 1px dashed rgba(255,238,0,0.3); padding-top: 0.4rem; color: var(--yellow);">
+            <strong>Bozza rapida di calcolo al banco:</strong><br>
+            V = π · (d/2)² · h ≈ 3.14 · 1.006² · 4.53 ≈ 14.4 cm³<br>
+            ρ = m/V ≈ 54.2 / 14.4 ≈ 2.76 g/cm³ (Torna! L'alluminio vale circa 2.7).</p>
+          </div>
+          <div class="why-box" style="background: rgba(255, 238, 0, 0.08); color: #ffe680; border-left: 3px solid var(--yellow); margin-top: 0.8rem;">
+            📝 <strong>Ruolo del taccuino:</strong> Al banco annoti velocemente i dati 'vivi', come hai operato e i limiti degli strumenti prima di rimettere tutto a posto!
           </div>
         </div>
 
-        <div style="background: #ffffff; color: #111; padding: 1.5rem 1.8rem; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 0.88rem; line-height: 1.5; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" id="printDocCard">
-          <div style="border-bottom: 2px solid #222; padding-bottom: 4px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 0.78rem;">
-            <strong>ISS GIORDANO BRUNO — LABORATORIO DI FISICA</strong>
-            <span id="docMeta">1ª B — 15/10/2026</span>
+        <!-- Colonna Destra: Trasformazione in Relazione Seria -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>📑</span> 2. TRASFORMAZIONE IN RELAZIONE SCIENTIFICA
           </div>
-          <h3 style="text-align: center; margin-bottom: 10px; font-size: 1.15rem; color: #0b3c66;">
-            RELAZIONE SCIENTIFICA: VERIFICA DELLA LEGGE DI HOOKE
+          <div class="doc-paper">
+            <div style="border-bottom: 2px solid #222; padding-bottom: 3px; margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 0.72rem;">
+              <strong>ISS GIORDANO BRUNO — LAB FISICA</strong>
+              <span>1ª B · Banco 3</span>
+            </div>
+            <h4 style="color: #0b3c66; margin-bottom: 0.4rem; font-size: 0.95rem;">DETERMINAZIONE DELLA DENSITÀ DI UN SOLIDO REGOLARE</h4>
+            <p><strong>1. Obiettivo:</strong> Determinare sperimentalmente la densità ρ di un cilindro di alluminio tramite misure dirette di massa e dimensioni con calibro.</p>
+            <p><strong>2. Strumentazione:</strong><br>
+            • Bilancia tecnica digitale (Portata: 500 g, Sensibilità: 0.1 g)<br>
+            • Calibro a corsoio ventesimale (Portata: 150 mm, Sensibilità: 0.05 mm = 0.005 cm)</p>
+            <p><strong>3. Dati ed Elaborazione con Incertezze:</strong><br>
+            • Massa: <em>m = (54.2 ± 0.1) g</em><br>
+            • Diametro medio: <em>d = (2.012 ± 0.005) cm</em><br>
+            • Altezza media: <em>h = (4.530 ± 0.005) cm</em></p>
+            <p><strong>4. Formule e Calcoli:</strong><br>
+            • Volume: <em>V = π · (d/2)² · h = 14.40 cm³</em><br>
+            • Densità: <em>ρ = m / V = (2.73 ± 0.05) g/cm³</em> (pari a <em>(2730 ± 50) kg/m³</em>)</p>
+            <p><strong>5. Conclusioni:</strong> Il valore sperimentale (2.73 g/cm³) è pienamente compatibile con la densità tabulata dell'alluminio (2.70 g/cm³). Lo scostamento dell'1% è dovuto a lievi imperfezioni superficiali del solido.</p>
+          </div>
+          <div class="why-box why-box-good" style="margin-top: 0.8rem;">
+            ✔️ <strong>Risultato scientifico:</strong> I numeri disordinati del banco diventano un documento scientifico elegante, ineccepibile e riproducibile.
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        💡 <strong>Guarda che differenza:</strong> A sinistra hai gli appunti operativi presi al volo con le mani sugli strumenti; a destra hai la relazione seria, ordinata e riproducibile pronta per essere valutata con il massimo dei voti!
+      </div>
+    `
+  },
+
+  // ── PASSO 8: ESERCIZIO DA FARE A CASA ──
+  {
+    badge: "FASE 8 — ESERCIZIO DA FARE A CASA",
+    title: "IL TUO COMPITO: DALLA MISURA ALLA RELAZIONE",
+    rule: "Ora tocca a te! Ecco un set di misure reali raccolte in laboratorio su una molla: segui la traccia guidata e redigi la tua relazione per la prossima lezione.",
+    render: () => `
+      <div>
+        <!-- Scheda Esperimento e Dati Assegnati -->
+        <div class="hw-box">
+          <div class="hw-badge">🎯 ESPERIMENTO ASSEGNATO PER CASA</div>
+          <h3 style="font-family: var(--font-title); color: var(--yellow); font-size: 1.1rem; margin-bottom: 0.5rem;">
+            Verifica Sperimentale della Legge di Hooke
           </h3>
-          <p><strong>1. OBIETTIVO:</strong> Determinare sperimentalmente la costante elastica k di una molla tramite la forza peso applicata.</p>
-          <p><strong>2. STRUMENTI:</strong> Asta millimetrata (p: 100 cm, s: 0.1 cm), Bilancia tecnica (p: 500 g, s: 0.1 g), Molla elicoidale.</p>
-          <p><strong>3. FORMULE:</strong> F = k · Δl  =>  k = F / Δl (in unità del S.I. [N/m]).</p>
-          <p><strong>4. RISULTATI:</strong> Allungamento medio Δl = (14.3 ± 0.2) cm. Costante calcolata k = (22.8 ± 0.5) N/m.</p>
-          <p><strong>5. CONCLUSIONI:</strong> La proporzionalità diretta è confermata; le fluttuazioni sono pienamente compatibili con le incertezze strumentali.</p>
+          <p style="font-size: 0.84rem; color: var(--text-dim); margin-bottom: 0.8rem;">
+            In laboratorio sono stati applicati 3 carichi noti a una molla elicoidale d'acciaio. Gli allungamenti sono stati misurati con un'asta metrica millimetrata (Portata: 100 cm, Sensibilità: 0.1 cm = 1 mm).
+          </p>
+
+          <table class="calc-table" style="font-size: 0.82rem; margin-bottom: 0.8rem;">
+            <thead>
+              <tr>
+                <th>Carico Applicato (Forza Peso)</th>
+                <th>Misura 1 (cm)</th>
+                <th>Misura 2 (cm)</th>
+                <th>Misura 3 (cm)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>F₁ = 0.98 N</strong> (massa 100 g)</td>
+                <td>2.4</td><td>2.5</td><td>2.4</td>
+              </tr>
+              <tr>
+                <td><strong>F₂ = 1.96 N</strong> (massa 200 g)</td>
+                <td>4.9</td><td>5.0</td><td>4.9</td>
+              </tr>
+              <tr>
+                <td><strong>F₃ = 2.94 N</strong> (massa 300 g)</td>
+                <td>7.3</td><td>7.5</td><td>7.4</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="font-family: var(--font-pixel); font-size: 0.65rem; color: var(--cyan); margin: 0.9rem 0 0.5rem;">
+            LE 5 CONSEGNE PER LA TUA RELAZIONE:
+          </div>
+
+          <div class="hw-task-item">
+            <strong>1. Obiettivo:</strong> Scrivi l'obiettivo scientifico iniziando con un verbo all'infinito (es. <em>Determinare...</em>).
+          </div>
+          <div class="hw-task-item">
+            <strong>2. Strumenti:</strong> Compila la scheda metrologica specificando <em>Portata</em> e <em>Sensibilità</em> dell'asta metrica.
+          </div>
+          <div class="hw-task-item">
+            <strong>3. Tabella ed Errori:</strong> Per ciascun carico, calcola l'allungamento medio <em>Δl_medio</em> e la semidispersione massima <em>Δ(Δl)</em>. Scrivi il risultato corretto nella forma <em>Δl = (Δl_medio ± errore) cm</em>.
+          </div>
+          <div class="hw-task-item">
+            <strong>4. Calcolo di k:</strong> Calcola per ciascun carico la costante elastica <em>k = F / Δl</em> (in N/m) e ricava il valor medio finale <em>k_medio</em>.
+          </div>
+          <div class="hw-task-item">
+            <strong>5. Conclusioni:</strong> Rispondi sul quaderno: la proporzionalità diretta è confermata? Quali errori casuali o sistematici potrebbero essersi verificati al banco?
+          </div>
         </div>
 
-        <div style="text-align: center; margin-top: 1.25rem;">
+        <div style="text-align: center; margin-top: 1rem;">
           <button class="nav-btn btn-next" style="display: inline-flex;" onclick="window.print()">
-            🖨️ STAMPA / SALVA IN PDF
+            🖨️ STAMPA / SALVA LA SCHEDA DEL COMPITO IN PDF
           </button>
         </div>
       </div>
 
       <div class="focus-feedback" style="border-left-color: var(--green);">
-        🎉 <strong>OTTIMO LAVORO!</strong> Ora conosci tutti i segreti del metodo scientifico: sei pronto a realizzare una relazione impeccabile sul tuo banco di laboratorio!
+        🎉 <strong>BUON LAVORO!</strong> Svolgi l'esercizio sul tuo quaderno o compila la scheda stampata: alla prossima lezione in laboratorio confronteremo insieme i risultati ottenuti!
       </div>
     `
   }
