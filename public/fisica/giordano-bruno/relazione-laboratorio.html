@@ -3,34 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La Relazione di Laboratorio: Errato vs Corretto — ISS Giordano Bruno</title>
+<title>La Relazione di Laboratorio — ISS Giordano Bruno</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 /* ═══════════════════════════════════════════
-   DESIGN SYSTEM: RETRO CRT CLEAN & SIDE-BY-SIDE
+   DESIGN SYSTEM: ESSENZIALE, PULITO, RETRO NEON
    ═══════════════════════════════════════════ */
 :root {
-  --bg: #060a12;
-  --bg-card: #0b1120;
-  --card-paper-bad: #130a10;
-  --card-paper-good: #081410;
+  --bg: #070b14;
+  --card-bg: #0d1527;
+  --card-inner: #070c18;
   --green: #39ff14;
-  --green-dim: #1ea80a;
-  --green-soft: #00ff88;
-  --red: #ff3366;
-  --red-dim: #991a38;
+  --green-rgb: 57, 255, 20;
   --cyan: #00f5ff;
   --yellow: #ffee00;
+  --red: #ff3366;
+  --red-rgb: 255, 51, 102;
   --white: #f0f4fc;
   --text-dim: #8b9bb4;
   --border: rgba(57, 255, 20, 0.22);
-  --border-bad: rgba(255, 51, 102, 0.35);
-  --border-good: rgba(57, 255, 20, 0.35);
-  --glow-green: 0 0 16px rgba(57, 255, 20, 0.4);
-  --glow-red: 0 0 16px rgba(255, 51, 102, 0.35);
+  --border-cyan: rgba(0, 245, 255, 0.22);
+  --glow-green: 0 0 16px rgba(57, 255, 20, 0.35);
+  --glow-cyan: 0 0 16px rgba(0, 245, 255, 0.35);
   --font-pixel: 'Press Start 2P', monospace;
   --font-title: 'Orbitron', sans-serif;
   --font-mono: 'Share Tech Mono', monospace;
@@ -44,13 +41,14 @@ body {
   color: var(--white);
   font-family: var(--font-body);
   min-height: 100vh;
-  padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
   background-image:
     linear-gradient(rgba(57, 255, 20, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(57, 255, 20, 0.025) 1px, transparent 1px);
   background-size: 32px 32px;
   position: relative;
-  line-height: 1.5;
+  overflow-x: hidden;
 }
 
 /* Scanline leggera */
@@ -67,20 +65,18 @@ body::after {
 }
 
 /* ═══════════════════════════════════════════
-   TOP NAVIGATION BAR
+   TOP NAVIGATION BAR (MINIMALE E PULITA)
    ═══════════════════════════════════════════ */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: #04070e;
+  padding: 0.85rem 1.75rem;
+  background: #040812;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 50;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .back-link {
@@ -90,7 +86,7 @@ body::after {
   color: var(--green);
   text-decoration: none;
   font-family: var(--font-pixel);
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   letter-spacing: 1px;
   padding: 0.35rem 0.75rem;
   border: 1px solid var(--border);
@@ -104,771 +100,950 @@ body::after {
   transform: translateX(-2px);
 }
 
-.top-title {
-  font-family: var(--font-title);
-  font-size: 0.95rem;
+.school-tag {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
   color: var(--cyan);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  letter-spacing: 1px;
 }
 
-.school-tag {
+.step-indicator {
   font-family: var(--font-pixel);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   color: var(--yellow);
   background: rgba(255, 238, 0, 0.1);
   border: 1px solid rgba(255, 238, 0, 0.3);
-  padding: 0.35rem 0.65rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 4px;
 }
 
 /* ═══════════════════════════════════════════
-   CONTAINER PRINCIPALE
+   MAIN STAGE (AREA CENTRALE A FOCUS SINGOLO)
    ═══════════════════════════════════════════ */
-.container {
-  max-width: 1320px;
+.main-stage {
+  flex: 1;
+  max-width: 1040px;
   width: 95%;
-  margin: 1.25rem auto 0;
+  margin: 1.5rem auto 2.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Intestazione rapida */
-.intro-box {
+/* Header del singolo passo */
+.step-header {
   text-align: center;
   margin-bottom: 1.5rem;
 }
-.intro-title {
+
+.step-subtitle-badge {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  color: var(--cyan);
+  background: rgba(0, 245, 255, 0.08);
+  border: 1px solid var(--border-cyan);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  margin-bottom: 0.45rem;
+  letter-spacing: 1.5px;
+}
+
+.step-title {
   font-family: var(--font-title);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: var(--green);
   text-shadow: var(--glow-green);
   letter-spacing: 1.5px;
   margin-bottom: 0.35rem;
 }
-.intro-desc {
-  font-size: 0.88rem;
+
+.step-rule {
   color: var(--text-dim);
+  font-size: 0.95rem;
   max-width: 720px;
   margin: 0 auto;
+  line-height: 1.5;
 }
 
-/* ═══════════════════════════════════════════
-   BARRA D'ANALISI INTERATTIVA (FOCUS BOX)
-   ═══════════════════════════════════════════ */
-.inspector-banner {
-  background: #09101d;
-  border: 1px solid var(--cyan);
-  border-radius: 8px;
-  padding: 0.85rem 1.25rem;
-  margin-bottom: 1.25rem;
+/* Card Contenuto Principale */
+.focus-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.85rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  animation: cardFade 0.25s ease;
+  min-height: 440px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
-  box-shadow: 0 4px 18px rgba(0, 245, 255, 0.15);
-  position: sticky;
-  top: 55px;
-  z-index: 40;
 }
 
-.inspector-text {
-  font-size: 0.85rem;
-  color: var(--white);
-  line-height: 1.4;
-}
-.inspector-text strong {
-  color: var(--cyan);
-  font-family: var(--font-title);
-}
-
-.inspector-badge {
-  font-family: var(--font-pixel);
-  font-size: 0.58rem;
-  background: rgba(0, 245, 255, 0.15);
-  color: var(--cyan);
-  padding: 4px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
+@keyframes cardFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ═══════════════════════════════════════════
-   FRAME SIDE-BY-SIDE: ERRATO VS CORRETTO
+   LAYOUT A CONFRONTO AFFIANCATO (SIDE-BY-SIDE)
    ═══════════════════════════════════════════ */
-.comparison-frame {
+.compare-frame {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: start;
+  gap: 1.25rem;
+  margin-bottom: 1.2rem;
 }
 
-@media (max-width: 950px) {
-  .comparison-frame {
+@media (max-width: 768px) {
+  .compare-frame {
     grid-template-columns: 1fr;
   }
 }
 
-/* Colonna Singola (Foglio di Laboratorio) */
-.report-sheet {
-  background: var(--bg-card);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  transition: all 0.25s ease;
-}
-
-.report-sheet.sheet-bad {
-  border: 2px solid var(--border-bad);
-}
-.report-sheet.sheet-bad:hover {
-  box-shadow: var(--glow-red);
-}
-
-.report-sheet.sheet-good {
-  border: 2px solid var(--border-good);
-}
-.report-sheet.sheet-good:hover {
-  box-shadow: var(--glow-green);
-}
-
-/* Header della Colonna */
-.sheet-header {
-  padding: 1rem 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.sheet-header.header-bad {
-  background: linear-gradient(90deg, rgba(255, 51, 102, 0.2), transparent);
-}
-.sheet-header.header-good {
-  background: linear-gradient(90deg, rgba(57, 255, 20, 0.2), transparent);
-}
-
-.sheet-title {
-  font-family: var(--font-title);
-  font-size: 1.05rem;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.sheet-title.bad-title { color: var(--red); }
-.sheet-title.good-title { color: var(--green); }
-
-.sheet-tag {
-  font-family: var(--font-pixel);
-  font-size: 0.55rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-.tag-bad {
-  background: rgba(255, 51, 102, 0.2);
-  color: #ff99aa;
-  border: 1px solid var(--red);
-}
-.tag-good {
-  background: rgba(57, 255, 20, 0.2);
-  color: var(--green);
-  border: 1px solid var(--green);
-}
-
-/* ═══════════════════════════════════════════
-   BLOCCHI DELLA RELAZIONE (SINCRONIZZATI)
-   ═══════════════════════════════════════════ */
-.sheet-body {
-  padding: 1.25rem;
+/* Colonna Sbagliata (Rosso) */
+.col-bad {
+  background: rgba(255, 51, 102, 0.04);
+  border: 1.5px solid rgba(255, 51, 102, 0.35);
+  border-radius: 8px;
+  padding: 1.25rem 1.4rem;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
-}
-
-.block-row {
-  border-radius: 8px;
-  padding: 0.9rem 1.1rem;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: all 0.2s ease;
   position: relative;
 }
 
-.block-row:hover {
-  transform: translateX(3px);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-/* Evidenziazione sincronizzata al click/focus */
-.block-row.active-bad {
-  border-color: var(--red) !important;
-  background: rgba(255, 51, 102, 0.12) !important;
-  box-shadow: 0 0 14px rgba(255, 51, 102, 0.25);
-}
-.block-row.active-good {
-  border-color: var(--green) !important;
-  background: rgba(57, 255, 20, 0.12) !important;
-  box-shadow: 0 0 14px rgba(57, 255, 20, 0.25);
-}
-
-.block-name-tag {
+.col-bad-header {
   font-family: var(--font-pixel);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
+  color: var(--red);
   letter-spacing: 1px;
-  margin-bottom: 0.45rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-.block-name-tag.bad { color: #ff88a3; }
-.block-name-tag.good { color: var(--green); }
-
-.block-content {
-  font-size: 0.86rem;
-  line-height: 1.5;
+  gap: 0.4rem;
+  border-bottom: 1px solid rgba(255, 51, 102, 0.2);
+  padding-bottom: 0.5rem;
 }
 
-.highlight-bad-text {
-  color: #ff99aa;
-  background: rgba(255, 51, 102, 0.18);
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-weight: 600;
+/* Colonna Corretta (Verde) */
+.col-good {
+  background: rgba(57, 255, 20, 0.04);
+  border: 1.5px solid rgba(57, 255, 20, 0.35);
+  border-radius: 8px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
-.highlight-good-text {
+.col-good-header {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
   color: var(--green);
-  background: rgba(57, 255, 20, 0.14);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.doc-paper {
+  background: #ffffff;
+  color: #1a1a2e;
+  border-radius: 6px;
+  padding: 1.25rem 1.4rem;
+  font-family: 'Times New Roman', serif;
+  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-size: 0.88rem;
+  flex: 1;
+}
+
+.doc-paper h4 {
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.tag-bad {
+  background: rgba(255, 51, 102, 0.15);
+  color: #c40033;
   padding: 2px 5px;
   border-radius: 3px;
-  font-weight: 600;
+  font-weight: bold;
+  border-bottom: 1px dashed var(--red);
 }
 
-/* Micro-Tabelle Dati */
-.mini-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.78rem;
-  margin-top: 0.5rem;
-}
-.mini-table th, .mini-table td {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0.35rem 0.5rem;
-  text-align: center;
-}
-.mini-table th {
-  background: rgba(255, 255, 255, 0.05);
-  font-family: var(--font-mono);
+.tag-good {
+  background: rgba(30, 168, 10, 0.15);
+  color: #0b6b0b;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--green);
 }
 
-/* Canvas del Grafico */
-.canvas-holder {
-  margin-top: 0.6rem;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #050811;
+.why-box {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+.why-box-bad {
+  background: rgba(255, 51, 102, 0.1);
+  color: #ff99aa;
+  border-left: 3px solid var(--red);
+}
+.why-box-good {
+  background: rgba(57, 255, 20, 0.1);
+  color: #bbffaa;
+  border-left: 3px solid var(--green);
 }
 
 /* ═══════════════════════════════════════════
-   BOTTOM ACTION BAR & STAMPA
+   STEP 3: STRUMENTI
    ═══════════════════════════════════════════ */
-.bottom-bar {
-  text-align: center;
-  margin-top: 2rem;
+.meter-card-display {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
-.btn-print {
+/* ═══════════════════════════════════════════
+   STEP 4: CALCOLATORE DATI E FORMULE
+   ═══════════════════════════════════════════ */
+.calc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8rem 0;
+  font-size: 0.85rem;
+}
+.calc-table th, .calc-table td {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem;
+  text-align: center;
+}
+.calc-table th {
+  background: rgba(57, 255, 20, 0.08);
+  color: var(--green);
+  font-family: var(--font-mono);
+}
+.calc-table input {
+  width: 75px;
+  background: #050811;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--yellow);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   STEP 5: CANVAS GRAFICI AFFIANCATI
+   ═══════════════════════════════════════════ */
+.canvas-mini {
+  background: #050914;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  width: 100%;
+  height: 190px;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════
+   BOTTOM ACTION BAR (NAVIGAZIONE AVANTI/INDIETRO)
+   ═══════════════════════════════════════════ */
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.step-jump-selector {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.jump-btn {
+  background: var(--card-inner);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-dim);
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jump-btn:hover {
+  border-color: var(--green);
+  color: var(--white);
+}
+.jump-btn.active {
   background: var(--green);
-  border: 1px solid var(--green);
   color: var(--bg);
+  border-color: var(--green);
+  box-shadow: var(--glow-green);
+  font-weight: bold;
+}
+
+.nav-btn {
   font-family: var(--font-pixel);
   font-size: 0.65rem;
-  padding: 0.8rem 1.6rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 6px;
   cursor: pointer;
-  letter-spacing: 1px;
-  font-weight: bold;
-  box-shadow: var(--glow-green);
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-}
-.btn-print:hover {
-  background: #50ff33;
-  transform: translateY(-2px);
-  box-shadow: 0 0 24px rgba(57, 255, 20, 0.6);
+  letter-spacing: 1px;
 }
 
+.btn-prev {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-dim);
+}
+.btn-prev:hover:not(:disabled) {
+  border-color: var(--white);
+  color: var(--white);
+  transform: translateX(-3px);
+}
+.btn-prev:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-next {
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: var(--bg);
+  font-weight: bold;
+  box-shadow: var(--glow-green);
+}
+.btn-next:hover {
+  background: #50ff33;
+  box-shadow: 0 0 22px rgba(57, 255, 20, 0.6);
+  transform: translateX(3px);
+}
+
+/* Feedback box inferiore */
+.focus-feedback {
+  background: rgba(0, 245, 255, 0.06);
+  border-left: 3px solid var(--cyan);
+  padding: 0.8rem 1.1rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  margin-top: 1.25rem;
+  line-height: 1.5;
+  color: var(--white);
+}
+
+/* Print Clean */
 @media print {
   body { background: #fff !important; color: #000 !important; }
-  .top-bar, .inspector-banner, .bottom-bar { display: none !important; }
-  .comparison-frame { grid-template-columns: 1fr 1fr !important; }
-  .report-sheet { border: 1px solid #333 !important; box-shadow: none !important; }
+  .top-bar, .bottom-nav { display: none !important; }
+  .focus-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
 }
 </style>
 </head>
 <body>
 
-  <!-- ── Top Bar ── -->
+  <!-- ── Top Navigation Bar (Senza sbarra a pallini) ── -->
   <header class="top-bar">
     <a href="/#fisica-laboratorio" class="back-link">
       <span>◄</span> FISICA LAB
     </a>
-    <div class="top-title">
-      <span>🔬</span> LA RELAZIONE DI LABORATORIO: ERRATO VS CORRETTO
-    </div>
     <div class="school-tag">
-      🏫 ISS GIORDANO BRUNO
+      <span>🏫</span> ISS GIORDANO BRUNO — LABORATORIO DI FISICA
+    </div>
+    <div class="step-indicator" id="stepCounterText">
+      PASSO 1 DI 7
     </div>
   </header>
 
-  <div class="container">
+  <!-- ── Main Stage (Area Centrale a Focus Singolo) ── -->
+  <main class="main-stage">
 
-    <!-- ── Intro ── -->
-    <div class="intro-box">
-      <h1 class="intro-title">CONFRONTO DIRETTO: COSA FARE E COSA EVITARE</h1>
-      <p class="intro-desc">
-        Guarda nello stesso frame la differenza tra un foglio sciatto (bocciato) e un vero documento scientifico.
-        <strong>Clicca su qualsiasi blocco</strong> per evidenziare la coppia e leggere la regola d'oro!
+    <div class="step-header">
+      <div class="step-subtitle-badge" id="stepBadge">FASE 1 — IL METODO SCIENTIFICO</div>
+      <h1 class="step-title" id="stepTitle">L'ANATOMIA DI UNA RELAZIONE</h1>
+      <p class="step-rule" id="stepRule">
+        Mettiamo a confronto la versione distratta dello studente con la versione scientifica corretta nello stesso frame.
       </p>
     </div>
 
-    <!-- ── Inspector Banner (Dettaglio Regola Dinamico) ── -->
-    <div class="inspector-banner" id="inspectorBanner">
-      <div class="inspector-text" id="inspectorText">
-        👉 <strong>CLICCA SU UN BLOCCO QUALSIASI QUI SOTTO:</strong> vedrai illuminarsi la versione errata e quella corretta contemporaneamente per capire subito dove cade l'errore!
+    <!-- Area Card con Contenuto Specifico dello Step Corrente -->
+    <div class="focus-card" id="focusCard">
+      <!-- Dynamic Step Content Populated by JavaScript -->
+    </div>
+
+    <!-- Bottom Action Bar (Navigazione Avanti/Indietro con Selettore Diretto) -->
+    <div class="bottom-nav">
+      <button class="nav-btn btn-prev" id="btnPrev" onclick="prevStep()" disabled>
+        <span>◄</span> PRECEDENTE
+      </button>
+
+      <div class="step-jump-selector" id="jumpSelector">
+        <button class="jump-btn active" onclick="goToStep(1)">1</button>
+        <button class="jump-btn" onclick="goToStep(2)">2</button>
+        <button class="jump-btn" onclick="goToStep(3)">3</button>
+        <button class="jump-btn" onclick="goToStep(4)">4</button>
+        <button class="jump-btn" onclick="goToStep(5)">5</button>
+        <button class="jump-btn" onclick="goToStep(6)">6</button>
+        <button class="jump-btn" onclick="goToStep(7)">7</button>
       </div>
-      <div class="inspector-badge" id="inspectorBadge">SELEZIONE ATTIVA</div>
-    </div>
 
-    <!-- ══════════════════════════════════════════════════════════════════════════
-         FRAME SIDE-BY-SIDE: 2 COLONNE NELLO STESSO FRAME
-         ══════════════════════════════════════════════════════════════════════════ -->
-    <div class="comparison-frame">
-
-      <!-- ── COLONNA SINISTRA: VERSIONE SBAGLIATA ── -->
-      <section class="report-sheet sheet-bad">
-        <div class="sheet-header header-bad">
-          <div class="sheet-title bad-title">
-            <span>❌</span> LA RELAZIONE SBAGLIATA
-          </div>
-          <span class="sheet-tag tag-bad">ERRORI DEGLI STUDENTI</span>
-        </div>
-
-        <div class="sheet-body">
-
-          <!-- 1. Intestazione & Titolo -->
-          <div class="block-row" id="bad-1" onclick="selectSection(1)">
-            <div class="block-name-tag bad">
-              <span>1. TITOLO & INTESTAZIONE</span>
-              <span>⚠️ MANCANO DATI</span>
-            </div>
-            <div class="block-content">
-              <strong style="color: #ff99aa;">"ESPERIMENTO CON LA MOLLA"</strong><br>
-              <span class="highlight-bad-text">Nessun nome dell'Istituto, nessuna classe, nessuna data né componenti del gruppo di laboratorio.</span>
-            </div>
-          </div>
-
-          <!-- 2. Obiettivo -->
-          <div class="block-row" id="bad-2" onclick="selectSection(2)">
-            <div class="block-name-tag bad">
-              <span>2. OBIETTIVO DELLA PROVA</span>
-              <span>⚠️ COLLOQUIALE</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-bad-text">"Oggi ci siamo divertiti a vedere quanto tirava la molla attaccandoci dei pesetti per vedere se si rompeva."</span>
-            </div>
-          </div>
-
-          <!-- 3. Strumenti -->
-          <div class="block-row" id="bad-3" onclick="selectSection(3)">
-            <div class="block-name-tag bad">
-              <span>3. STRUMENTI & APPARECCHIATURE</span>
-              <span>⚠️ NESSUNA METROLOGIA</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-bad-text">"Abbiamo usato un righello normale, una bilancia trovata sul banco e una molla."</span><br>
-              <span style="font-size: 0.78rem; color: #ff99aa;">(Nessuna portata né sensibilità specificata!)</span>
-            </div>
-          </div>
-
-          <!-- 4. Tabella Dati -->
-          <div class="block-row" id="bad-4" onclick="selectSection(4)">
-            <div class="block-name-tag bad">
-              <span>4. RACCOLTA DATI & TABELLA</span>
-              <span>⚠️ NUMERI SENZA UNITÀ</span>
-            </div>
-            <div class="block-content">
-              <table class="mini-table">
-                <tr>
-                  <th>Pesi</th>
-                  <th>Allungamento</th>
-                </tr>
-                <tr>
-                  <td><span class="highlight-bad-text">100</span></td>
-                  <td><span class="highlight-bad-text">4.2</span></td>
-                </tr>
-                <tr>
-                  <td><span class="highlight-bad-text">200</span></td>
-                  <td><span class="highlight-bad-text">8.5</span></td>
-                </tr>
-              </table>
-              <span style="font-size: 0.75rem; color: #ff88a3;">100 cosa? Grammi? Mele? Una sola misura frettolosa!</span>
-            </div>
-          </div>
-
-          <!-- 5. Calcolo & Cifre Significative -->
-          <div class="block-row" id="bad-5" onclick="selectSection(5)">
-            <div class="block-name-tag bad">
-              <span>5. RISULTATO ED INCERTEZZA</span>
-              <span>⚠️ CIFRE FITTIZIE</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-bad-text">k = 22.84615384615 N/m precisi.</span><br>
-              <span style="font-size: 0.78rem; color: #ff99aa;">(Copia e incolla di 11 decimali dal display della calcolatrice, senza errore associato!)</span>
-            </div>
-          </div>
-
-          <!-- 6. Grafico -->
-          <div class="block-row" id="bad-6" onclick="selectSection(6)">
-            <div class="block-name-tag bad">
-              <span>6. GRAFICO CARTESIANO</span>
-              <span>⚠️ ZIG-ZAG ERRATO</span>
-            </div>
-            <div class="block-content">
-              <div class="canvas-holder">
-                <canvas id="canvasBad" width="400" height="150" style="display:block; width:100%; height:130px;"></canvas>
-              </div>
-              <span style="font-size: 0.75rem; color: #ff99aa;">I punti sperimentali sono stati uniti a spezzata zig-zag!</span>
-            </div>
-          </div>
-
-          <!-- 7. Conclusioni -->
-          <div class="block-row" id="bad-7" onclick="selectSection(7)">
-            <div class="block-name-tag bad">
-              <span>7. CONCLUSION & NOTE</span>
-              <span>⚠️ NESSUNA ANALISI CRITICA</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-bad-text">"L'esperimento è andato benissimo, non ci sono stati errori e la legge di Hooke funziona."</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ── COLONNA DESTRA: VERSIONE CORRETTA ── -->
-      <section class="report-sheet sheet-good">
-        <div class="sheet-header header-good">
-          <div class="sheet-title good-title">
-            <span>✔️</span> LA RELAZIONE CORRETTA
-          </div>
-          <span class="sheet-tag tag-good">STANDARD SCIENTIFICO</span>
-        </div>
-
-        <div class="sheet-body">
-
-          <!-- 1. Intestazione & Titolo -->
-          <div class="block-row" id="good-1" onclick="selectSection(1)">
-            <div class="block-name-tag good">
-              <span>1. TITOLO & INTESTAZIONE</span>
-              <span>✔️ PROTOCOLLO COMPLETO</span>
-            </div>
-            <div class="block-content">
-              <div style="font-size: 0.78rem; color: var(--cyan); margin-bottom: 2px;">
-                <strong>ISS GIORDANO BRUNO</strong> — Classe 1ª B T.I. — Data: 15/10/2026<br>
-                Gruppo: Marco Rossi, Sara Bianchi, Luca Verdi
-              </div>
-              <strong style="color: var(--green);">"Verifica sperimentale della legge di Hooke e misura della costante elastica k"</strong>
-            </div>
-          </div>
-
-          <!-- 2. Obiettivo -->
-          <div class="block-row" id="good-2" onclick="selectSection(2)">
-            <div class="block-name-tag good">
-              <span>2. OBIETTIVO DELLA PROVA</span>
-              <span>✔️ VERBO ALL'INFINITO</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-good-text">"Determinare sperimentalmente la costante elastica k di una molla elicoidale mediante la relazione tra forza peso applicata e allungamento statico."</span>
-            </div>
-          </div>
-
-          <!-- 3. Strumenti -->
-          <div class="block-row" id="good-3" onclick="selectSection(3)">
-            <div class="block-name-tag good">
-              <span>3. STRUMENTI & APPARECCHIATURE</span>
-              <span>✔️ PORTATA & SENSIBILITÀ</span>
-            </div>
-            <div class="block-content">
-              • <strong>Asta metrica:</strong> Portata = 100 cm, Sensibilità = 0.1 cm (1 mm)<br>
-              • <strong>Bilancia tecnica:</strong> Portata = 500 g, Sensibilità = 0.1 g<br>
-              • <strong>Molla elicoidale</strong>, Masse graduate da 50 g (± 0.1 g).
-            </div>
-          </div>
-
-          <!-- 4. Tabella Dati -->
-          <div class="block-row" id="good-4" onclick="selectSection(4)">
-            <div class="block-name-tag good">
-              <span>4. RACCOLTA DATI & TABELLA</span>
-              <span>✔️ UNITÀ S.I. E RIPETIZIONI</span>
-            </div>
-            <div class="block-content">
-              <table class="mini-table">
-                <tr>
-                  <th>F [N]</th>
-                  <th>Δl₁ [cm]</th>
-                  <th>Δl₂ [cm]</th>
-                  <th>Δl_medio [cm]</th>
-                  <th>Incertezza</th>
-                </tr>
-                <tr>
-                  <td>0.49</td>
-                  <td>2.1</td>
-                  <td>2.2</td>
-                  <td><strong>2.15</strong></td>
-                  <td>± 0.1 cm</td>
-                </tr>
-                <tr>
-                  <td>0.98</td>
-                  <td>4.3</td>
-                  <td>4.2</td>
-                  <td><strong>4.25</strong></td>
-                  <td>± 0.1 cm</td>
-                </tr>
-              </table>
-              <span style="font-size: 0.75rem; color: var(--green);">Unità di misura nelle intestazioni e misure ripetute per media!</span>
-            </div>
-          </div>
-
-          <!-- 5. Calcolo & Cifre Significative -->
-          <div class="block-row" id="good-5" onclick="selectSection(5)">
-            <div class="block-name-tag good">
-              <span>5. RISULTATO ED INCERTEZZA</span>
-              <span>✔️ CIFRE COERENTI</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-good-text">k = (22.8 ± 0.5) N/m</span><br>
-              <span style="font-size: 0.78rem; color: var(--green);">L'incertezza ha 1 sola cifra significativa (±0.5) e il valor medio si ferma al decimo, coerentemente!</span>
-            </div>
-          </div>
-
-          <!-- 6. Grafico -->
-          <div class="block-row" id="good-6" onclick="selectSection(6)">
-            <div class="block-name-tag good">
-              <span>6. GRAFICO CARTESIANO</span>
-              <span>✔️ RETTA DI INTERPOLAZIONE</span>
-            </div>
-            <div class="block-content">
-              <div class="canvas-holder">
-                <canvas id="canvasGood" width="400" height="150" style="display:block; width:100%; height:130px;"></canvas>
-              </div>
-              <span style="font-size: 0.75rem; color: var(--green);">Retta di best-fit che media le oscillazioni casuali dei punti!</span>
-            </div>
-          </div>
-
-          <!-- 7. Conclusioni -->
-          <div class="block-row" id="good-7" onclick="selectSection(7)">
-            <div class="block-name-tag good">
-              <span>7. CONCLUSION & NOTE</span>
-              <span>✔️ SPIRITO CRITICO</span>
-            </div>
-            <div class="block-content">
-              <span class="highlight-good-text">"La retta passante per l'origine conferma la legge di Hooke. Le discrepanze sono compatibili con l'attrito della molla e l'errore di parallasse nella lettura dell'asta."</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-    </div>
-
-    <!-- ── Bottom Action Bar ── -->
-    <div class="bottom-bar">
-      <button class="btn-print" onclick="window.print()">
-        🖨️ STAMPA / SALVA IL MODELLO A4
+      <button class="nav-btn btn-next" id="btnNext" onclick="nextStep()">
+        SUCCESSIVO <span>►</span>
       </button>
     </div>
 
-  </div>
+  </main>
 
 <script>
 // ═══════════════════════════════════════════
-// SPIEGAZIONI GUIDATE PER OGNI SEZIONE
+// STATO & DATI DELLA LEZIONE (CONFRONTO AFFIANCATO)
 // ═══════════════════════════════════════════
-const RULES = {
-  1: {
-    tag: "1. INTESTAZIONE & TITOLO",
-    text: "<strong>REGOLA D'ORO:</strong> Una relazione scientifica è un documento formale. Deve riportare sempre l'Istituto (ISS Giordano Bruno), la classe, i componenti del gruppo e una data precisa. Il titolo deve citare sia il fenomeno sia il metodo (es. <em>Legge di Hooke</em>)."
-  },
-  2: {
-    tag: "2. OBIETTIVO DELLA PROVA",
-    text: "<strong>REGOLA D'ORO:</strong> L'obiettivo inizia SEMPRE con un verbo all'infinito (<em>Determinare, Verificare, Misurare</em>) e dichiara la grandezza fisica cercata. Espressioni come <em>'ci siamo divertiti'</em> o <em>'abbiamo provato'</em> non hanno cittadinanza scientifica!"
-  },
-  3: {
-    tag: "3. STRUMENTI & CARATTERISTICHE",
-    text: "<strong>REGOLA D'ORO:</strong> Non basta scrivere 'bilancia' o 'righello'. Bisogna sempre indicare: 1) Nome strumento, 2) <strong>Portata</strong> (valore massimo misurabile), 3) <strong>Sensibilità</strong> (più piccola tacca leggibile). Senza questi dati l'esperimento non è riproducibile!"
-  },
-  4: {
-    tag: "4. TABELLA MISURE",
-    text: "<strong>REGOLA D'ORO:</strong> 1) Ogni colonna deve avere la grandezza e la sua unità di misura [es. F in N, Δl in cm]. 2) Le misure si ripetono almeno 2-3 volte per calcolare il valor medio e stimare l'incertezza casuale."
-  },
-  5: {
-    tag: "5. CALCOLO & CIFRE SIGNIFICATIVE",
-    text: "<strong>REGOLA D'ORO:</strong> MAI copiare tutti i decimali della calcolatrice! L'incertezza assoluta ha SEMPRE 1 sola cifra significativa (es. ± 0.5 N/m) e il valor medio deve essere arrotondato alla stessa posizione decimale (22.8 e non 22.84615...)."
-  },
-  6: {
-    tag: "6. IL GRAFICO CARTESIANO",
-    text: "<strong>REGOLA D'ORO:</strong> In fisica NON si uniscono mai i punti a zig-zag! I punti oscillano per via degli errori casuali. Si traccia invece la <strong>retta di interpolazione (best-fit)</strong> che passa mediamente tra di essi rappresentando la legge fisica teorica."
-  },
-  7: {
-    tag: "7. LE CONCLUSION & ANALISI CRITICA",
-    text: "<strong>REGOLA D'ORO:</strong> Dire che <em>'non ci sono stati errori'</em> è l'errore più grave! In ogni misura reale esistono incertezze. Nelle conclusioni si discute: 1) Se il risultato conferma la teoria, 2) Quali errori sistematici c'erano (es. parallasse, attrito), 3) Come migliorare la prova."
-  }
-};
+let currentStep = 1;
+const totalSteps = 7;
 
-// Funzione di selezione sincronizzata
-function selectSection(id) {
-  // Rimuovi precedenti selezioni
-  document.querySelectorAll('.block-row').forEach(el => {
-    el.classList.remove('active-bad', 'active-good');
+const STEPS = [
+  // ── PASSO 1: CONFRONTO GLOBALE AFFIANCATO ──
+  {
+    badge: "FASE 1 — IL METODO SCIENTIFICO",
+    title: "L'ANATOMIA DI UNA RELAZIONE",
+    rule: "Osserva la differenza nello stesso frame: a sinistra gli errori tipici degli studenti, a destra la struttura formale corretta.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> 1. COME LA SCRIVE LO STUDENTE (ERRATA)
+          </div>
+          <div class="doc-paper">
+            <h4 style="color: #c40033;">ESPERIMENTO CON LA MOLLA</h4>
+            <p><strong>Obiettivo:</strong> <span class="tag-bad">"Oggi ci siamo divertiti a vedere quanto tirava la molla attaccandoci dei pesetti."</span></p>
+            <p><strong>Strumenti:</strong> <span class="tag-bad">"Abbiamo usato un righello normale e una bilancia trovata sul banco."</span></p>
+            <p><strong>Misure:</strong> "Allungamento: 4.2, 4.4, 4.3. Risultato: <span class="tag-bad">k = 22.84615384 N/m precisi</span>."</p>
+            <p><strong>Conclusioni:</strong> <span class="tag-bad">"L'esperimento è perfetto, non ci sono stati errori."</span></p>
+          </div>
+          <div class="why-box why-box-bad">
+            <strong>❌ Errori gravi:</strong> Linguaggio da diario personale, strumenti senza sensibilità/portata, troppe cifre decimali a caso e negazione delle incertezze.
+          </div>
+        </div>
+
+        <!-- Colonna Corretta -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> 2. COME RICHIEDE LA FISICA (CORRETTA)
+          </div>
+          <div class="doc-paper">
+            <h4 style="color: #0b6b0b;">VERIFICA DELLA LEGGE DI HOOKE</h4>
+            <p><strong>Obiettivo:</strong> <span class="tag-good">"Determinare sperimentalmente la costante elastica k di una molla tramite la forza peso applicata."</span></p>
+            <p><strong>Strumenti:</strong> <span class="tag-good">"Asta millimetrata (p: 100 cm, s: 0.1 cm), Bilancia tecnica (p: 500 g, s: 0.1 g)."</span></p>
+            <p><strong>Misure:</strong> "Δl_medio = <span class="tag-good">(4.3 ± 0.1) cm</span>. Risultato: <span class="tag-good">k = (22.8 ± 0.5) N/m</span>."</p>
+            <p><strong>Conclusioni:</strong> <span class="tag-good">"Proporzionalità diretta verificata; le incertezze sono compatibili con la sensibilità strumentale."</span></p>
+          </div>
+          <div class="why-box why-box-good">
+            <strong>✔️ Punti di forza:</strong> Verbo all'infinito, caratteristiche metrologiche precise, unità di misura S.I., cifre significative corrette e spirito critico.
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        💡 <strong>Regola per la classe:</strong> Chiunque nel mondo legga la colonna di destra deve poter ripetere l'esperimento nelle stesse identiche condizioni metrologiche.
+      </div>
+    `
+  },
+
+  // ── PASSO 2: TITOLO & OBIETTIVO AFFIANCATI ──
+  {
+    badge: "FASE 2 — IL PRIMO BLOCCO",
+    title: "IL TITOLO E L'OBIETTIVO",
+    rule: "La regola d'oro: l'obiettivo deve sempre iniziare con un VERBO ALL'INFINITO (Determinare, Misurare, Verificare) e indicare metodo e grandezza.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> COSA SCRIVONO SPESSO GLI STUDENTI
+          </div>
+          <div style="font-size: 0.9rem; line-height: 1.6; color: #ff99aa; margin-bottom: 0.8rem;">
+            <em>"Oggi con il compagno di banco abbiamo appeso dei pesetti alla molla per vedere quanto scendeva in basso."</em>
+          </div>
+          <div class="why-box why-box-bad">
+            <strong>Perché è bocciato:</strong><br>
+            • Descrive un'azione manuale vaga, non lo scopo scientifico.<br>
+            • Non specifica la legge fisica di riferimento (Hooke).<br>
+            • Manca la grandezza fisica cercata (costante elastica $k$).
+          </div>
+        </div>
+
+        <!-- Colonna Corretta -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> COME VA FORMULATO CORRETTAMENTE
+          </div>
+          <div style="font-size: 0.9rem; line-height: 1.6; color: #bbffaa; margin-bottom: 0.8rem;">
+            <em>"<strong>Determinare</strong> sperimentalmente la costante elastica <strong>k</strong> di una molla elicoidale mediante la <strong>legge di Hooke</strong>."</em>
+          </div>
+          <div class="why-box why-box-good">
+            <strong>Formula vincente:</strong><br>
+            • Inizia con un <strong>verbo all'infinito</strong> (<em>Determinare, Misurare, Verificare</em>).<br>
+            • Specifica la <strong>grandezza da misurare</strong> ($k$).<br>
+            • Cita il <strong>metodo sperimentale</strong> applicato.
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        🎯 <strong>Esercizio alla lavagna:</strong> Chiedi agli studenti di riformulare: <em>"Oggi cronometriamo la pallina sul piano inclinato"</em> ➔ Diventa: <em>"Determinare l'accelerazione di gravità g misurando i tempi di discesa sul piano inclinato."</em>
+      </div>
+    `
+  },
+
+  // ── PASSO 3: STRUMENTI (PORTATA VS SENSIBILITÀ AFFIANCATI) ──
+  {
+    badge: "FASE 3 — LA METROLOGIA",
+    title: "PORTATA VS SENSIBILITÀ",
+    rule: "Non basta scrivere 'bilancia' o 'righello'. Ogni strumento fisico è limitato dalle sue due caratteristiche metrologiche.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> ERRORE NELLA SCHEDA STRUMENTI
+          </div>
+          <div style="font-size: 0.9rem; color: #ff99aa; line-height: 1.6; margin-bottom: 0.8rem;">
+            <strong>Materiali usati:</strong><br>
+            • Righello<br>
+            • Pesi<br>
+            • Cronometro
+          </div>
+          <div class="why-box why-box-bad">
+            <strong>Cosa manca completamente?</strong><br>
+            Se usi un righello da 30 cm o un metro da cantiere da 5 m la precisione cambia totalmente. Nessuno può stimare l'errore senza conoscere la scala graduata!
+          </div>
+        </div>
+
+        <!-- Colonna Corretta -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> SCHEDA METROLOGICA COMPLETA
+          </div>
+          <div style="font-size: 0.88rem; color: #bbffaa; line-height: 1.6; margin-bottom: 0.8rem;">
+            <strong>Strumentazione con caratteristiche:</strong><br>
+            • <strong>Asta metrica:</strong> Portata 100 cm | Sensibilità 0.1 cm (1 mm)<br>
+            • <strong>Bilancia digitale:</strong> Portata 500 g | Sensibilità 0.01 g<br>
+            • <strong>Cronometro:</strong> Portata 60 min | Sensibilità 0.01 s
+          </div>
+          <div class="why-box why-box-good">
+            <strong>Definizioni chiave:</strong><br>
+            • <strong>PORTATA:</strong> Il valore massimo misurabile prima del fondo scala.<br>
+            • <strong>SENSIBILITÀ:</strong> La più piccola divisione leggibile sulla scala.
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        📏 <strong>Regola fondamentale:</strong> L'incertezza assoluta della misura singola non può MAI essere inferiore alla sensibilità dello strumento!
+      </div>
+    `
+  },
+
+  // ── PASSO 4: TABELLA DATI & INCERTEZZA AFFIANCATI ──
+  {
+    badge: "FASE 4 — DATI E INCERTEZZE",
+    title: "TABELLA MISURE & INCERTEZZA",
+    rule: "A sinistra i calcoli sbadati con numeri crudi; a destra la notazione scientifica con arrotondamento coerente all'incertezza.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> DATI GREZZI SENZA METODO
+          </div>
+          <table class="calc-table" style="color: #ff99aa;">
+            <tr><th>Misura 1</th><th>Misura 2</th><th>Misura 3</th></tr>
+            <tr><td>14.2</td><td>14.5</td><td>14.2</td></tr>
+          </table>
+          <div style="font-size: 0.85rem; color: #ff99aa; line-height: 1.5; margin-top: 0.6rem;">
+            Media display calcolatrice: <strong>14.300000000</strong><br>
+            Risultato scritto dallo studente: <span class="tag-bad">14.3</span> (senza incertezza e senza unità!)
+          </div>
+          <div class="why-box why-box-bad" style="margin-top: 0.6rem;">
+            In fisica un numero senza incertezza e senza unità di misura non è una misura scientifica.
+          </div>
+        </div>
+
+        <!-- Colonna Corretta -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> ELABORAZIONE STATISTICA CORRETTA
+          </div>
+          <table class="calc-table">
+            <tr><th>Prova 1 [cm]</th><th>Prova 2 [cm]</th><th>Prova 3 [cm]</th></tr>
+            <tr>
+              <td><input type="number" step="0.1" id="v1" value="14.2" onchange="updateCalcStep()"></td>
+              <td><input type="number" step="0.1" id="v2" value="14.5" onchange="updateCalcStep()"></td>
+              <td><input type="number" step="0.1" id="v3" value="14.2" onchange="updateCalcStep()"></td>
+            </tr>
+          </table>
+          <div style="background: rgba(57, 255, 20, 0.08); border: 1px solid var(--green); border-radius: 6px; padding: 0.6rem; text-align: center; margin-top: 0.6rem;">
+            <div style="font-size: 0.65rem; color: var(--cyan); font-family: var(--font-pixel);">SCRITTURA CORRETTA:</div>
+            <div style="font-family: var(--font-title); font-size: 1.15rem; color: var(--green);" id="sideCalcResult">
+              Δl = (14.3 ± 0.2) cm
+            </div>
+          </div>
+          <div class="why-box why-box-good" style="margin-top: 0.6rem;" id="sideCalcDetail">
+            • <strong>Media:</strong> 14.3 cm | • <strong>Semidispersione:</strong> (14.5 - 14.2)/2 = 0.15 ➔ 0.2 cm (1 cifra significativa per l'errore).
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        🧮 <strong>Regola delle cifre:</strong> L'incertezza si esprime con <strong>1 sola cifra significativa</strong> (es. ± 0.2 cm). Il valor medio si tronca alla stessa posizione decimale!
+      </div>
+    `
+  },
+
+  // ── PASSO 5: GRAFICO AFFIANCATO (ZIG-ZAG VS RETTA) ──
+  {
+    badge: "FASE 5 — RAPPRESENTAZIONE GRAFICA",
+    title: "IL GRAFICO CARTESIANO",
+    rule: "L'errore più comune in laboratorio: unire i punti a zig-zag! Guarda a sinistra cosa NON fare e a destra la retta di interpolazione.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata: Zig-Zag -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> ERRORE: UNIRE A ZIG-ZAG
+          </div>
+          <canvas class="canvas-mini" id="canvasBad" width="400" height="190"></canvas>
+          <div class="why-box why-box-bad" style="margin-top: 0.6rem;">
+            <strong>Errore concettuale grave:</strong><br>
+            I singoli punti oscillano per le inevitabili incertezze di misura. Se li unisci a zig-zag, tratti il rumore casuale come se fosse una legge fisica!
+          </div>
+        </div>
+
+        <!-- Colonna Corretta: Retta Best-fit -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> CORRETTO: RETTA DI INTERPOLAZIONE (BEST-FIT)
+          </div>
+          <canvas class="canvas-mini" id="canvasGood" width="400" height="190"></canvas>
+          <div class="why-box why-box-good" style="margin-top: 0.6rem;">
+            <strong>Metodo scientifico:</strong><br>
+            Si traccia la retta continua che passa il più vicino possibile a tutti i punti. La retta 'media' gli errori casuali e mostra la legge ($F = k \\cdot \\Delta l$).
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        📈 <strong>Pendenza della retta:</strong> Il coefficiente angolare della retta corrisponde al valore sperimentale della costante elastica $k = \\frac{\\Delta F}{\\Delta l}$.
+      </div>
+    `
+  },
+
+  // ── PASSO 6: CONCLUSIONIE AFFIANCATE ──
+  {
+    badge: "FASE 6 — ANALISI CRITICA",
+    title: "LE CONCLUSIONI",
+    rule: "A sinistra la classica conclusione 'da 4 in pagella'; a destra la struttura con spirito critico che valorizza il lavoro di laboratorio.",
+    render: () => `
+      <div class="compare-frame">
+        <!-- Colonna Errata -->
+        <div class="col-bad">
+          <div class="col-bad-header">
+            <span>❌</span> CONCLUSIONE SUPERFICIALE
+          </div>
+          <div style="font-size: 0.9rem; color: #ff99aa; line-height: 1.6; margin-bottom: 0.8rem;">
+            <em>"L'esperimento è andato molto bene. Abbiamo verificato che la molla funziona. Non ci sono stati errori e ci siamo divertiti molto."</em>
+          </div>
+          <div class="why-box why-box-bad">
+            <strong>Perché non è una conclusione:</strong><br>
+            • Non confronta i valori con la teoria.<br>
+            • Nega l'esistenza degli errori (che in fisica esistono sempre).<br>
+            • Non propone alcun miglioramento operativo.
+          </div>
+        </div>
+
+        <!-- Colonna Corretta -->
+        <div class="col-good">
+          <div class="col-good-header">
+            <span>✔️</span> ANALISI CRITICA DEI RISULTATI
+          </div>
+          <div style="font-size: 0.86rem; color: #bbffaa; line-height: 1.6; margin-bottom: 0.8rem;">
+            <em>"1. Il grafico F-Δl mostra andamento lineare, confermando la legge di Hooke con k = (22.8 ± 0.5) N/m.<br>
+            2. Fonti di errore sistematico: attrito interno e oscillazioni residue.<br>
+            3. Possibile miglioramento: uso di un sensore di forza digitale per ridurre l'incertezza."</em>
+          </div>
+          <div class="why-box why-box-good">
+            <strong>Le 3 domande chiave soddisfatte:</strong><br>
+            1. I dati confermano la legge fisica attesa?<br>
+            2. Quali sono state le cause di incertezza sperimentale?<br>
+            3. Come si potrebbe rendere la misura più accurata?
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-feedback">
+        🏆 <strong>Consiglio del docente ITP:</strong> Non aver paura di ammettere un'incertezza: uno scienziato viene valutato per come analizza i propri limiti sperimentali, non per numeri fittiziamente perfetti!
+      </div>
+    `
+  },
+
+  // ── PASSO 7: PROTOCOLLO COMPILATO PRONTO ALLA STAMPA ──
+  {
+    badge: "FASE 7 — PROTOCOLLO FINALE",
+    title: "IL MODELLO SCIENTIFICO COMPILATO",
+    rule: "Ecco il documento completo e pulito secondo le convenzioni apprese. Puoi personalizzarlo e stamparlo o salvarlo in PDF per la classe.",
+    render: () => `
+      <div style="margin-bottom: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
+          <div>
+            <label style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);">Gruppo di Lavoro:</label>
+            <input type="text" id="repAuthors" value="Rossi Marco, Bianchi Sara" style="width: 100%; background: #050811; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;" oninput="updatePrintDoc()">
+          </div>
+          <div>
+            <label style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);">Classe & Data:</label>
+            <input type="text" id="repClass" value="1ª B Scienze Applicate — 15/10/2026" style="width: 100%; background: #050811; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem;" oninput="updatePrintDoc()">
+          </div>
+        </div>
+
+        <div style="background: #ffffff; color: #111; padding: 1.5rem 1.8rem; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 0.88rem; line-height: 1.5; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" id="printDocCard">
+          <div style="border-bottom: 2px solid #222; padding-bottom: 4px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <strong>ISS GIORDANO BRUNO — LABORATORIO DI FISICA</strong>
+            <span id="docMeta">1ª B — 15/10/2026</span>
+          </div>
+          <h3 style="text-align: center; margin-bottom: 10px; font-size: 1.15rem; color: #0b3c66;">
+            RELAZIONE SCIENTIFICA: VERIFICA DELLA LEGGE DI HOOKE
+          </h3>
+          <p><strong>1. OBIETTIVO:</strong> Determinare sperimentalmente la costante elastica k di una molla tramite la forza peso applicata.</p>
+          <p><strong>2. STRUMENTI:</strong> Asta millimetrata (p: 100 cm, s: 0.1 cm), Bilancia tecnica (p: 500 g, s: 0.1 g), Molla elicoidale.</p>
+          <p><strong>3. FORMULE:</strong> F = k · Δl  =>  k = F / Δl (in unità del S.I. [N/m]).</p>
+          <p><strong>4. RISULTATI:</strong> Allungamento medio Δl = (14.3 ± 0.2) cm. Costante calcolata k = (22.8 ± 0.5) N/m.</p>
+          <p><strong>5. CONCLUSIONI:</strong> La proporzionalità diretta è confermata; le fluttuazioni sono pienamente compatibili con le incertezze strumentali.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem;">
+          <button class="nav-btn btn-next" style="display: inline-flex;" onclick="window.print()">
+            🖨️ STAMPA / SALVA IN PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="focus-feedback" style="border-left-color: var(--green);">
+        🎉 <strong>OTTIMO LAVORO!</strong> Il materiale è pronto per essere proiettato sulla LIM e utilizzato dagli studenti in laboratorio.
+      </div>
+    `
+  }
+];
+
+// ═══════════════════════════════════════════
+// FUNZIONI DI NAVIGAZIONE STEP
+// ═══════════════════════════════════════════
+function loadCurrentStep() {
+  const step = STEPS[currentStep - 1];
+
+  // Aggiorna header
+  document.getElementById('stepBadge').textContent = step.badge;
+  document.getElementById('stepTitle').textContent = step.title;
+  document.getElementById('stepRule').textContent = step.rule;
+  document.getElementById('stepCounterText').textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+
+  // Renderizza card principale
+  const card = document.getElementById('focusCard');
+  card.innerHTML = step.render();
+
+  // Aggiorna selettore numerico in basso
+  document.querySelectorAll('.jump-btn').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx + 1 === currentStep);
   });
 
-  // Evidenzia coppia sincronizzata
-  const badEl = document.getElementById('bad-' + id);
-  const goodEl = document.getElementById('good-' + id);
-  if (badEl) badEl.classList.add('active-bad');
-  if (goodEl) goodEl.classList.add('active-good');
+  // Gestione pulsanti avanti/indietro
+  document.getElementById('btnPrev').disabled = (currentStep === 1);
+  const nextBtn = document.getElementById('btnNext');
+  if (currentStep === totalSteps) {
+    nextBtn.innerHTML = `RICOMINCIA <span>↺</span>`;
+  } else {
+    nextBtn.innerHTML = `SUCCESSIVO <span>►</span>`;
+  }
 
-  // Aggiorna banner
-  const rule = RULES[id];
-  if (rule) {
-    document.getElementById('inspectorBadge').textContent = rule.tag;
-    document.getElementById('inspectorText').innerHTML = rule.text;
+  // Trigger post-render per grafici o calcoli
+  if (currentStep === 5) {
+    setTimeout(drawBothSideGraphs, 50);
+  } else if (currentStep === 4) {
+    setTimeout(updateCalcStep, 50);
   }
 }
 
+function nextStep() {
+  if (currentStep < totalSteps) {
+    currentStep++;
+  } else {
+    currentStep = 1;
+  }
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    loadCurrentStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToStep(s) {
+  currentStep = s;
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Navigazione tastiera (frecce destra/sinistra)
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') {
+    nextStep();
+  } else if (e.key === 'ArrowLeft') {
+    prevStep();
+  }
+});
+
 // ═══════════════════════════════════════════
-// DISEGNO DEI DUE GRAFICI (ZIGZAG VS RETTA)
+// LOGICHE DEI SINGOLI PASSI
 // ═══════════════════════════════════════════
-function drawGraphs() {
-  // 1. Grafico Errato (Zig-zag)
+
+// Step 4: Calcolo Misure
+function updateCalcStep() {
+  const v1 = parseFloat(document.getElementById('v1').value) || 0;
+  const v2 = parseFloat(document.getElementById('v2').value) || 0;
+  const v3 = parseFloat(document.getElementById('v3').value) || 0;
+
+  const mean = (v1 + v2 + v3) / 3;
+  const max = Math.max(v1, v2, v3);
+  const min = Math.min(v1, v2, v3);
+  const semidisp = (max - min) / 2;
+  const err = Math.max(semidisp, 0.1);
+
+  const resEl = document.getElementById('sideCalcResult');
+  const detEl = document.getElementById('sideCalcDetail');
+  if (resEl) resEl.textContent = `Δl = (${mean.toFixed(1)} ± ${err.toFixed(1)}) cm`;
+  if (detEl) {
+    detEl.innerHTML = `• <strong>Media:</strong> ${mean.toFixed(2)} cm ➔ <strong>${mean.toFixed(1)} cm</strong> | • <strong>Incertezza:</strong> (${max} - ${min})/2 = <strong>${err.toFixed(1)} cm</strong>.`;
+  }
+}
+
+// Step 5: Disegna entrambi i grafici affiancati
+function drawBothSideGraphs() {
+  // 1. Grafico Errato (Zig-Zag)
   const cBad = document.getElementById('canvasBad');
   if (cBad) {
     const ctx = cBad.getContext('2d');
     const w = cBad.width;
     const h = cBad.height;
-    ctx.clearRect(0,0,w,h);
+    ctx.clearRect(0, 0, w, h);
 
     // Assi
-    ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(35, 15); ctx.lineTo(35, h - 25); ctx.lineTo(w - 15, h - 25);
     ctx.stroke();
 
-    // Etichette
-    ctx.fillStyle = "#8b9bb4";
-    ctx.font = "10px 'Share Tech Mono'";
-    ctx.fillText("Δl", w - 25, h - 10);
-    ctx.fillText("F", 10, 20);
-
     const pts = [
-      {x: 35, y: h - 25},
-      {x: 110, y: h - 55},
-      {x: 190, y: h - 70},
-      {x: 270, y: h - 110},
-      {x: 350, y: h - 120}
+      { x: 35, y: h - 25 },
+      { x: 100, y: h - 55 },
+      { x: 180, y: h - 85 },
+      { x: 260, y: h - 145 },
+      { x: 340, y: h - 165 }
     ];
 
     // Punti
     ctx.fillStyle = "#ff3366";
     pts.slice(1).forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
     });
 
-    // Zig-zag
+    // Linea Zig-Zag spezzata
     ctx.strokeStyle = "#ff3366";
     ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(pts[0].x, pts[0].y);
     pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
     ctx.stroke();
-
-    // Scritta NO
-    ctx.fillStyle = "#ff3366";
-    ctx.font = "12px 'Orbitron'";
-    ctx.fillText("❌ ZIG-ZAG ERRATO", 180, 35);
+    ctx.setLineDash([]);
   }
 
-  // 2. Grafico Corretto (Retta best-fit)
+  // 2. Grafico Corretto (Retta Best-fit)
   const cGood = document.getElementById('canvasGood');
   if (cGood) {
     const ctx = cGood.getContext('2d');
     const w = cGood.width;
     const h = cGood.height;
-    ctx.clearRect(0,0,w,h);
+    ctx.clearRect(0, 0, w, h);
 
     // Assi
-    ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(35, 15); ctx.lineTo(35, h - 25); ctx.lineTo(w - 15, h - 25);
     ctx.stroke();
 
-    // Etichette
-    ctx.fillStyle = "#8b9bb4";
-    ctx.font = "10px 'Share Tech Mono'";
-    ctx.fillText("Δl", w - 25, h - 10);
-    ctx.fillText("F", 10, 20);
-
     const pts = [
-      {x: 110, y: h - 55},
-      {x: 190, y: h - 70},
-      {x: 270, y: h - 110},
-      {x: 350, y: h - 120}
+      { x: 35, y: h - 25 },
+      { x: 100, y: h - 55 },
+      { x: 180, y: h - 85 },
+      { x: 260, y: h - 145 },
+      { x: 340, y: h - 165 }
     ];
 
-    // Punti con barre errore
+    // Punti
     ctx.fillStyle = "#ffee00";
-    pts.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
-      ctx.fill();
-
-      // barre errore
-      ctx.strokeStyle = "rgba(255, 238, 0, 0.6)";
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y - 4); ctx.lineTo(p.x, p.y + 4);
-      ctx.stroke();
+    pts.slice(1).forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
     });
 
-    // Retta di regressione continua verde neon
+    // Retta best-fit continua verde
     ctx.strokeStyle = "#39ff14";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(35, h - 25);
-    ctx.lineTo(w - 20, 20);
+    ctx.lineTo(w - 30, 20);
     ctx.stroke();
-
-    // Scritta RETTA
-    ctx.fillStyle = "#39ff14";
-    ctx.font = "12px 'Orbitron'";
-    ctx.fillText("✔️ RETTA BEST-FIT", 180, 35);
   }
 }
 
-// Inizializza
+// Step 7: Update Print Card
+function updatePrintDoc() {
+  const a = document.getElementById('repAuthors').value;
+  const c = document.getElementById('repClass').value;
+  const m = document.getElementById('docMeta');
+  if (m) m.textContent = `${c} · Gruppo: ${a}`;
+}
+
+// Avvio
 window.addEventListener('DOMContentLoaded', () => {
-  drawGraphs();
-  selectSection(2); // Seleziona di default l'Obiettivo per mostrare subito l'interazione
+  loadCurrentStep();
 });
 </script>
 
