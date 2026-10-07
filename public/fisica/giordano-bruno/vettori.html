@@ -653,8 +653,14 @@ class VectorCanvas {
 
     const boxW = totalW + padX * 2;
     const boxH = totalH + padY * 2;
-    const boxX = sx - boxW / 2;
-    const boxY = sy - boxH / 2;
+    let boxX = sx - boxW / 2;
+    let boxY = sy - boxH / 2;
+
+    // Safety clamp to canvas viewport (Never cut off!)
+    if (boxX + boxW > this.size - 8) boxX = this.size - 8 - boxW;
+    if (boxX < 8) boxX = 8;
+    if (boxY + boxH > this.size - 8) boxY = this.size - 8 - boxH;
+    if (boxY < 8) boxY = 8;
 
     // Pill background
     ctx.fillStyle = bg;
@@ -667,7 +673,7 @@ class VectorCanvas {
     ctx.stroke();
 
     let curX = boxX + padX;
-    const textY = sy + 0.5;
+    const textY = boxY + boxH / 2 + 0.5;
 
     // Optional Prefix (e.g. "2 · " or "−1 · ")
     if (cleanPref) {
@@ -730,8 +736,14 @@ class VectorCanvas {
     const boxW = maxW + padX * 2;
     const boxH = lines.length * lineH + padY * 2;
 
-    const boxX = sx;
-    const boxY = sy - boxH / 2;
+    let boxX = sx;
+    let boxY = sy - boxH / 2;
+
+    // Safety clamp to canvas viewport (Never cut off!)
+    if (boxX + boxW > this.size - 12) boxX = this.size - 12 - boxW;
+    if (boxX < 12) boxX = 12;
+    if (boxY + boxH > this.size - 12) boxY = this.size - 12 - boxH;
+    if (boxY < 12) boxY = 12;
 
     ctx.fillStyle = bg;
     ctx.strokeStyle = 'rgba(88, 196, 221, 0.35)';
@@ -1144,8 +1156,8 @@ function step1Draw(mode) {
     // Pill label placed safely above the shaft (no line collision!)
     vc.drawPill(1.3, 1.6, 'F', ' = (3, 2)', COL.a);
 
-    // Floating card safely to the right
-    vc.drawInfoCard(3.3, 2.3, [
+    // Floating card in spacious bottom-right quadrant (Quadrant IV)
+    vc.drawInfoCard(0.6, -2.2, [
       '• Direzione: retta a ~34° ↗',
       '• Verso: in alto a destra ↗',
       '• Modulo: |F| ≈ 3.6 N'
