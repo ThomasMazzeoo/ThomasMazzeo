@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Vettori — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — 3BLUE1BROWN INSPIRED
+   Dark BG, vibrant colored vectors, clean grid
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #1b1b2f;
+  --bg-deep: #121225;
+  --card-bg: #16162b;
+  --grid-color: rgba(100, 130, 200, 0.12);
+  --grid-axis: rgba(180, 200, 255, 0.3);
+  --green: #39ff14;
+  --green-rgb: 57, 255, 20;
+  --cyan: #00f5ff;
+  --cyan-rgb: 0, 245, 255;
+  --yellow: #ffee00;
+  --yellow-rgb: 255, 238, 0;
+  --red: #ff3366;
+  --red-rgb: 255, 51, 102;
+  --blue: #58c4dd;
+  --blue-rgb: 88, 196, 221;
+  --orange: #ff8c42;
+  --orange-rgb: 255, 140, 66;
+  --purple: #b388ff;
+  --purple-rgb: 179, 136, 255;
+  --white: #f0f4fc;
+  --text-dim: #8b9bb4;
+  --border: rgba(88, 196, 221, 0.2);
+  --glow-blue: 0 0 16px rgba(88, 196, 221, 0.35);
+  --glow-green: 0 0 16px rgba(57, 255, 20, 0.35);
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Subtle scanline CRT */
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.12) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* ═══════════ TOP BAR ═══════════ */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--green);
+  text-decoration: none;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(57,255,20,0.22);
+  border-radius: 4px;
+  background: rgba(57,255,20,0.06);
+  transition: all 0.2s ease;
+}
+.back-link:hover {
+  background: rgba(57,255,20,0.18);
+  box-shadow: var(--glow-green);
+  transform: translateX(-2px);
+}
+.school-tag {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.step-indicator {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--yellow);
+  background: rgba(255,238,0,0.1);
+  border: 1px solid rgba(255,238,0,0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+}
+
+/* ═══════════ MAIN LAYOUT ═══════════ */
+.main-stage {
+  flex: 1;
+  max-width: 1200px;
+  width: 96%;
+  margin: 1.2rem auto 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.step-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.step-subtitle-badge {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--blue);
+  background: rgba(88,196,221,0.08);
+  border: 1px solid rgba(88,196,221,0.22);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  margin-bottom: 0.4rem;
+  letter-spacing: 1.5px;
+}
+.step-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--blue);
+  text-shadow: var(--glow-blue);
+  letter-spacing: 1.5px;
+  margin-bottom: 0.3rem;
+}
+.step-rule {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ═══════════ CONTENT CARD ═══════════ */
+.focus-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+  animation: cardFade 0.25s ease;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+@keyframes cardFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════ CANVAS AREA ═══════════ */
+.canvas-wrapper {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  flex: 1;
+}
+.canvas-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.canvas-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 520px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+}
+.canvas-container canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.explain-side {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .canvas-wrapper { flex-direction: column; }
+  .explain-side { flex: 0 0 auto; }
+}
+
+/* ═══════════ EXPLANATION PANELS ═══════════ */
+.info-box {
+  background: rgba(88,196,221,0.06);
+  border-left: 3px solid var(--blue);
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.info-box.green { background: rgba(57,255,20,0.06); border-color: var(--green); }
+.info-box.yellow { background: rgba(255,238,0,0.06); border-color: var(--yellow); }
+.info-box.orange { background: rgba(255,140,66,0.06); border-color: var(--orange); }
+.info-box.red { background: rgba(255,51,102,0.06); border-color: var(--red); }
+.info-box.purple { background: rgba(179,136,255,0.06); border-color: var(--purple); }
+.info-box strong { color: var(--white); }
+.info-box .highlight { color: var(--yellow); font-weight: 600; }
+
+.key-concept {
+  background: rgba(255,238,0,0.07);
+  border: 1px solid rgba(255,238,0,0.2);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--yellow);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.vec-label {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+.vec-a { color: #58c4dd; }
+.vec-b { color: #ff8c42; }
+.vec-sum { color: #39ff14; }
+.vec-diff { color: #ff3366; }
+.vec-scaled { color: #b388ff; }
+
+/* ═══════════ ANIMATION CONTROLS ═══════════ */
+.anim-controls {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.anim-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(88,196,221,0.3);
+  background: rgba(88,196,221,0.08);
+  color: var(--blue);
+  letter-spacing: 0.5px;
+}
+.anim-btn:hover {
+  background: rgba(88,196,221,0.2);
+  box-shadow: var(--glow-blue);
+}
+.anim-btn.active {
+  background: var(--blue);
+  color: var(--bg);
+  font-weight: bold;
+  border-color: var(--blue);
+}
+.anim-btn.green { border-color: rgba(57,255,20,0.3); color: var(--green); background: rgba(57,255,20,0.08); }
+.anim-btn.green:hover { background: rgba(57,255,20,0.2); box-shadow: var(--glow-green); }
+.anim-btn.green.active { background: var(--green); color: var(--bg); border-color: var(--green); }
+
+/* ═══════════ BOTTOM NAV ═══════════ */
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.6rem 0;
+}
+.step-jump-selector {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.jump-btn {
+  background: rgba(22,22,43,0.8);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-dim);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jump-btn:hover {
+  border-color: var(--blue);
+  color: var(--white);
+}
+.jump-btn.active {
+  background: var(--blue);
+  color: var(--bg);
+  border-color: var(--blue);
+  box-shadow: var(--glow-blue);
+  font-weight: bold;
+}
+.nav-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 1px;
+}
+.btn-prev {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-dim);
+}
+.btn-prev:hover:not(:disabled) {
+  border-color: var(--white);
+  color: var(--white);
+  transform: translateX(-3px);
+}
+.btn-prev:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-next {
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: var(--bg);
+  font-weight: bold;
+  box-shadow: var(--glow-blue);
+}
+.btn-next:hover {
+  background: #7dd8ee;
+  box-shadow: 0 0 22px rgba(88,196,221,0.6);
+  transform: translateX(3px);
+}
+
+/* Focus Feedback */
+.focus-feedback {
+  background: rgba(88,196,221,0.06);
+  border-left: 3px solid var(--blue);
+  padding: 0.75rem 1rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  margin-top: auto;
+  line-height: 1.5;
+  color: var(--white);
+}
+
+/* ═══════════ PRINT ═══════════ */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  .top-bar, .bottom-nav { display: none !important; }
+}
+
+/* ═══════════ QUIZ STYLES ═══════════ */
+.quiz-option {
+  background: rgba(88,196,221,0.06);
+  border: 1px solid rgba(88,196,221,0.2);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.88rem;
+  color: var(--white);
+  font-family: var(--font-body);
+}
+.quiz-option:hover {
+  border-color: var(--blue);
+  background: rgba(88,196,221,0.12);
+}
+.quiz-option.correct {
+  border-color: var(--green);
+  background: rgba(57,255,20,0.12);
+  color: var(--green);
+}
+.quiz-option.wrong {
+  border-color: var(--red);
+  background: rgba(255,51,102,0.12);
+  color: var(--red);
+}
+.quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+.quiz-feedback {
+  font-size: 0.85rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(57,255,20,0.08); color: var(--green); border-left: 3px solid var(--green); }
+.quiz-feedback.ko { background: rgba(255,51,102,0.08); color: var(--red); border-left: 3px solid var(--red); }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="/#fisica-laboratorio" class="back-link">
+      <span>◄</span> FISICA LAB
+    </a>
+    <div class="school-tag">
+      <span>🏫</span> ISS GIORDANO BRUNO — LABORATORIO DI FISICA
+    </div>
+    <div class="step-indicator" id="stepCounterText">
+      PASSO 1 DI 7
+    </div>
+  </header>
+
+  <main class="main-stage">
+    <div class="step-header">
+      <div class="step-subtitle-badge" id="stepBadge">FASE 1</div>
+      <h1 class="step-title" id="stepTitle">I VETTORI</h1>
+      <p class="step-rule" id="stepRule"></p>
+    </div>
+
+    <div class="focus-card" id="focusCard"></div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn btn-prev" id="btnPrev" onclick="prevStep()" disabled>
+        <span>◄</span> PRECEDENTE
+      </button>
+      <div class="step-jump-selector" id="jumpSelector"></div>
+      <button class="nav-btn btn-next" id="btnNext" onclick="nextStep()">
+        SUCCESSIVO <span>►</span>
+      </button>
+    </div>
+  </main>
+
+<script>
+// ═══════════════════════════════════════════
+// VECTOR LESSON — 3BLUE1BROWN STYLE
+// ═══════════════════════════════════════════
+
+let currentStep = 1;
+const totalSteps = 7;
+let animFrameId = null;
+
+// ── Colors ──
+const COL = {
+  bg: '#1b1b2f',
+  grid: 'rgba(100,130,200,0.12)',
+  axis: 'rgba(180,200,255,0.35)',
+  axisLabel: 'rgba(180,200,255,0.5)',
+  a: '#58c4dd',
+  b: '#ff8c42',
+  sum: '#39ff14',
+  diff: '#ff3366',
+  scaled: '#b388ff',
+  white: '#f0f4fc',
+  dimWhite: 'rgba(240,244,252,0.4)',
+  yellow: '#ffee00',
+  component: 'rgba(88,196,221,0.35)',
+};
+
+// ═══════════════════════════════════════════
+// GRID & VECTOR DRAWING ENGINE
+// ═══════════════════════════════════════════
+
+class VectorCanvas {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.resize();
+    this._resizeHandler = () => this.resize();
+    window.addEventListener('resize', this._resizeHandler);
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    const s = Math.min(rect.width, rect.height, 520);
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = s * dpr;
+    this.canvas.height = s * dpr;
+    this.canvas.style.width = s + 'px';
+    this.canvas.style.height = s + 'px';
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.size = s;
+    this.unit = s / 12; // -6 to +6
+    this.ox = s / 2;
+    this.oy = s / 2;
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.size, this.size);
+  }
+
+  // World to screen coords
+  toScreen(x, y) {
+    return [this.ox + x * this.unit, this.oy - y * this.unit];
+  }
+
+  drawGrid() {
+    const ctx = this.ctx;
+    const s = this.size;
+    const u = this.unit;
+
+    // Grid lines
+    ctx.strokeStyle = COL.grid;
+    ctx.lineWidth = 1;
+    for (let i = -6; i <= 6; i++) {
+      const px = this.ox + i * u;
+      const py = this.oy - i * u;
+      ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(s, py); ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = COL.axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, this.oy); ctx.lineTo(s, this.oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(this.ox, 0); ctx.lineTo(this.ox, s); ctx.stroke();
+
+    // Axis labels
+    ctx.font = '11px "Share Tech Mono", monospace';
+    ctx.fillStyle = COL.axisLabel;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let i = -5; i <= 5; i++) {
+      if (i === 0) continue;
+      const px = this.ox + i * u;
+      ctx.fillText(i, px, this.oy + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = -5; i <= 5; i++) {
+      if (i === 0) continue;
+      const py = this.oy - i * u;
+      ctx.fillText(i, this.ox - 5, py);
+    }
+
+    // Origin
+    ctx.fillStyle = COL.dimWhite;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('O', this.ox - 5, this.oy + 4);
+
+    // Axis names
+    ctx.font = 'bold 13px "Share Tech Mono", monospace';
+    ctx.fillStyle = COL.axisLabel;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', s - 14, this.oy + 14);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y', this.ox + 14, 14);
+  }
+
+  drawVector(x1, y1, x2, y2, color, label, lineWidth = 2.5, alpha = 1) {
+    const ctx = this.ctx;
+    const [sx1, sy1] = this.toScreen(x1, y1);
+    const [sx2, sy2] = this.toScreen(x2, y2);
+    const angle = Math.atan2(sy2 - sy1, sx2 - sx1);
+    const headLen = 12;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    // Shaft
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+
+    // Arrowhead
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(sx2, sy2);
+    ctx.lineTo(sx2 - headLen * Math.cos(angle - 0.35), sy2 - headLen * Math.sin(angle - 0.35));
+    ctx.lineTo(sx2 - headLen * Math.cos(angle + 0.35), sy2 - headLen * Math.sin(angle + 0.35));
+    ctx.closePath();
+    ctx.fill();
+
+    // Label
+    if (label) {
+      const mx = (sx1 + sx2) / 2;
+      const my = (sy1 + sy2) / 2;
+      const offsetX = 16 * Math.cos(angle + Math.PI / 2);
+      const offsetY = 16 * Math.sin(angle + Math.PI / 2);
+      ctx.font = 'bold 14px "Share Tech Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, mx + offsetX, my + offsetY);
+    }
+
+    ctx.restore();
+  }
+
+  drawDashedLine(x1, y1, x2, y2, color, alpha = 0.5) {
+    const ctx = this.ctx;
+    const [sx1, sy1] = this.toScreen(x1, y1);
+    const [sx2, sy2] = this.toScreen(x2, y2);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  drawPoint(x, y, color, radius = 4) {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(x, y);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  drawCoordLabel(x, y, text, color, offsetX = 0, offsetY = -16) {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(x, y);
+    ctx.font = '12px "Share Tech Mono", monospace';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(text, sx + offsetX, sy + offsetY);
+  }
+
+  drawComponentLines(x, y, color) {
+    this.drawDashedLine(x, 0, x, y, color, 0.35);
+    this.drawDashedLine(0, y, x, y, color, 0.35);
+  }
+
+  destroy() {
+    window.removeEventListener('resize', this._resizeHandler);
+  }
+}
+
+// ═══════════════════════════════════════════
+// ANIMATION HELPERS
+// ═══════════════════════════════════════════
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+function cancelAnim() {
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId);
+    animFrameId = null;
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP DEFINITIONS
+// ═══════════════════════════════════════════
+
+const STEPS = [
+
+  // ── STEP 1: COS'È UN VETTORE ──
+  {
+    badge: "FASE 1 — LE BASI",
+    title: "COS'È UN VETTORE?",
+    rule: "Uno scalare è un semplice numero (come la temperatura); un vettore è una freccia che ha direzione, verso e intensità.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv1"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" onclick="step1Show('both')">MOSTRA TUTTO</button>
+            <button class="anim-btn" onclick="step1Show('scalar')">SOLO SCALARE</button>
+            <button class="anim-btn" onclick="step1Show('vector')">SOLO VETTORE</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box yellow">
+            <strong>📏 Scalare</strong><br>
+            Un numero con la sua unità di misura.<br>
+            Esempio: <em>T = 25 °C</em> — sai quanto fa caldo, ma non c'è una "direzione" della temperatura.
+          </div>
+          <div class="info-box">
+            <strong>➡️ Vettore</strong><br>
+            Una freccia nel piano. Per descriverlo servono <strong>3 cose</strong>:
+          </div>
+          <div class="info-box green">
+            <strong>1. Direzione</strong> — la retta su cui giace (es. 45° rispetto all'asse x)<br>
+            <strong>2. Verso</strong> — dove punta la freccia (es. in alto a destra)<br>
+            <strong>3. Modulo (intensità)</strong> — la lunghezza della freccia (es. 5 N)
+          </div>
+          <div class="key-concept">
+            💡 Se dici "spingo con 10 N" manca qualcosa:<br>
+            <strong>verso dove?</strong> Per questo la forza è un vettore!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step1Draw('both'); }
+  },
+
+  // ── STEP 2: COMPONENTI ──
+  {
+    badge: "FASE 2 — LE COORDINATE",
+    title: "LE COMPONENTI DI UN VETTORE",
+    rule: "Ogni vettore nel piano si può scomporre in due componenti: una lungo x e una lungo y. Sono le sue 'istruzioni di viaggio'.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv2"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" onclick="step2Anim()">▶ ANIMA</button>
+            <button class="anim-btn" onclick="step2Static()">MOSTRA STATICO</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <strong>🧭 Scomporre un vettore</strong><br>
+            Prendi il vettore <span class="vec-a">a⃗ = (3, 4)</span>.<br>
+            Significa: <em>vai 3 passi a destra sull'asse x, poi 4 passi in alto sull'asse y.</em>
+          </div>
+          <div class="info-box green">
+            <strong>Componente x:</strong> a<sub>x</sub> = 3<br>
+            <strong>Componente y:</strong> a<sub>y</sub> = 4<br><br>
+            Le componenti sono le "proiezioni" del vettore sugli assi.
+          </div>
+          <div class="info-box yellow">
+            <strong>📐 Il modulo (la lunghezza)</strong><br>
+            Si calcola con Pitagora:<br>
+            |a⃗| = √(a<sub>x</sub>² + a<sub>y</sub>²) = √(9 + 16) = √25 = <strong>5</strong>
+          </div>
+          <div class="key-concept">
+            💡 Le componenti sono numeri (scalari!).<br>
+            Insieme, ricostruiscono il vettore.
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step2Static(); }
+  },
+
+  // ── STEP 3: SOMMA PUNTA-CODA ──
+  {
+    badge: "FASE 3 — SOMMA VETTORI",
+    title: "LA SOMMA: METODO PUNTA–CODA",
+    rule: "Per sommare due vettori, attacca la coda del secondo alla punta del primo. Il vettore risultante va dall'inizio alla fine.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv3"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn green active" onclick="step3Anim()">▶ ANIMA PASSO-PASSO</button>
+            <button class="anim-btn" onclick="step3Reset()">↺ RICOMINCIA</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <span class="vec-a">a⃗ = (3, 2)</span> &nbsp;+&nbsp; <span class="vec-b">b⃗ = (1, 3)</span><br><br>
+            <strong>Metodo punta–coda in 3 mosse:</strong>
+          </div>
+          <div class="info-box" id="step3msg1" style="opacity:0.3">
+            <strong>1.</strong> Disegna <span class="vec-a">a⃗</span> partendo dall'origine O.
+          </div>
+          <div class="info-box orange" id="step3msg2" style="opacity:0.3">
+            <strong>2.</strong> Attacca la coda di <span class="vec-b">b⃗</span> alla punta di <span class="vec-a">a⃗</span>.
+          </div>
+          <div class="info-box green" id="step3msg3" style="opacity:0.3">
+            <strong>3.</strong> Il vettore <span class="vec-sum">somma s⃗ = a⃗ + b⃗</span> va dall'origine alla punta di b⃗ spostato.
+          </div>
+          <div class="key-concept" id="step3result" style="opacity:0">
+            s⃗ = (3+1, 2+3) = <strong>(4, 5)</strong><br>
+            Componente per componente!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step3Reset(); }
+  },
+
+  // ── STEP 4: SOMMA CON PARALLELOGRAMMA ──
+  {
+    badge: "FASE 4 — IL PARALLELOGRAMMA",
+    title: "LA SOMMA: REGOLA DEL PARALLELOGRAMMA",
+    rule: "C'è un secondo modo equivalente: metti entrambi i vettori con la coda nell'origine e completa il parallelogramma. La diagonale è la somma!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv4"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn green active" onclick="step4Anim()">▶ ANIMA</button>
+            <button class="anim-btn" onclick="step4Reset()">↺ RICOMINCIA</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <span class="vec-a">a⃗ = (3, 1)</span> &nbsp;e&nbsp; <span class="vec-b">b⃗ = (1, 3)</span><br><br>
+            Entrambi partono dall'origine.
+          </div>
+          <div class="info-box" id="step4msg1" style="opacity:0.3">
+            <strong>1.</strong> Disegna i due vettori con la coda in O.
+          </div>
+          <div class="info-box yellow" id="step4msg2" style="opacity:0.3">
+            <strong>2.</strong> Completa il parallelogramma tracciando le linee tratteggiate.
+          </div>
+          <div class="info-box green" id="step4msg3" style="opacity:0.3">
+            <strong>3.</strong> La <strong>diagonale</strong> del parallelogramma è la somma <span class="vec-sum">s⃗ = a⃗ + b⃗</span>!
+          </div>
+          <div class="key-concept" id="step4result" style="opacity:0">
+            ✅ I due metodi (punta–coda e parallelogramma)<br>danno <strong>sempre lo stesso risultato!</strong>
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step4Reset(); }
+  },
+
+  // ── STEP 5: DIFFERENZA ──
+  {
+    badge: "FASE 5 — DIFFERENZA",
+    title: "LA DIFFERENZA TRA VETTORI",
+    rule: "Sottrarre un vettore significa sommarne l'opposto: a⃗ − b⃗ = a⃗ + (−b⃗). Capovolgi la freccia e poi somma!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv5"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn green active" onclick="step5Anim()">▶ ANIMA</button>
+            <button class="anim-btn" onclick="step5Reset()">↺ RICOMINCIA</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <span class="vec-a">a⃗ = (4, 2)</span> &nbsp;−&nbsp; <span class="vec-b">b⃗ = (1, 3)</span>
+          </div>
+          <div class="info-box orange" id="step5msg1" style="opacity:0.3">
+            <strong>1.</strong> Trova l'opposto: <span class="vec-b">−b⃗ = (−1, −3)</span><br>
+            <em>Stessa lunghezza, verso contrario!</em>
+          </div>
+          <div class="info-box" id="step5msg2" style="opacity:0.3">
+            <strong>2.</strong> Somma punta-coda: <span class="vec-a">a⃗</span> + (−<span class="vec-b">b⃗</span>)
+          </div>
+          <div class="info-box red" id="step5msg3" style="opacity:0.3">
+            <strong>3.</strong> Risultato: <span class="vec-diff">d⃗ = (4−1, 2−3) = (3, −1)</span>
+          </div>
+          <div class="key-concept" id="step5result" style="opacity:0">
+            💡 Sottrarre = capovolgere + sommare.<br>
+            Sempre componente per componente!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step5Reset(); }
+  },
+
+  // ── STEP 6: MOLTIPLICAZIONE PER SCALARE ──
+  {
+    badge: "FASE 6 — SCALARE × VETTORE",
+    title: "MOLTIPLICARE UN VETTORE PER UN NUMERO",
+    rule: "Moltiplicare per uno scalare cambia solo la lunghezza (e il verso se il numero è negativo). La direzione resta la stessa!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cv6"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" onclick="step6Draw(2)">×2</button>
+            <button class="anim-btn" onclick="step6Draw(0.5)">×0.5</button>
+            <button class="anim-btn" onclick="step6Draw(-1)">×(−1)</button>
+            <button class="anim-btn" onclick="step6Draw(-1.5)">×(−1.5)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <span class="vec-a">a⃗ = (2, 1)</span><br><br>
+            Premi i pulsanti per vedere come cambia il vettore quando lo moltiplichi per un numero.
+          </div>
+          <div class="info-box purple" id="step6info">
+            <strong>Risultato corrente:</strong><br>
+            <span id="step6text">2 · a⃗ = (4, 2) — il vettore si allunga al doppio!</span>
+          </div>
+          <div class="info-box green">
+            <strong>Regola generale:</strong><br>
+            k · (a<sub>x</sub>, a<sub>y</sub>) = (k · a<sub>x</sub>, k · a<sub>y</sub>)<br><br>
+            • k &gt; 1 → si <strong>allunga</strong><br>
+            • 0 &lt; k &lt; 1 → si <strong>accorcia</strong><br>
+            • k &lt; 0 → <strong>cambia verso</strong>!
+          </div>
+          <div class="key-concept">
+            💡 Se moltiplichi una forza per 2,<br>
+            la forza raddoppia ma la direzione resta!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { step6Draw(2); }
+  },
+
+  // ── STEP 7: QUIZ FINALE ──
+  {
+    badge: "FASE 7 — METTITI ALLA PROVA",
+    title: "QUIZ: HAI CAPITO I VETTORI?",
+    rule: "Rispondi a queste domande per verificare se i concetti sono chiari. Non preoccuparti se sbagli: clicca e leggi la spiegazione!",
+    render: () => `
+      <div style="display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
+        <!-- Q1 -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
+            <strong>Domanda 1:</strong> Quale di queste grandezze è un vettore?
+          </div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q1fb')">La velocità (ha un modulo e una direzione)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La temperatura (ha solo un valore numerico)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La massa (è un numero in kg)</div>
+          <div class="quiz-feedback" id="q1fb"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
+            <strong>Domanda 2:</strong> Se a⃗ = (2, 3) e b⃗ = (1, −1), quanto vale a⃗ + b⃗?
+          </div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q2fb')">(1, 4)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q2fb')">(3, 2)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q2fb')">(2, −3)</div>
+          <div class="quiz-feedback" id="q2fb"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
+            <strong>Domanda 3:</strong> Se moltiplico il vettore (4, 2) per −1, cosa succede?
+          </div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">Il vettore scompare (diventa zero)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">Il vettore diventa (4, −2)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q3fb')">Il vettore diventa (−4, −2) — stesso modulo, verso opposto</div>
+          <div class="quiz-feedback" id="q3fb"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
+            <strong>Domanda 4:</strong> Nel metodo punta–coda, dove attacchi il secondo vettore?
+          </div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q4fb')">All'origine O</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q4fb')">Alla punta (fine) del primo vettore</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q4fb')">A metà del primo vettore</div>
+          <div class="quiz-feedback" id="q4fb"></div>
+        </div>
+      </div>
+
+      <div class="focus-feedback" style="border-color: var(--yellow); margin-top: 1rem;">
+        🎉 <strong>Complimenti!</strong> Ora sai cos'è un vettore, come si scompone, come si sommano, si sottraggono e si moltiplicano per un numero. Questi strumenti ti serviranno in tutto il percorso di fisica!
+      </div>
+    `,
+    onMount: () => {}
+  }
+];
+
+// ═══════════════════════════════════════════
+// STEP-SPECIFIC DRAWING FUNCTIONS
+// ═══════════════════════════════════════════
+
+// ── STEP 1 ──
+function step1Draw(mode) {
+  cancelAnim();
+  const vc = new VectorCanvas('cv1');
+  if (!vc.canvas) return;
+  vc.clear();
+  vc.drawGrid();
+
+  if (mode === 'scalar' || mode === 'both') {
+    // Draw a temperature marker
+    const [sx, sy] = vc.toScreen(-3, 3);
+    vc.ctx.font = 'bold 26px "Share Tech Mono", monospace';
+    vc.ctx.fillStyle = COL.yellow;
+    vc.ctx.textAlign = 'center';
+    vc.ctx.textBaseline = 'middle';
+    vc.ctx.fillText('25 °C', sx, sy);
+    vc.ctx.font = '11px "Share Tech Mono", monospace';
+    vc.ctx.fillStyle = 'rgba(255,238,0,0.6)';
+    vc.ctx.fillText('(solo un numero)', sx, sy + 22);
+  }
+
+  if (mode === 'vector' || mode === 'both') {
+    // Draw a force vector
+    vc.drawVector(0, 0, 3, 2, COL.a, 'F⃗ = (3, 2)', 3);
+
+    // Annotations
+    const [px, py] = vc.toScreen(3, 2);
+    vc.ctx.font = '11px "Share Tech Mono", monospace';
+    vc.ctx.fillStyle = 'rgba(88,196,221,0.7)';
+    vc.ctx.textAlign = 'left';
+    vc.ctx.fillText('direzione ↗', px + 12, py - 6);
+    vc.ctx.fillText('verso: ↗ alto-destra', px + 12, py + 10);
+    vc.ctx.fillText('modulo: |F⃗| ≈ 3.6 N', px + 12, py + 26);
+  }
+
+  // Btn states
+  document.querySelectorAll('#focusCard .anim-btn').forEach(b => {
+    b.classList.remove('active');
+    if ((mode === 'both' && b.textContent.includes('TUTTO')) ||
+        (mode === 'scalar' && b.textContent.includes('SCALARE')) ||
+        (mode === 'vector' && b.textContent.includes('VETTORE'))) {
+      b.classList.add('active');
+    }
+  });
+}
+function step1Show(m) { step1Draw(m); }
+
+// ── STEP 2: COMPONENTI ──
+function step2Static() {
+  cancelAnim();
+  const vc = new VectorCanvas('cv2');
+  if (!vc.canvas) return;
+  vc.clear();
+  vc.drawGrid();
+  vc.drawComponentLines(3, 4, COL.component);
+  vc.drawVector(0, 0, 3, 0, COL.yellow, 'ax = 3', 2, 0.7);
+  vc.drawVector(3, 0, 3, 4, COL.yellow, 'ay = 4', 2, 0.7);
+  vc.drawVector(0, 0, 3, 4, COL.a, 'a⃗ = (3,4)', 3);
+  vc.drawCoordLabel(3, 4, '(3, 4)', COL.a);
+  vc.drawPoint(3, 4, COL.a, 5);
+
+  document.querySelectorAll('#focusCard .anim-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#focusCard .anim-btn')[1].classList.add('active');
+}
+
+function step2Anim() {
+  cancelAnim();
+  const vc = new VectorCanvas('cv2');
+  if (!vc.canvas) return;
+
+  document.querySelectorAll('#focusCard .anim-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#focusCard .anim-btn')[0].classList.add('active');
+
+  const duration = 2500;
+  const start = performance.now();
+
+  function frame(now) {
+    const elapsed = now - start;
+    const t = clamp01(elapsed / duration);
+    const e = easeInOut(t);
+
+    vc.clear();
+    vc.drawGrid();
+
+    // Phase 1: draw vector a growing (0 -> 0.4)
+    const t1 = clamp01(t / 0.4);
+    const vx = lerp(0, 3, easeInOut(t1));
+    const vy = lerp(0, 4, easeInOut(t1));
+    vc.drawVector(0, 0, vx, vy, COL.a, t1 > 0.5 ? 'a⃗' : '', 3);
+
+    // Phase 2: show components (0.4 -> 0.8)
+    if (t > 0.4) {
+      const t2 = clamp01((t - 0.4) / 0.4);
+      const alpha = easeInOut(t2);
+      vc.drawDashedLine(3, 0, 3, 4, COL.component, alpha * 0.5);
+      vc.drawDashedLine(0, 4, 3, 4, COL.component, alpha * 0.5);
+      vc.drawVector(0, 0, 3 * alpha, 0, COL.yellow, t2 > 0.5 ? 'ax=3' : '', 2, alpha * 0.8);
+      vc.drawVector(3, 0, 3, 4 * alpha, COL.yellow, t2 > 0.5 ? 'ay=4' : '', 2, alpha * 0.8);
+    }
+
+    // Phase 3: show point and label
+    if (t > 0.8) {
+      const t3 = clamp01((t - 0.8) / 0.2);
+      vc.drawPoint(3, 4, COL.a, 5 * easeInOut(t3));
+      if (t3 > 0.3) vc.drawCoordLabel(3, 4, '(3, 4)', COL.a);
+    }
+
+    if (t < 1) {
+      animFrameId = requestAnimationFrame(frame);
+    }
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ── STEP 3: SOMMA PUNTA-CODA ──
+let step3Phase = 0;
+
+function step3Reset() {
+  cancelAnim();
+  step3Phase = 0;
+  const vc = new VectorCanvas('cv3');
+  if (!vc.canvas) return;
+  vc.clear();
+  vc.drawGrid();
+
+  ['step3msg1','step3msg2','step3msg3'].forEach(id => { const el = document.getElementById(id); if(el) el.style.opacity = '0.3'; });
+  const r = document.getElementById('step3result'); if(r) r.style.opacity = '0';
+}
+
+function step3Anim() {
+  step3Phase++;
+  if (step3Phase > 3) { step3Reset(); step3Phase = 1; }
+  cancelAnim();
+
+  const vc = new VectorCanvas('cv3');
+  if (!vc.canvas) return;
+
+  const ax=3, ay=2, bx=1, by=3;
+  const duration = 800;
+  const start = performance.now();
+
+  function frame(now) {
+    const t = clamp01((now - start) / duration);
+    const e = easeInOut(t);
+    vc.clear();
+    vc.drawGrid();
+
+    // Phase 1: draw a
+    if (step3Phase >= 1) {
+      const p = step3Phase === 1 ? e : 1;
+      vc.drawVector(0, 0, ax * p, ay * p, COL.a, p > 0.6 ? 'a⃗' : '', 3);
+      if (p > 0.8) vc.drawCoordLabel(ax, ay, '(3, 2)', COL.a, 14, -8);
+      const m1 = document.getElementById('step3msg1'); if(m1) m1.style.opacity = '1';
+    }
+
+    // Phase 2: draw b from tip of a
+    if (step3Phase >= 2) {
+      const p = step3Phase === 2 ? e : 1;
+      vc.drawVector(ax, ay, ax + bx * p, ay + by * p, COL.b, p > 0.6 ? 'b⃗' : '', 3);
+      if (p > 0.8) vc.drawCoordLabel(ax + bx, ay + by, '(1, 3)', COL.b, 14, -8);
+      const m2 = document.getElementById('step3msg2'); if(m2) m2.style.opacity = '1';
+    }
+
+    // Phase 3: draw sum
+    if (step3Phase >= 3) {
+      const p = step3Phase === 3 ? e : 1;
+      vc.drawVector(0, 0, (ax+bx) * p, (ay+by) * p, COL.sum, p > 0.6 ? 's⃗ = a⃗+b⃗' : '', 3.5);
+      if (p > 0.8) {
+        vc.drawCoordLabel(ax+bx, ay+by, '(4, 5)', COL.sum, 0, -14);
+        vc.drawPoint(ax+bx, ay+by, COL.sum, 5);
+      }
+      const m3 = document.getElementById('step3msg3'); if(m3) m3.style.opacity = '1';
+      const r = document.getElementById('step3result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
+    }
+
+    if (t < 1) animFrameId = requestAnimationFrame(frame);
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ── STEP 4: PARALLELOGRAMMA ──
+let step4Phase = 0;
+
+function step4Reset() {
+  cancelAnim();
+  step4Phase = 0;
+  const vc = new VectorCanvas('cv4');
+  if (!vc.canvas) return;
+  vc.clear();
+  vc.drawGrid();
+  ['step4msg1','step4msg2','step4msg3'].forEach(id => { const el = document.getElementById(id); if(el) el.style.opacity = '0.3'; });
+  const r = document.getElementById('step4result'); if(r) r.style.opacity = '0';
+}
+
+function step4Anim() {
+  step4Phase++;
+  if (step4Phase > 3) { step4Reset(); step4Phase = 1; }
+  cancelAnim();
+
+  const vc = new VectorCanvas('cv4');
+  if (!vc.canvas) return;
+
+  const ax=3, ay=1, bx=1, by=3;
+  const duration = 800;
+  const start = performance.now();
+
+  function frame(now) {
+    const t = clamp01((now - start) / duration);
+    const e = easeInOut(t);
+    vc.clear();
+    vc.drawGrid();
+
+    // Phase 1: both vectors from origin
+    if (step4Phase >= 1) {
+      const p = step4Phase === 1 ? e : 1;
+      vc.drawVector(0, 0, ax * p, ay * p, COL.a, p > 0.6 ? 'a⃗' : '', 3);
+      vc.drawVector(0, 0, bx * p, by * p, COL.b, p > 0.6 ? 'b⃗' : '', 3);
+      const m1 = document.getElementById('step4msg1'); if(m1) m1.style.opacity = '1';
+    }
+
+    // Phase 2: parallelogram sides
+    if (step4Phase >= 2) {
+      const p = step4Phase === 2 ? e : 1;
+      vc.drawDashedLine(ax, ay, ax + bx * p, ay + by * p, COL.b, 0.5);
+      vc.drawDashedLine(bx, by, bx + ax * p, by + ay * p, COL.a, 0.5);
+      const m2 = document.getElementById('step4msg2'); if(m2) m2.style.opacity = '1';
+    }
+
+    // Phase 3: diagonal = sum
+    if (step4Phase >= 3) {
+      const p = step4Phase === 3 ? e : 1;
+      // Keep dashed lines
+      vc.drawDashedLine(ax, ay, ax + bx, ay + by, COL.b, 0.5);
+      vc.drawDashedLine(bx, by, bx + ax, by + ay, COL.a, 0.5);
+      vc.drawVector(0, 0, (ax+bx) * p, (ay+by) * p, COL.sum, p > 0.6 ? 's⃗' : '', 3.5);
+      if (p > 0.8) {
+        vc.drawPoint(ax+bx, ay+by, COL.sum, 5);
+        vc.drawCoordLabel(ax+bx, ay+by, '(4, 4)', COL.sum, 0, -14);
+      }
+      const m3 = document.getElementById('step4msg3'); if(m3) m3.style.opacity = '1';
+      const r = document.getElementById('step4result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
+    }
+
+    if (t < 1) animFrameId = requestAnimationFrame(frame);
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ── STEP 5: DIFFERENZA ──
+let step5Phase = 0;
+
+function step5Reset() {
+  cancelAnim();
+  step5Phase = 0;
+  const vc = new VectorCanvas('cv5');
+  if (!vc.canvas) return;
+  vc.clear();
+  vc.drawGrid();
+  // Draw a from origin
+  vc.drawVector(0, 0, 4, 2, COL.a, 'a⃗', 3);
+  vc.drawVector(0, 0, 1, 3, COL.b, 'b⃗', 3);
+  ['step5msg1','step5msg2','step5msg3'].forEach(id => { const el = document.getElementById(id); if(el) el.style.opacity = '0.3'; });
+  const r = document.getElementById('step5result'); if(r) r.style.opacity = '0';
+}
+
+function step5Anim() {
+  step5Phase++;
+  if (step5Phase > 3) { step5Reset(); step5Phase = 1; }
+  cancelAnim();
+
+  const vc = new VectorCanvas('cv5');
+  if (!vc.canvas) return;
+
+  const ax=4, ay=2, bx=1, by=3;
+  const duration = 900;
+  const start = performance.now();
+
+  function frame(now) {
+    const t = clamp01((now - start) / duration);
+    const e = easeInOut(t);
+    vc.clear();
+    vc.drawGrid();
+
+    vc.drawVector(0, 0, ax, ay, COL.a, 'a⃗', 3);
+
+    // Phase 1: show -b
+    if (step5Phase >= 1) {
+      const p = step5Phase === 1 ? e : 1;
+      // Original b fading out
+      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 1 - p * 0.6);
+      // -b appearing
+      vc.drawVector(0, 0, -bx * p, -by * p, COL.orange, p > 0.6 ? '−b⃗' : '', 2.5, p);
+      const m1 = document.getElementById('step5msg1'); if(m1) m1.style.opacity = '1';
+    }
+
+    // Phase 2: move -b to tip of a (punta-coda)
+    if (step5Phase >= 2) {
+      const p = step5Phase === 2 ? e : 1;
+      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 0.3);
+      // -b translated to tip of a
+      const sx = lerp(0, ax, p);
+      const sy = lerp(0, ay, p);
+      vc.drawVector(sx, sy, sx + (-bx), sy + (-by), COL.orange, '−b⃗', 2.5);
+      const m2 = document.getElementById('step5msg2'); if(m2) m2.style.opacity = '1';
+    }
+
+    // Phase 3: draw difference vector
+    if (step5Phase >= 3) {
+      const p = step5Phase === 3 ? e : 1;
+      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 0.3);
+      vc.drawVector(ax, ay, ax + (-bx), ay + (-by), COL.orange, '−b⃗', 2.5);
+      vc.drawVector(0, 0, (ax-bx) * p, (ay-by) * p, COL.diff, p > 0.6 ? 'd⃗ = a⃗−b⃗' : '', 3.5);
+      if (p > 0.8) {
+        vc.drawPoint(ax-bx, ay-by, COL.diff, 5);
+        vc.drawCoordLabel(ax-bx, ay-by, '(3, −1)', COL.diff, 14, 14);
+      }
+      const m3 = document.getElementById('step5msg3'); if(m3) m3.style.opacity = '1';
+      const r = document.getElementById('step5result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
+    }
+
+    if (t < 1) animFrameId = requestAnimationFrame(frame);
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ── STEP 6: SCALARE × VETTORE ──
+function step6Draw(k) {
+  cancelAnim();
+  const vc = new VectorCanvas('cv6');
+  if (!vc.canvas) return;
+
+  const ax = 2, ay = 1;
+  const duration = 700;
+  const start = performance.now();
+
+  // Update button states
+  document.querySelectorAll('#focusCard .anim-btn').forEach(b => {
+    b.classList.remove('active');
+    if (b.textContent.includes(k === -1.5 ? '−1.5' : k === -1 ? '−1' : String(k))) b.classList.add('active');
+  });
+
+  // Update text
+  const rx = k * ax, ry = k * ay;
+  const textEl = document.getElementById('step6text');
+  let desc = '';
+  if (k === 2) desc = `2 · a⃗ = (${rx}, ${ry}) — il vettore si allunga al doppio!`;
+  else if (k === 0.5) desc = `0.5 · a⃗ = (${rx}, ${ry}) — il vettore si dimezza!`;
+  else if (k === -1) desc = `−1 · a⃗ = (${rx}, ${ry}) — stesso modulo, verso opposto!`;
+  else if (k === -1.5) desc = `−1.5 · a⃗ = (${rx}, ${ry}) — più lungo E verso opposto!`;
+  if (textEl) textEl.textContent = desc;
+
+  function frame(now) {
+    const t = clamp01((now - start) / duration);
+    const e = easeInOut(t);
+    vc.clear();
+    vc.drawGrid();
+
+    // Original vector (dimmed)
+    vc.drawVector(0, 0, ax, ay, COL.a, 'a⃗', 2, 0.35);
+
+    // Scaled vector growing
+    const cx = ax * k * e;
+    const cy = ay * k * e;
+    vc.drawVector(0, 0, cx, cy, COL.purple, t > 0.5 ? `${k}·a⃗` : '', 3);
+
+    if (t > 0.9) {
+      vc.drawPoint(rx, ry, COL.purple, 5);
+      vc.drawCoordLabel(rx, ry, `(${rx}, ${ry})`, COL.purple, 0, ry >= 0 ? -14 : 20);
+    }
+
+    if (t < 1) animFrameId = requestAnimationFrame(frame);
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ── QUIZ ──
+function checkQuiz(el, isCorrect, fbId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.quiz-option').forEach(o => {
+    o.classList.add('disabled');
+    if (o === el) {
+      o.classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+  });
+  const fb = document.getElementById(fbId);
+  if (fb) {
+    fb.classList.add('show', isCorrect ? 'ok' : 'ko');
+    if (isCorrect) {
+      fb.textContent = '✅ Esatto! Ottimo lavoro!';
+    } else {
+      fb.textContent = '❌ Non è la risposta giusta. Rileggi la spiegazione nel passo corrispondente e riprova!';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+
+function loadCurrentStep() {
+  cancelAnim();
+  const step = STEPS[currentStep - 1];
+
+  document.getElementById('stepBadge').textContent = step.badge;
+  document.getElementById('stepTitle').textContent = step.title;
+  document.getElementById('stepRule').textContent = step.rule;
+  document.getElementById('stepCounterText').textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+
+  const card = document.getElementById('focusCard');
+  card.innerHTML = step.render();
+
+  // Jump buttons
+  const jumpSel = document.getElementById('jumpSelector');
+  jumpSel.innerHTML = '';
+  for (let i = 1; i <= totalSteps; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'jump-btn' + (i === currentStep ? ' active' : '');
+    btn.textContent = i;
+    btn.onclick = () => goToStep(i);
+    jumpSel.appendChild(btn);
+  }
+
+  document.getElementById('btnPrev').disabled = (currentStep === 1);
+  const nextBtn = document.getElementById('btnNext');
+  nextBtn.innerHTML = currentStep === totalSteps
+    ? 'RICOMINCIA <span>↺</span>'
+    : 'SUCCESSIVO <span>►</span>';
+
+  // Post-render callback
+  if (step.onMount) {
+    setTimeout(step.onMount, 60);
+  }
+}
+
+function nextStep() {
+  currentStep = currentStep < totalSteps ? currentStep + 1 : 1;
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    loadCurrentStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToStep(s) {
+  currentStep = s;
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextStep();
+  else if (e.key === 'ArrowLeft') prevStep();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadCurrentStep();
+});
+</script>
+
+</body>
+</html>

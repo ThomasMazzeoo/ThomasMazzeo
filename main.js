@@ -122,6 +122,16 @@ const MATERIE = [
                 url: "/fisica/giordano-bruno/relazione-laboratorio.html"
               }
             ]
+          },
+          {
+            title: "I Vettori",
+            topics: [
+              {
+                title: "Lezione Interattiva — I Vettori nel Piano (1h)",
+                desc: "Piano cartesiano animato stile 3Blue1Brown: cos'è un vettore, componenti, somma punta-coda, parallelogramma, differenza, moltiplicazione per scalare e quiz finale.",
+                url: "/fisica/giordano-bruno/vettori.html"
+              }
+            ]
           }
         ]
       }
