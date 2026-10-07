@@ -495,6 +495,11 @@ const COL = {
   sum: '#39ff14',
   diff: '#ff3366',
   scaled: '#b388ff',
+  purple: '#b388ff',
+  cyan: '#00f5ff',
+  green: '#39ff14',
+  orange: '#ff8c42',
+  red: '#ff3366',
   white: '#f0f4fc',
   dimWhite: 'rgba(240,244,252,0.4)',
   yellow: '#ffee00',
@@ -628,18 +633,20 @@ class VectorCanvas {
   }
 
   // Draw a sleek pill badge with vector arrow rendered procedurally (Zero tofu glyphs!)
-  drawPill(worldX, worldY, symbol, remainder, color, bg = 'rgba(18, 18, 37, 0.92)') {
+  drawPill(worldX, worldY, symbol, remainder, color, bg = 'rgba(18, 18, 37, 0.92)', prefix = '') {
     const ctx = this.ctx;
     const [sx, sy] = this.toScreen(worldX, worldY);
     ctx.save();
     ctx.font = 'bold 12px "Share Tech Mono", monospace';
 
-    const cleanRem = remainder || '';
+    const cleanPref = prefix || '';
     const cleanSym = symbol || '';
+    const cleanRem = remainder || '';
 
+    const prefWidth = cleanPref ? ctx.measureText(cleanPref).width : 0;
     const symWidth = cleanSym ? ctx.measureText(cleanSym).width : 0;
     const remWidth = cleanRem ? ctx.measureText(cleanRem).width : 0;
-    const totalW = symWidth + remWidth;
+    const totalW = prefWidth + symWidth + remWidth;
     const totalH = 17;
     const padX = 7;
     const padY = 3;
@@ -662,6 +669,15 @@ class VectorCanvas {
     let curX = boxX + padX;
     const textY = sy + 0.5;
 
+    // Optional Prefix (e.g. "2 · " or "−1 · ")
+    if (cleanPref) {
+      ctx.fillStyle = color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cleanPref, curX, textY);
+      curX += prefWidth;
+    }
+
     // Symbol with procedural vector arrow on top
     if (cleanSym) {
       ctx.fillStyle = color;
@@ -669,7 +685,7 @@ class VectorCanvas {
       ctx.textBaseline = 'middle';
       ctx.fillText(cleanSym, curX, textY);
 
-      // Procedural mini vector arrow
+      // Procedural mini vector arrow only over the symbol
       const arrowY = textY - 8;
       const arrowW = Math.max(7, symWidth - 1);
       ctx.strokeStyle = color;
@@ -1494,21 +1510,33 @@ function step6Draw(k) {
     vc.clear();
     vc.drawGrid();
 
-    // Original vector (dimmed)
+    // 1. Original vector a (dimmed)
     vc.drawVector(0, 0, ax, ay, COL.a, 2, 0.4);
-    vc.drawPill(0.8, 0.9, 'a', ' = (2, 1)', COL.a, 'rgba(18,18,37,0.7)');
+    vc.drawPill(0.8, 1.35, 'a', ' = (2, 1)', COL.a, 'rgba(18,18,37,0.85)');
 
-    // Scaled vector growing
+    // 2. Scaled vector growing
     const cx = ax * k * e;
     const cy = ay * k * e;
     vc.drawVector(0, 0, cx, cy, COL.purple, 3.2);
 
-    if (t > 0.7) {
-      const pillX = (cx * 0.5) + (k < 0 ? -0.4 : -0.4);
-      const pillY = (cy * 0.5) + (k < 0 ? -0.5 : 0.5);
-      vc.drawPill(pillX, pillY, `${k}·a`, '', COL.purple);
+    if (t > 0.6) {
+      // Point at tip
       vc.drawPoint(rx, ry, COL.purple, 5);
-      vc.drawPill(rx + (rx >= 0 ? 0.7 : -0.7), ry + (ry >= 0 ? 0.4 : -0.4), '', `(${rx}, ${ry})`, COL.purple);
+
+      // Distinct, non-overlapping coordinates for each k:
+      if (k === 2) {
+        vc.drawPill(2.2, 1.85, 'a', '', COL.purple, 'rgba(18,18,37,0.92)', '2 · ');
+        vc.drawPill(4.8, 2.3, '', '(4, 2)', COL.purple);
+      } else if (k === 0.5) {
+        vc.drawPill(0.5, 0.95, 'a', '', COL.purple, 'rgba(18,18,37,0.92)', '0.5 · ');
+        vc.drawPill(1.7, 0.35, '', '(1, 0.5)', COL.purple);
+      } else if (k === -1) {
+        vc.drawPill(-1.0, 0.25, 'a', '', COL.purple, 'rgba(18,18,37,0.92)', '−1 · ');
+        vc.drawPill(-2.8, -1.0, '', '(-2, -1)', COL.purple);
+      } else if (k === -1.5) {
+        vc.drawPill(-1.5, 0.3, 'a', '', COL.purple, 'rgba(18,18,37,0.92)', '−1.5 · ');
+        vc.drawPill(-3.9, -1.5, '', '(-3, -1.5)', COL.purple);
+      }
     }
 
     if (t < 1) animFrameId = requestAnimationFrame(frame);
