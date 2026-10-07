@@ -18,7 +18,7 @@
   --bg-deep: #121225;
   --card-bg: #16162b;
   --grid-color: rgba(100, 130, 200, 0.12);
-  --grid-axis: rgba(180, 200, 255, 0.3);
+  --grid-axis: rgba(180, 200, 255, 0.35);
   --green: #39ff14;
   --green-rgb: 57, 255, 20;
   --cyan: #00f5ff;
@@ -248,14 +248,25 @@ body::after {
   font-family: var(--font-mono);
 }
 
-.vec-label {
+/* Real Vector arrow in HTML (Clean, no broken glyphs!) */
+.vec-sym {
+  position: relative;
   display: inline-block;
-  padding: 0.1rem 0.45rem;
-  border-radius: 4px;
   font-weight: 700;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  padding: 0 1px;
 }
+.vec-sym::before {
+  content: "→";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0.8);
+  font-size: 0.75em;
+  line-height: 1;
+  color: inherit;
+}
+
 .vec-a { color: #58c4dd; }
 .vec-b { color: #ff8c42; }
 .vec-sum { color: #39ff14; }
@@ -584,7 +595,8 @@ class VectorCanvas {
     ctx.fillText('y', this.ox + 14, 14);
   }
 
-  drawVector(x1, y1, x2, y2, color, label, lineWidth = 2.5, alpha = 1) {
+  // Draw clean vector arrow
+  drawVector(x1, y1, x2, y2, color, lineWidth = 2.5, alpha = 1) {
     const ctx = this.ctx;
     const [sx1, sy1] = this.toScreen(x1, y1);
     const [sx2, sy2] = this.toScreen(x2, y2);
@@ -612,18 +624,114 @@ class VectorCanvas {
     ctx.closePath();
     ctx.fill();
 
-    // Label
-    if (label) {
-      const mx = (sx1 + sx2) / 2;
-      const my = (sy1 + sy2) / 2;
-      const offsetX = 16 * Math.cos(angle + Math.PI / 2);
-      const offsetY = 16 * Math.sin(angle + Math.PI / 2);
-      ctx.font = 'bold 14px "Share Tech Mono", monospace';
+    ctx.restore();
+  }
+
+  // Draw a sleek pill badge with vector arrow rendered procedurally (Zero tofu glyphs!)
+  drawPill(worldX, worldY, symbol, remainder, color, bg = 'rgba(18, 18, 37, 0.92)') {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(worldX, worldY);
+    ctx.save();
+    ctx.font = 'bold 12px "Share Tech Mono", monospace';
+
+    const cleanRem = remainder || '';
+    const cleanSym = symbol || '';
+
+    const symWidth = cleanSym ? ctx.measureText(cleanSym).width : 0;
+    const remWidth = cleanRem ? ctx.measureText(cleanRem).width : 0;
+    const totalW = symWidth + remWidth;
+    const totalH = 17;
+    const padX = 7;
+    const padY = 3;
+
+    const boxW = totalW + padX * 2;
+    const boxH = totalH + padY * 2;
+    const boxX = sx - boxW / 2;
+    const boxY = sy - boxH / 2;
+
+    // Pill background
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 4);
+    else ctx.rect(boxX, boxY, boxW, boxH);
+    ctx.fill();
+    ctx.stroke();
+
+    let curX = boxX + padX;
+    const textY = sy + 0.5;
+
+    // Symbol with procedural vector arrow on top
+    if (cleanSym) {
       ctx.fillStyle = color;
-      ctx.textAlign = 'center';
+      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(label, mx + offsetX, my + offsetY);
+      ctx.fillText(cleanSym, curX, textY);
+
+      // Procedural mini vector arrow
+      const arrowY = textY - 8;
+      const arrowW = Math.max(7, symWidth - 1);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(curX, arrowY);
+      ctx.lineTo(curX + arrowW, arrowY);
+      ctx.lineTo(curX + arrowW - 2.5, arrowY - 2.5);
+      ctx.moveTo(curX + arrowW, arrowY);
+      ctx.lineTo(curX + arrowW - 2.5, arrowY + 2.5);
+      ctx.stroke();
+
+      curX += symWidth;
     }
+
+    if (cleanRem) {
+      ctx.fillStyle = color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cleanRem, curX, textY);
+    }
+
+    ctx.restore();
+  }
+
+  // Draw floating multi-line info card on canvas
+  drawInfoCard(worldX, worldY, lines, color, bg = 'rgba(18, 18, 37, 0.94)') {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(worldX, worldY);
+    ctx.save();
+    ctx.font = '11px "Share Tech Mono", monospace';
+
+    let maxW = 0;
+    lines.forEach(l => {
+      const w = ctx.measureText(l).width;
+      if (w > maxW) maxW = w;
+    });
+
+    const lineH = 16;
+    const padX = 10;
+    const padY = 8;
+    const boxW = maxW + padX * 2;
+    const boxH = lines.length * lineH + padY * 2;
+
+    const boxX = sx;
+    const boxY = sy - boxH / 2;
+
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = 'rgba(88, 196, 221, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 6);
+    else ctx.rect(boxX, boxY, boxW, boxH);
+    ctx.fill();
+    ctx.stroke();
+
+    lines.forEach((l, i) => {
+      ctx.fillStyle = i === 0 ? color : 'rgba(240, 244, 252, 0.9)';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(l, boxX + padX, boxY + padY + i * lineH);
+    });
 
     ctx.restore();
   }
@@ -652,16 +760,6 @@ class VectorCanvas {
     ctx.beginPath();
     ctx.arc(sx, sy, radius, 0, Math.PI * 2);
     ctx.fill();
-  }
-
-  drawCoordLabel(x, y, text, color, offsetX = 0, offsetY = -16) {
-    const ctx = this.ctx;
-    const [sx, sy] = this.toScreen(x, y);
-    ctx.font = '12px "Share Tech Mono", monospace';
-    ctx.fillStyle = color;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(text, sx + offsetX, sy + offsetY);
   }
 
   drawComponentLines(x, y, color) {
@@ -716,16 +814,16 @@ const STEPS = [
           <div class="info-box yellow">
             <strong>📏 Scalare</strong><br>
             Un numero con la sua unità di misura.<br>
-            Esempio: <em>T = 25 °C</em> — sai quanto fa caldo, ma non c'è una "direzione" della temperatura.
+            Esempio: <em>T = 25 °C</em> — sai quanto fa caldo, ma non esiste una "direzione" della temperatura.
           </div>
           <div class="info-box">
             <strong>➡️ Vettore</strong><br>
-            Una freccia nel piano. Per descriverlo servono <strong>3 cose</strong>:
+            Una freccia nel piano. Per descriverlo servono <strong>3 proprietà</strong>:
           </div>
           <div class="info-box green">
-            <strong>1. Direzione</strong> — la retta su cui giace (es. 45° rispetto all'asse x)<br>
-            <strong>2. Verso</strong> — dove punta la freccia (es. in alto a destra)<br>
-            <strong>3. Modulo (intensità)</strong> — la lunghezza della freccia (es. 5 N)
+            <strong>1. Direzione</strong> — la retta su cui giace la freccia (es. inclinata di ~34°)<br>
+            <strong>2. Verso</strong> — dove punta la punta (in alto a destra ↗)<br>
+            <strong>3. Modulo (intensità)</strong> — la lunghezza: |F| = √(3² + 2²) ≈ 3.6 N
           </div>
           <div class="key-concept">
             💡 Se dici "spingo con 10 N" manca qualcosa:<br>
@@ -741,7 +839,7 @@ const STEPS = [
   {
     badge: "FASE 2 — LE COORDINATE",
     title: "LE COMPONENTI DI UN VETTORE",
-    rule: "Ogni vettore nel piano si può scomporre in due componenti: una lungo x e una lungo y. Sono le sue 'istruzioni di viaggio'.",
+    rule: "Ogni vettore nel piano si scompone in due componenti: una lungo l'asse x e una lungo l'asse y. Sono le sue 'istruzioni di viaggio'.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -756,22 +854,22 @@ const STEPS = [
         <div class="explain-side">
           <div class="info-box">
             <strong>🧭 Scomporre un vettore</strong><br>
-            Prendi il vettore <span class="vec-a">a⃗ = (3, 4)</span>.<br>
-            Significa: <em>vai 3 passi a destra sull'asse x, poi 4 passi in alto sull'asse y.</em>
+            Prendi il vettore <span class="vec-a"><span class="vec-sym">a</span> = (3, 4)</span>.<br>
+            Significa: <em>parti dall'origine, fai 3 passi a destra su x, poi 4 passi in alto su y.</em>
           </div>
           <div class="info-box green">
-            <strong>Componente x:</strong> a<sub>x</sub> = 3<br>
-            <strong>Componente y:</strong> a<sub>y</sub> = 4<br><br>
-            Le componenti sono le "proiezioni" del vettore sugli assi.
+            <strong>Componente orizzontale:</strong> a<sub>x</sub> = 3<br>
+            <strong>Componente verticale:</strong> a<sub>y</sub> = 4<br><br>
+            Le componenti sono le proiezioni ortogonali del vettore sugli assi.
           </div>
           <div class="info-box yellow">
             <strong>📐 Il modulo (la lunghezza)</strong><br>
-            Si calcola con Pitagora:<br>
-            |a⃗| = √(a<sub>x</sub>² + a<sub>y</sub>²) = √(9 + 16) = √25 = <strong>5</strong>
+            Si calcola con il teorema di Pitagora:<br>
+            |<span class="vec-sym">a</span>| = √(a<sub>x</sub>² + a<sub>y</sub>²) = √(3² + 4²) = √25 = <strong>5</strong>
           </div>
           <div class="key-concept">
             💡 Le componenti sono numeri (scalari!).<br>
-            Insieme, ricostruiscono il vettore.
+            Insieme ricostruiscono il vettore completo.
           </div>
         </div>
       </div>
@@ -797,21 +895,21 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="info-box">
-            <span class="vec-a">a⃗ = (3, 2)</span> &nbsp;+&nbsp; <span class="vec-b">b⃗ = (1, 3)</span><br><br>
+            <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span> &nbsp;+&nbsp; <span class="vec-b"><span class="vec-sym">b</span> = (1, 3)</span><br><br>
             <strong>Metodo punta–coda in 3 mosse:</strong>
           </div>
           <div class="info-box" id="step3msg1" style="opacity:0.3">
-            <strong>1.</strong> Disegna <span class="vec-a">a⃗</span> partendo dall'origine O.
+            <strong>1.</strong> Disegna <span class="vec-a"><span class="vec-sym">a</span></span> partendo dall'origine O.
           </div>
           <div class="info-box orange" id="step3msg2" style="opacity:0.3">
-            <strong>2.</strong> Attacca la coda di <span class="vec-b">b⃗</span> alla punta di <span class="vec-a">a⃗</span>.
+            <strong>2.</strong> Sposta la coda di <span class="vec-b"><span class="vec-sym">b</span></span> sulla punta di <span class="vec-a"><span class="vec-sym">a</span></span>.
           </div>
           <div class="info-box green" id="step3msg3" style="opacity:0.3">
-            <strong>3.</strong> Il vettore <span class="vec-sum">somma s⃗ = a⃗ + b⃗</span> va dall'origine alla punta di b⃗ spostato.
+            <strong>3.</strong> Il vettore <span class="vec-sum">somma <span class="vec-sym">s</span> = <span class="vec-sym">a</span> + <span class="vec-sym">b</span></span> va dall'origine O alla punta di b!
           </div>
           <div class="key-concept" id="step3result" style="opacity:0">
-            s⃗ = (3+1, 2+3) = <strong>(4, 5)</strong><br>
-            Componente per componente!
+            <span class="vec-sym">s</span> = (3+1, 2+3) = <strong>(4, 5)</strong><br>
+            Si sommano componente per componente!
           </div>
         </div>
       </div>
@@ -823,7 +921,7 @@ const STEPS = [
   {
     badge: "FASE 4 — IL PARALLELOGRAMMA",
     title: "LA SOMMA: REGOLA DEL PARALLELOGRAMMA",
-    rule: "C'è un secondo modo equivalente: metti entrambi i vettori con la coda nell'origine e completa il parallelogramma. La diagonale è la somma!",
+    rule: "Metodo equivalente: applica entrambi i vettori all'origine e costruisci il parallelogramma. La diagonale è la somma!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -837,20 +935,20 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="info-box">
-            <span class="vec-a">a⃗ = (3, 1)</span> &nbsp;e&nbsp; <span class="vec-b">b⃗ = (1, 3)</span><br><br>
-            Entrambi partono dall'origine.
+            <span class="vec-a"><span class="vec-sym">a</span> = (3, 1)</span> &nbsp;e&nbsp; <span class="vec-b"><span class="vec-sym">b</span> = (1, 3)</span><br><br>
+            Entrambi partono dall'origine O.
           </div>
           <div class="info-box" id="step4msg1" style="opacity:0.3">
             <strong>1.</strong> Disegna i due vettori con la coda in O.
           </div>
           <div class="info-box yellow" id="step4msg2" style="opacity:0.3">
-            <strong>2.</strong> Completa il parallelogramma tracciando le linee tratteggiate.
+            <strong>2.</strong> Traccia le rette parallele tratteggiate per completare la figura.
           </div>
           <div class="info-box green" id="step4msg3" style="opacity:0.3">
-            <strong>3.</strong> La <strong>diagonale</strong> del parallelogramma è la somma <span class="vec-sum">s⃗ = a⃗ + b⃗</span>!
+            <strong>3.</strong> La <strong>diagonale</strong> del parallelogramma è la somma <span class="vec-sum"><span class="vec-sym">s</span> = <span class="vec-sym">a</span> + <span class="vec-sym">b</span></span>!
           </div>
           <div class="key-concept" id="step4result" style="opacity:0">
-            ✅ I due metodi (punta–coda e parallelogramma)<br>danno <strong>sempre lo stesso risultato!</strong>
+            ✅ Punta–coda e parallelogramma danno <strong>sempre lo stesso identico vettore</strong>!
           </div>
         </div>
       </div>
@@ -862,7 +960,7 @@ const STEPS = [
   {
     badge: "FASE 5 — DIFFERENZA",
     title: "LA DIFFERENZA TRA VETTORI",
-    rule: "Sottrarre un vettore significa sommarne l'opposto: a⃗ − b⃗ = a⃗ + (−b⃗). Capovolgi la freccia e poi somma!",
+    rule: "Sottrarre un vettore significa sommare il suo opposto: a − b = a + (−b). Capovolgi il secondo vettore e poi somma!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -876,20 +974,20 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="info-box">
-            <span class="vec-a">a⃗ = (4, 2)</span> &nbsp;−&nbsp; <span class="vec-b">b⃗ = (1, 3)</span>
+            <span class="vec-a"><span class="vec-sym">a</span> = (4, 2)</span> &nbsp;−&nbsp; <span class="vec-b"><span class="vec-sym">b</span> = (1, 3)</span>
           </div>
           <div class="info-box orange" id="step5msg1" style="opacity:0.3">
-            <strong>1.</strong> Trova l'opposto: <span class="vec-b">−b⃗ = (−1, −3)</span><br>
-            <em>Stessa lunghezza, verso contrario!</em>
+            <strong>1.</strong> Trova l'opposto: <span class="vec-b">−<span class="vec-sym">b</span> = (−1, −3)</span><br>
+            <em>Stessa lunghezza, verso opposto!</em>
           </div>
           <div class="info-box" id="step5msg2" style="opacity:0.3">
-            <strong>2.</strong> Somma punta-coda: <span class="vec-a">a⃗</span> + (−<span class="vec-b">b⃗</span>)
+            <strong>2.</strong> Somma punta-coda: <span class="vec-a"><span class="vec-sym">a</span></span> + (−<span class="vec-b"><span class="vec-sym">b</span></span>)
           </div>
           <div class="info-box red" id="step5msg3" style="opacity:0.3">
-            <strong>3.</strong> Risultato: <span class="vec-diff">d⃗ = (4−1, 2−3) = (3, −1)</span>
+            <strong>3.</strong> Risultato: <span class="vec-diff"><span class="vec-sym">d</span> = (4−1, 2−3) = (3, −1)</span>
           </div>
           <div class="key-concept" id="step5result" style="opacity:0">
-            💡 Sottrarre = capovolgere + sommare.<br>
+            💡 Differenza = capovolgi il secondo + somma.<br>
             Sempre componente per componente!
           </div>
         </div>
@@ -902,7 +1000,7 @@ const STEPS = [
   {
     badge: "FASE 6 — SCALARE × VETTORE",
     title: "MOLTIPLICARE UN VETTORE PER UN NUMERO",
-    rule: "Moltiplicare per uno scalare cambia solo la lunghezza (e il verso se il numero è negativo). La direzione resta la stessa!",
+    rule: "Moltiplicare per un numero cambia solo la lunghezza (e il verso se il numero è negativo). La direzione resta invariata!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -918,23 +1016,23 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="info-box">
-            <span class="vec-a">a⃗ = (2, 1)</span><br><br>
-            Premi i pulsanti per vedere come cambia il vettore quando lo moltiplichi per un numero.
+            <span class="vec-a"><span class="vec-sym">a</span> = (2, 1)</span><br><br>
+            Premi i pulsanti per osservare come cambia il vettore scalato.
           </div>
           <div class="info-box purple" id="step6info">
             <strong>Risultato corrente:</strong><br>
-            <span id="step6text">2 · a⃗ = (4, 2) — il vettore si allunga al doppio!</span>
+            <span id="step6text">2 · a = (4, 2) — il vettore raddoppia la lunghezza!</span>
           </div>
           <div class="info-box green">
             <strong>Regola generale:</strong><br>
-            k · (a<sub>x</sub>, a<sub>y</sub>) = (k · a<sub>x</sub>, k · a<sub>y</sub>)<br><br>
+            k · (a<sub>x</sub>, a<sub>y</sub>) = (k·a<sub>x</sub>, k·a<sub>y</sub>)<br><br>
             • k &gt; 1 → si <strong>allunga</strong><br>
             • 0 &lt; k &lt; 1 → si <strong>accorcia</strong><br>
             • k &lt; 0 → <strong>cambia verso</strong>!
           </div>
           <div class="key-concept">
             💡 Se moltiplichi una forza per 2,<br>
-            la forza raddoppia ma la direzione resta!
+            la spinta raddoppia ma la retta d'azione resta!
           </div>
         </div>
       </div>
@@ -946,7 +1044,7 @@ const STEPS = [
   {
     badge: "FASE 7 — METTITI ALLA PROVA",
     title: "QUIZ: HAI CAPITO I VETTORI?",
-    rule: "Rispondi a queste domande per verificare se i concetti sono chiari. Non preoccuparti se sbagli: clicca e leggi la spiegazione!",
+    rule: "Rispondi alle domande per verificare se i concetti sono chiari. Clicca e leggi la spiegazione immediata!",
     render: () => `
       <div style="display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
         <!-- Q1 -->
@@ -954,19 +1052,19 @@ const STEPS = [
           <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
             <strong>Domanda 1:</strong> Quale di queste grandezze è un vettore?
           </div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'q1fb')">La velocità (ha un modulo e una direzione)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La temperatura (ha solo un valore numerico)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La massa (è un numero in kg)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q1fb')">La velocità (ha modulo, direzione e verso)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La temperatura (è solo un valore numerico)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q1fb')">La massa (è un valore in kg senza direzione)</div>
           <div class="quiz-feedback" id="q1fb"></div>
         </div>
 
         <!-- Q2 -->
         <div>
           <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
-            <strong>Domanda 2:</strong> Se a⃗ = (2, 3) e b⃗ = (1, −1), quanto vale a⃗ + b⃗?
+            <strong>Domanda 2:</strong> Se a = (2, 3) e b = (1, −1), quanto vale la somma a + b?
           </div>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'q2fb')">(1, 4)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'q2fb')">(3, 2)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q2fb')">(3, 2) — basta sommare le x (2+1=3) e le y (3−1=2)</div>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'q2fb')">(2, −3)</div>
           <div class="quiz-feedback" id="q2fb"></div>
         </div>
@@ -974,28 +1072,28 @@ const STEPS = [
         <!-- Q3 -->
         <div>
           <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
-            <strong>Domanda 3:</strong> Se moltiplico il vettore (4, 2) per −1, cosa succede?
+            <strong>Domanda 3:</strong> Se moltiplichi il vettore (4, 2) per −1, cosa ottieni?
           </div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">Il vettore scompare (diventa zero)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">Il vettore diventa (4, −2)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'q3fb')">Il vettore diventa (−4, −2) — stesso modulo, verso opposto</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">Il vettore scompare (diventa nullo)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q3fb')">(4, −2)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q3fb')">(−4, −2) — stessa lunghezza, verso opposto a 180°</div>
           <div class="quiz-feedback" id="q3fb"></div>
         </div>
 
         <!-- Q4 -->
         <div>
           <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--blue); margin-bottom: 0.5rem;">
-            <strong>Domanda 4:</strong> Nel metodo punta–coda, dove attacchi il secondo vettore?
+            <strong>Domanda 4:</strong> Nel metodo punta–coda, dove colleghi la coda del secondo vettore?
           </div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'q4fb')">All'origine O</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'q4fb')">Alla punta (fine) del primo vettore</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'q4fb')">All'origine O degli assi</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'q4fb')">Sulla punta (termine) del primo vettore</div>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'q4fb')">A metà del primo vettore</div>
           <div class="quiz-feedback" id="q4fb"></div>
         </div>
       </div>
 
       <div class="focus-feedback" style="border-color: var(--yellow); margin-top: 1rem;">
-        🎉 <strong>Complimenti!</strong> Ora sai cos'è un vettore, come si scompone, come si sommano, si sottraggono e si moltiplicano per un numero. Questi strumenti ti serviranno in tutto il percorso di fisica!
+        🎉 <strong>Ottimo lavoro!</strong> Ora sai cos'è un vettore, come si scompone nelle componenti, come si somma, si sottrae e si riscala per un numero. Questi concetti sono la base di tutta la fisica del biennio!
       </div>
     `,
     onMount: () => {}
@@ -1003,7 +1101,7 @@ const STEPS = [
 ];
 
 // ═══════════════════════════════════════════
-// STEP-SPECIFIC DRAWING FUNCTIONS
+// STEP DRAWING FUNCTIONS (PILL-BASED & COLLISION-FREE)
 // ═══════════════════════════════════════════
 
 // ── STEP 1 ──
@@ -1015,33 +1113,29 @@ function step1Draw(mode) {
   vc.drawGrid();
 
   if (mode === 'scalar' || mode === 'both') {
-    // Draw a temperature marker
     const [sx, sy] = vc.toScreen(-3, 3);
-    vc.ctx.font = 'bold 26px "Share Tech Mono", monospace';
+    vc.ctx.font = 'bold 24px "Share Tech Mono", monospace';
     vc.ctx.fillStyle = COL.yellow;
     vc.ctx.textAlign = 'center';
     vc.ctx.textBaseline = 'middle';
     vc.ctx.fillText('25 °C', sx, sy);
-    vc.ctx.font = '11px "Share Tech Mono", monospace';
-    vc.ctx.fillStyle = 'rgba(255,238,0,0.6)';
-    vc.ctx.fillText('(solo un numero)', sx, sy + 22);
+    vc.drawPill(-3, 2.2, '', '(solo un numero)', 'rgba(255,238,0,0.85)', 'rgba(18,18,37,0.8)');
   }
 
   if (mode === 'vector' || mode === 'both') {
-    // Draw a force vector
-    vc.drawVector(0, 0, 3, 2, COL.a, 'F⃗ = (3, 2)', 3);
+    // Vector F
+    vc.drawVector(0, 0, 3, 2, COL.a, 3);
+    // Pill label placed safely above the shaft (no line collision!)
+    vc.drawPill(1.3, 1.6, 'F', ' = (3, 2)', COL.a);
 
-    // Annotations
-    const [px, py] = vc.toScreen(3, 2);
-    vc.ctx.font = '11px "Share Tech Mono", monospace';
-    vc.ctx.fillStyle = 'rgba(88,196,221,0.7)';
-    vc.ctx.textAlign = 'left';
-    vc.ctx.fillText('direzione ↗', px + 12, py - 6);
-    vc.ctx.fillText('verso: ↗ alto-destra', px + 12, py + 10);
-    vc.ctx.fillText('modulo: |F⃗| ≈ 3.6 N', px + 12, py + 26);
+    // Floating card safely to the right
+    vc.drawInfoCard(3.3, 2.3, [
+      '• Direzione: retta a ~34° ↗',
+      '• Verso: in alto a destra ↗',
+      '• Modulo: |F| ≈ 3.6 N'
+    ], COL.a);
   }
 
-  // Btn states
   document.querySelectorAll('#focusCard .anim-btn').forEach(b => {
     b.classList.remove('active');
     if ((mode === 'both' && b.textContent.includes('TUTTO')) ||
@@ -1061,14 +1155,25 @@ function step2Static() {
   vc.clear();
   vc.drawGrid();
   vc.drawComponentLines(3, 4, COL.component);
-  vc.drawVector(0, 0, 3, 0, COL.yellow, 'ax = 3', 2, 0.7);
-  vc.drawVector(3, 0, 3, 4, COL.yellow, 'ay = 4', 2, 0.7);
-  vc.drawVector(0, 0, 3, 4, COL.a, 'a⃗ = (3,4)', 3);
-  vc.drawCoordLabel(3, 4, '(3, 4)', COL.a);
+
+  // Components: horizontal (inside triangle) and vertical (right side)
+  vc.drawVector(0, 0, 3, 0, COL.yellow, 2.2, 0.85);
+  vc.drawPill(1.5, 0.45, '', 'ax = 3', COL.yellow); // Above axis tick marks!
+
+  vc.drawVector(3, 0, 3, 4, COL.yellow, 2.2, 0.85);
+  vc.drawPill(3.8, 2.0, '', 'ay = 4', COL.yellow); // Outside right!
+
+  // Hypotenuse vector a
+  vc.drawVector(0, 0, 3, 4, COL.a, 3);
+  vc.drawPill(1.1, 2.7, 'a', ' = (3, 4)', COL.a); // Outside upper-left!
+
+  // Tip point
   vc.drawPoint(3, 4, COL.a, 5);
+  vc.drawPill(3.0, 4.6, '', '(3, 4)', COL.a); // Clear of the arrow tip!
 
   document.querySelectorAll('#focusCard .anim-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('#focusCard .anim-btn')[1].classList.add('active');
+  const btnStatic = document.querySelectorAll('#focusCard .anim-btn')[1];
+  if (btnStatic) btnStatic.classList.add('active');
 }
 
 function step2Anim() {
@@ -1077,15 +1182,15 @@ function step2Anim() {
   if (!vc.canvas) return;
 
   document.querySelectorAll('#focusCard .anim-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('#focusCard .anim-btn')[0].classList.add('active');
+  const btnAnim = document.querySelectorAll('#focusCard .anim-btn')[0];
+  if (btnAnim) btnAnim.classList.add('active');
 
-  const duration = 2500;
+  const duration = 2400;
   const start = performance.now();
 
   function frame(now) {
     const elapsed = now - start;
     const t = clamp01(elapsed / duration);
-    const e = easeInOut(t);
 
     vc.clear();
     vc.drawGrid();
@@ -1094,23 +1199,33 @@ function step2Anim() {
     const t1 = clamp01(t / 0.4);
     const vx = lerp(0, 3, easeInOut(t1));
     const vy = lerp(0, 4, easeInOut(t1));
-    vc.drawVector(0, 0, vx, vy, COL.a, t1 > 0.5 ? 'a⃗' : '', 3);
+    vc.drawVector(0, 0, vx, vy, COL.a, 3);
+    if (t1 > 0.6) {
+      vc.drawPill(1.1, 2.7, 'a', ' = (3, 4)', COL.a);
+    }
 
     // Phase 2: show components (0.4 -> 0.8)
     if (t > 0.4) {
       const t2 = clamp01((t - 0.4) / 0.4);
       const alpha = easeInOut(t2);
-      vc.drawDashedLine(3, 0, 3, 4, COL.component, alpha * 0.5);
-      vc.drawDashedLine(0, 4, 3, 4, COL.component, alpha * 0.5);
-      vc.drawVector(0, 0, 3 * alpha, 0, COL.yellow, t2 > 0.5 ? 'ax=3' : '', 2, alpha * 0.8);
-      vc.drawVector(3, 0, 3, 4 * alpha, COL.yellow, t2 > 0.5 ? 'ay=4' : '', 2, alpha * 0.8);
+      vc.drawDashedLine(3, 0, 3, 4, COL.component, alpha * 0.4);
+      vc.drawDashedLine(0, 4, 3, 4, COL.component, alpha * 0.4);
+      vc.drawVector(0, 0, 3 * alpha, 0, COL.yellow, 2.2, alpha * 0.85);
+      vc.drawVector(3, 0, 3, 4 * alpha, COL.yellow, 2.2, alpha * 0.85);
+
+      if (t2 > 0.5) {
+        vc.drawPill(1.5, 0.45, '', 'ax = 3', COL.yellow);
+        vc.drawPill(3.8, 2.0, '', 'ay = 4', COL.yellow);
+      }
     }
 
-    // Phase 3: show point and label
+    // Phase 3: show tip point
     if (t > 0.8) {
       const t3 = clamp01((t - 0.8) / 0.2);
       vc.drawPoint(3, 4, COL.a, 5 * easeInOut(t3));
-      if (t3 > 0.3) vc.drawCoordLabel(3, 4, '(3, 4)', COL.a);
+      if (t3 > 0.4) {
+        vc.drawPill(3.0, 4.6, '', '(3, 4)', COL.a);
+      }
     }
 
     if (t < 1) {
@@ -1143,8 +1258,8 @@ function step3Anim() {
   const vc = new VectorCanvas('cv3');
   if (!vc.canvas) return;
 
-  const ax=3, ay=2, bx=1, by=3;
-  const duration = 800;
+  const ax = 3, ay = 2, bx = 1, by = 3;
+  const duration = 750;
   const start = performance.now();
 
   function frame(now) {
@@ -1156,26 +1271,32 @@ function step3Anim() {
     // Phase 1: draw a
     if (step3Phase >= 1) {
       const p = step3Phase === 1 ? e : 1;
-      vc.drawVector(0, 0, ax * p, ay * p, COL.a, p > 0.6 ? 'a⃗' : '', 3);
-      if (p > 0.8) vc.drawCoordLabel(ax, ay, '(3, 2)', COL.a, 14, -8);
+      vc.drawVector(0, 0, ax * p, ay * p, COL.a, 3);
+      if (p > 0.6) {
+        vc.drawPill(1.5, 0.5, 'a', ' = (3, 2)', COL.a);
+        vc.drawPoint(ax, ay, COL.a, 4);
+      }
       const m1 = document.getElementById('step3msg1'); if(m1) m1.style.opacity = '1';
     }
 
-    // Phase 2: draw b from tip of a
+    // Phase 2: draw b at tip of a
     if (step3Phase >= 2) {
       const p = step3Phase === 2 ? e : 1;
-      vc.drawVector(ax, ay, ax + bx * p, ay + by * p, COL.b, p > 0.6 ? 'b⃗' : '', 3);
-      if (p > 0.8) vc.drawCoordLabel(ax + bx, ay + by, '(1, 3)', COL.b, 14, -8);
+      vc.drawVector(ax, ay, ax + bx * p, ay + by * p, COL.b, 3);
+      if (p > 0.6) {
+        vc.drawPill(3.9, 3.5, 'b', ' = (1, 3)', COL.b);
+      }
       const m2 = document.getElementById('step3msg2'); if(m2) m2.style.opacity = '1';
     }
 
-    // Phase 3: draw sum
+    // Phase 3: draw sum s
     if (step3Phase >= 3) {
       const p = step3Phase === 3 ? e : 1;
-      vc.drawVector(0, 0, (ax+bx) * p, (ay+by) * p, COL.sum, p > 0.6 ? 's⃗ = a⃗+b⃗' : '', 3.5);
-      if (p > 0.8) {
-        vc.drawCoordLabel(ax+bx, ay+by, '(4, 5)', COL.sum, 0, -14);
-        vc.drawPoint(ax+bx, ay+by, COL.sum, 5);
+      vc.drawVector(0, 0, (ax + bx) * p, (ay + by) * p, COL.sum, 3.5);
+      if (p > 0.6) {
+        vc.drawPill(1.4, 3.1, 's', ' = a + b', COL.sum);
+        vc.drawPoint(ax + bx, ay + by, COL.sum, 5);
+        vc.drawPill(4.0, 5.6, '', '(4, 5)', COL.sum);
       }
       const m3 = document.getElementById('step3msg3'); if(m3) m3.style.opacity = '1';
       const r = document.getElementById('step3result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
@@ -1208,8 +1329,8 @@ function step4Anim() {
   const vc = new VectorCanvas('cv4');
   if (!vc.canvas) return;
 
-  const ax=3, ay=1, bx=1, by=3;
-  const duration = 800;
+  const ax = 3, ay = 1, bx = 1, by = 3;
+  const duration = 750;
   const start = performance.now();
 
   function frame(now) {
@@ -1218,32 +1339,36 @@ function step4Anim() {
     vc.clear();
     vc.drawGrid();
 
-    // Phase 1: both vectors from origin
+    // Phase 1: both from origin
     if (step4Phase >= 1) {
       const p = step4Phase === 1 ? e : 1;
-      vc.drawVector(0, 0, ax * p, ay * p, COL.a, p > 0.6 ? 'a⃗' : '', 3);
-      vc.drawVector(0, 0, bx * p, by * p, COL.b, p > 0.6 ? 'b⃗' : '', 3);
+      vc.drawVector(0, 0, ax * p, ay * p, COL.a, 3);
+      vc.drawVector(0, 0, bx * p, by * p, COL.b, 3);
+      if (p > 0.6) {
+        vc.drawPill(1.8, 0.35, 'a', ' = (3, 1)', COL.a);
+        vc.drawPill(0.1, 1.8, 'b', ' = (1, 3)', COL.b);
+      }
       const m1 = document.getElementById('step4msg1'); if(m1) m1.style.opacity = '1';
     }
 
     // Phase 2: parallelogram sides
     if (step4Phase >= 2) {
       const p = step4Phase === 2 ? e : 1;
-      vc.drawDashedLine(ax, ay, ax + bx * p, ay + by * p, COL.b, 0.5);
-      vc.drawDashedLine(bx, by, bx + ax * p, by + ay * p, COL.a, 0.5);
+      vc.drawDashedLine(ax, ay, ax + bx * p, ay + by * p, COL.b, 0.55);
+      vc.drawDashedLine(bx, by, bx + ax * p, by + ay * p, COL.a, 0.55);
       const m2 = document.getElementById('step4msg2'); if(m2) m2.style.opacity = '1';
     }
 
     // Phase 3: diagonal = sum
     if (step4Phase >= 3) {
       const p = step4Phase === 3 ? e : 1;
-      // Keep dashed lines
-      vc.drawDashedLine(ax, ay, ax + bx, ay + by, COL.b, 0.5);
-      vc.drawDashedLine(bx, by, bx + ax, by + ay, COL.a, 0.5);
-      vc.drawVector(0, 0, (ax+bx) * p, (ay+by) * p, COL.sum, p > 0.6 ? 's⃗' : '', 3.5);
-      if (p > 0.8) {
-        vc.drawPoint(ax+bx, ay+by, COL.sum, 5);
-        vc.drawCoordLabel(ax+bx, ay+by, '(4, 4)', COL.sum, 0, -14);
+      vc.drawDashedLine(ax, ay, ax + bx, ay + by, COL.b, 0.55);
+      vc.drawDashedLine(bx, by, bx + ax, by + ay, COL.a, 0.55);
+      vc.drawVector(0, 0, (ax + bx) * p, (ay + by) * p, COL.sum, 3.5);
+      if (p > 0.6) {
+        vc.drawPill(1.8, 2.6, 's', ' = a + b', COL.sum);
+        vc.drawPoint(ax + bx, ay + by, COL.sum, 5);
+        vc.drawPill(4.7, 4.3, '', '(4, 4)', COL.sum);
       }
       const m3 = document.getElementById('step4msg3'); if(m3) m3.style.opacity = '1';
       const r = document.getElementById('step4result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
@@ -1264,9 +1389,13 @@ function step5Reset() {
   if (!vc.canvas) return;
   vc.clear();
   vc.drawGrid();
-  // Draw a from origin
-  vc.drawVector(0, 0, 4, 2, COL.a, 'a⃗', 3);
-  vc.drawVector(0, 0, 1, 3, COL.b, 'b⃗', 3);
+  // Vector a
+  vc.drawVector(0, 0, 4, 2, COL.a, 3);
+  vc.drawPill(2.0, 1.6, 'a', ' = (4, 2)', COL.a);
+  // Vector b
+  vc.drawVector(0, 0, 1, 3, COL.b, 2.5);
+  vc.drawPill(0.3, 2.0, 'b', ' = (1, 3)', COL.b);
+
   ['step5msg1','step5msg2','step5msg3'].forEach(id => { const el = document.getElementById(id); if(el) el.style.opacity = '0.3'; });
   const r = document.getElementById('step5result'); if(r) r.style.opacity = '0';
 }
@@ -1279,8 +1408,8 @@ function step5Anim() {
   const vc = new VectorCanvas('cv5');
   if (!vc.canvas) return;
 
-  const ax=4, ay=2, bx=1, by=3;
-  const duration = 900;
+  const ax = 4, ay = 2, bx = 1, by = 3;
+  const duration = 850;
   const start = performance.now();
 
   function frame(now) {
@@ -1289,38 +1418,42 @@ function step5Anim() {
     vc.clear();
     vc.drawGrid();
 
-    vc.drawVector(0, 0, ax, ay, COL.a, 'a⃗', 3);
+    // Vector a
+    vc.drawVector(0, 0, ax, ay, COL.a, 3);
+    vc.drawPill(2.0, 1.6, 'a', ' = (4, 2)', COL.a);
 
     // Phase 1: show -b
     if (step5Phase >= 1) {
       const p = step5Phase === 1 ? e : 1;
-      // Original b fading out
-      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 1 - p * 0.6);
-      // -b appearing
-      vc.drawVector(0, 0, -bx * p, -by * p, COL.orange, p > 0.6 ? '−b⃗' : '', 2.5, p);
+      vc.drawVector(0, 0, bx, by, COL.b, 2, Math.max(0.15, 1 - p * 0.7));
+      vc.drawVector(0, 0, -bx * p, -by * p, COL.orange, 2.5, p);
+      if (p > 0.6) {
+        vc.drawPill(-1.1, -1.9, '-b', ' = (-1, -3)', COL.orange);
+      }
       const m1 = document.getElementById('step5msg1'); if(m1) m1.style.opacity = '1';
     }
 
-    // Phase 2: move -b to tip of a (punta-coda)
+    // Phase 2: translated -b to tip of a
     if (step5Phase >= 2) {
       const p = step5Phase === 2 ? e : 1;
-      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 0.3);
-      // -b translated to tip of a
       const sx = lerp(0, ax, p);
       const sy = lerp(0, ay, p);
-      vc.drawVector(sx, sy, sx + (-bx), sy + (-by), COL.orange, '−b⃗', 2.5);
+      vc.drawVector(sx, sy, sx - bx, sy - by, COL.orange, 2.5);
+      if (p > 0.7) {
+        vc.drawPill(4.2, 0.6, '-b', '', COL.orange);
+      }
       const m2 = document.getElementById('step5msg2'); if(m2) m2.style.opacity = '1';
     }
 
-    // Phase 3: draw difference vector
+    // Phase 3: difference d = a - b
     if (step5Phase >= 3) {
       const p = step5Phase === 3 ? e : 1;
-      vc.drawVector(0, 0, bx, by, COL.b, 'b⃗', 2, 0.3);
-      vc.drawVector(ax, ay, ax + (-bx), ay + (-by), COL.orange, '−b⃗', 2.5);
-      vc.drawVector(0, 0, (ax-bx) * p, (ay-by) * p, COL.diff, p > 0.6 ? 'd⃗ = a⃗−b⃗' : '', 3.5);
-      if (p > 0.8) {
-        vc.drawPoint(ax-bx, ay-by, COL.diff, 5);
-        vc.drawCoordLabel(ax-bx, ay-by, '(3, −1)', COL.diff, 14, 14);
+      vc.drawVector(ax, ay, ax - bx, ay - by, COL.orange, 2.2, 0.7);
+      vc.drawVector(0, 0, (ax - bx) * p, (ay - by) * p, COL.diff, 3.5);
+      if (p > 0.6) {
+        vc.drawPill(1.3, -1.0, 'd', ' = a - b', COL.diff);
+        vc.drawPoint(ax - bx, ay - by, COL.diff, 5);
+        vc.drawPill(3.8, -1.0, '', '(3, -1)', COL.diff);
       }
       const m3 = document.getElementById('step5msg3'); if(m3) m3.style.opacity = '1';
       const r = document.getElementById('step5result'); if(r) r.style.opacity = p > 0.5 ? '1' : '0';
@@ -1338,23 +1471,21 @@ function step6Draw(k) {
   if (!vc.canvas) return;
 
   const ax = 2, ay = 1;
-  const duration = 700;
+  const duration = 600;
   const start = performance.now();
 
-  // Update button states
   document.querySelectorAll('#focusCard .anim-btn').forEach(b => {
     b.classList.remove('active');
     if (b.textContent.includes(k === -1.5 ? '−1.5' : k === -1 ? '−1' : String(k))) b.classList.add('active');
   });
 
-  // Update text
   const rx = k * ax, ry = k * ay;
   const textEl = document.getElementById('step6text');
   let desc = '';
-  if (k === 2) desc = `2 · a⃗ = (${rx}, ${ry}) — il vettore si allunga al doppio!`;
-  else if (k === 0.5) desc = `0.5 · a⃗ = (${rx}, ${ry}) — il vettore si dimezza!`;
-  else if (k === -1) desc = `−1 · a⃗ = (${rx}, ${ry}) — stesso modulo, verso opposto!`;
-  else if (k === -1.5) desc = `−1.5 · a⃗ = (${rx}, ${ry}) — più lungo E verso opposto!`;
+  if (k === 2) desc = `2 · a = (${rx}, ${ry}) — il vettore raddoppia la lunghezza!`;
+  else if (k === 0.5) desc = `0.5 · a = (${rx}, ${ry}) — il vettore si dimezza!`;
+  else if (k === -1) desc = `−1 · a = (${rx}, ${ry}) — stessa lunghezza, verso opposto!`;
+  else if (k === -1.5) desc = `−1.5 · a = (${rx}, ${ry}) — più lungo E verso opposto!`;
   if (textEl) textEl.textContent = desc;
 
   function frame(now) {
@@ -1364,16 +1495,20 @@ function step6Draw(k) {
     vc.drawGrid();
 
     // Original vector (dimmed)
-    vc.drawVector(0, 0, ax, ay, COL.a, 'a⃗', 2, 0.35);
+    vc.drawVector(0, 0, ax, ay, COL.a, 2, 0.4);
+    vc.drawPill(0.8, 0.9, 'a', ' = (2, 1)', COL.a, 'rgba(18,18,37,0.7)');
 
     // Scaled vector growing
     const cx = ax * k * e;
     const cy = ay * k * e;
-    vc.drawVector(0, 0, cx, cy, COL.purple, t > 0.5 ? `${k}·a⃗` : '', 3);
+    vc.drawVector(0, 0, cx, cy, COL.purple, 3.2);
 
-    if (t > 0.9) {
+    if (t > 0.7) {
+      const pillX = (cx * 0.5) + (k < 0 ? -0.4 : -0.4);
+      const pillY = (cy * 0.5) + (k < 0 ? -0.5 : 0.5);
+      vc.drawPill(pillX, pillY, `${k}·a`, '', COL.purple);
       vc.drawPoint(rx, ry, COL.purple, 5);
-      vc.drawCoordLabel(rx, ry, `(${rx}, ${ry})`, COL.purple, 0, ry >= 0 ? -14 : 20);
+      vc.drawPill(rx + (rx >= 0 ? 0.7 : -0.7), ry + (ry >= 0 ? 0.4 : -0.4), '', `(${rx}, ${ry})`, COL.purple);
     }
 
     if (t < 1) animFrameId = requestAnimationFrame(frame);
