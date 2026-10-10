@@ -134,6 +134,24 @@ const MATERIE = [
             ]
           }
         ]
+      },
+      {
+        id: "iss-archimede",
+        title: "ISS Archimede",
+        icon: "🏛️",
+        desc: "Attività sperimentali, simulazioni interattive e relazioni di laboratorio.",
+        chapters: [
+          {
+            title: "LAB Fisica Seconda Elettronica",
+            topics: [
+              {
+                title: "Laboratorio 1: moto rettilineo uniforme",
+                desc: "Studio sperimentale del moto rettilineo su rotaia con andata e ritorno (punta a 2,30 m): carrello virtuale, tabelle dati, grafici s(t) e v(t) live e relazione PDF fronte/retro.",
+                url: "/fisica/archimede/seconda-elettronica/moto-rettilineo-uniforme.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },

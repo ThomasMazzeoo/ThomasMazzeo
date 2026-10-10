@@ -1,0 +1,2868 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 1: Moto Rettilineo Uniforme — ISS Archimede</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --primary-dark: #1e3a8a;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-card: #334155;
+      --border: #475569;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-andata: #38bdf8;
+      --accent-punta: #4ade80;
+      --accent-ritorno: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      height: 100vh;
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 12px;
+      box-sizing: border-box;
+    }
+
+    /* ================= SCREEN HEADER ================= */
+    header.screen-header {
+      background: linear-gradient(135deg, #1e3a8a, #0f172a);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 14px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .title-group h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+
+    .title-group p {
+      font-size: 0.74rem;
+      color: var(--accent-andata);
+      margin-top: 1px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-card);
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #15803d;
+    }
+
+    .btn-pdf {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      font-weight: 700;
+      border: 1px solid #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    }
+    .btn-pdf:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+      transform: translateY(-1px);
+    }
+
+    /* ================= STUDENT INFO BAR ================= */
+    .student-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 12px;
+      margin-bottom: 6px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr 1.1fr 0.8fr auto;
+      gap: 8px;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .student-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .student-field label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .student-field input {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 3px 6px;
+      color: #ffffff;
+      font-size: 0.80rem;
+      font-weight: 600;
+      height: 26px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .student-field input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+    }
+
+    /* ================= TRACK SIMULATION BANNER ================= */
+    .track-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 14px 6px 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .track-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .rail-track {
+      position: relative;
+      height: 36px;
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .rail-scale {
+      position: absolute;
+      left: 45px;
+      right: 45px;
+      top: 0;
+      bottom: 0;
+    }
+
+    .rail-tick {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .rail-tick-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      border-left: 1.5px dashed #475569;
+    }
+
+    .rail-tick.tick-punta .rail-tick-line {
+      border-left: 2px solid #4ade80;
+    }
+
+    .rail-tick-label {
+      position: absolute;
+      top: 1px;
+      left: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #94a3b8;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .rail-tick.tick-punta .rail-tick-label {
+      color: #4ade80;
+      font-weight: 800;
+      left: auto;
+      right: 4px;
+    }
+
+    .cart {
+      position: absolute;
+      top: 5px;
+      height: 24px;
+      min-width: 58px;
+      padding: 0 6px;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border: 1.5px solid #93c5fd;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+      transition: left 0.15s ease-out, background 0.3s ease;
+      z-index: 5;
+    }
+
+    .cart::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 3.5px solid transparent;
+      border-right: 3.5px solid transparent;
+      border-top: 5px solid #93c5fd;
+    }
+
+    .cart.cart-andata {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: #7dd3fc;
+    }
+    .cart.cart-andata::after {
+      border-top-color: #7dd3fc;
+    }
+
+    .cart.cart-punta {
+      background: linear-gradient(135deg, #15803d, #16a34a);
+      border-color: #86efac;
+      box-shadow: 0 0 16px rgba(74, 222, 128, 0.8);
+    }
+    .cart.cart-punta::after {
+      border-top-color: #86efac;
+    }
+
+    .cart.cart-ritorno {
+      background: linear-gradient(135deg, #b91c1c, #dc2626);
+      border-color: #fca5a5;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
+    .cart.cart-ritorno::after {
+      border-top-color: #fca5a5;
+    }
+
+    /* ================= MAIN WORKSPACE GRID ================= */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      grid-gap: 10px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Left pane: Table + Formula inspector */
+    .left-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+
+    .panel-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    table.data-table th {
+      background: #0f172a;
+      color: var(--text-muted);
+      padding: 3px 4px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.72rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    table.data-table td {
+      padding: 2px 4px;
+      text-align: center;
+      border-bottom: 1px solid #334155;
+      transition: background 0.25s ease;
+    }
+
+    tr.row-andata { background: rgba(56, 189, 248, 0.04); }
+    tr.row-punta { background: rgba(74, 222, 128, 0.1); font-weight: bold; }
+    tr.row-ritorno { background: rgba(248, 113, 113, 0.04); }
+
+    tr.selected-row {
+      outline: 2px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.18) !important;
+    }
+
+    tr.active-sim-row {
+      outline: 2px solid #facc15;
+      background: rgba(250, 204, 21, 0.25) !important;
+    }
+
+    .badge-fase {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .badge-andata { background: #0369a1; color: #bae6fd; }
+    .badge-punta { background: #15803d; color: #bbf7d0; }
+    .badge-ritorno { background: #991b1b; color: #fecaca; }
+
+    input.time-input {
+      width: 68px;
+      background: #090d16;
+      border: 1px solid #475569;
+      color: #ffffff;
+      padding: 2px 4px;
+      height: 24px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 700;
+      font-family: monospace;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    input.time-input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+    }
+    input.time-input.input-error {
+      border-color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+    }
+
+    .cell-calc {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.80rem;
+    }
+    .v-pos { color: #38bdf8; font-weight: 800; }
+    .v-zero { color: #4ade80; font-weight: 800; }
+    .v-neg { color: #f87171; font-weight: 800; }
+    .v-err { color: #f59e0b; font-weight: bold; font-size: 0.72rem; }
+
+    /* Formula Inspector Card */
+    .formula-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1.5px solid #3b82f6;
+      border-radius: 10px;
+      padding: 7px 10px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .formula-card.card-pulse {
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
+      transform: scale(1.01);
+    }
+
+    .formula-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .formula-display {
+      background: #090d16;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 5px 8px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 0.80rem;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+      color: #f1f5f9;
+      margin-bottom: 4px;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      transition: all 0.25s ease;
+    }
+
+    .formula-breakdown {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      font-size: 0.68rem;
+    }
+
+    .breakdown-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 3px 6px;
+    }
+
+    .breakdown-box strong {
+      color: #93c5fd;
+    }
+
+    /* Right pane: Dual Charts */
+    .right-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .chart-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 8px 10px;
+    }
+
+    .chart-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .canvas-container {
+      flex: 1;
+      position: relative;
+      background: #090d16;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 180px;
+    }
+
+    canvas#physics-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Live Summary bar at bottom */
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 1px;
+      font-family: monospace;
+    }
+
+    /* ================= PASSWORD MODAL (DARK THEME) ================= */
+    .pwd-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .pwd-modal-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1.5px solid #3b82f6;
+      border-radius: 14px;
+      padding: 22px 24px;
+      width: 380px;
+      max-width: 90vw;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 0 24px rgba(59, 130, 246, 0.4);
+      animation: modalScaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalScaleUp {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .pwd-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pwd-lock-icon {
+      font-size: 24px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid #3b82f6;
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pwd-modal-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .pwd-modal-header p {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .pwd-input-wrap {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .pwd-input {
+      width: 100%;
+      background: #090d16;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 38px 9px 12px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      letter-spacing: 2px;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .pwd-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.45);
+    }
+
+    .pwd-eye-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+    .pwd-eye-btn:hover {
+      opacity: 1;
+    }
+
+    .pwd-error-msg {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pwd-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    /* ============================================================== */
+    /* ================= PRINT STYLES (A4 LANDSCAPE) ================ */
+    /* ============================================================== */
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    @media screen {
+      #print-container {
+        display: none !important;
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #1e293b !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      header.screen-header,
+      .student-bar,
+      .track-container,
+      .workspace-grid,
+      #pwd-modal,
+      .screen-only {
+        display: none !important;
+      }
+
+      #print-container {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+      }
+
+      .print-page {
+        width: 100% !important;
+        max-width: 277mm !important;
+        height: 188mm !important;
+        max-height: 188mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        background: #ffffff !important;
+      }
+
+      .print-page.page-fronte {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      .print-page.page-retro {
+        page-break-before: always !important;
+        break-before: page !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      /* Print typography & layouts */
+      .print-header {
+        border-bottom: 2px solid #1e3a8a;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .print-school-label {
+        font-size: 8.5pt;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #3b82f6;
+        margin-bottom: 1px;
+      }
+
+      .print-main-title {
+        font-size: 13.5pt;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.15;
+        letter-spacing: -0.2px;
+      }
+
+      .print-subtitle {
+        font-size: 8pt;
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 1px;
+      }
+
+      .print-header-right {
+        width: 105mm;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 8pt;
+        display: grid;
+        grid-template-columns: 1.8fr 1fr;
+        grid-gap: 3px 10px;
+      }
+
+      .print-field-line {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+      }
+
+      .print-field-label {
+        font-weight: 700;
+        color: #334155;
+        white-space: nowrap;
+        font-size: 7.5pt;
+      }
+
+      .print-field-val {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 7.8pt;
+      }
+
+      .print-content-grid {
+        display: grid;
+        grid-template-columns: 96mm 1fr;
+        grid-gap: 7mm;
+        flex: 1;
+        min-height: 0;
+        margin-bottom: 3px;
+      }
+
+      .print-left-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+      }
+
+      .print-section-title {
+        font-size: 8.8pt;
+        font-weight: 700;
+        color: #1e3a8a;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .print-badge-num {
+        background: #1e3a8a;
+        color: white;
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-size: 7.5pt;
+        font-weight: bold;
+      }
+
+      .print-table-container {
+        border: 1.5px solid #1e3a8a;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      table.print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 7.5pt;
+        text-align: center;
+      }
+
+      table.print-table th {
+        background-color: #1e3a8a;
+        color: #ffffff;
+        padding: 3px 2px;
+        font-weight: 700;
+        font-size: 7pt;
+        border: 1px solid #1e3a8a;
+        line-height: 1.15;
+      }
+
+      table.print-table td {
+        border: 1px solid #cbd5e1;
+        padding: 2.2px 3px;
+        height: 15px;
+        vertical-align: middle;
+        font-weight: 500;
+      }
+
+      .print-row-andata { background-color: #f0f7ff; }
+      .print-row-andata td.p-space { background-color: #dbeafe; font-weight: 700; color: #1e40af; }
+
+      .print-row-punta { background-color: #f0fdf4; }
+      .print-row-punta td.p-space { background-color: #dcfce7; font-weight: 800; color: #15803d; }
+
+      .print-row-ritorno { background-color: #fef2f2; }
+      .print-row-ritorno td.p-space { background-color: #fee2e2; font-weight: 700; color: #b91c1c; }
+
+      .p-badge {
+        font-size: 6.2pt;
+        font-weight: 700;
+        padding: 1px 3.5px;
+        border-radius: 3px;
+        display: inline-block;
+        text-transform: uppercase;
+      }
+      .p-badge-andata { background: #bfdbfe; color: #1e40af; }
+      .p-badge-punta { background: #bbf7d0; color: #166534; }
+      .p-badge-ritorno { background: #fecaca; color: #991b1b; }
+
+      .p-val-cell {
+        font-family: 'Courier New', monospace;
+        font-size: 8.5pt;
+        font-weight: bold;
+        color: #0f172a;
+      }
+
+      .p-note-cell {
+        font-size: 6.5pt;
+        color: #64748b;
+        text-align: left;
+        padding-left: 4px;
+      }
+
+      .print-instructions-box {
+        background: #f8fafc;
+        border: 1.5px solid #3b82f6;
+        border-radius: 5px;
+        padding: 4px 7px;
+        margin-top: 3px;
+      }
+
+      .print-inst-title {
+        font-size: 7.5pt;
+        font-weight: 800;
+        color: #1e3a8a;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+      }
+
+      .print-inst-content {
+        font-size: 6.8pt;
+        color: #334155;
+        line-height: 1.25;
+      }
+
+      .print-box-info {
+        background: #f1f5f9;
+        border-left: 3px solid #3b82f6;
+        border-radius: 0 4px 4px 0;
+        padding: 3px 6px;
+        margin-top: 3px;
+        font-size: 6.8pt;
+        line-height: 1.25;
+        color: #334155;
+      }
+
+      .print-right-col {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .print-graph-wrapper {
+        flex: 1;
+        border: 1.5px solid #1e3a8a;
+        border-radius: 6px;
+        background: #ffffff;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .print-graph-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .print-footer-section {
+        display: flex;
+        gap: 6mm;
+        margin-top: 3px;
+      }
+
+      .print-questions-box {
+        flex: 1;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        padding: 4px 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 7.2pt;
+        color: #334155;
+      }
+
+      .print-question-item {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        line-height: 1.25;
+      }
+
+      .print-q-num {
+        font-weight: 700;
+        color: #1e3a8a;
+        white-space: nowrap;
+      }
+
+      .print-grade-box {
+        width: 58mm;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        padding: 4px 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 7.5pt;
+      }
+
+      .print-grade-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .print-score-badge {
+        font-size: 9pt;
+        font-weight: 800;
+        color: #1e3a8a;
+        border: 1px solid #93c5fd;
+        background: #eff6ff;
+        border-radius: 4px;
+        padding: 1px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= SCREEN HEADER ================= -->
+  <header class="screen-header">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <a href="/#fisica-laboratorio" class="btn btn-secondary" style="text-decoration: none; font-weight: 700; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); padding: 6px 12px;">
+        <span>◄</span> FISICA LAB
+      </a>
+      <div class="title-group">
+        <h1>ISS ARCHIMEDE &bull; 2ª ELETTRONICA</h1>
+        <p>Laboratorio 1: Moto Rettilineo Uniforme &bull; Studio sperimentale andata e ritorno (punta 2,30 m)</p>
+      </div>
+    </div>
+    <div class="header-actions" style="flex-wrap: wrap;">
+      <button class="btn btn-secondary" onclick="loadSampleData()">📂 Dati Esempio</button>
+      <button class="btn btn-secondary" onclick="resetData()">🔄 Azzera Dati</button>
+      <a href="scheda_laboratorio_A4.xlsx" download class="btn btn-secondary" style="text-decoration: none;">📊 Excel Dati</a>
+      <a href="scheda_velocita_A4.xlsx" download class="btn btn-secondary" style="text-decoration: none;">📈 Excel Velocità</a>
+      <a href="relazione_compilata_fronte_retro.pdf" target="_blank" class="btn btn-secondary" style="text-decoration: none;">📄 PDF Relazione</a>
+      <button class="btn btn-success" id="btn-play" onclick="togglePlayAnimation()">▶ Avvia Simulazione</button>
+      <button class="btn btn-pdf" id="btn-print" onclick="prepareAndPrintPDF()">🖨 Salva come PDF (Fronte/Retro)</button>
+    </div>
+  </header>
+
+  <!-- ================= STUDENT INFO BAR (SCREEN) ================= -->
+  <div class="student-bar">
+    <div class="student-field">
+      <label>👤 Studente/i</label>
+      <input type="text" id="input-student-name" placeholder="Nome e Cognome..." oninput="syncStudentInfo()" />
+    </div>
+    <div class="student-field">
+      <label>🏫 Classe</label>
+      <input type="text" id="input-student-class" value="2ª Elettronica" placeholder="2ª Elettronica" oninput="syncStudentInfo()" />
+    </div>
+    <div class="student-field">
+      <label>👨‍🏫 Docente</label>
+      <input type="text" id="input-student-teacher" value="Prof. Thomas Mazzeo" placeholder="Prof. Thomas Mazzeo" oninput="syncStudentInfo()" />
+    </div>
+    <div class="student-field">
+      <label>📅 Data</label>
+      <input type="text" id="input-student-date" value="10/10/2026" oninput="syncStudentInfo()" />
+    </div>
+    <div style="text-align: right;">
+      <span style="font-size: 0.73rem; color: #38bdf8; font-weight: 600;">✨ Compila i dati: si aggiornano sul PDF in tempo reale</span>
+    </div>
+  </div>
+
+  <!-- ================= VIRTUAL RAIL TRACK WITH LIVE MOVING CART ================= -->
+  <div class="track-container">
+    <div class="track-title">
+      <span>Rotaia Didattica con Carrello Virtuale (Scala metrica: 0,00 m &rarr; 2,30 m)</span>
+      <span id="live-cart-info" style="color: #38bdf8; font-family: monospace;">Posizione: 0,00 m | Tempo: 0,00 s | Pronto</span>
+    </div>
+    <div class="rail-track" id="rail-track">
+      <div class="rail-scale" id="rail-scale">
+        <div class="rail-tick" style="left: 0%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">0.0 m (Partenza)</span>
+        </div>
+        <div class="rail-tick" style="left: 21.739%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">0.5 m</span>
+        </div>
+        <div class="rail-tick" style="left: 43.478%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">1.0 m</span>
+        </div>
+        <div class="rail-tick" style="left: 65.217%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">1.5 m (Passaggio doppio)</span>
+        </div>
+        <div class="rail-tick" style="left: 86.957%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">2.0 m</span>
+        </div>
+        <div class="rail-tick tick-punta" style="left: 100%;">
+          <div class="rail-tick-line"></div>
+          <span class="rail-tick-label">2.30 m (PUNTA)</span>
+        </div>
+        <div class="cart cart-andata" id="virtual-cart" style="left: 0%;">▶ 0.00m</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= WORKSPACE ================= -->
+  <div class="workspace-grid">
+    
+    <!-- LEFT PANE: TABLE, FORMULA INSPECTOR & QUESTIONS -->
+    <div class="left-pane">
+      
+      <!-- DATA ENTRY TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <span>1. Tabella Raccolta & Calcolo Dati</span>
+          <span style="font-size: 0.72rem; color: #94a3b8;">Inserisci i tempi (supporta virgola , o punto .)</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Fase</th>
+              <th>Spazio <i>s</i> (m)</th>
+              <th>Tempo <i>t</i> (s)</th>
+              <th>Velocità <i>v</i> (m/s)</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Dynamically generated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ANIMATED FORMULA INSPECTOR -->
+      <div class="formula-card" id="formula-card">
+        <div class="formula-title">
+          <span>⚡ Analisi della Formula in Tempo Reale</span>
+        </div>
+        <div class="formula-display" id="formula-display">
+          Inserisci i tempi per vedere la formula applicata
+        </div>
+        <div class="formula-breakdown" id="formula-breakdown">
+          <div class="breakdown-box">
+            <strong>Spostamento Δs:</strong> <span id="val-delta-s">--</span>
+          </div>
+          <div class="breakdown-box">
+            <strong>Intervallo Δt:</strong> <span id="val-delta-t">--</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANE: INTERACTIVE ANIMATED CHARTS -->
+    <div class="right-pane">
+      <div class="panel chart-panel">
+        <div class="panel-header">
+          <span>2. Visualizzazione Grafica in Tempo Reale</span>
+          <div class="chart-tabs">
+            <button class="tab-btn active" id="tab-st" onclick="switchChart('st')">Grafico Spazio-Tempo s(t)</button>
+            <button class="tab-btn" id="tab-vt" onclick="switchChart('vt')">Grafico Velocità-Tempo v(t)</button>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="physics-canvas"></canvas>
+        </div>
+
+        <!-- STATS BAR -->
+        <div class="summary-bar">
+          <div class="stat-card">
+            <span class="stat-label">Velocità Media Andata</span>
+            <span class="stat-value" id="stat-v-andata" style="color: #38bdf8;">-- m/s</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Punta Massima</span>
+            <span class="stat-value" id="stat-punta" style="color: #4ade80;">s = 2,30 m</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Velocità Media Ritorno</span>
+            <span class="stat-value" id="stat-v-ritorno" style="color: #f87171;">-- m/s</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= PASSWORD MODAL FOR TEACHER ACCESS ================= -->
+  <div id="pwd-modal" class="pwd-modal-overlay" style="display: none;">
+    <div class="pwd-modal-card">
+      <div class="pwd-modal-header">
+        <div class="pwd-lock-icon">🔒</div>
+        <div>
+          <h3>Accesso Docente</h3>
+          <p>Inserisci la password per caricare i dati di esempio</p>
+        </div>
+      </div>
+      
+      <div class="pwd-input-wrap">
+        <input type="password" id="modal-pwd-input" class="pwd-input" placeholder="Password docente..." autocomplete="off" spellcheck="false" />
+        <button type="button" class="pwd-eye-btn" id="pwd-toggle-visibility" title="Mostra/Nascondi password" tabindex="-1">👁️</button>
+      </div>
+
+      <div id="modal-pwd-error" class="pwd-error-msg" style="display: none;">
+        ❌ Password errata! Riprova.
+      </div>
+
+      <div class="pwd-modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closePwdModal()">Annulla</button>
+        <button type="button" class="btn btn-success" id="btn-pwd-submit" onclick="submitPwdModal()">Sblocca Dati</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- ================= DEDICATED PRINT CONTAINER ================== -->
+  <!-- ================= (FRONTE E RETRO A4 LANDSCAPE) ============== -->
+  <!-- ============================================================== -->
+  <div id="print-container">
+
+    <!-- ================= PAGE 1: FRONTE (SPAZIO-TEMPO) ================= -->
+    <div class="print-page page-fronte" id="page-fronte">
+      <!-- HEADER -->
+      <div class="print-header">
+        <div>
+          <div class="print-school-label">ISS Archimede &bull; Laboratorio di Fisica Sperimentale &bull; 2ª Elettronica</div>
+          <h1 class="print-main-title">LABORATORIO 1: IL GRAFICO SPAZIO-TEMPO NEL MOTO RETTILINEO</h1>
+          <div class="print-subtitle">Esperienza con carrello e rotaia: studio del moto rettilineo con andata e ritorno (punta 2,30 m)</div>
+        </div>
+        <div class="print-header-right">
+          <div class="print-field-line">
+            <span class="print-field-label">Studente/i:</span>
+            <span class="print-field-val" id="p-st-name">.........................</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Classe:</span>
+            <span class="print-field-val" id="p-st-class">2ª Elettronica</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Docente:</span>
+            <span class="print-field-val" id="p-st-teacher">Prof. Thomas Mazzeo</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Data:</span>
+            <span class="print-field-val" id="p-st-date">10/10/2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <main class="print-content-grid">
+        <!-- LEFT COLUMN: DATA TABLE & INSTRUCTIONS -->
+        <div class="print-left-col">
+          <div>
+            <div class="print-section-title">
+              <span class="print-badge-num">1</span> Tabella Dati Sperimentali
+            </div>
+            <div class="print-table-container">
+              <table class="print-table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Fase</th>
+                    <th style="width: 25%;">Tempo <i>t</i><br><span style="font-weight: normal; font-size: 6pt;">(secondi s)</span></th>
+                    <th style="width: 25%;">Spazio <i>s</i><br><span style="font-weight: normal; font-size: 6pt;">(metri m)</span></th>
+                    <th style="width: 30%;">Note / Evento</th>
+                  </tr>
+                </thead>
+                <tbody id="print-table-st-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ISTRUZIONI GRAFICO -->
+          <div class="print-instructions-box">
+            <div class="print-inst-title">📐 Istruzioni per il Grafico Spazio-Tempo</div>
+            <div class="print-inst-content">
+              <strong>1. Grafico a destra:</strong> Il grafico <i>s</i>(<i>t</i>) è generato con i dati sperimentali. Il vertice massimo del moto è a <strong>2,30 m</strong> e interseca <strong>1,50 m</strong> due volte.<br>
+              <strong>2. Su Excel:</strong> Inserisci le colonne (X: Tempo, Y: Spazio), crea un <em>Grafico a dispersione con linee ed indicatori</em>.
+            </div>
+          </div>
+
+          <!-- STRUMENTAZIONE -->
+          <div class="print-box-info">
+            <strong>Strumenti:</strong> Rotaia graduata con carrello, cronometro digitale.
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: REAL-TIME PLOTTED GRAPH -->
+        <div class="print-right-col">
+          <div class="print-section-title">
+            <span class="print-badge-num">2</span> Grafico Spazio-Tempo <i>s</i>(<i>t</i>) Sperimentale
+          </div>
+          <div class="print-graph-wrapper">
+            <img id="print-img-st" class="print-graph-img" alt="Grafico Spazio-Tempo s(t)" />
+          </div>
+        </div>
+      </main>
+
+      <!-- FOOTER: SUMMARY CALCULATIONS & GRADE -->
+      <footer class="print-footer-section">
+        <div class="print-questions-box">
+          <div class="print-question-item">
+            <span class="print-q-num">1. Pendenza Andata:</span>
+            <span>Velocità media di andata: <i>v</i><sub>andata</sub> = &Delta;<i>s</i>/&Delta;<i>t</i> = (2,30 m &minus; 0,00 m)/(<i>t</i><sub>punta</sub> &minus; <i>t</i><sub>0</sub>) = </span>
+            <strong id="print-calc-v-andata" style="color: #1e3a8a;">-- m/s</strong>
+          </div>
+          <div class="print-question-item">
+            <span class="print-q-num">2. Pendenza Ritorno:</span>
+            <span>Velocità media di ritorno: <i>v</i><sub>ritorno</sub> = &Delta;<i>s</i>/&Delta;<i>t</i> = (0,00 m &minus; 2,30 m)/(<i>t</i><sub>fine</sub> &minus; <i>t</i><sub>punta</sub>) = </span>
+            <strong id="print-calc-v-ritorno" style="color: #b91c1c;">-- m/s</strong>
+          </div>
+        </div>
+
+        <div class="print-grade-box">
+          <div class="print-grade-row">
+            <span style="font-weight: 700; color: #334155;">Valutazione:</span>
+            <span class="print-score-badge">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 10</span>
+          </div>
+          <div class="print-grade-row" style="margin-top: 3px;">
+            <span style="font-size: 7pt; color: #64748b;">Firma Docente:</span>
+            <span style="border-bottom: 1px dotted #94a3b8; flex: 1; margin-left: 6px; height: 10px;"></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ================= PAGE 2: RETRO (VELOCITÀ-TEMPO) ================= -->
+    <div class="print-page page-retro" id="page-retro">
+      <!-- HEADER -->
+      <div class="print-header">
+        <div>
+          <div class="print-school-label">ISS Archimede &bull; Laboratorio di Fisica Sperimentale &bull; 2ª Elettronica</div>
+          <h1 class="print-main-title">LABORATORIO 1: IL GRAFICO VELOCITÀ-TEMPO NEL MOTO RETTILINEO</h1>
+          <div class="print-subtitle">Studio della velocità media e rappresentazione del grafico v(t) con andata e ritorno</div>
+        </div>
+        <div class="print-header-right">
+          <div class="print-field-line">
+            <span class="print-field-label">Studente/i:</span>
+            <span class="print-field-val" id="p-vt-name">.........................</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Classe:</span>
+            <span class="print-field-val" id="p-vt-class">2ª Elettronica</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Docente:</span>
+            <span class="print-field-val" id="p-vt-teacher">Prof. Thomas Mazzeo</span>
+          </div>
+          <div class="print-field-line">
+            <span class="print-field-label">Data:</span>
+            <span class="print-field-val" id="p-vt-date">10/10/2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <main class="print-content-grid">
+        <!-- LEFT COLUMN: DATA TABLE & INSTRUCTIONS -->
+        <div class="print-left-col">
+          <div>
+            <div class="print-section-title">
+              <span class="print-badge-num">1</span> Tabella dei Dati Calcolati
+            </div>
+            <div class="print-table-container">
+              <table class="print-table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Fase</th>
+                    <th style="width: 25%;">Tempo <i>t</i><br><span style="font-weight: normal; font-size: 6pt;">(secondi s)</span></th>
+                    <th style="width: 25%;">Velocità <i>v</i><br><span style="font-weight: normal; font-size: 6pt;">(m/s)</span></th>
+                    <th style="width: 30%;">Note / Traguardo</th>
+                  </tr>
+                </thead>
+                <tbody id="print-table-vt-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ISTRUZIONI GRAFICO -->
+          <div class="print-instructions-box">
+            <div class="print-inst-title">📐 Istruzioni per il Grafico Velocità-Tempo</div>
+            <div class="print-inst-content">
+              <strong>1. Calcolo velocità:</strong> <i>v</i> = &Delta;<i>s</i> / &Delta;<i>t</i> su ciascun intervallo (la punta è a <strong>2,30 m</strong>, passando due volte per <strong>1,50 m</strong>). Andata <i>v</i> &gt; 0, ritorno <i>v</i> &lt; 0.<br>
+              <strong>2. Grafico a destra:</strong> L'asse orizzontale <i>v</i> = 0 divide la fase di avanzamento da quella di rientro.
+            </div>
+          </div>
+
+          <!-- STRUMENTAZIONE -->
+          <div class="print-box-info">
+            <strong>Strumenti:</strong> Rotaia graduata con carrello, cronometro digitale.
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: REAL-TIME PLOTTED GRAPH -->
+        <div class="print-right-col">
+          <div class="print-section-title">
+            <span class="print-badge-num">2</span> Grafico Velocità-Tempo <i>v</i>(<i>t</i>) Sperimentale
+          </div>
+          <div class="print-graph-wrapper">
+            <img id="print-img-vt" class="print-graph-img" alt="Grafico Velocità-Tempo v(t)" />
+          </div>
+        </div>
+      </main>
+
+      <!-- FOOTER: SUMMARY CALCULATIONS & GRADE -->
+      <footer class="print-footer-section">
+        <div class="print-questions-box">
+          <div class="print-question-item">
+            <span class="print-q-num">1. Velocità Media Andata:</span>
+            <span>Valore medio della velocità nella fase di andata: <i>v̄</i><sub>andata</sub> = </span>
+            <strong id="print-calc-vt-andata" style="color: #1e3a8a;">-- m/s</strong>
+          </div>
+          <div class="print-question-item">
+            <span class="print-q-num">2. Velocità Media Ritorno:</span>
+            <span>Valore medio della velocità nella fase di ritorno: <i>v̄</i><sub>ritorno</sub> = </span>
+            <strong id="print-calc-vt-ritorno" style="color: #b91c1c;">-- m/s</strong>
+          </div>
+        </div>
+
+        <div class="print-grade-box">
+          <div class="print-grade-row">
+            <span style="font-weight: 700; color: #334155;">Valutazione:</span>
+            <span class="print-score-badge">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 10</span>
+          </div>
+          <div class="print-grade-row" style="margin-top: 3px;">
+            <span style="font-size: 7pt; color: #64748b;">Firma Docente:</span>
+            <span style="border-bottom: 1px dotted #94a3b8; flex: 1; margin-left: 6px; height: 10px;"></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+  </div>
+
+  <!-- Offscreen canvas elements for generating high-res print charts -->
+  <canvas id="offscreen-canvas-st" width="1400" height="850" style="display:none;"></canvas>
+  <canvas id="offscreen-canvas-vt" width="1400" height="850" style="display:none;"></canvas>
+
+  <script>
+    // DATA MODEL: 9 experimental points with peak at 2.30m
+    // INIZIALMENTE VUOTI (solo t0 = 0.00 fissato alla partenza)
+    const experimentData = [
+      { id: 0, fase: "Andata", s: 0.00, t: 0.00, note: "Partenza (t₀)" },
+      { id: 1, fase: "Andata", s: 0.50, t: null, note: "Traguardo 1 (0,50 m)" },
+      { id: 2, fase: "Andata", s: 1.00, t: null, note: "Traguardo 2 (1,00 m)" },
+      { id: 3, fase: "Andata", s: 1.50, t: null, note: "Traguardo 3 (andata 1,50 m)" },
+      { id: 4, fase: "Punta",  s: 2.30, t: null, note: "Inversione (fine corsa 2,30 m)" },
+      { id: 5, fase: "Ritorno", s: 1.50, t: null, note: "Traguardo 3 rit. (1,50 m)" },
+      { id: 6, fase: "Ritorno", s: 1.00, t: null, note: "Traguardo 2 rit. (1,00 m)" },
+      { id: 7, fase: "Ritorno", s: 0.50, t: null, note: "Traguardo 1 rit. (0,50 m)" },
+      { id: 8, fase: "Ritorno", s: 0.00, t: null, note: "Rientro partenza (0,00 m)" }
+    ];
+
+    let currentChart = 'st'; // 'st' (Spazio-Tempo) or 'vt' (Velocità-Tempo)
+    let selectedRowIndex = 1;
+    let isPlaying = false;
+    let animFrameId = null;
+    let simTime = 0;
+
+    const screenCanvas = document.getElementById('physics-canvas');
+    const screenCtx = screenCanvas.getContext('2d');
+
+    // Resize screen canvas dynamically
+    function resizeCanvas() {
+      const rect = screenCanvas.parentElement.getBoundingClientRect();
+      screenCanvas.width = rect.width * window.devicePixelRatio;
+      screenCanvas.height = rect.height * window.devicePixelRatio;
+      screenCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      renderScreenChart(isPlaying ? simTime : null);
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // Build the interactive table DOM once (maintains input focus and cursor)
+    function buildTable() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      experimentData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.id = `row-${idx}`;
+        if (row.fase === 'Andata') tr.className = 'row-andata';
+        else if (row.fase === 'Punta') tr.className = 'row-punta';
+        else tr.className = 'row-ritorno';
+
+        if (idx === selectedRowIndex) tr.classList.add('selected-row');
+
+        let badgeClass = 'badge-andata';
+        if (row.fase === 'Punta') badgeClass = 'badge-punta';
+        else if (row.fase === 'Ritorno') badgeClass = 'badge-ritorno';
+
+        const displayVal = (row.t !== null) ? row.t.toString().replace('.', ',') : '';
+
+        tr.innerHTML = `
+          <td><span class="badge-fase ${badgeClass}">${row.fase}</span></td>
+          <td style="font-weight: 700;">${row.s.toFixed(2)}</td>
+          <td>
+            <input type="text" inputmode="decimal" class="time-input" id="time-input-${idx}"
+                   value="${displayVal}" 
+                   placeholder="-- s"
+                   ${idx === 0 ? 'readonly style="opacity:0.7;"' : ''}
+                   onfocus="selectRow(${idx})"
+                   oninput="onTimeChange(${idx}, this.value)" />
+          </td>
+          <td class="cell-calc" id="cell-calc-${idx}">--</td>
+        `;
+
+        tr.addEventListener('click', (e) => {
+          if (e.target.tagName !== 'INPUT') selectRow(idx);
+        });
+        tbody.appendChild(tr);
+      });
+
+      updateTableCalculations();
+    }
+
+    // Velocity calculation: v = (s_i - s_{i-1}) / (t_i - t_{i-1})
+    function calculateVelocity(idx) {
+      if (idx === 0) return 0.00;
+      const prev = experimentData[idx - 1];
+      const curr = experimentData[idx];
+      if (curr.t === null || prev.t === null) return null;
+      const dt = curr.t - prev.t;
+      if (dt <= 0) return null; // Time must be strictly increasing
+      const ds = curr.s - prev.s;
+      return ds / dt;
+    }
+
+    // Handles user typing in time input (supports both comma ',' and dot '.')
+    function onTimeChange(idx, val) {
+      const inputEl = document.getElementById(`time-input-${idx}`);
+      const raw = String(val).trim();
+
+      if (raw === '') {
+        experimentData[idx].t = null;
+        if (inputEl) inputEl.classList.remove('input-error');
+      } else {
+        // Normalize Italian comma to decimal point
+        const normalized = raw.replace(',', '.');
+        const num = parseFloat(normalized);
+
+        if (isNaN(num) || num < 0) {
+          experimentData[idx].t = null;
+          if (inputEl) inputEl.classList.add('input-error');
+        } else {
+          experimentData[idx].t = num;
+          // Validate chronological sequence: must be strictly greater than preceding non-null point
+          const prev = experimentData[idx - 1];
+          if (prev && prev.t !== null && num <= prev.t) {
+            if (inputEl) inputEl.classList.add('input-error');
+          } else {
+            if (inputEl) inputEl.classList.remove('input-error');
+          }
+        }
+      }
+
+      // Check subsequent point chronological consistency
+      for (let i = 1; i < experimentData.length; i++) {
+        const inp = document.getElementById(`time-input-${i}`);
+        const pPrev = experimentData[i - 1];
+        const pCurr = experimentData[i];
+        if (inp && pCurr.t !== null && pPrev.t !== null) {
+          inp.classList.toggle('input-error', pCurr.t <= pPrev.t);
+        }
+      }
+
+      updateTableCalculations();
+      updateFormulaInspector(idx);
+      updateStats();
+      renderScreenChart(isPlaying ? simTime : null);
+
+      // Interactive animation: glide virtual cart to the position of this milestone
+      if (experimentData[idx].t !== null) {
+        moveCartToPosition(experimentData[idx].s, experimentData[idx].t, calculateVelocity(idx));
+        triggerFormulaPulse();
+      }
+    }
+
+    // In-place updates to avoid losing input focus
+    function updateTableCalculations() {
+      for (let i = 0; i < experimentData.length; i++) {
+        const cell = document.getElementById(`cell-calc-${i}`);
+        if (!cell) continue;
+
+        if (i === 0) {
+          cell.textContent = '+0.00';
+          cell.className = 'cell-calc v-zero';
+          continue;
+        }
+
+        const prev = experimentData[i - 1];
+        const curr = experimentData[i];
+
+        if (curr.t === null || prev.t === null) {
+          cell.textContent = '--';
+          cell.className = 'cell-calc';
+        } else if (curr.t <= prev.t) {
+          cell.textContent = 'err (t ≤ tₚ)';
+          cell.className = 'cell-calc v-err';
+        } else {
+          const v = calculateVelocity(i);
+          if (v !== null) {
+            const sign = v >= 0 ? '+' : '';
+            cell.textContent = sign + v.toFixed(2);
+            if (v > 0) cell.className = 'cell-calc v-pos';
+            else if (v === 0) cell.className = 'cell-calc v-zero';
+            else cell.className = 'cell-calc v-neg';
+          }
+        }
+      }
+    }
+
+    function selectRow(idx) {
+      selectedRowIndex = idx;
+      document.querySelectorAll('#table-body tr').forEach((tr, i) => {
+        tr.classList.toggle('selected-row', i === idx);
+      });
+      updateFormulaInspector(idx);
+      moveCartToPosition(experimentData[idx].s, experimentData[idx].t, calculateVelocity(idx));
+    }
+
+    // Interactive Animated Formula Breakdown
+    function updateFormulaInspector(idx) {
+      const display = document.getElementById('formula-display');
+      const valDeltaS = document.getElementById('val-delta-s');
+      const valDeltaT = document.getElementById('val-delta-t');
+
+      if (idx === 0) {
+        display.innerHTML = `<strong>Partenza da fermo:</strong> s<sub>0</sub> = 0,00 m, t<sub>0</sub> = 0,00 s &rarr; v<sub>0</sub> = 0,00 m/s`;
+        valDeltaS.textContent = `Origine coordinate (s = 0,00 m)`;
+        valDeltaT.textContent = `t = 0,00 s`;
+        return;
+      }
+
+      const prev = experimentData[idx - 1];
+      const curr = experimentData[idx];
+
+      if (curr.t === null || prev.t === null) {
+        display.innerHTML = `<span style="color:#94a3b8;">✍️ Inserisci il tempo per calcolare la velocità del tratto ${idx}...</span>`;
+        valDeltaS.textContent = `Δs = (${curr.s.toFixed(2)} - ${prev.s.toFixed(2)}) = ${(curr.s - prev.s).toFixed(2)} m`;
+        valDeltaT.textContent = `In attesa di t_${idx}`;
+        return;
+      }
+
+      const ds = curr.s - prev.s;
+      const dt = curr.t - prev.t;
+
+      if (dt <= 0) {
+        display.innerHTML = `<span style="color:#ef4444; font-weight:bold;">⚠️ Errore cronologico: il tempo t<sub>${idx}</sub> deve essere maggiore di ${prev.t.toFixed(2)} s!</span>`;
+        valDeltaS.textContent = `${(ds >= 0 ? '+' : '')}${ds.toFixed(2)} m`;
+        valDeltaT.textContent = `Δt negativo o nullo (${dt.toFixed(2)} s)`;
+        return;
+      }
+
+      const v = ds / dt;
+      const colorStyle = v >= 0 ? 'color: #38bdf8;' : 'color: #f87171;';
+      const signNotice = v < 0 ? ' <span style="font-size:0.75rem; color:#fca5a5;">(ritorno)</span>' : '';
+
+      display.innerHTML = `
+        <span>v<sub>${idx}</sub> = <span style="color:#93c5fd;">Δs</span>/<span style="color:#fcd34d;">Δt</span></span>
+        <span>=</span>
+        <span>(${curr.s.toFixed(2)} − ${prev.s.toFixed(2)}) / (${curr.t.toFixed(2)} − ${prev.t.toFixed(2)})</span>
+        <span>=</span>
+        <strong style="${colorStyle}">${(v >= 0 ? '+' : '') + v.toFixed(2)} m/s</strong>${signNotice}
+      `;
+
+      valDeltaS.textContent = `${ds >= 0 ? '+' : ''}${ds.toFixed(2)} m (${ds >= 0 ? 'avanzamento' : 'rientro'})`;
+      valDeltaT.textContent = `+${dt.toFixed(2)} s`;
+    }
+
+    function triggerFormulaPulse() {
+      const card = document.getElementById('formula-card');
+      card.classList.remove('card-pulse');
+      void card.offsetWidth; // trigger reflow
+      card.classList.add('card-pulse');
+      setTimeout(() => card.classList.remove('card-pulse'), 500);
+    }
+
+    // Live update of overall velocity stats
+    function updateStats() {
+      const tPunta = experimentData[4].t;
+      if (tPunta && tPunta > 0) {
+        const vAndata = 2.30 / tPunta;
+        document.getElementById('stat-v-andata').textContent = `+${vAndata.toFixed(2)} m/s`;
+      } else {
+        document.getElementById('stat-v-andata').textContent = `-- m/s`;
+      }
+
+      const tFine = experimentData[8].t;
+      if (tFine && tPunta && tFine > tPunta) {
+        const vRitorno = (0.00 - 2.30) / (tFine - tPunta);
+        document.getElementById('stat-v-ritorno').textContent = `${vRitorno.toFixed(2)} m/s`;
+      } else {
+        document.getElementById('stat-v-ritorno').textContent = `-- m/s`;
+      }
+    }
+
+    // Move virtual cart on the rail track with exact metric percentage alignment
+    function moveCartToPosition(s, t, v = null) {
+      const cart = document.getElementById('virtual-cart');
+      const maxS = 2.30;
+      const sClamped = Math.max(0, Math.min(s, maxS));
+      const percent = (sClamped / maxS) * 100;
+
+      cart.style.left = `${percent}%`;
+
+      // Visual phase styling on cart
+      cart.classList.remove('cart-andata', 'cart-punta', 'cart-ritorno');
+      let faseText = 'Fermo';
+
+      if (s >= 2.29) {
+        cart.classList.add('cart-punta');
+        cart.innerHTML = `★ 2.30m`;
+        faseText = 'Punta di inversione (2,30 m)';
+      } else if (v !== null && v < 0) {
+        cart.classList.add('cart-ritorno');
+        cart.innerHTML = `◀ ${s.toFixed(2)}m`;
+        faseText = 'Fase di Ritorno';
+      } else {
+        cart.classList.add('cart-andata');
+        cart.innerHTML = `▶ ${s.toFixed(2)}m`;
+        faseText = 'Fase di Andata';
+      }
+
+      const tStr = (t !== null && !isNaN(t)) ? t.toFixed(2) + ' s' : '--';
+      const vStr = (v !== null && !isNaN(v)) ? (v >= 0 ? '+' : '') + v.toFixed(2) + ' m/s' : '--';
+
+      document.getElementById('live-cart-info').innerHTML = 
+        `Posizione: <strong style="color:#ffffff;">${s.toFixed(2)} m</strong> | Tempo: <strong style="color:#ffffff;">${tStr}</strong> | Velocità: <strong style="color:#38bdf8;">${vStr}</strong> &bull; <span style="color:#4ade80;">${faseText}</span>`;
+    }
+
+    // Switch between s(t) and v(t) on screen
+    function switchChart(type) {
+      currentChart = type;
+      document.getElementById('tab-st').classList.toggle('active', type === 'st');
+      document.getElementById('tab-vt').classList.toggle('active', type === 'vt');
+      renderScreenChart(isPlaying ? simTime : null);
+    }
+
+    // Filter valid chronological points
+    function getValidChronologicalPoints() {
+      const pts = [];
+      for (let i = 0; i < experimentData.length; i++) {
+        const p = experimentData[i];
+        if (p.t !== null && !isNaN(p.t)) {
+          if (pts.length === 0 || p.t > pts[pts.length - 1].t) {
+            pts.push({ ...p, origIndex: i });
+          }
+        }
+      }
+      return pts;
+    }
+
+    // SCREEN CANVAS GRAPH RENDERING (Dark Mode Theme)
+    function renderScreenChart(animCursorTime = null) {
+      const w = screenCanvas.width / window.devicePixelRatio;
+      const h = screenCanvas.height / window.devicePixelRatio;
+      screenCtx.clearRect(0, 0, w, h);
+
+      const margin = { top: 32, right: 35, bottom: 42, left: 65 };
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+
+      // Draw background grid
+      screenCtx.strokeStyle = '#1e293b';
+      screenCtx.lineWidth = 1;
+      for (let x = 0; x <= plotW; x += plotW / 10) {
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left + x, margin.top);
+        screenCtx.lineTo(margin.left + x, margin.top + plotH);
+        screenCtx.stroke();
+      }
+      for (let y = 0; y <= plotH; y += plotH / 8) {
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left, margin.top + y);
+        screenCtx.lineTo(margin.left + plotW, margin.top + y);
+        screenCtx.stroke();
+      }
+
+      // Max time scale based on entered data
+      let maxT = 12.0;
+      experimentData.forEach(p => { if (p.t && p.t > maxT) maxT = Math.ceil(p.t + 1); });
+
+      const scaleX = (t) => margin.left + (t / maxT) * plotW;
+      const validPoints = getValidChronologicalPoints();
+
+      if (currentChart === 'st') {
+        // --- GRAFICO SPAZIO-TEMPO s(t) ---
+        const maxS = 2.50; // headroom for 2.30m
+        const scaleY = (s) => margin.top + plotH - (s / maxS) * plotH;
+
+        // Axes
+        screenCtx.strokeStyle = '#94a3b8';
+        screenCtx.lineWidth = 2;
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left, margin.top);
+        screenCtx.lineTo(margin.left, margin.top + plotH);
+        screenCtx.lineTo(margin.left + plotW, margin.top + plotH);
+        screenCtx.stroke();
+
+        // Ticks Y
+        const yTicks = [0.00, 0.50, 1.00, 1.50, 2.00, 2.30];
+        screenCtx.fillStyle = '#94a3b8';
+        screenCtx.font = '11px Segoe UI';
+        screenCtx.textAlign = 'right';
+        yTicks.forEach(sVal => {
+          const yPos = scaleY(sVal);
+          screenCtx.fillStyle = sVal === 2.30 ? '#4ade80' : '#94a3b8';
+          screenCtx.fillText(sVal.toFixed(2) + ' m', margin.left - 8, yPos + 4);
+          screenCtx.beginPath();
+          screenCtx.moveTo(margin.left - 4, yPos);
+          screenCtx.lineTo(margin.left, yPos);
+          screenCtx.strokeStyle = '#94a3b8';
+          screenCtx.stroke();
+        });
+
+        // 1.50 m double passage guide line
+        screenCtx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+        screenCtx.setLineDash([4, 4]);
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left, scaleY(1.50));
+        screenCtx.lineTo(margin.left + plotW, scaleY(1.50));
+        screenCtx.stroke();
+
+        // 2.30 m peak guide line
+        screenCtx.strokeStyle = 'rgba(74, 222, 128, 0.35)';
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left, scaleY(2.30));
+        screenCtx.lineTo(margin.left + plotW, scaleY(2.30));
+        screenCtx.stroke();
+        screenCtx.setLineDash([]);
+
+        // Labels
+        screenCtx.fillStyle = '#38bdf8';
+        screenCtx.font = 'bold 11px Segoe UI';
+        screenCtx.textAlign = 'left';
+        screenCtx.fillText('▲ SPAZIO s [m]', margin.left + 5, margin.top - 10);
+        screenCtx.textAlign = 'right';
+        screenCtx.fillText('TEMPO t [s] ►', margin.left + plotW, margin.top + plotH + 30);
+
+        // X axis ticks
+        screenCtx.fillStyle = '#94a3b8';
+        screenCtx.font = '10px Segoe UI';
+        screenCtx.textAlign = 'center';
+        for (let t = 0; t <= maxT; t += 2.0) {
+          screenCtx.fillText(t.toFixed(0) + 's', scaleX(t), margin.top + plotH + 16);
+        }
+
+        // Empty state watermark if no data
+        if (validPoints.length <= 1) {
+          screenCtx.fillStyle = '#64748b';
+          screenCtx.font = '13px Segoe UI';
+          screenCtx.textAlign = 'center';
+          screenCtx.fillText('✍️ Inserisci i tempi nella tabella a sinistra per tracciare il grafico s(t)', margin.left + plotW / 2, margin.top + plotH / 2);
+        }
+
+        // Plot lines connecting points
+        if (validPoints.length > 1) {
+          screenCtx.lineWidth = 3.5;
+          for (let i = 1; i < validPoints.length; i++) {
+            const p0 = validPoints[i-1];
+            const p1 = validPoints[i];
+            screenCtx.beginPath();
+            screenCtx.moveTo(scaleX(p0.t), scaleY(p0.s));
+            screenCtx.lineTo(scaleX(p1.t), scaleY(p1.s));
+            screenCtx.strokeStyle = p1.origIndex <= 4 ? '#38bdf8' : '#f87171';
+            screenCtx.stroke();
+          }
+        }
+
+        // Draw point dots
+        validPoints.forEach(p => {
+          const x = scaleX(p.t);
+          const y = scaleY(p.s);
+          screenCtx.beginPath();
+          screenCtx.arc(x, y, p.origIndex === 4 ? 6.5 : 5, 0, Math.PI * 2);
+          screenCtx.fillStyle = p.origIndex === 4 ? '#4ade80' : (p.origIndex < 4 ? '#38bdf8' : '#f87171');
+          screenCtx.fill();
+          screenCtx.strokeStyle = '#ffffff';
+          screenCtx.lineWidth = 2;
+          screenCtx.stroke();
+        });
+
+        // Animated realtime cursor on s(t)
+        if (animCursorTime !== null && validPoints.length > 1) {
+          const state = interpolateState(animCursorTime, validPoints);
+          const curX = scaleX(animCursorTime);
+          const curY = scaleY(state.s);
+
+          // Vertical timeline cursor line
+          screenCtx.strokeStyle = 'rgba(250, 204, 21, 0.4)';
+          screenCtx.setLineDash([3, 3]);
+          screenCtx.beginPath();
+          screenCtx.moveTo(curX, margin.top);
+          screenCtx.lineTo(curX, margin.top + plotH);
+          screenCtx.stroke();
+          screenCtx.setLineDash([]);
+
+          // Glowing animated circle
+          screenCtx.beginPath();
+          screenCtx.arc(curX, curY, 8, 0, Math.PI * 2);
+          screenCtx.fillStyle = '#facc15';
+          screenCtx.fill();
+          screenCtx.strokeStyle = '#ffffff';
+          screenCtx.lineWidth = 2.5;
+          screenCtx.stroke();
+        }
+
+      } else {
+        // --- GRAFICO VELOCITÀ-TEMPO v(t) ---
+        const maxV = 1.00;
+        const scaleY = (v) => margin.top + plotH / 2 - (v / maxV) * (plotH / 2);
+
+        // Axes: Zero line in the exact middle
+        screenCtx.strokeStyle = '#94a3b8';
+        screenCtx.lineWidth = 2;
+        screenCtx.beginPath();
+        screenCtx.moveTo(margin.left, margin.top);
+        screenCtx.lineTo(margin.left, margin.top + plotH);
+        screenCtx.moveTo(margin.left, scaleY(0));
+        screenCtx.lineTo(margin.left + plotW, scaleY(0));
+        screenCtx.stroke();
+
+        // Ticks Y
+        const vTicks = [1.00, 0.50, 0.00, -0.50, -1.00];
+        screenCtx.fillStyle = '#94a3b8';
+        screenCtx.font = '10px Segoe UI';
+        screenCtx.textAlign = 'right';
+        vTicks.forEach(vVal => {
+          const yPos = scaleY(vVal);
+          screenCtx.fillText((vVal > 0 ? '+' : '') + vVal.toFixed(2), margin.left - 8, yPos + 3);
+          screenCtx.beginPath();
+          screenCtx.moveTo(margin.left - 4, yPos);
+          screenCtx.lineTo(margin.left, yPos);
+          screenCtx.stroke();
+        });
+
+        // Labels
+        screenCtx.fillStyle = '#38bdf8';
+        screenCtx.font = 'bold 11px Segoe UI';
+        screenCtx.textAlign = 'left';
+        screenCtx.fillText('▲ VELOCITÀ v [m/s]', margin.left + 5, margin.top - 10);
+        screenCtx.textAlign = 'right';
+        screenCtx.fillText('TEMPO t [s] ►', margin.left + plotW, scaleY(0) + 18);
+
+        // X axis ticks
+        screenCtx.fillStyle = '#94a3b8';
+        screenCtx.font = '10px Segoe UI';
+        screenCtx.textAlign = 'center';
+        for (let t = 0; t <= maxT; t += 2.0) {
+          screenCtx.fillText(t.toFixed(0) + 's', scaleX(t), margin.top + plotH + 16);
+        }
+
+        // Plot velocities
+        const validVelocities = [];
+        for (let i = 0; i < experimentData.length; i++) {
+          const v = calculateVelocity(i);
+          if (v !== null && experimentData[i].t !== null) {
+            validVelocities.push({ t: experimentData[i].t, v: v, id: i });
+          }
+        }
+
+        if (validVelocities.length <= 1) {
+          screenCtx.fillStyle = '#64748b';
+          screenCtx.font = '13px Segoe UI';
+          screenCtx.textAlign = 'center';
+          screenCtx.fillText('✍️ Inserisci i tempi per calcolare e visualizzare le velocità v(t)', margin.left + plotW / 2, margin.top + plotH / 2);
+        }
+
+        if (validVelocities.length > 1) {
+          screenCtx.lineWidth = 3.5;
+          for (let i = 1; i < validVelocities.length; i++) {
+            const p0 = validVelocities[i-1];
+            const p1 = validVelocities[i];
+            screenCtx.beginPath();
+            screenCtx.moveTo(scaleX(p0.t), scaleY(p0.v));
+            screenCtx.lineTo(scaleX(p1.t), scaleY(p1.v));
+            screenCtx.strokeStyle = p1.v >= 0 ? '#38bdf8' : '#f87171';
+            screenCtx.stroke();
+          }
+        }
+
+        validVelocities.forEach(p => {
+          const x = scaleX(p.t);
+          const y = scaleY(p.v);
+          screenCtx.beginPath();
+          screenCtx.arc(x, y, 5.5, 0, Math.PI * 2);
+          screenCtx.fillStyle = p.v >= 0 ? '#38bdf8' : '#f87171';
+          screenCtx.fill();
+          screenCtx.strokeStyle = '#ffffff';
+          screenCtx.lineWidth = 2;
+          screenCtx.stroke();
+        });
+
+        // Animated realtime cursor on v(t) - accurately glides directly along the plotted line
+        if (animCursorTime !== null && validVelocities.length > 0) {
+          const curV = interpolateVelocityGraph(animCursorTime, validVelocities);
+          const curX = scaleX(animCursorTime);
+          const curY = scaleY(curV);
+
+          // Vertical timeline cursor line
+          screenCtx.strokeStyle = 'rgba(250, 204, 21, 0.4)';
+          screenCtx.setLineDash([3, 3]);
+          screenCtx.beginPath();
+          screenCtx.moveTo(curX, margin.top);
+          screenCtx.lineTo(curX, margin.top + plotH);
+          screenCtx.stroke();
+          screenCtx.setLineDash([]);
+
+          // Glowing animated circle exactly centered on the plotted line
+          screenCtx.beginPath();
+          screenCtx.arc(curX, curY, 8, 0, Math.PI * 2);
+          screenCtx.fillStyle = '#facc15';
+          screenCtx.fill();
+          screenCtx.strokeStyle = '#ffffff';
+          screenCtx.lineWidth = 2.5;
+          screenCtx.stroke();
+        }
+      }
+    }
+
+    // INTERPOLATE MOTION STATE FOR SMOOTH 60FPS SIMULATION (s(t))
+    function interpolateState(t, pts) {
+      if (!pts || pts.length === 0) return { s: 0, v: 0, activeRowIndex: 0 };
+      if (pts.length === 1) return { s: pts[0].s, v: 0, activeRowIndex: pts[0].origIndex };
+
+      if (t <= pts[0].t) {
+        return { s: pts[0].s, v: 0, activeRowIndex: pts[0].origIndex };
+      }
+      if (t >= pts[pts.length - 1].t) {
+        const last = pts[pts.length - 1];
+        return { s: last.s, v: 0, activeRowIndex: last.origIndex };
+      }
+
+      for (let i = 1; i < pts.length; i++) {
+        const p0 = pts[i - 1];
+        const p1 = pts[i];
+        if (t >= p0.t && t <= p1.t) {
+          const dt = p1.t - p0.t;
+          const ratio = dt > 0 ? (t - p0.t) / dt : 0;
+          const s = p0.s + ratio * (p1.s - p0.s);
+          const v = dt > 0 ? (p1.s - p0.s) / dt : 0;
+          return { s, v, activeRowIndex: p1.origIndex };
+        }
+      }
+
+      const endPt = pts[pts.length - 1];
+      return { s: endPt.s, v: 0, activeRowIndex: endPt.origIndex };
+    }
+
+    // INTERPOLATE VELOCITY GRAPH TO FOLLOW PLOTTED POLYLINE 100% PRECISELY
+    function interpolateVelocityGraph(t, velPts) {
+      if (!velPts || velPts.length === 0) return 0;
+      if (velPts.length === 1) return velPts[0].v;
+      if (t <= velPts[0].t) return velPts[0].v;
+      if (t >= velPts[velPts.length - 1].t) return velPts[velPts.length - 1].v;
+
+      for (let i = 1; i < velPts.length; i++) {
+        const p0 = velPts[i - 1];
+        const p1 = velPts[i];
+        if (t >= p0.t && t <= p1.t) {
+          const dt = p1.t - p0.t;
+          const ratio = dt > 0 ? (t - p0.t) / dt : 0;
+          return p0.v + ratio * (p1.v - p0.v);
+        }
+      }
+      return velPts[velPts.length - 1].v;
+    }
+
+    // ANIMATED MOTION SIMULATION (PLAY / PAUSE BUTTON)
+    function togglePlayAnimation() {
+      const validPts = getValidChronologicalPoints();
+      if (validPts.length < 2) {
+        alert("⚠️ Per avviare la simulazione, inserisci prima i tempi cronometrati nella tabella (oppure clicca '📂 Dati Esempio' per caricare dati dimostrativi).");
+        return;
+      }
+
+      if (isPlaying) {
+        stopSimulation();
+      } else {
+        startSimulation();
+      }
+    }
+
+    function startSimulation() {
+      const validPts = getValidChronologicalPoints();
+      if (validPts.length < 2) return;
+
+      isPlaying = true;
+      const btn = document.getElementById('btn-play');
+      btn.innerHTML = '⏸ Pausa Simulazione';
+      btn.classList.remove('btn-success');
+      btn.classList.add('btn-secondary');
+
+      const minT = validPts[0].t;
+      const maxT = validPts[validPts.length - 1].t;
+
+      if (simTime >= maxT || simTime < minT) simTime = minT;
+      let lastStamp = performance.now();
+
+      function loop(now) {
+        if (!isPlaying) return;
+        const deltaSec = (now - lastStamp) / 1000;
+        lastStamp = now;
+
+        simTime += deltaSec;
+        if (simTime > maxT) {
+          simTime = minT; // seamless loop
+        }
+
+        const state = interpolateState(simTime, validPts);
+        moveCartToPosition(state.s, simTime, state.v);
+
+        // Highlight active traversing row in table
+        document.querySelectorAll('#table-body tr').forEach((tr, i) => {
+          tr.classList.toggle('active-sim-row', i === state.activeRowIndex);
+        });
+
+        // Update inspector during live simulation
+        updateFormulaInspector(state.activeRowIndex);
+        renderScreenChart(simTime);
+
+        animFrameId = requestAnimationFrame(loop);
+      }
+
+      animFrameId = requestAnimationFrame(loop);
+    }
+
+    function stopSimulation() {
+      isPlaying = false;
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+
+      const btn = document.getElementById('btn-play');
+      btn.innerHTML = '▶ Avvia Simulazione';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-success');
+
+      document.querySelectorAll('#table-body tr').forEach(tr => {
+        tr.classList.remove('active-sim-row');
+      });
+
+      renderScreenChart(null);
+    }
+
+    // PASSWORD MODAL CONTROLLER & SECURE VERIFICATION
+    function openPwdModal() {
+      const modal = document.getElementById('pwd-modal');
+      const input = document.getElementById('modal-pwd-input');
+      const err = document.getElementById('modal-pwd-error');
+      if (!modal || !input) return;
+      input.value = '';
+      input.type = 'password';
+      const eye = document.getElementById('pwd-toggle-visibility');
+      if (eye) eye.textContent = '👁️';
+      if (err) err.style.display = 'none';
+      modal.style.display = 'flex';
+      setTimeout(() => input.focus(), 60);
+    }
+
+    function closePwdModal() {
+      const modal = document.getElementById('pwd-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function togglePwdVisibility() {
+      const input = document.getElementById('modal-pwd-input');
+      const eye = document.getElementById('pwd-toggle-visibility');
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (eye) eye.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        if (eye) eye.textContent = '👁️';
+      }
+    }
+
+    function checkTeacherPassword(input) {
+      if (!input) return false;
+      const clean = input.trim().toLowerCase();
+      // Obfuscated Base64 check for 'thomas' so password is never stored in plaintext in code
+      return btoa(clean) === 'dGhvbWFz';
+    }
+
+    function submitPwdModal() {
+      const input = document.getElementById('modal-pwd-input');
+      const err = document.getElementById('modal-pwd-error');
+      if (!input) return;
+
+      if (checkTeacherPassword(input.value)) {
+        closePwdModal();
+        applySampleData();
+      } else {
+        if (err) err.style.display = 'flex';
+        input.value = '';
+        input.focus();
+        input.classList.add('input-error');
+        setTimeout(() => input.classList.remove('input-error'), 1000);
+      }
+    }
+
+    function loadSampleData() {
+      openPwdModal();
+    }
+
+    function applySampleData() {
+      if (isPlaying) stopSimulation();
+
+      const sampleTimes = [0.00, 1.25, 2.50, 3.80, 5.50, 7.20, 8.50, 9.75, 11.00];
+      sampleTimes.forEach((tVal, i) => {
+        experimentData[i].t = tVal;
+        const inp = document.getElementById(`time-input-${i}`);
+        if (inp) {
+          inp.value = tVal.toFixed(2).replace('.', ',');
+          inp.classList.remove('input-error');
+        }
+      });
+
+      // Sample student fields
+      document.getElementById('input-student-name').value = 'Mario Rossi';
+      document.getElementById('input-student-class').value = '2ª Elettronica';
+      document.getElementById('input-student-teacher').value = 'Prof. Thomas Mazzeo';
+
+      syncStudentInfo();
+      updateTableCalculations();
+      selectRow(1);
+      updateStats();
+      renderScreenChart();
+    }
+
+    // RESET TO INITIAL EMPTY STATE
+    function resetData() {
+      if (isPlaying) stopSimulation();
+
+      experimentData.forEach((row, i) => {
+        row.t = (i === 0) ? 0.00 : null;
+        const inp = document.getElementById(`time-input-${i}`);
+        if (inp) {
+          inp.value = (i === 0) ? '0,00' : '';
+          inp.classList.remove('input-error');
+        }
+      });
+
+      document.getElementById('input-student-name').value = '';
+      document.getElementById('input-student-class').value = '';
+      document.getElementById('input-student-teacher').value = 'Prof. Thomas Mazzeo';
+
+      syncStudentInfo();
+      updateTableCalculations();
+      selectRow(0);
+      updateStats();
+      renderScreenChart();
+      moveCartToPosition(0, 0, 0);
+    }
+
+    // ==============================================================
+    // ============= HIGH-RES PRINT CANVAS RENDERERS ================
+    // ==============================================================
+
+    // Synchronize student data across inputs & print templates
+    function syncStudentInfo() {
+      const sName = document.getElementById('input-student-name').value.trim() || '.........................';
+      const sClass = document.getElementById('input-student-class').value.trim() || '2ª Elettronica';
+      const sTeacher = document.getElementById('input-student-teacher').value.trim() || 'Prof. Thomas Mazzeo';
+      const sDate = document.getElementById('input-student-date').value.trim() || '___/___/202...';
+
+      // Page 1
+      document.getElementById('p-st-name').textContent = sName;
+      document.getElementById('p-st-class').textContent = sClass;
+      document.getElementById('p-st-teacher').textContent = sTeacher;
+      document.getElementById('p-st-date').textContent = sDate;
+
+      // Page 2
+      document.getElementById('p-vt-name').textContent = sName;
+      document.getElementById('p-vt-class').textContent = sClass;
+      document.getElementById('p-vt-teacher').textContent = sTeacher;
+      document.getElementById('p-vt-date').textContent = sDate;
+    }
+
+    // Populate Print Tables on Page 1 and Page 2
+    function populatePrintTables() {
+      // 1. Page 1: Spazio-Tempo Table
+      const tbodyST = document.getElementById('print-table-st-body');
+      tbodyST.innerHTML = '';
+      experimentData.forEach(row => {
+        const tr = document.createElement('tr');
+        if (row.fase === 'Andata') tr.className = 'print-row-andata';
+        else if (row.fase === 'Punta') tr.className = 'print-row-punta';
+        else tr.className = 'print-row-ritorno';
+
+        let badgeClass = 'p-badge-andata';
+        if (row.fase === 'Punta') badgeClass = 'p-badge-punta';
+        else if (row.fase === 'Ritorno') badgeClass = 'p-badge-ritorno';
+
+        const tText = row.t !== null ? row.t.toFixed(2) : '';
+
+        tr.innerHTML = `
+          <td><span class="p-badge ${badgeClass}">${row.fase}</span></td>
+          <td class="p-val-cell">${tText}</td>
+          <td class="p-space">${row.s.toFixed(2)}</td>
+          <td class="p-note-cell">${row.note}</td>
+        `;
+        tbodyST.appendChild(tr);
+      });
+
+      // 2. Page 2: Velocità-Tempo Table
+      const tbodyVT = document.getElementById('print-table-vt-body');
+      tbodyVT.innerHTML = '';
+      experimentData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        if (row.fase === 'Andata') tr.className = 'print-row-andata';
+        else if (row.fase === 'Punta') tr.className = 'print-row-punta';
+        else tr.className = 'print-row-ritorno';
+
+        let badgeClass = 'p-badge-andata';
+        if (row.fase === 'Punta') badgeClass = 'p-badge-punta';
+        else if (row.fase === 'Ritorno') badgeClass = 'p-badge-ritorno';
+
+        const tText = row.t !== null ? row.t.toFixed(2) : '';
+        const v = calculateVelocity(idx);
+        let vText = '';
+        let vColorStyle = '';
+        if (v !== null) {
+          vText = (v >= 0 ? '+' : '') + v.toFixed(2);
+          vColorStyle = v > 0 ? 'color:#1e40af;' : (v === 0 ? 'color:#15803d;' : 'color:#b91c1c;');
+        }
+
+        tr.innerHTML = `
+          <td><span class="p-badge ${badgeClass}">${row.fase}</span></td>
+          <td class="p-val-cell">${tText}</td>
+          <td class="p-val-cell" style="${vColorStyle}">${vText}</td>
+          <td class="p-note-cell">${row.note}</td>
+        `;
+        tbodyVT.appendChild(tr);
+      });
+
+      // 3. Update calculated velocities in questions
+      const tPunta = experimentData[4].t;
+      const tFine = experimentData[8].t;
+
+      let vAndataStr = '-- m/s';
+      let vRitornoStr = '-- m/s';
+
+      if (tPunta && tPunta > 0) {
+        const vAndata = 2.30 / tPunta;
+        vAndataStr = `+${vAndata.toFixed(2)} m/s`;
+      }
+      if (tFine && tPunta && tFine > tPunta) {
+        const vRitorno = (0.00 - 2.30) / (tFine - tPunta);
+        vRitornoStr = `${vRitorno.toFixed(2)} m/s`;
+      }
+
+      document.getElementById('print-calc-v-andata').textContent = vAndataStr;
+      document.getElementById('print-calc-v-ritorno').textContent = vRitornoStr;
+      document.getElementById('print-calc-vt-andata').textContent = vAndataStr;
+      document.getElementById('print-calc-vt-ritorno').textContent = vRitornoStr;
+    }
+
+    // High-Resolution Print Canvas Renderer for s(t)
+    function renderPrintChartST() {
+      const c = document.getElementById('offscreen-canvas-st');
+      const ctx = c.getContext('2d');
+      const w = c.width;
+      const h = c.height;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      const margin = { top: 50, right: 60, bottom: 65, left: 100 };
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+
+      const maxS = 2.50; // Headroom for 2.30m
+      let maxT = 12.0;
+      experimentData.forEach(p => { if (p.t && p.t > maxT) maxT = Math.ceil(p.t); });
+
+      const scaleX = (t) => margin.left + (t / maxT) * plotW;
+      const scaleY = (s) => margin.top + plotH - (s / maxS) * plotH;
+
+      // Millimeter grid
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      for (let t = 0; t <= maxT; t += 0.5) {
+        ctx.beginPath();
+        ctx.moveTo(scaleX(t), margin.top);
+        ctx.lineTo(scaleX(t), margin.top + plotH);
+        ctx.stroke();
+      }
+      for (let s = 0; s <= maxS; s += 0.25) {
+        ctx.beginPath();
+        ctx.moveTo(margin.left, scaleY(s));
+        ctx.lineTo(margin.left + plotW, scaleY(s));
+        ctx.stroke();
+      }
+
+      // Major grid lines
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      for (let t = 0; t <= maxT; t += 2.0) {
+        ctx.beginPath();
+        ctx.moveTo(scaleX(t), margin.top);
+        ctx.lineTo(scaleX(t), margin.top + plotH);
+        ctx.stroke();
+      }
+      for (let s = 0; s <= maxS; s += 0.50) {
+        ctx.beginPath();
+        ctx.moveTo(margin.left, scaleY(s));
+        ctx.lineTo(margin.left + plotW, scaleY(s));
+        ctx.stroke();
+      }
+
+      // 1.50 m double passage guide line
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(margin.left, scaleY(1.50));
+      ctx.lineTo(margin.left + plotW, scaleY(1.50));
+      ctx.stroke();
+
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 16px Segoe UI';
+      ctx.textAlign = 'right';
+      ctx.fillText('Passaggio doppio (s = 1,50 m)', margin.left + plotW - 10, scaleY(1.50) - 8);
+
+      // 2.30 m peak guide line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(margin.left, scaleY(2.30));
+      ctx.lineTo(margin.left + plotW, scaleY(2.30));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#16a34a';
+      ctx.font = 'bold 16px Segoe UI';
+      ctx.textAlign = 'right';
+      ctx.fillText('PUNTA DI INVERSIONE (s = 2,30 m)', margin.left + plotW - 10, scaleY(2.30) - 8);
+
+      // Cartesians Axes
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top - 15);
+      ctx.lineTo(margin.left, margin.top + plotH);
+      ctx.lineTo(margin.left + plotW + 25, margin.top + plotH);
+      ctx.stroke();
+
+      // Arrows
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top - 25);
+      ctx.lineTo(margin.left - 6, margin.top - 12);
+      ctx.lineTo(margin.left + 6, margin.top - 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left + plotW + 35, margin.top + plotH);
+      ctx.lineTo(margin.left + plotW + 22, margin.top + plotH - 6);
+      ctx.lineTo(margin.left + plotW + 22, margin.top + plotH + 6);
+      ctx.closePath();
+      ctx.fill();
+
+      // Axis Labels
+      ctx.fillStyle = '#1e3a8a';
+      ctx.font = '800 20px Segoe UI';
+      ctx.textAlign = 'left';
+      ctx.fillText('▲ SPAZIO s [m]', margin.left + 15, margin.top - 15);
+
+      ctx.textAlign = 'right';
+      ctx.fillText('TEMPO t [s] ►', margin.left + plotW + 20, margin.top + plotH + 45);
+
+      // Y-axis tick marks
+      const yTicks = [0.00, 0.50, 1.00, 1.50, 2.00, 2.30];
+      ctx.font = 'bold 16px Segoe UI';
+      ctx.textAlign = 'right';
+      yTicks.forEach(sVal => {
+        const yPos = scaleY(sVal);
+        ctx.fillStyle = sVal === 2.30 ? '#16a34a' : '#1e293b';
+        ctx.fillText(sVal.toFixed(2) + ' m', margin.left - 12, yPos + 6);
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(margin.left - 8, yPos);
+        ctx.lineTo(margin.left, yPos);
+        ctx.stroke();
+      });
+
+      // X-axis tick marks
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 16px Segoe UI';
+      ctx.textAlign = 'center';
+      for (let t = 0; t <= maxT; t += 2.0) {
+        const xPos = scaleX(t);
+        ctx.fillText(t.toFixed(1) + ' s', xPos, margin.top + plotH + 26);
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xPos, margin.top + plotH);
+        ctx.lineTo(xPos, margin.top + plotH + 8);
+        ctx.stroke();
+      }
+
+      // Plot Experimental Curve
+      const validPoints = getValidChronologicalPoints();
+      if (validPoints.length > 1) {
+        ctx.lineWidth = 4.5;
+        ctx.lineJoin = 'round';
+        for (let i = 1; i < validPoints.length; i++) {
+          const p0 = validPoints[i-1];
+          const p1 = validPoints[i];
+          ctx.beginPath();
+          ctx.moveTo(scaleX(p0.t), scaleY(p0.s));
+          ctx.lineTo(scaleX(p1.t), scaleY(p1.s));
+          ctx.strokeStyle = p1.origIndex <= 4 ? '#2563eb' : '#dc2626';
+          ctx.stroke();
+        }
+      }
+
+      // Plot Point Dots & Coordinate Badges
+      validPoints.forEach(p => {
+        const x = scaleX(p.t);
+        const y = scaleY(p.s);
+
+        ctx.beginPath();
+        const r = p.origIndex === 4 ? 10 : 7.5;
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = p.origIndex === 4 ? '#16a34a' : (p.origIndex < 4 ? '#2563eb' : '#dc2626');
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        const coordText = `(${p.t.toFixed(2)}s; ${p.s.toFixed(2)}m)`;
+        ctx.font = 'bold 13px Segoe UI';
+        const textW = ctx.measureText(coordText).width;
+
+        const badgeY = (p.origIndex === 4 || p.origIndex === 3 || p.origIndex === 5) ? y - 18 : y + 24;
+        const badgeX = x;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(badgeX - textW / 2 - 6, badgeY - 14, textW + 12, 18, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = p.origIndex === 4 ? '#15803d' : '#0f172a';
+        ctx.textAlign = 'center';
+        ctx.fillText(coordText, badgeX, badgeY);
+      });
+
+      const imgST = document.getElementById('print-img-st');
+      imgST.src = c.toDataURL('image/png');
+    }
+
+    // High-Resolution Print Canvas Renderer for v(t)
+    function renderPrintChartVT() {
+      const c = document.getElementById('offscreen-canvas-vt');
+      const ctx = c.getContext('2d');
+      const w = c.width;
+      const h = c.height;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      const margin = { top: 50, right: 60, bottom: 65, left: 100 };
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+
+      const maxV = 1.00; // range: +1.00 down to -1.00 m/s
+      let maxT = 12.0;
+      experimentData.forEach(p => { if (p.t && p.t > maxT) maxT = Math.ceil(p.t); });
+
+      const scaleX = (t) => margin.left + (t / maxT) * plotW;
+      const centerY = margin.top + plotH / 2;
+      const scaleY = (v) => centerY - (v / maxV) * (plotH / 2);
+
+      // Zone shading
+      ctx.fillStyle = 'rgba(239, 246, 255, 0.55)';
+      ctx.fillRect(margin.left, margin.top, plotW, plotH / 2);
+
+      ctx.fillStyle = 'rgba(254, 242, 242, 0.55)';
+      ctx.fillRect(margin.left, centerY, plotW, plotH / 2);
+
+      ctx.fillStyle = '#1e40af';
+      ctx.font = 'bold 15px Segoe UI';
+      ctx.textAlign = 'left';
+      ctx.fillText('FASE DI ANDATA (v > 0, verso concorde)', margin.left + 15, margin.top + 25);
+
+      ctx.fillStyle = '#b91c1c';
+      ctx.fillText('FASE DI RITORNO (v < 0, verso discorde)', margin.left + 15, margin.top + plotH - 15);
+
+      // Grid lines
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      for (let t = 0; t <= maxT; t += 0.5) {
+        ctx.beginPath();
+        ctx.moveTo(scaleX(t), margin.top);
+        ctx.lineTo(scaleX(t), margin.top + plotH);
+        ctx.stroke();
+      }
+      const subTicksV = [0.75, 0.50, 0.25, -0.25, -0.50, -0.75];
+      subTicksV.forEach(vVal => {
+        ctx.beginPath();
+        ctx.moveTo(margin.left, scaleY(vVal));
+        ctx.lineTo(margin.left + plotW, scaleY(vVal));
+        ctx.stroke();
+      });
+
+      // Major grid lines
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      for (let t = 0; t <= maxT; t += 2.0) {
+        ctx.beginPath();
+        ctx.moveTo(scaleX(t), margin.top);
+        ctx.lineTo(scaleX(t), margin.top + plotH);
+        ctx.stroke();
+      }
+      [-1.0, -0.5, 0.5, 1.0].forEach(vVal => {
+        ctx.beginPath();
+        ctx.moveTo(margin.left, scaleY(vVal));
+        ctx.lineTo(margin.left + plotW, scaleY(vVal));
+        ctx.stroke();
+      });
+
+      // Cartesians Axes
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top - 15);
+      ctx.lineTo(margin.left, margin.top + plotH);
+      ctx.moveTo(margin.left, centerY);
+      ctx.lineTo(margin.left + plotW + 25, centerY);
+      ctx.stroke();
+
+      // Arrows
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top - 25);
+      ctx.lineTo(margin.left - 6, margin.top - 12);
+      ctx.lineTo(margin.left + 6, margin.top - 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left + plotW + 35, centerY);
+      ctx.lineTo(margin.left + plotW + 22, centerY - 6);
+      ctx.lineTo(margin.left + plotW + 22, centerY + 6);
+      ctx.closePath();
+      ctx.fill();
+
+      // Axis Labels
+      ctx.fillStyle = '#1e3a8a';
+      ctx.font = '800 20px Segoe UI';
+      ctx.textAlign = 'left';
+      ctx.fillText('▲ VELOCITÀ v [m/s]', margin.left + 15, margin.top - 15);
+
+      ctx.textAlign = 'right';
+      ctx.fillText('TEMPO t [s] ►', margin.left + plotW + 20, centerY + 28);
+
+      // Y-axis tick marks
+      const vTicks = [1.00, 0.75, 0.50, 0.25, 0.00, -0.25, -0.50, -0.75, -1.00];
+      ctx.font = 'bold 15px Segoe UI';
+      ctx.textAlign = 'right';
+      vTicks.forEach(vVal => {
+        const yPos = scaleY(vVal);
+        ctx.fillStyle = vVal > 0 ? '#1e40af' : (vVal === 0 ? '#15803d' : '#b91c1c');
+        const sign = vVal > 0 ? '+' : '';
+        ctx.fillText(sign + vVal.toFixed(2), margin.left - 12, yPos + 6);
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = vVal === 0 ? 3 : 2;
+        ctx.beginPath();
+        ctx.moveTo(margin.left - 8, yPos);
+        ctx.lineTo(margin.left, yPos);
+        ctx.stroke();
+      });
+
+      // X-axis tick marks
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 16px Segoe UI';
+      ctx.textAlign = 'center';
+      for (let t = 0; t <= maxT; t += 2.0) {
+        const xPos = scaleX(t);
+        ctx.fillText(t.toFixed(1) + ' s', xPos, margin.top + plotH + 26);
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xPos, margin.top + plotH);
+        ctx.lineTo(xPos, margin.top + plotH + 8);
+        ctx.stroke();
+      }
+
+      // Plot Calculated Velocities
+      const validVelocities = [];
+      for (let i = 0; i < experimentData.length; i++) {
+        const v = calculateVelocity(i);
+        if (v !== null && experimentData[i].t !== null) {
+          validVelocities.push({ t: experimentData[i].t, v: v, id: i });
+        }
+      }
+
+      if (validVelocities.length > 1) {
+        ctx.lineWidth = 4;
+        ctx.lineJoin = 'round';
+        for (let i = 1; i < validVelocities.length; i++) {
+          const p0 = validVelocities[i-1];
+          const p1 = validVelocities[i];
+          ctx.beginPath();
+          ctx.moveTo(scaleX(p0.t), scaleY(p0.v));
+          ctx.lineTo(scaleX(p1.t), scaleY(p1.v));
+          ctx.strokeStyle = p1.v >= 0 ? '#2563eb' : '#dc2626';
+          ctx.stroke();
+        }
+      }
+
+      validVelocities.forEach(p => {
+        const x = scaleX(p.t);
+        const y = scaleY(p.v);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 7.5, 0, Math.PI * 2);
+        ctx.fillStyle = p.v > 0 ? '#2563eb' : (p.v === 0 ? '#16a34a' : '#dc2626');
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        const sign = p.v >= 0 ? '+' : '';
+        const coordText = `(${p.t.toFixed(2)}s; ${sign}${p.v.toFixed(2)}m/s)`;
+        ctx.font = 'bold 12.5px Segoe UI';
+        const textW = ctx.measureText(coordText).width;
+
+        const badgeY = p.v >= 0 ? y - 18 : y + 24;
+        const badgeX = x;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(badgeX - textW / 2 - 6, badgeY - 14, textW + 12, 18, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = p.v >= 0 ? '#1e40af' : '#991b1b';
+        ctx.textAlign = 'center';
+        ctx.fillText(coordText, badgeX, badgeY);
+      });
+
+      const imgVT = document.getElementById('print-img-vt');
+      imgVT.src = c.toDataURL('image/png');
+    }
+
+    // MAIN ACTION: PREPARE AND PRINT FRONT/BACK PDF
+    function prepareAndPrintPDF() {
+      syncStudentInfo();
+      populatePrintTables();
+      renderPrintChartST();
+      renderPrintChartVT();
+
+      setTimeout(() => {
+        window.print();
+      }, 150);
+    }
+
+    window.onbeforeprint = () => {
+      syncStudentInfo();
+      populatePrintTables();
+      renderPrintChartST();
+      renderPrintChartVT();
+    };
+
+    // PASSWORD MODAL EVENT LISTENERS
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('pwd-modal');
+      if (modal && modal.style.display === 'flex') {
+        if (e.key === 'Escape') {
+          closePwdModal();
+        } else if (e.key === 'Enter') {
+          submitPwdModal();
+        }
+      }
+    });
+
+    const modalOverlay = document.getElementById('pwd-modal');
+    if (modalOverlay) {
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target.id === 'pwd-modal') closePwdModal();
+      });
+    }
+
+    const toggleEye = document.getElementById('pwd-toggle-visibility');
+    if (toggleEye) {
+      toggleEye.addEventListener('click', togglePwdVisibility);
+    }
+
+    // INITIALIZATION: Start with clean EMPTY table for student entry!
+    buildTable();
+    resetData();
+    setTimeout(resizeCanvas, 50);
+  </script>
+</body>
+</html>
