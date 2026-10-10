@@ -1090,9 +1090,8 @@
       <button class="btn btn-secondary" onclick="resetData()">🔄 Azzera Dati</button>
       <a href="scheda_laboratorio_A4.xlsx" download class="btn btn-secondary" style="text-decoration: none;">📊 Excel Spazio-Tempo (Grafico Auto)</a>
       <a href="scheda_velocita_A4.xlsx" download class="btn btn-secondary" style="text-decoration: none;">📈 Excel Velocità (Grafico Auto)</a>
-      <a href="relazione_compilata_fronte_retro.pdf" target="_blank" class="btn btn-secondary" style="text-decoration: none;">📄 PDF Relazione</a>
       <button class="btn btn-success" id="btn-play" onclick="togglePlayAnimation()">▶ Avvia Simulazione</button>
-      <button class="btn btn-pdf" id="btn-print" onclick="prepareAndPrintPDF()">🖨 Salva come PDF (Fronte/Retro)</button>
+      <button class="btn btn-pdf" id="btn-print" onclick="prepareAndPrintPDF()">🖨️ Genera Relazione PDF (con i tuoi Dati)</button>
     </div>
   </header>
 
@@ -1206,11 +1205,17 @@
     <!-- RIGHT PANE: INTERACTIVE ANIMATED CHARTS -->
     <div class="right-pane">
       <div class="panel chart-panel">
-        <div class="panel-header">
+        <div class="panel-header" style="flex-wrap: wrap; gap: 8px;">
           <span>2. Visualizzazione Grafica in Tempo Reale</span>
-          <div class="chart-tabs">
-            <button class="tab-btn active" id="tab-st" onclick="switchChart('st')">Grafico Spazio-Tempo s(t)</button>
-            <button class="tab-btn" id="tab-vt" onclick="switchChart('vt')">Grafico Velocità-Tempo v(t)</button>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            <div class="chart-tabs">
+              <button class="tab-btn active" id="tab-st" onclick="switchChart('st')">Grafico Spazio-Tempo s(t)</button>
+              <button class="tab-btn" id="tab-vt" onclick="switchChart('vt')">Grafico Velocità-Tempo v(t)</button>
+            </div>
+            <button class="tab-btn" id="btn-bestfit" onclick="toggleBestFit()" style="background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.2s;" title="Attiva/Disattiva il modello teorico MRU con retta di interpolazione o velocità costante">
+              <span id="bestfit-icon">📐</span>
+              <span id="bestfit-text">RETTA DI INTERPOLAZIONE (BEST-FIT)</span>
+            </button>
           </div>
         </div>
 
@@ -1510,6 +1515,7 @@
     ];
 
     let currentChart = 'st'; // 'st' (Spazio-Tempo) or 'vt' (Velocità-Tempo)
+    let isBestFit = false;
     let selectedRowIndex = 1;
     let isPlaying = false;
     let animFrameId = null;
@@ -1791,7 +1797,66 @@
       currentChart = type;
       document.getElementById('tab-st').classList.toggle('active', type === 'st');
       document.getElementById('tab-vt').classList.toggle('active', type === 'vt');
+      updateBestFitButton();
       renderScreenChart(isPlaying ? simTime : null);
+    }
+
+    function updateBestFitButton() {
+      const btn = document.getElementById('btn-bestfit');
+      const text = document.getElementById('bestfit-text');
+      if (!btn || !text) return;
+
+      if (currentChart === 'st') {
+        text.textContent = isBestFit ? 'RETTA DI INTERPOLAZIONE (BEST-FIT) [ATTIVA]' : 'RETTA DI INTERPOLAZIONE (BEST-FIT)';
+      } else {
+        text.textContent = isBestFit ? 'MODELLO VELOCITÀ COSTANTE (v = cost) [ATTIVO]' : 'MODELLO VELOCITÀ COSTANTE (v = cost)';
+      }
+
+      if (isBestFit) {
+        btn.style.background = '#0284c7';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#38bdf8';
+        btn.style.boxShadow = '0 0 12px rgba(56, 189, 248, 0.5)';
+      } else {
+        btn.style.background = 'rgba(56, 189, 248, 0.12)';
+        btn.style.color = '#38bdf8';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+        btn.style.boxShadow = 'none';
+      }
+    }
+
+    function toggleBestFit() {
+      isBestFit = !isBestFit;
+      updateBestFitButton();
+      renderScreenChart(isPlaying ? simTime : null);
+    }
+
+    // Calcolo regressione lineare dei minimi quadrati: s(t) = m*t + q
+    function calculateLinearRegression(points) {
+      const n = points.length;
+      if (n < 2) return null;
+      let sumT = 0, sumS = 0, sumTS = 0, sumT2 = 0;
+      for (let i = 0; i < n; i++) {
+        sumT += points[i].t;
+        sumS += points[i].s;
+        sumTS += points[i].t * points[i].s;
+        sumT2 += points[i].t * points[i].t;
+      }
+      const meanT = sumT / n;
+      const meanS = sumS / n;
+      const denom = sumT2 - n * meanT * meanT;
+      if (Math.abs(denom) < 1e-9) return null;
+      const m = (sumTS - n * meanT * meanS) / denom;
+      const q = meanS - m * meanT;
+
+      let sTot = 0, sRes = 0;
+      for (let i = 0; i < n; i++) {
+        const sPred = m * points[i].t + q;
+        sTot += Math.pow(points[i].s - meanS, 2);
+        sRes += Math.pow(points[i].s - sPred, 2);
+      }
+      const r2 = sTot > 0 ? Math.max(0, 1 - (sRes / sTot)) : 1;
+      return { m, q, r2 };
     }
 
     // Filter valid chronological points
@@ -1911,17 +1976,90 @@
           screenCtx.fillText('✍️ Inserisci i tempi nella tabella a sinistra per tracciare il grafico s(t)', margin.left + plotW / 2, margin.top + plotH / 2);
         }
 
-        // Plot lines connecting points
+        // Plot lines / Best-Fit on s(t)
         if (validPoints.length > 1) {
-          screenCtx.lineWidth = 3.5;
-          for (let i = 1; i < validPoints.length; i++) {
-            const p0 = validPoints[i-1];
-            const p1 = validPoints[i];
+          if (isBestFit) {
+            // --- RETTE DI INTERPOLAZIONE (BEST-FIT MRU) ---
+            const andataPts = validPoints.filter(p => p.origIndex <= 4);
+            const ritornoPts = validPoints.filter(p => p.origIndex >= 4);
+
+            const regA = calculateLinearRegression(andataPts);
+            const regR = calculateLinearRegression(ritornoPts);
+
+            // Retta di interpolazione Andata
+            if (regA && andataPts.length >= 2) {
+              const t0 = 0;
+              const tPeak = andataPts[andataPts.length - 1].t;
+              screenCtx.strokeStyle = '#38bdf8';
+              screenCtx.lineWidth = 4;
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(t0), scaleY(regA.m * t0 + regA.q));
+              screenCtx.lineTo(scaleX(tPeak), scaleY(regA.m * tPeak + regA.q));
+              screenCtx.stroke();
+            }
+
+            // Retta di interpolazione Ritorno
+            if (regR && ritornoPts.length >= 2) {
+              const tPeak = ritornoPts[0].t;
+              const tEnd = ritornoPts[ritornoPts.length - 1].t;
+              screenCtx.strokeStyle = '#f87171';
+              screenCtx.lineWidth = 4;
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(tPeak), scaleY(regR.m * tPeak + regR.q));
+              screenCtx.lineTo(scaleX(tEnd), scaleY(regR.m * tEnd + regR.q));
+              screenCtx.stroke();
+            }
+
+            // Segmenti tratteggiati di errore sperimentale (residui dai punti alla retta)
+            validPoints.forEach(p => {
+              const reg = p.origIndex <= 4 ? regA : regR;
+              if (reg) {
+                const sFit = reg.m * p.t + reg.q;
+                screenCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+                screenCtx.lineWidth = 1.5;
+                screenCtx.setLineDash([2, 3]);
+                screenCtx.beginPath();
+                screenCtx.moveTo(scaleX(p.t), scaleY(p.s));
+                screenCtx.lineTo(scaleX(p.t), scaleY(sFit));
+                screenCtx.stroke();
+                screenCtx.setLineDash([]);
+              }
+            });
+
+            // Badge overlay con formule di regressione
+            screenCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            screenCtx.strokeStyle = '#38bdf8';
+            screenCtx.lineWidth = 1.5;
             screenCtx.beginPath();
-            screenCtx.moveTo(scaleX(p0.t), scaleY(p0.s));
-            screenCtx.lineTo(scaleX(p1.t), scaleY(p1.s));
-            screenCtx.strokeStyle = p1.origIndex <= 4 ? '#38bdf8' : '#f87171';
+            screenCtx.roundRect(margin.left + 14, margin.top + 14, 280, 52, 6);
+            screenCtx.fill();
             screenCtx.stroke();
+
+            screenCtx.font = 'bold 10.5px Segoe UI';
+            screenCtx.textAlign = 'left';
+            if (regA) {
+              screenCtx.fillStyle = '#38bdf8';
+              const qStr = regA.q >= 0 ? `+ ${regA.q.toFixed(2)}` : `- ${Math.abs(regA.q).toFixed(2)}`;
+              screenCtx.fillText(`Andata: s(t) = ${regA.m.toFixed(2)}·t ${qStr}  (R² = ${regA.r2.toFixed(3)})`, margin.left + 24, margin.top + 34);
+            }
+            if (regR) {
+              screenCtx.fillStyle = '#f87171';
+              const qStr = regR.q >= 0 ? `+ ${regR.q.toFixed(2)}` : `- ${Math.abs(regR.q).toFixed(2)}`;
+              screenCtx.fillText(`Ritorno: s(t) = ${regR.m.toFixed(2)}·t ${qStr}  (R² = ${regR.r2.toFixed(3)})`, margin.left + 24, margin.top + 52);
+            }
+
+          } else {
+            // Spezzata punto a punto classica
+            screenCtx.lineWidth = 3.5;
+            for (let i = 1; i < validPoints.length; i++) {
+              const p0 = validPoints[i-1];
+              const p1 = validPoints[i];
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(p0.t), scaleY(p0.s));
+              screenCtx.lineTo(scaleX(p1.t), scaleY(p1.s));
+              screenCtx.strokeStyle = p1.origIndex <= 4 ? '#38bdf8' : '#f87171';
+              screenCtx.stroke();
+            }
           }
         }
 
@@ -2025,15 +2163,96 @@
         }
 
         if (validVelocities.length > 1) {
-          screenCtx.lineWidth = 3.5;
-          for (let i = 1; i < validVelocities.length; i++) {
-            const p0 = validVelocities[i-1];
-            const p1 = validVelocities[i];
+          if (isBestFit) {
+            // --- MODELLO VELOCITÀ COSTANTE MRU (DUE SEGMENTI ORIZZONTALI) ---
+            const tPunta = experimentData[4].t;
+            const tFine = experimentData[8].t;
+
+            let vAndataMean = null;
+            let vRitornoMean = null;
+            if (tPunta && tPunta > 0) vAndataMean = 2.30 / tPunta;
+            if (tFine && tPunta && tFine > tPunta) vRitornoMean = -2.30 / (tFine - tPunta);
+
+            // Segmento Orizzontale Andata (v = cost > 0)
+            if (vAndataMean !== null) {
+              screenCtx.strokeStyle = '#38bdf8';
+              screenCtx.lineWidth = 4;
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(0), scaleY(vAndataMean));
+              screenCtx.lineTo(scaleX(tPunta), scaleY(vAndataMean));
+              screenCtx.stroke();
+
+              // Linea verticale tratteggiata di inversione a tPunta
+              if (vRitornoMean !== null) {
+                screenCtx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+                screenCtx.lineWidth = 2;
+                screenCtx.setLineDash([4, 4]);
+                screenCtx.beginPath();
+                screenCtx.moveTo(scaleX(tPunta), scaleY(vAndataMean));
+                screenCtx.lineTo(scaleX(tPunta), scaleY(vRitornoMean));
+                screenCtx.stroke();
+                screenCtx.setLineDash([]);
+              }
+            }
+
+            // Segmento Orizzontale Ritorno (v = cost < 0)
+            if (vRitornoMean !== null && tPunta) {
+              screenCtx.strokeStyle = '#f87171';
+              screenCtx.lineWidth = 4;
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(tPunta), scaleY(vRitornoMean));
+              screenCtx.lineTo(scaleX(tFine), scaleY(vRitornoMean));
+              screenCtx.stroke();
+            }
+
+            // Tratteggio scarti dai punti campionati ai segmenti orizzontali
+            validVelocities.forEach(p => {
+              if (p.id === 0) return;
+              const targetV = p.id <= 4 ? vAndataMean : vRitornoMean;
+              if (targetV !== null) {
+                screenCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+                screenCtx.lineWidth = 1.5;
+                screenCtx.setLineDash([2, 3]);
+                screenCtx.beginPath();
+                screenCtx.moveTo(scaleX(p.t), scaleY(p.v));
+                screenCtx.lineTo(scaleX(p.t), scaleY(targetV));
+                screenCtx.stroke();
+                screenCtx.setLineDash([]);
+              }
+            });
+
+            // Badge overlay con valori costanti
+            screenCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            screenCtx.strokeStyle = '#38bdf8';
+            screenCtx.lineWidth = 1.5;
             screenCtx.beginPath();
-            screenCtx.moveTo(scaleX(p0.t), scaleY(p0.v));
-            screenCtx.lineTo(scaleX(p1.t), scaleY(p1.v));
-            screenCtx.strokeStyle = p1.v >= 0 ? '#38bdf8' : '#f87171';
+            screenCtx.roundRect(margin.left + 14, margin.top + 14, 280, 52, 6);
+            screenCtx.fill();
             screenCtx.stroke();
+
+            screenCtx.font = 'bold 10.5px Segoe UI';
+            screenCtx.textAlign = 'left';
+            if (vAndataMean !== null) {
+              screenCtx.fillStyle = '#38bdf8';
+              screenCtx.fillText(`Andata: v(t) = +${vAndataMean.toFixed(2)} m/s (costante)`, margin.left + 24, margin.top + 34);
+            }
+            if (vRitornoMean !== null) {
+              screenCtx.fillStyle = '#f87171';
+              screenCtx.fillText(`Ritorno: v(t) = ${vRitornoMean.toFixed(2)} m/s (costante)`, margin.left + 24, margin.top + 52);
+            }
+
+          } else {
+            // Spezzata punto a punto classica
+            screenCtx.lineWidth = 3.5;
+            for (let i = 1; i < validVelocities.length; i++) {
+              const p0 = validVelocities[i-1];
+              const p1 = validVelocities[i];
+              screenCtx.beginPath();
+              screenCtx.moveTo(scaleX(p0.t), scaleY(p0.v));
+              screenCtx.lineTo(scaleX(p1.t), scaleY(p1.v));
+              screenCtx.strokeStyle = p1.v >= 0 ? '#38bdf8' : '#f87171';
+              screenCtx.stroke();
+            }
           }
         }
 
@@ -2081,6 +2300,30 @@
       if (!pts || pts.length === 0) return { s: 0, v: 0, activeRowIndex: 0 };
       if (pts.length === 1) return { s: pts[0].s, v: 0, activeRowIndex: pts[0].origIndex };
 
+      if (isBestFit) {
+        const andataPts = pts.filter(p => p.origIndex <= 4);
+        const ritornoPts = pts.filter(p => p.origIndex >= 4);
+        const regA = calculateLinearRegression(andataPts);
+        const regR = calculateLinearRegression(ritornoPts);
+        const tPunta = andataPts.length > 0 ? andataPts[andataPts.length - 1].t : 5.5;
+
+        if (t <= tPunta && regA) {
+          const s = Math.max(0, Math.min(2.30, regA.m * t + regA.q));
+          let rowIdx = 1;
+          for (let i = 0; i < andataPts.length; i++) {
+            if (t >= andataPts[i].t) rowIdx = andataPts[i].origIndex;
+          }
+          return { s, v: regA.m, activeRowIndex: rowIdx };
+        } else if (regR) {
+          const s = Math.max(0, Math.min(2.30, regR.m * t + regR.q));
+          let rowIdx = 5;
+          for (let i = 0; i < ritornoPts.length; i++) {
+            if (t >= ritornoPts[i].t) rowIdx = ritornoPts[i].origIndex;
+          }
+          return { s, v: regR.m, activeRowIndex: rowIdx };
+        }
+      }
+
       if (t <= pts[0].t) {
         return { s: pts[0].s, v: 0, activeRowIndex: pts[0].origIndex };
       }
@@ -2108,6 +2351,13 @@
     // INTERPOLATE VELOCITY GRAPH TO FOLLOW PLOTTED POLYLINE 100% PRECISELY
     function interpolateVelocityGraph(t, velPts) {
       if (!velPts || velPts.length === 0) return 0;
+      if (isBestFit) {
+        const tPunta = experimentData[4].t || 5.5;
+        const tFine = experimentData[8].t || 11.0;
+        const vA = tPunta > 0 ? 2.30 / tPunta : 0.42;
+        const vR = (tFine > tPunta) ? -2.30 / (tFine - tPunta) : -0.42;
+        return t <= tPunta ? vA : vR;
+      }
       if (velPts.length === 1) return velPts[0].v;
       if (t <= velPts[0].t) return velPts[0].v;
       if (t >= velPts[velPts.length - 1].t) return velPts[velPts.length - 1].v;
@@ -2563,19 +2813,88 @@
         ctx.stroke();
       }
 
-      // Plot Experimental Curve
+      // Plot Curve / Best-Fit on s(t)
       const validPoints = getValidChronologicalPoints();
       if (validPoints.length > 1) {
-        ctx.lineWidth = 4.5;
-        ctx.lineJoin = 'round';
-        for (let i = 1; i < validPoints.length; i++) {
-          const p0 = validPoints[i-1];
-          const p1 = validPoints[i];
+        if (isBestFit) {
+          const andataPts = validPoints.filter(p => p.origIndex <= 4);
+          const ritornoPts = validPoints.filter(p => p.origIndex >= 4);
+
+          const regA = calculateLinearRegression(andataPts);
+          const regR = calculateLinearRegression(ritornoPts);
+
+          if (regA && andataPts.length >= 2) {
+            const t0 = 0;
+            const tPeak = andataPts[andataPts.length - 1].t;
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(scaleX(t0), scaleY(regA.m * t0 + regA.q));
+            ctx.lineTo(scaleX(tPeak), scaleY(regA.m * tPeak + regA.q));
+            ctx.stroke();
+          }
+
+          if (regR && ritornoPts.length >= 2) {
+            const tPeak = ritornoPts[0].t;
+            const tEnd = ritornoPts[ritornoPts.length - 1].t;
+            ctx.strokeStyle = '#dc2626';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(scaleX(tPeak), scaleY(regR.m * tPeak + regR.q));
+            ctx.lineTo(scaleX(tEnd), scaleY(regR.m * tEnd + regR.q));
+            ctx.stroke();
+          }
+
+          // Linee tratteggiate di residuo/scarto
+          validPoints.forEach(p => {
+            const reg = p.origIndex <= 4 ? regA : regR;
+            if (reg) {
+              const sFit = reg.m * p.t + reg.q;
+              ctx.strokeStyle = '#64748b';
+              ctx.lineWidth = 2;
+              ctx.setLineDash([4, 4]);
+              ctx.beginPath();
+              ctx.moveTo(scaleX(p.t), scaleY(p.s));
+              ctx.lineTo(scaleX(p.t), scaleY(sFit));
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+          });
+
+          // Badge formule Best-Fit su stampa
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+          ctx.strokeStyle = '#2563eb';
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(scaleX(p0.t), scaleY(p0.s));
-          ctx.lineTo(scaleX(p1.t), scaleY(p1.s));
-          ctx.strokeStyle = p1.origIndex <= 4 ? '#2563eb' : '#dc2626';
+          ctx.roundRect(margin.left + 20, margin.top + 20, 420, 68, 8);
+          ctx.fill();
           ctx.stroke();
+
+          ctx.font = 'bold 16px Segoe UI';
+          ctx.textAlign = 'left';
+          if (regA) {
+            ctx.fillStyle = '#1e40af';
+            const qStr = regA.q >= 0 ? `+ ${regA.q.toFixed(2)}` : `- ${Math.abs(regA.q).toFixed(2)}`;
+            ctx.fillText(`Andata (Best-Fit): s(t) = ${regA.m.toFixed(2)}·t ${qStr}  (R² = ${regA.r2.toFixed(3)})`, margin.left + 35, margin.top + 48);
+          }
+          if (regR) {
+            ctx.fillStyle = '#b91c1c';
+            const qStr = regR.q >= 0 ? `+ ${regR.q.toFixed(2)}` : `- ${Math.abs(regR.q).toFixed(2)}`;
+            ctx.fillText(`Ritorno (Best-Fit): s(t) = ${regR.m.toFixed(2)}·t ${qStr}  (R² = ${regR.r2.toFixed(3)})`, margin.left + 35, margin.top + 74);
+          }
+
+        } else {
+          ctx.lineWidth = 4.5;
+          ctx.lineJoin = 'round';
+          for (let i = 1; i < validPoints.length; i++) {
+            const p0 = validPoints[i-1];
+            const p1 = validPoints[i];
+            ctx.beginPath();
+            ctx.moveTo(scaleX(p0.t), scaleY(p0.s));
+            ctx.lineTo(scaleX(p1.t), scaleY(p1.s));
+            ctx.strokeStyle = p1.origIndex <= 4 ? '#2563eb' : '#dc2626';
+            ctx.stroke();
+          }
         }
       }
 
@@ -2766,16 +3085,94 @@
       }
 
       if (validVelocities.length > 1) {
-        ctx.lineWidth = 4;
-        ctx.lineJoin = 'round';
-        for (let i = 1; i < validVelocities.length; i++) {
-          const p0 = validVelocities[i-1];
-          const p1 = validVelocities[i];
+        if (isBestFit) {
+          const tPunta = experimentData[4].t;
+          const tFine = experimentData[8].t;
+
+          let vAndataMean = null;
+          let vRitornoMean = null;
+          if (tPunta && tPunta > 0) vAndataMean = 2.30 / tPunta;
+          if (tFine && tPunta && tFine > tPunta) vRitornoMean = -2.30 / (tFine - tPunta);
+
+          // Segmento Orizzontale Andata
+          if (vAndataMean !== null) {
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(scaleX(0), scaleY(vAndataMean));
+            ctx.lineTo(scaleX(tPunta), scaleY(vAndataMean));
+            ctx.stroke();
+
+            if (vRitornoMean !== null) {
+              ctx.strokeStyle = '#94a3b8';
+              ctx.lineWidth = 2.5;
+              ctx.setLineDash([6, 6]);
+              ctx.beginPath();
+              ctx.moveTo(scaleX(tPunta), scaleY(vAndataMean));
+              ctx.lineTo(scaleX(tPunta), scaleY(vRitornoMean));
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+          }
+
+          // Segmento Orizzontale Ritorno
+          if (vRitornoMean !== null && tPunta) {
+            ctx.strokeStyle = '#dc2626';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(scaleX(tPunta), scaleY(vRitornoMean));
+            ctx.lineTo(scaleX(tFine), scaleY(vRitornoMean));
+            ctx.stroke();
+          }
+
+          // Tratteggio scarti dai punti campionati ai segmenti
+          validVelocities.forEach(p => {
+            if (p.id === 0) return;
+            const targetV = p.id <= 4 ? vAndataMean : vRitornoMean;
+            if (targetV !== null) {
+              ctx.strokeStyle = '#64748b';
+              ctx.lineWidth = 2;
+              ctx.setLineDash([4, 4]);
+              ctx.beginPath();
+              ctx.moveTo(scaleX(p.t), scaleY(p.v));
+              ctx.lineTo(scaleX(p.t), scaleY(targetV));
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+          });
+
+          // Badge Modello Costante
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+          ctx.strokeStyle = '#2563eb';
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(scaleX(p0.t), scaleY(p0.v));
-          ctx.lineTo(scaleX(p1.t), scaleY(p1.v));
-          ctx.strokeStyle = p1.v >= 0 ? '#2563eb' : '#dc2626';
+          ctx.roundRect(margin.left + 20, margin.top + 20, 440, 68, 8);
+          ctx.fill();
           ctx.stroke();
+
+          ctx.font = 'bold 16px Segoe UI';
+          ctx.textAlign = 'left';
+          if (vAndataMean !== null) {
+            ctx.fillStyle = '#1e40af';
+            ctx.fillText(`Modello Andata: v(t) = +${vAndataMean.toFixed(2)} m/s (costante)`, margin.left + 35, margin.top + 48);
+          }
+          if (vRitornoMean !== null) {
+            ctx.fillStyle = '#b91c1c';
+            ctx.fillText(`Modello Ritorno: v(t) = ${vRitornoMean.toFixed(2)} m/s (costante)`, margin.left + 35, margin.top + 74);
+          }
+
+        } else {
+          ctx.lineWidth = 4;
+          ctx.lineJoin = 'round';
+          for (let i = 1; i < validVelocities.length; i++) {
+            const p0 = validVelocities[i-1];
+            const p1 = validVelocities[i];
+            ctx.beginPath();
+            ctx.moveTo(scaleX(p0.t), scaleY(p0.v));
+            ctx.lineTo(scaleX(p1.t), scaleY(p1.v));
+            ctx.strokeStyle = p1.v >= 0 ? '#2563eb' : '#dc2626';
+            ctx.stroke();
+          }
         }
       }
 
