@@ -522,6 +522,35 @@
       border-color: #2563eb;
     }
 
+    .btn-bestfit {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1.5px solid #38bdf8;
+      color: #38bdf8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+      letter-spacing: 0.4px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    }
+    .btn-bestfit:hover {
+      background: rgba(56, 189, 248, 0.3);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-bestfit.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.65);
+    }
+
     .canvas-container {
       flex: 1;
       position: relative;
@@ -1212,7 +1241,7 @@
               <button class="tab-btn active" id="tab-st" onclick="switchChart('st')">Grafico Spazio-Tempo s(t)</button>
               <button class="tab-btn" id="tab-vt" onclick="switchChart('vt')">Grafico Velocità-Tempo v(t)</button>
             </div>
-            <button class="tab-btn" id="btn-bestfit" onclick="toggleBestFit()" style="background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.2s;" title="Attiva/Disattiva il modello teorico MRU con retta di interpolazione o velocità costante">
+            <button class="btn-bestfit" id="btn-bestfit" onclick="toggleBestFit()" title="Attiva/Disattiva il modello teorico MRU con retta di interpolazione o velocità costante">
               <span id="bestfit-icon">📐</span>
               <span id="bestfit-text">RETTA DI INTERPOLAZIONE (BEST-FIT)</span>
             </button>
@@ -1812,17 +1841,7 @@
         text.textContent = isBestFit ? 'MODELLO VELOCITÀ COSTANTE (v = cost) [ATTIVO]' : 'MODELLO VELOCITÀ COSTANTE (v = cost)';
       }
 
-      if (isBestFit) {
-        btn.style.background = '#0284c7';
-        btn.style.color = '#ffffff';
-        btn.style.borderColor = '#38bdf8';
-        btn.style.boxShadow = '0 0 12px rgba(56, 189, 248, 0.5)';
-      } else {
-        btn.style.background = 'rgba(56, 189, 248, 0.12)';
-        btn.style.color = '#38bdf8';
-        btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-        btn.style.boxShadow = 'none';
-      }
+      btn.classList.toggle('active', isBestFit);
     }
 
     function toggleBestFit() {
