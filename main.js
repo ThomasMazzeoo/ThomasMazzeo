@@ -26,6 +26,16 @@ const MATERIE = [
         desc: "Dalle basi alla programmazione ad oggetti in C++.",
         chapters: [
           {
+            title: "Capitolo 0 — Introduzione Informatica",
+            topics: [
+              {
+                title: "Slide Interattive: Hardware, Software e Società",
+                desc: "Presentazione multimediale completa: origini e architettura del computer, sistema operativo, software, dati e impatto digitale.",
+                url: "/informatica/introduzione-informatica.html"
+              }
+            ]
+          },
+          {
             title: "Capitolo 1 — Introduzione al C++",
             topics: [
               { title: "Cos'è il C++ e la sua storia", desc: "Origini, evoluzione da C, standard ISO e versioni moderne (C++11, 14, 17, 20)." },
@@ -487,6 +497,14 @@ function handleHashRoute() {
   if (!rawHash) return;
 
   for (const materia of MATERIE) {
+    if (materia.id === rawHash) {
+      selectedMateria = materia;
+      selectedSectionObj = null;
+      currentView = 'sections';
+      switchSection('risorse');
+      renderRisorseView();
+      return;
+    }
     const sec = materia.sections.find(s => s.id === rawHash && !s.hidden);
     if (sec) {
       selectedMateria = materia;
