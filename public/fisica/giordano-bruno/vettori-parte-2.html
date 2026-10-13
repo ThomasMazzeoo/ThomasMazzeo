@@ -1507,7 +1507,24 @@ class VectorCanvas2 {
       const midAngle = (sRad + eRad) / 2;
       const lx = scx + (rPx + 16) * Math.cos(midAngle);
       const ly = scy + (rPx + 16) * Math.sin(midAngle);
-      ctx.font = 'bold 12px "Share Tech Mono", monospace';
+      ctx.font = 'bold 11px "Share Tech Mono", monospace';
+      const tw = ctx.measureText(label).width;
+      const padX = 5;
+      const bw = tw + padX * 2;
+      const bh = 17;
+      const bx = lx - bw / 2;
+      const by = ly - bh / 2;
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.strokeStyle = color || '#ca8a04';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4);
+      else ctx.rect(bx, by, bw, bh);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(label, lx, ly);
@@ -1542,18 +1559,152 @@ class VectorCanvas2 {
     ctx.restore();
   }
 
-  drawPoint(x, y, color = COL.white, radius = 4, label = '') {
+  drawCompass(cx = 44, cy = 44, r = 18) {
+    const ctx = this.ctx;
+    ctx.save();
+    
+    // Sfondo card per la bussola in alto a sinistra
+    const pad = 8;
+    const boxW = r * 2 + pad * 2 + 10;
+    const boxH = r * 2 + pad * 2 + 10;
+    const bx = cx - r - pad;
+    const by = cy - r - pad;
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, by, boxW, boxH, 8);
+    else ctx.rect(bx, by, boxW, boxH);
+    ctx.fill();
+    ctx.stroke();
+
+    // Cerchio bussola
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 2]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Linee di croce
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - r + 3, cy); ctx.lineTo(cx + r - 3, cy);
+    ctx.moveTo(cx, cy - r + 3); ctx.lineTo(cx, cy + r - 3);
+    ctx.stroke();
+
+    // Freccia Nord (blu evidenziata)
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r + 2);
+    ctx.lineTo(cx - 3.5, cy - 2);
+    ctx.lineTo(cx + 3.5, cy - 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Freccia Sud
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + r - 2);
+    ctx.lineTo(cx - 3, cy + 2);
+    ctx.lineTo(cx + 3, cy + 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Etichette cardinali
+    ctx.font = 'bold 10px "Share Tech Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = '#0284c7';
+    ctx.fillText('N', cx, cy - r - 4);
+
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('S', cx, cy + r + 4);
+    ctx.fillText('E', cx + r + 4, cy);
+    ctx.fillText('O', cx - r - 4, cy);
+
+    ctx.restore();
+  }
+
+  drawPoint(x, y, color = COL.white, radius = 4, label = '', align = 'auto') {
     const ctx = this.ctx;
     const [sx, sy] = this.toScreen(x, y);
     ctx.save();
+
+    // Alone bianco esterno per contrasto assoluto
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(sx, sy, radius + 1, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Punto pieno colorato
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(sx, sy, radius, 0, Math.PI * 2);
     ctx.fill();
+
     if (label) {
-      ctx.font = 'bold 12px "Share Tech Mono", monospace';
+      ctx.font = 'bold 11px "Share Tech Mono", monospace';
+      const tw = ctx.measureText(label).width;
+      const padX = 6;
+      const bw = tw + padX * 2;
+      const bh = 18;
+
+      let bx = sx + radius + 6;
+      let by = sy - bh / 2;
+
+      if (align === 'left') {
+        bx = sx - radius - 6 - bw;
+        by = sy - bh / 2;
+      } else if (align === 'top') {
+        bx = sx - bw / 2;
+        by = sy - radius - 6 - bh;
+      } else if (align === 'bottom') {
+        bx = sx - bw / 2;
+        by = sy + radius + 6;
+      } else if (align === 'top-right') {
+        bx = sx + radius + 4;
+        by = sy - radius - 4 - bh;
+      } else if (align === 'top-left') {
+        bx = sx - radius - 4 - bw;
+        by = sy - radius - 4 - bh;
+      } else if (align === 'bottom-right') {
+        bx = sx + radius + 4;
+        by = sy + radius + 4;
+      } else if (align === 'bottom-left') {
+        bx = sx - radius - 4 - bw;
+        by = sy + radius + 4;
+      } else if (align === 'right' || align === 'auto') {
+        bx = sx + radius + 6;
+        by = sy - bh / 2;
+      }
+
+      // Clamping nei bordi del canvas
+      if (bx + bw > this.size - 6) bx = this.size - 6 - bw;
+      if (bx < 6) bx = 6;
+      if (by + bh > this.size - 6) by = this.size - 6 - bh;
+      if (by < 6) by = 6;
+
+      // Pill card bianca con bordo colorato
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.strokeStyle = color || '#0284c7';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4);
+      else ctx.rect(bx, by, bw, bh);
+      ctx.fill();
+      ctx.stroke();
+
+      // Testo
       ctx.fillStyle = '#0f172a';
-      ctx.fillText(label, sx + 8, sy - 8);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, bx + padX, by + bh / 2);
     }
     ctx.restore();
   }
@@ -2757,27 +2908,22 @@ function stepNapoliSet(mode) {
   ctx.setLineDash([]);
   ctx.restore();
 
-  ctx.save();
-  ctx.font = 'bold 11px "Share Tech Mono", monospace';
-  ctx.fillStyle = COL.axisLabel;
-  ctx.fillText('NORD ↑', nox, noy - 25 * vcNapoli.unit - 8);
-  ctx.fillText('SUD ↓', nox, noy + 25 * vcNapoli.unit + 14);
-  ctx.fillText('EST →', nox + 25 * vcNapoli.unit + 8, noy);
-  ctx.fillText('← OVEST', nox - 25 * vcNapoli.unit - 16, noy);
-  ctx.restore();
+  // Bussola / Rosa dei Venti (posizionata nell'angolo superiore sinistro, libera e nitida)
+  vcNapoli.drawCompass(44, 44, 18);
 
-  vcNapoli.drawPoint(0, 0, COL.yellow, 5, 'Napoli (Centro)');
-  vcNapoli.drawPoint(0, 25, COL.cyan, 4, 'Caserta (25 km N)');
-  vcNapoli.drawPoint(-24, -7, COL.orange, 4, 'Isola di Procida (25 km O)');
+  // Punti con etichette a card pill anti-sovrapposizione
+  vcNapoli.drawPoint(0, 0, COL.yellow, 5, 'Napoli (Centro)', 'top-left');
+  vcNapoli.drawPoint(0, 25, COL.cyan, 5, 'Caserta (+25 km Nord)', 'right');
+  vcNapoli.drawPoint(-24, -7, COL.orange, 5, 'Procida (25 km Ovest)', 'bottom-left');
 
   const cx = 17.7, cy = -17.7;
-  vcNapoli.drawPoint(cx, cy, COL.green, 6, 'Castellammare (25 km SE)');
+  vcNapoli.drawPoint(cx, cy, COL.green, 6, 'Castellammare (25 km Sud-Est)', 'bottom-right');
 
   if (modeNapoli === 'spost') {
     vcNapoli.drawVector(0, 0, cx, cy, COL.green, 3.8);
-    vcNapoli.drawPill(cx / 2 + 1.2, cy / 2 - 1.2, 's', ' = 25 km (Sud-Est)', COL.green);
+    vcNapoli.drawPill(cx / 2 - 1.2, cy / 2 + 1.2, 's', ' = 25 km (Sud-Est)', COL.green);
   } else {
-    vcNapoli.drawPill(12, 18, '', 'Raggio = 25 km (Distanza)', COL.red);
+    vcNapoli.drawPill(12, 16, '', 'Raggio = 25 km (Distanza scalare)', COL.red);
   }
 }
 
@@ -2886,8 +3032,8 @@ function updateStepAnatomia() {
   vcAnat.drawVector(0, 0, vx, vy, COL.green, 4);
   vcAnat.drawPill(vx / 2 - 0.4, vy / 2 + 0.4, '', `Modulo = ${mod.toFixed(1)} u`, COL.green);
 
-  vcAnat.drawPoint(0, 0, COL.white, 4, 'O (Coda)');
-  vcAnat.drawPoint(vx, vy, COL.cyan, 4, 'Punta (Verso)');
+  vcAnat.drawPoint(0, 0, COL.white, 4, 'O (Coda)', 'bottom-left');
+  vcAnat.drawPoint(vx, vy, COL.cyan, 4, 'Punta (Verso)', 'top-right');
 }
 
 function stepAnatFlip() {
@@ -2927,7 +3073,7 @@ function updateStepBasket() {
   const vx = vel * Math.cos(rad);
   const vy = vel * Math.sin(rad);
 
-  vcBasket.drawPoint(0, 0, COL.yellow, 6, 'Giocatore');
+  vcBasket.drawPoint(0, 0, COL.yellow, 6, 'Giocatore', 'bottom-left');
   vcBasket.drawVector(0, 0, vx, vy, COL.v, 3.8);
   vcBasket.drawPill(vx / 2 + 0.3, vy / 2 + 0.4, 'v', ` = ${vel} m/s`, COL.v);
   vcBasket.drawDashedLine(0, 0, vx * 1.3, vy * 1.3, COL.dashed, 0.4);
@@ -3058,9 +3204,9 @@ function stepPCAnim(ph) {
   const bx = 1, by = -2.5;
   const cx = 2.5, cy = 2.5;
 
-  vcPC.drawPoint(ax, ay, COL.yellow, 5, 'Giocatore A');
-  vcPC.drawPoint(bx, by, COL.yellow, 5, 'Giocatore B');
-  vcPC.drawPoint(cx, cy, COL.yellow, 5, 'Giocatore C');
+  vcPC.drawPoint(ax, ay, COL.yellow, 5, 'Giocatore A', 'bottom-left');
+  vcPC.drawPoint(bx, by, COL.yellow, 5, 'Giocatore B', 'bottom-right');
+  vcPC.drawPoint(cx, cy, COL.yellow, 5, 'Giocatore C', 'top-right');
 
   if (ph >= 1) {
     vcPC.drawVector(ax, ay, bx, by, COL.a, 3.2);
@@ -3463,9 +3609,9 @@ function updateStepTrigBase() {
   ctx.lineWidth = 4;
   ctx.beginPath(); ctx.moveTo(scx, scy); ctx.lineTo(sbx, sby); ctx.stroke();
 
-  vcTrig.drawPoint(0, 0, COL.white, 4, 'C');
-  vcTrig.drawPoint(adj, 0, COL.white, 4, 'A');
-  vcTrig.drawPoint(adj, opp, COL.white, 4, 'B');
+  vcTrig.drawPoint(0, 0, COL.white, 4, 'C', 'bottom-left');
+  vcTrig.drawPoint(adj, 0, COL.white, 4, 'A', 'bottom-right');
+  vcTrig.drawPoint(adj, opp, COL.white, 4, 'B', 'top-right');
 
   vcTrig.drawRightAngle(adj, 0, -1, 1, 0.45);
   vcTrig.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
@@ -3640,9 +3786,9 @@ function updateStepDecomp() {
   vcDecomp.drawVector(0, 0, ax, ay, COL.green, 3.8);
   vcDecomp.drawPill(ax / 2 + 0.3, ay / 2 + 0.4, 'a', ` = ${mod.toFixed(2)}`, COL.green);
 
-  vcDecomp.drawPoint(0, 0, COL.white, 4, 'O');
-  vcDecomp.drawPoint(ax, 0, COL.white, 4, 'A');
-  vcDecomp.drawPoint(ax, ay, COL.white, 4, 'B');
+  vcDecomp.drawPoint(0, 0, COL.white, 4, 'O', 'bottom-left');
+  vcDecomp.drawPoint(ax, 0, COL.white, 4, 'A', 'bottom');
+  vcDecomp.drawPoint(ax, ay, COL.white, 4, 'B', 'top-right');
 }
 
 let vcQuad = null;
