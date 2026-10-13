@@ -93,14 +93,24 @@ const MATERIE = [
       },
       {
         id: "excel",
-        title: "Office Excel",
+        title: "Office Excel & Fogli",
         icon: "📊",
-        desc: "Dalle basi ai fogli di calcolo avanzati con Microsoft Excel.",
+        desc: "Dalle basi ai fogli di calcolo avanzati con Microsoft Excel e Google Workspace.",
         chapters: [
           {
             title: "Lezione 1 — Le Basi di Excel",
             topics: [
               { title: "Tutorial Interattivo", desc: "Impara l'interfaccia, le celle, le formule e la formattazione con un simulatore animato passo-passo.", url: "/office-excel/Lezione_01_Basi/lezione.html" }
+            ]
+          },
+          {
+            title: "Lezione 2 — Grafici di Fisica con Google Fogli & Documenti",
+            topics: [
+              {
+                title: "Tutorial Interattivo: Grafici s(t), v(t) e Relazione",
+                desc: "Guida passo-passo: dispersione scatter, retta di interpolazione lineare (andata/ritorno), formule di velocità, grafico v(t) e collegamento dinamico su Google Documenti.",
+                url: "/office-excel/Lezione_02_Grafici_Fisica/lezione.html"
+              }
             ]
           }
         ]
