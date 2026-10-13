@@ -3,226 +3,244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lezione 2 — Grafici Scientifici con Google Fogli & Documenti</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Lezione — Grafici Scientifici con Google Fogli & Documenti</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Roboto:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 /* ═══════════════════════════════════════════
-   ROOT & COLOR THEME
+   THEME & BASE SETUP (Sfondo Chiaro & Pulito)
    ═══════════════════════════════════════════ */
 :root {
-  --bg: #070b14;
-  --panel: #0d1424;
-  --cyan: #00d4ff;
-  --green: #00ff88;
-  --red: #ff4466;
-  --orange: #ff8c00;
-  --purple: #bb44ff;
-  --yellow: #ffd700;
-  --white: #e8f0ff;
-  --font-title: 'Orbitron', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
-  --font-body: 'IBM Plex Mono', monospace;
+  --bg-page: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --border-light: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #475569;
   
-  /* Google Workspace Colors */
+  /* Google Palette */
   --sheets-green: #0f9d58;
-  --sheets-dark-green: #0b8043;
-  --sheets-light-green: #e6f4ea;
-  --docs-blue: #4285f4;
-  --docs-dark-blue: #1a73e8;
-  --google-gray: #f8f9fa;
+  --sheets-green-hover: #0b8043;
+  --docs-blue: #1a73e8;
+  --docs-blue-hover: #1557b0;
+  --google-gray-bg: #f8f9fa;
+  --google-gray-hover: #f1f3f4;
   --google-border: #dadce0;
-  --google-select: #e8f0fe;
-  --google-select-border: #1a73e8;
+  --google-sel-bg: #e8f0fe;
+  --google-sel-border: #1a73e8;
+  --google-text: #3c4043;
+  --google-text-dark: #202124;
+  
+  --font-google: 'Google Sans', 'Segoe UI', Roboto, sans-serif;
+  --font-roboto: Roboto, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Share Tech Mono', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background-color: var(--bg);
-  color: var(--white);
-  font-family: var(--font-body);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font-google);
   height: 100vh; height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-image:
-    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-  background-size: 30px 30px;
+  user-select: none;
 }
 
 /* ═══════════════════════════════════════════
-   HEADER
+   PAGE HEADER (Barra di navigazione lezione)
    ═══════════════════════════════════════════ */
-header {
-  background-color: #04070d;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-  padding: 0.65rem 1.4rem;
+.lesson-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.55rem 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  z-index: 20;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  z-index: 30;
   flex-shrink: 0;
-  gap: 0.8rem;
-  flex-wrap: wrap;
+  gap: 0.75rem;
 }
-.header-left {
+.lesson-header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
+  flex-wrap: wrap;
 }
-.back-link {
+.btn-back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--cyan);
+  color: #0284c7;
   text-decoration: none;
-  font-family: var(--font-title);
-  font-size: 0.72rem;
-  letter-spacing: 0.5px;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  border-radius: 4px;
-  background: rgba(0, 212, 255, 0.06);
-  transition: all 0.2s;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.32rem 0.75rem;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  background: #f0f9ff;
+  transition: all 0.15s;
 }
-.back-link:hover {
-  background: rgba(0, 212, 255, 0.18);
-  border-color: var(--cyan);
-  transform: translateX(-2px);
+.btn-back-link:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
 }
-header h1 {
-  font-family: var(--font-title);
-  color: var(--cyan);
+.lesson-header h1 {
   font-size: 1.05rem;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
-}
-.header-right {
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.2px;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
 }
-.app-pill {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  background: rgba(15, 157, 88, 0.15);
-  border: 1px solid rgba(15, 157, 88, 0.4);
-  color: #34d399;
-  font-weight: bold;
+.lesson-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
-.step-counter {
+.step-chip {
   font-family: var(--font-mono);
-  color: var(--orange);
-  font-size: 0.95rem;
-  background: rgba(255, 140, 0, 0.1);
-  padding: 0.28rem 0.75rem;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 140, 0, 0.3);
-  white-space: nowrap;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #0284c7;
+  background: #e0f2fe;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  border: 1px solid #bae6fd;
+}
+.btn-pres-mode {
+  background: #1e293b;
+  color: #ffffff;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.38rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s;
+}
+.btn-pres-mode:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+}
+.btn-pres-mode.active {
+  background: #0284c7;
 }
 
 /* ═══════════════════════════════════════════
-   MAIN LAYOUT
+   MAIN SPLIT AREA (Sidebar Spiegazione + Simulatore)
    ═══════════════════════════════════════════ */
 .main-area {
   flex: 1;
   display: flex;
   overflow: hidden;
+  background: #f1f5f9;
 }
 
-/* EXPLANATION PANEL (left) */
+/* SIDEBAR SPIEGAZIONE (Sinistra) */
 .explain-panel {
-  width: 360px;
-  min-width: 300px;
-  background: var(--panel);
-  border-right: 1px solid rgba(0, 212, 255, 0.15);
+  width: 380px;
+  min-width: 320px;
+  background: #ffffff;
+  border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   flex-shrink: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.02);
 }
 .explain-content {
-  padding: 1.25rem 1.4rem;
+  padding: 1.35rem 1.4rem;
   flex: 1;
+  line-height: 1.6;
 }
-.explain-content h2 {
-  font-family: var(--font-title);
-  color: var(--green);
-  font-size: 0.95rem;
-  margin-bottom: 0.3rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.explain-content .step-badge {
+.explain-badge {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: #04070d;
-  background: var(--cyan);
-  padding: 0.18rem 0.55rem;
-  border-radius: 3px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #0284c7;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
   margin-bottom: 0.75rem;
-  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.explain-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.85rem;
+  line-height: 1.35;
 }
 .explain-content p {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 0.85rem;
   line-height: 1.65;
-  color: #b0c4d8;
-  margin-bottom: 0.75rem;
 }
-.explain-content .highlight-box {
-  background: rgba(0, 212, 255, 0.08);
-  border-left: 3px solid var(--cyan);
-  padding: 0.65rem 0.9rem;
-  border-radius: 0 6px 6px 0;
-  margin: 0.85rem 0;
-  font-size: 0.84rem;
-  color: var(--cyan);
+.info-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #0284c7;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.9rem 0;
+  font-size: 0.86rem;
+  color: #1e293b;
   line-height: 1.55;
 }
-.explain-content .highlight-box.green {
-  background: rgba(0, 255, 136, 0.08);
-  border-left-color: var(--green);
-  color: var(--green);
+.info-card.green {
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
 }
-.explain-content .highlight-box.yellow {
-  background: rgba(255, 215, 0, 0.08);
-  border-left-color: var(--yellow);
-  color: var(--yellow);
+.info-card.yellow {
+  border-left-color: #d97706;
+  background: #fffbeb;
+  border-color: #fde68a;
 }
-.explain-content .highlight-box.purple {
-  background: rgba(187, 68, 255, 0.08);
-  border-left-color: var(--purple);
-  color: #d8b4fe;
+.info-card.red {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
 }
-.explain-content .formula-tag {
+.info-card.purple {
+  border-left-color: #9333ea;
+  background: #faf5ff;
+  border-color: #e9d5ff;
+}
+.formula-tag {
   display: inline-block;
   font-family: var(--font-mono);
-  background: #090f1d;
-  color: #38bdf8;
-  border: 1px solid #1e3a8a;
+  background: #f1f5f9;
+  color: #0369a1;
+  border: 1px solid #cbd5e1;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 0.82rem;
 }
-.explain-content .key-hint {
+.key-hint {
   display: inline-block;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
   border-radius: 4px;
   padding: 0.1rem 0.45rem;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--yellow);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-/* SIMULATOR AREA (right) */
+/* SIMULATOR AREA (Destra) */
 .simulator-area {
   flex: 1;
   display: flex;
@@ -234,153 +252,279 @@ header h1 {
 }
 
 /* ═══════════════════════════════════════════
-   WORKSPACE WINDOW (SHEETS / DOCS)
+   WORKPLACE CONTAINER (LA FINESTRA DI GOOGLE)
    ═══════════════════════════════════════════ */
 .workspace-window {
   width: 100%;
-  max-width: 900px;
+  max-width: 980px;
   height: 100%;
-  max-height: 560px;
+  max-height: 620px;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
-  font-family: 'Segoe UI', Arial, sans-serif;
   position: relative;
-  color: #202124;
+  font-family: var(--font-roboto);
+  transition: all 0.25s ease;
 }
 
-/* TITLE BAR */
-.window-titlebar {
-  height: 36px;
-  background: var(--sheets-green);
+/* MODALITÀ PRESENTAZIONE (Massimizza tutto) */
+body.presentation-mode .lesson-header {
+  padding: 0.35rem 1rem;
+}
+body.presentation-mode .explain-panel {
+  width: 320px;
+}
+body.presentation-mode .explain-title {
+  font-size: 1.25rem;
+}
+body.presentation-mode .explain-content p {
+  font-size: 0.95rem;
+}
+body.presentation-mode .simulator-area {
+  padding: 0.4rem;
+}
+body.presentation-mode .workspace-window {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 6px;
+  box-shadow: none;
+}
+body.presentation-mode .nav-bar {
+  display: none; /* L'insegnante usa le frecce della tastiera */
+}
+
+/* ═══════════════════════════════════════════
+   1. GOOGLE SHEETS HEADER (100% AUTENTICO)
+   ═══════════════════════════════════════════ */
+.gs-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--google-border);
+  padding: 8px 12px 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.gs-topbar-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.gs-logo-icon {
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  gap: 10px;
-  flex-shrink: 0;
-  transition: background 0.3s;
+  justify-content: center;
 }
-.window-titlebar.docs-mode {
-  background: var(--docs-dark-blue);
+.gs-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
-.window-titlebar .window-icon {
-  font-size: 16px;
-  line-height: 1;
+.gs-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.window-titlebar .doc-title-input {
+.gs-doc-title-input {
+  font-family: var(--font-google);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--google-text-dark);
   background: transparent;
   border: 1px solid transparent;
-  color: white;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 2px 6px;
   border-radius: 4px;
-  letter-spacing: 0.3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  letter-spacing: -0.2px;
 }
-.window-titlebar .save-pill {
-  font-size: 11px;
-  color: rgba(255,255,255,0.85);
+.gs-doc-title-input:hover {
+  border-color: #cbd5e1;
+}
+.gs-icon-btn {
+  color: #5f6368;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 15px;
+  transition: all 0.15s;
+}
+.gs-icon-btn:hover { background: #f1f3f4; color: #202124; }
+
+/* Menu riga: File, Modifica, Visualizza... */
+.gs-menubar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  margin-top: 1px;
 }
-.window-titlebar .user-pill {
-  margin-left: auto;
-  width: 24px;
-  height: 24px;
+.gs-menu-item {
+  font-size: 13.5px;
+  color: #3c4043;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-weight: 400;
+}
+.gs-menu-item:hover { background: #f1f3f4; color: #202124; }
+.gs-menu-item.active { background: var(--google-sel-bg); color: var(--docs-blue); font-weight: 500; }
+.gs-menu-item.glow {
+  background: #d2e3fc;
+  box-shadow: 0 0 8px rgba(26,115,232,0.6);
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+/* Lato destro: Condividi + Avatar */
+.gs-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gs-share-btn {
+  background: #c2e7ff;
+  color: #001d35;
+  border: none;
+  font-family: var(--font-google);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gs-share-btn:hover {
+  background: #b3d7f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.gs-avatar {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #1a73e8;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-/* GOOGLE MENU BAR */
-.google-menubar {
-  height: 26px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dadce0;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  gap: 4px;
-  font-size: 12px;
-  color: #3c4043;
-  flex-shrink: 0;
-}
-.menu-btn {
-  padding: 2px 7px;
-  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
-}
-.menu-btn:hover { background: #e8eaed; color: #202124; }
-.menu-btn.active { background: #e8f0fe; color: #1a73e8; font-weight: 600; }
-.menu-btn.glow { animation: menuGlow 0.8s ease-in-out infinite alternate; }
-@keyframes menuGlow {
-  from { background: #d2e3fc; box-shadow: 0 0 4px #1a73e8; color: #1a73e8; font-weight: bold; }
-  to { background: #1a73e8; box-shadow: 0 0 10px #1a73e8; color: white; font-weight: bold; }
 }
 
-/* TOOLBAR */
-.google-toolbar {
-  height: 32px;
-  background: #ffffff;
-  border-bottom: 1px solid #dadce0;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  gap: 4px;
+/* ═══════════════════════════════════════════
+   2. GOOGLE SHEETS TOOLBAR (IDENTICA ALLO SCREENSHOT)
+   ═══════════════════════════════════════════ */
+.gs-toolbar-container {
+  padding: 3px 8px;
+  background: #f9fbfd;
+  border-bottom: 1px solid var(--google-border);
   flex-shrink: 0;
 }
-.tb-btn {
-  width: 26px; height: 26px;
+.gs-toolbar {
+  background: #edf2fa;
+  border-radius: 24px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 2px;
+  overflow-x: auto;
+}
+.gs-tb-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  padding: 3px 10px 3px 8px;
+  border-radius: 16px;
+  font-size: 12.5px;
+  color: #444746;
+  cursor: pointer;
   border: 1px solid transparent;
+}
+.gs-tb-search:hover { background: #e0e6ed; }
+.gs-tb-btn {
+  width: 28px;
+  height: 28px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  cursor: pointer;
+  color: #444746;
+  font-size: 14px;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.gs-tb-btn:hover { background: #d3e3fd; color: #1a73e8; }
+.gs-tb-btn.active { background: #c2e7ff; color: #001d35; }
+.gs-tb-btn.glow {
+  background: #c2e7ff !important;
+  color: #1a73e8 !important;
+  box-shadow: 0 0 10px rgba(26,115,232,0.8);
+  font-weight: bold;
+}
+.gs-tb-dropdown {
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12.5px;
   color: #444746;
   cursor: pointer;
-  transition: all 0.15s;
+  flex-shrink: 0;
 }
-.tb-btn:hover { background: #f1f3f4; }
-.tb-btn.active { background: #e8f0fe; color: #1a73e8; border-color: #d2e3fc; }
-.tb-btn.glow { animation: tbGlow 0.8s ease-in-out infinite alternate; }
-@keyframes tbGlow {
-  from { background: #d2e3fc; box-shadow: 0 0 4px #1a73e8; }
-  to { background: #b8d8ff; box-shadow: 0 0 10px #1a73e8; }
+.gs-tb-dropdown:hover { background: #d3e3fd; }
+.gs-tb-sep {
+  width: 1px;
+  height: 18px;
+  background: #c7c7c7;
+  margin: 0 3px;
+  flex-shrink: 0;
 }
-.tb-sep { width: 1px; height: 18px; background: #dadce0; margin: 0 4px; }
 
-/* FORMULA BAR (Sheets) */
-.sheets-formula-bar {
+/* ═══════════════════════════════════════════
+   3. BARRA DELLA FORMULA
+   ═══════════════════════════════════════════ */
+.gs-formula-bar {
   height: 28px;
   background: #ffffff;
-  border-bottom: 1px solid #dadce0;
+  border-bottom: 1px solid var(--google-border);
   display: flex;
   align-items: center;
   flex-shrink: 0;
 }
-.name-box {
-  width: 65px;
+.gs-name-box {
+  width: 68px;
   height: 100%;
-  border-right: 1px solid #dadce0;
+  border-right: 1px solid var(--google-border);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
   color: #3c4043;
+  gap: 3px;
+  cursor: pointer;
 }
-.fx-symbol {
+.gs-fx-symbol {
   width: 28px;
   height: 100%;
   display: flex;
@@ -390,32 +534,34 @@ header h1 {
   font-style: italic;
   font-weight: 700;
   color: #70757a;
-  border-right: 1px solid #dadce0;
+  border-right: 1px solid var(--google-border);
 }
-.formula-field {
+.gs-formula-input {
   flex: 1;
   padding: 0 10px;
   font-size: 12.5px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   color: #202124;
   white-space: nowrap;
   overflow: hidden;
 }
-.formula-field.typing {
+.gs-formula-input.typing {
   color: #1a73e8;
   font-weight: bold;
 }
 
-/* WORKSPACE BODY (Contains Sheets Grid + Chart Editor Panel or Docs Canvas) */
+/* ═══════════════════════════════════════════
+   4. WORKSPACE BODY (Griglia + Editor + Docs)
+   ═══════════════════════════════════════════ */
 .workspace-body {
   flex: 1;
   display: flex;
   position: relative;
   overflow: hidden;
-  background: #f8f9fa;
+  background: #ffffff;
 }
 
-/* SHEETS VIEW */
+/* GRIGLIA FOGLI */
 .sheets-container {
   flex: 1;
   display: flex;
@@ -424,57 +570,144 @@ header h1 {
   overflow: hidden;
   background: white;
 }
+.grid-table-wrapper {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
 .grid-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
   table-layout: fixed;
 }
-.grid-table th {
+.grid-corner {
+  width: 38px;
   background: #f8f9fa;
-  color: #5f6368;
-  font-weight: 600;
   border: 1px solid #e0e0e0;
-  padding: 4px 6px;
+}
+.grid-col-hdr {
+  background: #f8f9fa;
+  color: #444746;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+  height: 24px;
   text-align: center;
   user-select: none;
+  font-size: 12px;
+  transition: all 0.15s;
 }
-.grid-table th.col-hdr { width: 95px; }
-.grid-table th.col-hdr.hdr-narrow { width: 45px; }
-.grid-table th.col-hdr.hdr-wide { width: 110px; }
-.grid-table th.row-hdr { width: 32px; background: #f8f9fa; color: #5f6368; font-weight: 600; }
-.grid-table td {
+.grid-col-hdr.selected-col {
+  background: #e8f0fe !important;
+  color: #1a73e8 !important;
+  border-bottom: 2px solid #1a73e8 !important;
+  font-weight: 600;
+}
+.grid-row-hdr {
+  width: 38px;
+  background: #f8f9fa;
+  color: #5f6368;
+  font-weight: 500;
   border: 1px solid #e0e0e0;
-  padding: 4px 6px;
+  text-align: center;
+  user-select: none;
+  font-size: 12px;
+}
+.grid-row-hdr.selected-row {
+  background: #e8f0fe !important;
+  color: #1a73e8 !important;
+  font-weight: 600;
+}
+.grid-table td {
+  border: 1px solid #e1e3e1;
+  padding: 3px 6px;
   color: #202124;
   height: 25px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
-  transition: background 0.15s, border 0.15s;
+  font-family: var(--font-roboto);
+  font-size: 12px;
 }
+.grid-table td.cell-hdr {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+}
+.grid-table td.cell-num { text-align: right; }
+.grid-table td.cell-calc { background: #fafafa; }
 .grid-table td.selected {
   outline: 2px solid #1a73e8;
   outline-offset: -1px;
-  background: #e8f0fe !important;
+  background: #ffffff !important;
   z-index: 2;
+}
+/* Fill Handle blu in basso a destra */
+.grid-table td.selected::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  background: #1a73e8;
+  border: 1px solid #ffffff;
+  z-index: 4;
 }
 .grid-table td.range-sel {
   background: rgba(26, 115, 232, 0.12) !important;
   border-color: #93bcf9;
 }
-.grid-table td.cell-num { text-align: right; }
-.grid-table td.cell-hdr { background: #f1f3f4; font-weight: 600; text-align: center; }
-.grid-table td.calc-col { background: #fcfcfc; }
 
-/* EMBEDDED FLOATING CHARTS ON THE SHEET */
+/* BARRA SCHEDE DEI FOGLI IN BASSO */
+.sheets-bottom-tabs {
+  height: 32px;
+  background: #f8f9fa;
+  border-top: 1px solid var(--google-border);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.tab-action-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f6368;
+  cursor: pointer;
+}
+.tab-action-btn:hover { background: #e8eaed; }
+.sheet-tab-pill {
+  height: 26px;
+  background: #ffffff;
+  border: 1px solid var(--google-border);
+  border-bottom: 2px solid var(--sheets-green);
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #202124;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════
+   5. GRAFICO FLUTTUANTE SUL FOGLIO
+   ═══════════════════════════════════════════ */
 .embedded-chart-box {
   position: absolute;
-  background: white;
-  border: 1px solid #dadce0;
-  border-radius: 6px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  background: #ffffff;
+  border: 1px solid var(--google-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(60,64,67,0.15);
   display: flex;
   flex-direction: column;
   z-index: 10;
@@ -482,120 +715,129 @@ header h1 {
   overflow: hidden;
 }
 .chart-box-header {
-  height: 24px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dadce0;
+  height: 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f3f4;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
   color: #5f6368;
 }
-.chart-box-menu-dots {
+.chart-menu-dots-btn {
   cursor: pointer;
-  padding: 0 4px;
-  border-radius: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
 }
-.chart-box-menu-dots:hover { background: #e8eaed; }
+.chart-menu-dots-btn:hover { background: #f1f3f4; }
 .chart-canvas-holder {
   flex: 1;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
 }
 
-/* CHART EDITOR PANEL (Slide from right in Google Sheets) */
+/* ═══════════════════════════════════════════
+   6. EDITOR DI GRAFICI (PANNELLO LATERALE DX)
+   ═══════════════════════════════════════════ */
 .chart-editor-panel {
-  width: 250px;
+  width: 290px;
   background: #ffffff;
-  border-left: 1px solid #dadce0;
+  border-left: 1px solid var(--google-border);
   display: flex;
   flex-direction: column;
-  font-size: 12px;
+  font-size: 12.5px;
   flex-shrink: 0;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+  box-shadow: -2px 0 8px rgba(0,0,0,0.04);
   z-index: 15;
 }
 .editor-hdr {
-  padding: 8px 12px;
-  font-weight: 700;
-  border-bottom: 1px solid #dadce0;
+  padding: 10px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  border-bottom: 1px solid var(--google-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f8f9fa;
-  color: #202124;
+  color: var(--google-text-dark);
 }
 .editor-tabs {
   display: flex;
-  border-bottom: 1px solid #dadce0;
+  border-bottom: 1px solid var(--google-border);
+  background: #ffffff;
 }
 .editor-tab {
   flex: 1;
   text-align: center;
-  padding: 6px 0;
-  font-weight: 600;
+  padding: 8px 0;
+  font-weight: 500;
   color: #5f6368;
   cursor: pointer;
   border-bottom: 2px solid transparent;
+  font-size: 13px;
+  transition: all 0.15s;
 }
 .editor-tab.active {
-  color: #1a73e8;
-  border-bottom-color: #1a73e8;
+  color: var(--docs-blue);
+  border-bottom-color: var(--docs-blue);
+  font-weight: 600;
 }
 .editor-body {
-  padding: 10px 12px;
+  padding: 12px 14px;
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .editor-field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 .editor-field label {
-  font-size: 11px;
+  font-size: 11.5px;
   color: #5f6368;
-  font-weight: 600;
+  font-weight: 500;
 }
 .editor-select, .editor-input {
-  border: 1px solid #dadce0;
+  border: 1px solid var(--google-border);
   border-radius: 4px;
-  padding: 4px 6px;
-  font-size: 12px;
+  padding: 6px 8px;
+  font-size: 12.5px;
   background: #ffffff;
-  color: #202124;
+  color: var(--google-text-dark);
 }
 .editor-select.glow {
-  border-color: #1a73e8;
-  box-shadow: 0 0 6px rgba(26,115,232,0.5);
+  border-color: var(--docs-blue);
+  box-shadow: 0 0 8px rgba(26,115,232,0.4);
 }
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #202124;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--google-text-dark);
   cursor: pointer;
-  padding: 4px 0;
+  padding: 6px 0;
 }
-.checkbox-row input { accent-color: #1a73e8; cursor: pointer; }
+.checkbox-row input { accent-color: var(--docs-blue); cursor: pointer; width: 15px; height: 15px; }
 .checkbox-row.glow {
-  background: #e8f0fe;
-  padding: 4px 6px;
+  background: var(--google-sel-bg);
+  padding: 6px 8px;
   border-radius: 4px;
   font-weight: 600;
-  color: #1a73e8;
+  color: var(--docs-blue);
 }
 
-/* GOOGLE DOCS VIEW (Step 11 & 12) */
+/* ═══════════════════════════════════════════
+   7. GOOGLE DOCUMENTI VIEW (STEP 11 & 12)
+   ═══════════════════════════════════════════ */
 .docs-container {
   display: none;
   flex: 1;
@@ -607,42 +849,42 @@ header h1 {
 }
 .docs-paper {
   width: 100%;
-  max-width: 580px;
+  max-width: 600px;
   background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  padding: 24px 30px;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  box-shadow: 0 1px 4px rgba(60,64,67,0.15), 0 4px 12px rgba(60,64,67,0.1);
+  padding: 28px 34px;
+  font-family: var(--font-roboto);
   color: #202124;
   border-radius: 2px;
-  min-height: 440px;
+  min-height: 460px;
   display: flex;
   flex-direction: column;
 }
 .doc-heading {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   color: #1a73e8;
   border-bottom: 2px solid #1a73e8;
-  padding-bottom: 4px;
-  margin-bottom: 10px;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
 }
 .doc-meta {
-  font-size: 11px;
+  font-size: 11.5px;
   color: #5f6368;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   line-height: 1.5;
 }
 .doc-section-title {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #202124;
-  margin: 10px 0 6px;
+  margin: 12px 0 6px;
 }
 .doc-pasted-chart-box {
   border: 1px solid #dadce0;
   border-radius: 6px;
   padding: 8px;
-  margin: 8px 0;
+  margin: 10px 0;
   background: #fafafa;
   position: relative;
   display: flex;
@@ -656,13 +898,13 @@ header h1 {
   background: #ffffff;
   border: 1px solid #1a73e8;
   color: #1a73e8;
-  border-radius: 12px;
-  padding: 2px 8px;
-  font-size: 10.5px;
-  font-weight: 700;
+  border-radius: 14px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   cursor: pointer;
   transition: all 0.2s;
@@ -675,7 +917,7 @@ header h1 {
 }
 @keyframes pillUpdateGlow {
   from { background: #1a73e8; color: white; box-shadow: 0 0 10px #1a73e8; }
-  to { background: #34a853; color: white; box-shadow: 0 0 14px #34a853; }
+  to { background: #16a34a; color: white; box-shadow: 0 0 14px #16a34a; }
 }
 
 /* ANIMATED MOUSE CURSOR */
@@ -687,7 +929,7 @@ header h1 {
   z-index: 1000;
   opacity: 0;
   transition: left 0.6s cubic-bezier(.4,0,.2,1), top 0.6s cubic-bezier(.4,0,.2,1), opacity 0.3s;
-  filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.4));
+  filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.35));
 }
 .sim-cursor.visible { opacity: 1; }
 .sim-cursor.clicking { animation: cursorClick 0.25s ease; }
@@ -698,52 +940,51 @@ header h1 {
 }
 
 /* ═══════════════════════════════════════════
-   NAVIGATION BAR (BOTTOM)
+   8. NAVIGATION BAR (BOTTOM)
    ═══════════════════════════════════════════ */
 .nav-bar {
-  background: #04070d;
-  border-top: 1px solid rgba(0, 212, 255, 0.2);
-  padding: 0.6rem 1.4rem;
+  background: #ffffff;
+  border-top: 1px solid var(--border-light);
+  padding: 0.65rem 1.4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  z-index: 20;
+  z-index: 30;
 }
 .nav-btn {
-  padding: 0.45rem 1.3rem;
-  font-family: var(--font-title);
-  font-size: 0.8rem;
+  padding: 0.45rem 1.25rem;
+  font-family: var(--font-google);
+  font-size: 0.82rem;
   border: 1px solid;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.25s;
+  transition: all 0.2s;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 .nav-btn.prev {
-  background: transparent;
-  color: var(--cyan);
-  border-color: rgba(0, 212, 255, 0.3);
+  background: #ffffff;
+  color: #475569;
+  border-color: #cbd5e1;
 }
-.nav-btn.prev:hover { background: rgba(0, 212, 255, 0.12); border-color: var(--cyan); }
-.nav-btn.prev:disabled { opacity: 0.3; cursor: default; }
+.nav-btn.prev:hover { background: #f1f5f9; color: #0f172a; }
+.nav-btn.prev:disabled { opacity: 0.35; cursor: default; }
 .nav-btn.replay {
-  background: transparent;
-  color: var(--yellow);
-  border-color: rgba(255, 215, 0, 0.3);
+  background: #ffffff;
+  color: #d97706;
+  border-color: #fde68a;
 }
-.nav-btn.replay:hover { background: rgba(255, 215, 0, 0.12); border-color: var(--yellow); }
+.nav-btn.replay:hover { background: #fef3c7; }
 .nav-btn.next {
-  background: var(--cyan);
-  color: #04070d;
-  border-color: var(--cyan);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 1px 3px rgba(2,132,199,0.3);
 }
-.nav-btn.next:hover { background: #ffffff; box-shadow: 0 0 18px var(--cyan); }
+.nav-btn.next:hover { background: #0369a1; }
 
 .progress-dots {
   display: flex;
@@ -752,28 +993,29 @@ header h1 {
 .progress-dots .dot {
   width: 9px; height: 9px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  transition: all 0.3s;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  transition: all 0.2s;
   cursor: pointer;
 }
-.progress-dots .dot:hover { transform: scale(1.2); }
+.progress-dots .dot:hover { transform: scale(1.25); }
 .progress-dots .dot.active {
-  background: var(--cyan);
-  border-color: var(--cyan);
-  box-shadow: 0 0 8px var(--cyan);
+  background: #0284c7;
+  border-color: #0284c7;
+  box-shadow: 0 0 6px rgba(2,132,199,0.5);
 }
 .progress-dots .dot.done {
-  background: var(--green);
-  border-color: var(--green);
+  background: #16a34a;
+  border-color: #16a34a;
 }
 
-/* COMPLETION POPUP */
+/* POPUP COMPLETAMENTO */
 .completion-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(7, 11, 20, 0.95);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
   z-index: 200;
   align-items: center;
   justify-content: center;
@@ -783,129 +1025,223 @@ header h1 {
   padding: 1rem;
 }
 .completion-overlay.visible { display: flex; }
-.completion-overlay .trophy { font-size: 4.5rem; animation: trophyBounce 1s ease infinite; }
-@keyframes trophyBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+.completion-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  max-width: 520px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
+.completion-overlay .trophy { font-size: 4rem; }
 .completion-overlay h2 {
-  font-family: var(--font-title);
-  color: var(--green);
-  font-size: 1.6rem;
+  font-family: var(--font-google);
+  color: #0f172a;
+  font-size: 1.5rem;
 }
-.completion-overlay p { color: #b0c4d8; font-size: 1rem; line-height: 1.6; max-width: 540px; }
+.completion-overlay p { color: #475569; font-size: 0.95rem; line-height: 1.6; }
 
 @media (max-width: 900px) {
   .main-area { flex-direction: column; }
-  .explain-panel { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid rgba(0,212,255,0.2); }
+  .explain-panel { width: 100%; height: 210px; border-right: none; border-bottom: 1px solid var(--border-light); }
 }
 </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-left">
-      <a href="/#excel" class="back-link">
+  <!-- HEADER LEZIONE -->
+  <header class="lesson-header">
+    <div class="lesson-header-left">
+      <a href="/#excel" class="btn-back-link">
         <span>◄</span> SEZIONE EXCEL
       </a>
-      <a href="/fisica/archimede/seconda-elettronica/moto-rettilineo-uniforme.html" class="back-link" style="color:var(--green); border-color:rgba(0,255,136,0.3); background:rgba(0,255,136,0.06);">
+      <a href="/fisica/archimede/seconda-elettronica/moto-rettilineo-uniforme.html" class="btn-back-link" style="color:#16a34a; border-color:#bbf7d0; background:#f0fdf4;">
         <span>🔬</span> LAB FISICA
       </a>
       <h1>GRAFICI SCIENTIFICI IN GOOGLE FOGLI & DOCUMENTI</h1>
     </div>
-    <div class="header-right">
-      <span class="app-pill" id="appModeBadge">GOOGLE FOGLI 📊</span>
-      <div class="step-counter" id="stepCounter">PASSO 1 DI 12</div>
+    <div class="lesson-header-right">
+      <div class="step-chip" id="stepCounter">PASSO 1 DI 12</div>
+      <button class="btn-pres-mode" id="btnPresMode" onclick="togglePresentationMode()" title="Massimizza per LIM e Proiettore (Frecce ← e →)">
+        <span>📺</span> Modalità Presentazione
+      </button>
     </div>
   </header>
 
-  <!-- MAIN AREA -->
+  <!-- MAIN SPLIT -->
   <div class="main-area">
-    <!-- LEFT: EXPLANATION PANEL -->
+    <!-- SINISTRA: SPIEGAZIONE DIDATTICA -->
     <div class="explain-panel">
       <div class="explain-content" id="explainContent">
         <!-- Injected via JavaScript -->
       </div>
     </div>
 
-    <!-- RIGHT: SIMULATOR AREA -->
+    <!-- DESTRA: SIMULATORE GOOGLE AUTENTICO -->
     <div class="simulator-area">
       <div class="workspace-window" id="workspaceWindow">
-        <!-- TITLE BAR -->
-        <div class="window-titlebar" id="windowTitlebar">
-          <span class="window-icon" id="windowIcon">📊</span>
-          <input type="text" class="doc-title-input" id="docTitleInput" value="Laboratorio 1 — Moto Rettilineo Uniforme" readonly />
-          <span class="save-pill" id="savePill">☁️ Salvato in Drive</span>
-          <div class="user-pill">TM</div>
-        </div>
-
-        <!-- GOOGLE MENUBAR -->
-        <div class="google-menubar" id="googleMenubar">
-          <span class="menu-btn" id="mFile">File</span>
-          <span class="menu-btn" id="mEdit">Modifica</span>
-          <span class="menu-btn" id="mView">Visualizza</span>
-          <span class="menu-btn" id="mInsert">Inserisci</span>
-          <span class="menu-btn" id="mFormat">Formato</span>
-          <span class="menu-btn" id="mData">Dati</span>
-          <span class="menu-btn" id="mTools">Strumenti</span>
-        </div>
-
-        <!-- GOOGLE TOOLBAR -->
-        <div class="google-toolbar" id="googleToolbar">
-          <div class="tb-btn" title="Annulla">↺</div>
-          <div class="tb-btn" title="Ripeti">↻</div>
-          <div class="tb-btn" title="Stampa">🖨️</div>
-          <div class="tb-sep"></div>
-          <div class="tb-btn" id="tbBold" title="Grassetto"><strong>B</strong></div>
-          <div class="tb-btn" id="tbItalic" title="Corsivo"><em>I</em></div>
-          <div class="tb-sep"></div>
-          <div class="tb-btn" id="tbAlign" title="Allinea al centro">≡</div>
-          <div class="tb-sep"></div>
-          <div class="tb-btn" id="tbChart" title="Inserisci grafico (📊)">📊</div>
-        </div>
-
-        <!-- FORMULA BAR (Sheets mode) -->
-        <div class="sheets-formula-bar" id="sheetsFormulaBar">
-          <div class="name-box" id="nameBox">A1</div>
-          <div class="fx-symbol">fx</div>
-          <div class="formula-field" id="formulaField"></div>
-        </div>
-
-        <!-- WORKSPACE BODY -->
-        <div class="workspace-body" id="workspaceBody">
-          <!-- 1. SHEETS GRID VIEW -->
-          <div class="sheets-container" id="sheetsContainer">
-            <table class="grid-table" id="gridTable">
-              <thead>
-                <tr>
-                  <th class="row-hdr"></th>
-                  <th class="col-hdr hdr-narrow">A</th>
-                  <th class="col-hdr">B</th>
-                  <th class="col-hdr">C</th>
-                  <th class="col-hdr">D</th>
-                  <th class="col-hdr">E</th>
-                  <th class="col-hdr hdr-wide">F</th>
-                </tr>
-              </thead>
-              <tbody id="gridTbody">
-                <!-- 10 rows generated dynamically -->
-              </tbody>
-            </table>
-
-            <!-- FLOATING EMBEDDED CHART (Displayed on sheets) -->
-            <div class="embedded-chart-box" id="embeddedChartBox" style="display:none; width:340px; height:240px; top:35px; right:20px;">
-              <div class="chart-box-header">
-                <span id="chartBoxTitle">Grafico a dispersione</span>
-                <span class="chart-box-menu-dots" id="chartMenuDots" title="Menu grafico">⋮</span>
+        
+        <!-- 1. GOOGLE TOP BAR (Identica allo screenshot) -->
+        <div class="gs-topbar" id="gsTopbar">
+          <div class="gs-topbar-left">
+            <!-- Icona Fogli Verde Ufficiale SVG -->
+            <div class="gs-logo-icon" id="gsLogoIcon">
+              <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+                <path d="M23 2H9C7.9 2 7 2.9 7 4V32C7 33.1 7.9 34 9 34H27C28.1 34 29 33.1 29 32V8L23 2Z" fill="#0F9D58"/>
+                <path d="M23 2V8H29L23 2Z" fill="#87CEAB"/>
+                <path d="M12 16H24V18H12V16ZM12 21H24V23H12V21ZM12 26H20V28H12V26Z" fill="white"/>
+              </svg>
+            </div>
+            <div class="gs-meta-col">
+              <div class="gs-title-row">
+                <input type="text" class="gs-doc-title-input" id="docTitleInput" value="Relazione Lab 1 — Moto Rettilineo Uniforme" readonly />
+                <span class="gs-icon-btn" title="Aggiungi a Speciali">☆</span>
+                <span class="gs-icon-btn" title="Sposta">📁</span>
+                <span class="gs-icon-btn" title="Stato documento: Salvato in Drive" id="saveIcon">☁️</span>
               </div>
-              <div class="chart-canvas-holder">
-                <canvas id="simCanvas" width="330" height="205"></canvas>
+              <!-- Menu riga ufficiale -->
+              <div class="gs-menubar" id="gsMenubar">
+                <span class="gs-menu-item" id="mFile">File</span>
+                <span class="gs-menu-item" id="mEdit">Modifica</span>
+                <span class="gs-menu-item" id="mView">Visualizza</span>
+                <span class="gs-menu-item" id="mInsert">Inserisci</span>
+                <span class="gs-menu-item" id="mFormat">Formato</span>
+                <span class="gs-menu-item" id="mData">Dati</span>
+                <span class="gs-menu-item" id="mTools">Strumenti</span>
+                <span class="gs-menu-item" id="mExt">Estensioni</span>
+                <span class="gs-menu-item" id="mHelp">Guida</span>
+              </div>
+            </div>
+          </div>
+          <div class="gs-topbar-right">
+            <button class="gs-share-btn" title="Condividi con i compagni o con il docente">
+              <span>🔒</span> Condividi
+            </button>
+            <div class="gs-avatar" title="Account Google">TM</div>
+          </div>
+        </div>
+
+        <!-- 2. GOOGLE TOOLBAR (Pixel-Perfect rispetto allo screenshot utente) -->
+        <div class="gs-toolbar-container" id="gsToolbarContainer">
+          <div class="gs-toolbar" id="gsToolbar">
+            <!-- Search Menu Capsule -->
+            <div class="gs-tb-search" title="Cerca nei menu">
+              <span>🔍</span> <span>Menu</span>
+            </div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Undo, Redo, Print, Format Painter, Zoom -->
+            <div class="gs-tb-btn" title="Annulla (Ctrl+Z)">↶</div>
+            <div class="gs-tb-btn" title="Ripeti (Ctrl+Y)">↷</div>
+            <div class="gs-tb-btn" title="Stampa (Ctrl+P)">🖶</div>
+            <div class="gs-tb-btn" title="Copia formato">🖌</div>
+            <div class="gs-tb-dropdown" title="Zoom">100% ▾</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Number Formats (€, %, .0, .00, 123) -->
+            <div class="gs-tb-btn" title="Formatta come valuta">€</div>
+            <div class="gs-tb-btn" title="Formatta come percentuale">%</div>
+            <div class="gs-tb-btn" title="Riduci decimali">.0</div>
+            <div class="gs-tb-btn" title="Aumenta decimali">.00</div>
+            <div class="gs-tb-dropdown" title="Altri formati">123 ▾</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Font Family & Font Size -->
+            <div class="gs-tb-dropdown" title="Famiglia caratteri">Prede... ▾</div>
+            <div class="gs-tb-btn" style="width:20px; font-weight:bold;">−</div>
+            <div class="gs-tb-btn" style="width:24px; font-weight:600;">10</div>
+            <div class="gs-tb-btn" style="width:20px; font-weight:bold;">+</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Bold, Italic, Strikethrough, Text color, Fill color -->
+            <div class="gs-tb-btn" id="tbBold" title="Grassetto (Ctrl+B)"><strong>B</strong></div>
+            <div class="gs-tb-btn" id="tbItalic" title="Corsivo (Ctrl+I)"><em>I</em></div>
+            <div class="gs-tb-btn" title="Barrato"><strike>S</strike></div>
+            <div class="gs-tb-btn" title="Colore testo"><strong>A</strong></div>
+            <div class="gs-tb-btn" title="Colore riempimento">🪣</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Borders, Merge -->
+            <div class="gs-tb-btn" title="Bordi">田</div>
+            <div class="gs-tb-btn" title="Unisci celle">⇥⇤</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Align, Vertical, Wrap, Rotate -->
+            <div class="gs-tb-btn" title="Allineamento orizzontale">≡ ▾</div>
+            <div class="gs-tb-btn" title="Allineamento verticale">↕ ▾</div>
+            <div class="gs-tb-btn" title="Testo a capo">↳ ▾</div>
+            <div class="gs-tb-btn" title="Rotazione testo">↗ ▾</div>
+            <div class="gs-tb-sep"></div>
+
+            <!-- Link, Comment, Chart, Filter, Functions -->
+            <div class="gs-tb-btn" title="Inserisci link">🔗</div>
+            <div class="gs-tb-btn" title="Aggiungi commento">💬</div>
+            <div class="gs-tb-btn" id="tbChart" title="Inserisci grafico (📊)">📊</div>
+            <div class="gs-tb-btn" title="Crea un filtro">⏳ ▾</div>
+            <div class="gs-tb-btn" title="Funzioni">Σ ▾</div>
+          </div>
+        </div>
+
+        <!-- 3. BARRA DELLA FORMULA -->
+        <div class="gs-formula-bar" id="gsFormulaBar">
+          <div class="gs-name-box" id="nameBox">H21 ▾</div>
+          <div class="gs-fx-symbol">fx</div>
+          <div class="gs-formula-input" id="formulaField"></div>
+        </div>
+
+        <!-- 4. WORKSPACE BODY -->
+        <div class="workspace-body" id="workspaceBody">
+          
+          <!-- VISTA 1: FOGLIO DI LAVORO -->
+          <div class="sheets-container" id="sheetsContainer">
+            <div class="grid-table-wrapper">
+              <table class="grid-table" id="gridTable">
+                <thead>
+                  <tr>
+                    <th class="grid-corner"></th>
+                    <th class="grid-col-hdr" id="col-hdr-A" style="width:115px;">A</th>
+                    <th class="grid-col-hdr" id="col-hdr-B" style="width:95px;">B</th>
+                    <th class="grid-col-hdr" id="col-hdr-C" style="width:95px;">C</th>
+                    <th class="grid-col-hdr" id="col-hdr-D" style="width:85px;">D</th>
+                    <th class="grid-col-hdr" id="col-hdr-E" style="width:85px;">E</th>
+                    <th class="grid-col-hdr" id="col-hdr-F" style="width:110px;">F</th>
+                    <th class="grid-col-hdr" id="col-hdr-G" style="width:70px;">G</th>
+                    <th class="grid-col-hdr" id="col-hdr-H" style="width:70px;">H</th>
+                    <th class="grid-col-hdr" id="col-hdr-I" style="width:70px;">I</th>
+                    <th class="grid-col-hdr" id="col-hdr-J" style="width:70px;">J</th>
+                  </tr>
+                </thead>
+                <tbody id="gridTbody">
+                  <!-- Generate 16 righe dinamicamente -->
+                </tbody>
+              </table>
+
+              <!-- GRAFICO FLUTTUANTE SUL FOGLIO -->
+              <div class="embedded-chart-box" id="embeddedChartBox" style="display:none; width:360px; height:245px; top:30px; right:16px;">
+                <div class="chart-box-header">
+                  <span id="chartBoxTitle">Grafico a dispersione</span>
+                  <span class="chart-menu-dots-btn" id="chartMenuDots" title="Opzioni grafico">⋮</span>
+                </div>
+                <div class="chart-canvas-holder">
+                  <canvas id="simCanvas" width="350" height="210"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB IN BASSO: Schede Fogli -->
+            <div class="sheets-bottom-tabs">
+              <div class="tab-action-btn" title="Aggiungi foglio">+</div>
+              <div class="tab-action-btn" title="Tutti i fogli">≡</div>
+              <div class="sheet-tab-pill">
+                <span>Foglio1</span> <span>▾</span>
               </div>
             </div>
           </div>
 
-          <!-- 2. CHART EDITOR PANEL (Google Sheets sidebar) -->
+          <!-- VISTA 2: PANNELLO EDITOR DI GRAFICI LATERALE -->
           <div class="chart-editor-panel" id="chartEditorPanel" style="display:none;">
             <div class="editor-hdr">
               <span>Editor di grafici</span>
@@ -916,11 +1252,11 @@ header h1 {
               <div class="editor-tab" id="tabCustomize" onclick="switchEditorTab('custom')">Personalizza</div>
             </div>
             <div class="editor-body" id="editorBody">
-              <!-- Injected via JavaScript based on step -->
+              <!-- Injected via JS -->
             </div>
           </div>
 
-          <!-- 3. DOCS CONTAINER (Google Documenti view) -->
+          <!-- VISTA 3: GOOGLE DOCUMENTI (STEP 11 & 12) -->
           <div class="docs-container" id="docsContainer">
             <div class="docs-paper">
               <div class="doc-heading">RELAZIONE DI LABORATORIO: MOTO RETTILINEO UNIFORME</div>
@@ -929,21 +1265,22 @@ header h1 {
                 <strong>Istituto:</strong> ISS Archimede &nbsp;|&nbsp; <strong>Docente:</strong> Prof. Mazzeo
               </div>
               <div class="doc-section-title">1. Obiettivo dell'Esperimento</div>
-              <p style="font-size:11px; color:#444; line-height:1.5;">
-                Verificare sperimentalmente la legge oraria del moto rettilineo uniforme mediante una rotaia con carrello, cronometrando i passaggi in andata e ritorno e calcolando la velocità media.
+              <p style="font-size:11.5px; color:#444; line-height:1.55;">
+                Verificare sperimentalmente la legge oraria del moto rettilineo uniforme mediante rotaia a cuscino d'aria, cronometrando i tempi di andata e ritorno e calcolando la velocità media su ciascun intervallo.
               </p>
-              <div class="doc-section-title">2. Grafici Sperimentali & Analisi dei Dati</div>
+              <div class="doc-section-title">2. Grafici Sperimentali & Analisi</div>
               <div class="doc-pasted-chart-box" id="docsPastedBox">
                 <div class="doc-link-pill" id="docLinkPill">
-                  <span>🔗</span> <span id="docLinkPillText">Collegato a Fogli</span>
+                  <span>🔗</span> <span id="docLinkPillText">Opzioni per il grafico collegato ▾</span>
                 </div>
-                <canvas id="docsCanvas" width="440" height="230"></canvas>
+                <canvas id="docsCanvas" width="460" height="235"></canvas>
               </div>
-              <p style="font-size:10.5px; color:#666; margin-top:6px; font-style:italic;">
+              <p style="font-size:11px; color:#64748b; margin-top:6px; font-style:italic;">
                 Figura 1: Grafico Spazio-Tempo s(t) con retta di interpolazione lineare (Best-Fit).
               </p>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -956,28 +1293,30 @@ header h1 {
     </div>
   </div>
 
-  <!-- BOTTOM NAVIGATION BAR -->
-  <div class="nav-bar">
+  <!-- BOTTOM BAR NAVIGAZIONE -->
+  <footer class="nav-bar">
     <button class="nav-btn prev" id="btnPrev" onclick="prevStep()">◄ Precedente</button>
     <button class="nav-btn replay" id="btnReplay" onclick="replayStep()">↺ Ripeti Azione</button>
     <div class="progress-dots" id="progressDots"></div>
     <button class="nav-btn next" id="btnNext" onclick="nextStep()">Successivo ►</button>
-  </div>
+  </footer>
 
-  <!-- COMPLETION SCREEN -->
+  <!-- POPUP COMPLETAMENTO -->
   <div class="completion-overlay" id="completionOverlay">
-    <div class="trophy">🏆</div>
-    <h2>COMPLIMENTI! TUTORIAL COMPLETATO!</h2>
-    <p>Ora sai esattamente come impostare un foglio di calcolo per un laboratorio di fisica, calcolare le formule del moto uniforme, generare i due grafici con <strong>rette di interpolazione</strong> e incollarli dinamicamente nella relazione su <strong>Google Documenti</strong>!</p>
-    <div style="display:flex; gap:12px; margin-top:10px;">
-      <button class="nav-btn next" onclick="goToStep(1); document.getElementById('completionOverlay').classList.remove('visible');">↺ Rivedi Tutorial</button>
-      <a href="/fisica/archimede/seconda-elettronica/moto-rettilineo-uniforme.html" class="nav-btn prev" style="text-decoration:none;">🔬 Torna al Laboratorio</a>
+    <div class="completion-card">
+      <div class="trophy">🏆</div>
+      <h2>LEZIONE COMPLETATA CON SUCCESSO!</h2>
+      <p>Ora padroneggi al 100% l'interfaccia di <strong>Google Fogli</strong> per la fisica: sai inserire tabelle, calcolare le formule, creare grafici a dispersione con <strong>rette di interpolazione (Best-Fit)</strong> e incollarli dinamicamente in <strong>Google Documenti</strong>!</p>
+      <div style="display:flex; gap:12px; margin-top:10px;">
+        <button class="nav-btn next" onclick="goToStep(1); document.getElementById('completionOverlay').classList.remove('visible');">↺ Rivedi Tutorial</button>
+        <a href="/fisica/archimede/seconda-elettronica/moto-rettilineo-uniforme.html" class="nav-btn prev" style="text-decoration:none;">🔬 Torna al Laboratorio</a>
+      </div>
     </div>
   </div>
 
 <script>
 /* ═══════════════════════════════════════════
-   DATI DELL'ESPERIMENTO (Moto Rettilineo Uniforme)
+   DATI FISICI SPERIMENTALI (Rotaia con Carrello)
    ═══════════════════════════════════════════ */
 const LAB_DATA = [
   { pos: "Partenza", s: 0.00, t: 0.00, ds: 0, dt: 0, v: 0 },
@@ -991,10 +1330,10 @@ let currentStep = 1;
 const TOTAL_STEPS = 12;
 
 /* ═══════════════════════════════════════════
-   GRID GENERATOR & CELL DATA MODEL
+   GRIGLIA FOGLI: MODEL & ENGINE
    ═══════════════════════════════════════════ */
-const COLS = ['A','B','C','D','E','F'];
-const ROWS = 10;
+const COLS = ['A','B','C','D','E','F','G','H','I','J'];
+const ROWS = 16;
 const gridData = {};
 
 function initGrid() {
@@ -1002,11 +1341,15 @@ function initGrid() {
   tbody.innerHTML = '';
   for (let r = 1; r <= ROWS; r++) {
     const tr = document.createElement('tr');
+    
+    // Header riga
     const th = document.createElement('th');
-    th.className = 'row-hdr';
+    th.className = 'grid-row-hdr';
+    th.id = `row-hdr-${r}`;
     th.textContent = r;
     tr.appendChild(th);
 
+    // Colonne
     COLS.forEach(c => {
       const td = document.createElement('td');
       td.id = `cell-${c}${r}`;
@@ -1040,20 +1383,36 @@ function clearGrid() {
       delete gridData[`${c}${r}`];
     });
   }
+  document.querySelectorAll('.grid-col-hdr.selected-col').forEach(el => el.classList.remove('selected-col'));
+  document.querySelectorAll('.grid-row-hdr.selected-row').forEach(el => el.classList.remove('selected-row'));
 }
 
 function selectCell(coord) {
   document.querySelectorAll('.grid-table td.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.grid-col-hdr.selected-col').forEach(el => el.classList.remove('selected-col'));
+  document.querySelectorAll('.grid-row-hdr.selected-row').forEach(el => el.classList.remove('selected-row'));
+
   const td = document.getElementById(`cell-${coord}`);
   if (td) {
     td.classList.add('selected');
-    document.getElementById('nameBox').textContent = coord;
+    document.getElementById('nameBox').textContent = coord + ' ▾';
     document.getElementById('formulaField').textContent = gridData[coord] || '';
+
+    // Evidenzia colonna e riga (identico a Google Fogli!)
+    const c = coord.charAt(0);
+    const r = coord.substring(1);
+    const colHdr = document.getElementById(`col-hdr-${c}`);
+    const rowHdr = document.getElementById(`row-hdr-${r}`);
+    if (colHdr) colHdr.classList.add('selected-col');
+    if (rowHdr) rowHdr.classList.add('selected-row');
   }
 }
 
 function selectRange(startCoord, endCoord) {
   document.querySelectorAll('.grid-table td.range-sel').forEach(el => el.classList.remove('range-sel'));
+  document.querySelectorAll('.grid-col-hdr.selected-col').forEach(el => el.classList.remove('selected-col'));
+  document.querySelectorAll('.grid-row-hdr.selected-row').forEach(el => el.classList.remove('selected-row'));
+
   const sc = startCoord.charAt(0);
   const sr = parseInt(startCoord.substring(1));
   const ec = endCoord.charAt(0);
@@ -1063,15 +1422,21 @@ function selectRange(startCoord, endCoord) {
   const cEnd = COLS.indexOf(ec);
 
   for (let c = cStart; c <= cEnd; c++) {
+    const colHdr = document.getElementById(`col-hdr-${COLS[c]}`);
+    if (colHdr) colHdr.classList.add('selected-col');
     for (let r = sr; r <= er; r++) {
       const td = document.getElementById(`cell-${COLS[c]}${r}`);
       if (td) td.classList.add('range-sel');
+      const rowHdr = document.getElementById(`row-hdr-${r}`);
+      if (rowHdr) rowHdr.classList.add('selected-row');
     }
   }
+
+  document.getElementById('nameBox').textContent = `${startCoord}:${endCoord} ▾`;
 }
 
 /* ═══════════════════════════════════════════
-   CURSOR HELPER
+   ANIMATORE DEL CURSORE MOUSE
    ═══════════════════════════════════════════ */
 const cursor = document.getElementById('simCursor');
 function moveCursor(targetEl, callback, delay = 600) {
@@ -1098,8 +1463,7 @@ function hideCursor() {
 }
 
 /* ═══════════════════════════════════════════
-   CHART DRAWING ENGINE (CANVAS)
-   Disegna sia s(t) con interpolazione che v(t) orizzontale
+   CHART DRAWING ENGINE (Alta Risoluzione Canvas)
    ═══════════════════════════════════════════ */
 function drawChart(canvasId, type = 'st', options = {}) {
   const cv = document.getElementById(canvasId);
@@ -1112,14 +1476,14 @@ function drawChart(canvasId, type = 'st', options = {}) {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, w, h);
 
-  const padL = 45;
+  const padL = 48;
   const padR = 20;
-  const padT = 30;
-  const padB = 35;
+  const padT = 32;
+  const padB = 36;
   const plotW = w - padL - padR;
   const plotH = h - padT - padB;
 
-  // Draw grid & axes
+  // Griglia & Assi
   ctx.strokeStyle = '#e2e8f0';
   ctx.lineWidth = 1;
 
@@ -1128,8 +1492,8 @@ function drawChart(canvasId, type = 'st', options = {}) {
     const maxT = 10.0;
     const maxS = 2.5;
 
-    // Horizontal grid lines
-    ctx.font = '10px "Segoe UI", sans-serif';
+    // Linee griglia orizzontali
+    ctx.font = '10px "Roboto", sans-serif';
     ctx.fillStyle = '#64748b';
     ctx.textAlign = 'right';
     for (let s = 0; s <= 2.5; s += 0.5) {
@@ -1141,7 +1505,7 @@ function drawChart(canvasId, type = 'st', options = {}) {
       ctx.fillText(s.toFixed(1) + ' m', padL - 6, y + 3);
     }
 
-    // Vertical grid lines
+    // Linee griglia verticali
     ctx.textAlign = 'center';
     for (let t = 0; t <= 10; t += 2) {
       const x = padL + (t / maxT) * plotW;
@@ -1152,18 +1516,18 @@ function drawChart(canvasId, type = 'st', options = {}) {
       ctx.fillText(t + ' s', x, padT + plotH + 14);
     }
 
-    // Main Axes
+    // Assi cartesiani principali
     ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
     ctx.moveTo(padL, padT);
     ctx.lineTo(padL, padT + plotH);
     ctx.lineTo(padL + plotW, padT + plotH);
     ctx.stroke();
 
-    // Axis labels
+    // Etichette assi
     ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 10.5px "Segoe UI", sans-serif';
+    ctx.font = 'bold 10.5px "Roboto", sans-serif';
     ctx.fillText('Tempo t (s)', padL + plotW / 2, padT + plotH + 28);
     ctx.save();
     ctx.translate(14, padT + plotH / 2);
@@ -1171,10 +1535,11 @@ function drawChart(canvasId, type = 'st', options = {}) {
     ctx.fillText('Spazio s (m)', 0, 0);
     ctx.restore();
 
-    // Title
+    // Titolo grafico
     ctx.textAlign = 'center';
     ctx.fillStyle = '#1e3a8a';
-    ctx.fillText('Grafico Spazio-Tempo s(t) — MRU', padL + plotW / 2, 16);
+    ctx.font = 'bold 11.5px "Google Sans", sans-serif';
+    ctx.fillText('Grafico Spazio-Tempo s(t) — MRU', padL + plotW / 2, 18);
 
     const pts = [
       { t: 0.00, s: 0.00 },
@@ -1184,54 +1549,40 @@ function drawChart(canvasId, type = 'st', options = {}) {
       { t: 9.20, s: 0.00 }
     ];
 
-    // Plot Best-Fit Trendlines if enabled
+    // Rette di interpolazione (Best-Fit)
     if (options.trendline) {
-      // Retta di andata (0 a 4.60 s): s = (2.3/4.6)*t = 0.50*t
+      // Retta andata: s = 0.50·t
       const x0 = padL;
       const y0 = padT + plotH;
       const xPunta = padL + (4.6 / maxT) * plotW;
       const yPunta = padT + plotH - (2.3 / maxS) * plotH;
 
-      ctx.strokeStyle = '#0284c7'; // Andata azzurra
-      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#0284c7'; // Andata Azzurra
+      ctx.lineWidth = 2.4;
       ctx.beginPath();
       ctx.moveTo(x0, y0);
       ctx.lineTo(xPunta, yPunta);
       ctx.stroke();
 
-      // Retta di ritorno (4.60 a 9.20 s): pendenza negativa
+      // Retta ritorno: s = -0.50·t + 4.60
       const xEnd = padL + (9.2 / maxT) * plotW;
       const yEnd = padT + plotH;
 
-      ctx.strokeStyle = '#ef4444'; // Ritorno rossa
+      ctx.strokeStyle = '#dc2626'; // Ritorno Rossa
       ctx.beginPath();
       ctx.moveTo(xPunta, yPunta);
       ctx.lineTo(xEnd, yEnd);
       ctx.stroke();
 
-      // Tag Best-Fit
-      ctx.font = 'italic 9.5px "Segoe UI", sans-serif';
+      // Badge equazioni
+      ctx.font = 'italic 9.5px "Roboto", sans-serif';
       ctx.fillStyle = '#0284c7';
-      ctx.fillText('Andata: s = +0.50·t', padL + 60, yPunta + 18);
+      ctx.fillText('Andata: s = +0.50·t', padL + 65, yPunta + 18);
       ctx.fillStyle = '#dc2626';
       ctx.fillText('Ritorno: s = -0.50·t + 4.6', padL + plotW - 65, yPunta + 18);
-    } else if (options.connected) {
-      // Spezzata grezza (non corretta, mostrata per confronto)
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 3]);
-      ctx.beginPath();
-      pts.forEach((p, idx) => {
-        const x = padL + (p.t / maxT) * plotW;
-        const y = padT + plotH - (p.s / maxS) * plotH;
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-      ctx.setLineDash([]);
     }
 
-    // Experimental points
+    // Punti sperimentali (Cerchietti blu con alone bianco)
     pts.forEach(p => {
       const x = padL + (p.t / maxT) * plotW;
       const y = padT + plotH - (p.s / maxS) * plotH;
@@ -1240,26 +1591,26 @@ function drawChart(canvasId, type = 'st', options = {}) {
       ctx.arc(x, y, 4.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.8;
       ctx.stroke();
     });
 
   } else if (type === 'vt') {
     // ── GRAFICO 2: VELOCITÀ - TEMPO v(t) ──
     const maxT = 10.0;
-    const maxV = 1.0; // da -1.0 a +1.0 m/s
+    const maxV = 1.0;
     const midY = padT + plotH / 2;
 
-    // Zero Axis (v = 0)
+    // Asse Zero (v = 0)
     ctx.strokeStyle = '#64748b';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
     ctx.moveTo(padL, midY);
     ctx.lineTo(padL + plotW, midY);
     ctx.stroke();
 
-    // Horizontal grid
-    ctx.font = '10px "Segoe UI", sans-serif';
+    // Linee orizzontali
+    ctx.font = '10px "Roboto", sans-serif';
     ctx.fillStyle = '#64748b';
     ctx.textAlign = 'right';
     [-0.5, 0, 0.5].forEach(v => {
@@ -1275,7 +1626,7 @@ function drawChart(canvasId, type = 'st', options = {}) {
       }
     });
 
-    // Time ticks
+    // Tacche temporali
     ctx.textAlign = 'center';
     for (let t = 0; t <= 10; t += 2) {
       const x = padL + (t / maxT) * plotW;
@@ -1286,17 +1637,17 @@ function drawChart(canvasId, type = 'st', options = {}) {
       ctx.fillText(t + ' s', x, padT + plotH + 14);
     }
 
-    // Axes
+    // Asse verticale
     ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
     ctx.moveTo(padL, padT);
     ctx.lineTo(padL, padT + plotH);
     ctx.stroke();
 
-    // Axis labels
+    // Etichette assi
     ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 10.5px "Segoe UI", sans-serif';
+    ctx.font = 'bold 10.5px "Roboto", sans-serif';
     ctx.fillText('Tempo t (s)', padL + plotW / 2, padT + plotH + 28);
     ctx.save();
     ctx.translate(14, midY);
@@ -1304,19 +1655,20 @@ function drawChart(canvasId, type = 'st', options = {}) {
     ctx.fillText('Velocità v (m/s)', 0, 0);
     ctx.restore();
 
-    // Title
+    // Titolo grafico
     ctx.textAlign = 'center';
     ctx.fillStyle = '#1e3a8a';
-    ctx.fillText('Grafico Velocità-Tempo v(t) — MRU', padL + plotW / 2, 16);
+    ctx.font = 'bold 11.5px "Google Sans", sans-serif';
+    ctx.fillText('Grafico Velocità-Tempo v(t) — MRU', padL + plotW / 2, 18);
 
-    // Segmenti teorici orizzontali
+    // Segmenti teorici costanti
     const x0 = padL;
     const xMid = padL + (4.6 / maxT) * plotW;
     const xEnd = padL + (9.2 / maxT) * plotW;
     const yPos = midY - (0.50 / maxV) * (plotH / 2);
     const yNeg = midY - (-0.50 / maxV) * (plotH / 2);
 
-    // Andata (v = +0.50 m/s)
+    // Andata (+0.50 m/s costante)
     ctx.strokeStyle = '#0284c7';
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -1324,21 +1676,21 @@ function drawChart(canvasId, type = 'st', options = {}) {
     ctx.lineTo(xMid, yPos);
     ctx.stroke();
 
-    // Ritorno (v = -0.50 m/s)
+    // Ritorno (-0.50 m/s costante)
     ctx.strokeStyle = '#dc2626';
     ctx.beginPath();
     ctx.moveTo(xMid, yNeg);
     ctx.lineTo(xEnd, yNeg);
     ctx.stroke();
 
-    // Labels andata / ritorno
-    ctx.font = 'bold 10px "Segoe UI", sans-serif';
+    // Testi
+    ctx.font = 'bold 10px "Roboto", sans-serif';
     ctx.fillStyle = '#0284c7';
-    ctx.fillText('Andata: v_media = +0.50 m/s', padL + 75, yPos - 8);
+    ctx.fillText('Andata: v = +0.50 m/s', padL + 75, yPos - 8);
     ctx.fillStyle = '#dc2626';
-    ctx.fillText('Ritorno: v_media = -0.50 m/s', padL + plotW - 75, yNeg + 16);
+    ctx.fillText('Ritorno: v = -0.50 m/s', padL + plotW - 75, yNeg + 16);
 
-    // Punti sperimentali intervallari
+    // Punti calcolati medi
     const vPts = [
       { t: 1.5, v: 0.50 },
       { t: 3.8, v: 0.50 },
@@ -1392,6 +1744,10 @@ function switchEditorTab(tab) {
         <label>Serie (Asse Y)</label>
         <div class="editor-select">Spazio s (m)</div>
       </div>
+      <div class="checkbox-row" style="margin-top:4px;">
+        <input type="checkbox" checked disabled />
+        <span>Usa la riga 1 come intestazione</span>
+      </div>
     `;
   } else {
     tSetup.classList.remove('active');
@@ -1416,34 +1772,37 @@ function switchEditorTab(tab) {
         <label>Etichetta</label>
         <div class="editor-select">Usa equazione</div>
       </div>
+      <div class="checkbox-row">
+        <input type="checkbox" checked disabled />
+        <span>Mostra R² (Coefficiente di correlazione)</span>
+      </div>
     `;
   }
 }
 
 /* ═══════════════════════════════════════════
-   STEPS ARRAY (12 PASSAGGI INTERATTIVI)
+   I 12 PASSI DIDATTICI STEP-BY-STEP
    ═══════════════════════════════════════════ */
 const STEPS = [
   {
-    badge: "STEP 1 — INTRODUZIONE",
+    badge: "PASSO 1 — INTRODUZIONE",
     title: "Dal Laboratorio a Google Fogli",
     html: `
-      <p>In laboratorio di fisica abbiamo raccolto i dati del <strong>Moto Rettilineo Uniforme</strong> (rotaia a cuscino d'aria con carrello che va e torna).</p>
-      <p>Per preparare la relazione scientifica dobbiamo fare <strong>due grafici fondamentali</strong>:</p>
-      <div class="highlight-box green">
+      <p>In laboratorio di fisica abbiamo studiato il <strong>Moto Rettilineo Uniforme</strong> registrando il moto di un carrello su rotaia che parte, raggiunge la punta e torna indietro.</p>
+      <p>Per la relazione dobbiamo creare <strong>due grafici scientifici fondamentali</strong>:</p>
+      <div class="info-card green">
         <strong>1. Grafico Spazio-Tempo s(t):</strong> I punti con la <em>Retta di Interpolazione (Best-Fit)</em>.<br>
-        <strong>2. Grafico Velocità-Tempo v(t):</strong> Le velocità costanti calcolate con le formule.
+        <strong>2. Grafico Velocità-Tempo v(t):</strong> Le velocità costanti calcolate con la formula fisica.
       </div>
-      <p>In questo tutorial imparerai a usare <strong>Google Fogli</strong> per i calcoli e i grafici, e come incollarli dinamicamente in <strong>Google Documenti</strong>!</p>
+      <p>In questo tutorial imparerai a usare <strong>Google Fogli</strong> per impostare i dati, configurare i grafici e incollarli dinamicamente in <strong>Google Documenti</strong>!</p>
     `,
     run: () => {
       document.getElementById('docsContainer').style.display = 'none';
       document.getElementById('sheetsContainer').style.display = 'flex';
-      document.getElementById('windowTitlebar').classList.remove('docs-mode');
+      document.getElementById('gsTopbar').style.display = 'flex';
+      document.getElementById('gsToolbarContainer').style.display = 'block';
+      document.getElementById('gsFormulaBar').style.display = 'flex';
       document.getElementById('docTitleInput').value = "Relazione Lab 1 — Moto Rettilineo Uniforme";
-      document.getElementById('appModeBadge').textContent = "GOOGLE FOGLI 📊";
-      document.getElementById('appModeBadge').style.background = "rgba(15, 157, 88, 0.15)";
-      document.getElementById('appModeBadge').style.color = "#34d399";
       toggleChartEditor(false);
       document.getElementById('embeddedChartBox').style.display = 'none';
       clearGrid();
@@ -1451,16 +1810,16 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 2 — TABELLA DATI",
+    badge: "PASSO 2 — TABELLA DATI",
     title: "Inserire i Dati Sperimentali",
     html: `
-      <p>Costruiamo la tabella dei dati nelle prime 3 colonne:</p>
-      <div class="highlight-box">
+      <p>Costruiamo la tabella scientifica nelle prime 3 colonne del foglio:</p>
+      <div class="info-card">
         • <strong>Colonna A:</strong> Posizione / Traguardo (Punti fissi sulla rotaia)<br>
         • <strong>Colonna B:</strong> Spazio <em>s</em> in metri (0, 1.50, 2.30, 1.50, 0)<br>
         • <strong>Colonna C:</strong> Tempi cronometrati <em>t</em> in secondi
       </div>
-      <p>Nota la fisica dell'esperimento: il carrello parte da <strong>0 m</strong>, tocca il primo fototraguardo a <strong>1.50 m</strong>, raggiunge la punta a <strong>2.30 m</strong> dove inverte il moto, ripassa da <strong>1.50 m</strong> e finisce a <strong>0 m</strong>!</p>
+      <p>Nota la fisica dell'esperimento: il carrello parte da <strong>0 m</strong>, tocca il primo fototraguardo a <strong>1.50 m</strong>, raggiunge la punta a <strong>2.30 m</strong> dove inverte il moto, ripassa da <strong>1.50 m</strong> e torna a <strong>0 m</strong>!</p>
     `,
     run: () => {
       clearGrid();
@@ -1481,15 +1840,15 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 3 — SELEZIONE VARIABILI",
+    badge: "PASSO 3 — SELEZIONE VARIABILI",
     title: "Selezionare le Colonne per s(t)",
     html: `
       <p>In fisica, la <strong>variabile indipendente</strong> (il Tempo <em>t</em> che scorre da solo) si mette sull'<strong>asse orizzontale X</strong>.</p>
       <p>La <strong>variabile dipendente</strong> (lo Spazio <em>s</em>) va sull'<strong>asse verticale Y</strong>.</p>
-      <div class="highlight-box yellow">
+      <div class="info-card yellow">
         💡 <strong>Cosa fare:</strong> Seleziona con il mouse l'intervallo con le intestazioni e i numeri: da <strong>B1 fino a C6</strong>.
       </div>
-      <p>Includere le intestazioni fa sì che Google Fogli dia automaticamente i nomi corretti agli assi del grafico!</p>
+      <p>Includere le intestazioni permette a Google Fogli di dare automaticamente i nomi corretti agli assi!</p>
     `,
     run: () => {
       selectRange('B1', 'C6');
@@ -1501,12 +1860,12 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 4 — CREARE IL GRAFICO",
-    title: "Grafico a Dispersione (Scatter)",
+    badge: "PASSO 4 — CREARE IL GRAFICO",
+    title: "Grafico a Dispersione (Scatter Plot)",
     html: `
       <p>Ora clicchiamo su <strong>Inserisci ➔ Grafico</strong> (o sull'icona 📊 nella barra degli strumenti).</p>
-      <div class="highlight-box red" style="border-left-color:var(--red); color:#fca5a5;">
-        ⚠️ <strong>ERRORE COMUNE:</strong> Mai scegliere grafici a linee o istogrammi! In fisica e nelle scienze sperimentali si usa <strong>ESCLUSIVAMENTE il Grafico a dispersione (Scatter Plot)</strong>.
+      <div class="info-card red">
+        ⚠️ <strong>REGOLA D'ORO IN FISICA:</strong> Mai scegliere grafici a linee o istogrammi! Nelle scienze sperimentali si usa <strong>ESCLUSIVAMENTE il Grafico a dispersione (Scatter Plot)</strong>.
       </div>
       <p>Il grafico a dispersione posiziona ogni misurazione come una coppia di coordinate cartesiane <code>(t, s)</code> nello spazio.</p>
     `,
@@ -1518,23 +1877,23 @@ const STEPS = [
         hideCursor();
         toggleChartEditor(true, 'setup');
         document.getElementById('embeddedChartBox').style.display = 'flex';
-        drawChart('simCanvas', 'st', { trendline: false, connected: false });
+        drawChart('simCanvas', 'st', { trendline: false });
       }, 700);
     }
   },
   {
-    badge: "STEP 5 — RETTA DI INTERPOLAZIONE",
+    badge: "PASSO 5 — RETTA DI INTERPOLAZIONE",
     title: "Aggiungere la Retta di Best-Fit",
     html: `
-      <p>I punti sperimentali non sono perfettamente allineati a causa dell'<strong>errore di misura umano</strong> sui cronometri.</p>
+      <p>I punti sperimentali non sono perfettamente allineati a causa dei piccoli <strong>errori di misura umani</strong> sui cronometri.</p>
       <p><strong>Perché NON unire i punti a spezzata?</strong> Perché il moto è <em>uniforme</em>: la traiettoria ideale è una <strong>linea retta</strong>!</p>
-      <div class="highlight-box green">
-        🛠️ <strong>Come fare su Google Fogli:</strong><br>
-        1. Vai su <strong>Personalizza ➔ Serie</strong><br>
-        2. Spunta la casella <strong>Linea di tendenza (Trendline)</strong><br>
-        3. Tipo: <em>Lineare</em> (Retta di interpolazione)
+      <div class="info-card green">
+        🛠️ <strong>Come impostare su Google Fogli:</strong><br>
+        1. Nel pannello a destra, clicca su <strong>Personalizza</strong>.<br>
+        2. Apri la sezione <strong>Serie</strong>.<br>
+        3. Spunta la casella <strong>Linea di tendenza (Trendline)</strong>.<br>
+        4. Tipo: <em>Lineare</em> (Retta di interpolazione che interpola i dati mediando gli errori).
       </div>
-      <p>Ottieni due rette: una per l'andata (pendenza positiva) e una per il ritorno (pendenza negativa)!</p>
     `,
     run: () => {
       toggleChartEditor(true, 'custom');
@@ -1543,16 +1902,16 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 6 — GRAFICO COMPLETATO",
+    badge: "PASSO 6 — GRAFICO COMPLETATO",
     title: "Il Grafico s(t) Scientifico",
     html: `
-      <p>Ecco il primo grafico finito e pronto per la relazione scientifica!</p>
-      <div class="highlight-box purple">
+      <p>Ecco il primo grafico completato e pronto per la pubblicazione scientifica!</p>
+      <div class="info-card purple">
         🎯 <strong>Checklist di correttezza fisica:</strong><br>
-        ✓ Asse X: <code>Tempo t (s)</code> con unità tra parentesi.<br>
-        ✓ Asse Y: <code>Spazio s (m)</code> con unità tra parentesi.<br>
+        ✓ Asse X: <code>Tempo t (s)</code> con unità di misura.<br>
+        ✓ Asse Y: <code>Spazio s (m)</code> con unità di misura.<br>
         ✓ Punti sperimentali ben visibili con cerchietti.<br>
-        ✓ Rette di interpolazione che mediano gli errori di misura.
+        ✓ Rette di interpolazione lineare (andata e ritorno).
       </div>
       <p>Ora passiamo al <strong>secondo grafico</strong>: il grafico della velocità <em>v(t)</em>!</p>
     `,
@@ -1563,20 +1922,20 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 7 — CALCOLO FORMULE",
+    badge: "PASSO 7 — CALCOLO FORMULE",
     title: "Calcolare la Velocità con le Formule",
     html: `
-      <p>Per fare il grafico <em>v(t)</em> dobbiamo calcolare la velocità media su ciascun intervallo usando la formula fisica:</p>
+      <p>Per creare il grafico <em>v(t)</em> dobbiamo calcolare la velocità media su ciascun intervallo usando la legge oraria:</p>
       <div style="text-align:center; margin:8px 0;">
         <span class="formula-tag">v = Δs / Δt</span>
       </div>
-      <p>Aggiungiamo le formule nelle colonne D, E ed F di Google Fogli:</p>
-      <div class="highlight-box">
-        • Colonna D: <code>Δs = B3 - B2</code><br>
-        • Colonna E: <code>Δt = C3 - C2</code><br>
+      <p>Aggiungiamo le formule nelle colonne D, E ed F del foglio:</p>
+      <div class="info-card">
+        • Colonna D: <code>Δs = B3 - B2</code> (spostamento parziale)<br>
+        • Colonna E: <code>Δt = C3 - C2</code> (intervallo di tempo)<br>
         • Colonna F: <span class="formula-tag">=D2/E2</span> (calcolo automatico!)
       </div>
-      <p>Trascina la formula con il quadratino di riempimento: Fogli calcola tutto da solo in un secondo!</p>
+      <p>Trascina la formula verso il basso con il quadratino blu (fill handle): Fogli calcola tutto automaticamente in un secondo!</p>
     `,
     run: () => {
       document.getElementById('embeddedChartBox').style.display = 'none';
@@ -1600,15 +1959,15 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 8 — GRAFICO VELOCITÀ",
+    badge: "PASSO 8 — GRAFICO VELOCITÀ",
     title: "Creare il Grafico v(t)",
     html: `
-      <p>Ora selezioniamo i tempi medi e la colonna F della Velocità per creare il grafico <strong>Velocità-Tempo v(t)</strong>.</p>
-      <div class="highlight-box green">
-        • In andata: la velocità è <strong>POSITIVA</strong> (+0.50 m/s), sopra l'asse zero.<br>
-        • In ritorno: la velocità è <strong>NEGATIVA</strong> (-0.50 m/s), sotto l'asse zero!
+      <p>Ora selezioniamo i tempi e la colonna F della Velocità per tracciare il grafico <strong>Velocità-Tempo v(t)</strong>.</p>
+      <div class="info-card green">
+        • <strong>In Andata:</strong> la velocità è <strong>POSITIVA</strong> (+0.50 m/s), sopra l'asse dello zero.<br>
+        • <strong>In Ritorno:</strong> la velocità è <strong>NEGATIVA</strong> (-0.50 m/s), sotto l'asse dello zero!
       </div>
-      <p>Questo è fondamentale in fisica: il segno meno indica che il carrello sta tornando indietro verso l'origine!</p>
+      <p>In fisica il segno meno indica che il carrello sta tornando indietro verso l'origine!</p>
     `,
     run: () => {
       document.getElementById('embeddedChartBox').style.display = 'flex';
@@ -1617,16 +1976,16 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 9 — MODELLO FISICO v(t)",
+    badge: "PASSO 9 — MODELLO FISICO v(t)",
     title: "Segmenti Orizzontali per v(t)",
     html: `
-      <p>Anche per il grafico della velocità <strong>non si uniscono i punti a spezzata</strong>!</p>
-      <div class="highlight-box yellow">
+      <p>Anche per il grafico della velocità <strong>non si uniscono i punti a zig-zag</strong>!</p>
+      <div class="info-card yellow">
         📐 <strong>Fisica del Moto Uniforme:</strong><br>
         Essendo un moto rettilineo uniforme, la velocità ideale è <strong>COSTANTE</strong>.<br>
         Il grafico corretto è formato da <strong>due segmenti orizzontali</strong>:<br>
-        1. Segmento orizzontale a <code>v = +0.50 m/s</code> per l'andata.<br>
-        2. Segmento orizzontale a <code>v = -0.50 m/s</code> per il ritorno.
+        1. Segmento orizzontale a <code>v = +0.50 m/s</code> per tutta l'andata.<br>
+        2. Segmento orizzontale a <code>v = -0.50 m/s</code> per tutto il ritorno.
       </div>
       <p>I punti sperimentali calcolati con il cronometro oscillano attorno a queste rette per effetto degli errori di misura.</p>
     `,
@@ -1636,14 +1995,14 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 10 — COPIA DA FOGLI",
+    badge: "PASSO 10 — COPIA DA FOGLI",
     title: "Copiare il Grafico per la Relazione",
     html: `
       <p>Ora che i due grafici sono completi, dobbiamo portarli nella <strong>Relazione di Laboratorio</strong> su Google Documenti.</p>
-      <div class="highlight-box">
+      <div class="info-card">
         📋 <strong>Come copiare:</strong><br>
         1. Clicca sui <strong>tre puntini (⋮)</strong> in alto a destra nel riquadro del grafico.<br>
-        2. Clicca su <strong>"Copia grafico"</strong>.<br>
+        2. Nel menu a comparsa, clicca su <strong>"Copia grafico"</strong>.<br>
         Il grafico viene memorizzato negli appunti pronto per essere incollato!
       </div>
     `,
@@ -1659,13 +2018,13 @@ const STEPS = [
     }
   },
   {
-    badge: "STEP 11 — INCOLLA SU DOCUMENTI",
+    badge: "PASSO 11 — INCOLLA SU DOCUMENTI",
     title: "Incollare in Google Documenti",
     html: `
       <p>Apriamo il file della relazione su <strong>Google Documenti</strong> e premiamo <span class="key-hint">Ctrl + V</span> (o Modifica ➔ Incolla).</p>
-      <div class="highlight-box green">
-        🔗 <strong>FINESTRA IMPORTANTE — SCELTA DEL COLLEGAMENTO:</strong><br>
-        Google Documenti ti chiederà:<br>
+      <div class="info-card green">
+        🔗 <strong>FINESTRA CRUCIALE — SCELTA DEL COLLEGAMENTO:</strong><br>
+        Google Documenti ti mostrerà due opzioni:<br>
         🔘 <strong>Collega al foglio di lavoro (CONSIGLIATO)</strong><br>
         🔘 Incolla non collegato
       </div>
@@ -1675,28 +2034,34 @@ const STEPS = [
       document.getElementById('sheetsContainer').style.display = 'none';
       document.getElementById('chartEditorPanel').style.display = 'none';
       document.getElementById('docsContainer').style.display = 'flex';
-      document.getElementById('windowTitlebar').classList.add('docs-mode');
-      document.getElementById('windowIcon').textContent = "📄";
+      document.getElementById('gsToolbarContainer').style.display = 'none';
+      document.getElementById('gsFormulaBar').style.display = 'none';
+      
+      // Trasforma header in Google Docs
       document.getElementById('docTitleInput').value = "Relazione di Laboratorio — Gruppo 2 Elettronica";
-      document.getElementById('appModeBadge').textContent = "GOOGLE DOCUMENTI 📄";
-      document.getElementById('appModeBadge').style.background = "rgba(66, 133, 244, 0.15)";
-      document.getElementById('appModeBadge').style.color = "#60a5fa";
+      document.getElementById('gsLogoIcon').innerHTML = `
+        <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+          <path d="M23 2H9C7.9 2 7 2.9 7 4V32C7 33.1 7.9 34 9 34H27C28.1 34 29 33.1 29 32V8L23 2Z" fill="#4285F4"/>
+          <path d="M23 2V8H29L23 2Z" fill="#A1C2FA"/>
+          <path d="M12 16H24V18H12V16ZM12 21H24V23H12V21ZM12 26H20V28H12V26Z" fill="white"/>
+        </svg>
+      `;
 
       drawChart('docsCanvas', 'st', { trendline: true });
     }
   },
   {
-    badge: "STEP 12 — COLLEGAMENTO DINAMICO",
-    title: "Il Pulsante 'AGGIORNA' (Aggiornamento Live)",
+    badge: "PASSO 12 — COLLEGAMENTO DINAMICO",
+    title: "Il Pulsante 'AGGIORNA' (Live Sync)",
     html: `
       <p>Ecco la vera potenza dell'integrazione tra Google Fogli e Google Documenti!</p>
-      <div class="highlight-box purple">
-        🚀 <strong>Che succede se il professore ti chiede di correggere un tempo o aggiungere una prova?</strong><br>
-        • Vai su Google Fogli e modifichi il dato nella cella.<br>
+      <div class="info-card purple">
+        🚀 <strong>Che succede se devi correggere un tempo o aggiungere una prova?</strong><br>
+        • Vai su Google Fogli e modifichi il valore nella cella.<br>
         • Torni sulla relazione in Google Documenti.<br>
-        • Sul grafico compare il pulsante magico <strong>"AGGIORNA"</strong>!
+        • Sul grafico compare il pulsante <strong>"AGGIORNA"</strong>!
       </div>
-      <p>Basta un click e il grafico nella relazione si ridisegna da solo con i nuovi dati corretti, senza dover rifare nulla da capo!</p>
+      <p>Basta un click e il grafico nella relazione si ridisegna da solo con i nuovi dati, senza dover rifare nulla da capo!</p>
     `,
     run: () => {
       const pill = document.getElementById('docLinkPill');
@@ -1704,12 +2069,12 @@ const STEPS = [
       pill.innerHTML = "<span>🔄</span> <strong>AGGIORNA (1 modifica)</strong>";
       pill.onclick = () => {
         pill.classList.remove('glow');
-        pill.innerHTML = "<span>🔗</span> Collegato a Fogli";
+        pill.innerHTML = "<span>🔗</span> Opzioni per il grafico collegato ▾";
         drawChart('docsCanvas', 'st', { trendline: true });
       };
       moveCursor(pill, () => {
         pill.classList.remove('glow');
-        pill.innerHTML = "<span>🔗</span> Collegato a Fogli";
+        pill.innerHTML = "<span>🔗</span> Opzioni per il grafico collegato ▾";
         hideCursor();
       }, 1000);
     }
@@ -1717,7 +2082,7 @@ const STEPS = [
 ];
 
 /* ═══════════════════════════════════════════
-   NAVIGATION LOGIC
+   NAVIGAZIONE E GESTIONE STEP
    ═══════════════════════════════════════════ */
 function renderDots() {
   const c = document.getElementById('progressDots');
@@ -1736,8 +2101,8 @@ function loadStep(idx) {
 
   document.getElementById('stepCounter').textContent = `PASSO ${idx} DI ${TOTAL_STEPS}`;
   document.getElementById('explainContent').innerHTML = `
-    <span class="step-badge">${s.badge}</span>
-    <h2>${s.title}</h2>
+    <span class="explain-badge">${s.badge}</span>
+    <h2 class="explain-title">${s.title}</h2>
     ${s.html}
   `;
 
@@ -1748,9 +2113,8 @@ function loadStep(idx) {
   renderDots();
   hideCursor();
 
-  if (s.run) {
-    s.run();
-  }
+  // Esegui la logica visiva associata
+  if (s.run) s.run();
 }
 
 function nextStep() {
@@ -1771,21 +2135,32 @@ function replayStep() {
   loadStep(currentStep);
 }
 
-function goToStep(i) {
-  loadStep(i);
+function goToStep(idx) {
+  if (idx >= 1 && idx <= TOTAL_STEPS) {
+    loadStep(idx);
+  }
 }
 
+function togglePresentationMode() {
+  document.body.classList.toggle('presentation-mode');
+  const btn = document.getElementById('btnPresMode');
+  const isPres = document.body.classList.contains('presentation-mode');
+  btn.classList.toggle('active', isPres);
+  btn.innerHTML = isPres ? '<span>✖</span> Esci Presentazione' : '<span>📺</span> Modalità Presentazione';
+}
+
+/* Navigazione da tastiera: Frecce ← e → */
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-    e.preventDefault();
     nextStep();
   } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-    e.preventDefault();
     prevStep();
+  } else if (e.key === 'Escape') {
+    if (document.body.classList.contains('presentation-mode')) togglePresentationMode();
   }
 });
 
-// Start
+// Avvio al Passo 1
 loadStep(1);
 </script>
 </body>
