@@ -55,7 +55,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 1.75rem;
+  padding: max(0.85rem, env(safe-area-inset-top, 0.85rem)) 1.25rem 0.85rem;
   background: var(--bg-deep);
   border-bottom: 1px solid var(--border-light);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -64,6 +64,33 @@ body {
   z-index: 50;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .top-bar {
+    padding: 0.6rem 0.75rem;
+    gap: 0.35rem;
+  }
+  .nav-links-group {
+    gap: 0.35rem;
+  }
+  .back-link {
+    font-size: 0.52rem;
+    padding: 0.35rem 0.6rem;
+  }
+  .school-tag {
+    font-size: 0.75rem;
+  }
+  .step-indicator {
+    font-size: 0.5rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .pill-btn {
+    font-size: 0.44rem;
+    padding: 0.4rem 0.6rem;
+  }
+  .step-title {
+    font-size: 1.15rem !important;
+  }
 }
 .nav-links-group {
   display: flex;
@@ -714,6 +741,14 @@ const COL = {
   hypot: '#0284c7',    // Sky Blue
   catOpp: '#ea580c',   // Orange
   catAdj: '#16a34a',   // Emerald Green
+  c: '#16a34a',
+  d: '#9333ea',
+  e: '#dc2626',
+  cyan: '#0284c7',
+  blue: '#0284c7',
+  orange: '#ea580c',
+  green: '#16a34a',
+  purple: '#9333ea',
   sum: '#16a34a',
   diff: '#dc2626',
   scaled: '#9333ea',
@@ -827,6 +862,7 @@ class VectorCanvas2 {
 
   drawVector(x1, y1, x2, y2, color, lineWidth = 2.5, alpha = 1) {
     const ctx = this.ctx;
+    const safeColor = color || '#0f172a';
     const [sx1, sy1] = this.toScreen(x1, y1);
     const [sx2, sy2] = this.toScreen(x2, y2);
     const angle = Math.atan2(sy2 - sy1, sx2 - sx1);
@@ -836,7 +872,7 @@ class VectorCanvas2 {
 
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = safeColor;
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
     ctx.beginPath();
@@ -844,7 +880,7 @@ class VectorCanvas2 {
     ctx.lineTo(sx2, sy2);
     ctx.stroke();
 
-    ctx.fillStyle = color;
+    ctx.fillStyle = safeColor;
     ctx.beginPath();
     ctx.moveTo(sx2, sy2);
     ctx.lineTo(sx2 - headLen * Math.cos(angle - 0.35), sy2 - headLen * Math.sin(angle - 0.35));
@@ -958,6 +994,7 @@ class VectorCanvas2 {
     ctx.save();
     ctx.font = 'bold 12px "Share Tech Mono", monospace';
 
+    const safeColor = color || '#0f172a';
     const cleanPref = prefix || '';
     const cleanSym = symbol || '';
     const cleanRem = remainder || '';
@@ -981,9 +1018,9 @@ class VectorCanvas2 {
     if (boxY < 8) boxY = 8;
 
     // Crisp white card with colored border
-    ctx.fillStyle = bg;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.3;
+    ctx.fillStyle = bg || '#ffffff';
+    ctx.strokeStyle = safeColor;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 4);
     else ctx.rect(boxX, boxY, boxW, boxH);
@@ -994,7 +1031,7 @@ class VectorCanvas2 {
     const textY = boxY + boxH / 2 + 0.5;
 
     if (cleanPref) {
-      ctx.fillStyle = color;
+      ctx.fillStyle = safeColor;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(cleanPref, curX, textY);
@@ -1002,15 +1039,15 @@ class VectorCanvas2 {
     }
 
     if (cleanSym) {
-      ctx.fillStyle = color;
+      ctx.fillStyle = safeColor;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(cleanSym, curX, textY);
 
       const arrowY = textY - 8;
       const arrowW = Math.max(7, symWidth - 1);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = safeColor;
+      ctx.lineWidth = 1.3;
       ctx.beginPath();
       ctx.moveTo(curX, arrowY);
       ctx.lineTo(curX + arrowW, arrowY);
@@ -1023,7 +1060,7 @@ class VectorCanvas2 {
     }
 
     if (cleanRem) {
-      ctx.fillStyle = color;
+      ctx.fillStyle = safeColor;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(cleanRem, curX, textY);
@@ -1215,12 +1252,12 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong>|v⃗| = 5 m/s   oppure   v = 5 m/s</strong>
+            <strong>|<span class="vec-sym vec-v">v</span>| = 5 m/s &nbsp; oppure &nbsp; v = 5 m/s</strong>
           </div>
           <div class="info-box">
             <strong>La Notazione Rigorosa:</strong><br>
             • <span class="vec-v"><span class="vec-sym">v</span></span> = il <strong>vettore velocità completo</strong> (direzione, verso e modulo).<br>
-            • <strong>|v⃗|</strong> oppure <strong>v</strong> = il <strong>modulo</strong> (il semplice valore numerico scalare, es. 5 metri al secondo).
+            • <strong>|<span class="vec-sym vec-v">v</span>|</strong> oppure <strong>v</strong> = il <strong>modulo</strong> (il semplice valore numerico scalare, es. 5 metri al secondo).
           </div>
           <div class="info-box green">
             <strong>Esempi di grandezze vettoriali cinematiche:</strong><br>
@@ -1274,7 +1311,7 @@ const STEPS = [
           </div>
           <div class="info-box green" id="stepParDetailBox">
             <strong>1. Stesso Verso:</strong><br>
-            I due vettori si rafforzano. Disegnando s⃗₂ a partire dalla punta di s⃗₁, il vettore risultante s⃗_tot va dalla coda di s⃗₁ alla punta di s⃗₂:<br>
+            I due vettori si rafforzano. Disegnando <span class="vec-sym vec-s">s</span>₂ a partire dalla punta di <span class="vec-sym vec-s">s</span>₁, il vettore risultante <span class="vec-sym vec-s">s</span><sub>tot</sub> va dalla coda di <span class="vec-sym vec-s">s</span>₁ alla punta di <span class="vec-sym vec-s">s</span>₂:<br>
             • Modulo: <strong>s_tot = s₁ + s₂</strong><br>
             • Direzione e verso: invariati (concordi con entrambi).
           </div>
@@ -1282,7 +1319,7 @@ const STEPS = [
             <strong>2. Versi Opposti (si contrastano):</strong><br>
             • Il modulo è la differenza: <strong>s_tot = |s₁ - s₂|</strong><br>
             • Il verso è quello del vettore di modulo maggiore.<br>
-            • Se <strong>s₁ = s₂</strong>, i due vettori si annullano perfettamente: la somma è il <strong>vettore nullo 0⃗</strong>!
+            • Se <strong>s₁ = s₂</strong>, i due vettori si annullano perfettamente: la somma è il <strong>vettore nullo 0</strong> (modulo zero)!
           </div>
           <div class="key-concept">
             💡 Nota sull'omogeneità: si possono sommare solo vettori della stessa natura fisica (due spostamenti o due velocità, mai uno spostamento con una velocità)!
@@ -1318,11 +1355,11 @@ const STEPS = [
             • Lo spostamento complessivo della palla è <span class="vec-s"><span class="vec-sym">s</span>_tot = <span class="vec-sym">s</span>₁ + <span class="vec-sym">s</span>₂</span>, da A direttamente a C!
           </div>
           <div class="formula-card big">
-            <strong>c⃗ = a⃗ + b⃗ (Metodo Punta-Coda)</strong>
+            <strong><span class="vec-sym vec-c">c</span> = <span class="vec-sym vec-a">a</span> + <span class="vec-sym vec-b">b</span> (Metodo Punta-Coda)</strong>
           </div>
           <div class="info-box yellow">
             <strong>📐 La Disuguaglianza Triangolare:</strong><br>
-            Nota fondamentale del libro: il modulo dello spostamento totale <strong>|s⃗_tot| è MINORE della somma dei singoli moduli (s₁ + s₂)</strong>!<br>
+            Nota fondamentale del libro: il modulo dello spostamento totale <strong>|<span class="vec-sym vec-s">s</span><sub>tot</sub>| è MINORE della somma dei singoli moduli (s₁ + s₂)</strong>!<br>
             Il percorso diretto in linea d'aria tra due punti è sempre più corto di qualsiasi tragitto a spezzata!
           </div>
           <div class="key-concept">
@@ -1346,7 +1383,7 @@ const STEPS = [
             <canvas id="cvParallelogramma"></canvas>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" id="btnParalleloGen" onclick="stepParalleloSet('gen')">CASO GENERALE (a⃗ + b⃗)</button>
+            <button class="anim-btn active" id="btnParalleloGen" onclick="stepParalleloSet('gen')">CASO GENERALE (a + b)</button>
             <button class="anim-btn" id="btnParalleloTart" onclick="stepParalleloSet('tartaruga')">ESERCIZIO TARTARUGA (3 m + 4 m ➜ 5 m)</button>
           </div>
         </div>
@@ -1359,8 +1396,8 @@ const STEPS = [
           </div>
           <div class="info-box">
             <strong>Proprietà dell'Addizione Vettoriale:</strong><br>
-            • <strong>Commutativa:</strong> a⃗₁ + a⃗₂ = a⃗₂ + a⃗₁<br>
-            • <strong>Associativa:</strong> (a⃗₁ + a⃗₂) + a⃗₃ = a⃗₁ + (a⃗₂ + a⃗₃)
+            • <strong>Commutativa:</strong> <span class="vec-sym vec-a">a</span>₁ + <span class="vec-sym vec-a">a</span>₂ = <span class="vec-sym vec-a">a</span>₂ + <span class="vec-sym vec-a">a</span>₁<br>
+            • <strong>Associativa:</strong> (<span class="vec-sym vec-a">a</span>₁ + <span class="vec-sym vec-a">a</span>₂) + <span class="vec-sym vec-a">a</span>₃ = <span class="vec-sym vec-a">a</span>₁ + (<span class="vec-sym vec-a">a</span>₂ + <span class="vec-sym vec-a">a</span>₃)
           </div>
           <div class="info-box orange" id="stepTartarugaBox">
             <strong>Esercizio del libro (La Tartaruga):</strong><br>
@@ -1400,20 +1437,20 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big" id="stepScaleKFormula">
-            <strong>d⃗ = k · a⃗ ➜ d = |k| · a</strong>
+            <strong><span class="vec-sym vec-d">d</span> = k · <span class="vec-sym vec-a">a</span> ➜ d = |k| · a</strong>
           </div>
           <div class="info-box">
             <strong>Le 3 Caratteristiche del Vettore Prodotto:</strong><br>
             • <strong>Modulo:</strong> d = |k| · a (sempre positivo, moltiplicato per il valore assoluto di k).<br>
-            • <strong>Direzione:</strong> invariata (stessa retta di a⃗).<br>
-            • <strong>Verso:</strong> uguale a quello di a⃗ se <strong>k &gt; 0</strong>; opposto se <strong>k &lt; 0</strong>.
+            • <strong>Direzione:</strong> invariata (stessa retta di <span class="vec-sym vec-a">a</span>).<br>
+            • <strong>Verso:</strong> uguale a quello di <span class="vec-sym vec-a">a</span> se <strong>k &gt; 0</strong>; opposto se <strong>k &lt; 0</strong>.
           </div>
           <div class="info-box purple" id="stepScaleKOppBox">
             <strong>Il Vettore Opposto:</strong><br>
-            Moltiplicando per <strong>k = -1</strong> otteniamo il vettore opposto <span style="color:var(--red); font-weight:bold;">-a⃗</span> (stesso modulo, stessa direzione, verso contrario!).
+            Moltiplicando per <strong>k = -1</strong> otteniamo il vettore opposto <span class="vec-e">-<span class="vec-sym">a</span></span> (stesso modulo, stessa direzione, verso contrario!).
           </div>
           <div class="key-concept">
-            💡 Proprietà distributiva: k · (a⃗₁ + a⃗₂) = k·a⃗₁ + k·a⃗₂
+            💡 Proprietà distributiva: k · (<span class="vec-sym vec-a">a</span>₁ + <span class="vec-sym vec-a">a</span>₂) = k·<span class="vec-sym vec-a">a</span>₁ + k·<span class="vec-sym vec-a">a</span>₂
           </div>
         </div>
       </div>
@@ -1424,8 +1461,8 @@ const STEPS = [
   // ── STEP 9: LA SOTTRAZIONE TRA VETTORI (PAG. 91) ──
   {
     badge: "FASE 9 — LA SOTTRAZIONE",
-    title: "LA SOTTRAZIONE: e⃗ = a⃗ - b⃗ = a⃗ + (-b⃗)",
-    rule: "La sottrazione tra due vettori equivale ad addizionare al primo vettore l'opposto del secondo: e⃗ = a⃗ - b⃗ = a⃗ + (-b⃗).",
+    title: "LA SOTTRAZIONE DI VETTORI: e = a - b = a + (-b)",
+    rule: "La sottrazione tra due vettori equivale ad addizionare al primo vettore l'opposto del secondo: e = a - b = a + (-b).",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1433,20 +1470,20 @@ const STEPS = [
             <canvas id="cvSubGraph"></canvas>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" id="btnSubStep1" onclick="stepSubSetPhase(1)">1. VETTORI DI PARTENZA a⃗ E b⃗</button>
-            <button class="anim-btn" id="btnSubStep2" onclick="stepSubSetPhase(2)">2. COSTRUISCI L'OPPOSTO -b⃗</button>
-            <button class="anim-btn" id="btnSubStep3" onclick="stepSubSetPhase(3)">3. ADDIZIONA: e⃗ = a⃗ + (-b⃗)</button>
+            <button class="anim-btn active" id="btnSubStep1" onclick="stepSubSetPhase(1)">1. VETTORI DI PARTENZA a E b</button>
+            <button class="anim-btn" id="btnSubStep2" onclick="stepSubSetPhase(2)">2. COSTRUISCI L'OPPOSTO -b</button>
+            <button class="anim-btn" id="btnSubStep3" onclick="stepSubSetPhase(3)">3. ADDIZIONA: e = a + (-b)</button>
           </div>
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong>e⃗ = a⃗ - b⃗ = a⃗ + (-b⃗)</strong>
+            <strong><span class="vec-sym vec-e">e</span> = <span class="vec-sym vec-a">a</span> - <span class="vec-sym vec-b">b</span> = <span class="vec-sym vec-a">a</span> + (-<span class="vec-sym vec-b">b</span>)</strong>
           </div>
           <div class="info-box" id="stepSubExplainBox">
             <strong>Procedimento Grafico dal Libro:</strong><br>
             1. Dati due vettori <span class="vec-a"><span class="vec-sym">a</span></span> e <span class="vec-b"><span class="vec-sym">b</span></span>.<br>
-            2. Prima si disegna il vettore <span style="color:var(--red); font-weight:bold;">-b⃗</span>, opposto di b⃗ (stessa lunghezza e inclinazione, punta capovolta).<br>
-            3. Poi si esegue la normale addizione tra <span class="vec-a"><span class="vec-sym">a</span></span> e <span style="color:var(--red); font-weight:bold;">-b⃗</span> col metodo del parallelogramma o punta-coda!
+            2. Prima si disegna il vettore <span class="vec-e">-<span class="vec-sym">b</span></span>, opposto di <span class="vec-b"><span class="vec-sym">b</span></span> (stessa lunghezza e inclinazione, punta capovolta).<br>
+            3. Poi si esegue la normale addizione tra <span class="vec-a"><span class="vec-sym">a</span></span> e <span class="vec-e">-<span class="vec-sym">b</span></span> col metodo del parallelogramma o punta-coda!
           </div>
           <div class="key-concept">
             💡 Sottrarre un vettore significa sommare il suo opposto!
@@ -1461,7 +1498,7 @@ const STEPS = [
   {
     badge: "FASE 10 — IL PONTE",
     title: "SCOMPOSIZIONE SU ASSI PERPENDICOLARI",
-    rule: "Disegnando due assi perpendicolari x e y, ogni vettore a si scompone in due proiezioni a⃗_x e a⃗_y tali che a⃗_x + a⃗_y = a⃗. Il vettore è l'ipotenusa, le proiezioni sono i cateti!",
+    rule: "Disegnando due assi perpendicolari x e y, ogni vettore a si scompone in due proiezioni a_x e a_y tali che a_x + a_y = a. Il vettore è l'ipotenusa, le proiezioni sono i cateti!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1475,18 +1512,18 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong>a⃗_x + a⃗_y = a⃗</strong>
+            <strong><span class="vec-sym vec-a">a</span><sub>x</sub> + <span class="vec-sym vec-a">a</span><sub>y</sub> = <span class="vec-sym vec-a">a</span></strong>
           </div>
           <div class="info-box">
             <strong>Dalla Geometria alle Componenti (Pag. 91):</strong><br>
             • Posizioniamo la coda del vettore nell'origine O(0, 0).<br>
             • Proiettiamo ortogonalmente la punta sugli assi x e y.<br>
-            • I due vettori ottenuti sono le <strong>proiezioni ortogonali a⃗_x e a⃗_y</strong>.
+            • I due vettori ottenuti sono le <strong>proiezioni ortogonali <span class="vec-sym vec-a">a</span><sub>x</sub> e <span class="vec-sym vec-a">a</span><sub>y</sub></strong>.
           </div>
           <div class="info-box green">
             <strong>Definizione delle Componenti Cartesiane:</strong><br>
-            • <strong>a<sub>x</sub>:</strong> ha modulo pari ad |a⃗_x|, con segno positivo se concorde con x, negativo se contrario.<br>
-            • <strong>a<sub>y</sub>:</strong> ha modulo pari ad |a⃗_y|, con segno positivo se concorde con y, negativo se contrario.
+            • <strong>a<sub>x</sub>:</strong> ha modulo pari ad |<span class="vec-sym vec-a">a</span><sub>x</sub>|, con segno positivo se concorde con x, negativo se contrario.<br>
+            • <strong>a<sub>y</sub>:</strong> ha modulo pari ad |<span class="vec-sym vec-a">a</span><sub>y</sub>|, con segno positivo se concorde con y, negativo se contrario.
           </div>
           <div class="info-box yellow">
             <strong>📐 Il Triangolo Rettangolo:</strong><br>
@@ -1976,15 +2013,15 @@ const STEPS = [
         </div>
 
         <div class="quiz-box">
-          <p class="quiz-q-title">4. Moltiplicando un vettore a⃗ per il numero scalare k = -1, cosa otteniamo?</p>
+          <p class="quiz-q-title">4. Moltiplicando un vettore a per il numero scalare k = -1, cosa otteniamo?</p>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ4')">A) Il vettore nullo</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ4')">B) Il vettore opposto -a⃗ (stesso modulo e direzione, verso opposto)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ4')">B) Il vettore opposto -a (stesso modulo e direzione, verso opposto)</div>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ4')">C) Un vettore ruotato di 90°</div>
           <div class="quiz-feedback" id="fbQ4"></div>
         </div>
 
         <div class="quiz-box">
-          <p class="quiz-q-title">5. Un vettore a⃗ ha modulo a = 10 m ed è inclinato di α = 60° rispetto all'asse x. Sapendo che cos(60°) = 0.5, quanto vale la componente a<sub>x</sub>?</p>
+          <p class="quiz-q-title">5. Un vettore a ha modulo a = 10 m ed è inclinato di α = 60° rispetto all'asse x. Sapendo che cos(60°) = 0.5, quanto vale la componente a<sub>x</sub>?</p>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ5')">A) 8.66 m</div>
           <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ5')">B) 5.0 m (a_x = 10 · 0.5 = 5.0 m)</div>
           <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ5')">C) 10 m</div>
@@ -2034,7 +2071,7 @@ function stepNapoliSet(mode) {
       `;
     } else {
       exp.innerHTML = `
-        <strong>Spostamento vettoriale s⃗ = 25 km a Sud-Est:</strong><br>
+        <strong>Spostamento vettoriale s = 25 km a Sud-Est:</strong><br>
         Avendo specificato direzione (retta NO-SE) e verso (Sud-Est), siamo certi al 100% di trovarci a <strong>Castellammare di Stabia</strong>!
       `;
     }
@@ -2296,7 +2333,7 @@ function updateStepParallel() {
       vcPar.drawVector(startX, yTot, startX + dirTot * sTot, yTot, COL.sum, 3.8);
       vcPar.drawPill(startX + (dirTot * sTot) / 2, yTot - 0.6, 's', `_tot = ${sTot.toFixed(1)} m`, COL.sum);
     } else {
-      vcPar.drawPoint(startX, yTot, COL.yellow, 6, 'Vettore nullo 0⃗ (si annullano!)');
+      vcPar.drawPoint(startX, yTot, COL.yellow, 6, 'Vettore nullo 0 (si annullano!)');
     }
   }
 }
@@ -2419,7 +2456,7 @@ function updateStepScaleK() {
 
   const fCard = document.getElementById('stepScaleKFormula');
   if (fCard) {
-    fCard.innerHTML = `<strong>d⃗ = (${k.toFixed(1)}) · a⃗ ➜ Modulo d = |${k.toFixed(1)}| · 2.5 = ${dMod.toFixed(2)} u</strong>`;
+    fCard.innerHTML = `<strong>d = (${k.toFixed(1)}) · a ➜ Modulo d = |${k.toFixed(1)}| · 2.5 = ${dMod.toFixed(2)} u</strong>`;
   }
 
   vcScaleK.clear();
@@ -2432,7 +2469,7 @@ function updateStepScaleK() {
     vcScaleK.drawVector(0, 0, dx, dy, COL.scaled, 3.8);
     vcScaleK.drawPill(dx / 2 + 0.4, dy / 2 - 0.4, 'd', ` = ${k.toFixed(1)}·a`, COL.scaled);
   } else {
-    vcScaleK.drawPoint(0, 0, COL.yellow, 6, 'Vettore nullo 0⃗ (k = 0)');
+    vcScaleK.drawPoint(0, 0, COL.yellow, 6, 'Vettore nullo 0 (k = 0)');
   }
 }
 
@@ -2533,7 +2570,7 @@ function stepBridgeSet(m) {
 let vcPitagora = null;
 
 function initStepPitagora() {
-  vcPitagora = new VectorCanvas2('cvPitagora', { range: 6 });
+  vcPitagora = new VectorCanvas2('cvPitagora', { range: 7 });
   updateStepPitagora();
 }
 
@@ -2562,11 +2599,12 @@ function updateStepPitagora() {
 
   if (Math.abs(ax) > 0.05) {
     vcPitagora.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
-    vcPitagora.drawPill(ax / 2, -0.6, 'a', '_x = ' + (ax >= 0 ? '+' : '') + ax.toFixed(1), COL.cyan);
+    vcPitagora.drawPill(ax / 2, (ay >= 0 ? -0.8 : 0.8), 'a', '_x = ' + (ax >= 0 ? '+' : '') + ax.toFixed(1), COL.cyan);
   }
   if (Math.abs(ay) > 0.05) {
     vcPitagora.drawVector(ax, 0, ax, ay, COL.orange, 3.2);
-    vcPitagora.drawPill(ax + (ax >= 0 ? 0.7 : -0.7), ay / 2, 'a', '_y = ' + (ay >= 0 ? '+' : '') + ay.toFixed(1), COL.orange);
+    const offsetX = ax >= 0 ? 1.1 : -1.1;
+    vcPitagora.drawPill(ax + offsetX, ay / 2, 'a', '_y = ' + (ay >= 0 ? '+' : '') + ay.toFixed(1), COL.orange);
   }
 
   if (Math.abs(ax) > 0.8 && Math.abs(ay) > 0.8) {
@@ -2577,7 +2615,9 @@ function updateStepPitagora() {
 
   if (mod > 0.05) {
     vcPitagora.drawVector(0, 0, ax, ay, COL.green, 3.8);
-    vcPitagora.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' = ' + mod.toFixed(2), COL.green);
+    const perpX = -ay / mod;
+    const perpY = ax / mod;
+    vcPitagora.drawPill(ax / 2 + perpX * 0.75, ay / 2 + perpY * 0.75, 'a', ' = ' + mod.toFixed(2), COL.green);
   }
 }
 
@@ -2922,8 +2962,8 @@ function stepExampleShowSub(s) {
       </div>
       <div class="info-box green">
         <strong>Osserviamo il disegno:</strong><br>
-        • Proiezione s⃗<sub>x</sub> rivolta a destra ➜ <strong>s<sub>x</sub> è POSITIVA</strong>.<br>
-        • Proiezione s⃗<sub>y</sub> rivolta verso il basso ➜ <strong>s<sub>y</sub> è NEGATIVA</strong>.
+        • Proiezione s<sub>x</sub> rivolta a destra ➜ <strong>s<sub>x</sub> è POSITIVA</strong>.<br>
+        • Proiezione s<sub>y</sub> rivolta verso il basso ➜ <strong>s<sub>y</sub> è NEGATIVA</strong>.
       </div>
       <div class="key-concept">
         💡 Prima dei calcoli sappiamo già che: <strong>s<sub>x</sub> &gt; 0</strong> e <strong>s<sub>y</sub> &lt; 0</strong>!
@@ -3006,28 +3046,28 @@ function stepAlgebraSetOp(op) {
   if (op === 'add') {
     const cx = ax + bx, cy = ay + by;
     detail.innerHTML = `
-      <strong>Somma: c⃗ = a⃗ + b⃗</strong><br>
+      <strong>Somma: c = a + b</strong><br>
       • c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub> = 3 + 2 = <strong>${cx}</strong><br>
       • c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub> = 2 + 4 = <strong>${cy}</strong><br>
       Risultato: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>.
     `;
   } else if (op === 'scale') {
     detail.innerHTML = `
-      <strong>Moltiplicazione per k = 2: d⃗ = 2 · a⃗</strong><br>
+      <strong>Moltiplicazione per k = 2: d = 2 · a</strong><br>
       • d<sub>x</sub> = 2 · 3 = <strong>6</strong><br>
       • d<sub>y</sub> = 2 · 2 = <strong>4</strong><br>
       Risultato: <span class="vec-d"><span class="vec-sym">d</span> = (6, 4)</span>.
     `;
   } else if (op === 'sub') {
     detail.innerHTML = `
-      <strong>Sottrazione: e⃗ = a⃗ - b⃗</strong><br>
+      <strong>Sottrazione: e = a - b</strong><br>
       • e<sub>x</sub> = 3 - 2 = <strong>1</strong><br>
       • e<sub>y</sub> = 2 - 4 = <strong>-2</strong><br>
       Risultato: <span class="vec-e"><span class="vec-sym">e</span> = (1, -2)</span>.
     `;
   } else if (op === 'opp') {
     detail.innerHTML = `
-      <strong>Vettore Opposto: -a⃗</strong><br>
+      <strong>Vettore Opposto: -a</strong><br>
       • (-a<sub>x</sub>, -a<sub>y</sub>) = <strong>(-3, -2)</strong><br>
       Stesso modulo, stessa direzione, verso opposto!
     `;
