@@ -2286,22 +2286,39 @@ function switchEditorTab(tab) {
       </div>
       <div class="editor-field">
         <label>Asse X</label>
-        <div class="editor-select"><span>${isScatter ? 'Tempo t (s)' : '+ Aggiungi Asse X'}</span></div>
+        <div class="editor-select" id="edXAxisBox"><span>${isScatter ? 'Tempo t (s)' : '+ Aggiungi Asse X'}</span></div>
       </div>
       <div class="editor-field">
         <label>Serie</label>
-        <div class="editor-series-item">
-          <span>123 &nbsp; t (s)</span>
-          <span style="color:#5f6368;">⋮</span>
-        </div>
-        <div class="editor-series-item" style="margin-top:3px;">
-          <span>123 &nbsp; x (m)</span>
-          <span style="color:#5f6368;">⋮</span>
+        <div id="edSeriesContainer">
+          ${isScatter ? `
+            <div class="editor-series-item">
+              <span>123 &nbsp; x (m)</span>
+              <span style="color:#5f6368;">⋮</span>
+            </div>
+          ` : `
+            <div class="editor-series-item">
+              <span>123 &nbsp; t (s)</span>
+              <span style="color:#5f6368;">⋮</span>
+            </div>
+            <div class="editor-series-item" style="margin-top:3px;">
+              <span>123 &nbsp; x (m)</span>
+              <span style="color:#5f6368;">⋮</span>
+            </div>
+          `}
         </div>
       </div>
-      <div class="checkbox-row" style="margin-top:4px;">
+      <div class="checkbox-row" style="margin-top:6px;">
+        <input type="checkbox" disabled />
+        <span>Inverti righe/colonne</span>
+      </div>
+      <div class="checkbox-row">
         <input type="checkbox" checked disabled />
         <span>Usa la riga 3 per le intestazioni</span>
+      </div>
+      <div class="checkbox-row" id="rowColB">
+        <input type="checkbox" id="chkColB" ${isScatter ? 'checked' : ''} />
+        <span><strong>Usa la colonna B per le etichette</strong></span>
       </div>
     `;
   } else {
@@ -2325,7 +2342,7 @@ function switchEditorTab(tab) {
       </div>
       <div class="editor-field">
         <label>Etichetta</label>
-        <div class="editor-select"><span>Usa equazione</span> <span style="font-size:10px;">▾</span></div>
+        <div class="editor-select" id="edTrendLabel"><span>Usa equazione</span> <span style="font-size:10px;">▾</span></div>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" checked disabled />
@@ -2462,13 +2479,15 @@ const STEPS = [
     badge: "PASSO 4 — INSERISCI GRAFICO",
     title: "Google Fogli Crea il Grafico a Colonne",
     html: `
-      <p>Con l'intervallo B3:C10 selezionato, clicchiamo sul pulsante <strong>Inserisci grafico 📊</strong> nella barra degli strumenti.</p>
+      <p>Con l'intervallo <strong>B3:C10</strong> selezionato, clicchiamo su <strong>Inserisci grafico 📊</strong> nella barra degli strumenti.</p>
       <div class="info-card red">
-        ⚠️ <strong>ATTENZIONE (COMPORTAMENTO STANDARD DI GOOGLE FOGLI):</strong><br>
-        Come hai visto anche nel tuo foglio, Google Fogli per impostazione predefinita crea un <strong>GRAFICO A COLONNE</strong> (con barre blu e rosse affiancate per t e x)!<br>
-        Contemporaneamente apre a destra l'<strong>Editor grafici</strong>.
+        ⚠️ <strong>IL PROBLEMA: GOOGLE FOGLI CREA UN GRAFICO A COLONNE!</strong><br>
+        Come hai visto anche sul tuo schermo, Google Fogli per impostazione predefinita genera un <strong>Grafico a colonne</strong> con barre blu e rosse affiancate:<br>
+        • <em>Asse X:</em> Vuoto<br>
+        • <em>Serie:</em> Ha messo sia <code>t</code> che <code>x</code> come colonne verticali sull'asse Y!<br>
+        In fisica questo è errato. Nel prossimo passo impostiamo le opzioni giuste per ottenere il <strong>risultato voluto</strong>.
       </div>
-      <p>In fisica questo è errato: nel prossimo passo vedremo come cambiarlo in un click!</p>
+      <p>Osserva l'Editor grafici che si è aperto sulla destra: è lì che faremo la configurazione corretta!</p>
     `,
     run: async () => {
       cursorCtrl.clear();
@@ -2496,17 +2515,18 @@ const STEPS = [
     }
   },
   {
-    badge: "PASSO 5 — TIPO DI GRAFICO",
-    title: "Passare al Grafico a Dispersione (Scatter)",
+    badge: "PASSO 5 — CONFIGURAZIONE",
+    title: "Impostazioni Corrette per il Risultato Voluto",
     html: `
-      <p>Risolviamo l'errore del grafico a colonne: dobbiamo trasformarlo in un <strong>Grafico a dispersione (Scatter Plot)</strong>!</p>
+      <p>Ecco come impostare l'Editor grafici per ottenere il <strong>risultato scientifico voluto</strong>:</p>
       <div class="info-card green">
-        🛠️ <strong>Come procedere nell'Editor grafici a destra:</strong><br>
-        1. Clicca sul menu a tendina <strong>Tipo di grafico</strong>.<br>
-        2. Scorri le categorie fino a <strong>A dispersione</strong>.<br>
-        3. Clicca sull'icona con i puntini cartesiani.
+        🛠️ <strong>LE IMPOSTAZIONI CORRETTE (SCHEDA CONFIGURAZIONE):</strong><br>
+        1. <strong>Tipo di grafico:</strong> Seleziona <strong>Grafico a dispersione</strong>.<br>
+        2. <strong>Asse X:</strong> Imposta la Colonna B (<code>Tempo t (s)</code>).<br>
+        3. <strong>Serie:</strong> Mantieni solo la Colonna C (<code>Posizione x (m)</code>).<br>
+        4. <strong>Spunta:</strong> <em>Usa la colonna B per le etichette</em> (trasferisce il tempo sull'asse orizzontale!).
       </div>
-      <p>Guarda l'animazione: il grafico sul foglio si trasforma all'istante nei veri assi cartesiani della fisica!</p>
+      <p>Guarda l'animazione: applicando queste impostazioni, Fogli trasforma le colonne nel vero piano cartesiano <code>(t, x)</code>!</p>
     `,
     run: async () => {
       cursorCtrl.clear();
@@ -2517,7 +2537,7 @@ const STEPS = [
       // Azione 1: Cursore si sposta sul selettore Tipo di grafico nell'editor
       const selector = document.getElementById('edChartTypeSelector');
       if (selector) {
-        await cursorCtrl.moveTo(selector, 500, 'Clicca Tipo di grafico');
+        await cursorCtrl.moveTo(selector, 450, 'Clicca Tipo di grafico');
         await cursorCtrl.click(selector);
       }
 
@@ -2528,14 +2548,24 @@ const STEPS = [
       // Azione 3: Cursore scende sulla miniatura "A dispersione"
       const scatterItem = document.getElementById('ctItemScatter');
       if (scatterItem) {
-        await cursorCtrl.moveTo(scatterItem, 500, 'Scegli "A dispersione"');
+        await cursorCtrl.moveTo(scatterItem, 450, 'Scegli "A dispersione"');
         await cursorCtrl.click(scatterItem);
       }
 
-      // Azione 4: Il menu si chiude e il grafico diventa Scatter Plot cartesiano!
+      // Azione 4: Il menu si chiude e il tipo diventa scatter
       selectChartType('scatter');
-      cursorCtrl.showLabel('✓ Grafico a dispersione attivato!');
-      await cursorCtrl.wait(600);
+
+      // Azione 5: Cursore va sulla casella "Usa la colonna B per le etichette"
+      await cursorCtrl.wait(250);
+      const chkColB = document.getElementById('chkColB');
+      if (chkColB) {
+        await cursorCtrl.moveTo(chkColB, 450, 'Spunta: Colonna B come Asse X');
+        await cursorCtrl.click(chkColB);
+        chkColB.checked = true;
+      }
+
+      cursorCtrl.showLabel('✓ Impostazioni applicate: Risultato voluto!');
+      await cursorCtrl.wait(700);
       cursorCtrl.hideLabel();
     }
   },
