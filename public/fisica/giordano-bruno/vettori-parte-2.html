@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>I Vettori — Parte 2: Componenti & Trigonometria — ISS Giordano Bruno</title>
+<title>I Vettori — Parte 2: Dalle Basi alle Componenti — ISS Giordano Bruno</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle scanline CRT effect */
+/* CRT scanlines effect */
 body::after {
   content: "";
   display: block;
@@ -138,18 +138,49 @@ body::after {
   white-space: nowrap;
 }
 
+/* ═══════════ SECTION TABS ═══════════ */
+.chapter-nav-pills {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+.pill-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  background: rgba(18,18,37,0.7);
+  color: var(--text-dim);
+  border: 1px solid rgba(88,196,221,0.2);
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+.pill-btn:hover {
+  border-color: var(--cyan);
+  color: var(--white);
+}
+.pill-btn.active {
+  background: rgba(0,245,255,0.12);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,255,0.25);
+}
+
 /* ═══════════ MAIN LAYOUT ═══════════ */
 .main-stage {
   flex: 1;
   max-width: 1240px;
   width: 96%;
-  margin: 1.2rem auto 2rem;
+  margin: 1.1rem auto 2rem;
   display: flex;
   flex-direction: column;
 }
 .step-header {
   text-align: center;
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.9rem;
 }
 .step-subtitle-badge {
   display: inline-block;
@@ -165,7 +196,7 @@ body::after {
 }
 .step-title {
   font-family: var(--font-title);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   color: var(--blue);
   text-shadow: var(--glow-blue);
   letter-spacing: 1.5px;
@@ -272,7 +303,7 @@ body::after {
   font-family: var(--font-mono);
 }
 
-/* Math formula callout card */
+/* Formula card */
 .formula-card {
   background: var(--card-inner);
   border: 1px solid rgba(88,196,221,0.28);
@@ -288,9 +319,6 @@ body::after {
   font-size: 1.15rem;
   border-color: rgba(57,255,20,0.35);
   color: var(--green);
-}
-.formula-card strong {
-  color: var(--white);
 }
 
 /* Real Vector arrow in HTML */
@@ -315,6 +343,7 @@ body::after {
 .vec-a { color: #58c4dd; }
 .vec-b { color: #ff8c42; }
 .vec-s { color: #39ff14; }
+.vec-v { color: #00f5ff; }
 .vec-c { color: #39ff14; }
 .vec-d { color: #b388ff; }
 .vec-e { color: #ff3366; }
@@ -341,12 +370,12 @@ body::after {
 }
 .ctrl-row label {
   color: var(--text-dim);
-  min-width: 110px;
+  min-width: 120px;
 }
 .ctrl-row .val-disp {
   color: var(--cyan);
   font-weight: bold;
-  min-width: 65px;
+  min-width: 70px;
   text-align: right;
 }
 .ctrl-slider {
@@ -456,8 +485,8 @@ body::after {
   color: var(--text-dim);
   font-family: var(--font-pixel);
   font-size: 0.5rem;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -620,14 +649,20 @@ body::after {
       <span>🏫</span> ISS GIORDANO BRUNO — FISICA
     </div>
     <div class="step-indicator" id="stepCounterText">
-      PASSO 1 DI 10
+      PASSO 1 DI 15
     </div>
   </header>
 
   <main class="main-stage">
+    <div class="chapter-nav-pills">
+      <button class="pill-btn active" id="secBtn1" onclick="jumpToSection('start')">📍 PARTE 1: SCALARI & VETTORIALI (Pag. 86-87)</button>
+      <button class="pill-btn" id="secBtn2" onclick="jumpToSection('middle')">⏳ PARTE 2: OPERAZIONI (In arrivo)</button>
+      <button class="pill-btn" id="secBtn3" onclick="jumpToSection('end')">📐 PARTE 3: COMPONENTI & TRIGONOMETRIA (Pag. 92-93)</button>
+    </div>
+
     <div class="step-header">
       <div class="step-subtitle-badge" id="stepBadge">FASE 1</div>
-      <h1 class="step-title" id="stepTitle">I VETTORI — PARTE 2</h1>
+      <h1 class="step-title" id="stepTitle">I VETTORI</h1>
       <p class="step-rule" id="stepRule"></p>
     </div>
 
@@ -646,25 +681,25 @@ body::after {
 
 <script>
 // ═══════════════════════════════════════════
-// I VETTORI — PARTE 2: COMPONENTI & TRIGONOMETRIA
+// I VETTORI — DALLA DEFINIZIONE ALLE COMPONENTI
 // ═══════════════════════════════════════════
 
 let currentStep = 1;
 let animFrameId = null;
 
-// Palette Colors
 const COL = {
   bg: '#1b1b2f',
   bgDeep: '#121225',
   grid: 'rgba(100,130,200,0.12)',
   axis: 'rgba(180,200,255,0.35)',
   axisLabel: 'rgba(180,200,255,0.5)',
-  a: '#58c4dd',       // Blue / Cyan
-  b: '#ff8c42',       // Orange
-  s: '#39ff14',       // Phosphor Green
-  hypot: '#58c4dd',   // Cyan / Blue
-  catOpp: '#ff8c42',  // Orange
-  catAdj: '#39ff14',  // Green
+  a: '#58c4dd',
+  b: '#ff8c42',
+  s: '#39ff14',
+  v: '#00f5ff',
+  hypot: '#58c4dd',
+  catOpp: '#ff8c42',
+  catAdj: '#39ff14',
   sum: '#39ff14',
   diff: '#ff3366',
   scaled: '#b388ff',
@@ -676,7 +711,7 @@ const COL = {
 };
 
 // ═══════════════════════════════════════════
-// VECTOR & GEOMETRY CANVAS ENGINE
+// CANVAS ENGINE
 // ═══════════════════════════════════════════
 
 class VectorCanvas2 {
@@ -684,9 +719,9 @@ class VectorCanvas2 {
     this.canvas = document.getElementById(canvasId);
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
-    this.range = options.range || 6; // Coords range from -range to +range
+    this.range = options.range || 6;
     this.showAxes = options.showAxes !== false;
-    this.centerOffsetX = options.centerOffsetX || 0; // In units
+    this.centerOffsetX = options.centerOffsetX || 0;
     this.centerOffsetY = options.centerOffsetY || 0;
     this.resize();
     this._resizeHandler = () => this.resize();
@@ -717,17 +752,12 @@ class VectorCanvas2 {
     return [this.ox + x * this.unit, this.oy - y * this.unit];
   }
 
-  toWorld(sx, sy) {
-    return [(sx - this.ox) / this.unit, (this.oy - sy) / this.unit];
-  }
-
   drawGrid() {
     const ctx = this.ctx;
     const s = this.size;
     const u = this.unit;
     const r = this.range;
 
-    // Grid lines
     ctx.strokeStyle = COL.grid;
     ctx.lineWidth = 1;
     for (let i = -r * 2; i <= r * 2; i++) {
@@ -743,18 +773,16 @@ class VectorCanvas2 {
 
     if (!this.showAxes) return;
 
-    // Primary Axes
     ctx.strokeStyle = COL.axis;
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(0, this.oy); ctx.lineTo(s, this.oy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(this.ox, 0); ctx.lineTo(this.ox, s); ctx.stroke();
 
-    // Axis Labels
     ctx.font = '11px "Share Tech Mono", monospace';
     ctx.fillStyle = COL.axisLabel;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    const step = r > 10 ? 2 : 1;
+    const step = r > 12 ? 4 : (r > 7 ? 2 : 1);
     for (let i = -Math.floor(r); i <= Math.floor(r); i += step) {
       if (i === 0) continue;
       const px = this.ox + i * u;
@@ -768,13 +796,11 @@ class VectorCanvas2 {
       if (py > 10 && py < s - 10) ctx.fillText(i, this.ox - 5, py);
     }
 
-    // Origin label
     ctx.fillStyle = COL.dimWhite;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
     ctx.fillText('O', this.ox - 5, this.oy + 4);
 
-    // Axis names
     ctx.font = 'bold 13px "Share Tech Mono", monospace';
     ctx.fillStyle = COL.axisLabel;
     ctx.textAlign = 'left';
@@ -785,7 +811,6 @@ class VectorCanvas2 {
     ctx.fillText('y', this.ox + 14, 14);
   }
 
-  // Draw clean, smooth vector arrow
   drawVector(x1, y1, x2, y2, color, lineWidth = 2.5, alpha = 1) {
     const ctx = this.ctx;
     const [sx1, sy1] = this.toScreen(x1, y1);
@@ -797,8 +822,6 @@ class VectorCanvas2 {
 
     ctx.save();
     ctx.globalAlpha = alpha;
-
-    // Shaft
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
@@ -807,7 +830,6 @@ class VectorCanvas2 {
     ctx.lineTo(sx2, sy2);
     ctx.stroke();
 
-    // Arrowhead
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(sx2, sy2);
@@ -815,11 +837,9 @@ class VectorCanvas2 {
     ctx.lineTo(sx2 - headLen * Math.cos(angle + 0.35), sy2 - headLen * Math.sin(angle + 0.35));
     ctx.closePath();
     ctx.fill();
-
     ctx.restore();
   }
 
-  // Draw dashed projection line
   drawDashedLine(x1, y1, x2, y2, color = COL.dashed, alpha = 0.6) {
     const ctx = this.ctx;
     const [sx1, sy1] = this.toScreen(x1, y1);
@@ -837,7 +857,6 @@ class VectorCanvas2 {
     ctx.restore();
   }
 
-  // Draw angle arc with label
   drawArc(cx, cy, rWorld, startDeg, endDeg, color, counterClockwise = false, label = '') {
     const ctx = this.ctx;
     const [scx, scy] = this.toScreen(cx, cy);
@@ -853,8 +872,7 @@ class VectorCanvas2 {
     ctx.arc(scx, scy, rPx, sRad, eRad, counterClockwise);
     ctx.stroke();
 
-    // Arrow on arc if desired
-    const tipAngle = counterClockwise ? eRad : eRad;
+    const tipAngle = eRad;
     const tangent = tipAngle + (counterClockwise ? -Math.PI / 2 : Math.PI / 2);
     const tipX = scx + rPx * Math.cos(tipAngle);
     const tipY = scy + rPx * Math.sin(tipAngle);
@@ -877,7 +895,6 @@ class VectorCanvas2 {
     ctx.restore();
   }
 
-  // Draw 90 degree square indicator
   drawRightAngle(x, y, dirX = 1, dirY = 1, sizeWorld = 0.45, color = 'rgba(255,238,0,0.7)') {
     const ctx = this.ctx;
     const sz = sizeWorld;
@@ -905,7 +922,6 @@ class VectorCanvas2 {
     ctx.restore();
   }
 
-  // Draw point marker
   drawPoint(x, y, color = COL.white, radius = 4, label = '') {
     const ctx = this.ctx;
     const [sx, sy] = this.toScreen(x, y);
@@ -921,7 +937,6 @@ class VectorCanvas2 {
     ctx.restore();
   }
 
-  // Procedural Pill Badge (Vector Arrow rendered natively without glyph bugs)
   drawPill(worldX, worldY, symbol, remainder, color, bg = 'rgba(18, 18, 37, 0.94)', prefix = '') {
     const ctx = this.ctx;
     const [sx, sy] = this.toScreen(worldX, worldY);
@@ -945,7 +960,6 @@ class VectorCanvas2 {
     let boxX = sx - boxW / 2;
     let boxY = sy - boxH / 2;
 
-    // Viewport clamp
     if (boxX + boxW > this.size - 8) boxX = this.size - 8 - boxW;
     if (boxX < 8) boxX = 8;
     if (boxY + boxH > this.size - 8) boxY = this.size - 8 - boxH;
@@ -977,7 +991,6 @@ class VectorCanvas2 {
       ctx.textBaseline = 'middle';
       ctx.fillText(cleanSym, curX, textY);
 
-      // Mini vector arrow procedurally drawn
       const arrowY = textY - 8;
       const arrowW = Math.max(7, symWidth - 1);
       ctx.strokeStyle = color;
@@ -1007,10 +1020,6 @@ class VectorCanvas2 {
   }
 }
 
-// ═══════════════════════════════════════════
-// ANIMATION & TIMING HELPERS
-// ═══════════════════════════════════════════
-
 function cancelAnim() {
   if (animFrameId) {
     cancelAnimationFrame(animFrameId);
@@ -1019,14 +1028,232 @@ function cancelAnim() {
 }
 
 // ═══════════════════════════════════════════
-// SLIDE STEPS DEFINITIONS (10 MODULAR PHASES)
+// SLIDE STEPS DEFINITIONS (15 MODULAR PHASES)
 // ═══════════════════════════════════════════
 
 const STEPS = [
 
-  // ── STEP 1: PITAGORA E IL MODULO ──
+  // ═══════════════════════════════════════════
+  // SEZIONE 1 — PARTE INIZIALE (PAGINE 86-87)
+  // ═══════════════════════════════════════════
+
+  // ── STEP 1: L'ESEMPIO DI NAPOLI (25 KM) ──
   {
-    badge: "FASE 1 — IL FONDAMENTO",
+    badge: "FASE 1 — SCALARI VS VETTORI",
+    title: "IL MISTERO DEI 25 KM DA NAPOLI",
+    rule: "Se ti allontani di 25 km dal centro di Napoli, dove arrivi? Dire solo '25 km' non basta a stabilire il punto di arrivo: ci sono infiniti punti possibili su una circonferenza!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvNapoli"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" id="btnNapDist" onclick="stepNapoliSet('dist')">SOLO DISTANZA (SCALARE: 25 km)</button>
+            <button class="anim-btn" id="btnNapSpost" onclick="stepNapoliSet('spost')">SPOSTAMENTO COMPLETO (VETTORE)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box yellow">
+            <strong>Distanza = Grandezza Scalare</strong><br>
+            Tutti i punti sulla circonferenza rossa distano esattamente <strong>25 km in linea d'aria</strong> dal centro di Napoli.<br>
+            Potresti trovarti a <strong>Caserta</strong> (a Nord), sull'isola di <strong>Procida</strong> (a Ovest), in mare aperto nel golfo, o a <strong>Castellammare di Stabia</strong> (a Sud-Est)!
+          </div>
+          <div class="info-box green" id="boxNapoliExplain">
+            <strong>Perché serve un vettore?</strong><br>
+            Per descrivere completamente lo <strong>spostamento</strong> compiuto occorrono <strong>3 informazioni</strong>:<br>
+            1. <strong>Distanza (Modulo):</strong> 25 km<br>
+            2. <strong>Direzione:</strong> la retta che collega Napoli a Castellammare<br>
+            3. <strong>Verso:</strong> verso Sud-Est (e non verso Nord-Ovest!)
+          </div>
+          <div class="key-concept">
+            💡 Solo un punto della circonferenza — <strong>Castellammare di Stabia</strong> — si trova precisamente a 25 km a <strong>Sud-Est</strong> di Napoli!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStepNapoli(); }
+  },
+
+  // ── STEP 2: LE GRANDEZZE SCALARI (IL TERMOMETRO 13°C) ──
+  {
+    badge: "FASE 2 — GRANDEZZE SCALARI",
+    title: "LA DISTANZA & LA TEMPERATURA A 13 °C",
+    rule: "Una grandezza scalare è completamente specificata da un singolo numero, che ne esprime il valore rispetto a un'appropriata unità di misura.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvTermometro"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Temperatura (°C):</label>
+              <input type="range" class="ctrl-slider" id="sliderTemp" min="-15" max="45" step="1" value="13" oninput="updateStepTermometro()">
+              <span class="val-disp" id="dispTemp">+13 °C</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" onclick="stepTermoSet(13)">ESEMPIO LIBRO: 13 °C</button>
+            <button class="anim-btn" onclick="stepTermoSet(0)">ZERO TERMICO: 0 °C</button>
+            <button class="anim-btn" onclick="stepTermoSet(-5)">SOTTOZERO: -5 °C</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big">
+            <strong>T = +13 °C (Dato completo al 100%)</strong>
+          </div>
+          <div class="info-box">
+            <strong>Che cos'è uno Scalare?</strong><br>
+            Se sul termometro appeso al muro leggiamo <strong>13 °C</strong>, l'informazione sulla temperatura dell'aria è <strong>completa</strong> e non necessita di altre precisazioni.<br>
+            Non avrebbe alcun senso chiedersi <em>"in quale direzione fanno 13 gradi?"</em> o <em>"verso dove?"</em>!
+          </div>
+          <div class="info-box green">
+            <strong>Altre Grandezze Scalari Fondamentali:</strong><br>
+            • <strong>Intervallo di tempo:</strong> Δt = 12 s<br>
+            • <strong>Massa:</strong> m = 70 kg<br>
+            • <strong>Densità:</strong> d = 1000 kg/m³<br>
+            • <strong>Distanza percorsa:</strong> s = 100 m
+          </div>
+          <div class="key-concept">
+            💡 Il valore di uno scalare può essere positivo (+13 °C), nullo (0 °C) o negativo (-5 °C), ma rimane sempre un <strong>singolo numero</strong>.
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStepTermometro(); }
+  },
+
+  // ── STEP 3: LE 3 PROPRIETÀ DI UN VETTORE ──
+  {
+    badge: "FASE 3 — PROPRIETÀ VETTORIALI",
+    title: "MODULO, DIREZIONE E VERSO",
+    rule: "Una grandezza vettoriale è rappresentata graficamente da una freccia ed è caratterizzata da tre proprietà inseparabili: modulo (lunghezza), direzione (la retta) e verso (la punta).",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvAnatomia"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Modulo (lunghezza):</label>
+              <input type="range" class="ctrl-slider" id="sliderAnatMod" min="2" max="5.5" step="0.5" value="4.5" oninput="updateStepAnatomia()">
+              <span class="val-disp" id="dispAnatMod">4.5 u</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Inclinazione retta:</label>
+              <input type="range" class="ctrl-slider" id="sliderAnatAng" min="0" max="180" step="5" value="35" oninput="updateStepAnatomia()">
+              <span class="val-disp" id="dispAnatAng">35°</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn" id="btnAnatFlip" onclick="stepAnatFlip()">INVERTI IL VERSO (180°)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box cyan">
+            <strong>1. MODULO (Intensità)</strong><br>
+            È la lunghezza della freccia rispetto a un'unità di misura scelta. Rappresenta il valore quantitativo ed è <strong>sempre un numero non negativo (≥ 0)</strong>.
+          </div>
+          <div class="info-box yellow">
+            <strong>2. DIREZIONE</strong><br>
+            È la <strong>retta</strong> (linea tratteggiata) lungo la quale giace il vettore. Indica l'orientamento geometrico nello spazio (es. orizzontale, verticale, inclinata di 35°).
+          </div>
+          <div class="info-box green">
+            <strong>3. VERSO</strong><br>
+            È indicato dalla <strong>punta della freccia</strong>. Su ogni retta (direzione) esistono sempre <strong>due versi possibili opposti</strong> (es. destra o sinistra, in alto o in basso).
+          </div>
+          <div class="key-concept">
+            💡 Cambiare verso lascia la direzione identica, ma inverte completamente l'effetto del vettore!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStepAnatomia(); }
+  },
+
+  // ── STEP 4: NOTAZIONE & GRANDEZZE FISICHE (VELOCITÀ & ACCELERAZIONE) ──
+  {
+    badge: "FASE 4 — NOTAZIONE & CINEMATICA",
+    title: "NOTAZIONE: IL VETTORE v E IL MODULO |v|",
+    rule: "Indichiamo il vettore con una freccetta sopra la lettera (v), mentre il suo modulo si indica tra barre (|v|) oppure semplicemente con la lettera senza freccia (v = 5 m/s).",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvBasket"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Velocità v:</label>
+              <input type="range" class="ctrl-slider" id="sliderBasketVel" min="1" max="8" step="1" value="5" oninput="updateStepBasket()">
+              <span class="val-disp" id="dispBasketVel">5 m/s</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" id="btnBForward" onclick="stepBasketDir('forward')">SCATTO IN AVANTI (↗)</button>
+            <button class="anim-btn" id="btnBLateral" onclick="stepBasketDir('lateral')">SCATTO LATERALE (↖)</button>
+            <button class="anim-btn" id="btnBBack" onclick="stepBasketDir('back')">RETROMARCIA (↙)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big">
+            <strong>|v⃗| = 5 m/s   oppure   v = 5 m/s</strong>
+          </div>
+          <div class="info-box">
+            <strong>La Notazione Rigorosa:</strong><br>
+            • <span class="vec-v"><span class="vec-sym">v</span></span> = il <strong>vettore velocità completo</strong> (direzione, verso e modulo).<br>
+            • <strong>|v⃗|</strong> oppure <strong>v</strong> = il <strong>modulo</strong> (il semplice valore scalare, es. 5 metri al secondo).
+          </div>
+          <div class="info-box green">
+            <strong>Esempi di grandezze vettoriali cinematiche:</strong><br>
+            • <strong>Velocità (<span class="vec-v"><span class="vec-sym">v</span></span>):</strong> misura la <em>rapidità di spostamento</em>. Un giocatore di basket che corre a 5 m/s deve sapere verso quale canestro si sta muovendo!<br>
+            • <strong>Accelerazione (<span class="vec-a"><span class="vec-sym">a</span></span>):</strong> misura la <em>rapidità di variazione della velocità</em> (quando scatta, frena di colpo o salta).
+          </div>
+          <div class="key-concept">
+            💡 Notazione: se vedi la freccetta sopra, stai parlando della grandezza vettoriale; senza freccia, parli solo del suo modulo numerico!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStepBasket(); }
+  },
+
+  // ═══════════════════════════════════════════
+  // SEZIONE 2 — OPERAZIONI GRAFICHE (IN ARRIVO)
+  // ═══════════════════════════════════════════
+
+  // ── STEP 5: PLACEHOLDER OPERAZIONI ──
+  {
+    badge: "FASE 5 — SEZIONE IN ARRIVO",
+    title: "LE OPERAZIONI GRAFICHE TRA VETTORI",
+    rule: "Spazio riservato per le pagine intermedie del capitolo: la somma grafica punta-coda, la regola del parallelogramma e le proprietà geometriche.",
+    render: () => `
+      <div style="max-width:860px; margin:2rem auto; text-align:center;">
+        <div style="font-size:3rem; margin-bottom:1rem;">⏳</div>
+        <h2 style="font-family:var(--font-title); color:var(--cyan); margin-bottom:1rem; font-size:1.4rem;">
+          PAGINE INTERMEDIE IN ARRIVO DAL DOCENTE
+        </h2>
+        <div class="info-box" style="text-align:left; max-width:680px; margin:0 auto 1.5rem; line-height:1.7;">
+          Questa sezione è predisposta per accogliere le immagini e i concetti delle pagine centrali del testo (somma con il metodo punta-coda, regola del parallelogramma e moltiplicazione geometrica).<br><br>
+          👉 <strong>Puoi passare subito alla Parte 3 (Componenti Cartesiane & Trigonometria)</strong> cliccando sul pulsante qui sotto o usando il tasto SUCCESSIVO!
+        </div>
+        <button class="anim-btn green active" style="font-size:0.75rem; padding:0.9rem 1.6rem;" onclick="goToStep(6)">
+          PASSA ALLA PARTE 3: COMPONENTI & TRIGONOMETRIA <span>►</span>
+        </button>
+      </div>
+    `,
+    onMount: () => {}
+  },
+
+  // ═══════════════════════════════════════════
+  // SEZIONE 3 — PARTE FINALE (PAGINE 92-93)
+  // ═══════════════════════════════════════════
+
+  // ── STEP 6: PITAGORA E IL MODULO ──
+  {
+    badge: "FASE 6 — IL FONDAMENTO",
     title: "IL TEOREMA DI PITAGORA & IL MODULO",
     rule: "Se conosciamo le componenti a_x e a_y di un vettore a, possiamo sempre risalire alla sua lunghezza (modulo) applicando il Teorema di Pitagora: a = √(a_x² + a_y²).",
     render: () => `
@@ -1038,19 +1265,19 @@ const STEPS = [
           <div class="ctrl-panel">
             <div class="ctrl-row">
               <label>Componente a<sub>x</sub>:</label>
-              <input type="range" class="ctrl-slider" id="sliderAx" min="-5" max="5" step="0.5" value="4" oninput="updateStep1()">
+              <input type="range" class="ctrl-slider" id="sliderAx" min="-5" max="5" step="0.5" value="4" oninput="updateStepPitagora()">
               <span class="val-disp" id="dispAx">+4.0</span>
             </div>
             <div class="ctrl-row">
               <label>Componente a<sub>y</sub>:</label>
-              <input type="range" class="ctrl-slider" id="sliderAy" min="-5" max="5" step="0.5" value="3" oninput="updateStep1()">
+              <input type="range" class="ctrl-slider" id="sliderAy" min="-5" max="5" step="0.5" value="3" oninput="updateStepPitagora()">
               <span class="val-disp" id="dispAy">+3.0</span>
             </div>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" onclick="step1SetPreset(4, 3)">TERNA (4, 3) ➜ 5</button>
-            <button class="anim-btn" onclick="step1SetPreset(-3, 4)">QUADRANTE II (-3, 4)</button>
-            <button class="anim-btn" onclick="step1SetPreset(3, -4)">QUADRANTE IV (3, -4)</button>
+            <button class="anim-btn active" onclick="stepPitagoraSet(4, 3)">TERNA (4, 3) ➜ 5</button>
+            <button class="anim-btn" onclick="stepPitagoraSet(-3, 4)">QUADRANTE II (-3, 4)</button>
+            <button class="anim-btn" onclick="stepPitagoraSet(3, -4)">QUADRANTE IV (3, -4)</button>
           </div>
         </div>
         <div class="explain-side">
@@ -1075,12 +1302,12 @@ const STEPS = [
         </div>
       </div>
     `,
-    onMount: () => { initStep1(); }
+    onMount: () => { initStepPitagora(); }
   },
 
-  // ── STEP 2: LA MATEMATICA CHE USERAI — SENO E COSENO ──
+  // ── STEP 7: TRIGONOMETRIA BASE (SENO E COSENO) ──
   {
-    badge: "FASE 2 — LA MATEMATICA",
+    badge: "FASE 7 — LA MATEMATICA",
     title: "IL SENO E IL COSENO DI UN ANGOLO ACUTO",
     rule: "In un triangolo rettangolo, il seno di un angolo acuto è il rapporto tra il cateto opposto e l'ipotenusa; il coseno è il rapporto tra il cateto adiacente e l'ipotenusa.",
     render: () => `
@@ -1092,19 +1319,19 @@ const STEPS = [
           <div class="ctrl-panel">
             <div class="ctrl-row">
               <label>Angolo acuto α (o Ĉ):</label>
-              <input type="range" class="ctrl-slider" id="sliderTrigAngle" min="15" max="75" step="1" value="35" oninput="updateStep2()">
+              <input type="range" class="ctrl-slider" id="sliderTrigAngle" min="15" max="75" step="1" value="35" oninput="updateStepTrigBase()">
               <span class="val-disp" id="dispTrigAngle">35°</span>
             </div>
             <div class="ctrl-row">
               <label>Ipotenusa BC:</label>
-              <input type="range" class="ctrl-slider" id="sliderTrigHyp" min="3" max="5.5" step="0.5" value="5" oninput="updateStep2()">
+              <input type="range" class="ctrl-slider" id="sliderTrigHyp" min="3" max="5.5" step="0.5" value="5" oninput="updateStepTrigBase()">
               <span class="val-disp" id="dispTrigHyp">5.0</span>
             </div>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn" onclick="step2SetAngle(30)">α = 30°</button>
-            <button class="anim-btn" onclick="step2SetAngle(45)">α = 45°</button>
-            <button class="anim-btn" onclick="step2SetAngle(60)">α = 60°</button>
+            <button class="anim-btn" onclick="stepTrigSetAngle(30)">α = 30°</button>
+            <button class="anim-btn" onclick="stepTrigSetAngle(45)">α = 45°</button>
+            <button class="anim-btn" onclick="stepTrigSetAngle(60)">α = 60°</button>
           </div>
         </div>
         <div class="explain-side">
@@ -1121,7 +1348,7 @@ const STEPS = [
             • <strong>AB = BC · sin α</strong> (lunghezza = ipotenusa × seno dell'angolo opposto)<br>
             • <strong>CA = BC · cos α</strong> (lunghezza = ipotenusa × coseno dell'angolo adiacente)
           </div>
-          <div class="info-box green" id="step2CalcBox">
+          <div class="info-box green" id="stepTrigCalcBox">
             Valori calcolati per α = <strong>35°</strong>:<br>
             • sin(35°) ≈ <strong>0.574</strong> ➜ AB = 5.0 × 0.574 = <strong>2.87</strong><br>
             • cos(35°) ≈ <strong>0.819</strong> ➜ CA = 5.0 × 0.819 = <strong>4.10</strong>
@@ -1134,14 +1361,14 @@ const STEPS = [
         </div>
       </div>
     `,
-    onMount: () => { initStep2(); }
+    onMount: () => { initStepTrigBase(); }
   },
 
-  // ── STEP 3: ANGOLI NOTEVOLI ──
+  // ── STEP 8: ANGOLI NOTEVOLI ──
   {
-    badge: "FASE 3 — VALORI FONDAMENTALI",
+    badge: "FASE 8 — VALORI FONDAMENTALI",
     title: "LA TABELLA DEGLI ANGOLI NOTEVOLI",
-    rule: "Alcuni angoli si incontrano continuamente nella fisica e nella geometria: per 0°, 30°, 45°, 60° e 90° i valori di seno e coseno sono esprimibili tramite frazioni e radici esatte.",
+    rule: "Alcuni angoli si incontrano continuamente nella fisica: per 0°, 30°, 45°, 60° e 90° i valori di seno e coseno sono esprimibili tramite frazioni e radici esatte.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1149,11 +1376,11 @@ const STEPS = [
             <canvas id="cvNotable"></canvas>
           </div>
           <div class="anim-controls" style="margin-top:0.9rem;">
-            <button class="anim-btn" id="btnNot0" onclick="step3Select(0)">0°</button>
-            <button class="anim-btn" id="btnNot30" onclick="step3Select(30)">30°</button>
-            <button class="anim-btn active" id="btnNot45" onclick="step3Select(45)">45°</button>
-            <button class="anim-btn" id="btnNot60" onclick="step3Select(60)">60°</button>
-            <button class="anim-btn" id="btnNot90" onclick="step3Select(90)">90°</button>
+            <button class="anim-btn" id="btnNot0" onclick="stepNotableSelect(0)">0°</button>
+            <button class="anim-btn" id="btnNot30" onclick="stepNotableSelect(30)">30°</button>
+            <button class="anim-btn active" id="btnNot45" onclick="stepNotableSelect(45)">45°</button>
+            <button class="anim-btn" id="btnNot60" onclick="stepNotableSelect(60)">60°</button>
+            <button class="anim-btn" id="btnNot90" onclick="stepNotableSelect(90)">90°</button>
           </div>
         </div>
         <div class="explain-side">
@@ -1171,11 +1398,11 @@ const STEPS = [
             <tbody>
               <tr>
                 <td class="row-title">SENO (sin)</td>
-                <td id="c_s0">0</td>
-                <td id="c_s30">1/2</td>
-                <td id="c_s45" class="cell-highlight">√2 / 2</td>
-                <td id="c_s60">√3 / 2</td>
-                <td id="c_s90">1</td>
+                <td>0</td>
+                <td>1/2</td>
+                <td class="cell-highlight">√2 / 2</td>
+                <td>√3 / 2</td>
+                <td>1</td>
               </tr>
               <tr>
                 <td class="row-title">DECIMALE</td>
@@ -1187,11 +1414,11 @@ const STEPS = [
               </tr>
               <tr>
                 <td class="row-title">COSENO (cos)</td>
-                <td id="c_c0">1</td>
-                <td id="c_c30">√3 / 2</td>
-                <td id="c_c45" class="cell-highlight">√2 / 2</td>
-                <td id="c_c60">1/2</td>
-                <td id="c_c90">0</td>
+                <td>1</td>
+                <td>√3 / 2</td>
+                <td class="cell-highlight">√2 / 2</td>
+                <td>1/2</td>
+                <td>0</td>
               </tr>
               <tr>
                 <td class="row-title">DECIMALE</td>
@@ -1203,7 +1430,7 @@ const STEPS = [
               </tr>
             </tbody>
           </table>
-          <div class="info-box yellow" id="step3DetailBox">
+          <div class="info-box yellow" id="stepNotableDetailBox">
             <strong>Configurazione a 45°:</strong><br>
             A 45° il triangolo rettangolo è isoscele: i due cateti sono esattamente uguali! Sia il seno che il coseno valgono √2 / 2 ≈ 0.707.
           </div>
@@ -1216,12 +1443,12 @@ const STEPS = [
         </div>
       </div>
     `,
-    onMount: () => { initStep3(); }
+    onMount: () => { initStepNotable(); }
   },
 
-  // ── STEP 4: COMPONENTI CARTESIANE CON L'ANGOLO α ──
+  // ── STEP 9: SCOMPOSIZIONE CARTESIANA ──
   {
-    badge: "FASE 4 — SCOMPOSIZIONE",
+    badge: "FASE 9 — SCOMPOSIZIONE",
     title: "a_x = a cos α  E  a_y = a sin α",
     rule: "Dato un vettore a di modulo 'a' inclinato di un angolo α rispetto al semiasse positivo x, le sue componenti cartesiane si ottengono moltiplicando il modulo per il coseno e per il seno dell'angolo.",
     render: () => `
@@ -1233,12 +1460,12 @@ const STEPS = [
           <div class="ctrl-panel">
             <div class="ctrl-row">
               <label>Angolo α con asse x:</label>
-              <input type="range" class="ctrl-slider" id="sliderDecompAngle" min="0" max="90" step="1" value="40" oninput="updateStep4()">
+              <input type="range" class="ctrl-slider" id="sliderDecompAngle" min="0" max="90" step="1" value="40" oninput="updateStepDecomp()">
               <span class="val-disp" id="dispDecompAngle">40°</span>
             </div>
             <div class="ctrl-row">
               <label>Modulo vettore a:</label>
-              <input type="range" class="ctrl-slider" id="sliderDecompMod" min="2" max="5.5" step="0.25" value="4.5" oninput="updateStep4()">
+              <input type="range" class="ctrl-slider" id="sliderDecompMod" min="2" max="5.5" step="0.25" value="4.5" oninput="updateStepDecomp()">
               <span class="val-disp" id="dispDecompMod">4.50</span>
             </div>
           </div>
@@ -1254,24 +1481,24 @@ const STEPS = [
             Tracciando la perpendicolare sull'asse x otteniamo il punto <strong>A</strong>.<br>
             Il triangolo OAB è rettangolo in A con ipotenusa OB = a.
           </div>
-          <div class="info-box green" id="step4CalcBox">
+          <div class="info-box green" id="stepDecompCalcBox">
             Valori istantanei (a = <strong>4.50</strong>, α = <strong>40°</strong>):<br>
             • cos(40°) = 0.766 ➜ a<sub>x</sub> = 4.50 · 0.766 = <strong style="color:var(--cyan)">+3.45</strong><br>
             • sin(40°) = 0.643 ➜ a<sub>y</sub> = 4.50 · 0.643 = <strong style="color:var(--orange)">+2.89</strong>
           </div>
-          <div class="info-box purple" id="step4PitagoraBox">
+          <div class="info-box purple" id="stepDecompPitagoraBox">
             <strong>Verifica con Pitagora:</strong><br>
             √(3.45² + 2.89²) = √(11.90 + 8.35) = √20.25 = <strong>4.50</strong> ✓
           </div>
         </div>
       </div>
     `,
-    onMount: () => { initStep4(); }
+    onMount: () => { initStepDecomp(); }
   },
 
-  // ── STEP 5: ESTENSIONE A 360° E I 4 QUADRANTI ──
+  // ── STEP 10: I 4 QUADRANTI ──
   {
-    badge: "FASE 5 — I 4 QUADRANTI",
+    badge: "FASE 10 — I 4 QUADRANTI",
     title: "SEGNI DELLE COMPONENTI NEI 4 QUADRANTI",
     rule: "Le formule a_x = a cos α e a_y = a sin α valgono per QUALUNQUE angolo tra 0° e 360°. La calcolatrice e la trigonometria assegnano automaticamente il segno corretto alle componenti!",
     render: () => `
@@ -1283,36 +1510,36 @@ const STEPS = [
           <div class="ctrl-panel">
             <div class="ctrl-row">
               <label>Angolo α (0°–360°):</label>
-              <input type="range" class="ctrl-slider" id="sliderQuadAngle" min="0" max="360" step="2" value="135" oninput="updateStep5()">
+              <input type="range" class="ctrl-slider" id="sliderQuadAngle" min="0" max="360" step="2" value="135" oninput="updateStepQuadrants()">
               <span class="val-disp" id="dispQuadAngle">135°</span>
             </div>
           </div>
           <div class="quad-grid" style="width:100%;">
-            <div class="quad-item" id="qBtn2" onclick="step5SetQuad(135)">
+            <div class="quad-item" id="qBtn2" onclick="stepQuadSet(135)">
               <span class="quad-badge">II QUADRANTE (90°–180°)</span>
               cos &lt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &gt; 0</strong>
             </div>
-            <div class="quad-item" id="qBtn1" onclick="step5SetQuad(45)">
+            <div class="quad-item" id="qBtn1" onclick="stepQuadSet(45)">
               <span class="quad-badge">I QUADRANTE (0°–90°)</span>
               cos &gt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &gt; 0</strong>
             </div>
-            <div class="quad-item" id="qBtn3" onclick="step5SetQuad(225)">
+            <div class="quad-item" id="qBtn3" onclick="stepQuadSet(225)">
               <span class="quad-badge">III QUADRANTE (180°–270°)</span>
               cos &lt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &lt; 0</strong>
             </div>
-            <div class="quad-item" id="qBtn4" onclick="step5SetQuad(315)">
+            <div class="quad-item" id="qBtn4" onclick="stepQuadSet(315)">
               <span class="quad-badge">IV QUADRANTE (270°–360°)</span>
               cos &gt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &lt; 0</strong>
             </div>
           </div>
         </div>
         <div class="explain-side">
-          <div class="info-box yellow" id="step5StatusBox">
+          <div class="info-box yellow" id="stepQuadStatusBox">
             <strong>Quadrante Attivo: II Quadrante (135°)</strong><br>
             • Il coseno è <strong>negativo</strong>: a<sub>x</sub> punta a sinistra (←)<br>
             • Il seno è <strong>positivo</strong>: a<sub>y</sub> punta in alto (↑)
           </div>
-          <div class="formula-card" id="step5ValuesBox">
+          <div class="formula-card" id="stepQuadValuesBox">
             cos(135°) = -0.707 ➜ <strong>a<sub>x</sub> = -3.18</strong><br>
             sin(135°) = +0.707 ➜ <strong>a<sub>y</sub> = +3.18</strong>
           </div>
@@ -1321,19 +1548,15 @@ const STEPS = [
             • <strong>Seno (a<sub>y</sub>):</strong> è positivo nel semipiano superiore (0°–180°) e negativo nel semipiano inferiore (180°–360°).<br>
             • <strong>Coseno (a<sub>x</sub>):</strong> è positivo nel semipiano destro (0°–90° e 270°–360°) e negativo a sinistra (90°–270°).
           </div>
-          <div class="key-concept">
-            💡 Non devi memorizzare i segni a memoria:<br>
-            basta guardare dove punta la freccia rispetto agli assi cartesiani!
-          </div>
         </div>
       </div>
     `,
-    onMount: () => { initStep5(); }
+    onMount: () => { initStepQuadrants(); }
   },
 
-  // ── STEP 6: ANGOLI ORARI NEGATIVI ──
+  // ── STEP 11: ANGOLI ORARI NEGATIVI ──
   {
-    badge: "FASE 6 — ANGOLI CON SEGNO",
+    badge: "FASE 11 — ANGOLI CON SEGNO",
     title: "ANGOLI ORARI NEGATIVI (α = 320° ⟺ β = -40°)",
     rule: "Un angolo è positivo se misurato in senso antiorario a partire dal semiasse positivo x; è negativo se misurato in senso orario. L'angolo α = 320° e l'angolo β = -40° descrivono esattamente lo stesso vettore!",
     render: () => `
@@ -1343,9 +1566,9 @@ const STEPS = [
             <canvas id="cvClockwise"></canvas>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" id="btnDualAngle" onclick="step6SetMode('both')">MOSTRA ENTRAMBI GLI ANGOLI</button>
-            <button class="anim-btn" id="btnAntiAngle" onclick="step6SetMode('anti')">SOLO ANTIORARIO (+320°)</button>
-            <button class="anim-btn" id="btnClockAngle" onclick="step6SetMode('clock')">SOLO ORARIO (-40°)</button>
+            <button class="anim-btn active" id="btnDualAngle" onclick="stepClockSetMode('both')">MOSTRA ENTRAMBI GLI ANGOLI</button>
+            <button class="anim-btn" id="btnAntiAngle" onclick="stepClockSetMode('anti')">SOLO ANTIORARIO (+320°)</button>
+            <button class="anim-btn" id="btnClockAngle" onclick="stepClockSetMode('clock')">SOLO ORARIO (-40°)</button>
           </div>
         </div>
         <div class="explain-side">
@@ -1365,17 +1588,17 @@ const STEPS = [
           </div>
           <div class="info-box orange">
             <strong>Perché si usano gli angoli negativi?</strong><br>
-            Nel 4° quadrante è spesso molto più immediato e pratico dire "inclinato di 40° verso il basso" (-40°) invece di calcolare un intero giro di 320°!
+            Nel 4° quadrante è spesso molto più immediato dire "inclinato di 40° verso il basso" (-40°) invece di calcolare un intero giro di 320°!
           </div>
         </div>
       </div>
     `,
-    onMount: () => { initStep6(); }
+    onMount: () => { initStepClockwise(); }
   },
 
-  // ── STEP 7: ESEMPIO REALE GUIDATO — VETTORE SPOSTAMENTO s ──
+  // ── STEP 12: ESEMPIO REALE GUIDATO (s = 15.4 m) ──
   {
-    badge: "FASE 7 — ESEMPIO GUIDATO",
+    badge: "FASE 12 — ESEMPIO GUIDATO",
     title: "ESEMPIO: IL VETTORE POSIZIONE s = 15.4 m A 320°",
     rule: "Risolviamo passo-passo l'esercizio del libro di testo: un vettore posizione s ha modulo s = 15.4 m e forma un angolo di 320° (o -40°) con il semiasse positivo x.",
     render: () => `
@@ -1385,25 +1608,24 @@ const STEPS = [
             <canvas id="cvExampleBook"></canvas>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" id="btnEx1" onclick="step7ShowStep(1)">1. ANALISI DEI SEGNI</button>
-            <button class="anim-btn" id="btnEx2" onclick="step7ShowStep(2)">2. FORMULE CON α=320°</button>
-            <button class="anim-btn" id="btnEx3" onclick="step7ShowStep(3)">3. METODO CON β=-40°</button>
-            <button class="anim-btn" id="btnEx4" onclick="step7ShowStep(4)">4. TEST PITAGORA</button>
+            <button class="anim-btn active" id="btnEx1" onclick="stepExampleShowSub(1)">1. ANALISI DEI SEGNI</button>
+            <button class="anim-btn" id="btnEx2" onclick="stepExampleShowSub(2)">2. FORMULE CON α=320°</button>
+            <button class="anim-btn" id="btnEx3" onclick="stepExampleShowSub(3)">3. METODO CON β=-40°</button>
+            <button class="anim-btn" id="btnEx4" onclick="stepExampleShowSub(4)">4. TEST PITAGORA</button>
           </div>
         </div>
-        <div class="explain-side" id="step7Content">
-          <!-- Dynamically populated by JS based on selected step -->
+        <div class="explain-side" id="stepExampleContent">
         </div>
       </div>
     `,
-    onMount: () => { initStep7(); }
+    onMount: () => { initStepExampleBook(); }
   },
 
-  // ── STEP 8: OPERAZIONI CON I VETTORI IN COMPONENTI ──
+  // ── STEP 13: OPERAZIONI IN COMPONENTI ──
   {
-    badge: "FASE 8 — ALGEBRA VETTORIALE",
+    badge: "FASE 13 — ALGEBRA VETTORIALE",
     title: "LE OPERAZIONI CON I VETTORI IN COMPONENTI",
-    rule: "Scrivere i vettori in componenti cartesiane permette di eseguire le operazioni con la normale algebra dei numeri reali, operando separatamente su x e su y, senza bisogno di goniometri o righelli!",
+    rule: "Scrivere i vettori in componenti cartesiane permette di eseguire le operazioni con la normale algebra dei numeri reali, operando separatamente su x e su y.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1411,10 +1633,10 @@ const STEPS = [
             <canvas id="cvAlgebra"></canvas>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn active" id="btnOpAdd" onclick="step8SetOp('add')">ADDIZIONE (c = a + b)</button>
-            <button class="anim-btn" id="btnOpScale" onclick="step8SetOp('scale')">SCALARE (d = 2 · a)</button>
-            <button class="anim-btn" id="btnOpSub" onclick="step8SetOp('sub')">SOTTRAZIONE (e = a - b)</button>
-            <button class="anim-btn" id="btnOpOpp" onclick="step8SetOp('opp')">VETTORE OPPOSTO (-a)</button>
+            <button class="anim-btn active" id="btnOpAdd" onclick="stepAlgebraSetOp('add')">ADDIZIONE (c = a + b)</button>
+            <button class="anim-btn" id="btnOpScale" onclick="stepAlgebraSetOp('scale')">SCALARE (d = 2 · a)</button>
+            <button class="anim-btn" id="btnOpSub" onclick="stepAlgebraSetOp('sub')">SOTTRAZIONE (e = a - b)</button>
+            <button class="anim-btn" id="btnOpOpp" onclick="stepAlgebraSetOp('opp')">VETTORE OPPOSTO (-a)</button>
           </div>
         </div>
         <div class="explain-side">
@@ -1426,26 +1648,25 @@ const STEPS = [
               </tr>
             </thead>
             <tbody>
-              <tr id="rowAdd">
+              <tr>
                 <td class="row-title">Addizione: <span class="vec-c"><span class="vec-sym">c</span> = <span class="vec-a"><span class="vec-sym">a</span></span> + <span class="vec-b"><span class="vec-sym">b</span></span></span></td>
                 <td><strong>c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub><br>c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub></strong></td>
               </tr>
-              <tr id="rowScale">
+              <tr>
                 <td class="row-title">Moltiplicazione: <span class="vec-d"><span class="vec-sym">d</span> = k · <span class="vec-a"><span class="vec-sym">a</span></span></span></td>
                 <td><strong>d<sub>x</sub> = k · a<sub>x</sub><br>d<sub>y</sub> = k · a<sub>y</sub></strong></td>
               </tr>
-              <tr id="rowSub">
+              <tr>
                 <td class="row-title">Sottrazione: <span class="vec-e"><span class="vec-sym">e</span> = <span class="vec-a"><span class="vec-sym">a</span></span> - <span class="vec-b"><span class="vec-sym">b</span></span></span></td>
                 <td><strong>e<sub>x</sub> = a<sub>x</sub> - b<sub>x</sub><br>e<sub>y</sub> = a<sub>y</sub> - b<sub>y</sub></strong></td>
               </tr>
-              <tr id="rowOpp">
+              <tr>
                 <td class="row-title">Vettore Opposto: <span style="color:var(--red); font-weight:bold;">-<span class="vec-sym">a</span></span></td>
                 <td><strong>-a<sub>x</sub> , -a<sub>y</sub></strong></td>
               </tr>
             </tbody>
           </table>
-          <div class="info-box green" id="step8DetailBox">
-            <!-- Populated by JS -->
+          <div class="info-box green" id="stepAlgebraDetailBox">
           </div>
           <div class="key-concept">
             💡 <strong>La potenza delle componenti:</strong><br>
@@ -1454,12 +1675,12 @@ const STEPS = [
         </div>
       </div>
     `,
-    onMount: () => { initStep8(); }
+    onMount: () => { initStepAlgebra(); }
   },
 
-  // ── STEP 9: LABORATORIO INTERATTIVO / GONIOMETRO ──
+  // ── STEP 14: GONIOMETRO 360 PLAYGROUND ──
   {
-    badge: "FASE 9 — PLAYGROUND",
+    badge: "FASE 14 — PLAYGROUND",
     title: "LABORATORIO: GONIOMETRO DEI VETTORI 360°",
     rule: "Usa gli slider per orientare il vettore a 360°: osserva come cambiano in diretta il triangolo delle proiezioni, le funzioni trigonometriche, i segni e il teorema di Pitagora.",
     render: () => `
@@ -1471,103 +1692,95 @@ const STEPS = [
           <div class="ctrl-panel">
             <div class="ctrl-row">
               <label>Angolo α (0°–360°):</label>
-              <input type="range" class="ctrl-slider" id="sliderLabAngle" min="0" max="360" step="1" value="210" oninput="updateStep9()">
+              <input type="range" class="ctrl-slider" id="sliderLabAngle" min="0" max="360" step="1" value="210" oninput="updateStepLab()">
               <span class="val-disp" id="dispLabAngle">210°</span>
             </div>
             <div class="ctrl-row">
               <label>Modulo a:</label>
-              <input type="range" class="ctrl-slider" id="sliderLabMod" min="1.5" max="5.5" step="0.25" value="4.5" oninput="updateStep9()">
+              <input type="range" class="ctrl-slider" id="sliderLabMod" min="1.5" max="5.5" step="0.25" value="4.5" oninput="updateStepLab()">
               <span class="val-disp" id="dispLabMod">4.50</span>
             </div>
           </div>
           <div class="anim-controls">
-            <button class="anim-btn" onclick="step9QuickSet(30)">30° (I)</button>
-            <button class="anim-btn" onclick="step9QuickSet(120)">120° (II)</button>
-            <button class="anim-btn active" onclick="step9QuickSet(210)">210° (III)</button>
-            <button class="anim-btn" onclick="step9QuickSet(320)">320° (IV)</button>
+            <button class="anim-btn" onclick="stepLabQuickSet(30)">30° (I)</button>
+            <button class="anim-btn" onclick="stepLabQuickSet(120)">120° (II)</button>
+            <button class="anim-btn active" onclick="stepLabQuickSet(210)">210° (III)</button>
+            <button class="anim-btn" onclick="stepLabQuickSet(320)">320° (IV)</button>
           </div>
         </div>
         <div class="explain-side">
-          <div class="formula-card big" id="step9FormulaCard">
+          <div class="formula-card big" id="stepLabFormulaCard">
             <strong>a<sub>x</sub> = 4.50 · cos(210°) = -3.90</strong><br>
             <strong>a<sub>y</sub> = 4.50 · sin(210°) = -2.25</strong>
           </div>
-          <div class="info-box" id="step9InfoBox">
+          <div class="info-box" id="stepLabInfoBox">
             • <strong>Angolo antiorario (+):</strong> α = 210°<br>
             • <strong>Angolo orario equivalente (-):</strong> β = -150°<br>
             • <strong>Quadrante:</strong> III Quadrante (sinistro inferiore)<br>
             • <strong>cos(210°):</strong> -0.866 &lt; 0 ➜ a<sub>x</sub> verso sinistra<br>
             • <strong>sin(210°):</strong> -0.500 &lt; 0 ➜ a<sub>y</sub> verso il basso
           </div>
-          <div class="info-box yellow" id="step9PitagoraBox">
+          <div class="info-box yellow" id="stepLabPitagoraBox">
             <strong>Ricostruzione con Pitagora:</strong><br>
             a = √((-3.90)² + (-2.25)²) = √(15.19 + 5.06) = √20.25 = <strong>4.50</strong>
-          </div>
-          <div class="key-concept">
-            🎯 Qualunque sia l'angolo scelto, la relazione geometrica tra vettore, cateti e ipotenusa rimane sempre vera e coerente!
           </div>
         </div>
       </div>
     `,
-    onMount: () => { initStep9(); }
+    onMount: () => { initStepLab(); }
   },
 
-  // ── STEP 10: QUIZ DI VERIFICA ──
+  // ── STEP 15: QUIZ COMPLETO ──
   {
-    badge: "FASE 10 — VERIFICA",
-    title: "QUIZ: HAI CAPITO COMPONENTI & TRIGONOMETRIA?",
-    rule: "Rispondi a queste 5 domande per testare la tua comprensione della trigonometria, dei segni nei quadranti e delle operazioni con i vettori.",
+    badge: "FASE 15 — VERIFICA",
+    title: "QUIZ COMPLETO SUI VETTORI",
+    rule: "Verifica ciò che hai imparato: dalle grandezze scalari/vettoriali alle componenti cartesiane e alla trigonometria.",
     render: () => `
       <div style="max-width:880px; margin:0 auto; width:100%;">
 
-        <!-- DOMANDA 1 -->
         <div class="quiz-box">
-          <p class="quiz-q-title">1. Un vettore a ha modulo a = 10 m ed è inclinato di α = 60° rispetto all'asse x. Sapendo che cos(60°) = 0.5, quanto vale la componente a<sub>x</sub>?</p>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">A) 8.66 m</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb1')">B) 5.0 m</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">C) 10 m</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">D) 20 m</div>
-          <div class="quiz-feedback" id="fb1"></div>
+          <p class="quiz-q-title">1. Quale tra le seguenti grandezze fisiche è uno SCALARE?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ1')">A) Lo spostamento da Napoli a Castellammare</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ1')">B) La temperatura di 13 °C letta sul termometro</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ1')">C) La velocità di corsa del giocatore di basket</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ1')">D) L'accelerazione durante uno scatto</div>
+          <div class="quiz-feedback" id="fbQ1"></div>
         </div>
 
-        <!-- DOMANDA 2 -->
         <div class="quiz-box">
-          <p class="quiz-q-title">2. Se un vettore si trova nel secondo quadrante (90° &lt; α &lt; 180°), che segni hanno le sue componenti a<sub>x</sub> e a<sub>y</sub>?</p>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">A) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &gt; 0</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">B) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &lt; 0</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb2')">C) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &gt; 0</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">D) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &lt; 0</div>
-          <div class="quiz-feedback" id="fb2"></div>
+          <p class="quiz-q-title">2. Se un vettore velocità è indicato con v⃗, cosa esprime la scrittura v = 5 m/s (oppure |v⃗| = 5 m/s)?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ2')">A) Il modulo (lunghezza/valore numerico) del vettore velocità</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ2')">B) La direzione lungo cui corre il giocatore</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ2')">C) Il verso (avanti o indietro)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ2')">D) L'angolo rispetto all'asse delle ascisse</div>
+          <div class="quiz-feedback" id="fbQ2"></div>
         </div>
 
-        <!-- DOMANDA 3 -->
         <div class="quiz-box">
-          <p class="quiz-q-title">3. Un vettore ha angolo antiorario α = 330°. Qual è il suo angolo orario negativo equivalente β?</p>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb3')">A) β = -30°</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">B) β = -60°</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">C) β = -330°</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">D) β = -150°</div>
-          <div class="quiz-feedback" id="fb3"></div>
+          <p class="quiz-q-title">3. Un vettore ha modulo a = 10 m ed è inclinato di α = 60° rispetto all'asse x. Sapendo che cos(60°) = 0.5, quanto vale la componente a<sub>x</sub>?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ3')">A) 8.66 m</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ3')">B) 5.0 m (a_x = 10 · 0.5 = 5.0 m)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ3')">C) 10 m</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ3')">D) 20 m</div>
+          <div class="quiz-feedback" id="fbQ3"></div>
         </div>
 
-        <!-- DOMANDA 4 -->
         <div class="quiz-box">
-          <p class="quiz-q-title">4. Dati i vettori a = (4, -2) e b = (-1, 5), quali sono le componenti del vettore somma c = a + b?</p>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">A) c<sub>x</sub> = 5, c<sub>y</sub> = 3</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb4')">B) c<sub>x</sub> = 3, c<sub>y</sub> = 3</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">C) c<sub>x</sub> = 3, c<sub>y</sub> = -7</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">D) c<sub>x</sub> = -4, c<sub>y</sub> = -10</div>
-          <div class="quiz-feedback" id="fb4"></div>
+          <p class="quiz-q-title">4. Se un vettore si trova nel secondo quadrante (90° &lt; α &lt; 180°), che segni hanno le sue componenti a<sub>x</sub> e a<sub>y</sub>?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ4')">A) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &gt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ4')">B) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &lt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ4')">C) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &gt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ4')">D) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &lt; 0</div>
+          <div class="quiz-feedback" id="fbQ4"></div>
         </div>
 
-        <!-- DOMANDA 5 -->
         <div class="quiz-box">
-          <p class="quiz-q-title">5. Se un vettore ha componenti a = (6, -8), quali sono le componenti del suo vettore opposto -a?</p>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">A) (-6, -8)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">B) (6, 8)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb5')">C) (-6, 8)</div>
-          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">D) (-8, 6)</div>
-          <div class="quiz-feedback" id="fb5"></div>
+          <p class="quiz-q-title">5. Dati i vettori a = (4, -2) e b = (-1, 5), quali sono le componenti del vettore somma c = a + b?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ5')">A) c<sub>x</sub> = 5, c<sub>y</sub> = 3</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fbQ5')">B) c<sub>x</sub> = 3, c<sub>y</sub> = 3 (c_x = 4 + (-1) = 3; c_y = -2 + 5 = 3)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ5')">C) c<sub>x</sub> = 3, c<sub>y</sub> = -7</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fbQ5')">D) c<sub>x</sub> = -4, c<sub>y</sub> = -10</div>
+          <div class="quiz-feedback" id="fbQ5"></div>
         </div>
 
       </div>
@@ -1580,23 +1793,281 @@ const STEPS = [
 const totalSteps = STEPS.length;
 
 // ═══════════════════════════════════════════
-// STEP 1 IMPLEMENTATION: PITAGORA
+// IMPLEMENTAZIONE STEP 1: NAPOLI (25 KM)
 // ═══════════════════════════════════════════
-let vc1 = null;
+let vcNapoli = null;
+let modeNapoli = 'dist';
 
-function initStep1() {
-  vc1 = new VectorCanvas2('cvPitagora', { range: 6 });
-  updateStep1();
+function initStepNapoli() {
+  vcNapoli = new VectorCanvas2('cvNapoli', { range: 32 });
+  stepNapoliSet('dist');
 }
 
-function updateStep1() {
-  if (!vc1) return;
+function stepNapoliSet(mode) {
+  modeNapoli = mode;
+  document.getElementById('btnNapDist').classList.toggle('active', mode === 'dist');
+  document.getElementById('btnNapSpost').classList.toggle('active', mode === 'spost');
+
+  const exp = document.getElementById('boxNapoliExplain');
+  if (exp) {
+    if (mode === 'dist') {
+      exp.innerHTML = `
+        <strong>Distanza scalare = 25 km:</strong><br>
+        Sapere soltanto che ci siamo allontanati di 25 km non specifica dove siamo arrivati: potremmo essere a Caserta, a Procida o a Castellammare.
+      `;
+    } else {
+      exp.innerHTML = `
+        <strong>Spostamento vettoriale s⃗ = 25 km a Sud-Est:</strong><br>
+        Avendo specificato direzione (retta NO-SE) e verso (Sud-Est), siamo certi al 100% di trovarci a <strong>Castellammare di Stabia</strong>!
+      `;
+    }
+  }
+
+  drawNapoliCanvas();
+}
+
+function drawNapoliCanvas() {
+  if (!vcNapoli) return;
+  vcNapoli.clear();
+  vcNapoli.drawGrid();
+
+  const ctx = vcNapoli.ctx;
+  const [nox, noy] = vcNapoli.toScreen(0, 0);
+
+  // 25 km circle
+  ctx.save();
+  ctx.strokeStyle = modeNapoli === 'dist' ? COL.red : 'rgba(255, 51, 102, 0.4)';
+  ctx.lineWidth = modeNapoli === 'dist' ? 2.5 : 1.5;
+  ctx.setLineDash(modeNapoli === 'dist' ? [] : [6, 4]);
+  ctx.beginPath();
+  ctx.arc(nox, noy, 25 * vcNapoli.unit, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // Compass Rose / Cardinale in top-left
+  ctx.save();
+  ctx.font = 'bold 11px "Share Tech Mono", monospace';
+  ctx.fillStyle = COL.axisLabel;
+  ctx.fillText('NORD ↑', nox, noy - 25 * vcNapoli.unit - 8);
+  ctx.fillText('SUD ↓', nox, noy + 25 * vcNapoli.unit + 14);
+  ctx.fillText('EST →', nox + 25 * vcNapoli.unit + 8, noy);
+  ctx.fillText('← OVEST', nox - 25 * vcNapoli.unit - 16, noy);
+  ctx.restore();
+
+  // Landmark points
+  // Napoli (0, 0)
+  vcNapoli.drawPoint(0, 0, COL.yellow, 5, 'Napoli (Centro)');
+
+  // Caserta (0, 25)
+  vcNapoli.drawPoint(0, 25, COL.cyan, 4, 'Caserta (25 km N)');
+
+  // Procida (-24, -7)
+  vcNapoli.drawPoint(-24, -7, COL.orange, 4, 'Isola di Procida (25 km O)');
+
+  // Castellammare (17.7, -17.7) -> 25 km SE
+  const cx = 17.7, cy = -17.7;
+  vcNapoli.drawPoint(cx, cy, COL.green, 6, 'Castellammare (25 km SE)');
+
+  if (modeNapoli === 'spost') {
+    // Vector arrow from Napoli to Castellammare
+    vcNapoli.drawVector(0, 0, cx, cy, COL.green, 3.8);
+    vcNapoli.drawPill(cx / 2 + 1.2, cy / 2 - 1.2, 's', ' = 25 km (Sud-Est)', COL.green);
+  } else {
+    vcNapoli.drawPill(12, 18, '', 'Raggio = 25 km (Distanza)', COL.red);
+  }
+}
+
+// ═══════════════════════════════════════════
+// IMPLEMENTAZIONE STEP 2: TERMOMETRO 13°C
+// ═══════════════════════════════════════════
+let vcTermo = null;
+
+function initStepTermometro() {
+  vcTermo = new VectorCanvas2('cvTermometro', { range: 6, showAxes: false });
+  updateStepTermometro();
+}
+
+function updateStepTermometro() {
+  if (!vcTermo) return;
+  const t = parseFloat(document.getElementById('sliderTemp').value);
+  document.getElementById('dispTemp').textContent = (t >= 0 ? '+' : '') + t + ' °C';
+
+  vcTermo.clear();
+  const ctx = vcTermo.ctx;
+  const s = vcTermo.size;
+
+  // Background wooden / metallic wall plate
+  const bx = s * 0.32, by = s * 0.1, bw = s * 0.36, bh = s * 0.8;
+  ctx.fillStyle = 'rgba(22, 22, 43, 0.9)';
+  ctx.strokeStyle = 'rgba(88, 196, 221, 0.3)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 12);
+  else ctx.rect(bx, by, bw, bh);
+  ctx.fill();
+  ctx.stroke();
+
+  // Glass tube
+  const tx = s * 0.5, ty = s * 0.2, tw = 12, th = s * 0.58;
+  ctx.fillStyle = 'rgba(10, 10, 20, 0.8)';
+  ctx.fillRect(tx - tw / 2, ty, tw, th);
+
+  // Mercury bulb
+  const bulbRadius = 18;
+  const bulbY = ty + th + 4;
+  ctx.fillStyle = COL.red;
+  ctx.beginPath();
+  ctx.arc(tx, bulbY, bulbRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Column height calculation (-20°C to +50°C -> range 70)
+  const clampedT = Math.max(-20, Math.min(50, t));
+  const frac = (clampedT - (-20)) / 70;
+  const colHeight = th * frac;
+  const colTopY = (ty + th) - colHeight;
+
+  ctx.fillStyle = COL.red;
+  ctx.fillRect(tx - tw / 2 + 2, colTopY, tw - 4, colHeight + 6);
+
+  // Graduation marks
+  ctx.font = '10px "Share Tech Mono", monospace';
+  ctx.fillStyle = 'rgba(240, 244, 252, 0.7)';
+  ctx.textAlign = 'right';
+  for (let val = -20; val <= 50; val += 10) {
+    const f = (val - (-20)) / 70;
+    const yPos = (ty + th) - th * f;
+    ctx.fillRect(tx - tw / 2 - 8, yPos - 1, 8, 2);
+    ctx.fillText(val + '°', tx - tw / 2 - 12, yPos + 3);
+  }
+
+  // Unit Title at top
+  ctx.font = 'bold 12px "Share Tech Mono", monospace';
+  ctx.fillStyle = COL.cyan;
+  ctx.textAlign = 'center';
+  ctx.fillText('°C CELSIUS', tx, by + 22);
+
+  // Pill badge with current reading
+  vcTermo.drawPill(0, -3.8, '', `T = ${(t >= 0 ? '+' : '') + t} °C`, COL.yellow);
+}
+
+function stepTermoSet(v) {
+  document.getElementById('sliderTemp').value = v;
+  updateStepTermometro();
+}
+
+// ═══════════════════════════════════════════
+// IMPLEMENTAZIONE STEP 3: ANATOMIA DEL VETTORE
+// ═══════════════════════════════════════════
+let vcAnat = null;
+let anatFlipped = false;
+
+function initStepAnatomia() {
+  vcAnat = new VectorCanvas2('cvAnatomia', { range: 6 });
+  anatFlipped = false;
+  updateStepAnatomia();
+}
+
+function updateStepAnatomia() {
+  if (!vcAnat) return;
+  const mod = parseFloat(document.getElementById('sliderAnatMod').value);
+  const ang = parseFloat(document.getElementById('sliderAnatAng').value);
+
+  document.getElementById('dispAnatMod').textContent = mod.toFixed(1) + ' u';
+  document.getElementById('dispAnatAng').textContent = ang + '°';
+
+  vcAnat.clear();
+  vcAnat.drawGrid();
+
+  const effectiveAng = anatFlipped ? (ang + 180) : ang;
+  const rad = effectiveAng * Math.PI / 180;
+  const vx = mod * Math.cos(rad);
+  const vy = mod * Math.sin(rad);
+
+  // Line of action (Direzione)
+  const lineExtent = 5.8;
+  const dirCos = Math.cos(ang * Math.PI / 180);
+  const dirSin = Math.sin(ang * Math.PI / 180);
+  vcAnat.drawDashedLine(-dirCos * lineExtent, -dirSin * lineExtent, dirCos * lineExtent, dirSin * lineExtent, COL.yellow, 0.45);
+  vcAnat.drawPill(-dirCos * 4.2, -dirSin * 4.2, '', 'Retta = Direzione', COL.yellow);
+
+  // Main Vector
+  vcAnat.drawVector(0, 0, vx, vy, COL.green, 4);
+  vcAnat.drawPill(vx / 2 - 0.4, vy / 2 + 0.4, '', `Modulo = ${mod.toFixed(1)} u`, COL.green);
+
+  // Point O
+  vcAnat.drawPoint(0, 0, COL.white, 4, 'O (Coda)');
+  vcAnat.drawPoint(vx, vy, COL.cyan, 4, 'Punta (Verso)');
+}
+
+function stepAnatFlip() {
+  anatFlipped = !anatFlipped;
+  updateStepAnatomia();
+}
+
+// ═══════════════════════════════════════════
+// IMPLEMENTAZIONE STEP 4: BASKET CINEMATICA
+// ═══════════════════════════════════════════
+let vcBasket = null;
+let basketDirType = 'forward';
+
+function initStepBasket() {
+  vcBasket = new VectorCanvas2('cvBasket', { range: 8 });
+  stepBasketDir('forward');
+}
+
+function stepBasketDir(d) {
+  basketDirType = d;
+  document.getElementById('btnBForward').classList.toggle('active', d === 'forward');
+  document.getElementById('btnBLateral').classList.toggle('active', d === 'lateral');
+  document.getElementById('btnBBack').classList.toggle('active', d === 'back');
+  updateStepBasket();
+}
+
+function updateStepBasket() {
+  if (!vcBasket) return;
+  const vel = parseFloat(document.getElementById('sliderBasketVel').value);
+  document.getElementById('dispBasketVel').textContent = vel + ' m/s';
+
+  vcBasket.clear();
+  vcBasket.drawGrid();
+
+  let ang = 35;
+  if (basketDirType === 'lateral') ang = 135;
+  else if (basketDirType === 'back') ang = 225;
+
+  const rad = ang * Math.PI / 180;
+  const vx = vel * Math.cos(rad);
+  const vy = vel * Math.sin(rad);
+
+  // Basketball player indicator at O
+  vcBasket.drawPoint(0, 0, COL.yellow, 6, 'Giocatore');
+
+  // Velocity Vector
+  vcBasket.drawVector(0, 0, vx, vy, COL.v, 3.8);
+  vcBasket.drawPill(vx / 2 + 0.3, vy / 2 + 0.4, 'v', ` = ${vel} m/s`, COL.v);
+
+  // Trajectory dashed
+  vcBasket.drawDashedLine(0, 0, vx * 1.3, vy * 1.3, COL.dashed, 0.35);
+}
+
+// ═══════════════════════════════════════════
+// IMPLEMENTAZIONE STEP 6: PITAGORA
+// ═══════════════════════════════════════════
+let vcPitagora = null;
+
+function initStepPitagora() {
+  vcPitagora = new VectorCanvas2('cvPitagora', { range: 6 });
+  updateStepPitagora();
+}
+
+function updateStepPitagora() {
+  if (!vcPitagora) return;
   const ax = parseFloat(document.getElementById('sliderAx').value);
   const ay = parseFloat(document.getElementById('sliderAy').value);
 
   document.getElementById('dispAx').textContent = (ax >= 0 ? '+' : '') + ax.toFixed(1);
   document.getElementById('dispAy').textContent = (ay >= 0 ? '+' : '') + ay.toFixed(1);
-
   document.getElementById('boxAx').textContent = Math.abs(ax).toFixed(1);
   document.getElementById('boxAy').textContent = Math.abs(ay).toFixed(1);
 
@@ -1607,55 +2078,51 @@ function updateStep1() {
   document.getElementById('boxRad').textContent = sqSum.toFixed(1);
   document.getElementById('boxMod').textContent = mod.toFixed(2);
 
-  vc1.clear();
-  vc1.drawGrid();
+  vcPitagora.clear();
+  vcPitagora.drawGrid();
 
-  // Projections
-  vc1.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.5);
-  vc1.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.5);
+  vcPitagora.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.5);
+  vcPitagora.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.5);
 
-  // Component vectors
   if (Math.abs(ax) > 0.05) {
-    vc1.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
-    vc1.drawPill(ax / 2, -0.6, 'a', '_x = ' + (ax >= 0 ? '+' : '') + ax.toFixed(1), COL.cyan);
+    vcPitagora.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+    vcPitagora.drawPill(ax / 2, -0.6, 'a', '_x = ' + (ax >= 0 ? '+' : '') + ax.toFixed(1), COL.cyan);
   }
   if (Math.abs(ay) > 0.05) {
-    vc1.drawVector(ax, 0, ax, ay, COL.orange, 3.2);
-    vc1.drawPill(ax + (ax >= 0 ? 0.7 : -0.7), ay / 2, 'a', '_y = ' + (ay >= 0 ? '+' : '') + ay.toFixed(1), COL.orange);
+    vcPitagora.drawVector(ax, 0, ax, ay, COL.orange, 3.2);
+    vcPitagora.drawPill(ax + (ax >= 0 ? 0.7 : -0.7), ay / 2, 'a', '_y = ' + (ay >= 0 ? '+' : '') + ay.toFixed(1), COL.orange);
   }
 
-  // Right angle indicator in (ax, 0)
   if (Math.abs(ax) > 0.8 && Math.abs(ay) > 0.8) {
     const dirX = ax >= 0 ? -1 : 1;
     const dirY = ay >= 0 ? 1 : -1;
-    vc1.drawRightAngle(ax, 0, dirX, dirY, 0.45);
+    vcPitagora.drawRightAngle(ax, 0, dirX, dirY, 0.45);
   }
 
-  // Hypotenuse / Vector
   if (mod > 0.05) {
-    vc1.drawVector(0, 0, ax, ay, COL.green, 3.8);
-    vc1.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' = ' + mod.toFixed(2), COL.green);
+    vcPitagora.drawVector(0, 0, ax, ay, COL.green, 3.8);
+    vcPitagora.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' = ' + mod.toFixed(2), COL.green);
   }
 }
 
-function step1SetPreset(x, y) {
+function stepPitagoraSet(x, y) {
   document.getElementById('sliderAx').value = x;
   document.getElementById('sliderAy').value = y;
-  updateStep1();
+  updateStepPitagora();
 }
 
 // ═══════════════════════════════════════════
-// STEP 2 IMPLEMENTATION: TRIGONOMETRIA BASE
+// IMPLEMENTAZIONE STEP 7: TRIGONOMETRIA BASE
 // ═══════════════════════════════════════════
-let vc2 = null;
+let vcTrig = null;
 
-function initStep2() {
-  vc2 = new VectorCanvas2('cvTrigBase', { range: 6, showAxes: false, centerOffsetX: -1.2, centerOffsetY: -1.2 });
-  updateStep2();
+function initStepTrigBase() {
+  vcTrig = new VectorCanvas2('cvTrigBase', { range: 6, showAxes: false, centerOffsetX: -1.2, centerOffsetY: -1.2 });
+  updateStepTrigBase();
 }
 
-function updateStep2() {
-  if (!vc2) return;
+function updateStepTrigBase() {
+  if (!vcTrig) return;
   const deg = parseFloat(document.getElementById('sliderTrigAngle').value);
   const hyp = parseFloat(document.getElementById('sliderTrigHyp').value);
 
@@ -1666,10 +2133,10 @@ function updateStep2() {
   const sinVal = Math.sin(rad);
   const cosVal = Math.cos(rad);
 
-  const adj = hyp * cosVal; // CA (orizzontale)
-  const opp = hyp * sinVal; // AB (verticale)
+  const adj = hyp * cosVal;
+  const opp = hyp * sinVal;
 
-  const calcBox = document.getElementById('step2CalcBox');
+  const calcBox = document.getElementById('stepTrigCalcBox');
   if (calcBox) {
     calcBox.innerHTML = `
       Valori per α = <strong>${deg}°</strong> e Ipotenusa BC = <strong>${hyp.toFixed(1)}</strong>:<br>
@@ -1678,19 +2145,14 @@ function updateStep2() {
     `;
   }
 
-  vc2.clear();
-  vc2.drawGrid();
+  vcTrig.clear();
+  vcTrig.drawGrid();
 
-  // Triangle vertices:
-  // C at (0, 0)
-  // A at (adj, 0)
-  // B at (adj, opp)
-  const ctx = vc2.ctx;
-  const [scx, scy] = vc2.toScreen(0, 0);
-  const [sax, say] = vc2.toScreen(adj, 0);
-  const [sbx, sby] = vc2.toScreen(adj, opp);
+  const ctx = vcTrig.ctx;
+  const [scx, scy] = vcTrig.toScreen(0, 0);
+  const [sax, say] = vcTrig.toScreen(adj, 0);
+  const [sbx, sby] = vcTrig.toScreen(adj, opp);
 
-  // Fill triangle subtly
   ctx.save();
   ctx.fillStyle = 'rgba(88,196,221,0.08)';
   ctx.beginPath();
@@ -1701,57 +2163,46 @@ function updateStep2() {
   ctx.fill();
   ctx.restore();
 
-  // Draw 3 sides with dedicated colors
-  // CA: Adiacente (Green)
   ctx.strokeStyle = COL.catAdj;
   ctx.lineWidth = 3.5;
   ctx.beginPath(); ctx.moveTo(scx, scy); ctx.lineTo(sax, say); ctx.stroke();
 
-  // AB: Opposto (Orange)
   ctx.strokeStyle = COL.catOpp;
   ctx.lineWidth = 3.5;
   ctx.beginPath(); ctx.moveTo(sax, say); ctx.lineTo(sbx, sby); ctx.stroke();
 
-  // BC: Ipotenusa (Blue/Cyan)
   ctx.strokeStyle = COL.hypot;
   ctx.lineWidth = 4;
   ctx.beginPath(); ctx.moveTo(scx, scy); ctx.lineTo(sbx, sby); ctx.stroke();
 
-  // Vertices points & letters
-  vc2.drawPoint(0, 0, COL.white, 4, 'C');
-  vc2.drawPoint(adj, 0, COL.white, 4, 'A');
-  vc2.drawPoint(adj, opp, COL.white, 4, 'B');
+  vcTrig.drawPoint(0, 0, COL.white, 4, 'C');
+  vcTrig.drawPoint(adj, 0, COL.white, 4, 'A');
+  vcTrig.drawPoint(adj, opp, COL.white, 4, 'B');
 
-  // Right angle at A
-  vc2.drawRightAngle(adj, 0, -1, 1, 0.45);
+  vcTrig.drawRightAngle(adj, 0, -1, 1, 0.45);
+  vcTrig.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
 
-  // Angle arc at C
-  vc2.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
-
-  // Side Labels
-  vc2.drawPill(adj / 2, -0.6, '', `CA = ${adj.toFixed(2)} (Adiacente)`, COL.catAdj);
-  vc2.drawPill(adj + 0.8, opp / 2, '', `AB = ${opp.toFixed(2)} (Opposto)`, COL.catOpp);
-  vc2.drawPill(adj / 2 - 0.4, opp / 2 + 0.5, '', `BC = ${hyp.toFixed(1)} (Ipotenusa)`, COL.hypot);
+  vcTrig.drawPill(adj / 2, -0.6, '', `CA = ${adj.toFixed(2)} (Adiacente)`, COL.catAdj);
+  vcTrig.drawPill(adj + 0.8, opp / 2, '', `AB = ${opp.toFixed(2)} (Opposto)`, COL.catOpp);
+  vcTrig.drawPill(adj / 2 - 0.4, opp / 2 + 0.5, '', `BC = ${hyp.toFixed(1)} (Ipotenusa)`, COL.hypot);
 }
 
-function step2SetAngle(a) {
+function stepTrigSetAngle(a) {
   document.getElementById('sliderTrigAngle').value = a;
-  updateStep2();
+  updateStepTrigBase();
 }
 
 // ═══════════════════════════════════════════
-// STEP 3 IMPLEMENTATION: ANGOLI NOTEVOLI
+// IMPLEMENTAZIONE STEP 8: ANGOLI NOTEVOLI
 // ═══════════════════════════════════════════
-let vc3 = null;
-let curNotable = 45;
+let vcNotable = null;
 
-function initStep3() {
-  vc3 = new VectorCanvas2('cvNotable', { range: 6, centerOffsetX: -1.2, centerOffsetY: -1.2, showAxes: true });
-  step3Select(45);
+function initStepNotable() {
+  vcNotable = new VectorCanvas2('cvNotable', { range: 6, centerOffsetX: -1.2, centerOffsetY: -1.2, showAxes: true });
+  stepNotableSelect(45);
 }
 
-function step3Select(deg) {
-  curNotable = deg;
+function stepNotableSelect(deg) {
   [0, 30, 45, 60, 90].forEach(d => {
     const btn = document.getElementById('btnNot' + d);
     if (btn) btn.classList.toggle('active', d === deg);
@@ -1764,56 +2215,50 @@ function step3Select(deg) {
   const adj = hyp * cosVal;
   const opp = hyp * sinVal;
 
-  const box = document.getElementById('step3DetailBox');
+  const box = document.getElementById('stepNotableDetailBox');
   if (box) {
-    if (deg === 0) {
-      box.innerHTML = `<strong>Angolo 0° (Vettore perfettamente orizzontale):</strong><br>Il cateto opposto collassa a zero (sin 0° = 0), mentre il cateto adiacente coincide interamente con l'ipotenusa (cos 0° = 1). Il vettore giace tutto sull'asse x!`;
-    } else if (deg === 30) {
-      box.innerHTML = `<strong>Angolo 30°:</strong><br>Il cateto opposto è esattamente <strong>la metà dell'ipotenusa</strong>: sin(30°) = 1/2 = 0.500!<br>Il cateto adiacente vale (√3 / 2) · ipotenusa ≈ 0.866 · ipotenusa.`;
-    } else if (deg === 45) {
-      box.innerHTML = `<strong>Angolo 45°:</strong><br>Il triangolo rettangolo è <strong>isoscele</strong>: i due cateti sono esattamente uguali! Sia il seno che il coseno valgono √2 / 2 ≈ 0.707.`;
-    } else if (deg === 60) {
-      box.innerHTML = `<strong>Angolo 60°:</strong><br>È l'opposto di 30°: ora è il <strong>cateto adiacente</strong> a essere esattamente metà dell'ipotenusa (cos 60° = 1/2 = 0.500), mentre quello opposto è lungo √3 / 2 ≈ 0.866.`;
-    } else if (deg === 90) {
-      box.innerHTML = `<strong>Angolo 90° (Vettore perfettamente verticale):</strong><br>Il cateto adiacente collassa a zero (cos 90° = 0), mentre il cateto opposto coincide interamente con l'ipotenusa (sin 90° = 1). Il vettore giace tutto sull'asse y!`;
-    }
+    if (deg === 0) box.innerHTML = `<strong>Angolo 0°:</strong> Il cateto opposto collassa a zero (sin 0° = 0), il cateto adiacente coincide con l'ipotenusa (cos 0° = 1).`;
+    else if (deg === 30) box.innerHTML = `<strong>Angolo 30°:</strong> Il cateto opposto è esattamente <strong>metà dell'ipotenusa</strong>: sin(30°) = 1/2 = 0.500!`;
+    else if (deg === 45) box.innerHTML = `<strong>Angolo 45°:</strong> Triangolo isoscele: cateti identici! sin(45°) = cos(45°) = √2 / 2 ≈ 0.707.`;
+    else if (deg === 60) box.innerHTML = `<strong>Angolo 60°:</strong> Il cateto adiacente è metà dell'ipotenusa (cos 60° = 1/2), quello opposto vale √3 / 2 ≈ 0.866.`;
+    else if (deg === 90) box.innerHTML = `<strong>Angolo 90°:</strong> Il cateto adiacente collassa a zero (cos 90° = 0), il cateto opposto coincide con l'ipotenusa (sin 90° = 1).`;
   }
 
-  vc3.clear();
-  vc3.drawGrid();
+  vcNotable.clear();
+  vcNotable.drawGrid();
 
   if (deg > 0 && deg < 90) {
-    vc3.drawDashedLine(adj, 0, adj, opp, COL.dashed, 0.4);
-    vc3.drawRightAngle(adj, 0, -1, 1, 0.4);
-    vc3.drawVector(0, 0, adj, 0, COL.catAdj, 3);
-    vc3.drawVector(adj, 0, adj, opp, COL.catOpp, 3);
-    vc3.drawArc(0, 0, 1.2, 0, deg, COL.yellow, false, `${deg}°`);
-    vc3.drawPill(adj / 2, -0.6, '', `cos = ${cosVal.toFixed(3)}`, COL.catAdj);
-    vc3.drawPill(adj + 0.9, opp / 2, '', `sin = ${sinVal.toFixed(3)}`, COL.catOpp);
+    vcNotable.drawDashedLine(adj, 0, adj, opp, COL.dashed, 0.4);
+    vcNotable.drawRightAngle(adj, 0, -1, 1, 0.4);
+    vcNotable.drawVector(0, 0, adj, 0, COL.catAdj, 3);
+    vcNotable.drawVector(adj, 0, adj, opp, COL.catOpp, 3);
+    vcNotable.drawArc(0, 0, 1.2, 0, deg, COL.yellow, false, `${deg}°`);
+    vcNotable.drawPill(adj / 2, -0.6, '', `cos = ${cosVal.toFixed(3)}`, COL.catAdj);
+    vcNotable.drawPill(adj + 0.9, opp / 2, '', `sin = ${sinVal.toFixed(3)}`, COL.catOpp);
   } else if (deg === 0) {
-    vc3.drawVector(0, 0, hyp, 0, COL.catAdj, 3.5);
-    vc3.drawPill(hyp / 2, -0.6, '', `cos(0°) = 1.0 (opp = 0)`, COL.catAdj);
+    vcNotable.drawVector(0, 0, hyp, 0, COL.catAdj, 3.5);
+    vcNotable.drawPill(hyp / 2, -0.6, '', `cos(0°) = 1.0`, COL.catAdj);
   } else if (deg === 90) {
-    vc3.drawVector(0, 0, 0, hyp, COL.catOpp, 3.5);
-    vc3.drawPill(0.9, hyp / 2, '', `sin(90°) = 1.0 (adj = 0)`, COL.catOpp);
+    vcNotable.drawVector(0, 0, 0, hyp, COL.catOpp, 3.5);
+    vcNotable.drawPill(0.9, hyp / 2, '', `sin(90°) = 1.0`, COL.catOpp);
   }
 
-  vc3.drawVector(0, 0, adj, opp, COL.cyan, 3.8);
-  vc3.drawPill(adj / 2 - 0.3, opp / 2 + 0.4, 'a', ` = ${hyp.toFixed(1)}`, COL.cyan);
+  vcNotable.drawVector(0, 0, adj, opp, COL.cyan, 3.8);
+  vcNotable.drawPill(adj / 2 - 0.3, opp / 2 + 0.4, 'a', ` = ${hyp.toFixed(1)}`, COL.cyan);
 }
 
 // ═══════════════════════════════════════════
-// STEP 4 IMPLEMENTATION: DECOMPOSIZIONE
+// IMPLEMENTAZIONE STEP 9: SCOMPOSIZIONE CARTESIANA
 // ═══════════════════════════════════════════
-let vc4 = null;
+let vcDecomp = null;
 
-function initStep4() {
-  vc4 = new VectorCanvas2('cvDecomp', { range: 6 });
-  updateStep4();
+function initStepDecomp() {
+  vcDecomp = new VectorCanvas2('cvDecomp', { range: 6 });
+  updateStepDecomp();
 }
 
-function updateStep4() {
-  if (!vc4) return;
+function updateStepDecomp() {
+  if (!vcDecomp) return;
   const deg = parseFloat(document.getElementById('sliderDecompAngle').value);
   const mod = parseFloat(document.getElementById('sliderDecompMod').value);
 
@@ -1823,11 +2268,10 @@ function updateStep4() {
   const rad = deg * Math.PI / 180;
   const cosV = Math.cos(rad);
   const sinV = Math.sin(rad);
-
   const ax = mod * cosV;
   const ay = mod * sinV;
 
-  const cBox = document.getElementById('step4CalcBox');
+  const cBox = document.getElementById('stepDecompCalcBox');
   if (cBox) {
     cBox.innerHTML = `
       Valori istantanei (a = <strong>${mod.toFixed(2)}</strong>, α = <strong>${deg}°</strong>):<br>
@@ -1836,56 +2280,52 @@ function updateStep4() {
     `;
   }
 
-  const pBox = document.getElementById('step4PitagoraBox');
+  const pBox = document.getElementById('stepDecompPitagoraBox');
   if (pBox) {
     const testMod = Math.sqrt(ax * ax + ay * ay);
     pBox.innerHTML = `
       <strong>Verifica con Pitagora:</strong><br>
-      √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = √(${ (ax*ax).toFixed(2) } + ${ (ay*ay).toFixed(2) }) = √${ (ax*ax + ay*ay).toFixed(2) } = <strong>${testMod.toFixed(2)}</strong> ✓
+      √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = √(${ (ax*ax).toFixed(2) } + ${ (ay*ay).toFixed(2) }) = <strong>${testMod.toFixed(2)}</strong> ✓
     `;
   }
 
-  vc4.clear();
-  vc4.drawGrid();
+  vcDecomp.clear();
+  vcDecomp.drawGrid();
 
-  // Projections
-  vc4.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
-  vc4.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+  vcDecomp.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vcDecomp.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
 
   if (ax > 0.5 && ay > 0.5) {
-    vc4.drawRightAngle(ax, 0, -1, 1, 0.4);
-    vc4.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
+    vcDecomp.drawRightAngle(ax, 0, -1, 1, 0.4);
+    vcDecomp.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
   }
 
-  // Component vectors
-  vc4.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
-  vc4.drawPill(ax / 2, -0.6, 'a', `_x = +${ax.toFixed(2)}`, COL.cyan);
+  vcDecomp.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vcDecomp.drawPill(ax / 2, -0.6, 'a', `_x = +${ax.toFixed(2)}`, COL.cyan);
 
-  vc4.drawVector(0, 0, 0, ay, COL.orange, 3.2);
-  vc4.drawPill(-0.8, ay / 2, 'a', `_y = +${ay.toFixed(2)}`, COL.orange);
+  vcDecomp.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vcDecomp.drawPill(-0.8, ay / 2, 'a', `_y = +${ay.toFixed(2)}`, COL.orange);
 
-  // Main Vector a
-  vc4.drawVector(0, 0, ax, ay, COL.green, 3.8);
-  vc4.drawPill(ax / 2 + 0.3, ay / 2 + 0.4, 'a', ` = ${mod.toFixed(2)}`, COL.green);
+  vcDecomp.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vcDecomp.drawPill(ax / 2 + 0.3, ay / 2 + 0.4, 'a', ` = ${mod.toFixed(2)}`, COL.green);
 
-  // Label vertices O, A, B
-  vc4.drawPoint(0, 0, COL.white, 4, 'O');
-  vc4.drawPoint(ax, 0, COL.white, 4, 'A');
-  vc4.drawPoint(ax, ay, COL.white, 4, 'B');
+  vcDecomp.drawPoint(0, 0, COL.white, 4, 'O');
+  vcDecomp.drawPoint(ax, 0, COL.white, 4, 'A');
+  vcDecomp.drawPoint(ax, ay, COL.white, 4, 'B');
 }
 
 // ═══════════════════════════════════════════
-// STEP 5 IMPLEMENTATION: I 4 QUADRANTI
+// IMPLEMENTAZIONE STEP 10: QUADRANTI
 // ═══════════════════════════════════════════
-let vc5 = null;
+let vcQuad = null;
 
-function initStep5() {
-  vc5 = new VectorCanvas2('cvQuadrants', { range: 6 });
-  updateStep5();
+function initStepQuadrants() {
+  vcQuad = new VectorCanvas2('cvQuadrants', { range: 6 });
+  updateStepQuadrants();
 }
 
-function updateStep5() {
-  if (!vc5) return;
+function updateStepQuadrants() {
+  if (!vcQuad) return;
   const deg = parseFloat(document.getElementById('sliderQuadAngle').value);
   document.getElementById('dispQuadAngle').textContent = deg + '°';
 
@@ -1902,22 +2342,21 @@ function updateStep5() {
   else if (deg > 180 && deg <= 270) { quadNum = 3; quadName = "III Quadrante (180°–270°)"; }
   else if (deg > 270 && deg <= 360) { quadNum = 4; quadName = "IV Quadrante (270°–360°)"; }
 
-  // Update quadrant buttons active state
   [1, 2, 3, 4].forEach(q => {
     const el = document.getElementById('qBtn' + q);
     if (el) el.classList.toggle('active', q === quadNum);
   });
 
-  const statBox = document.getElementById('step5StatusBox');
+  const statBox = document.getElementById('stepQuadStatusBox');
   if (statBox) {
     statBox.innerHTML = `
-      <strong>Quadrante Attivo: ${quadName} (α = ${deg}°)</strong><br>
-      • Coseno: <strong>${cosV >= 0 ? 'POSITIVO (+)' : 'NEGATIVO (-)'}</strong> ➜ a<sub>x</sub> punta ${ax >= 0 ? 'a DESTRA (→)' : 'a SINISTRA (←)'}<br>
-      • Seno: <strong>${sinV >= 0 ? 'POSITIVO (+)' : 'NEGATIVO (-)'}</strong> ➜ a<sub>y</sub> punta ${ay >= 0 ? 'in ALTO (↑)' : 'in BASSO (↓)'}
+      <strong>Quadrante: ${quadName} (α = ${deg}°)</strong><br>
+      • Coseno: <strong>${cosV >= 0 ? '+' : '-'}</strong> ➜ a<sub>x</sub> punta ${ax >= 0 ? 'a DESTRA (→)' : 'a SINISTRA (←)'}<br>
+      • Seno: <strong>${sinV >= 0 ? '+' : '-'}</strong> ➜ a<sub>y</sub> punta ${ay >= 0 ? 'in ALTO (↑)' : 'in BASSO (↓)'}
     `;
   }
 
-  const valBox = document.getElementById('step5ValuesBox');
+  const valBox = document.getElementById('stepQuadValuesBox');
   if (valBox) {
     valBox.innerHTML = `
       cos(${deg}°) = ${cosV.toFixed(3)} ➜ <strong>a<sub>x</sub> = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
@@ -1925,66 +2364,51 @@ function updateStep5() {
     `;
   }
 
-  vc5.clear();
-  vc5.drawGrid();
+  vcQuad.clear();
+  vcQuad.drawGrid();
 
-  // Subtle highlight of the active quadrant background
-  const ctx = vc5.ctx;
-  ctx.save();
-  ctx.fillStyle = 'rgba(0, 245, 255, 0.04)';
-  if (quadNum === 1) ctx.fillRect(vc5.ox, 0, vc5.size - vc5.ox, vc5.oy);
-  else if (quadNum === 2) ctx.fillRect(0, 0, vc5.ox, vc5.oy);
-  else if (quadNum === 3) ctx.fillRect(0, vc5.oy, vc5.ox, vc5.size - vc5.oy);
-  else if (quadNum === 4) ctx.fillRect(vc5.ox, vc5.oy, vc5.size - vc5.ox, vc5.size - vc5.oy);
-  ctx.restore();
+  vcQuad.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vcQuad.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+  vcQuad.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `${deg}°`);
 
-  // Projections
-  vc5.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
-  vc5.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+  vcQuad.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vcQuad.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
 
-  // Angle arc
-  vc5.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `${deg}°`);
+  vcQuad.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vcQuad.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
 
-  // Components
-  vc5.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
-  vc5.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
-
-  vc5.drawVector(0, 0, 0, ay, COL.orange, 3.2);
-  vc5.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
-
-  // Main Vector
-  vc5.drawVector(0, 0, ax, ay, COL.green, 3.8);
-  vc5.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(1)}`, COL.green);
+  vcQuad.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vcQuad.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(1)}`, COL.green);
 }
 
-function step5SetQuad(angle) {
+function stepQuadSet(angle) {
   document.getElementById('sliderQuadAngle').value = angle;
-  updateStep5();
+  updateStepQuadrants();
 }
 
 // ═══════════════════════════════════════════
-// STEP 6 IMPLEMENTATION: ANGOLI ORARI NEGATIVI
+// IMPLEMENTAZIONE STEP 11: ANGOLI ORARI NEGATIVI
 // ═══════════════════════════════════════════
-let vc6 = null;
-let step6Mode = 'both';
+let vcClock = null;
+let clockMode = 'both';
 
-function initStep6() {
-  vc6 = new VectorCanvas2('cvClockwise', { range: 6 });
-  drawStep6();
+function initStepClockwise() {
+  vcClock = new VectorCanvas2('cvClockwise', { range: 6 });
+  drawClockwise();
 }
 
-function step6SetMode(m) {
-  step6Mode = m;
+function stepClockSetMode(m) {
+  clockMode = m;
   document.getElementById('btnDualAngle').classList.toggle('active', m === 'both');
   document.getElementById('btnAntiAngle').classList.toggle('active', m === 'anti');
   document.getElementById('btnClockAngle').classList.toggle('active', m === 'clock');
-  drawStep6();
+  drawClockwise();
 }
 
-function drawStep6() {
-  if (!vc6) return;
-  vc6.clear();
-  vc6.drawGrid();
+function drawClockwise() {
+  if (!vcClock) return;
+  vcClock.clear();
+  vcClock.drawGrid();
 
   const mod = 5;
   const alpha = 320;
@@ -1993,71 +2417,58 @@ function drawStep6() {
   const sx = mod * Math.cos(rad);
   const sy = mod * Math.sin(rad);
 
-  // Projections
-  vc6.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.4);
-  vc6.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.4);
+  vcClock.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.4);
+  vcClock.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.4);
 
-  // Arcs
-  if (step6Mode === 'both' || step6Mode === 'anti') {
-    // Counterclockwise 320°
-    vc6.drawArc(0, 0, 1.4, 0, alpha, COL.cyan, false, 'α = +320°');
+  if (clockMode === 'both' || clockMode === 'anti') {
+    vcClock.drawArc(0, 0, 1.4, 0, alpha, COL.cyan, false, 'α = +320°');
   }
-  if (step6Mode === 'both' || step6Mode === 'clock') {
-    // Clockwise -40°
-    vc6.drawArc(0, 0, 0.9, 0, beta, COL.orange, true, 'β = -40°');
+  if (clockMode === 'both' || clockMode === 'clock') {
+    vcClock.drawArc(0, 0, 0.9, 0, beta, COL.orange, true, 'β = -40°');
   }
 
-  // Components
-  vc6.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
-  vc6.drawPill(sx / 2, 0.6, 's', `_x = +${sx.toFixed(2)} m`, COL.cyan);
+  vcClock.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
+  vcClock.drawPill(sx / 2, 0.6, 's', `_x = +${sx.toFixed(2)} m`, COL.cyan);
 
-  vc6.drawVector(0, 0, 0, sy, COL.orange, 3.2);
-  vc6.drawPill(-0.9, sy / 2, 's', `_y = ${sy.toFixed(2)} m`, COL.orange);
+  vcClock.drawVector(0, 0, 0, sy, COL.orange, 3.2);
+  vcClock.drawPill(-0.9, sy / 2, 's', `_y = ${sy.toFixed(2)} m`, COL.orange);
 
-  // Main Vector s
-  vc6.drawVector(0, 0, sx, sy, COL.green, 3.8);
-  vc6.drawPill(sx / 2 + 0.4, sy / 2 - 0.4, 's', ` = ${mod} m`, COL.green);
+  vcClock.drawVector(0, 0, sx, sy, COL.green, 3.8);
+  vcClock.drawPill(sx / 2 + 0.4, sy / 2 - 0.4, 's', ` = ${mod} m`, COL.green);
 }
 
 // ═══════════════════════════════════════════
-// STEP 7 IMPLEMENTATION: ESEMPIO LIBRO s=15.4m
+// IMPLEMENTAZIONE STEP 12: ESEMPIO LIBRO (s=15.4m)
 // ═══════════════════════════════════════════
-let vc7 = null;
-let curStep7Sub = 1;
+let vcExBook = null;
 
-function initStep7() {
-  vc7 = new VectorCanvas2('cvExampleBook', { range: 18 });
-  step7ShowStep(1);
+function initStepExampleBook() {
+  vcExBook = new VectorCanvas2('cvExampleBook', { range: 18 });
+  stepExampleShowSub(1);
 }
 
-function step7ShowStep(s) {
-  curStep7Sub = s;
+function stepExampleShowSub(s) {
   [1, 2, 3, 4].forEach(i => {
     const b = document.getElementById('btnEx' + i);
     if (b) b.classList.toggle('active', i === s);
   });
 
-  const container = document.getElementById('step7Content');
+  const container = document.getElementById('stepExampleContent');
   if (!container) return;
-
-  const sMod = 15.4;
-  const sx = 11.8;
-  const sy = -9.90;
 
   if (s === 1) {
     container.innerHTML = `
       <div class="info-box yellow">
         <strong>FASE 1: Analisi Qualitativa dei Segni</strong><br>
-        Il problema ci dice che il vettore posizione <span class="vec-s"><span class="vec-sym">s</span></span> ha modulo <strong>s = 15.4 m</strong> e angolo positivo <strong>α = 320°</strong>.
+        Vettore posizione <span class="vec-s"><span class="vec-sym">s</span></span> con modulo <strong>s = 15.4 m</strong> e angolo positivo <strong>α = 320°</strong>.
       </div>
       <div class="info-box green">
         <strong>Osserviamo il disegno:</strong><br>
-        • La proiezione <span class="vec-sym">s</span><sub>x</sub> lungo l'asse x è rivolta nello stesso verso dell'asse (a destra): quindi <strong>s<sub>x</sub> è POSITIVA</strong>.<br>
-        • La proiezione <span class="vec-sym">s</span><sub>y</sub> lungo l'asse y è rivolta verso il basso (verso opposto all'asse y): quindi <strong>s<sub>y</sub> è NEGATIVA</strong>.
+        • Proiezione s⃗<sub>x</sub> rivolta a destra ➜ <strong>s<sub>x</sub> è POSITIVA</strong>.<br>
+        • Proiezione s⃗<sub>y</sub> rivolta verso il basso ➜ <strong>s<sub>y</sub> è NEGATIVA</strong>.
       </div>
       <div class="key-concept">
-        💡 Prima ancora di toccare la calcolatrice sappiamo già che:<br>
-        <strong>s<sub>x</sub> &gt; 0</strong> e <strong>s<sub>y</sub> &lt; 0</strong>!
+        💡 Prima dei calcoli sappiamo già che: <strong>s<sub>x</sub> &gt; 0</strong> e <strong>s<sub>y</sub> &lt; 0</strong>!
       </div>
     `;
   } else if (s === 2) {
@@ -2068,202 +2479,163 @@ function step7ShowStep(s) {
       </div>
       <div class="info-box green">
         <strong>FASE 2: Calcolo con le Formule Trigonometriche</strong><br>
-        Sfruttando le equazioni [4]:<br>
         • cos(320°) = +0.766 ➜ s<sub>x</sub> = 15.4 · 0.766 = <strong>+11.8 m</strong><br>
         • sin(320°) = -0.643 ➜ s<sub>y</sub> = 15.4 · (-0.643) = <strong>-9.90 m</strong>
-      </div>
-      <div class="info-box">
-        In perfetto accordo con l'analisi dei segni, la calcolatrice ha restituito <strong>s<sub>x</sub> positiva</strong> e <strong>s<sub>y</sub> negativa</strong>!
       </div>
     `;
   } else if (s === 3) {
     container.innerHTML = `
       <div class="info-box orange">
         <strong>FASE 3: Calcolo con l'Angolo Negativo β = -40°</strong><br>
-        Possiamo anche usare l'angolo orario β = 320° - 360° = <strong>-40°</strong>!
+        β = 320° - 360° = <strong>-40°</strong>.
       </div>
       <div class="formula-card">
         <strong>s<sub>x</sub> = (15.4 m) · cos(-40°) = 15.4 · 0.766 = +11.8 m</strong><br>
         <strong>s<sub>y</sub> = (15.4 m) · sin(-40°) = 15.4 · (-0.643) = -9.90 m</strong>
       </div>
       <div class="key-concept">
-        🎯 <strong>Stesso identico risultato!</strong><br>
-        Sei libero di usare l'angolo antiorario a 360° oppure l'angolo acuto negativo: la fisica e la matematica non cambiano.
+        🎯 <strong>Stesso identico risultato!</strong>
       </div>
     `;
   } else if (s === 4) {
     container.innerHTML = `
       <div class="formula-card big">
-        <strong>s = √(s<sub>x</sub>² + s<sub>y</sub>²) = √(11.8² + (-9.90)²) ≈ 15.4 m</strong>
+        <strong>s = √(11.8² + (-9.90)²) = √(139.24 + 98.01) ≈ 15.4 m</strong>
       </div>
       <div class="info-box purple">
-        <strong>FASE 4: Prova del nove con il Teorema di Pitagora</strong><br>
-        Verifichiamo se le componenti trovate ricostruiscono il modulo di partenza:<br>
-        • s<sub>x</sub>² = 11.8² = 139.24<br>
-        • s<sub>y</sub>² = (-9.90)² = 98.01<br>
-        • Somma dei quadrati: 139.24 + 98.01 = 237.25<br>
-        • Radice quadrata: √237.25 = <strong>15.40 m</strong> ✓
-      </div>
-      <div class="info-box green">
-        La scomposizione è esatta e verificata matematicamente al 100%!
+        <strong>FASE 4: Prova del nove con Pitagora</strong><br>
+        √237.25 = <strong>15.40 m</strong> ✓. La scomposizione è esatta al 100%!
       </div>
     `;
   }
 
-  drawStep7Canvas();
-}
-
-function drawStep7Canvas() {
-  if (!vc7) return;
-  vc7.clear();
-  vc7.drawGrid();
-
-  const sx = 11.8;
-  const sy = -9.90;
-  const sMod = 15.4;
-
-  // Projections
-  vc7.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.45);
-  vc7.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.45);
-
-  // Arcs
-  vc7.drawArc(0, 0, 4.2, 0, 320, COL.cyan, false, 'α = 320°');
-  vc7.drawArc(0, 0, 2.6, 0, -40, COL.orange, true, 'β = -40°');
-
-  // Component vectors
-  vc7.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
-  vc7.drawPill(sx / 2, 1.8, 's', '_x = +11.8 m', COL.cyan);
-
-  vc7.drawVector(0, 0, 0, sy, COL.orange, 3.2);
-  vc7.drawPill(-2.5, sy / 2, 's', '_y = -9.90 m', COL.orange);
-
-  // Main Vector s
-  vc7.drawVector(0, 0, sx, sy, COL.green, 4.0);
-  vc7.drawPill(sx / 2 + 1.2, sy / 2 - 1.2, 's', ' = 15.4 m', COL.green);
+  if (vcExBook) {
+    vcExBook.clear();
+    vcExBook.drawGrid();
+    const sx = 11.8, sy = -9.90;
+    vcExBook.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.45);
+    vcExBook.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.45);
+    vcExBook.drawArc(0, 0, 4.2, 0, 320, COL.cyan, false, 'α = 320°');
+    vcExBook.drawArc(0, 0, 2.6, 0, -40, COL.orange, true, 'β = -40°');
+    vcExBook.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
+    vcExBook.drawPill(sx / 2, 1.8, 's', '_x = +11.8 m', COL.cyan);
+    vcExBook.drawVector(0, 0, 0, sy, COL.orange, 3.2);
+    vcExBook.drawPill(-2.5, sy / 2, 's', '_y = -9.90 m', COL.orange);
+    vcExBook.drawVector(0, 0, sx, sy, COL.green, 4.0);
+    vcExBook.drawPill(sx / 2 + 1.2, sy / 2 - 1.2, 's', ' = 15.4 m', COL.green);
+  }
 }
 
 // ═══════════════════════════════════════════
-// STEP 8 IMPLEMENTATION: OPERAZIONI IN COMPONENTI
+// IMPLEMENTAZIONE STEP 13: ALGEBRA VETTORIALE
 // ═══════════════════════════════════════════
-let vc8 = null;
-let curOp = 'add';
+let vcAlg = null;
+let curAlgOp = 'add';
 
-function initStep8() {
-  vc8 = new VectorCanvas2('cvAlgebra', { range: 8 });
-  step8SetOp('add');
+function initStepAlgebra() {
+  vcAlg = new VectorCanvas2('cvAlgebra', { range: 8 });
+  stepAlgebraSetOp('add');
 }
 
-function step8SetOp(op) {
-  curOp = op;
+function stepAlgebraSetOp(op) {
+  curAlgOp = op;
   ['Add', 'Scale', 'Sub', 'Opp'].forEach(k => {
     const b = document.getElementById('btnOp' + k);
     if (b) b.classList.toggle('active', k.toLowerCase() === op.toLowerCase());
   });
 
-  const detail = document.getElementById('step8DetailBox');
+  const detail = document.getElementById('stepAlgebraDetailBox');
   const ax = 3, ay = 2;
   const bx = 2, by = 4;
 
   if (op === 'add') {
-    const cx = ax + bx;
-    const cy = ay + by;
+    const cx = ax + bx, cy = ay + by;
     detail.innerHTML = `
-      <strong>Somma: c = a + b</strong><br>
-      Dati: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span> e <span class="vec-b"><span class="vec-sym">b</span> = (2, 4)</span>:<br>
+      <strong>Somma: c⃗ = a⃗ + b⃗</strong><br>
       • c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub> = 3 + 2 = <strong>${cx}</strong><br>
       • c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub> = 2 + 4 = <strong>${cy}</strong><br>
-      Risultato: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>. Modulo: c = √(${cx*cx + cy*cy}) ≈ ${Math.hypot(cx, cy).toFixed(2)}.
+      Risultato: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>.
     `;
   } else if (op === 'scale') {
-    const k = 2;
-    const dx = k * ax;
-    const dy = k * ay;
     detail.innerHTML = `
-      <strong>Moltiplicazione per scalare k = 2: d = 2 · a</strong><br>
-      Dato: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span>:<br>
-      • d<sub>x</sub> = k · a<sub>x</sub> = 2 · 3 = <strong>${dx}</strong><br>
-      • d<sub>y</sub> = k · a<sub>y</sub> = 2 · 2 = <strong>${dy}</strong><br>
-      Risultato: <span class="vec-d"><span class="vec-sym">d</span> = (${dx}, ${dy})</span>. La lunghezza raddoppia, direzione e verso restano invariati!
+      <strong>Moltiplicazione per k = 2: d⃗ = 2 · a⃗</strong><br>
+      • d<sub>x</sub> = 2 · 3 = <strong>6</strong><br>
+      • d<sub>y</sub> = 2 · 2 = <strong>4</strong><br>
+      Risultato: <span class="vec-d"><span class="vec-sym">d</span> = (6, 4)</span>.
     `;
   } else if (op === 'sub') {
-    const ex = ax - bx;
-    const ey = ay - by;
     detail.innerHTML = `
-      <strong>Sottrazione: e = a - b</strong><br>
-      Dati: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span> e <span class="vec-b"><span class="vec-sym">b</span> = (2, 4)</span>:<br>
-      • e<sub>x</sub> = a<sub>x</sub> - b<sub>x</sub> = 3 - 2 = <strong>${ex}</strong><br>
-      • e<sub>y</sub> = a<sub>y</sub> - b<sub>y</sub> = 2 - 4 = <strong>${ey}</strong><br>
-      Risultato: <span class="vec-e"><span class="vec-sym">e</span> = (${ex}, ${ey})</span>.
+      <strong>Sottrazione: e⃗ = a⃗ - b⃗</strong><br>
+      • e<sub>x</sub> = 3 - 2 = <strong>1</strong><br>
+      • e<sub>y</sub> = 2 - 4 = <strong>-2</strong><br>
+      Risultato: <span class="vec-e"><span class="vec-sym">e</span> = (1, -2)</span>.
     `;
   } else if (op === 'opp') {
-    const ox = -ax;
-    const oy = -ay;
     detail.innerHTML = `
-      <strong>Vettore Opposto: -a</strong><br>
-      Dato: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span>:<br>
-      • Componenti opposte: <strong>(-a<sub>x</sub>, -a<sub>y</sub>) = (${ox}, ${oy})</strong><br>
-      Stesso modulo, stessa direzione, ma <strong>verso opposto</strong> (ruotato di 180°)!
+      <strong>Vettore Opposto: -a⃗</strong><br>
+      • (-a<sub>x</sub>, -a<sub>y</sub>) = <strong>(-3, -2)</strong><br>
+      Stesso modulo, stessa direzione, verso opposto!
     `;
   }
 
-  drawStep8Canvas();
+  drawAlgebraCanvas();
 }
 
-function drawStep8Canvas() {
-  if (!vc8) return;
-  vc8.clear();
-  vc8.drawGrid();
+function drawAlgebraCanvas() {
+  if (!vcAlg) return;
+  vcAlg.clear();
+  vcAlg.drawGrid();
 
   const ax = 3, ay = 2;
   const bx = 2, by = 4;
 
-  if (curOp === 'add') {
+  if (curAlgOp === 'add') {
     const cx = ax + bx, cy = ay + by;
-    vc8.drawVector(0, 0, ax, ay, COL.a, 3);
-    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+    vcAlg.drawVector(0, 0, ax, ay, COL.a, 3);
+    vcAlg.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
 
-    vc8.drawVector(ax, ay, cx, cy, COL.b, 3);
-    vc8.drawPill(ax + bx / 2 + 0.6, ay + by / 2, 'b', ' (2, 4)', COL.b);
+    vcAlg.drawVector(ax, ay, cx, cy, COL.b, 3);
+    vcAlg.drawPill(ax + bx / 2 + 0.6, ay + by / 2, 'b', ' (2, 4)', COL.b);
 
-    vc8.drawVector(0, 0, cx, cy, COL.sum, 3.8);
-    vc8.drawPill(cx / 2 - 0.6, cy / 2 + 0.5, 'c', ` = (${cx}, ${cy})`, COL.sum);
-  } else if (curOp === 'scale') {
-    vc8.drawVector(0, 0, ax * 2, ay * 2, COL.scaled, 3.8);
-    vc8.drawPill(ax + 0.5, ay + 0.6, 'd', ' = 2·a (6, 4)', COL.scaled);
+    vcAlg.drawVector(0, 0, cx, cy, COL.sum, 3.8);
+    vcAlg.drawPill(cx / 2 - 0.6, cy / 2 + 0.5, 'c', ` = (${cx}, ${cy})`, COL.sum);
+  } else if (curAlgOp === 'scale') {
+    vcAlg.drawVector(0, 0, ax * 2, ay * 2, COL.scaled, 3.8);
+    vcAlg.drawPill(ax + 0.5, ay + 0.6, 'd', ' = 2·a (6, 4)', COL.scaled);
 
-    vc8.drawVector(0, 0, ax, ay, COL.a, 2.8);
-    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
-  } else if (curOp === 'sub') {
+    vcAlg.drawVector(0, 0, ax, ay, COL.a, 2.8);
+    vcAlg.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+  } else if (curAlgOp === 'sub') {
     const ex = ax - bx, ey = ay - by;
-    vc8.drawVector(0, 0, ax, ay, COL.a, 3);
-    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+    vcAlg.drawVector(0, 0, ax, ay, COL.a, 3);
+    vcAlg.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
 
-    vc8.drawVector(0, 0, bx, by, COL.b, 3);
-    vc8.drawPill(bx / 2 + 0.5, by / 2, 'b', ' (2, 4)', COL.b);
+    vcAlg.drawVector(0, 0, bx, by, COL.b, 3);
+    vcAlg.drawPill(bx / 2 + 0.5, by / 2, 'b', ' (2, 4)', COL.b);
 
-    vc8.drawVector(0, 0, ex, ey, COL.red, 3.8);
-    vc8.drawPill(ex / 2 - 0.6, ey / 2 - 0.4, 'e', ` = (${ex}, ${ey})`, COL.red);
-  } else if (curOp === 'opp') {
-    vc8.drawVector(0, 0, ax, ay, COL.a, 3.2);
-    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+    vcAlg.drawVector(0, 0, ex, ey, COL.red, 3.8);
+    vcAlg.drawPill(ex / 2 - 0.6, ey / 2 - 0.4, 'e', ` = (${ex}, ${ey})`, COL.red);
+  } else if (curAlgOp === 'opp') {
+    vcAlg.drawVector(0, 0, ax, ay, COL.a, 3.2);
+    vcAlg.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
 
-    vc8.drawVector(0, 0, -ax, -ay, COL.red, 3.6);
-    vc8.drawPill(-ax / 2 - 0.5, -ay / 2 - 0.4, '', '-a (-3, -2)', COL.red);
+    vcAlg.drawVector(0, 0, -ax, -ay, COL.red, 3.6);
+    vcAlg.drawPill(-ax / 2 - 0.5, -ay / 2 - 0.4, '', '-a (-3, -2)', COL.red);
   }
 }
 
 // ═══════════════════════════════════════════
-// STEP 9 IMPLEMENTATION: GONIOMETRO 360 PLAYGROUND
+// IMPLEMENTAZIONE STEP 14: GONIOMETRO PLAYGROUND
 // ═══════════════════════════════════════════
-let vc9 = null;
+let vcLab = null;
 
-function initStep9() {
-  vc9 = new VectorCanvas2('cvLab', { range: 7 });
-  updateStep9();
+function initStepLab() {
+  vcLab = new VectorCanvas2('cvLab', { range: 7 });
+  updateStepLab();
 }
 
-function updateStep9() {
-  if (!vc9) return;
+function updateStepLab() {
+  if (!vcLab) return;
   const deg = parseFloat(document.getElementById('sliderLabAngle').value);
   const mod = parseFloat(document.getElementById('sliderLabMod').value);
 
@@ -2283,7 +2655,7 @@ function updateStep9() {
   else if (deg > 180 && deg <= 270) quad = "III";
   else if (deg > 270 && deg < 360) quad = "IV";
 
-  const formCard = document.getElementById('step9FormulaCard');
+  const formCard = document.getElementById('stepLabFormulaCard');
   if (formCard) {
     formCard.innerHTML = `
       <strong>a<sub>x</sub> = ${mod.toFixed(2)} · cos(${deg}°) = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
@@ -2291,50 +2663,45 @@ function updateStep9() {
     `;
   }
 
-  const info = document.getElementById('step9InfoBox');
+  const info = document.getElementById('stepLabInfoBox');
   if (info) {
     info.innerHTML = `
       • <strong>Angolo antiorario (+):</strong> α = ${deg}°<br>
-      • <strong>Angolo orario equivalente (-):</strong> β = ${negAngle}°<br>
+      • <strong>Angolo orario (-):</strong> β = ${negAngle}°<br>
       • <strong>Quadrante:</strong> ${quad} Quadrante<br>
       • <strong>cos(${deg}°):</strong> ${cosV.toFixed(3)} ➜ a<sub>x</sub> verso ${ax >= 0 ? 'destra (→)' : 'sinistra (←)'}<br>
       • <strong>sin(${deg}°):</strong> ${sinV.toFixed(3)} ➜ a<sub>y</sub> verso ${ay >= 0 ? 'l\'alto (↑)' : 'il basso (↓)'}
     `;
   }
 
-  const pit = document.getElementById('step9PitagoraBox');
+  const pit = document.getElementById('stepLabPitagoraBox');
   if (pit) {
     pit.innerHTML = `
       <strong>Ricostruzione con Pitagora:</strong><br>
-      a = √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = √(${ (ax*ax).toFixed(2) } + ${ (ay*ay).toFixed(2) }) = √${ (ax*ax + ay*ay).toFixed(2) } = <strong>${mod.toFixed(2)}</strong>
+      a = √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = <strong>${mod.toFixed(2)}</strong>
     `;
   }
 
-  vc9.clear();
-  vc9.drawGrid();
+  vcLab.clear();
+  vcLab.drawGrid();
 
-  // Projections
-  vc9.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
-  vc9.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+  vcLab.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vcLab.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+  vcLab.drawArc(0, 0, 1.3, 0, deg, COL.yellow, false, `${deg}°`);
 
-  // Arcs
-  vc9.drawArc(0, 0, 1.3, 0, deg, COL.yellow, false, `${deg}°`);
+  vcLab.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vcLab.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
 
-  // Components
-  vc9.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
-  vc9.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
+  vcLab.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vcLab.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
 
-  vc9.drawVector(0, 0, 0, ay, COL.orange, 3.2);
-  vc9.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
-
-  // Main Vector
-  vc9.drawVector(0, 0, ax, ay, COL.green, 3.8);
-  vc9.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(2)}`, COL.green);
+  vcLab.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vcLab.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(2)}`, COL.green);
 }
 
-function step9QuickSet(deg) {
+function stepLabQuickSet(deg) {
   document.getElementById('sliderLabAngle').value = deg;
-  updateStep9();
+  updateStepLab();
 }
 
 // ═══════════════════════════════════════════
@@ -2354,16 +2721,33 @@ function checkQuiz(el, isCorrect, fbId) {
   if (fb) {
     fb.classList.add('show', isCorrect ? 'ok' : 'ko');
     if (isCorrect) {
-      fb.innerHTML = '✅ <strong>Esatto! Ottima risposta!</strong> Hai applicato correttamente il concetto.';
+      fb.innerHTML = '✅ <strong>Esatto! Ottima risposta!</strong>';
     } else {
-      fb.innerHTML = '❌ <strong>Risposta non corretta.</strong> Rileggi con calma la spiegazione e le formule nella slide corrispondente!';
+      fb.innerHTML = '❌ <strong>Risposta non corretta.</strong> Rivedi la spiegazione nella slide corrispondente!';
     }
   }
 }
 
 // ═══════════════════════════════════════════
-// STEP NAVIGATION ENGINE
+// STEP & SECTION NAVIGATION
 // ═══════════════════════════════════════════
+
+function updateSectionPills() {
+  const b1 = document.getElementById('secBtn1');
+  const b2 = document.getElementById('secBtn2');
+  const b3 = document.getElementById('secBtn3');
+  if (!b1 || !b2 || !b3) return;
+
+  b1.classList.toggle('active', currentStep >= 1 && currentStep <= 4);
+  b2.classList.toggle('active', currentStep === 5);
+  b3.classList.toggle('active', currentStep >= 6);
+}
+
+function jumpToSection(sec) {
+  if (sec === 'start') goToStep(1);
+  else if (sec === 'middle') goToStep(5);
+  else if (sec === 'end') goToStep(6);
+}
 
 function loadCurrentStep() {
   cancelAnim();
@@ -2377,7 +2761,6 @@ function loadCurrentStep() {
   const card = document.getElementById('focusCard');
   card.innerHTML = step.render();
 
-  // Jump buttons selector
   const jumpSel = document.getElementById('jumpSelector');
   jumpSel.innerHTML = '';
   for (let i = 1; i <= totalSteps; i++) {
@@ -2394,7 +2777,8 @@ function loadCurrentStep() {
     ? 'RICOMINCIA <span>↺</span>'
     : 'SUCCESSIVO <span>►</span>';
 
-  // Mount callback
+  updateSectionPills();
+
   if (step.onMount) {
     setTimeout(step.onMount, 50);
   }
