@@ -142,6 +142,16 @@ const MATERIE = [
                 url: "/fisica/giordano-bruno/vettori.html"
               }
             ]
+          },
+          {
+            title: "I Vettori — Parte 2",
+            topics: [
+              {
+                title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
+                desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
+                url: "/fisica/giordano-bruno/vettori-parte-2.html"
+              }
+            ]
           }
         ]
       },

@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Vettori — Parte 2: Componenti & Trigonometria — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — 3BLUE1BROWN INSPIRED
+   Dark BG, neon accents, crisp cartesian grid
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #1b1b2f;
+  --bg-deep: #121225;
+  --card-bg: #16162b;
+  --card-inner: #1e1e38;
+  --grid-color: rgba(100, 130, 200, 0.12);
+  --grid-axis: rgba(180, 200, 255, 0.35);
+  --green: #39ff14;
+  --green-rgb: 57, 255, 20;
+  --cyan: #00f5ff;
+  --cyan-rgb: 0, 245, 255;
+  --yellow: #ffee00;
+  --yellow-rgb: 255, 238, 0;
+  --red: #ff3366;
+  --red-rgb: 255, 51, 102;
+  --blue: #58c4dd;
+  --blue-rgb: 88, 196, 221;
+  --orange: #ff8c42;
+  --orange-rgb: 255, 140, 66;
+  --purple: #b388ff;
+  --purple-rgb: 179, 136, 255;
+  --white: #f0f4fc;
+  --text-dim: #8b9bb4;
+  --border: rgba(88, 196, 221, 0.2);
+  --glow-blue: 0 0 16px rgba(88, 196, 221, 0.35);
+  --glow-green: 0 0 16px rgba(57, 255, 20, 0.35);
+  --glow-yellow: 0 0 16px rgba(255, 238, 0, 0.35);
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Subtle scanline CRT effect */
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.12) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* ═══════════ TOP BAR ═══════════ */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.nav-links-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--green);
+  text-decoration: none;
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  letter-spacing: 1px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(57,255,20,0.22);
+  border-radius: 4px;
+  background: rgba(57,255,20,0.06);
+  transition: all 0.2s ease;
+}
+.back-link:hover {
+  background: rgba(57,255,20,0.18);
+  box-shadow: var(--glow-green);
+  transform: translateX(-2px);
+}
+.sub-link {
+  color: var(--blue);
+  border-color: rgba(88,196,221,0.25);
+  background: rgba(88,196,221,0.06);
+}
+.sub-link:hover {
+  background: rgba(88,196,221,0.2);
+  box-shadow: var(--glow-blue);
+}
+.school-tag {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.step-indicator {
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  color: var(--yellow);
+  background: rgba(255,238,0,0.1);
+  border: 1px solid rgba(255,238,0,0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ═══════════ MAIN LAYOUT ═══════════ */
+.main-stage {
+  flex: 1;
+  max-width: 1240px;
+  width: 96%;
+  margin: 1.2rem auto 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.step-header {
+  text-align: center;
+  margin-bottom: 1.1rem;
+}
+.step-subtitle-badge {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--blue);
+  background: rgba(88,196,221,0.08);
+  border: 1px solid rgba(88,196,221,0.22);
+  padding: 0.25rem 0.65rem;
+  border-radius: 3px;
+  margin-bottom: 0.4rem;
+  letter-spacing: 1.5px;
+}
+.step-title {
+  font-family: var(--font-title);
+  font-size: 1.55rem;
+  color: var(--blue);
+  text-shadow: var(--glow-blue);
+  letter-spacing: 1.5px;
+  margin-bottom: 0.35rem;
+}
+.step-rule {
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  max-width: 820px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* ═══════════ CONTENT CARD ═══════════ */
+.focus-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+  animation: cardFade 0.25s ease;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+@keyframes cardFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════ CANVAS AREA ═══════════ */
+.canvas-wrapper {
+  display: flex;
+  gap: 1.3rem;
+  align-items: stretch;
+  flex: 1;
+}
+.canvas-side {
+  flex: 1.1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.canvas-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 520px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+.canvas-container canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.explain-side {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  justify-content: flex-start;
+}
+
+@media (max-width: 960px) {
+  .canvas-wrapper { flex-direction: column; }
+  .explain-side { min-width: 100%; }
+}
+
+/* ═══════════ EXPLANATION PANELS ═══════════ */
+.info-box {
+  background: rgba(88,196,221,0.06);
+  border-left: 3px solid var(--blue);
+  padding: 0.85rem 1.05rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+.info-box.green { background: rgba(57,255,20,0.06); border-color: var(--green); }
+.info-box.yellow { background: rgba(255,238,0,0.06); border-color: var(--yellow); }
+.info-box.orange { background: rgba(255,140,66,0.06); border-color: var(--orange); }
+.info-box.red { background: rgba(255,51,102,0.06); border-color: var(--red); }
+.info-box.purple { background: rgba(179,136,255,0.06); border-color: var(--purple); }
+.info-box strong { color: var(--white); }
+.info-box .highlight { color: var(--yellow); font-weight: 600; }
+
+.key-concept {
+  background: rgba(255,238,0,0.07);
+  border: 1px solid rgba(255,238,0,0.22);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--yellow);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* Math formula callout card */
+.formula-card {
+  background: var(--card-inner);
+  border: 1px solid rgba(88,196,221,0.28);
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--cyan);
+  text-align: center;
+  line-height: 1.7;
+}
+.formula-card.big {
+  font-size: 1.15rem;
+  border-color: rgba(57,255,20,0.35);
+  color: var(--green);
+}
+.formula-card strong {
+  color: var(--white);
+}
+
+/* Real Vector arrow in HTML */
+.vec-sym {
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 0 1px;
+}
+.vec-sym::before {
+  content: "→";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0.8);
+  font-size: 0.75em;
+  line-height: 1;
+  color: inherit;
+}
+
+.vec-a { color: #58c4dd; }
+.vec-b { color: #ff8c42; }
+.vec-s { color: #39ff14; }
+.vec-c { color: #39ff14; }
+.vec-d { color: #b388ff; }
+.vec-e { color: #ff3366; }
+
+/* ═══════════ INTERACTIVE SLIDERS & CONTROLS ═══════════ */
+.ctrl-panel {
+  width: 100%;
+  background: rgba(18,18,37,0.7);
+  border: 1px solid rgba(88,196,221,0.2);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.ctrl-row label {
+  color: var(--text-dim);
+  min-width: 110px;
+}
+.ctrl-row .val-disp {
+  color: var(--cyan);
+  font-weight: bold;
+  min-width: 65px;
+  text-align: right;
+}
+.ctrl-slider {
+  flex: 1;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.anim-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.anim-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(88,196,221,0.3);
+  background: rgba(88,196,221,0.08);
+  color: var(--blue);
+  letter-spacing: 0.5px;
+}
+.anim-btn:hover {
+  background: rgba(88,196,221,0.2);
+  box-shadow: var(--glow-blue);
+}
+.anim-btn.active {
+  background: var(--blue);
+  color: var(--bg);
+  font-weight: bold;
+  border-color: var(--blue);
+}
+.anim-btn.green { border-color: rgba(57,255,20,0.3); color: var(--green); background: rgba(57,255,20,0.08); }
+.anim-btn.green:hover { background: rgba(57,255,20,0.2); box-shadow: var(--glow-green); }
+.anim-btn.green.active { background: var(--green); color: var(--bg); border-color: var(--green); }
+
+.anim-btn.yellow { border-color: rgba(255,238,0,0.3); color: var(--yellow); background: rgba(255,238,0,0.08); }
+.anim-btn.yellow:hover { background: rgba(255,238,0,0.2); box-shadow: var(--glow-yellow); }
+.anim-btn.yellow.active { background: var(--yellow); color: var(--bg); border-color: var(--yellow); }
+
+.anim-btn.orange { border-color: rgba(255,140,66,0.3); color: var(--orange); background: rgba(255,140,66,0.08); }
+.anim-btn.orange:hover { background: rgba(255,140,66,0.2); }
+.anim-btn.orange.active { background: var(--orange); color: var(--bg); border-color: var(--orange); }
+
+/* ═══════════ DATA TABLES ═══════════ */
+.trig-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-align: center;
+  background: rgba(18,18,37,0.6);
+  border: 1px solid rgba(88,196,221,0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.4rem 0;
+}
+.trig-table th, .trig-table td {
+  padding: 0.55rem 0.6rem;
+  border: 1px solid rgba(88,196,221,0.18);
+}
+.trig-table th {
+  background: rgba(88,196,221,0.14);
+  color: var(--cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.52rem;
+  letter-spacing: 1px;
+}
+.trig-table tr:hover td {
+  background: rgba(88,196,221,0.07);
+}
+.trig-table .cell-highlight {
+  color: var(--yellow);
+  font-weight: bold;
+}
+.trig-table .row-title {
+  color: var(--white);
+  font-weight: bold;
+  text-align: left;
+}
+
+/* ═══════════ BOTTOM NAV ═══════════ */
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.2rem;
+  padding: 0.6rem 0;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.step-jump-selector {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.jump-btn {
+  background: rgba(22,22,43,0.8);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-dim);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jump-btn:hover {
+  border-color: var(--blue);
+  color: var(--white);
+}
+.jump-btn.active {
+  background: var(--blue);
+  color: var(--bg);
+  border-color: var(--blue);
+  box-shadow: var(--glow-blue);
+  font-weight: bold;
+}
+.nav-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 1px;
+}
+.btn-prev {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-dim);
+}
+.btn-prev:hover:not(:disabled) {
+  border-color: var(--white);
+  color: var(--white);
+  transform: translateX(-3px);
+}
+.btn-prev:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-next {
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: var(--bg);
+  font-weight: bold;
+  box-shadow: var(--glow-blue);
+}
+.btn-next:hover {
+  background: #7dd8ee;
+  box-shadow: 0 0 22px rgba(88,196,221,0.6);
+  transform: translateX(3px);
+}
+
+/* ═══════════ QUIZ STYLES ═══════════ */
+.quiz-box {
+  background: rgba(18,18,37,0.7);
+  border: 1px solid rgba(88,196,221,0.25);
+  border-radius: 10px;
+  padding: 1.1rem;
+  margin-bottom: 1rem;
+}
+.quiz-q-title {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--yellow);
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+.quiz-option {
+  background: rgba(88,196,221,0.06);
+  border: 1px solid rgba(88,196,221,0.2);
+  border-radius: 8px;
+  padding: 0.65rem 0.95rem;
+  margin-bottom: 0.45rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.86rem;
+  color: var(--white);
+  font-family: var(--font-body);
+}
+.quiz-option:hover {
+  border-color: var(--blue);
+  background: rgba(88,196,221,0.14);
+}
+.quiz-option.correct {
+  border-color: var(--green);
+  background: rgba(57,255,20,0.14);
+  color: var(--green);
+  font-weight: bold;
+}
+.quiz-option.wrong {
+  border-color: var(--red);
+  background: rgba(255,51,102,0.14);
+  color: var(--red);
+}
+.quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+.quiz-feedback {
+  font-size: 0.85rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  line-height: 1.55;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(57,255,20,0.08); color: var(--green); border-left: 3px solid var(--green); }
+.quiz-feedback.ko { background: rgba(255,51,102,0.08); color: var(--red); border-left: 3px solid var(--red); }
+
+/* Quick Quadrant Badges */
+.quad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+.quad-item {
+  background: rgba(18,18,37,0.7);
+  border: 1px solid rgba(88,196,221,0.2);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quad-item:hover, .quad-item.active {
+  border-color: var(--cyan);
+  background: rgba(0,245,255,0.1);
+}
+.quad-item.active {
+  box-shadow: inset 0 0 10px rgba(0,245,255,0.25);
+}
+.quad-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--yellow);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  .top-bar, .bottom-nav { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="nav-links-group">
+      <a href="/#fisica-laboratorio" class="back-link">
+        <span>◄</span> FISICA LAB
+      </a>
+      <a href="/fisica/giordano-bruno/vettori.html" class="back-link sub-link">
+        <span>◄</span> PARTE 1: BASI
+      </a>
+    </div>
+    <div class="school-tag">
+      <span>🏫</span> ISS GIORDANO BRUNO — FISICA
+    </div>
+    <div class="step-indicator" id="stepCounterText">
+      PASSO 1 DI 10
+    </div>
+  </header>
+
+  <main class="main-stage">
+    <div class="step-header">
+      <div class="step-subtitle-badge" id="stepBadge">FASE 1</div>
+      <h1 class="step-title" id="stepTitle">I VETTORI — PARTE 2</h1>
+      <p class="step-rule" id="stepRule"></p>
+    </div>
+
+    <div class="focus-card" id="focusCard"></div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn btn-prev" id="btnPrev" onclick="prevStep()" disabled>
+        <span>◄</span> PRECEDENTE
+      </button>
+      <div class="step-jump-selector" id="jumpSelector"></div>
+      <button class="nav-btn btn-next" id="btnNext" onclick="nextStep()">
+        SUCCESSIVO <span>►</span>
+      </button>
+    </div>
+  </main>
+
+<script>
+// ═══════════════════════════════════════════
+// I VETTORI — PARTE 2: COMPONENTI & TRIGONOMETRIA
+// ═══════════════════════════════════════════
+
+let currentStep = 1;
+let animFrameId = null;
+
+// Palette Colors
+const COL = {
+  bg: '#1b1b2f',
+  bgDeep: '#121225',
+  grid: 'rgba(100,130,200,0.12)',
+  axis: 'rgba(180,200,255,0.35)',
+  axisLabel: 'rgba(180,200,255,0.5)',
+  a: '#58c4dd',       // Blue / Cyan
+  b: '#ff8c42',       // Orange
+  s: '#39ff14',       // Phosphor Green
+  hypot: '#58c4dd',   // Cyan / Blue
+  catOpp: '#ff8c42',  // Orange
+  catAdj: '#39ff14',  // Green
+  sum: '#39ff14',
+  diff: '#ff3366',
+  scaled: '#b388ff',
+  yellow: '#ffee00',
+  red: '#ff3366',
+  white: '#f0f4fc',
+  dimWhite: 'rgba(240,244,252,0.4)',
+  dashed: 'rgba(88,196,221,0.45)'
+};
+
+// ═══════════════════════════════════════════
+// VECTOR & GEOMETRY CANVAS ENGINE
+// ═══════════════════════════════════════════
+
+class VectorCanvas2 {
+  constructor(canvasId, options = {}) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.range = options.range || 6; // Coords range from -range to +range
+    this.showAxes = options.showAxes !== false;
+    this.centerOffsetX = options.centerOffsetX || 0; // In units
+    this.centerOffsetY = options.centerOffsetY || 0;
+    this.resize();
+    this._resizeHandler = () => this.resize();
+    window.addEventListener('resize', this._resizeHandler);
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    const s = Math.min(rect.width, rect.height, 520);
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = s * dpr;
+    this.canvas.height = s * dpr;
+    this.canvas.style.width = s + 'px';
+    this.canvas.style.height = s + 'px';
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.size = s;
+    this.unit = s / (this.range * 2);
+    this.ox = s / 2 + this.centerOffsetX * this.unit;
+    this.oy = s / 2 - this.centerOffsetY * this.unit;
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.size, this.size);
+  }
+
+  toScreen(x, y) {
+    return [this.ox + x * this.unit, this.oy - y * this.unit];
+  }
+
+  toWorld(sx, sy) {
+    return [(sx - this.ox) / this.unit, (this.oy - sy) / this.unit];
+  }
+
+  drawGrid() {
+    const ctx = this.ctx;
+    const s = this.size;
+    const u = this.unit;
+    const r = this.range;
+
+    // Grid lines
+    ctx.strokeStyle = COL.grid;
+    ctx.lineWidth = 1;
+    for (let i = -r * 2; i <= r * 2; i++) {
+      const px = this.ox + i * u;
+      const py = this.oy - i * u;
+      if (px >= 0 && px <= s) {
+        ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, s); ctx.stroke();
+      }
+      if (py >= 0 && py <= s) {
+        ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(s, py); ctx.stroke();
+      }
+    }
+
+    if (!this.showAxes) return;
+
+    // Primary Axes
+    ctx.strokeStyle = COL.axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, this.oy); ctx.lineTo(s, this.oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(this.ox, 0); ctx.lineTo(this.ox, s); ctx.stroke();
+
+    // Axis Labels
+    ctx.font = '11px "Share Tech Mono", monospace';
+    ctx.fillStyle = COL.axisLabel;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const step = r > 10 ? 2 : 1;
+    for (let i = -Math.floor(r); i <= Math.floor(r); i += step) {
+      if (i === 0) continue;
+      const px = this.ox + i * u;
+      if (px > 10 && px < s - 10) ctx.fillText(i, px, this.oy + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = -Math.floor(r); i <= Math.floor(r); i += step) {
+      if (i === 0) continue;
+      const py = this.oy - i * u;
+      if (py > 10 && py < s - 10) ctx.fillText(i, this.ox - 5, py);
+    }
+
+    // Origin label
+    ctx.fillStyle = COL.dimWhite;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('O', this.ox - 5, this.oy + 4);
+
+    // Axis names
+    ctx.font = 'bold 13px "Share Tech Mono", monospace';
+    ctx.fillStyle = COL.axisLabel;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', s - 14, this.oy + 14);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y', this.ox + 14, 14);
+  }
+
+  // Draw clean, smooth vector arrow
+  drawVector(x1, y1, x2, y2, color, lineWidth = 2.5, alpha = 1) {
+    const ctx = this.ctx;
+    const [sx1, sy1] = this.toScreen(x1, y1);
+    const [sx2, sy2] = this.toScreen(x2, y2);
+    const angle = Math.atan2(sy2 - sy1, sx2 - sx1);
+    const dist = Math.hypot(sx2 - sx1, sy2 - sy1);
+    if (dist < 1) return;
+    const headLen = Math.min(13, dist * 0.4);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    // Shaft
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+
+    // Arrowhead
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(sx2, sy2);
+    ctx.lineTo(sx2 - headLen * Math.cos(angle - 0.35), sy2 - headLen * Math.sin(angle - 0.35));
+    ctx.lineTo(sx2 - headLen * Math.cos(angle + 0.35), sy2 - headLen * Math.sin(angle + 0.35));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // Draw dashed projection line
+  drawDashedLine(x1, y1, x2, y2, color = COL.dashed, alpha = 0.6) {
+    const ctx = this.ctx;
+    const [sx1, sy1] = this.toScreen(x1, y1);
+    const [sx2, sy2] = this.toScreen(x2, y2);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  // Draw angle arc with label
+  drawArc(cx, cy, rWorld, startDeg, endDeg, color, counterClockwise = false, label = '') {
+    const ctx = this.ctx;
+    const [scx, scy] = this.toScreen(cx, cy);
+    const rPx = rWorld * this.unit;
+    const sRad = -startDeg * Math.PI / 180;
+    const eRad = -endDeg * Math.PI / 180;
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(scx, scy, rPx, sRad, eRad, counterClockwise);
+    ctx.stroke();
+
+    // Arrow on arc if desired
+    const tipAngle = counterClockwise ? eRad : eRad;
+    const tangent = tipAngle + (counterClockwise ? -Math.PI / 2 : Math.PI / 2);
+    const tipX = scx + rPx * Math.cos(tipAngle);
+    const tipY = scy + rPx * Math.sin(tipAngle);
+    ctx.beginPath();
+    ctx.moveTo(tipX, tipY);
+    ctx.lineTo(tipX - 7 * Math.cos(tangent - 0.5), tipY - 7 * Math.sin(tangent - 0.5));
+    ctx.lineTo(tipX - 7 * Math.cos(tangent + 0.5), tipY - 7 * Math.sin(tangent + 0.5));
+    ctx.closePath();
+    ctx.fill();
+
+    if (label) {
+      const midAngle = (sRad + eRad) / 2;
+      const lx = scx + (rPx + 16) * Math.cos(midAngle);
+      const ly = scy + (rPx + 16) * Math.sin(midAngle);
+      ctx.font = 'bold 12px "Share Tech Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, lx, ly);
+    }
+    ctx.restore();
+  }
+
+  // Draw 90 degree square indicator
+  drawRightAngle(x, y, dirX = 1, dirY = 1, sizeWorld = 0.45, color = 'rgba(255,238,0,0.7)') {
+    const ctx = this.ctx;
+    const sz = sizeWorld;
+    const [p0x, p0y] = this.toScreen(x, y);
+    const [p1x, p1y] = this.toScreen(x + dirX * sz, y);
+    const [p2x, p2y] = this.toScreen(x + dirX * sz, y + dirY * sz);
+    const [p3x, p3y] = this.toScreen(x, y + dirY * sz);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.4;
+    ctx.fillStyle = 'rgba(255,238,0,0.12)';
+    ctx.beginPath();
+    ctx.moveTo(p1x, p1y);
+    ctx.lineTo(p2x, p2y);
+    ctx.lineTo(p3x, p3y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(p0x, p0y);
+    ctx.lineTo(p1x, p1y);
+    ctx.lineTo(p2x, p2y);
+    ctx.lineTo(p3x, p3y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Draw point marker
+  drawPoint(x, y, color = COL.white, radius = 4, label = '') {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(x, y);
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+    ctx.fill();
+    if (label) {
+      ctx.font = 'bold 12px "Share Tech Mono", monospace';
+      ctx.fillText(label, sx + 8, sy - 8);
+    }
+    ctx.restore();
+  }
+
+  // Procedural Pill Badge (Vector Arrow rendered natively without glyph bugs)
+  drawPill(worldX, worldY, symbol, remainder, color, bg = 'rgba(18, 18, 37, 0.94)', prefix = '') {
+    const ctx = this.ctx;
+    const [sx, sy] = this.toScreen(worldX, worldY);
+    ctx.save();
+    ctx.font = 'bold 12px "Share Tech Mono", monospace';
+
+    const cleanPref = prefix || '';
+    const cleanSym = symbol || '';
+    const cleanRem = remainder || '';
+
+    const prefWidth = cleanPref ? ctx.measureText(cleanPref).width : 0;
+    const symWidth = cleanSym ? ctx.measureText(cleanSym).width : 0;
+    const remWidth = cleanRem ? ctx.measureText(cleanRem).width : 0;
+    const totalW = prefWidth + symWidth + remWidth;
+    const totalH = 17;
+    const padX = 7;
+    const padY = 3;
+
+    const boxW = totalW + padX * 2;
+    const boxH = totalH + padY * 2;
+    let boxX = sx - boxW / 2;
+    let boxY = sy - boxH / 2;
+
+    // Viewport clamp
+    if (boxX + boxW > this.size - 8) boxX = this.size - 8 - boxW;
+    if (boxX < 8) boxX = 8;
+    if (boxY + boxH > this.size - 8) boxY = this.size - 8 - boxH;
+    if (boxY < 8) boxY = 8;
+
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 4);
+    else ctx.rect(boxX, boxY, boxW, boxH);
+    ctx.fill();
+    ctx.stroke();
+
+    let curX = boxX + padX;
+    const textY = boxY + boxH / 2 + 0.5;
+
+    if (cleanPref) {
+      ctx.fillStyle = color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cleanPref, curX, textY);
+      curX += prefWidth;
+    }
+
+    if (cleanSym) {
+      ctx.fillStyle = color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cleanSym, curX, textY);
+
+      // Mini vector arrow procedurally drawn
+      const arrowY = textY - 8;
+      const arrowW = Math.max(7, symWidth - 1);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(curX, arrowY);
+      ctx.lineTo(curX + arrowW, arrowY);
+      ctx.lineTo(curX + arrowW - 2.5, arrowY - 2.5);
+      ctx.moveTo(curX + arrowW, arrowY);
+      ctx.lineTo(curX + arrowW - 2.5, arrowY + 2.5);
+      ctx.stroke();
+
+      curX += symWidth;
+    }
+
+    if (cleanRem) {
+      ctx.fillStyle = color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cleanRem, curX, textY);
+    }
+    ctx.restore();
+  }
+
+  destroy() {
+    window.removeEventListener('resize', this._resizeHandler);
+  }
+}
+
+// ═══════════════════════════════════════════
+// ANIMATION & TIMING HELPERS
+// ═══════════════════════════════════════════
+
+function cancelAnim() {
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId);
+    animFrameId = null;
+  }
+}
+
+// ═══════════════════════════════════════════
+// SLIDE STEPS DEFINITIONS (10 MODULAR PHASES)
+// ═══════════════════════════════════════════
+
+const STEPS = [
+
+  // ── STEP 1: PITAGORA E IL MODULO ──
+  {
+    badge: "FASE 1 — IL FONDAMENTO",
+    title: "IL TEOREMA DI PITAGORA & IL MODULO",
+    rule: "Se conosciamo le componenti a_x e a_y di un vettore a, possiamo sempre risalire alla sua lunghezza (modulo) applicando il Teorema di Pitagora: a = √(a_x² + a_y²).",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvPitagora"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Componente a<sub>x</sub>:</label>
+              <input type="range" class="ctrl-slider" id="sliderAx" min="-5" max="5" step="0.5" value="4" oninput="updateStep1()">
+              <span class="val-disp" id="dispAx">+4.0</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Componente a<sub>y</sub>:</label>
+              <input type="range" class="ctrl-slider" id="sliderAy" min="-5" max="5" step="0.5" value="3" oninput="updateStep1()">
+              <span class="val-disp" id="dispAy">+3.0</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" onclick="step1SetPreset(4, 3)">TERNA (4, 3) ➜ 5</button>
+            <button class="anim-btn" onclick="step1SetPreset(-3, 4)">QUADRANTE II (-3, 4)</button>
+            <button class="anim-btn" onclick="step1SetPreset(3, -4)">QUADRANTE IV (3, -4)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big">
+            <strong>a = √(a<sub>x</sub>² + a<sub>y</sub>²)</strong>
+          </div>
+          <div class="info-box">
+            <strong>📐 Il Triangolo Rettangolo delle Componenti</strong><br>
+            Il vettore <span class="vec-a"><span class="vec-sym">a</span></span> costituisce l'<strong>ipotenusa</strong> di un triangolo rettangolo, mentre le sue proiezioni ortogonali lungo gli assi coordinati formano i due <strong>cateti</strong>.
+          </div>
+          <div class="info-box green">
+            <strong>Calcolo in tempo reale:</strong><br>
+            • Cateto orizzontale: |a<sub>x</sub>| = <span id="boxAx" class="highlight">4.0</span><br>
+            • Cateto verticale: |a<sub>y</sub>| = <span id="boxAy" class="highlight">3.0</span><br>
+            • Somma dei quadrati: a<sub>x</sub>² + a<sub>y</sub>² = <span id="boxSqSum">16 + 9 = 25</span><br>
+            • Modulo: a = √(<span id="boxRad">25</span>) = <strong id="boxMod" style="color:var(--green); font-size:1.05rem;">5.00</strong>
+          </div>
+          <div class="key-concept">
+            💡 Poiché ogni numero al quadrato è positivo o nullo,<br>
+            <strong>il modulo è SEMPRE positivo</strong>, anche se le componenti sono negative!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep1(); }
+  },
+
+  // ── STEP 2: LA MATEMATICA CHE USERAI — SENO E COSENO ──
+  {
+    badge: "FASE 2 — LA MATEMATICA",
+    title: "IL SENO E IL COSENO DI UN ANGOLO ACUTO",
+    rule: "In un triangolo rettangolo, il seno di un angolo acuto è il rapporto tra il cateto opposto e l'ipotenusa; il coseno è il rapporto tra il cateto adiacente e l'ipotenusa.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvTrigBase"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Angolo acuto α (o Ĉ):</label>
+              <input type="range" class="ctrl-slider" id="sliderTrigAngle" min="15" max="75" step="1" value="35" oninput="updateStep2()">
+              <span class="val-disp" id="dispTrigAngle">35°</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Ipotenusa BC:</label>
+              <input type="range" class="ctrl-slider" id="sliderTrigHyp" min="3" max="5.5" step="0.5" value="5" oninput="updateStep2()">
+              <span class="val-disp" id="dispTrigHyp">5.0</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn" onclick="step2SetAngle(30)">α = 30°</button>
+            <button class="anim-btn" onclick="step2SetAngle(45)">α = 45°</button>
+            <button class="anim-btn" onclick="step2SetAngle(60)">α = 60°</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box">
+            <strong>Triangolo Rettangolo ABC (retto in A)</strong><br>
+            Consideriamo l'angolo acuto <strong>Ĉ = α</strong>:
+          </div>
+          <div class="formula-card">
+            <strong>sin α = Cateto Opposto / Ipotenusa = AB / BC</strong><br>
+            <strong>cos α = Cateto Adiacente / Ipotenusa = CA / BC</strong>
+          </div>
+          <div class="info-box orange">
+            <strong>Formule Inverse per ricavare i cateti:</strong><br>
+            • <strong>AB = BC · sin α</strong> (lunghezza = ipotenusa × seno dell'angolo opposto)<br>
+            • <strong>CA = BC · cos α</strong> (lunghezza = ipotenusa × coseno dell'angolo adiacente)
+          </div>
+          <div class="info-box green" id="step2CalcBox">
+            Valori calcolati per α = <strong>35°</strong>:<br>
+            • sin(35°) ≈ <strong>0.574</strong> ➜ AB = 5.0 × 0.574 = <strong>2.87</strong><br>
+            • cos(35°) ≈ <strong>0.819</strong> ➜ CA = 5.0 × 0.819 = <strong>4.10</strong>
+          </div>
+          <div class="key-concept">
+            💡 <strong>Trucco mnemonico:</strong><br>
+            <strong>CO-seno</strong> è il cateto <strong>a-CO-stato</strong> (adiacente all'angolo)!<br>
+            Il <strong>Seno</strong> è il cateto <strong>opposto</strong>!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep2(); }
+  },
+
+  // ── STEP 3: ANGOLI NOTEVOLI ──
+  {
+    badge: "FASE 3 — VALORI FONDAMENTALI",
+    title: "LA TABELLA DEGLI ANGOLI NOTEVOLI",
+    rule: "Alcuni angoli si incontrano continuamente nella fisica e nella geometria: per 0°, 30°, 45°, 60° e 90° i valori di seno e coseno sono esprimibili tramite frazioni e radici esatte.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvNotable"></canvas>
+          </div>
+          <div class="anim-controls" style="margin-top:0.9rem;">
+            <button class="anim-btn" id="btnNot0" onclick="step3Select(0)">0°</button>
+            <button class="anim-btn" id="btnNot30" onclick="step3Select(30)">30°</button>
+            <button class="anim-btn active" id="btnNot45" onclick="step3Select(45)">45°</button>
+            <button class="anim-btn" id="btnNot60" onclick="step3Select(60)">60°</button>
+            <button class="anim-btn" id="btnNot90" onclick="step3Select(90)">90°</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <table class="trig-table">
+            <thead>
+              <tr>
+                <th>ANGOLO</th>
+                <th>0°</th>
+                <th>30°</th>
+                <th>45°</th>
+                <th>60°</th>
+                <th>90°</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-title">SENO (sin)</td>
+                <td id="c_s0">0</td>
+                <td id="c_s30">1/2</td>
+                <td id="c_s45" class="cell-highlight">√2 / 2</td>
+                <td id="c_s60">√3 / 2</td>
+                <td id="c_s90">1</td>
+              </tr>
+              <tr>
+                <td class="row-title">DECIMALE</td>
+                <td>0.000</td>
+                <td>0.500</td>
+                <td class="cell-highlight">≈ 0.707</td>
+                <td>≈ 0.866</td>
+                <td>1.000</td>
+              </tr>
+              <tr>
+                <td class="row-title">COSENO (cos)</td>
+                <td id="c_c0">1</td>
+                <td id="c_c30">√3 / 2</td>
+                <td id="c_c45" class="cell-highlight">√2 / 2</td>
+                <td id="c_c60">1/2</td>
+                <td id="c_c90">0</td>
+              </tr>
+              <tr>
+                <td class="row-title">DECIMALE</td>
+                <td>1.000</td>
+                <td>≈ 0.866</td>
+                <td class="cell-highlight">≈ 0.707</td>
+                <td>0.500</td>
+                <td>0.000</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="info-box yellow" id="step3DetailBox">
+            <strong>Configurazione a 45°:</strong><br>
+            A 45° il triangolo rettangolo è isoscele: i due cateti sono esattamente uguali! Sia il seno che il coseno valgono √2 / 2 ≈ 0.707.
+          </div>
+          <div class="info-box">
+            <strong>📐 La 'Scala delle Radici' per ricordare tutto:</strong><br>
+            Per il seno (da 0° a 90°):<br>
+            √0/2 = 0 ➜ √1/2 = 1/2 ➜ √2/2 ➜ √3/2 ➜ √4/2 = 1.<br>
+            Per il coseno fai semplicemente l'ordine inverso!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep3(); }
+  },
+
+  // ── STEP 4: COMPONENTI CARTESIANE CON L'ANGOLO α ──
+  {
+    badge: "FASE 4 — SCOMPOSIZIONE",
+    title: "a_x = a cos α  E  a_y = a sin α",
+    rule: "Dato un vettore a di modulo 'a' inclinato di un angolo α rispetto al semiasse positivo x, le sue componenti cartesiane si ottengono moltiplicando il modulo per il coseno e per il seno dell'angolo.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvDecomp"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Angolo α con asse x:</label>
+              <input type="range" class="ctrl-slider" id="sliderDecompAngle" min="0" max="90" step="1" value="40" oninput="updateStep4()">
+              <span class="val-disp" id="dispDecompAngle">40°</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Modulo vettore a:</label>
+              <input type="range" class="ctrl-slider" id="sliderDecompMod" min="2" max="5.5" step="0.25" value="4.5" oninput="updateStep4()">
+              <span class="val-disp" id="dispDecompMod">4.50</span>
+            </div>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big">
+            <span style="color:var(--cyan)">a<sub>x</sub> = a · cos α</span><br>
+            <span style="color:var(--orange)">a<sub>y</sub> = a · sin α</span>
+          </div>
+          <div class="info-box">
+            <strong>Dalla geometria euclidea al piano cartesiano:</strong><br>
+            Posizioniamo la coda del vettore nell'origine <strong>O(0, 0)</strong> e la punta in <strong>B</strong>.<br>
+            Tracciando la perpendicolare sull'asse x otteniamo il punto <strong>A</strong>.<br>
+            Il triangolo OAB è rettangolo in A con ipotenusa OB = a.
+          </div>
+          <div class="info-box green" id="step4CalcBox">
+            Valori istantanei (a = <strong>4.50</strong>, α = <strong>40°</strong>):<br>
+            • cos(40°) = 0.766 ➜ a<sub>x</sub> = 4.50 · 0.766 = <strong style="color:var(--cyan)">+3.45</strong><br>
+            • sin(40°) = 0.643 ➜ a<sub>y</sub> = 4.50 · 0.643 = <strong style="color:var(--orange)">+2.89</strong>
+          </div>
+          <div class="info-box purple" id="step4PitagoraBox">
+            <strong>Verifica con Pitagora:</strong><br>
+            √(3.45² + 2.89²) = √(11.90 + 8.35) = √20.25 = <strong>4.50</strong> ✓
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep4(); }
+  },
+
+  // ── STEP 5: ESTENSIONE A 360° E I 4 QUADRANTI ──
+  {
+    badge: "FASE 5 — I 4 QUADRANTI",
+    title: "SEGNI DELLE COMPONENTI NEI 4 QUADRANTI",
+    rule: "Le formule a_x = a cos α e a_y = a sin α valgono per QUALUNQUE angolo tra 0° e 360°. La calcolatrice e la trigonometria assegnano automaticamente il segno corretto alle componenti!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvQuadrants"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Angolo α (0°–360°):</label>
+              <input type="range" class="ctrl-slider" id="sliderQuadAngle" min="0" max="360" step="2" value="135" oninput="updateStep5()">
+              <span class="val-disp" id="dispQuadAngle">135°</span>
+            </div>
+          </div>
+          <div class="quad-grid" style="width:100%;">
+            <div class="quad-item" id="qBtn2" onclick="step5SetQuad(135)">
+              <span class="quad-badge">II QUADRANTE (90°–180°)</span>
+              cos &lt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &gt; 0</strong>
+            </div>
+            <div class="quad-item" id="qBtn1" onclick="step5SetQuad(45)">
+              <span class="quad-badge">I QUADRANTE (0°–90°)</span>
+              cos &gt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &gt; 0</strong>
+            </div>
+            <div class="quad-item" id="qBtn3" onclick="step5SetQuad(225)">
+              <span class="quad-badge">III QUADRANTE (180°–270°)</span>
+              cos &lt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &lt; 0</strong>
+            </div>
+            <div class="quad-item" id="qBtn4" onclick="step5SetQuad(315)">
+              <span class="quad-badge">IV QUADRANTE (270°–360°)</span>
+              cos &gt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &lt; 0</strong>
+            </div>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="info-box yellow" id="step5StatusBox">
+            <strong>Quadrante Attivo: II Quadrante (135°)</strong><br>
+            • Il coseno è <strong>negativo</strong>: a<sub>x</sub> punta a sinistra (←)<br>
+            • Il seno è <strong>positivo</strong>: a<sub>y</sub> punta in alto (↑)
+          </div>
+          <div class="formula-card" id="step5ValuesBox">
+            cos(135°) = -0.707 ➜ <strong>a<sub>x</sub> = -3.18</strong><br>
+            sin(135°) = +0.707 ➜ <strong>a<sub>y</sub> = +3.18</strong>
+          </div>
+          <div class="info-box">
+            <strong>Regola generale dei segni:</strong><br>
+            • <strong>Seno (a<sub>y</sub>):</strong> è positivo nel semipiano superiore (0°–180°) e negativo nel semipiano inferiore (180°–360°).<br>
+            • <strong>Coseno (a<sub>x</sub>):</strong> è positivo nel semipiano destro (0°–90° e 270°–360°) e negativo a sinistra (90°–270°).
+          </div>
+          <div class="key-concept">
+            💡 Non devi memorizzare i segni a memoria:<br>
+            basta guardare dove punta la freccia rispetto agli assi cartesiani!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep5(); }
+  },
+
+  // ── STEP 6: ANGOLI ORARI NEGATIVI ──
+  {
+    badge: "FASE 6 — ANGOLI CON SEGNO",
+    title: "ANGOLI ORARI NEGATIVI (α = 320° ⟺ β = -40°)",
+    rule: "Un angolo è positivo se misurato in senso antiorario a partire dal semiasse positivo x; è negativo se misurato in senso orario. L'angolo α = 320° e l'angolo β = -40° descrivono esattamente lo stesso vettore!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvClockwise"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" id="btnDualAngle" onclick="step6SetMode('both')">MOSTRA ENTRAMBI GLI ANGOLI</button>
+            <button class="anim-btn" id="btnAntiAngle" onclick="step6SetMode('anti')">SOLO ANTIORARIO (+320°)</button>
+            <button class="anim-btn" id="btnClockAngle" onclick="step6SetMode('clock')">SOLO ORARIO (-40°)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big">
+            <strong>β = α - 360° ➜ 320° - 360° = -40°</strong>
+          </div>
+          <div class="info-box">
+            <strong>Convenzione sui segni degli angoli:</strong><br>
+            • <strong>Senso Antiorario:</strong> segno <strong>+</strong> (es. α = +320°)<br>
+            • <strong>Senso Orario:</strong> segno <strong>-</strong> (es. β = -40°)
+          </div>
+          <div class="info-box green">
+            <strong>Confronto matematico:</strong><br>
+            • cos(320°) = cos(-40°) = <strong>+0.766</strong><br>
+            • sin(320°) = sin(-40°) = <strong>-0.643</strong><br><br>
+            Entrambi gli angoli danno gli <strong>stessi identici valori numerici e segni</strong>!
+          </div>
+          <div class="info-box orange">
+            <strong>Perché si usano gli angoli negativi?</strong><br>
+            Nel 4° quadrante è spesso molto più immediato e pratico dire "inclinato di 40° verso il basso" (-40°) invece di calcolare un intero giro di 320°!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep6(); }
+  },
+
+  // ── STEP 7: ESEMPIO REALE GUIDATO — VETTORE SPOSTAMENTO s ──
+  {
+    badge: "FASE 7 — ESEMPIO GUIDATO",
+    title: "ESEMPIO: IL VETTORE POSIZIONE s = 15.4 m A 320°",
+    rule: "Risolviamo passo-passo l'esercizio del libro di testo: un vettore posizione s ha modulo s = 15.4 m e forma un angolo di 320° (o -40°) con il semiasse positivo x.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvExampleBook"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" id="btnEx1" onclick="step7ShowStep(1)">1. ANALISI DEI SEGNI</button>
+            <button class="anim-btn" id="btnEx2" onclick="step7ShowStep(2)">2. FORMULE CON α=320°</button>
+            <button class="anim-btn" id="btnEx3" onclick="step7ShowStep(3)">3. METODO CON β=-40°</button>
+            <button class="anim-btn" id="btnEx4" onclick="step7ShowStep(4)">4. TEST PITAGORA</button>
+          </div>
+        </div>
+        <div class="explain-side" id="step7Content">
+          <!-- Dynamically populated by JS based on selected step -->
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep7(); }
+  },
+
+  // ── STEP 8: OPERAZIONI CON I VETTORI IN COMPONENTI ──
+  {
+    badge: "FASE 8 — ALGEBRA VETTORIALE",
+    title: "LE OPERAZIONI CON I VETTORI IN COMPONENTI",
+    rule: "Scrivere i vettori in componenti cartesiane permette di eseguire le operazioni con la normale algebra dei numeri reali, operando separatamente su x e su y, senza bisogno di goniometri o righelli!",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvAlgebra"></canvas>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn active" id="btnOpAdd" onclick="step8SetOp('add')">ADDIZIONE (c = a + b)</button>
+            <button class="anim-btn" id="btnOpScale" onclick="step8SetOp('scale')">SCALARE (d = 2 · a)</button>
+            <button class="anim-btn" id="btnOpSub" onclick="step8SetOp('sub')">SOTTRAZIONE (e = a - b)</button>
+            <button class="anim-btn" id="btnOpOpp" onclick="step8SetOp('opp')">VETTORE OPPOSTO (-a)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <table class="trig-table">
+            <thead>
+              <tr>
+                <th>OPERAZIONE</th>
+                <th>FORMULA IN COMPONENTI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="rowAdd">
+                <td class="row-title">Addizione: <span class="vec-c"><span class="vec-sym">c</span> = <span class="vec-a"><span class="vec-sym">a</span></span> + <span class="vec-b"><span class="vec-sym">b</span></span></span></td>
+                <td><strong>c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub><br>c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub></strong></td>
+              </tr>
+              <tr id="rowScale">
+                <td class="row-title">Moltiplicazione: <span class="vec-d"><span class="vec-sym">d</span> = k · <span class="vec-a"><span class="vec-sym">a</span></span></span></td>
+                <td><strong>d<sub>x</sub> = k · a<sub>x</sub><br>d<sub>y</sub> = k · a<sub>y</sub></strong></td>
+              </tr>
+              <tr id="rowSub">
+                <td class="row-title">Sottrazione: <span class="vec-e"><span class="vec-sym">e</span> = <span class="vec-a"><span class="vec-sym">a</span></span> - <span class="vec-b"><span class="vec-sym">b</span></span></span></td>
+                <td><strong>e<sub>x</sub> = a<sub>x</sub> - b<sub>x</sub><br>e<sub>y</sub> = a<sub>y</sub> - b<sub>y</sub></strong></td>
+              </tr>
+              <tr id="rowOpp">
+                <td class="row-title">Vettore Opposto: <span style="color:var(--red); font-weight:bold;">-<span class="vec-sym">a</span></span></td>
+                <td><strong>-a<sub>x</sub> , -a<sub>y</sub></strong></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="info-box green" id="step8DetailBox">
+            <!-- Populated by JS -->
+          </div>
+          <div class="key-concept">
+            💡 <strong>La potenza delle componenti:</strong><br>
+            Sommare due vettori diventa una semplice somma aritmetica di due numeri!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep8(); }
+  },
+
+  // ── STEP 9: LABORATORIO INTERATTIVO / GONIOMETRO ──
+  {
+    badge: "FASE 9 — PLAYGROUND",
+    title: "LABORATORIO: GONIOMETRO DEI VETTORI 360°",
+    rule: "Usa gli slider per orientare il vettore a 360°: osserva come cambiano in diretta il triangolo delle proiezioni, le funzioni trigonometriche, i segni e il teorema di Pitagora.",
+    render: () => `
+      <div class="canvas-wrapper">
+        <div class="canvas-side">
+          <div class="canvas-container">
+            <canvas id="cvLab"></canvas>
+          </div>
+          <div class="ctrl-panel">
+            <div class="ctrl-row">
+              <label>Angolo α (0°–360°):</label>
+              <input type="range" class="ctrl-slider" id="sliderLabAngle" min="0" max="360" step="1" value="210" oninput="updateStep9()">
+              <span class="val-disp" id="dispLabAngle">210°</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Modulo a:</label>
+              <input type="range" class="ctrl-slider" id="sliderLabMod" min="1.5" max="5.5" step="0.25" value="4.5" oninput="updateStep9()">
+              <span class="val-disp" id="dispLabMod">4.50</span>
+            </div>
+          </div>
+          <div class="anim-controls">
+            <button class="anim-btn" onclick="step9QuickSet(30)">30° (I)</button>
+            <button class="anim-btn" onclick="step9QuickSet(120)">120° (II)</button>
+            <button class="anim-btn active" onclick="step9QuickSet(210)">210° (III)</button>
+            <button class="anim-btn" onclick="step9QuickSet(320)">320° (IV)</button>
+          </div>
+        </div>
+        <div class="explain-side">
+          <div class="formula-card big" id="step9FormulaCard">
+            <strong>a<sub>x</sub> = 4.50 · cos(210°) = -3.90</strong><br>
+            <strong>a<sub>y</sub> = 4.50 · sin(210°) = -2.25</strong>
+          </div>
+          <div class="info-box" id="step9InfoBox">
+            • <strong>Angolo antiorario (+):</strong> α = 210°<br>
+            • <strong>Angolo orario equivalente (-):</strong> β = -150°<br>
+            • <strong>Quadrante:</strong> III Quadrante (sinistro inferiore)<br>
+            • <strong>cos(210°):</strong> -0.866 &lt; 0 ➜ a<sub>x</sub> verso sinistra<br>
+            • <strong>sin(210°):</strong> -0.500 &lt; 0 ➜ a<sub>y</sub> verso il basso
+          </div>
+          <div class="info-box yellow" id="step9PitagoraBox">
+            <strong>Ricostruzione con Pitagora:</strong><br>
+            a = √((-3.90)² + (-2.25)²) = √(15.19 + 5.06) = √20.25 = <strong>4.50</strong>
+          </div>
+          <div class="key-concept">
+            🎯 Qualunque sia l'angolo scelto, la relazione geometrica tra vettore, cateti e ipotenusa rimane sempre vera e coerente!
+          </div>
+        </div>
+      </div>
+    `,
+    onMount: () => { initStep9(); }
+  },
+
+  // ── STEP 10: QUIZ DI VERIFICA ──
+  {
+    badge: "FASE 10 — VERIFICA",
+    title: "QUIZ: HAI CAPITO COMPONENTI & TRIGONOMETRIA?",
+    rule: "Rispondi a queste 5 domande per testare la tua comprensione della trigonometria, dei segni nei quadranti e delle operazioni con i vettori.",
+    render: () => `
+      <div style="max-width:880px; margin:0 auto; width:100%;">
+
+        <!-- DOMANDA 1 -->
+        <div class="quiz-box">
+          <p class="quiz-q-title">1. Un vettore a ha modulo a = 10 m ed è inclinato di α = 60° rispetto all'asse x. Sapendo che cos(60°) = 0.5, quanto vale la componente a<sub>x</sub>?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">A) 8.66 m</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb1')">B) 5.0 m</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">C) 10 m</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb1')">D) 20 m</div>
+          <div class="quiz-feedback" id="fb1"></div>
+        </div>
+
+        <!-- DOMANDA 2 -->
+        <div class="quiz-box">
+          <p class="quiz-q-title">2. Se un vettore si trova nel secondo quadrante (90° &lt; α &lt; 180°), che segni hanno le sue componenti a<sub>x</sub> e a<sub>y</sub>?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">A) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &gt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">B) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &lt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb2')">C) a<sub>x</sub> &lt; 0 e a<sub>y</sub> &gt; 0</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb2')">D) a<sub>x</sub> &gt; 0 e a<sub>y</sub> &lt; 0</div>
+          <div class="quiz-feedback" id="fb2"></div>
+        </div>
+
+        <!-- DOMANDA 3 -->
+        <div class="quiz-box">
+          <p class="quiz-q-title">3. Un vettore ha angolo antiorario α = 330°. Qual è il suo angolo orario negativo equivalente β?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb3')">A) β = -30°</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">B) β = -60°</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">C) β = -330°</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb3')">D) β = -150°</div>
+          <div class="quiz-feedback" id="fb3"></div>
+        </div>
+
+        <!-- DOMANDA 4 -->
+        <div class="quiz-box">
+          <p class="quiz-q-title">4. Dati i vettori a = (4, -2) e b = (-1, 5), quali sono le componenti del vettore somma c = a + b?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">A) c<sub>x</sub> = 5, c<sub>y</sub> = 3</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb4')">B) c<sub>x</sub> = 3, c<sub>y</sub> = 3</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">C) c<sub>x</sub> = 3, c<sub>y</sub> = -7</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb4')">D) c<sub>x</sub> = -4, c<sub>y</sub> = -10</div>
+          <div class="quiz-feedback" id="fb4"></div>
+        </div>
+
+        <!-- DOMANDA 5 -->
+        <div class="quiz-box">
+          <p class="quiz-q-title">5. Se un vettore ha componenti a = (6, -8), quali sono le componenti del suo vettore opposto -a?</p>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">A) (-6, -8)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">B) (6, 8)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, true, 'fb5')">C) (-6, 8)</div>
+          <div class="quiz-option" onclick="checkQuiz(this, false, 'fb5')">D) (-8, 6)</div>
+          <div class="quiz-feedback" id="fb5"></div>
+        </div>
+
+      </div>
+    `,
+    onMount: () => {}
+  }
+
+];
+
+const totalSteps = STEPS.length;
+
+// ═══════════════════════════════════════════
+// STEP 1 IMPLEMENTATION: PITAGORA
+// ═══════════════════════════════════════════
+let vc1 = null;
+
+function initStep1() {
+  vc1 = new VectorCanvas2('cvPitagora', { range: 6 });
+  updateStep1();
+}
+
+function updateStep1() {
+  if (!vc1) return;
+  const ax = parseFloat(document.getElementById('sliderAx').value);
+  const ay = parseFloat(document.getElementById('sliderAy').value);
+
+  document.getElementById('dispAx').textContent = (ax >= 0 ? '+' : '') + ax.toFixed(1);
+  document.getElementById('dispAy').textContent = (ay >= 0 ? '+' : '') + ay.toFixed(1);
+
+  document.getElementById('boxAx').textContent = Math.abs(ax).toFixed(1);
+  document.getElementById('boxAy').textContent = Math.abs(ay).toFixed(1);
+
+  const sqSum = ax * ax + ay * ay;
+  const mod = Math.sqrt(sqSum);
+
+  document.getElementById('boxSqSum').textContent = `${(ax*ax).toFixed(1)} + ${(ay*ay).toFixed(1)} = ${sqSum.toFixed(1)}`;
+  document.getElementById('boxRad').textContent = sqSum.toFixed(1);
+  document.getElementById('boxMod').textContent = mod.toFixed(2);
+
+  vc1.clear();
+  vc1.drawGrid();
+
+  // Projections
+  vc1.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.5);
+  vc1.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.5);
+
+  // Component vectors
+  if (Math.abs(ax) > 0.05) {
+    vc1.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+    vc1.drawPill(ax / 2, -0.6, 'a', '_x = ' + (ax >= 0 ? '+' : '') + ax.toFixed(1), COL.cyan);
+  }
+  if (Math.abs(ay) > 0.05) {
+    vc1.drawVector(ax, 0, ax, ay, COL.orange, 3.2);
+    vc1.drawPill(ax + (ax >= 0 ? 0.7 : -0.7), ay / 2, 'a', '_y = ' + (ay >= 0 ? '+' : '') + ay.toFixed(1), COL.orange);
+  }
+
+  // Right angle indicator in (ax, 0)
+  if (Math.abs(ax) > 0.8 && Math.abs(ay) > 0.8) {
+    const dirX = ax >= 0 ? -1 : 1;
+    const dirY = ay >= 0 ? 1 : -1;
+    vc1.drawRightAngle(ax, 0, dirX, dirY, 0.45);
+  }
+
+  // Hypotenuse / Vector
+  if (mod > 0.05) {
+    vc1.drawVector(0, 0, ax, ay, COL.green, 3.8);
+    vc1.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' = ' + mod.toFixed(2), COL.green);
+  }
+}
+
+function step1SetPreset(x, y) {
+  document.getElementById('sliderAx').value = x;
+  document.getElementById('sliderAy').value = y;
+  updateStep1();
+}
+
+// ═══════════════════════════════════════════
+// STEP 2 IMPLEMENTATION: TRIGONOMETRIA BASE
+// ═══════════════════════════════════════════
+let vc2 = null;
+
+function initStep2() {
+  vc2 = new VectorCanvas2('cvTrigBase', { range: 6, showAxes: false, centerOffsetX: -1.2, centerOffsetY: -1.2 });
+  updateStep2();
+}
+
+function updateStep2() {
+  if (!vc2) return;
+  const deg = parseFloat(document.getElementById('sliderTrigAngle').value);
+  const hyp = parseFloat(document.getElementById('sliderTrigHyp').value);
+
+  document.getElementById('dispTrigAngle').textContent = deg + '°';
+  document.getElementById('dispTrigHyp').textContent = hyp.toFixed(1);
+
+  const rad = deg * Math.PI / 180;
+  const sinVal = Math.sin(rad);
+  const cosVal = Math.cos(rad);
+
+  const adj = hyp * cosVal; // CA (orizzontale)
+  const opp = hyp * sinVal; // AB (verticale)
+
+  const calcBox = document.getElementById('step2CalcBox');
+  if (calcBox) {
+    calcBox.innerHTML = `
+      Valori per α = <strong>${deg}°</strong> e Ipotenusa BC = <strong>${hyp.toFixed(1)}</strong>:<br>
+      • sin(${deg}°) ≈ <strong>${sinVal.toFixed(3)}</strong> ➜ <strong>AB</strong> = ${hyp.toFixed(1)} · ${sinVal.toFixed(3)} = <span style="color:var(--orange); font-weight:bold;">${opp.toFixed(2)}</span><br>
+      • cos(${deg}°) ≈ <strong>${cosVal.toFixed(3)}</strong> ➜ <strong>CA</strong> = ${hyp.toFixed(1)} · ${cosVal.toFixed(3)} = <span style="color:var(--green); font-weight:bold;">${adj.toFixed(2)}</span>
+    `;
+  }
+
+  vc2.clear();
+  vc2.drawGrid();
+
+  // Triangle vertices:
+  // C at (0, 0)
+  // A at (adj, 0)
+  // B at (adj, opp)
+  const ctx = vc2.ctx;
+  const [scx, scy] = vc2.toScreen(0, 0);
+  const [sax, say] = vc2.toScreen(adj, 0);
+  const [sbx, sby] = vc2.toScreen(adj, opp);
+
+  // Fill triangle subtly
+  ctx.save();
+  ctx.fillStyle = 'rgba(88,196,221,0.08)';
+  ctx.beginPath();
+  ctx.moveTo(scx, scy);
+  ctx.lineTo(sax, say);
+  ctx.lineTo(sbx, sby);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Draw 3 sides with dedicated colors
+  // CA: Adiacente (Green)
+  ctx.strokeStyle = COL.catAdj;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(scx, scy); ctx.lineTo(sax, say); ctx.stroke();
+
+  // AB: Opposto (Orange)
+  ctx.strokeStyle = COL.catOpp;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(sax, say); ctx.lineTo(sbx, sby); ctx.stroke();
+
+  // BC: Ipotenusa (Blue/Cyan)
+  ctx.strokeStyle = COL.hypot;
+  ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(scx, scy); ctx.lineTo(sbx, sby); ctx.stroke();
+
+  // Vertices points & letters
+  vc2.drawPoint(0, 0, COL.white, 4, 'C');
+  vc2.drawPoint(adj, 0, COL.white, 4, 'A');
+  vc2.drawPoint(adj, opp, COL.white, 4, 'B');
+
+  // Right angle at A
+  vc2.drawRightAngle(adj, 0, -1, 1, 0.45);
+
+  // Angle arc at C
+  vc2.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
+
+  // Side Labels
+  vc2.drawPill(adj / 2, -0.6, '', `CA = ${adj.toFixed(2)} (Adiacente)`, COL.catAdj);
+  vc2.drawPill(adj + 0.8, opp / 2, '', `AB = ${opp.toFixed(2)} (Opposto)`, COL.catOpp);
+  vc2.drawPill(adj / 2 - 0.4, opp / 2 + 0.5, '', `BC = ${hyp.toFixed(1)} (Ipotenusa)`, COL.hypot);
+}
+
+function step2SetAngle(a) {
+  document.getElementById('sliderTrigAngle').value = a;
+  updateStep2();
+}
+
+// ═══════════════════════════════════════════
+// STEP 3 IMPLEMENTATION: ANGOLI NOTEVOLI
+// ═══════════════════════════════════════════
+let vc3 = null;
+let curNotable = 45;
+
+function initStep3() {
+  vc3 = new VectorCanvas2('cvNotable', { range: 6, centerOffsetX: -1.2, centerOffsetY: -1.2, showAxes: true });
+  step3Select(45);
+}
+
+function step3Select(deg) {
+  curNotable = deg;
+  [0, 30, 45, 60, 90].forEach(d => {
+    const btn = document.getElementById('btnNot' + d);
+    if (btn) btn.classList.toggle('active', d === deg);
+  });
+
+  const hyp = 5;
+  const rad = deg * Math.PI / 180;
+  const sinVal = Math.sin(rad);
+  const cosVal = Math.cos(rad);
+  const adj = hyp * cosVal;
+  const opp = hyp * sinVal;
+
+  const box = document.getElementById('step3DetailBox');
+  if (box) {
+    if (deg === 0) {
+      box.innerHTML = `<strong>Angolo 0° (Vettore perfettamente orizzontale):</strong><br>Il cateto opposto collassa a zero (sin 0° = 0), mentre il cateto adiacente coincide interamente con l'ipotenusa (cos 0° = 1). Il vettore giace tutto sull'asse x!`;
+    } else if (deg === 30) {
+      box.innerHTML = `<strong>Angolo 30°:</strong><br>Il cateto opposto è esattamente <strong>la metà dell'ipotenusa</strong>: sin(30°) = 1/2 = 0.500!<br>Il cateto adiacente vale (√3 / 2) · ipotenusa ≈ 0.866 · ipotenusa.`;
+    } else if (deg === 45) {
+      box.innerHTML = `<strong>Angolo 45°:</strong><br>Il triangolo rettangolo è <strong>isoscele</strong>: i due cateti sono esattamente uguali! Sia il seno che il coseno valgono √2 / 2 ≈ 0.707.`;
+    } else if (deg === 60) {
+      box.innerHTML = `<strong>Angolo 60°:</strong><br>È l'opposto di 30°: ora è il <strong>cateto adiacente</strong> a essere esattamente metà dell'ipotenusa (cos 60° = 1/2 = 0.500), mentre quello opposto è lungo √3 / 2 ≈ 0.866.`;
+    } else if (deg === 90) {
+      box.innerHTML = `<strong>Angolo 90° (Vettore perfettamente verticale):</strong><br>Il cateto adiacente collassa a zero (cos 90° = 0), mentre il cateto opposto coincide interamente con l'ipotenusa (sin 90° = 1). Il vettore giace tutto sull'asse y!`;
+    }
+  }
+
+  vc3.clear();
+  vc3.drawGrid();
+
+  if (deg > 0 && deg < 90) {
+    vc3.drawDashedLine(adj, 0, adj, opp, COL.dashed, 0.4);
+    vc3.drawRightAngle(adj, 0, -1, 1, 0.4);
+    vc3.drawVector(0, 0, adj, 0, COL.catAdj, 3);
+    vc3.drawVector(adj, 0, adj, opp, COL.catOpp, 3);
+    vc3.drawArc(0, 0, 1.2, 0, deg, COL.yellow, false, `${deg}°`);
+    vc3.drawPill(adj / 2, -0.6, '', `cos = ${cosVal.toFixed(3)}`, COL.catAdj);
+    vc3.drawPill(adj + 0.9, opp / 2, '', `sin = ${sinVal.toFixed(3)}`, COL.catOpp);
+  } else if (deg === 0) {
+    vc3.drawVector(0, 0, hyp, 0, COL.catAdj, 3.5);
+    vc3.drawPill(hyp / 2, -0.6, '', `cos(0°) = 1.0 (opp = 0)`, COL.catAdj);
+  } else if (deg === 90) {
+    vc3.drawVector(0, 0, 0, hyp, COL.catOpp, 3.5);
+    vc3.drawPill(0.9, hyp / 2, '', `sin(90°) = 1.0 (adj = 0)`, COL.catOpp);
+  }
+
+  vc3.drawVector(0, 0, adj, opp, COL.cyan, 3.8);
+  vc3.drawPill(adj / 2 - 0.3, opp / 2 + 0.4, 'a', ` = ${hyp.toFixed(1)}`, COL.cyan);
+}
+
+// ═══════════════════════════════════════════
+// STEP 4 IMPLEMENTATION: DECOMPOSIZIONE
+// ═══════════════════════════════════════════
+let vc4 = null;
+
+function initStep4() {
+  vc4 = new VectorCanvas2('cvDecomp', { range: 6 });
+  updateStep4();
+}
+
+function updateStep4() {
+  if (!vc4) return;
+  const deg = parseFloat(document.getElementById('sliderDecompAngle').value);
+  const mod = parseFloat(document.getElementById('sliderDecompMod').value);
+
+  document.getElementById('dispDecompAngle').textContent = deg + '°';
+  document.getElementById('dispDecompMod').textContent = mod.toFixed(2);
+
+  const rad = deg * Math.PI / 180;
+  const cosV = Math.cos(rad);
+  const sinV = Math.sin(rad);
+
+  const ax = mod * cosV;
+  const ay = mod * sinV;
+
+  const cBox = document.getElementById('step4CalcBox');
+  if (cBox) {
+    cBox.innerHTML = `
+      Valori istantanei (a = <strong>${mod.toFixed(2)}</strong>, α = <strong>${deg}°</strong>):<br>
+      • cos(${deg}°) = ${cosV.toFixed(3)} ➜ a<sub>x</sub> = ${mod.toFixed(2)} · ${cosV.toFixed(3)} = <strong style="color:var(--cyan)">+${ax.toFixed(2)}</strong><br>
+      • sin(${deg}°) = ${sinV.toFixed(3)} ➜ a<sub>y</sub> = ${mod.toFixed(2)} · ${sinV.toFixed(3)} = <strong style="color:var(--orange)">+${ay.toFixed(2)}</strong>
+    `;
+  }
+
+  const pBox = document.getElementById('step4PitagoraBox');
+  if (pBox) {
+    const testMod = Math.sqrt(ax * ax + ay * ay);
+    pBox.innerHTML = `
+      <strong>Verifica con Pitagora:</strong><br>
+      √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = √(${ (ax*ax).toFixed(2) } + ${ (ay*ay).toFixed(2) }) = √${ (ax*ax + ay*ay).toFixed(2) } = <strong>${testMod.toFixed(2)}</strong> ✓
+    `;
+  }
+
+  vc4.clear();
+  vc4.drawGrid();
+
+  // Projections
+  vc4.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vc4.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+
+  if (ax > 0.5 && ay > 0.5) {
+    vc4.drawRightAngle(ax, 0, -1, 1, 0.4);
+    vc4.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `α = ${deg}°`);
+  }
+
+  // Component vectors
+  vc4.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vc4.drawPill(ax / 2, -0.6, 'a', `_x = +${ax.toFixed(2)}`, COL.cyan);
+
+  vc4.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vc4.drawPill(-0.8, ay / 2, 'a', `_y = +${ay.toFixed(2)}`, COL.orange);
+
+  // Main Vector a
+  vc4.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vc4.drawPill(ax / 2 + 0.3, ay / 2 + 0.4, 'a', ` = ${mod.toFixed(2)}`, COL.green);
+
+  // Label vertices O, A, B
+  vc4.drawPoint(0, 0, COL.white, 4, 'O');
+  vc4.drawPoint(ax, 0, COL.white, 4, 'A');
+  vc4.drawPoint(ax, ay, COL.white, 4, 'B');
+}
+
+// ═══════════════════════════════════════════
+// STEP 5 IMPLEMENTATION: I 4 QUADRANTI
+// ═══════════════════════════════════════════
+let vc5 = null;
+
+function initStep5() {
+  vc5 = new VectorCanvas2('cvQuadrants', { range: 6 });
+  updateStep5();
+}
+
+function updateStep5() {
+  if (!vc5) return;
+  const deg = parseFloat(document.getElementById('sliderQuadAngle').value);
+  document.getElementById('dispQuadAngle').textContent = deg + '°';
+
+  const mod = 4.5;
+  const rad = deg * Math.PI / 180;
+  const cosV = Math.cos(rad);
+  const sinV = Math.sin(rad);
+  const ax = mod * cosV;
+  const ay = mod * sinV;
+
+  let quadNum = 1;
+  let quadName = "I Quadrante (0°–90°)";
+  if (deg > 90 && deg <= 180) { quadNum = 2; quadName = "II Quadrante (90°–180°)"; }
+  else if (deg > 180 && deg <= 270) { quadNum = 3; quadName = "III Quadrante (180°–270°)"; }
+  else if (deg > 270 && deg <= 360) { quadNum = 4; quadName = "IV Quadrante (270°–360°)"; }
+
+  // Update quadrant buttons active state
+  [1, 2, 3, 4].forEach(q => {
+    const el = document.getElementById('qBtn' + q);
+    if (el) el.classList.toggle('active', q === quadNum);
+  });
+
+  const statBox = document.getElementById('step5StatusBox');
+  if (statBox) {
+    statBox.innerHTML = `
+      <strong>Quadrante Attivo: ${quadName} (α = ${deg}°)</strong><br>
+      • Coseno: <strong>${cosV >= 0 ? 'POSITIVO (+)' : 'NEGATIVO (-)'}</strong> ➜ a<sub>x</sub> punta ${ax >= 0 ? 'a DESTRA (→)' : 'a SINISTRA (←)'}<br>
+      • Seno: <strong>${sinV >= 0 ? 'POSITIVO (+)' : 'NEGATIVO (-)'}</strong> ➜ a<sub>y</sub> punta ${ay >= 0 ? 'in ALTO (↑)' : 'in BASSO (↓)'}
+    `;
+  }
+
+  const valBox = document.getElementById('step5ValuesBox');
+  if (valBox) {
+    valBox.innerHTML = `
+      cos(${deg}°) = ${cosV.toFixed(3)} ➜ <strong>a<sub>x</sub> = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
+      sin(${deg}°) = ${sinV.toFixed(3)} ➜ <strong>a<sub>y</sub> = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}</strong>
+    `;
+  }
+
+  vc5.clear();
+  vc5.drawGrid();
+
+  // Subtle highlight of the active quadrant background
+  const ctx = vc5.ctx;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0, 245, 255, 0.04)';
+  if (quadNum === 1) ctx.fillRect(vc5.ox, 0, vc5.size - vc5.ox, vc5.oy);
+  else if (quadNum === 2) ctx.fillRect(0, 0, vc5.ox, vc5.oy);
+  else if (quadNum === 3) ctx.fillRect(0, vc5.oy, vc5.ox, vc5.size - vc5.oy);
+  else if (quadNum === 4) ctx.fillRect(vc5.ox, vc5.oy, vc5.size - vc5.ox, vc5.size - vc5.oy);
+  ctx.restore();
+
+  // Projections
+  vc5.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vc5.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+
+  // Angle arc
+  vc5.drawArc(0, 0, 1.1, 0, deg, COL.yellow, false, `${deg}°`);
+
+  // Components
+  vc5.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vc5.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
+
+  vc5.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vc5.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
+
+  // Main Vector
+  vc5.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vc5.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(1)}`, COL.green);
+}
+
+function step5SetQuad(angle) {
+  document.getElementById('sliderQuadAngle').value = angle;
+  updateStep5();
+}
+
+// ═══════════════════════════════════════════
+// STEP 6 IMPLEMENTATION: ANGOLI ORARI NEGATIVI
+// ═══════════════════════════════════════════
+let vc6 = null;
+let step6Mode = 'both';
+
+function initStep6() {
+  vc6 = new VectorCanvas2('cvClockwise', { range: 6 });
+  drawStep6();
+}
+
+function step6SetMode(m) {
+  step6Mode = m;
+  document.getElementById('btnDualAngle').classList.toggle('active', m === 'both');
+  document.getElementById('btnAntiAngle').classList.toggle('active', m === 'anti');
+  document.getElementById('btnClockAngle').classList.toggle('active', m === 'clock');
+  drawStep6();
+}
+
+function drawStep6() {
+  if (!vc6) return;
+  vc6.clear();
+  vc6.drawGrid();
+
+  const mod = 5;
+  const alpha = 320;
+  const beta = -40;
+  const rad = alpha * Math.PI / 180;
+  const sx = mod * Math.cos(rad);
+  const sy = mod * Math.sin(rad);
+
+  // Projections
+  vc6.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.4);
+  vc6.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.4);
+
+  // Arcs
+  if (step6Mode === 'both' || step6Mode === 'anti') {
+    // Counterclockwise 320°
+    vc6.drawArc(0, 0, 1.4, 0, alpha, COL.cyan, false, 'α = +320°');
+  }
+  if (step6Mode === 'both' || step6Mode === 'clock') {
+    // Clockwise -40°
+    vc6.drawArc(0, 0, 0.9, 0, beta, COL.orange, true, 'β = -40°');
+  }
+
+  // Components
+  vc6.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
+  vc6.drawPill(sx / 2, 0.6, 's', `_x = +${sx.toFixed(2)} m`, COL.cyan);
+
+  vc6.drawVector(0, 0, 0, sy, COL.orange, 3.2);
+  vc6.drawPill(-0.9, sy / 2, 's', `_y = ${sy.toFixed(2)} m`, COL.orange);
+
+  // Main Vector s
+  vc6.drawVector(0, 0, sx, sy, COL.green, 3.8);
+  vc6.drawPill(sx / 2 + 0.4, sy / 2 - 0.4, 's', ` = ${mod} m`, COL.green);
+}
+
+// ═══════════════════════════════════════════
+// STEP 7 IMPLEMENTATION: ESEMPIO LIBRO s=15.4m
+// ═══════════════════════════════════════════
+let vc7 = null;
+let curStep7Sub = 1;
+
+function initStep7() {
+  vc7 = new VectorCanvas2('cvExampleBook', { range: 18 });
+  step7ShowStep(1);
+}
+
+function step7ShowStep(s) {
+  curStep7Sub = s;
+  [1, 2, 3, 4].forEach(i => {
+    const b = document.getElementById('btnEx' + i);
+    if (b) b.classList.toggle('active', i === s);
+  });
+
+  const container = document.getElementById('step7Content');
+  if (!container) return;
+
+  const sMod = 15.4;
+  const sx = 11.8;
+  const sy = -9.90;
+
+  if (s === 1) {
+    container.innerHTML = `
+      <div class="info-box yellow">
+        <strong>FASE 1: Analisi Qualitativa dei Segni</strong><br>
+        Il problema ci dice che il vettore posizione <span class="vec-s"><span class="vec-sym">s</span></span> ha modulo <strong>s = 15.4 m</strong> e angolo positivo <strong>α = 320°</strong>.
+      </div>
+      <div class="info-box green">
+        <strong>Osserviamo il disegno:</strong><br>
+        • La proiezione <span class="vec-sym">s</span><sub>x</sub> lungo l'asse x è rivolta nello stesso verso dell'asse (a destra): quindi <strong>s<sub>x</sub> è POSITIVA</strong>.<br>
+        • La proiezione <span class="vec-sym">s</span><sub>y</sub> lungo l'asse y è rivolta verso il basso (verso opposto all'asse y): quindi <strong>s<sub>y</sub> è NEGATIVA</strong>.
+      </div>
+      <div class="key-concept">
+        💡 Prima ancora di toccare la calcolatrice sappiamo già che:<br>
+        <strong>s<sub>x</sub> &gt; 0</strong> e <strong>s<sub>y</sub> &lt; 0</strong>!
+      </div>
+    `;
+  } else if (s === 2) {
+    container.innerHTML = `
+      <div class="formula-card big">
+        <strong>s<sub>x</sub> = s · cos 320° = (15.4 m) · 0.766 = +11.8 m</strong><br>
+        <strong>s<sub>y</sub> = s · sin 320° = (15.4 m) · (-0.643) = -9.90 m</strong>
+      </div>
+      <div class="info-box green">
+        <strong>FASE 2: Calcolo con le Formule Trigonometriche</strong><br>
+        Sfruttando le equazioni [4]:<br>
+        • cos(320°) = +0.766 ➜ s<sub>x</sub> = 15.4 · 0.766 = <strong>+11.8 m</strong><br>
+        • sin(320°) = -0.643 ➜ s<sub>y</sub> = 15.4 · (-0.643) = <strong>-9.90 m</strong>
+      </div>
+      <div class="info-box">
+        In perfetto accordo con l'analisi dei segni, la calcolatrice ha restituito <strong>s<sub>x</sub> positiva</strong> e <strong>s<sub>y</sub> negativa</strong>!
+      </div>
+    `;
+  } else if (s === 3) {
+    container.innerHTML = `
+      <div class="info-box orange">
+        <strong>FASE 3: Calcolo con l'Angolo Negativo β = -40°</strong><br>
+        Possiamo anche usare l'angolo orario β = 320° - 360° = <strong>-40°</strong>!
+      </div>
+      <div class="formula-card">
+        <strong>s<sub>x</sub> = (15.4 m) · cos(-40°) = 15.4 · 0.766 = +11.8 m</strong><br>
+        <strong>s<sub>y</sub> = (15.4 m) · sin(-40°) = 15.4 · (-0.643) = -9.90 m</strong>
+      </div>
+      <div class="key-concept">
+        🎯 <strong>Stesso identico risultato!</strong><br>
+        Sei libero di usare l'angolo antiorario a 360° oppure l'angolo acuto negativo: la fisica e la matematica non cambiano.
+      </div>
+    `;
+  } else if (s === 4) {
+    container.innerHTML = `
+      <div class="formula-card big">
+        <strong>s = √(s<sub>x</sub>² + s<sub>y</sub>²) = √(11.8² + (-9.90)²) ≈ 15.4 m</strong>
+      </div>
+      <div class="info-box purple">
+        <strong>FASE 4: Prova del nove con il Teorema di Pitagora</strong><br>
+        Verifichiamo se le componenti trovate ricostruiscono il modulo di partenza:<br>
+        • s<sub>x</sub>² = 11.8² = 139.24<br>
+        • s<sub>y</sub>² = (-9.90)² = 98.01<br>
+        • Somma dei quadrati: 139.24 + 98.01 = 237.25<br>
+        • Radice quadrata: √237.25 = <strong>15.40 m</strong> ✓
+      </div>
+      <div class="info-box green">
+        La scomposizione è esatta e verificata matematicamente al 100%!
+      </div>
+    `;
+  }
+
+  drawStep7Canvas();
+}
+
+function drawStep7Canvas() {
+  if (!vc7) return;
+  vc7.clear();
+  vc7.drawGrid();
+
+  const sx = 11.8;
+  const sy = -9.90;
+  const sMod = 15.4;
+
+  // Projections
+  vc7.drawDashedLine(sx, 0, sx, sy, COL.dashed, 0.45);
+  vc7.drawDashedLine(0, sy, sx, sy, COL.dashed, 0.45);
+
+  // Arcs
+  vc7.drawArc(0, 0, 4.2, 0, 320, COL.cyan, false, 'α = 320°');
+  vc7.drawArc(0, 0, 2.6, 0, -40, COL.orange, true, 'β = -40°');
+
+  // Component vectors
+  vc7.drawVector(0, 0, sx, 0, COL.cyan, 3.2);
+  vc7.drawPill(sx / 2, 1.8, 's', '_x = +11.8 m', COL.cyan);
+
+  vc7.drawVector(0, 0, 0, sy, COL.orange, 3.2);
+  vc7.drawPill(-2.5, sy / 2, 's', '_y = -9.90 m', COL.orange);
+
+  // Main Vector s
+  vc7.drawVector(0, 0, sx, sy, COL.green, 4.0);
+  vc7.drawPill(sx / 2 + 1.2, sy / 2 - 1.2, 's', ' = 15.4 m', COL.green);
+}
+
+// ═══════════════════════════════════════════
+// STEP 8 IMPLEMENTATION: OPERAZIONI IN COMPONENTI
+// ═══════════════════════════════════════════
+let vc8 = null;
+let curOp = 'add';
+
+function initStep8() {
+  vc8 = new VectorCanvas2('cvAlgebra', { range: 8 });
+  step8SetOp('add');
+}
+
+function step8SetOp(op) {
+  curOp = op;
+  ['Add', 'Scale', 'Sub', 'Opp'].forEach(k => {
+    const b = document.getElementById('btnOp' + k);
+    if (b) b.classList.toggle('active', k.toLowerCase() === op.toLowerCase());
+  });
+
+  const detail = document.getElementById('step8DetailBox');
+  const ax = 3, ay = 2;
+  const bx = 2, by = 4;
+
+  if (op === 'add') {
+    const cx = ax + bx;
+    const cy = ay + by;
+    detail.innerHTML = `
+      <strong>Somma: c = a + b</strong><br>
+      Dati: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span> e <span class="vec-b"><span class="vec-sym">b</span> = (2, 4)</span>:<br>
+      • c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub> = 3 + 2 = <strong>${cx}</strong><br>
+      • c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub> = 2 + 4 = <strong>${cy}</strong><br>
+      Risultato: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>. Modulo: c = √(${cx*cx + cy*cy}) ≈ ${Math.hypot(cx, cy).toFixed(2)}.
+    `;
+  } else if (op === 'scale') {
+    const k = 2;
+    const dx = k * ax;
+    const dy = k * ay;
+    detail.innerHTML = `
+      <strong>Moltiplicazione per scalare k = 2: d = 2 · a</strong><br>
+      Dato: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span>:<br>
+      • d<sub>x</sub> = k · a<sub>x</sub> = 2 · 3 = <strong>${dx}</strong><br>
+      • d<sub>y</sub> = k · a<sub>y</sub> = 2 · 2 = <strong>${dy}</strong><br>
+      Risultato: <span class="vec-d"><span class="vec-sym">d</span> = (${dx}, ${dy})</span>. La lunghezza raddoppia, direzione e verso restano invariati!
+    `;
+  } else if (op === 'sub') {
+    const ex = ax - bx;
+    const ey = ay - by;
+    detail.innerHTML = `
+      <strong>Sottrazione: e = a - b</strong><br>
+      Dati: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span> e <span class="vec-b"><span class="vec-sym">b</span> = (2, 4)</span>:<br>
+      • e<sub>x</sub> = a<sub>x</sub> - b<sub>x</sub> = 3 - 2 = <strong>${ex}</strong><br>
+      • e<sub>y</sub> = a<sub>y</sub> - b<sub>y</sub> = 2 - 4 = <strong>${ey}</strong><br>
+      Risultato: <span class="vec-e"><span class="vec-sym">e</span> = (${ex}, ${ey})</span>.
+    `;
+  } else if (op === 'opp') {
+    const ox = -ax;
+    const oy = -ay;
+    detail.innerHTML = `
+      <strong>Vettore Opposto: -a</strong><br>
+      Dato: <span class="vec-a"><span class="vec-sym">a</span> = (3, 2)</span>:<br>
+      • Componenti opposte: <strong>(-a<sub>x</sub>, -a<sub>y</sub>) = (${ox}, ${oy})</strong><br>
+      Stesso modulo, stessa direzione, ma <strong>verso opposto</strong> (ruotato di 180°)!
+    `;
+  }
+
+  drawStep8Canvas();
+}
+
+function drawStep8Canvas() {
+  if (!vc8) return;
+  vc8.clear();
+  vc8.drawGrid();
+
+  const ax = 3, ay = 2;
+  const bx = 2, by = 4;
+
+  if (curOp === 'add') {
+    const cx = ax + bx, cy = ay + by;
+    vc8.drawVector(0, 0, ax, ay, COL.a, 3);
+    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+
+    vc8.drawVector(ax, ay, cx, cy, COL.b, 3);
+    vc8.drawPill(ax + bx / 2 + 0.6, ay + by / 2, 'b', ' (2, 4)', COL.b);
+
+    vc8.drawVector(0, 0, cx, cy, COL.sum, 3.8);
+    vc8.drawPill(cx / 2 - 0.6, cy / 2 + 0.5, 'c', ` = (${cx}, ${cy})`, COL.sum);
+  } else if (curOp === 'scale') {
+    vc8.drawVector(0, 0, ax * 2, ay * 2, COL.scaled, 3.8);
+    vc8.drawPill(ax + 0.5, ay + 0.6, 'd', ' = 2·a (6, 4)', COL.scaled);
+
+    vc8.drawVector(0, 0, ax, ay, COL.a, 2.8);
+    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+  } else if (curOp === 'sub') {
+    const ex = ax - bx, ey = ay - by;
+    vc8.drawVector(0, 0, ax, ay, COL.a, 3);
+    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+
+    vc8.drawVector(0, 0, bx, by, COL.b, 3);
+    vc8.drawPill(bx / 2 + 0.5, by / 2, 'b', ' (2, 4)', COL.b);
+
+    vc8.drawVector(0, 0, ex, ey, COL.red, 3.8);
+    vc8.drawPill(ex / 2 - 0.6, ey / 2 - 0.4, 'e', ` = (${ex}, ${ey})`, COL.red);
+  } else if (curOp === 'opp') {
+    vc8.drawVector(0, 0, ax, ay, COL.a, 3.2);
+    vc8.drawPill(ax / 2 - 0.4, ay / 2 + 0.4, 'a', ' (3, 2)', COL.a);
+
+    vc8.drawVector(0, 0, -ax, -ay, COL.red, 3.6);
+    vc8.drawPill(-ax / 2 - 0.5, -ay / 2 - 0.4, '', '-a (-3, -2)', COL.red);
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP 9 IMPLEMENTATION: GONIOMETRO 360 PLAYGROUND
+// ═══════════════════════════════════════════
+let vc9 = null;
+
+function initStep9() {
+  vc9 = new VectorCanvas2('cvLab', { range: 7 });
+  updateStep9();
+}
+
+function updateStep9() {
+  if (!vc9) return;
+  const deg = parseFloat(document.getElementById('sliderLabAngle').value);
+  const mod = parseFloat(document.getElementById('sliderLabMod').value);
+
+  document.getElementById('dispLabAngle').textContent = deg + '°';
+  document.getElementById('dispLabMod').textContent = mod.toFixed(2);
+
+  const rad = deg * Math.PI / 180;
+  const cosV = Math.cos(rad);
+  const sinV = Math.sin(rad);
+
+  const ax = mod * cosV;
+  const ay = mod * sinV;
+  const negAngle = deg === 0 ? 0 : deg - 360;
+
+  let quad = "I";
+  if (deg > 90 && deg <= 180) quad = "II";
+  else if (deg > 180 && deg <= 270) quad = "III";
+  else if (deg > 270 && deg < 360) quad = "IV";
+
+  const formCard = document.getElementById('step9FormulaCard');
+  if (formCard) {
+    formCard.innerHTML = `
+      <strong>a<sub>x</sub> = ${mod.toFixed(2)} · cos(${deg}°) = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
+      <strong>a<sub>y</sub> = ${mod.toFixed(2)} · sin(${deg}°) = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}</strong>
+    `;
+  }
+
+  const info = document.getElementById('step9InfoBox');
+  if (info) {
+    info.innerHTML = `
+      • <strong>Angolo antiorario (+):</strong> α = ${deg}°<br>
+      • <strong>Angolo orario equivalente (-):</strong> β = ${negAngle}°<br>
+      • <strong>Quadrante:</strong> ${quad} Quadrante<br>
+      • <strong>cos(${deg}°):</strong> ${cosV.toFixed(3)} ➜ a<sub>x</sub> verso ${ax >= 0 ? 'destra (→)' : 'sinistra (←)'}<br>
+      • <strong>sin(${deg}°):</strong> ${sinV.toFixed(3)} ➜ a<sub>y</sub> verso ${ay >= 0 ? 'l\'alto (↑)' : 'il basso (↓)'}
+    `;
+  }
+
+  const pit = document.getElementById('step9PitagoraBox');
+  if (pit) {
+    pit.innerHTML = `
+      <strong>Ricostruzione con Pitagora:</strong><br>
+      a = √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = √(${ (ax*ax).toFixed(2) } + ${ (ay*ay).toFixed(2) }) = √${ (ax*ax + ay*ay).toFixed(2) } = <strong>${mod.toFixed(2)}</strong>
+    `;
+  }
+
+  vc9.clear();
+  vc9.drawGrid();
+
+  // Projections
+  vc9.drawDashedLine(ax, 0, ax, ay, COL.dashed, 0.45);
+  vc9.drawDashedLine(0, ay, ax, ay, COL.dashed, 0.45);
+
+  // Arcs
+  vc9.drawArc(0, 0, 1.3, 0, deg, COL.yellow, false, `${deg}°`);
+
+  // Components
+  vc9.drawVector(0, 0, ax, 0, COL.cyan, 3.2);
+  vc9.drawPill(ax / 2, (ay >= 0 ? -0.6 : 0.6), 'a', `_x = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}`, COL.cyan);
+
+  vc9.drawVector(0, 0, 0, ay, COL.orange, 3.2);
+  vc9.drawPill((ax >= 0 ? -0.8 : 0.8), ay / 2, 'a', `_y = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}`, COL.orange);
+
+  // Main Vector
+  vc9.drawVector(0, 0, ax, ay, COL.green, 3.8);
+  vc9.drawPill(ax / 2 + (ax >= 0 ? 0.3 : -0.3), ay / 2 + (ay >= 0 ? 0.4 : -0.4), 'a', ` = ${mod.toFixed(2)}`, COL.green);
+}
+
+function step9QuickSet(deg) {
+  document.getElementById('sliderLabAngle').value = deg;
+  updateStep9();
+}
+
+// ═══════════════════════════════════════════
+// QUIZ ENGINE
+// ═══════════════════════════════════════════
+
+function checkQuiz(el, isCorrect, fbId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.quiz-option').forEach(o => {
+    o.classList.add('disabled');
+    if (o === el) {
+      o.classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+  });
+
+  const fb = document.getElementById(fbId);
+  if (fb) {
+    fb.classList.add('show', isCorrect ? 'ok' : 'ko');
+    if (isCorrect) {
+      fb.innerHTML = '✅ <strong>Esatto! Ottima risposta!</strong> Hai applicato correttamente il concetto.';
+    } else {
+      fb.innerHTML = '❌ <strong>Risposta non corretta.</strong> Rileggi con calma la spiegazione e le formule nella slide corrispondente!';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP NAVIGATION ENGINE
+// ═══════════════════════════════════════════
+
+function loadCurrentStep() {
+  cancelAnim();
+  const step = STEPS[currentStep - 1];
+
+  document.getElementById('stepBadge').textContent = step.badge;
+  document.getElementById('stepTitle').textContent = step.title;
+  document.getElementById('stepRule').textContent = step.rule;
+  document.getElementById('stepCounterText').textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+
+  const card = document.getElementById('focusCard');
+  card.innerHTML = step.render();
+
+  // Jump buttons selector
+  const jumpSel = document.getElementById('jumpSelector');
+  jumpSel.innerHTML = '';
+  for (let i = 1; i <= totalSteps; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'jump-btn' + (i === currentStep ? ' active' : '');
+    btn.textContent = i;
+    btn.onclick = () => goToStep(i);
+    jumpSel.appendChild(btn);
+  }
+
+  document.getElementById('btnPrev').disabled = (currentStep === 1);
+  const nextBtn = document.getElementById('btnNext');
+  nextBtn.innerHTML = currentStep === totalSteps
+    ? 'RICOMINCIA <span>↺</span>'
+    : 'SUCCESSIVO <span>►</span>';
+
+  // Mount callback
+  if (step.onMount) {
+    setTimeout(step.onMount, 50);
+  }
+}
+
+function nextStep() {
+  currentStep = currentStep < totalSteps ? currentStep + 1 : 1;
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    loadCurrentStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToStep(s) {
+  currentStep = s;
+  loadCurrentStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextStep();
+  else if (e.key === 'ArrowLeft') prevStep();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadCurrentStep();
+});
+</script>
+
+</body>
+</html>
