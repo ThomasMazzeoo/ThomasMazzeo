@@ -325,29 +325,285 @@ body {
   font-weight: 600;
 }
 
-.formula-card {
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.9rem 1.15rem;
+/* ═══════════ SISTEMA VISIVO FORMULE MATEMATICHE & SCIENTIFICHE ═══════════ */
+
+/* Math Chips per testi, titoli e sottotitoli */
+.math-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.18rem 0.6rem;
+  border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 0.96rem;
+  font-weight: 700;
+  font-size: 0.92em;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.35;
+  margin: 0 0.15rem;
+  transition: all 0.2s;
+}
+.math-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.math-chip.chip-x {
+  background: #f0f9ff;
+  border-color: #38bdf8;
   color: #0369a1;
+}
+.math-chip.chip-y {
+  background: #fff7ed;
+  border-color: #fb923c;
+  color: #c2410c;
+}
+.math-chip.chip-hyp {
+  background: #f0fdf4;
+  border-color: #4ade80;
+  color: #15803d;
+}
+.math-chip sub {
+  font-size: 0.72em;
+  font-weight: 800;
+  bottom: -0.2em;
+  position: relative;
+}
+.math-chip sup {
+  font-size: 0.72em;
+  font-weight: 800;
+  top: -0.3em;
+  position: relative;
+}
+
+/* Frazioni matematiche con riga orizzontale */
+.math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
   text-align: center;
-  line-height: 1.7;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  padding: 0 0.35rem;
+  line-height: 1.15;
+  font-family: var(--font-mono);
+}
+.math-frac .num {
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 0.15rem;
+  font-weight: 700;
+}
+.math-frac .den {
+  padding-top: 0.15rem;
+  font-weight: 700;
+}
+
+/* Radice quadrata coprente */
+.math-rad {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+}
+.math-rad-sym {
+  font-size: 1.25em;
+  line-height: 1;
+  font-weight: 700;
+}
+.math-rad-val {
+  border-top: 2px solid currentColor;
+  padding: 0.1rem 0.25rem 0 0.2rem;
+  margin-left: 1px;
+}
+
+/* Scheda Master Formula */
+.formula-card {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #0284c7;
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.98rem;
+  color: #0f172a;
+  text-align: left;
+  line-height: 1.6;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.11), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+.formula-card:hover {
+  box-shadow: 0 6px 24px rgba(2, 132, 199, 0.18);
 }
 .formula-card.big {
-  font-size: 1.15rem;
-  background: #f0fdf4;
-  border-color: #86efac;
-  color: #15803d;
+  font-size: 1.18rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border-color: #16a34a;
+  box-shadow: 0 4px 18px rgba(22, 163, 74, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+  color: #14532d;
+  text-align: center;
 }
 .formula-card strong {
   color: #0f172a;
 }
 .formula-card.big strong {
   color: #15803d;
+}
+
+/* Intestazione della scheda formule */
+.formula-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid rgba(2, 132, 199, 0.18);
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  letter-spacing: 0.8px;
+  color: #0369a1;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.formula-card-header .header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.formula-card-header .angle-pill {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 0.2rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.3);
+}
+
+/* Righe di calcolo componente x e y */
+.formula-row-item {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.7rem;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s;
+}
+.formula-row-item:last-child {
+  margin-bottom: 0;
+}
+.formula-row-item.row-x {
+  border-left: 5px solid #0284c7;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.05) 0%, #ffffff 100%);
+}
+.formula-row-item.row-y {
+  border-left: 5px solid #ea580c;
+  background: linear-gradient(90deg, rgba(234, 88, 12, 0.05) 0%, #ffffff 100%);
+}
+
+.formula-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.formula-badge-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  letter-spacing: 0.2px;
+}
+.badge-x {
+  background: #e0f2fe;
+  color: #0284c7;
+  border: 1.5px solid #7dd3fc;
+  padding: 0.15rem 0.55rem;
+  border-radius: 5px;
+  font-weight: 800;
+  font-size: 0.95em;
+}
+.badge-y {
+  background: #ffedd5;
+  color: #ea580c;
+  border: 1.5px solid #fdba74;
+  padding: 0.15rem 0.55rem;
+  border-radius: 5px;
+  font-weight: 800;
+  font-size: 0.95em;
+}
+
+/* Espressione matematica orizzontale */
+.formula-math-expr {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: #0f172a;
+  letter-spacing: 0.3px;
+  line-height: 1.55;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.45rem;
+  padding: 0.2rem 0;
+}
+.formula-math-expr .math-sym {
+  font-weight: 800;
+}
+.formula-math-expr .math-sym.x { color: #0284c7; font-size: 1.1em; }
+.formula-math-expr .math-sym.y { color: #ea580c; font-size: 1.1em; }
+.formula-math-expr .math-op { color: #64748b; font-weight: 700; }
+.formula-math-expr .math-val { color: #1e293b; font-weight: 600; }
+.formula-math-expr .math-trig { color: #0369a1; font-weight: 700; }
+.formula-math-expr .math-res {
+  font-weight: 800;
+  font-size: 1.18rem;
+  padding: 0.18rem 0.65rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 0.4px;
+}
+.formula-math-expr .math-res.plus {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  box-shadow: 0 1px 4px rgba(22, 163, 74, 0.2);
+}
+.formula-math-expr .math-res.minus {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #fca5a5;
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.2);
+}
+
+.formula-sub-note {
+  font-size: 0.82rem;
+  color: #475569;
+  margin-top: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+.sign-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+.sign-badge.plus {
+  background: #16a34a;
+  color: #ffffff;
+}
+.sign-badge.minus {
+  background: #dc2626;
+  color: #ffffff;
 }
 
 /* Vector symbols */
@@ -637,32 +893,38 @@ body {
 .quad-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-top: 0.4rem;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
 .quad-item {
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.82rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.95rem;
+  font-size: 0.84rem;
   line-height: 1.45;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
-.quad-item:hover, .quad-item.active {
+.quad-item:hover {
   border-color: var(--blue);
   background: #f0f9ff;
+  transform: translateY(-1px);
 }
 .quad-item.active {
-  box-shadow: inset 0 0 0 1px var(--blue);
+  border-color: #0284c7;
+  border-width: 2px;
+  background: #f0f9ff;
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.22), inset 0 0 0 1px #0284c7;
+  transform: translateY(-1px);
 }
 .quad-badge {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: 0.52rem;
   color: #854d0e;
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
   font-weight: bold;
 }
 
@@ -874,12 +1136,49 @@ body.presentation-mode .info-box {
 }
 
 body.presentation-mode .formula-card {
-  font-size: 1.3rem;
-  padding: 1rem 1.2rem;
+  font-size: 1.25rem;
+  padding: 1.3rem 1.6rem;
+  border-width: 3px;
 }
 
 body.presentation-mode .formula-card.big {
-  font-size: 1.55rem;
+  font-size: 1.6rem;
+  border-width: 3px;
+}
+
+body.presentation-mode .formula-card-header {
+  font-size: 0.95rem;
+  margin-bottom: 0.9rem;
+}
+
+body.presentation-mode .formula-row-item {
+  padding: 0.95rem 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+body.presentation-mode .formula-math-expr {
+  font-size: 1.35rem;
+  gap: 0.4rem 0.65rem;
+}
+
+body.presentation-mode .formula-math-expr .math-res {
+  font-size: 1.45rem;
+  padding: 0.22rem 0.8rem;
+}
+
+body.presentation-mode .formula-sub-note {
+  font-size: 0.98rem;
+}
+
+body.presentation-mode .math-chip {
+  font-size: 1.05em;
+  padding: 0.22rem 0.75rem;
+}
+
+body.presentation-mode .badge-x,
+body.presentation-mode .badge-y {
+  font-size: 1.05em;
+  padding: 0.2rem 0.65rem;
 }
 
 body.presentation-mode .key-concept {
@@ -1748,7 +2047,21 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong><span class="vec-sym vec-e">e</span> = <span class="vec-sym vec-a">a</span> - <span class="vec-sym vec-b">b</span> = <span class="vec-sym vec-a">a</span> + (-<span class="vec-sym vec-b">b</span>)</strong>
+            <div class="formula-card-header">
+              <span class="header-tag">📐 SOTTRAZIONE COME SOMMA DELL'OPPOSTO</span>
+              <span class="angle-pill">PAG. 90</span>
+            </div>
+            <div class="formula-math-expr" style="justify-content:center; padding:0.3rem 0;">
+              <span class="vec-sym vec-e">e</span>
+              <span class="math-op">=</span>
+              <span class="vec-sym vec-a">a</span>
+              <span class="math-op">-</span>
+              <span class="vec-sym vec-b">b</span>
+              <span class="math-op">=</span>
+              <span class="vec-sym vec-a">a</span>
+              <span class="math-op">+</span>
+              <span class="math-val">(-<span class="vec-sym vec-b">b</span>)</span>
+            </div>
           </div>
           <div class="info-box" id="stepSubExplainBox">
             <strong>Procedimento Grafico dal Libro:</strong><br>
@@ -1769,7 +2082,7 @@ const STEPS = [
   {
     badge: "FASE 10 — IL PONTE",
     title: "SCOMPOSIZIONE SU ASSI PERPENDICOLARI",
-    rule: "Disegnando due assi perpendicolari x e y, ogni vettore a si scompone in due proiezioni a_x e a_y tali che a_x + a_y = a. Il vettore è l'ipotenusa, le proiezioni sono i cateti!",
+    rule: "Disegnando due assi perpendicolari x e y, ogni vettore si scompone in due proiezioni <span class=\"math-chip chip-x\">a<sub>x</sub></span> e <span class=\"math-chip chip-y\">a<sub>y</sub></span> tali che <span class=\"math-chip chip-hyp\">a<sub>x</sub> + a<sub>y</sub> = a</span>. Il vettore è l'ipotenusa, le proiezioni sono i cateti!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1783,7 +2096,17 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong><span class="vec-sym vec-a">a</span><sub>x</sub> + <span class="vec-sym vec-a">a</span><sub>y</sub> = <span class="vec-sym vec-a">a</span></strong>
+            <div class="formula-card-header">
+              <span class="header-tag">📐 SOMMA DELLE PROIEZIONI CARTESIANE</span>
+              <span class="angle-pill">PAG. 91</span>
+            </div>
+            <div class="formula-math-expr" style="justify-content:center; padding:0.4rem 0;">
+              <span class="math-sym x"><span class="vec-sym vec-a">a</span><sub>x</sub></span>
+              <span class="math-op">+</span>
+              <span class="math-sym y"><span class="vec-sym vec-a">a</span><sub>y</sub></span>
+              <span class="math-op">=</span>
+              <span class="math-res plus"><span class="vec-sym vec-a">a</span></span>
+            </div>
           </div>
           <div class="info-box">
             <strong>Dalla Geometria alle Componenti (Pag. 91):</strong><br>
@@ -1818,7 +2141,7 @@ const STEPS = [
   {
     badge: "FASE 11 — TEOREMA DI PITAGORA",
     title: "IL TEOREMA DI PITAGORA & IL MODULO",
-    rule: "Se conosciamo le componenti a_x e a_y di un vettore a, possiamo calcolarne la lunghezza (modulo) applicando il Teorema di Pitagora al triangolo rettangolo: a = √(a_x² + a_y²).",
+    rule: "Se conosciamo le componenti cartesiane di un vettore, calcoliamo la lunghezza (modulo) con il Teorema di Pitagora: <span class=\"math-chip chip-hyp\">a = √(a<sub>x</sub>² + a<sub>y</sub>²)</span>.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1845,18 +2168,21 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong>a = √(a<sub>x</sub>² + a<sub>y</sub>²)</strong>
+            <div class="formula-card-header" style="border-bottom-color: rgba(22,163,74,0.2); color:#15803d;">
+              <span class="header-tag">📐 FORMULA DI PITAGORA PER IL MODULO</span>
+              <span class="angle-pill" style="background:#16a34a;">PAG. 92</span>
+            </div>
+            <div class="formula-math-expr" style="justify-content:center; padding:0.4rem 0;">
+              <span class="math-val">a</span>
+              <span class="math-op">=</span>
+              <span class="math-trig">√( <span style="color:#0284c7;">a<sub>x</sub>²</span> + <span style="color:#ea580c;">a<sub>y</sub>²</span> )</span>
+            </div>
           </div>
-          <div class="info-box green">
-            <strong>Calcolo in tempo reale:</strong><br>
-            • Cateto orizzontale: |a<sub>x</sub>| = <span id="boxAx" class="highlight">4.0</span><br>
-            • Cateto verticale: |a<sub>y</sub>| = <span id="boxAy" class="highlight">3.0</span><br>
-            • Somma dei quadrati: a<sub>x</sub>² + a<sub>y</sub>² = <span id="boxSqSum">16 + 9 = 25</span><br>
-            • Modulo: a = √(<span id="boxRad">25</span>) = <strong id="boxMod" style="color:var(--green); font-size:1.05rem;">5.00</strong>
+          <div class="info-box green" id="stepPitagoraCalcBox">
           </div>
           <div class="key-concept">
             💡 Poiché ogni numero al quadrato è positivo o nullo,<br>
-            <strong>il modulo è SEMPRE positivo</strong>, anche se le componenti sono negative!
+            <strong>il modulo è SEMPRE positivo</strong>, anche se le componenti cartesiane sono negative!
           </div>
         </div>
       </div>
@@ -1868,7 +2194,7 @@ const STEPS = [
   {
     badge: "FASE 12 — LA MATEMATICA CHE USERAI",
     title: "IL SENO E IL COSENO DI UN ANGOLO ACUTO",
-    rule: "In un triangolo rettangolo, il seno di un angolo acuto è il rapporto tra il cateto opposto e l'ipotenusa; il coseno è il rapporto tra il cateto adiacente e l'ipotenusa.",
+    rule: "In un triangolo rettangolo: <span class=\"math-chip chip-y\">sin α = Cateto Opposto / Ipotenusa = a<sub>y</sub> / a</span> e <span class=\"math-chip chip-x\">cos α = Cateto Adiacente / Ipotenusa = a<sub>x</sub> / a</span>.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -1895,13 +2221,35 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card">
-            <strong>sin α = Cateto Opposto / Ipotenusa = AB / BC</strong><br>
-            <strong>cos α = Cateto Adiacente / Ipotenusa = CA / BC</strong>
+            <div class="formula-card-header">
+              <span class="header-tag">📐 DEFINIZIONI FONDAMENTALI (PAG. 92)</span>
+              <span class="angle-pill">TRIANGOLO RETTANGOLO</span>
+            </div>
+            <div style="display:flex; justify-content:space-around; gap:0.8rem; flex-wrap:wrap; margin:0.4rem 0;">
+              <div style="font-size:1.05rem; display:flex; align-items:center; gap:0.35rem;">
+                <span style="color:#0369a1; font-weight:800;">sin(α)</span>
+                <span>=</span>
+                <span class="math-frac"><span class="num">Cateto Opposto</span><span class="den">Ipotenusa</span></span>
+                <span>=</span>
+                <span class="math-frac"><span class="num" style="color:#ea580c;">AB</span><span class="den" style="color:#16a34a;">BC</span></span>
+                <span>=</span>
+                <span class="math-frac"><span class="num" style="color:#ea580c;">a<sub>y</sub></span><span class="den" style="color:#16a34a;">a</span></span>
+              </div>
+              <div style="font-size:1.05rem; display:flex; align-items:center; gap:0.35rem;">
+                <span style="color:#0369a1; font-weight:800;">cos(α)</span>
+                <span>=</span>
+                <span class="math-frac"><span class="num">Cateto Adiacente</span><span class="den">Ipotenusa</span></span>
+                <span>=</span>
+                <span class="math-frac"><span class="num" style="color:#0284c7;">CA</span><span class="den" style="color:#16a34a;">BC</span></span>
+                <span>=</span>
+                <span class="math-frac"><span class="num" style="color:#0284c7;">a<sub>x</sub></span><span class="den" style="color:#16a34a;">a</span></span>
+              </div>
+            </div>
           </div>
           <div class="info-box orange">
-            <strong>Formule Inverse per ricavare i cateti (Pag. 92):</strong><br>
-            • <strong>AB = BC · sin α</strong> (lunghezza = ipotenusa × seno dell'angolo opposto)<br>
-            • <strong>CA = BC · cos α</strong> (lunghezza = ipotenusa × coseno dell'angolo adiacente)
+            <strong>📐 Formule Inverse per ricavare le componenti (Pag. 92):</strong><br>
+            • <span class="math-chip chip-y">AB = BC · sin(α) ➜ a<sub>y</sub> = a · sin(α)</span> (ipotenusa × seno dell'angolo opposto)<br>
+            • <span class="math-chip chip-x">CA = BC · cos(α) ➜ a<sub>x</sub> = a · cos(α)</span> (ipotenusa × coseno dell'angolo adiacente)
           </div>
           <div class="info-box green" id="stepTrigCalcBox">
           </div>
@@ -1999,8 +2347,8 @@ const STEPS = [
   // ── STEP 14: SCOMPOSIZIONE CON L'ANGOLO α (PAG. 92-93) ──
   {
     badge: "FASE 14 — SCOMPOSIZIONE CARTESIANA",
-    title: "a_x = a cos α  E  a_y = a sin α",
-    rule: "Dato un vettore a di modulo 'a' inclinato di un angolo α rispetto al semiasse positivo x, le sue componenti cartesiane si ottengono moltiplicando il modulo per il coseno e per il seno dell'angolo.",
+    title: "SCOMPOSIZIONE: a<sub>x</sub> = a · cos(α) &nbsp;E&nbsp; a<sub>y</sub> = a · sin(α)",
+    rule: "Dato un vettore <span class=\"vec-a\"><span class=\"vec-sym\">a</span></span> di modulo a inclinato dell'angolo α rispetto al semiasse positivo x, le componenti cartesiane sono: <span class=\"math-chip chip-x\">a<sub>x</sub> = a · cos(α)</span> e <span class=\"math-chip chip-y\">a<sub>y</sub> = a · sin(α)</span>.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -2021,9 +2369,37 @@ const STEPS = [
           </div>
         </div>
         <div class="explain-side">
-          <div class="formula-card big">
-            <span style="color:var(--cyan)">a<sub>x</sub> = a · cos α</span><br>
-            <span style="color:var(--orange)">a<sub>y</sub> = a · sin α</span>
+          <div class="formula-card" id="stepDecompMasterCard">
+            <div class="formula-card-header">
+              <span class="header-tag">📐 FORMULE FONDAMENTALI DELLA SCOMPOSIZIONE</span>
+              <span class="angle-pill">PAG. 92-93</span>
+            </div>
+            <div class="formula-row-item row-x">
+              <div class="formula-row-top">
+                <span class="formula-badge-label"><span class="badge-x">a<sub>x</sub></span> CATETO ADIACENTE ALL'ANGOLO α</span>
+                <span class="sign-badge plus">USA IL COSENO</span>
+              </div>
+              <div class="formula-math-expr">
+                <span class="math-sym x">a<sub>x</sub></span>
+                <span class="math-op">=</span>
+                <span class="math-val">a</span>
+                <span class="math-op">·</span>
+                <span class="math-trig">cos(α)</span>
+              </div>
+            </div>
+            <div class="formula-row-item row-y">
+              <div class="formula-row-top">
+                <span class="formula-badge-label"><span class="badge-y">a<sub>y</sub></span> CATETO OPPOSTO ALL'ANGOLO α</span>
+                <span class="sign-badge plus">USA IL SENO</span>
+              </div>
+              <div class="formula-math-expr">
+                <span class="math-sym y">a<sub>y</sub></span>
+                <span class="math-op">=</span>
+                <span class="math-val">a</span>
+                <span class="math-op">·</span>
+                <span class="math-trig">sin(α)</span>
+              </div>
+            </div>
           </div>
           <div class="info-box green" id="stepDecompCalcBox">
           </div>
@@ -2039,7 +2415,7 @@ const STEPS = [
   {
     badge: "FASE 15 — I 4 QUADRANTI",
     title: "SEGNI DELLE COMPONENTI NEI 4 QUADRANTI",
-    rule: "Le formule a_x = a cos α e a_y = a sin α valgono per QUALUNQUE angolo tra 0° e 360°. La calcolatrice e la trigonometria assegnano automaticamente il segno corretto alle componenti!",
+    rule: "Le formule <span class=\"math-chip chip-x\">a<sub>x</sub> = a · cos(α)</span> e <span class=\"math-chip chip-y\">a<sub>y</sub> = a · sin(α)</span> valgono per <strong>QUALUNQUE angolo</strong> tra 0° e 360°. La trigonometria e la calcolatrice assegnano automaticamente il <strong>segno corretto</strong> alle componenti!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -2056,19 +2432,19 @@ const STEPS = [
           <div class="quad-grid" style="width:100%;">
             <div class="quad-item" id="qBtn2" onclick="stepQuadSet(135)">
               <span class="quad-badge">II QUADRANTE (90°–180°)</span>
-              cos &lt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &gt; 0</strong>
+              <span style="color:#dc2626; font-weight:700;">cos &lt; 0</span>, <span style="color:#16a34a; font-weight:700;">sin &gt; 0</span> ➜ <strong style="color:#0284c7;">a<sub>x</sub> &lt; 0</strong>, <strong style="color:#ea580c;">a<sub>y</sub> &gt; 0</strong>
             </div>
             <div class="quad-item" id="qBtn1" onclick="stepQuadSet(45)">
               <span class="quad-badge">I QUADRANTE (0°–90°)</span>
-              cos &gt; 0, sin &gt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &gt; 0</strong>
+              <span style="color:#16a34a; font-weight:700;">cos &gt; 0</span>, <span style="color:#16a34a; font-weight:700;">sin &gt; 0</span> ➜ <strong style="color:#0284c7;">a<sub>x</sub> &gt; 0</strong>, <strong style="color:#ea580c;">a<sub>y</sub> &gt; 0</strong>
             </div>
             <div class="quad-item" id="qBtn3" onclick="stepQuadSet(225)">
               <span class="quad-badge">III QUADRANTE (180°–270°)</span>
-              cos &lt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &lt; 0, a<sub>y</sub> &lt; 0</strong>
+              <span style="color:#dc2626; font-weight:700;">cos &lt; 0</span>, <span style="color:#dc2626; font-weight:700;">sin &lt; 0</span> ➜ <strong style="color:#0284c7;">a<sub>x</sub> &lt; 0</strong>, <strong style="color:#ea580c;">a<sub>y</sub> &lt; 0</strong>
             </div>
             <div class="quad-item" id="qBtn4" onclick="stepQuadSet(315)">
               <span class="quad-badge">IV QUADRANTE (270°–360°)</span>
-              cos &gt; 0, sin &lt; 0 ➜ <strong>a<sub>x</sub> &gt; 0, a<sub>y</sub> &lt; 0</strong>
+              <span style="color:#16a34a; font-weight:700;">cos &gt; 0</span>, <span style="color:#dc2626; font-weight:700;">sin &lt; 0</span> ➜ <strong style="color:#0284c7;">a<sub>x</sub> &gt; 0</strong>, <strong style="color:#ea580c;">a<sub>y</sub> &lt; 0</strong>
             </div>
           </div>
         </div>
@@ -2078,9 +2454,9 @@ const STEPS = [
           <div class="formula-card" id="stepQuadValuesBox">
           </div>
           <div class="info-box">
-            <strong>Regola generale dei segni:</strong><br>
-            • <strong>Seno (a<sub>y</sub>):</strong> è positivo nel semipiano superiore (0°–180°) e negativo nel semipiano inferiore (180°–360°).<br>
-            • <strong>Coseno (a<sub>x</sub>):</strong> è positivo nel semipiano destro (0°–90° e 270°–360°) e negativo a sinistra (90°–270°).
+            <strong>📐 Regola generale dei segni trigonometrici:</strong><br>
+            • <strong>Coseno (e componente a<sub>x</sub>):</strong> dipende dall'asse x ➜ <strong>positivo a DESTRA</strong> (0°–90° e 270°–360°), <strong>negativo a SINISTRA</strong> (90°–270°).<br>
+            • <strong>Seno (e componente a<sub>y</sub>):</strong> dipende dall'asse y ➜ <strong>positivo in ALTO</strong> (0°–180°), <strong>negativo in BASSO</strong> (180°–360°).
           </div>
         </div>
       </div>
@@ -2092,7 +2468,7 @@ const STEPS = [
   {
     badge: "FASE 16 — ANGOLI CON SEGNO",
     title: "ANGOLI ORARI NEGATIVI (α = 320° ⟺ β = -40°)",
-    rule: "Un angolo è positivo se misurato in senso antiorario a partire dal semiasse positivo x; è negativo se misurato in senso orario. L'angolo α = 320° e l'angolo β = -40° descrivono esattamente lo stesso vettore!",
+    rule: "Un angolo è positivo se antiorario, negativo se orario: <span class=\"math-chip\">β = α - 360°</span> (es. <span class=\"math-chip\">320° ⟺ -40°</span>). Entrambi gli angoli producono gli stessi identici valori numerici e segni per seno e coseno!",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -2107,17 +2483,33 @@ const STEPS = [
         </div>
         <div class="explain-side">
           <div class="formula-card big">
-            <strong>β = α - 360° ➜ 320° - 360° = -40°</strong>
+            <div class="formula-card-header" style="border-bottom-color:rgba(22,163,74,0.2); color:#15803d;">
+              <span class="header-tag">📐 FORMULA DI TRASFORMAZIONE ANGOLO ORARIO</span>
+              <span class="angle-pill" style="background:#16a34a;">320° ⟺ -40°</span>
+            </div>
+            <div class="formula-math-expr" style="justify-content:center; padding:0.4rem 0;">
+              <span class="math-sym">β</span>
+              <span class="math-op">=</span>
+              <span class="math-val">α</span>
+              <span class="math-op">-</span>
+              <span class="math-val">360°</span>
+              <span class="math-op">➜</span>
+              <span class="math-val">320°</span>
+              <span class="math-op">-</span>
+              <span class="math-val">360°</span>
+              <span class="math-op">=</span>
+              <span class="math-res minus">-40°</span>
+            </div>
           </div>
           <div class="info-box">
             <strong>Convenzione sui segni degli angoli:</strong><br>
-            • <strong>Senso Antiorario:</strong> segno <strong>+</strong> (es. α = +320°)<br>
-            • <strong>Senso Orario:</strong> segno <strong>-</strong> (es. β = -40°)
+            • <strong>Senso Antiorario:</strong> segno <strong>+</strong> (<span class="math-chip">α = +320°</span>)<br>
+            • <strong>Senso Orario:</strong> segno <strong>-</strong> (<span class="math-chip">β = -40°</span>)
           </div>
           <div class="info-box green">
-            <strong>Confronto matematico:</strong><br>
-            • cos(320°) = cos(-40°) = <strong>+0.766</strong><br>
-            • sin(320°) = sin(-40°) = <strong>-0.643</strong><br><br>
+            <strong>Confronto trigonometrico:</strong><br>
+            • <span class="math-chip chip-x">cos(320°) = cos(-40°) = +0.766</span><br>
+            • <span class="math-chip chip-y">sin(320°) = sin(-40°) = -0.643</span><br><br>
             Entrambi gli angoli danno gli <strong>stessi identici valori numerici e segni</strong>!
           </div>
         </div>
@@ -2130,7 +2522,7 @@ const STEPS = [
   {
     badge: "FASE 17 — ESEMPIO GUIDATO",
     title: "ESEMPIO: IL VETTORE POSIZIONE s = 15.4 m A 320°",
-    rule: "Risolviamo passo-passo l'esercizio del libro di testo: un vettore posizione s ha modulo s = 15.4 m e forma un angolo di 320° (o -40°) con il semiasse positivo x.",
+    rule: "Esercizio svolto del libro: vettore posizione s con modulo <span class=\"math-chip chip-hyp\">s = 15.4 m</span> e angolo <span class=\"math-chip\">α = 320°</span> (oppure <span class=\"math-chip\">β = -40°</span>). Scomponiamo e verifichiamo con Pitagora.",
     render: () => `
       <div class="canvas-wrapper">
         <div class="canvas-side">
@@ -2572,10 +2964,44 @@ function updateStepParallel() {
   const card = document.getElementById('stepParFormulaCard');
   if (parVerso === 'same') {
     sTot = s1 + s2;
-    if (card) card.innerHTML = `<strong>s_tot = ${s1.toFixed(1)} + ${s2.toFixed(1)} = ${sTot.toFixed(1)} m</strong>`;
+    if (card) {
+      card.innerHTML = `
+        <div class="formula-card-header" style="border-bottom-color:rgba(22,163,74,0.2); color:#15803d;">
+          <span class="header-tag">📐 STESSO VERSO: SOMMA DEI MODULI</span>
+          <span class="angle-pill" style="background:#16a34a;">s_tot = s₁ + s₂</span>
+        </div>
+        <div class="formula-math-expr" style="justify-content:center; padding:0.3rem 0;">
+          <span class="math-sym"><span class="vec-sym vec-s">s</span><sub>tot</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">${s1.toFixed(1)} m</span>
+          <span class="math-op">+</span>
+          <span class="math-val">${s2.toFixed(1)} m</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">${sTot.toFixed(1)} m</span>
+        </div>
+      `;
+    }
   } else {
     sTot = Math.abs(s1 - s2);
-    if (card) card.innerHTML = `<strong>s_tot = |${s1.toFixed(1)} - ${s2.toFixed(1)}| = ${sTot.toFixed(1)} m</strong>`;
+    if (card) {
+      card.innerHTML = `
+        <div class="formula-card-header" style="border-bottom-color:rgba(234,88,12,0.2); color:#ea580c;">
+          <span class="header-tag">📐 VERSI OPPOSTI: MODULO DELLA DIFFERENZA</span>
+          <span class="angle-pill" style="background:#ea580c;">s_tot = |s₁ - s₂|</span>
+        </div>
+        <div class="formula-math-expr" style="justify-content:center; padding:0.3rem 0;">
+          <span class="math-sym"><span class="vec-sym vec-s">s</span><sub>tot</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-op">|</span>
+          <span class="math-val">${s1.toFixed(1)} m</span>
+          <span class="math-op">-</span>
+          <span class="math-val">${s2.toFixed(1)} m</span>
+          <span class="math-op">|</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">${sTot.toFixed(1)} m</span>
+        </div>
+      `;
+    }
   }
 
   vcPar.clear();
@@ -2727,7 +3153,25 @@ function updateStepScaleK() {
 
   const fCard = document.getElementById('stepScaleKFormula');
   if (fCard) {
-    fCard.innerHTML = `<strong>d = (${k.toFixed(1)}) · a ➜ Modulo d = |${k.toFixed(1)}| · 2.5 = ${dMod.toFixed(2)} u</strong>`;
+    fCard.innerHTML = `
+      <div class="formula-card-header">
+        <span class="header-tag">📐 MOLTIPLICAZIONE PER SCALARE</span>
+        <span class="angle-pill">k = ${(k >= 0 ? '+' : '') + k.toFixed(1)}</span>
+      </div>
+      <div class="formula-math-expr" style="justify-content:center; padding:0.3rem 0;">
+        <span class="math-sym"><span class="vec-sym vec-d">d</span></span>
+        <span class="math-op">=</span>
+        <span class="math-val">(${k.toFixed(1)})</span>
+        <span class="math-op">·</span>
+        <span class="math-val"><span class="vec-sym vec-a">a</span></span>
+        <span class="math-op">➜ Modulo d =</span>
+        <span class="math-val">|${k.toFixed(1)}|</span>
+        <span class="math-op">·</span>
+        <span class="math-val">2.5</span>
+        <span class="math-op">=</span>
+        <span class="math-res plus">${dMod.toFixed(2)} u</span>
+      </div>
+    `;
   }
 
   vcScaleK.clear();
@@ -2852,15 +3296,36 @@ function updateStepPitagora() {
 
   document.getElementById('dispAx').textContent = (ax >= 0 ? '+' : '') + ax.toFixed(1);
   document.getElementById('dispAy').textContent = (ay >= 0 ? '+' : '') + ay.toFixed(1);
-  document.getElementById('boxAx').textContent = Math.abs(ax).toFixed(1);
-  document.getElementById('boxAy').textContent = Math.abs(ay).toFixed(1);
 
   const sqSum = ax * ax + ay * ay;
   const mod = Math.sqrt(sqSum);
+  const axSign = ax >= 0 ? '+' : '';
+  const aySign = ay >= 0 ? '+' : '';
 
-  document.getElementById('boxSqSum').textContent = `${(ax*ax).toFixed(1)} + ${(ay*ay).toFixed(1)} = ${sqSum.toFixed(1)}`;
-  document.getElementById('boxRad').textContent = sqSum.toFixed(1);
-  document.getElementById('boxMod').textContent = mod.toFixed(2);
+  const calcBox = document.getElementById('stepPitagoraCalcBox');
+  if (calcBox) {
+    calcBox.innerHTML = `
+      <div class="formula-card-header" style="border-bottom-color: rgba(22,163,74,0.2); color:#15803d;">
+        <span class="header-tag">📐 CALCOLO IN TEMPO REALE</span>
+        <span class="angle-pill" style="background:#16a34a;">Modulo a = ${mod.toFixed(2)}</span>
+      </div>
+      <div style="margin-bottom:0.4rem;">
+        • Cateto orizzontale: <span class="math-chip chip-x">|a<sub>x</sub>| = |${axSign}${ax.toFixed(1)}| = ${Math.abs(ax).toFixed(1)}</span><br>
+        • Cateto verticale: <span class="math-chip chip-y">|a<sub>y</sub>| = |${aySign}${ay.toFixed(1)}| = ${Math.abs(ay).toFixed(1)}</span>
+      </div>
+      <div class="formula-math-expr" style="background:#ffffff; padding:0.6rem 0.85rem; border-radius:8px; border:1.5px solid #86efac;">
+        <span class="math-val">a</span>
+        <span class="math-op">=</span>
+        <span class="math-trig">√((<span style="color:#0284c7;">${axSign}${ax.toFixed(1)}</span>)² + (<span style="color:#ea580c;">${aySign}${ay.toFixed(1)}</span>)²)</span>
+        <span class="math-op">=</span>
+        <span class="math-val">√(${(ax*ax).toFixed(1)} + ${(ay*ay).toFixed(1)})</span>
+        <span class="math-op">=</span>
+        <span class="math-val">√(${sqSum.toFixed(1)})</span>
+        <span class="math-op">=</span>
+        <span class="math-res plus">${mod.toFixed(2)}</span>
+      </div>
+    `;
+  }
 
   vcPitagora.clear();
   vcPitagora.drawGrid();
@@ -2923,9 +3388,48 @@ function updateStepTrigBase() {
   const calcBox = document.getElementById('stepTrigCalcBox');
   if (calcBox) {
     calcBox.innerHTML = `
-      Valori per α = <strong>${deg}°</strong> e Ipotenusa BC = <strong>${hyp.toFixed(1)}</strong>:<br>
-      • sin(${deg}°) ≈ <strong>${sinVal.toFixed(3)}</strong> ➜ <strong>AB</strong> = ${hyp.toFixed(1)} · ${sinVal.toFixed(3)} = <span style="color:var(--orange); font-weight:bold;">${opp.toFixed(2)}</span><br>
-      • cos(${deg}°) ≈ <strong>${cosVal.toFixed(3)}</strong> ➜ <strong>CA</strong> = ${hyp.toFixed(1)} · ${cosVal.toFixed(3)} = <span style="color:var(--green); font-weight:bold;">${adj.toFixed(2)}</span>
+      <div class="formula-card-header" style="border-bottom-color: rgba(22,163,74,0.2); color:#15803d;">
+        <span class="header-tag">📐 CALCOLO ISTANTANEO DEI CATETI</span>
+        <span class="angle-pill" style="background:#16a34a;">α = ${deg}° | Ipotenusa BC = ${hyp.toFixed(1)}</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-x">CA</span> CATETO ADIACENTE (a<sub>x</sub>)</span>
+          <span class="sign-badge plus">USA IL COSENO</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-val">CA</span>
+          <span class="math-op">=</span>
+          <span class="math-val">BC</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">cos(${deg}°)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${hyp.toFixed(1)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">${cosVal.toFixed(3)}</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">+${adj.toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="formula-row-item row-y">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-y">AB</span> CATETO OPPOSTO (a<sub>y</sub>)</span>
+          <span class="sign-badge plus">USA IL SENO</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-val">AB</span>
+          <span class="math-op">=</span>
+          <span class="math-val">BC</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">sin(${deg}°)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${hyp.toFixed(1)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">${sinVal.toFixed(3)}</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">+${opp.toFixed(2)}</span>
+        </div>
+      </div>
     `;
   }
 
@@ -2998,11 +3502,11 @@ function stepNotableSelect(deg) {
 
   const box = document.getElementById('stepNotableDetailBox');
   if (box) {
-    if (deg === 0) box.innerHTML = `<strong>Angolo 0°:</strong> Il cateto opposto collassa a zero (sin 0° = 0), il cateto adiacente coincide con l'ipotenusa (cos 0° = 1).`;
-    else if (deg === 30) box.innerHTML = `<strong>Angolo 30°:</strong> Il cateto opposto è esattamente <strong>metà dell'ipotenusa</strong>: sin(30°) = 1/2 = 0.500!`;
-    else if (deg === 45) box.innerHTML = `<strong>Angolo 45°:</strong> Triangolo isoscele: cateti identici! sin(45°) = cos(45°) = √2 / 2 ≈ 0.707.`;
-    else if (deg === 60) box.innerHTML = `<strong>Angolo 60°:</strong> Il cateto adiacente è metà dell'ipotenusa (cos 60° = 1/2), quello opposto vale √3 / 2 ≈ 0.866.`;
-    else if (deg === 90) box.innerHTML = `<strong>Angolo 90°:</strong> Il cateto adiacente collassa a zero (cos 90° = 0), il cateto opposto coincide con l'ipotenusa (sin 90° = 1).`;
+    if (deg === 0) box.innerHTML = `<strong>📐 Angolo 0°:</strong> Il cateto opposto collassa a zero (<span class="math-chip chip-y">sin 0° = 0</span>), il cateto adiacente coincide con l'ipotenusa (<span class="math-chip chip-x">cos 0° = 1</span>).`;
+    else if (deg === 30) box.innerHTML = `<strong>📐 Angolo 30°:</strong> Il cateto opposto è metà dell'ipotenusa: <span class="math-chip chip-y">sin(30°) = 1/2 = 0.500</span>, mentre <span class="math-chip chip-x">cos(30°) = √3/2 ≈ 0.866</span>.`;
+    else if (deg === 45) box.innerHTML = `<strong>📐 Angolo 45°:</strong> Triangolo rettangolo isoscele: cateti identici! <span class="math-chip chip-hyp">sin(45°) = cos(45°) = √2 / 2 ≈ 0.707</span>.`;
+    else if (deg === 60) box.innerHTML = `<strong>📐 Angolo 60°:</strong> Il cateto adiacente è metà dell'ipotenusa: <span class="math-chip chip-x">cos(60°) = 1/2 = 0.500</span>, mentre <span class="math-chip chip-y">sin(60°) = √3/2 ≈ 0.866</span>.`;
+    else if (deg === 90) box.innerHTML = `<strong>📐 Angolo 90°:</strong> Il cateto adiacente collassa a zero (<span class="math-chip chip-x">cos 90° = 0</span>), il cateto opposto coincide con l'ipotenusa (<span class="math-chip chip-y">sin 90° = 1</span>).`;
   }
 
   vcNotable.clear();
@@ -3052,9 +3556,48 @@ function updateStepDecomp() {
   const cBox = document.getElementById('stepDecompCalcBox');
   if (cBox) {
     cBox.innerHTML = `
-      Valori istantanei (a = <strong>${mod.toFixed(2)}</strong>, α = <strong>${deg}°</strong>):<br>
-      • cos(${deg}°) = ${cosV.toFixed(3)} ➜ a<sub>x</sub> = ${mod.toFixed(2)} · ${cosV.toFixed(3)} = <strong style="color:var(--cyan)">+${ax.toFixed(2)}</strong><br>
-      • sin(${deg}°) = ${sinV.toFixed(3)} ➜ a<sub>y</sub> = ${mod.toFixed(2)} · ${sinV.toFixed(3)} = <strong style="color:var(--orange)">+${ay.toFixed(2)}</strong>
+      <div class="formula-card-header" style="border-bottom-color: rgba(22,163,74,0.2); color:#15803d;">
+        <span class="header-tag">📐 CALCOLO ISTANTANEO (a = ${mod.toFixed(2)}, α = ${deg}°)</span>
+        <span class="angle-pill" style="background:#16a34a;">I Quadrante</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-x">a<sub>x</sub></span> ASSE X</span>
+          <span class="sign-badge plus">+ POSITIVA</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym x">a<sub>x</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">cos(${deg}°)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">${cosV.toFixed(3)}</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">+${ax.toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="formula-row-item row-y">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-y">a<sub>y</sub></span> ASSE Y</span>
+          <span class="sign-badge plus">+ POSITIVA</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym y">a<sub>y</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">sin(${deg}°)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">${sinV.toFixed(3)}</span>
+          <span class="math-op">=</span>
+          <span class="math-res plus">+${ay.toFixed(2)}</span>
+        </div>
+      </div>
     `;
   }
 
@@ -3062,8 +3605,18 @@ function updateStepDecomp() {
   if (pBox) {
     const testMod = Math.sqrt(ax * ax + ay * ay);
     pBox.innerHTML = `
-      <strong>Verifica con Pitagora:</strong><br>
-      √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = <strong>${testMod.toFixed(2)}</strong> ✓
+      <strong>📐 Verifica del Modulo con Teorema di Pitagora:</strong><br>
+      <div class="formula-math-expr" style="margin-top:0.35rem; font-size:1.05rem;">
+        <span class="math-val">a</span>
+        <span class="math-op">=</span>
+        <span class="math-trig">√(a<sub>x</sub>² + a<sub>y</sub>²)</span>
+        <span class="math-op">=</span>
+        <span class="math-val">√(${ax.toFixed(2)}² + ${ay.toFixed(2)}²)</span>
+        <span class="math-op">=</span>
+        <span class="math-val">√(${(ax*ax).toFixed(2)} + ${(ay*ay).toFixed(2)})</span>
+        <span class="math-op">=</span>
+        <span class="math-res plus">${testMod.toFixed(2)}</span> ✓
+      </div>
     `;
   }
 
@@ -3124,18 +3677,80 @@ function updateStepQuadrants() {
 
   const statBox = document.getElementById('stepQuadStatusBox');
   if (statBox) {
+    const xPosText = ax >= 0 ? '<strong style="color:#0284c7;">DESTRA (→)</strong>' : '<strong style="color:#0284c7;">SINISTRA (←)</strong>';
+    const yPosText = ay >= 0 ? '<strong style="color:#ea580c;">ALTO (↑)</strong>' : '<strong style="color:#ea580c;">BASSO (↓)</strong>';
     statBox.innerHTML = `
-      <strong>Quadrante: ${quadName} (α = ${deg}°)</strong><br>
-      • Coseno: <strong>${cosV >= 0 ? '+' : '-'}</strong> ➜ a<sub>x</sub> punta ${ax >= 0 ? 'a DESTRA (→)' : 'a SINISTRA (←)'}<br>
-      • Seno: <strong>${sinV >= 0 ? '+' : '-'}</strong> ➜ a<sub>y</sub> punta ${ay >= 0 ? 'in ALTO (↑)' : 'in BASSO (↓)'}
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+        <strong>📍 ${quadName}</strong>
+        <span class="math-chip">α = ${deg}°</span>
+      </div>
+      • Coseno <strong>${cosV >= 0 ? '(+)' : '(-)'}</strong> ➜ componente <span class="badge-x" style="padding:0.05rem 0.35rem;">a<sub>x</sub></span> rivolta a ${xPosText}<br>
+      • Seno <strong>${sinV >= 0 ? '(+)' : '(-)'}</strong> ➜ componente <span class="badge-y" style="padding:0.05rem 0.35rem;">a<sub>y</sub></span> rivolta verso l'${yPosText}
     `;
   }
 
   const valBox = document.getElementById('stepQuadValuesBox');
   if (valBox) {
+    const cosSignStr = cosV >= 0 ? '+' : '';
+    const sinSignStr = sinV >= 0 ? '+' : '';
+    const axSignStr = ax >= 0 ? '+' : '';
+    const aySignStr = ay >= 0 ? '+' : '';
+    const axClass = ax >= 0 ? 'plus' : 'minus';
+    const ayClass = ay >= 0 ? 'plus' : 'minus';
+    const axDir = ax >= 0 ? 'DESTRA (→)' : 'SINISTRA (←)';
+    const ayDir = ay >= 0 ? 'ALTO (↑)' : 'BASSO (↓)';
+
     valBox.innerHTML = `
-      cos(${deg}°) = ${cosV.toFixed(3)} ➜ <strong>a<sub>x</sub> = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
-      sin(${deg}°) = ${sinV.toFixed(3)} ➜ <strong>a<sub>y</sub> = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}</strong>
+      <div class="formula-card-header">
+        <span class="header-tag"><span style="font-size:1.15em">📐</span> FORMULE DELLE COMPONENTI</span>
+        <span class="angle-pill">α = ${deg}° | Modulo a = ${mod.toFixed(1)}</span>
+      </div>
+
+      <div class="formula-row-item row-x">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-x">a<sub>x</sub></span> COMPONENTE ORIZZONTALE</span>
+          <span class="sign-badge ${axClass}">${ax >= 0 ? '+ POSITIVA' : '- NEGATIVA'}</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym x">a<sub>x</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">a</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">cos(α)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(1)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">(${cosSignStr}${cosV.toFixed(3)})</span>
+          <span class="math-op">=</span>
+          <span class="math-res ${axClass}">${axSignStr}${ax.toFixed(2)}</span>
+        </div>
+        <div class="formula-sub-note">
+          <span>cos(${deg}°) ${cosV >= 0 ? '≥ 0' : '< 0'} ➜ proiezione sull'asse x rivolta a <strong>${axDir}</strong></span>
+        </div>
+      </div>
+
+      <div class="formula-row-item row-y">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-y">a<sub>y</sub></span> COMPONENTE VERTICALE</span>
+          <span class="sign-badge ${ayClass}">${ay >= 0 ? '+ POSITIVA' : '- NEGATIVA'}</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym y">a<sub>y</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">a</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">sin(α)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(1)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">(${sinSignStr}${sinV.toFixed(3)})</span>
+          <span class="math-op">=</span>
+          <span class="math-res ${ayClass}">${aySignStr}${ay.toFixed(2)}</span>
+        </div>
+        <div class="formula-sub-note">
+          <span>sin(${deg}°) ${sinV >= 0 ? '≥ 0' : '< 0'} ➜ proiezione sull'asse y rivolta verso l'<strong>${ayDir}</strong></span>
+        </div>
+      </div>
     `;
   }
 
@@ -3242,38 +3857,128 @@ function stepExampleShowSub(s) {
     `;
   } else if (s === 2) {
     container.innerHTML = `
-      <div class="formula-card big">
-        <strong>s<sub>x</sub> = s · cos 320° = (15.4 m) · 0.766 = +11.8 m</strong><br>
-        <strong>s<sub>y</sub> = s · sin 320° = (15.4 m) · (-0.643) = -9.90 m</strong>
+      <div class="formula-card">
+        <div class="formula-card-header">
+          <span class="header-tag">📐 FASE 2: SCOMPOSIZIONE CON α = 320°</span>
+          <span class="angle-pill">Modulo s = 15.4 m</span>
+        </div>
+        <div class="formula-row-item row-x">
+          <div class="formula-row-top">
+            <span class="formula-badge-label"><span class="badge-x">s<sub>x</sub></span> ASSE X (ORIZZONTALE)</span>
+            <span class="sign-badge plus">+ POSITIVA</span>
+          </div>
+          <div class="formula-math-expr">
+            <span class="math-sym x">s<sub>x</sub></span>
+            <span class="math-op">=</span>
+            <span class="math-val">s</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">cos(320°)</span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">(+0.766)</span>
+            <span class="math-op">=</span>
+            <span class="math-res plus">+11.8 m</span>
+          </div>
+        </div>
+        <div class="formula-row-item row-y">
+          <div class="formula-row-top">
+            <span class="formula-badge-label"><span class="badge-y">s<sub>y</sub></span> ASSE Y (VERTICALE)</span>
+            <span class="sign-badge minus">- NEGATIVA</span>
+          </div>
+          <div class="formula-math-expr">
+            <span class="math-sym y">s<sub>y</sub></span>
+            <span class="math-op">=</span>
+            <span class="math-val">s</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">sin(320°)</span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">(-0.643)</span>
+            <span class="math-op">=</span>
+            <span class="math-res minus">-9.90 m</span>
+          </div>
+        </div>
       </div>
       <div class="info-box green">
-        <strong>FASE 2: Calcolo con le Formule Trigonometriche</strong><br>
-        • cos(320°) = +0.766 ➜ s<sub>x</sub> = 15.4 · 0.766 = <strong>+11.8 m</strong><br>
-        • sin(320°) = -0.643 ➜ s<sub>y</sub> = 15.4 · (-0.643) = <strong>-9.90 m</strong>
+        <strong>Spiegazione Segni & Direzione:</strong><br>
+        • Coseno positivo ➜ <strong>s<sub>x</sub> = +11.8 m</strong> punta a <strong>DESTRA (→)</strong><br>
+        • Seno negativo ➜ <strong>s<sub>y</sub> = -9.90 m</strong> punta in <strong>BASSO (↓)</strong>
       </div>
     `;
   } else if (s === 3) {
     container.innerHTML = `
-      <div class="info-box orange">
-        <strong>FASE 3: Calcolo con l'Angolo Negativo β = -40°</strong><br>
-        β = 320° - 360° = <strong>-40°</strong>.
-      </div>
       <div class="formula-card">
-        <strong>s<sub>x</sub> = (15.4 m) · cos(-40°) = 15.4 · 0.766 = +11.8 m</strong><br>
-        <strong>s<sub>y</sub> = (15.4 m) · sin(-40°) = 15.4 · (-0.643) = -9.90 m</strong>
+        <div class="formula-card-header">
+          <span class="header-tag">📐 FASE 3: SCOMPOSIZIONE CON ANGOLO NEGATIVO β = -40°</span>
+          <span class="angle-pill">β = 320° - 360° = -40°</span>
+        </div>
+        <div class="formula-row-item row-x">
+          <div class="formula-row-top">
+            <span class="formula-badge-label"><span class="badge-x">s<sub>x</sub></span> ASSE X (ORIZZONTALE)</span>
+            <span class="sign-badge plus">+ POSITIVA</span>
+          </div>
+          <div class="formula-math-expr">
+            <span class="math-sym x">s<sub>x</sub></span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">cos(-40°)</span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">(+0.766)</span>
+            <span class="math-op">=</span>
+            <span class="math-res plus">+11.8 m</span>
+          </div>
+        </div>
+        <div class="formula-row-item row-y">
+          <div class="formula-row-top">
+            <span class="formula-badge-label"><span class="badge-y">s<sub>y</sub></span> ASSE Y (VERTICALE)</span>
+            <span class="sign-badge minus">- NEGATIVA</span>
+          </div>
+          <div class="formula-math-expr">
+            <span class="math-sym y">s<sub>y</sub></span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">sin(-40°)</span>
+            <span class="math-op">=</span>
+            <span class="math-val">15.4 m</span>
+            <span class="math-op">·</span>
+            <span class="math-trig">(-0.643)</span>
+            <span class="math-op">=</span>
+            <span class="math-res minus">-9.90 m</span>
+          </div>
+        </div>
       </div>
       <div class="key-concept">
-        🎯 <strong>Stesso identico risultato!</strong>
+        🎯 <strong>Stesso identico risultato!</strong> L'angolo orario -40° produce esattamente le stesse componenti cartesiane!
       </div>
     `;
   } else if (s === 4) {
     container.innerHTML = `
       <div class="formula-card big">
-        <strong>s = √(11.8² + (-9.90)²) = √(139.24 + 98.01) ≈ 15.4 m</strong>
+        <div class="formula-card-header" style="border-bottom-color: rgba(22,163,74,0.2); color:#15803d;">
+          <span class="header-tag">📐 FASE 4: VERIFICA FINALE CON PITAGORA</span>
+          <span class="angle-pill" style="background:#16a34a;">Modulo Ricostruito</span>
+        </div>
+        <div class="formula-math-expr" style="justify-content:center; padding:0.6rem 0;">
+          <span class="math-val">s</span>
+          <span class="math-op">=</span>
+          <span class="math-trig">√((+11.8 m)² + (-9.90 m)²)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">√(139.24 + 98.01)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">√(237.25)</span>
+          <span class="math-op">≈</span>
+          <span class="math-res plus">15.4 m</span>
+        </div>
       </div>
       <div class="info-box purple">
-        <strong>FASE 4: Prova del nove con Pitagora</strong><br>
-        √237.25 = <strong>15.40 m</strong> ✓. La scomposizione è esatta al 100%!
+        <strong>Risultato Verificato:</strong><br>
+        Il modulo ricostruito è <strong>15.40 m</strong> ✓. La scomposizione con seno e coseno è verificata e corretta al 100%!
       </div>
     `;
   }
@@ -3317,30 +4022,91 @@ function stepAlgebraSetOp(op) {
   if (op === 'add') {
     const cx = ax + bx, cy = ay + by;
     detail.innerHTML = `
-      <strong>Somma: c = a + b</strong><br>
-      • c<sub>x</sub> = a<sub>x</sub> + b<sub>x</sub> = 3 + 2 = <strong>${cx}</strong><br>
-      • c<sub>y</sub> = a<sub>y</sub> + b<sub>y</sub> = 2 + 4 = <strong>${cy}</strong><br>
-      Risultato: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>.
+      <div class="formula-card-header" style="border-bottom-color:rgba(22,163,74,0.2); color:#15803d;">
+        <span class="header-tag">📐 ADDIZIONE: SOMMA DELLE COMPONENTI</span>
+        <span class="angle-pill" style="background:#16a34a;">c = a + b</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <span class="badge-x">c<sub>x</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          a<sub>x</sub> + b<sub>x</sub> = 3 + 2 = <span class="math-res plus">+${cx}</span>
+        </span>
+      </div>
+      <div class="formula-row-item row-y">
+        <span class="badge-y">c<sub>y</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          a<sub>y</sub> + b<sub>y</sub> = 2 + 4 = <span class="math-res plus">+${cy}</span>
+        </span>
+      </div>
+      <div style="margin-top:0.35rem; font-weight:700;">
+        Vettore Somma Risultante: <span class="vec-c"><span class="vec-sym">c</span> = (${cx}, ${cy})</span>
+      </div>
     `;
   } else if (op === 'scale') {
     detail.innerHTML = `
-      <strong>Moltiplicazione per k = 2: d = 2 · a</strong><br>
-      • d<sub>x</sub> = 2 · 3 = <strong>6</strong><br>
-      • d<sub>y</sub> = 2 · 2 = <strong>4</strong><br>
-      Risultato: <span class="vec-d"><span class="vec-sym">d</span> = (6, 4)</span>.
+      <div class="formula-card-header">
+        <span class="header-tag">📐 MOLTIPLICAZIONE PER SCALARE (k = 2)</span>
+        <span class="angle-pill">d = 2 · a</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <span class="badge-x">d<sub>x</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          2 · a<sub>x</sub> = 2 · 3 = <span class="math-res plus">+6</span>
+        </span>
+      </div>
+      <div class="formula-row-item row-y">
+        <span class="badge-y">d<sub>y</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          2 · a<sub>y</sub> = 2 · 2 = <span class="math-res plus">+4</span>
+        </span>
+      </div>
+      <div style="margin-top:0.35rem; font-weight:700;">
+        Vettore Prodotto Risultante: <span class="vec-d"><span class="vec-sym">d</span> = (6, 4)</span>
+      </div>
     `;
   } else if (op === 'sub') {
     detail.innerHTML = `
-      <strong>Sottrazione: e = a - b</strong><br>
-      • e<sub>x</sub> = 3 - 2 = <strong>1</strong><br>
-      • e<sub>y</sub> = 2 - 4 = <strong>-2</strong><br>
-      Risultato: <span class="vec-e"><span class="vec-sym">e</span> = (1, -2)</span>.
+      <div class="formula-card-header" style="border-bottom-color:rgba(234,88,12,0.2); color:#ea580c;">
+        <span class="header-tag">📐 SOTTRAZIONE: DIFFERENZA DELLE COMPONENTI</span>
+        <span class="angle-pill" style="background:#ea580c;">e = a - b</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <span class="badge-x">e<sub>x</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          a<sub>x</sub> - b<sub>x</sub> = 3 - 2 = <span class="math-res plus">+1</span>
+        </span>
+      </div>
+      <div class="formula-row-item row-y">
+        <span class="badge-y">e<sub>y</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          a<sub>y</sub> - b<sub>y</sub> = 2 - 4 = <span class="math-res minus">-2</span>
+        </span>
+      </div>
+      <div style="margin-top:0.35rem; font-weight:700;">
+        Vettore Differenza Risultante: <span class="vec-e"><span class="vec-sym">e</span> = (1, -2)</span>
+      </div>
     `;
   } else if (op === 'opp') {
     detail.innerHTML = `
-      <strong>Vettore Opposto: -a</strong><br>
-      • (-a<sub>x</sub>, -a<sub>y</sub>) = <strong>(-3, -2)</strong><br>
-      Stesso modulo, stessa direzione, verso opposto!
+      <div class="formula-card-header" style="border-bottom-color:rgba(220,38,38,0.2); color:#dc2626;">
+        <span class="header-tag">📐 VETTORE OPPOSTO: SEGNI INVERTITI</span>
+        <span class="angle-pill" style="background:#dc2626;">-a</span>
+      </div>
+      <div class="formula-row-item row-x">
+        <span class="badge-x">-a<sub>x</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          -(+3) = <span class="math-res minus">-3</span>
+        </span>
+      </div>
+      <div class="formula-row-item row-y">
+        <span class="badge-y">-a<sub>y</sub></span>
+        <span class="formula-math-expr" style="display:inline-flex;">
+          -(+2) = <span class="math-res minus">-2</span>
+        </span>
+      </div>
+      <div style="margin-top:0.35rem; font-weight:700;">
+        Vettore Opposto: <span style="color:var(--red); font-weight:bold;">-<span class="vec-sym">a</span> = (-3, -2)</span>
+      </div>
     `;
   }
 
@@ -3407,9 +4173,66 @@ function updateStepLab() {
 
   const formCard = document.getElementById('stepLabFormulaCard');
   if (formCard) {
+    const cosSignStr = cosV >= 0 ? '+' : '';
+    const sinSignStr = sinV >= 0 ? '+' : '';
+    const axSignStr = ax >= 0 ? '+' : '';
+    const aySignStr = ay >= 0 ? '+' : '';
+    const axClass = ax >= 0 ? 'plus' : 'minus';
+    const ayClass = ay >= 0 ? 'plus' : 'minus';
+    const axDir = ax >= 0 ? 'DESTRA (→)' : 'SINISTRA (←)';
+    const ayDir = ay >= 0 ? 'ALTO (↑)' : 'BASSO (↓)';
+
     formCard.innerHTML = `
-      <strong>a<sub>x</sub> = ${mod.toFixed(2)} · cos(${deg}°) = ${ax >= 0 ? '+' : ''}${ax.toFixed(2)}</strong><br>
-      <strong>a<sub>y</sub> = ${mod.toFixed(2)} · sin(${deg}°) = ${ay >= 0 ? '+' : ''}${ay.toFixed(2)}</strong>
+      <div class="formula-card-header">
+        <span class="header-tag">📐 FORMULE DELLE COMPONENTI (360°)</span>
+        <span class="angle-pill">α = ${deg}° (${negAngle}°) | Modulo a = ${mod.toFixed(2)}</span>
+      </div>
+
+      <div class="formula-row-item row-x">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-x">a<sub>x</sub></span> ASSE X (ORIZZONTALE)</span>
+          <span class="sign-badge ${axClass}">${ax >= 0 ? '+ POSITIVA' : '- NEGATIVA'}</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym x">a<sub>x</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">a</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">cos(α)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">(${cosSignStr}${cosV.toFixed(3)})</span>
+          <span class="math-op">=</span>
+          <span class="math-res ${axClass}">${axSignStr}${ax.toFixed(2)}</span>
+        </div>
+        <div class="formula-sub-note">
+          <span>Punta verso <strong>${axDir}</strong></span>
+        </div>
+      </div>
+
+      <div class="formula-row-item row-y">
+        <div class="formula-row-top">
+          <span class="formula-badge-label"><span class="badge-y">a<sub>y</sub></span> ASSE Y (VERTICALE)</span>
+          <span class="sign-badge ${ayClass}">${ay >= 0 ? '+ POSITIVA' : '- NEGATIVA'}</span>
+        </div>
+        <div class="formula-math-expr">
+          <span class="math-sym y">a<sub>y</sub></span>
+          <span class="math-op">=</span>
+          <span class="math-val">a</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">sin(α)</span>
+          <span class="math-op">=</span>
+          <span class="math-val">${mod.toFixed(2)}</span>
+          <span class="math-op">·</span>
+          <span class="math-trig">(${sinSignStr}${sinV.toFixed(3)})</span>
+          <span class="math-op">=</span>
+          <span class="math-res ${ayClass}">${aySignStr}${ay.toFixed(2)}</span>
+        </div>
+        <div class="formula-sub-note">
+          <span>Punta verso <strong>${ayDir}</strong></span>
+        </div>
+      </div>
     `;
   }
 
@@ -3427,8 +4250,16 @@ function updateStepLab() {
   const pit = document.getElementById('stepLabPitagoraBox');
   if (pit) {
     pit.innerHTML = `
-      <strong>Ricostruzione con Pitagora:</strong><br>
-      a = √(${ax.toFixed(2)}² + ${ay.toFixed(2)}²) = <strong>${mod.toFixed(2)}</strong>
+      <strong>📐 Ricostruzione del Modulo con Pitagora:</strong><br>
+      <div class="formula-math-expr" style="margin-top:0.35rem; font-size:1.05rem;">
+        <span class="math-val">a</span>
+        <span class="math-op">=</span>
+        <span class="math-trig">√(a<sub>x</sub>² + a<sub>y</sub>²)</span>
+        <span class="math-op">=</span>
+        <span class="math-val">√(${ax.toFixed(2)}² + ${ay.toFixed(2)}²)</span>
+        <span class="math-op">=</span>
+        <span class="math-res plus">${mod.toFixed(2)}</span> ✓
+      </div>
     `;
   }
 
@@ -3509,8 +4340,8 @@ function loadCurrentStep() {
   const step = STEPS[currentStep - 1];
 
   document.getElementById('stepBadge').textContent = step.badge;
-  document.getElementById('stepTitle').textContent = step.title;
-  document.getElementById('stepRule').textContent = step.rule;
+  document.getElementById('stepTitle').innerHTML = step.title;
+  document.getElementById('stepRule').innerHTML = step.rule;
   document.getElementById('stepCounterText').textContent = `PASSO ${currentStep} DI ${totalSteps}`;
   const floatBadge = document.getElementById('presFloatingStepText');
   if (floatBadge) floatBadge.textContent = `PASSO ${currentStep} / ${totalSteps}`;
