@@ -186,21 +186,36 @@ const MATERIE = [
         title: "3°L Relazioni Internazionali",
         icon: "🌐",
         desc: "Materiali didattici, lezioni ed esercitazioni per la classe 3°L RIM.",
-        chapters: []
+        chapters: [
+          {
+            title: "Sicurezza informatica",
+            topics: []
+          }
+        ]
       },
       {
         id: "2h-finanza-marketing",
         title: "2H Finanza & Marketing",
         icon: "📈",
         desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2H AFM.",
-        chapters: []
+        chapters: [
+          {
+            title: "Sicurezza informatica",
+            topics: []
+          }
+        ]
       },
       {
         id: "2g-finanza-marketing",
         title: "2G Finanza & Marketing",
         icon: "💼",
         desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2G AFM.",
-        chapters: []
+        chapters: [
+          {
+            title: "Sicurezza informatica",
+            topics: []
+          }
+        ]
       }
     ]
   },
@@ -858,6 +873,19 @@ function renderSectionsView() {
 // ── Helper: Render Topics list ──
 function renderTopicsInto(container, topics, color, colorRgb) {
   container.innerHTML = '';
+  if (!topics || topics.length === 0) {
+    const emptyNotice = document.createElement('div');
+    emptyNotice.className = 'empty-topics-notice';
+    emptyNotice.innerHTML = `
+      <span style="font-size: 1.3rem;">📁</span>
+      <p style="margin: 0.35rem 0 0.15rem; font-family: var(--font-pixel); font-size: 0.72rem; color: ${color}; letter-spacing: 0.5px;">IN FASE DI ALLESTIMENTO</p>
+      <p style="margin: 0; font-size: 0.8rem; color: var(--color-text-muted);">I materiali didattici, le lezioni ed esercitazioni per questo modulo verranno pubblicati a breve.</p>
+    `;
+    emptyNotice.style.cssText = 'padding: 1.25rem 1rem; text-align: center; border: 1px dashed rgba(255,255,255,0.12); border-radius: 8px; margin: 0.5rem 0; background: rgba(0,0,0,0.25);';
+    container.appendChild(emptyNotice);
+    return;
+  }
+
   topics.forEach((topic) => {
     const topicEl = document.createElement(topic.url ? 'a' : 'div');
     topicEl.className = 'topic';
@@ -921,7 +949,9 @@ function renderChaptersView() {
     const hasVariants = chapter.variants && chapter.variants.length > 0;
     const countLabel = hasVariants 
       ? `${chapter.variants.length} versioni`
-      : `${chapter.topics.length} argomenti`;
+      : chapter.topics.length === 0
+        ? 'In allestimento'
+        : `${chapter.topics.length} argomenti`;
 
     // Chapter header (clickable)
     const chapterHeader = document.createElement('button');
