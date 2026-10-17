@@ -180,6 +180,27 @@ const MATERIE = [
             ]
           }
         ]
+      },
+      {
+        id: "3l-relazioni-internazionali",
+        title: "3°L Relazioni Internazionali",
+        icon: "🌐",
+        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 3°L RIM.",
+        chapters: []
+      },
+      {
+        id: "2h-finanza-marketing",
+        title: "2H Finanza & Marketing",
+        icon: "📈",
+        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2H AFM.",
+        chapters: []
+      },
+      {
+        id: "2g-finanza-marketing",
+        title: "2G Finanza & Marketing",
+        icon: "💼",
+        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2G AFM.",
+        chapters: []
       }
     ]
   },
@@ -876,6 +897,18 @@ function renderChaptersView() {
     </div>
   `;
   risorseContainer.appendChild(header);
+
+  if (selectedSectionObj.chapters.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = `
+      <span class="empty-state__icon">📁</span>
+      <p class="empty-state__text pixel-text">SEZIONE IN FASE DI ALLESTIMENTO</p>
+      <p class="empty-state__sub">I materiali didattici, le lezioni e gli esercizi per questa classe verranno pubblicati a breve.</p>
+    `;
+    risorseContainer.appendChild(empty);
+    return;
+  }
 
   const chaptersWrapper = document.createElement('div');
   chaptersWrapper.className = 'chapters-list';
