@@ -119,10 +119,10 @@ const MATERIE = [
         id: "sicurezza-informatica",
         title: "Sicurezza informatica",
         icon: "🛡️",
-        desc: "Principi di cybersecurity, crittografia, minacce digitali, protezione dei dati e reti sicure.",
+        desc: "Principi di cybersecurity, crittografia, minacce digitali, protezione dei dati e percorsi per le classi.",
         chapters: [
           {
-            title: "Capitolo 1 — Fondamenti di Sicurezza",
+            title: "Teoria di base",
             topics: [
               {
                 title: "Slide Interattive: Fondamenti di Cybersecurity",
@@ -130,77 +130,26 @@ const MATERIE = [
                 url: "/informatica/sicurezza-informatica.html"
               },
               { title: "La Triade CIA", desc: "I tre pilastri della sicurezza: Riservatezza (Confidentiality), Integrità (Integrity) e Disponibilità (Availability)." },
-              { title: "Principi di protezione", desc: "Privilegio minimo (Least Privilege), difesa in profondità (Defense in Depth) e fail-safe defaults." },
-              { title: "Vulnerabilità, minacce e rischio", desc: "Differenza tra minaccia, vulnerabilità ed exploit. Analisi della superficie di attacco." }
+              { title: "Minacce e Malware", desc: "Virus, worm, trojan, spyware, ransomware, rootkit, botnet, phishing e attacchi DoS/DDoS." },
+              { title: "Crittografia e Protezione Dati", desc: "Cifrari simmetrici e asimmetrici (AES, RSA), funzioni hash SHA-256, firma digitale e protocolli TLS/HTTPS." },
+              { title: "Sicurezza delle Reti & Wi-Fi", desc: "Firewall, zonizzazione DMZ, sistemi IDS/IPS, VPN cifrate e crittografia Wi-Fi WPA2/WPA3." },
+              { title: "Autenticazione e Password", desc: "Criteri di robustezza ed entropia, autenticazione multifattore (MFA/2FA), passkey FIDO2 e password manager." },
+              { title: "Privacy, Normative e Buone Pratiche", desc: "GDPR, diritti digitali, regola di backup 3-2-1, ethical hacking e igiene informatica quotidiana." }
             ]
           },
           {
-            title: "Capitolo 2 — Minacce e Malware",
-            topics: [
-              { title: "Tipologie di Malware", desc: "Virus, worm, trojan, spyware, ransomware, rootkit e botnet: caratteristiche e modalità di diffusione." },
-              { title: "Ransomware ed Estorsione Digitale", desc: "Cifratura dei file, richiesta di riscatto, vettori di infezione e strategie di backup." },
-              { title: "Ingegneria Sociale e Phishing", desc: "Manipolazione psicologica: phishing, spear phishing, smishing, vishing e spoofing dell'identità." },
-              { title: "Attacchi DoS e DDoS", desc: "Denial of Service, reti botnet, attacchi volumetrici e tecniche di mitigazione." }
-            ]
+            title: "3°L Relazioni Internazionali",
+            topics: []
           },
           {
-            title: "Capitolo 3 — Crittografia e Protezione Dati",
-            topics: [
-              { title: "Crittografia Simmetrica e Asimmetrica", desc: "Cifrari a chiave segreta (AES) e a coppia di chiavi pubblica/privata (RSA, ECC)." },
-              { title: "Funzioni di Hash e Integrità", desc: "Algoritmi unidirezionali (SHA-256), checksum e garanzia di non alterazione dei file." },
-              { title: "Firma Digitale e Certificati X.509", desc: "Infrastruttura a chiave pubblica (PKI), Certification Authority (CA) e non ripudio." },
-              { title: "Protocolli Web Sicuri: HTTPS e TLS/SSL", desc: "Handshake crittografico, certificati SSL/TLS e navigazione web protetta." }
-            ]
+            title: "2H Finanza & Marketing",
+            topics: []
           },
           {
-            title: "Capitolo 4 — Sicurezza delle Reti",
-            topics: [
-              { title: "Firewall e Zonizzazione DMZ", desc: "Filtraggio dei pacchetti, stateful inspection, next-generation firewall e segmentazione di rete." },
-              { title: "Sistemi IDS e IPS", desc: "Intrusion Detection e Prevention: rilevamento basato su firme e su anomalie di traffico." },
-              { title: "Reti Private Virtuali (VPN)", desc: "Tunneling cifrato, protocolli IPsec e OpenVPN, protezione delle comunicazioni remote." },
-              { title: "Sicurezza Wi-Fi", desc: "Protocolli WPA2 e WPA3, crittografia radio, rischi degli hotspot pubblici e attacchi Evil Twin." }
-            ]
-          },
-          {
-            title: "Capitolo 5 — Autenticazione e Password",
-            topics: [
-              { title: "Password Sicure ed Entropia", desc: "Criteri di robustezza, entropia, attacchi brute-force, dizionario e rainbow tables." },
-              { title: "Autenticazione a Più Fattori (MFA / 2FA)", desc: "Fattori di autenticazione: conoscenza, possesso, inerenza. Codici OTP e token hardware." },
-              { title: "Passkey e Standard FIDO2", desc: "Autenticazione biometrica e crittografia passwordless resistente al phishing." },
-              { title: "Password Manager", desc: "Gestione centralizzata e cifrata delle credenziali, generazione di chiavi casuali uniche." }
-            ]
-          },
-          {
-            title: "Capitolo 6 — Privacy, Normative e Buone Pratiche",
-            topics: [
-              { title: "GDPR e Protezione dei Dati Personali", desc: "Principi fondamentali del regolamento europeo: privacy by design, consenso e diritti degli utenti." },
-              { title: "Strategia di Backup 3-2-1", desc: "Tre copie, due supporti diversi, una copia off-site o cloud per il disaster recovery." },
-              { title: "Hacking Etico e Penetration Testing", desc: "Figure hacker (White Hat, Black Hat), test di penetrazione e divulgazione responsabile delle falle." },
-              { title: "Igiene Digitale Quotidiana", desc: "Aggiornamenti continui, verifica dei link, gestione dei permessi delle app e backup periodici." }
-            ]
+            title: "2G Finanza & Marketing",
+            topics: []
           }
         ]
-      },
-      {
-        id: "3l-relazioni-internazionali",
-        title: "3°L Relazioni Internazionali",
-        icon: "🌐",
-        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 3°L RIM.",
-        chapters: []
-      },
-      {
-        id: "2h-finanza-marketing",
-        title: "2H Finanza & Marketing",
-        icon: "📈",
-        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2H AFM.",
-        chapters: []
-      },
-      {
-        id: "2g-finanza-marketing",
-        title: "2G Finanza & Marketing",
-        icon: "💼",
-        desc: "Materiali didattici, lezioni ed esercitazioni per la classe 2G AFM.",
-        chapters: []
       }
     ]
   },
@@ -601,6 +550,37 @@ function handleHashRoute() {
   const rawHash = window.location.hash.replace('#', '');
   if (!rawHash) return;
 
+  const classAliases = {
+    '3l-relazioni-internazionali': '3°L Relazioni Internazionali',
+    '2h-finanza-marketing': '2H Finanza & Marketing',
+    '2g-finanza-marketing': '2G Finanza & Marketing',
+    'teoria-base': 'Teoria di base',
+    'teoria-di-base': 'Teoria di base'
+  };
+
+  if (classAliases[rawHash]) {
+    const infMateria = MATERIE.find(m => m.id === 'informatica');
+    const sec = infMateria?.sections.find(s => s.id === 'sicurezza-informatica');
+    if (infMateria && sec) {
+      selectedMateria = infMateria;
+      selectedSectionObj = sec;
+      currentView = 'chapters';
+      switchSection('risorse');
+      renderRisorseView();
+      const targetTitle = classAliases[rawHash];
+      const chapters = document.querySelectorAll('.chapter');
+      chapters.forEach(ch => {
+        const titleEl = ch.querySelector('.chapter__title');
+        if (titleEl && titleEl.textContent.trim() === targetTitle) {
+          ch.classList.add('chapter--open');
+        } else {
+          ch.classList.remove('chapter--open');
+        }
+      });
+      return;
+    }
+  }
+
   for (const materia of MATERIE) {
     if (materia.id === rawHash) {
       selectedMateria = materia;
@@ -858,6 +838,19 @@ function renderSectionsView() {
 // ── Helper: Render Topics list ──
 function renderTopicsInto(container, topics, color, colorRgb) {
   container.innerHTML = '';
+  if (!topics || topics.length === 0) {
+    const emptyNotice = document.createElement('div');
+    emptyNotice.className = 'empty-topics-notice';
+    emptyNotice.innerHTML = `
+      <span style="font-size: 1.3rem;">📁</span>
+      <p style="margin: 0.35rem 0 0.15rem; font-family: var(--font-pixel); font-size: 0.72rem; color: ${color}; letter-spacing: 0.5px;">IN FASE DI ALLESTIMENTO</p>
+      <p style="margin: 0; font-size: 0.8rem; color: var(--color-text-muted);">I materiali didattici, le lezioni ed esercitazioni per questa classe verranno pubblicati a breve.</p>
+    `;
+    emptyNotice.style.cssText = 'padding: 1.25rem 1rem; text-align: center; border: 1px dashed rgba(255,255,255,0.12); border-radius: 8px; margin: 0.5rem 0; background: rgba(0,0,0,0.25);';
+    container.appendChild(emptyNotice);
+    return;
+  }
+
   topics.forEach((topic) => {
     const topicEl = document.createElement(topic.url ? 'a' : 'div');
     topicEl.className = 'topic';
@@ -921,7 +914,9 @@ function renderChaptersView() {
     const hasVariants = chapter.variants && chapter.variants.length > 0;
     const countLabel = hasVariants 
       ? `${chapter.variants.length} versioni`
-      : `${chapter.topics.length} argomenti`;
+      : chapter.topics.length === 0
+        ? 'In allestimento'
+        : `${chapter.topics.length} argomenti`;
 
     // Chapter header (clickable)
     const chapterHeader = document.createElement('button');
