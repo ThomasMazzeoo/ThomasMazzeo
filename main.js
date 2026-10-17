@@ -115,8 +115,72 @@ const MATERIE = [
           }
         ]
       },
-      // Puoi aggiungere altre sezioni qui, es:
-      // { id: "python", title: "Linguaggio Python", ... }
+      {
+        id: "sicurezza-informatica",
+        title: "Sicurezza informatica",
+        icon: "🛡️",
+        desc: "Principi di cybersecurity, crittografia, minacce digitali, protezione dei dati e reti sicure.",
+        chapters: [
+          {
+            title: "Capitolo 1 — Fondamenti di Sicurezza",
+            topics: [
+              {
+                title: "Slide Interattive: Fondamenti di Cybersecurity",
+                desc: "Presentazione multimediale completa: la Triade CIA, minacce digitali, malware, crittografia, sicurezza delle reti e buone pratiche.",
+                url: "/informatica/sicurezza-informatica.html"
+              },
+              { title: "La Triade CIA", desc: "I tre pilastri della sicurezza: Riservatezza (Confidentiality), Integrità (Integrity) e Disponibilità (Availability)." },
+              { title: "Principi di protezione", desc: "Privilegio minimo (Least Privilege), difesa in profondità (Defense in Depth) e fail-safe defaults." },
+              { title: "Vulnerabilità, minacce e rischio", desc: "Differenza tra minaccia, vulnerabilità ed exploit. Analisi della superficie di attacco." }
+            ]
+          },
+          {
+            title: "Capitolo 2 — Minacce e Malware",
+            topics: [
+              { title: "Tipologie di Malware", desc: "Virus, worm, trojan, spyware, ransomware, rootkit e botnet: caratteristiche e modalità di diffusione." },
+              { title: "Ransomware ed Estorsione Digitale", desc: "Cifratura dei file, richiesta di riscatto, vettori di infezione e strategie di backup." },
+              { title: "Ingegneria Sociale e Phishing", desc: "Manipolazione psicologica: phishing, spear phishing, smishing, vishing e spoofing dell'identità." },
+              { title: "Attacchi DoS e DDoS", desc: "Denial of Service, reti botnet, attacchi volumetrici e tecniche di mitigazione." }
+            ]
+          },
+          {
+            title: "Capitolo 3 — Crittografia e Protezione Dati",
+            topics: [
+              { title: "Crittografia Simmetrica e Asimmetrica", desc: "Cifrari a chiave segreta (AES) e a coppia di chiavi pubblica/privata (RSA, ECC)." },
+              { title: "Funzioni di Hash e Integrità", desc: "Algoritmi unidirezionali (SHA-256), checksum e garanzia di non alterazione dei file." },
+              { title: "Firma Digitale e Certificati X.509", desc: "Infrastruttura a chiave pubblica (PKI), Certification Authority (CA) e non ripudio." },
+              { title: "Protocolli Web Sicuri: HTTPS e TLS/SSL", desc: "Handshake crittografico, certificati SSL/TLS e navigazione web protetta." }
+            ]
+          },
+          {
+            title: "Capitolo 4 — Sicurezza delle Reti",
+            topics: [
+              { title: "Firewall e Zonizzazione DMZ", desc: "Filtraggio dei pacchetti, stateful inspection, next-generation firewall e segmentazione di rete." },
+              { title: "Sistemi IDS e IPS", desc: "Intrusion Detection e Prevention: rilevamento basato su firme e su anomalie di traffico." },
+              { title: "Reti Private Virtuali (VPN)", desc: "Tunneling cifrato, protocolli IPsec e OpenVPN, protezione delle comunicazioni remote." },
+              { title: "Sicurezza Wi-Fi", desc: "Protocolli WPA2 e WPA3, crittografia radio, rischi degli hotspot pubblici e attacchi Evil Twin." }
+            ]
+          },
+          {
+            title: "Capitolo 5 — Autenticazione e Password",
+            topics: [
+              { title: "Password Sicure ed Entropia", desc: "Criteri di robustezza, entropia, attacchi brute-force, dizionario e rainbow tables." },
+              { title: "Autenticazione a Più Fattori (MFA / 2FA)", desc: "Fattori di autenticazione: conoscenza, possesso, inerenza. Codici OTP e token hardware." },
+              { title: "Passkey e Standard FIDO2", desc: "Autenticazione biometrica e crittografia passwordless resistente al phishing." },
+              { title: "Password Manager", desc: "Gestione centralizzata e cifrata delle credenziali, generazione di chiavi casuali uniche." }
+            ]
+          },
+          {
+            title: "Capitolo 6 — Privacy, Normative e Buone Pratiche",
+            topics: [
+              { title: "GDPR e Protezione dei Dati Personali", desc: "Principi fondamentali del regolamento europeo: privacy by design, consenso e diritti degli utenti." },
+              { title: "Strategia di Backup 3-2-1", desc: "Tre copie, due supporti diversi, una copia off-site o cloud per il disaster recovery." },
+              { title: "Hacking Etico e Penetration Testing", desc: "Figure hacker (White Hat, Black Hat), test di penetrazione e divulgazione responsabile delle falle." },
+              { title: "Igiene Digitale Quotidiana", desc: "Aggiornamenti continui, verifica dei link, gestione dei permessi delle app e backup periodici." }
+            ]
+          }
+        ]
+      }
     ]
   },
   {
