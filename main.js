@@ -85,16 +85,6 @@ const MATERIE = [
             title: "I Vettori",
             topics: [
               {
-                title: "Lezione Interattiva — I Vettori nel Piano (1h)",
-                desc: "Piano cartesiano animato stile 3Blue1Brown: cos'è un vettore, componenti, somma punta-coda, parallelogramma, differenza, moltiplicazione per scalare e quiz finale.",
-                url: "/fisica/giordano-bruno/vettori.html"
-              }
-            ]
-          },
-          {
-            title: "I Vettori — Parte 2",
-            topics: [
-              {
                 title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
                 desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
                 url: "/fisica/giordano-bruno/vettori-parte-2.html"
@@ -420,7 +410,7 @@ const MATERIE = [
         id: "bozze",
         title: "Bozze",
         icon: "📦",
-        desc: "Materiali didattici in bozza: Linguaggio C++, Office Excel & Fogli e Sicurezza informatica.",
+        desc: "Materiali didattici in bozza: C++, Office Excel, Sicurezza informatica e Vettori di Fisica.",
         subsections: [
           {
             id: "cpp",
@@ -580,6 +570,24 @@ const MATERIE = [
                   { title: "Strategia di Backup 3-2-1", desc: "Tre copie, due supporti diversi, una copia off-site o cloud per il disaster recovery." },
                   { title: "Hacking Etico e Penetration Testing", desc: "Figure hacker (White Hat, Black Hat), test di penetrazione e divulgazione responsabile delle falle." },
                   { title: "Igiene Digitale Quotidiana", desc: "Aggiornamenti continui, verifica dei link, gestione dei permessi delle app e backup periodici." }
+                ]
+              }
+            ]
+          },
+          {
+            id: "bozze-vettori",
+            title: "I Vettori (Fisica)",
+            icon: "📐",
+            desc: "Lezione interattiva sui vettori nel piano cartesiano, componenti e somma grafica.",
+            chapters: [
+              {
+                title: "I Vettori nel Piano",
+                topics: [
+                  {
+                    title: "Lezione Interattiva — I Vettori nel Piano (1h)",
+                    desc: "Piano cartesiano animato stile 3Blue1Brown: cos'è un vettore, componenti, somma punta-coda, parallelogramma, differenza, moltiplicazione per scalare e quiz finale.",
+                    url: "/fisica/giordano-bruno/vettori.html"
+                  }
                 ]
               }
             ]
