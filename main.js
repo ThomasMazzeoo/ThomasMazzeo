@@ -17,170 +17,8 @@ const MATERIE = [
     icon: "💻",
     color: "var(--color-cyan)",
     colorRgb: "0, 245, 255",
-    desc: "Programmazione, algoritmi, reti e sistemi operativi.",
+    desc: "Materiali didattici, lezioni ed esercitazioni per le classi.",
     sections: [
-      {
-        id: "cpp",
-        title: "Linguaggio C++",
-        icon: "⚙️",
-        desc: "Dalle basi alla programmazione ad oggetti in C++.",
-        chapters: [
-          {
-            title: "Capitolo 0 — Introduzione Informatica",
-            topics: [
-              {
-                title: "Slide Interattive: Hardware, Software e Società",
-                desc: "Presentazione multimediale completa: origini e architettura del computer, sistema operativo, software, dati e impatto digitale.",
-                url: "/informatica/introduzione-informatica.html"
-              }
-            ]
-          },
-          {
-            title: "Capitolo 1 — Introduzione al C++",
-            topics: [
-              { title: "Cos'è il C++ e la sua storia", desc: "Origini, evoluzione da C, standard ISO e versioni moderne (C++11, 14, 17, 20)." },
-              { title: "Ambiente di sviluppo", desc: "Installazione di un compilatore (GCC, Clang, MSVC), IDE consigliati e configurazione." },
-              { title: "Il primo programma: Hello World", desc: "Struttura base di un programma C++, #include, main(), cout e compilazione." },
-              { title: "Compilazione e linking", desc: "Preprocessore, compilazione, assemblaggio, linking. Differenza tra file .cpp e .h." },
-            ]
-          },
-          {
-            title: "Capitolo 2 — Variabili e Tipi di Dato",
-            topics: [
-              { title: "Tipi fondamentali", desc: "int, float, double, char, bool, void. Dimensioni e range." },
-              { title: "Variabili e costanti", desc: "Dichiarazione, inizializzazione, const, constexpr, auto." },
-              { title: "Operatori", desc: "Aritmetici, relazionali, logici, bitwise, assegnamento e operatore ternario." },
-              { title: "Casting e conversioni", desc: "Conversioni implicite, static_cast, dynamic_cast, reinterpret_cast." },
-            ]
-          },
-          {
-            title: "Capitolo 3 — Strutture di Controllo",
-            topics: [
-              { title: "Condizionali: if, else, switch", desc: "Costrutti condizionali, operatore ternario, switch-case con break e default." },
-              { title: "Cicli: for, while, do-while", desc: "Iterazione, range-based for, cicli annidati e controllo del flusso." },
-              { title: "Break, continue e goto", desc: "Istruzioni di salto, quando usarle e quando evitarle." },
-            ]
-          },
-          {
-            title: "Capitolo 4 — Funzioni",
-            topics: [
-              { title: "Dichiarazione e definizione", desc: "Prototipi, parametri, valore di ritorno, void functions." },
-              { title: "Passaggio per valore e per riferimento", desc: "Differenze, reference (&), const reference, quando usare quale." },
-              { title: "Overloading delle funzioni", desc: "Funzioni con lo stesso nome ma parametri diversi, risoluzione." },
-              { title: "Funzioni inline e ricorsione", desc: "Keyword inline, funzioni ricorsive, stack overflow e ottimizzazione." },
-            ]
-          },
-          {
-            title: "Capitolo 5 — Array e Puntatori",
-            topics: [
-              { title: "Array statici e multidimensionali", desc: "Dichiarazione, accesso, iterazione, limiti degli array C-style." },
-              { title: "Puntatori: concetti base", desc: "Indirizzo di memoria, operatore &, dereferenziazione *, puntatori null." },
-              { title: "Aritmetica dei puntatori", desc: "Incremento, decremento, differenza tra puntatori, relazione array-puntatori." },
-              { title: "Allocazione dinamica: new e delete", desc: "Heap vs stack, new, delete, memory leak, array dinamici." },
-            ]
-          },
-          {
-            title: "Capitolo 6 — Classi e OOP",
-            topics: [
-              { title: "Classi e oggetti", desc: "Definizione di classe, attributi, metodi, istanziazione di oggetti." },
-              { title: "Costruttori e distruttori", desc: "Costruttore di default, parametrizzato, di copia. Distruttore e RAII." },
-              { title: "Incapsulamento", desc: "Access specifiers: public, private, protected. Getter e setter." },
-              { title: "Ereditarietà", desc: "Classi derivate, ereditarietà singola e multipla, virtual, override." },
-              { title: "Polimorfismo", desc: "Funzioni virtuali, classi astratte, vtable, dynamic dispatch." },
-            ]
-          },
-        ]
-      },
-      {
-        id: "excel",
-        title: "Office Excel & Fogli",
-        icon: "📊",
-        desc: "Dalle basi ai fogli di calcolo avanzati con Microsoft Excel e Google Workspace.",
-        chapters: [
-          {
-            title: "Lezione 1 — Le Basi di Excel",
-            topics: [
-              { title: "Tutorial Interattivo", desc: "Impara l'interfaccia, le celle, le formule e la formattazione con un simulatore animato passo-passo.", url: "/office-excel/Lezione_01_Basi/lezione.html" }
-            ]
-          },
-          {
-            title: "Lezione 2 — Grafici di Fisica con Google Fogli & Documenti",
-            topics: [
-              {
-                title: "Tutorial Interattivo: Grafici s(t), v(t) e Relazione",
-                desc: "Guida passo-passo: dispersione scatter, retta di interpolazione lineare (andata/ritorno), formule di velocità, grafico v(t) e collegamento dinamico su Google Documenti.",
-                url: "/office-excel/Lezione_02_Grafici_Fisica/lezione.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: "sicurezza-informatica",
-        title: "Sicurezza informatica",
-        icon: "🛡️",
-        desc: "Principi di cybersecurity, crittografia, minacce digitali, protezione dei dati e reti sicure.",
-        chapters: [
-          {
-            title: "Capitolo 1 — Fondamenti di Sicurezza",
-            topics: [
-              {
-                title: "Slide Interattive: Fondamenti di Cybersecurity",
-                desc: "Presentazione multimediale completa: la Triade CIA, minacce digitali, malware, crittografia, sicurezza delle reti e buone pratiche.",
-                url: "/informatica/sicurezza-informatica.html"
-              },
-              { title: "La Triade CIA", desc: "I tre pilastri della sicurezza: Riservatezza (Confidentiality), Integrità (Integrity) e Disponibilità (Availability)." },
-              { title: "Principi di protezione", desc: "Privilegio minimo (Least Privilege), difesa in profondità (Defense in Depth) e fail-safe defaults." },
-              { title: "Vulnerabilità, minacce e rischio", desc: "Differenza tra minaccia, vulnerabilità ed exploit. Analisi della superficie di attacco." }
-            ]
-          },
-          {
-            title: "Capitolo 2 — Minacce e Malware",
-            topics: [
-              { title: "Tipologie di Malware", desc: "Virus, worm, trojan, spyware, ransomware, rootkit e botnet: caratteristiche e modalità di diffusione." },
-              { title: "Ransomware ed Estorsione Digitale", desc: "Cifratura dei file, richiesta di riscatto, vettori di infezione e strategie di backup." },
-              { title: "Ingegneria Sociale e Phishing", desc: "Manipolazione psicologica: phishing, spear phishing, smishing, vishing e spoofing dell'identità." },
-              { title: "Attacchi DoS e DDoS", desc: "Denial of Service, reti botnet, attacchi volumetrici e tecniche di mitigazione." }
-            ]
-          },
-          {
-            title: "Capitolo 3 — Crittografia e Protezione Dati",
-            topics: [
-              { title: "Crittografia Simmetrica e Asimmetrica", desc: "Cifrari a chiave segreta (AES) e a coppia di chiavi pubblica/privata (RSA, ECC)." },
-              { title: "Funzioni di Hash e Integrità", desc: "Algoritmi unidirezionali (SHA-256), checksum e garanzia di non alterazione dei file." },
-              { title: "Firma Digitale e Certificati X.509", desc: "Infrastruttura a chiave pubblica (PKI), Certification Authority (CA) e non ripudio." },
-              { title: "Protocolli Web Sicuri: HTTPS e TLS/SSL", desc: "Handshake crittografico, certificati SSL/TLS e navigazione web protetta." }
-            ]
-          },
-          {
-            title: "Capitolo 4 — Sicurezza delle Reti",
-            topics: [
-              { title: "Firewall e Zonizzazione DMZ", desc: "Filtraggio dei pacchetti, stateful inspection, next-generation firewall e segmentazione di rete." },
-              { title: "Sistemi IDS e IPS", desc: "Intrusion Detection e Prevention: rilevamento basato su firme e su anomalie di traffico." },
-              { title: "Reti Private Virtuali (VPN)", desc: "Tunneling cifrato, protocolli IPsec e OpenVPN, protezione delle comunicazioni remote." },
-              { title: "Sicurezza Wi-Fi", desc: "Protocolli WPA2 e WPA3, crittografia radio, rischi degli hotspot pubblici e attacchi Evil Twin." }
-            ]
-          },
-          {
-            title: "Capitolo 5 — Autenticazione e Password",
-            topics: [
-              { title: "Password Sicure ed Entropia", desc: "Criteri di robustezza, entropia, attacchi brute-force, dizionario e rainbow tables." },
-              { title: "Autenticazione a Più Fattori (MFA / 2FA)", desc: "Fattori di autenticazione: conoscenza, possesso, inerenza. Codici OTP e token hardware." },
-              { title: "Passkey e Standard FIDO2", desc: "Autenticazione biometrica e crittografia passwordless resistente al phishing." },
-              { title: "Password Manager", desc: "Gestione centralizzata e cifrata delle credenziali, generazione di chiavi casuali uniche." }
-            ]
-          },
-          {
-            title: "Capitolo 6 — Privacy, Normative e Buone Pratiche",
-            topics: [
-              { title: "GDPR e Protezione dei Dati Personali", desc: "Principi fondamentali del regolamento europeo: privacy by design, consenso e diritti degli utenti." },
-              { title: "Strategia di Backup 3-2-1", desc: "Tre copie, due supporti diversi, una copia off-site o cloud per il disaster recovery." },
-              { title: "Hacking Etico e Penetration Testing", desc: "Figure hacker (White Hat, Black Hat), test di penetrazione e divulgazione responsabile delle falle." },
-              { title: "Igiene Digitale Quotidiana", desc: "Aggiornamenti continui, verifica dei link, gestione dei permessi delle app e backup periodici." }
-            ]
-          }
-        ]
-      },
       {
         id: "3l-relazioni-internazionali",
         title: "3°L Relazioni Internazionali",
@@ -577,13 +415,183 @@ const MATERIE = [
             ]
           }
         ]
+      },
+      {
+        id: "bozze",
+        title: "Bozze",
+        icon: "📦",
+        desc: "Materiali didattici in bozza: Linguaggio C++, Office Excel & Fogli e Sicurezza informatica.",
+        subsections: [
+          {
+            id: "cpp",
+            title: "Linguaggio C++",
+            icon: "⚙️",
+            desc: "Dalle basi alla programmazione ad oggetti in C++.",
+            chapters: [
+              {
+                title: "Capitolo 0 — Introduzione Informatica",
+                topics: [
+                  {
+                    title: "Slide Interattive: Hardware, Software e Società",
+                    desc: "Presentazione multimediale completa: origini e architettura del computer, sistema operativo, software, dati e impatto digitale.",
+                    url: "/informatica/introduzione-informatica.html"
+                  }
+                ]
+              },
+              {
+                title: "Capitolo 1 — Introduzione al C++",
+                topics: [
+                  { title: "Cos'è il C++ e la sua storia", desc: "Origini, evoluzione da C, standard ISO e versioni moderne (C++11, 14, 17, 20)." },
+                  { title: "Ambiente di sviluppo", desc: "Installazione di un compilatore (GCC, Clang, MSVC), IDE consigliati e configurazione." },
+                  { title: "Il primo programma: Hello World", desc: "Struttura base di un programma C++, #include, main(), cout e compilazione." },
+                  { title: "Compilazione e linking", desc: "Preprocessore, compilazione, assemblaggio, linking. Differenza tra file .cpp e .h." },
+                ]
+              },
+              {
+                title: "Capitolo 2 — Variabili e Tipi di Dato",
+                topics: [
+                  { title: "Tipi fondamentali", desc: "int, float, double, char, bool, void. Dimensioni e range." },
+                  { title: "Variabili e costanti", desc: "Dichiarazione, inizializzazione, const, constexpr, auto." },
+                  { title: "Operatori", desc: "Aritmetici, relazionali, logici, bitwise, assegnamento e operatore ternario." },
+                  { title: "Casting e conversioni", desc: "Conversioni implicite, static_cast, dynamic_cast, reinterpret_cast." },
+                ]
+              },
+              {
+                title: "Capitolo 3 — Strutture di Controllo",
+                topics: [
+                  { title: "Condizionali: if, else, switch", desc: "Costrutti condizionali, operatore ternario, switch-case con break e default." },
+                  { title: "Cicli: for, while, do-while", desc: "Iterazione, range-based for, cicli annidati e controllo del flusso." },
+                  { title: "Break, continue e goto", desc: "Istruzioni di salto, quando usarle e quando evitarle." },
+                ]
+              },
+              {
+                title: "Capitolo 4 — Funzioni",
+                topics: [
+                  { title: "Dichiarazione e definizione", desc: "Prototipi, parametri, valore di ritorno, void functions." },
+                  { title: "Passaggio per valore e per riferimento", desc: "Differenze, reference (&), const reference, quando usare quale." },
+                  { title: "Overloading delle funzioni", desc: "Funzioni con lo stesso nome ma parametri diversi, risoluzione." },
+                  { title: "Funzioni inline e ricorsione", desc: "Keyword inline, funzioni ricorsive, stack overflow e ottimizzazione." },
+                ]
+              },
+              {
+                title: "Capitolo 5 — Array e Puntatori",
+                topics: [
+                  { title: "Array statici e multidimensionali", desc: "Dichiarazione, accesso, iterazione, limiti degli array C-style." },
+                  { title: "Puntatori: concetti base", desc: "Indirizzo di memoria, operatore &, dereferenziazione *, puntatori null." },
+                  { title: "Aritmetica dei puntatori", desc: "Incremento, decremento, differenza tra puntatori, relazione array-puntatori." },
+                  { title: "Allocazione dinamica: new e delete", desc: "Heap vs stack, new, delete, memory leak, array dinamici." },
+                ]
+              },
+              {
+                title: "Capitolo 6 — Classi e OOP",
+                topics: [
+                  { title: "Classi e oggetti", desc: "Definizione di classe, attributi, metodi, istanziazione di oggetti." },
+                  { title: "Costruttori e distruttori", desc: "Costruttore di default, parametrizzato, di copia. Distruttore e RAII." },
+                  { title: "Incapsulamento", desc: "Access specifiers: public, private, protected. Getter e setter." },
+                  { title: "Ereditarietà", desc: "Classi derivate, ereditarietà singola e multipla, virtual, override." },
+                  { title: "Polimorfismo", desc: "Funzioni virtuali, classi astratte, vtable, dynamic dispatch." },
+                ]
+              },
+            ]
+          },
+          {
+            id: "excel",
+            title: "Office Excel & Fogli",
+            icon: "📊",
+            desc: "Dalle basi ai fogli di calcolo avanzati con Microsoft Excel e Google Workspace.",
+            chapters: [
+              {
+                title: "Lezione 1 — Le Basi di Excel",
+                topics: [
+                  { title: "Tutorial Interattivo", desc: "Impara l'interfaccia, le celle, le formule e la formattazione con un simulatore animato passo-passo.", url: "/office-excel/Lezione_01_Basi/lezione.html" }
+                ]
+              },
+              {
+                title: "Lezione 2 — Grafici di Fisica con Google Fogli & Documenti",
+                topics: [
+                  {
+                    title: "Tutorial Interattivo: Grafici s(t), v(t) e Relazione",
+                    desc: "Guida passo-passo: dispersione scatter, retta di interpolazione lineare (andata/ritorno), formule di velocità, grafico v(t) e collegamento dinamico su Google Documenti.",
+                    url: "/office-excel/Lezione_02_Grafici_Fisica/lezione.html"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "sicurezza-informatica",
+            title: "Sicurezza informatica",
+            icon: "🛡️",
+            desc: "Principi di cybersecurity, crittografia, minacce digitali, protezione dei dati e reti sicure.",
+            chapters: [
+              {
+                title: "Capitolo 1 — Fondamenti di Sicurezza",
+                topics: [
+                  {
+                    title: "Slide Interattive: Fondamenti di Cybersecurity",
+                    desc: "Presentazione multimediale completa: la Triade CIA, minacce digitali, malware, crittografia, sicurezza delle reti e buone pratiche.",
+                    url: "/informatica/sicurezza-informatica.html"
+                  },
+                  { title: "La Triade CIA", desc: "I tre pilastri della sicurezza: Riservatezza (Confidentiality), Integrità (Integrity) e Disponibilità (Availability)." },
+                  { title: "Principi di protezione", desc: "Privilegio minimo (Least Privilege), difesa in profondità (Defense in Depth) e fail-safe defaults." },
+                  { title: "Vulnerabilità, minacce e rischio", desc: "Differenza tra minaccia, vulnerabilità ed exploit. Analisi della superficie di attacco." }
+                ]
+              },
+              {
+                title: "Capitolo 2 — Minacce e Malware",
+                topics: [
+                  { title: "Tipologie di Malware", desc: "Virus, worm, trojan, spyware, ransomware, rootkit e botnet: caratteristiche e modalità di diffusione." },
+                  { title: "Ransomware ed Estorsione Digitale", desc: "Cifratura dei file, richiesta di riscatto, vettori di infezione e strategie di backup." },
+                  { title: "Ingegneria Sociale e Phishing", desc: "Manipolazione psicologica: phishing, spear phishing, smishing, vishing e spoofing dell'identità." },
+                  { title: "Attacchi DoS e DDoS", desc: "Denial of Service, reti botnet, attacchi volumetrici e tecniche di mitigazione." }
+                ]
+              },
+              {
+                title: "Capitolo 3 — Crittografia e Protezione Dati",
+                topics: [
+                  { title: "Crittografia Simmetrica e Asimmetrica", desc: "Cifrari a chiave segreta (AES) e a coppia di chiavi pubblica/privata (RSA, ECC)." },
+                  { title: "Funzioni di Hash e Integrità", desc: "Algoritmi unidirezionali (SHA-256), checksum e garanzia di non alterazione dei file." },
+                  { title: "Firma Digitale e Certificati X.509", desc: "Infrastruttura a chiave pubblica (PKI), Certification Authority (CA) e non ripudio." },
+                  { title: "Protocolli Web Sicuri: HTTPS e TLS/SSL", desc: "Handshake crittografico, certificati SSL/TLS e navigazione web protetta." }
+                ]
+              },
+              {
+                title: "Capitolo 4 — Sicurezza delle Reti",
+                topics: [
+                  { title: "Firewall e Zonizzazione DMZ", desc: "Filtraggio dei pacchetti, stateful inspection, next-generation firewall e segmentazione di rete." },
+                  { title: "Sistemi IDS e IPS", desc: "Intrusion Detection e Prevention: rilevamento basato su firme e su anomalie di traffico." },
+                  { title: "Reti Private Virtuali (VPN)", desc: "Tunneling cifrato, protocolli IPsec e OpenVPN, protezione delle comunicazioni remote." },
+                  { title: "Sicurezza Wi-Fi", desc: "Protocolli WPA2 e WPA3, crittografia radio, rischi degli hotspot pubblici e attacchi Evil Twin." }
+                ]
+              },
+              {
+                title: "Capitolo 5 — Autenticazione e Password",
+                topics: [
+                  { title: "Password Sicure ed Entropia", desc: "Criteri di robustezza, entropia, attacchi brute-force, dizionario e rainbow tables." },
+                  { title: "Autenticazione a Più Fattori (MFA / 2FA)", desc: "Fattori di autenticazione: conoscenza, possesso, inerenza. Codici OTP e token hardware." },
+                  { title: "Passkey e Standard FIDO2", desc: "Autenticazione biometrica e crittografia passwordless resistente al phishing." },
+                  { title: "Password Manager", desc: "Gestione centralizzata e cifrata delle credenziali, generazione di chiavi casuali uniche." }
+                ]
+              },
+              {
+                title: "Capitolo 6 — Privacy, Normative e Buone Pratiche",
+                topics: [
+                  { title: "GDPR e Protezione dei Dati Personali", desc: "Principi fondamentali del regolamento europeo: privacy by design, consenso e diritti degli utenti." },
+                  { title: "Strategia di Backup 3-2-1", desc: "Tre copie, due supporti diversi, una copia off-site o cloud per il disaster recovery." },
+                  { title: "Hacking Etico e Penetration Testing", desc: "Figure hacker (White Hat, Black Hat), test di penetrazione e divulgazione responsabile delle falle." },
+                  { title: "Igiene Digitale Quotidiana", desc: "Aggiornamenti continui, verifica dei link, gestione dei permessi delle app e backup periodici." }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
 ];
 
 // ══════════════════════════════════════════
-// ── Helper per conteggio topic ──
+// ── Helper per conteggio topic e sezioni ──
 // ══════════════════════════════════════════
 function getChapterTopicCount(chapter) {
   if (chapter.variants && chapter.variants.length > 0) {
@@ -592,13 +600,29 @@ function getChapterTopicCount(chapter) {
   return chapter.topics ? chapter.topics.length : 0;
 }
 
+function getSectionChapterCount(sec) {
+  if (sec.subsections) {
+    return sec.subsections.reduce((sum, sub) => sum + sub.chapters.length, 0);
+  }
+  return sec.chapters ? sec.chapters.length : 0;
+}
+
+function getSectionTopicCount(sec) {
+  if (sec.subsections) {
+    return sec.subsections.reduce((sum, sub) =>
+      sum + sub.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0), 0);
+  }
+  return sec.chapters ? sec.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0) : 0;
+}
+
 // ══════════════════════════════════════════
 // ── State ──
 // ══════════════════════════════════════════
 let currentSection = 'home';
-let currentView = 'materie'; // 'materie' | 'sections' | 'chapters'
+let currentView = 'materie'; // 'materie' | 'sections' | 'subsections' | 'chapters'
 let selectedMateria = null;
 let selectedSectionObj = null;
+let selectedSubsectionObj = null;
 
 // ══════════════════════════════════════════
 // ── DOM Elements ──
@@ -620,19 +644,34 @@ function handleHashRoute() {
     if (materia.id === rawHash) {
       selectedMateria = materia;
       selectedSectionObj = null;
+      selectedSubsectionObj = null;
       currentView = 'sections';
       switchSection('risorse');
       renderRisorseView();
       return;
     }
-    const sec = materia.sections.find(s => s.id === rawHash && !s.hidden);
-    if (sec) {
-      selectedMateria = materia;
-      selectedSectionObj = sec;
-      currentView = 'chapters';
-      switchSection('risorse');
-      renderRisorseView();
-      return;
+    for (const sec of materia.sections) {
+      if (sec.id === rawHash && !sec.hidden) {
+        selectedMateria = materia;
+        selectedSectionObj = sec;
+        selectedSubsectionObj = null;
+        currentView = (sec.subsections && sec.subsections.length > 0) ? 'subsections' : 'chapters';
+        switchSection('risorse');
+        renderRisorseView();
+        return;
+      }
+      if (sec.subsections) {
+        const sub = sec.subsections.find(s => s.id === rawHash);
+        if (sub) {
+          selectedMateria = materia;
+          selectedSectionObj = sec;
+          selectedSubsectionObj = sub;
+          currentView = 'chapters';
+          switchSection('risorse');
+          renderRisorseView();
+          return;
+        }
+      }
     }
   }
 
@@ -654,8 +693,10 @@ function init() {
 function updateStats() {
   const totalTopics = MATERIE.reduce((sum, m) =>
     sum + m.sections.filter(s => !s.hidden).reduce((s2, sec) =>
-      s2 + sec.chapters.reduce((s3, ch) => s3 + getChapterTopicCount(ch), 0), 0), 0);
-  const totalSections = MATERIE.reduce((sum, m) => sum + m.sections.filter(s => !s.hidden).length, 0);
+      s2 + getSectionTopicCount(sec), 0), 0);
+  const totalSections = MATERIE.reduce((sum, m) =>
+    sum + m.sections.filter(s => !s.hidden).reduce((s2, sec) =>
+      s2 + (sec.subsections ? sec.subsections.length : 1), 0), 0);
 
   document.getElementById('stat-total').textContent = totalTopics;
   document.getElementById('stat-subjects').textContent = MATERIE.length;
@@ -708,6 +749,7 @@ function renderRisorseView() {
   switch (currentView) {
     case 'materie': renderMaterieView(); break;
     case 'sections': renderSectionsView(); break;
+    case 'subsections': renderSubsectionsView(); break;
     case 'chapters': renderChaptersView(); break;
   }
   renderBreadcrumb();
@@ -722,7 +764,13 @@ function renderBreadcrumb() {
   root.className = 'breadcrumb__item';
   root.innerHTML = '<span class="breadcrumb__icon">🏠</span> MATERIE';
   if (currentView === 'materie') root.classList.add('breadcrumb__item--active');
-  root.addEventListener('click', () => { currentView = 'materie'; selectedMateria = null; selectedSectionObj = null; renderRisorseView(); });
+  root.addEventListener('click', () => {
+    currentView = 'materie';
+    selectedMateria = null;
+    selectedSectionObj = null;
+    selectedSubsectionObj = null;
+    renderRisorseView();
+  });
   breadcrumbContainer.appendChild(root);
 
   if (selectedMateria) {
@@ -736,7 +784,12 @@ function renderBreadcrumb() {
     materiaBtn.style.setProperty('--bc-color', selectedMateria.color);
     materiaBtn.innerHTML = `${selectedMateria.icon} ${selectedMateria.label.toUpperCase()}`;
     if (currentView === 'sections') materiaBtn.classList.add('breadcrumb__item--active');
-    materiaBtn.addEventListener('click', () => { currentView = 'sections'; selectedSectionObj = null; renderRisorseView(); });
+    materiaBtn.addEventListener('click', () => {
+      currentView = 'sections';
+      selectedSectionObj = null;
+      selectedSubsectionObj = null;
+      renderRisorseView();
+    });
     breadcrumbContainer.appendChild(materiaBtn);
   }
 
@@ -747,10 +800,35 @@ function renderBreadcrumb() {
     breadcrumbContainer.appendChild(sep2);
 
     const secBtn = document.createElement('button');
-    secBtn.className = 'breadcrumb__item breadcrumb__item--active';
+    secBtn.className = 'breadcrumb__item';
     secBtn.style.setProperty('--bc-color', selectedMateria.color);
     secBtn.innerHTML = `${selectedSectionObj.icon} ${selectedSectionObj.title.toUpperCase()}`;
+    if (currentView === 'subsections' || (currentView === 'chapters' && !selectedSubsectionObj)) {
+      secBtn.classList.add('breadcrumb__item--active');
+    }
+    secBtn.addEventListener('click', () => {
+      if (selectedSectionObj.subsections && selectedSectionObj.subsections.length > 0) {
+        currentView = 'subsections';
+        selectedSubsectionObj = null;
+      } else {
+        currentView = 'chapters';
+      }
+      renderRisorseView();
+    });
     breadcrumbContainer.appendChild(secBtn);
+  }
+
+  if (selectedSubsectionObj) {
+    const sep3 = document.createElement('span');
+    sep3.className = 'breadcrumb__sep';
+    sep3.textContent = '►';
+    breadcrumbContainer.appendChild(sep3);
+
+    const subBtn = document.createElement('button');
+    subBtn.className = 'breadcrumb__item breadcrumb__item--active';
+    subBtn.style.setProperty('--bc-color', selectedMateria.color);
+    subBtn.innerHTML = `${selectedSubsectionObj.icon} ${selectedSubsectionObj.title.toUpperCase()}`;
+    breadcrumbContainer.appendChild(subBtn);
   }
 }
 
@@ -768,9 +846,10 @@ function renderMaterieView() {
 
   MATERIE.forEach((materia, i) => {
     const visibleSections = materia.sections.filter(sec => !sec.hidden);
-    const sectionCount = visibleSections.length;
+    const sectionCount = visibleSections.reduce((s, sec) =>
+      s + (sec.subsections ? sec.subsections.length : 1), 0);
     const topicCount = visibleSections.reduce((s, sec) =>
-      s + sec.chapters.reduce((s2, ch) => s2 + getChapterTopicCount(ch), 0), 0);
+      s + getSectionTopicCount(sec), 0);
 
     const card = document.createElement('button');
     card.className = 'materia-card';
@@ -833,8 +912,11 @@ function renderSectionsView() {
   grid.className = 'sections-grid';
 
   visibleSections.forEach((sec, i) => {
-    const chapterCount = sec.chapters.length;
-    const topicCount = sec.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0);
+    const chapterCount = getSectionChapterCount(sec);
+    const topicCount = getSectionTopicCount(sec);
+    const badgeLabel = sec.subsections
+      ? `${sec.subsections.length} sezioni`
+      : `${chapterCount} capitoli`;
 
     const card = document.createElement('button');
     card.className = 'section-card';
@@ -851,7 +933,7 @@ function renderSectionsView() {
         </div>
       </div>
       <div class="section-card__meta">
-        <span class="section-card__badge">${chapterCount} capitoli</span>
+        <span class="section-card__badge">${badgeLabel}</span>
         <span class="section-card__badge">${topicCount} risorse</span>
         <span class="section-card__arrow">►</span>
       </div>
@@ -859,8 +941,66 @@ function renderSectionsView() {
 
     card.addEventListener('click', () => {
       selectedSectionObj = sec;
-      currentView = 'chapters';
+      selectedSubsectionObj = null;
+      currentView = (sec.subsections && sec.subsections.length > 0) ? 'subsections' : 'chapters';
       history.replaceState(null, '', `#${sec.id}`);
+      renderRisorseView();
+    });
+
+    grid.appendChild(card);
+  });
+
+  risorseContainer.appendChild(grid);
+}
+
+// ── View: Subsections inside a grouped section (es. Bozze) ──
+function renderSubsectionsView() {
+  if (!selectedMateria || !selectedSectionObj || !selectedSectionObj.subsections) return;
+  risorseContainer.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'chapters-header';
+  header.innerHTML = `
+    <span class="chapters-header__icon">${selectedSectionObj.icon}</span>
+    <div>
+      <h2 class="chapters-header__title pixel-text" style="color:${selectedMateria.color}">${selectedSectionObj.title}</h2>
+      <p class="chapters-header__desc">${selectedSectionObj.desc}</p>
+    </div>
+  `;
+  risorseContainer.appendChild(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'sections-grid';
+
+  selectedSectionObj.subsections.forEach((subSec, i) => {
+    const chapterCount = subSec.chapters.length;
+    const topicCount = subSec.chapters.reduce((s, ch) => s + getChapterTopicCount(ch), 0);
+
+    const card = document.createElement('button');
+    card.className = 'section-card';
+    card.style.setProperty('--card-color', selectedMateria.color);
+    card.style.setProperty('--card-color-rgb', selectedMateria.colorRgb);
+    card.style.animationDelay = `${i * 0.1}s`;
+
+    card.innerHTML = `
+      <div class="section-card__header">
+        <span class="section-card__icon">${subSec.icon}</span>
+        <div>
+          <h3 class="section-card__title">${subSec.title}</h3>
+          <p class="section-card__desc">${subSec.desc}</p>
+        </div>
+      </div>
+      <div class="section-card__meta">
+        <span class="section-card__badge">${chapterCount} capitoli</span>
+        <span class="section-card__badge">${topicCount} risorse</span>
+        <span class="section-card__arrow">►</span>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      selectedSubsectionObj = subSec;
+      currentView = 'chapters';
+      history.replaceState(null, '', `#${subSec.id}`);
       renderRisorseView();
     });
 
@@ -913,20 +1053,21 @@ function renderTopicsInto(container, topics, color, colorRgb) {
 // ── View: Chapters accordion ──
 function renderChaptersView() {
   if (!selectedMateria || !selectedSectionObj) return;
+  const activeSection = selectedSubsectionObj || selectedSectionObj;
   risorseContainer.innerHTML = '';
 
   const header = document.createElement('div');
   header.className = 'chapters-header';
   header.innerHTML = `
-    <span class="chapters-header__icon">${selectedSectionObj.icon}</span>
+    <span class="chapters-header__icon">${activeSection.icon}</span>
     <div>
-      <h2 class="chapters-header__title pixel-text" style="color:${selectedMateria.color}">${selectedSectionObj.title}</h2>
-      <p class="chapters-header__desc">${selectedSectionObj.desc}</p>
+      <h2 class="chapters-header__title pixel-text" style="color:${selectedMateria.color}">${activeSection.title}</h2>
+      <p class="chapters-header__desc">${activeSection.desc}</p>
     </div>
   `;
   risorseContainer.appendChild(header);
 
-  if (selectedSectionObj.chapters.length === 0) {
+  if (activeSection.chapters.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty-state';
     empty.innerHTML = `
@@ -941,7 +1082,7 @@ function renderChaptersView() {
   const chaptersWrapper = document.createElement('div');
   chaptersWrapper.className = 'chapters-list';
 
-  selectedSectionObj.chapters.forEach((chapter, ci) => {
+  activeSection.chapters.forEach((chapter, ci) => {
     const chapterEl = document.createElement('div');
     chapterEl.className = 'chapter';
     chapterEl.style.animationDelay = `${ci * 0.08}s`;
@@ -1074,6 +1215,7 @@ function setupEventListeners() {
         currentView = 'materie';
         selectedMateria = null;
         selectedSectionObj = null;
+        selectedSubsectionObj = null;
       }
       switchSection(btn.dataset.section);
     });
@@ -1084,6 +1226,7 @@ function setupEventListeners() {
       currentView = 'materie';
       selectedMateria = null;
       selectedSectionObj = null;
+      selectedSubsectionObj = null;
       switchSection('risorse');
     });
   }
