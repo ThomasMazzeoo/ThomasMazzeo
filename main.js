@@ -76,24 +76,40 @@ const MATERIE = [
         title: "ISS Giordano Bruno",
         icon: "🏫",
         desc: "Attività sperimentali, protocolli di laboratorio e relazioni scientifiche.",
-        chapters: [
+        subsections: [
           {
-            title: "La Relazione di Laboratorio",
-            topics: [
+            id: "giordano-bruno-prime",
+            title: "1° classi",
+            icon: "🧪",
+            desc: "Attività sperimentali, misure e protocolli di laboratorio per le classi prime.",
+            chapters: [
               {
-                title: "Lezione Interattiva & Laboratorio Pratico (1h)",
-                desc: "Workshop pratico per studenti: caccia agli errori, i 6 pilastri scientifici, simulatore live con calcolo incertezze e generatore di relazione in PDF.",
-                url: "/fisica/giordano-bruno/relazione-laboratorio.html"
+                title: "La Relazione di Laboratorio",
+                topics: [
+                  {
+                    title: "Lezione Interattiva & Laboratorio Pratico (1h)",
+                    desc: "Workshop pratico per studenti: caccia agli errori, i 6 pilastri scientifici, simulatore live con calcolo incertezze e generatore di relazione in PDF.",
+                    url: "/fisica/giordano-bruno/relazione-laboratorio.html"
+                  }
+                ]
               }
             ]
           },
           {
-            title: "I Vettori",
-            topics: [
+            id: "giordano-bruno-seconde",
+            title: "2° classi",
+            icon: "📐",
+            desc: "Attività sperimentali, vettori e dinamica per le classi seconde.",
+            chapters: [
               {
-                title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
-                desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
-                url: "/fisica/giordano-bruno/vettori-parte-2.html"
+                title: "I Vettori",
+                topics: [
+                  {
+                    title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
+                    desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
+                    url: "/fisica/giordano-bruno/vettori-parte-2.html"
+                  }
+                ]
               }
             ]
           }
