@@ -12,7 +12,7 @@
 
   <style>
     /* ============================================================
-       LIGHT THEME & CLEAN RESET
+       LIGHT THEME & CLEAN COMPACT RESET
        ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -49,90 +49,122 @@
       background-color: var(--bg-page);
       color: var(--text-body);
       font-family: var(--font-sans);
-      line-height: 1.6;
+      line-height: 1.5;
       min-height: 100vh;
-      padding-bottom: 90px;
+      padding-bottom: 2.5rem; /* No more giant floating bottom padding */
     }
 
     /* ============================================================
-       TOP HEADER (STICKY)
+       TOP HEADER (TUTTO SOPRA IN UNA BARRA COMPATTA)
        ============================================================ */
     .top-header {
       position: sticky;
       top: 0;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1.5rem;
+      padding: 0.45rem 1.15rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 0.85rem;
       z-index: 100;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
     }
 
     .top-header__left {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.65rem;
     }
 
     .back-btn {
       text-decoration: none;
       color: var(--primary-dark);
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 700;
       border: 1px solid var(--primary-border);
-      padding: 6px 14px;
+      padding: 4px 10px;
       background: var(--primary-light);
-      border-radius: 6px;
+      border-radius: 5px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
     .back-btn:hover {
       background: var(--primary);
       color: #ffffff;
       border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
     }
 
     .header-tag {
-      font-size: 0.82rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent-navy);
       letter-spacing: 0.5px;
       text-transform: uppercase;
       background: #f1f5f9;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 4px;
       border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    /* Compact Progress in Header */
+    .top-header__center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    .progress-bar-wrap {
+      width: 90px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    .progress-text {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
     }
 
     .top-header__right {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.5rem;
     }
 
     /* Timer Widget */
     .timer-widget {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #f8fafc;
       border: 1px solid #cbd5e1;
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: 3px 8px;
+      border-radius: 5px;
       font-family: var(--font-mono);
-      font-size: 0.88rem;
+      font-size: 0.8rem;
     }
     .timer-display {
       font-weight: 700;
       color: var(--accent-navy);
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       letter-spacing: 0.5px;
     }
     .timer-ctrl-btn {
@@ -140,9 +172,9 @@
       border: 1px solid #cbd5e1;
       color: var(--text-dark);
       cursor: pointer;
-      font-size: 0.82rem;
-      padding: 2px 7px;
-      border-radius: 4px;
+      font-size: 0.75rem;
+      padding: 1px 5px;
+      border-radius: 3px;
       font-weight: 600;
       transition: all 0.15s;
     }
@@ -151,101 +183,144 @@
       color: var(--primary);
     }
 
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      border: none;
+      outline: none;
+      white-space: nowrap;
+    }
+    .btn--secondary {
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1px solid #cbd5e1;
+    }
+    .btn--secondary:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .btn--primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(2, 132, 199, 0.2);
+    }
+    .btn--primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn--success {
+      background: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(22, 163, 74, 0.2);
+    }
+    .btn--success:hover {
+      background: #15803d;
+      transform: translateY(-1px);
+    }
+
     /* ============================================================
-       MAIN CONTAINER
+       MAIN CONTAINER (SPAZIO OTTIMIZZATO E COMPATTO)
        ============================================================ */
     .container {
       max-width: 960px;
-      margin: 1.75rem auto;
-      padding: 0 1.25rem;
+      margin: 1rem auto;
+      padding: 0 1rem;
     }
 
-    /* Hero Banner */
+    /* Hero Banner compatto */
     .hero-card {
       background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
       border: 1px solid var(--primary-border);
-      border-left: 6px solid var(--primary);
-      border-radius: 12px;
-      padding: 1.75rem 2rem;
-      box-shadow: var(--shadow-md);
-      margin-bottom: 2rem;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.15rem;
     }
 
     .hero-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.65rem;
-      margin-bottom: 0.85rem;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
     }
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.76rem;
+      gap: 4px;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
     }
     .badge--blue { background: var(--primary-light); color: var(--primary-dark); border: 1px solid var(--primary-border); }
     .badge--amber { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning-border); }
     .badge--green { background: var(--success-light); color: var(--success); border: 1px solid var(--success-border); }
 
     .hero-title {
-      font-size: 1.85rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: var(--text-dark);
       line-height: 1.25;
-      margin-bottom: 0.65rem;
-      letter-spacing: -0.5px;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.4px;
     }
     .hero-title span { color: var(--primary); }
 
     .hero-desc {
-      font-size: 0.98rem;
+      font-size: 0.9rem;
       color: var(--text-body);
-      line-height: 1.65;
+      line-height: 1.5;
     }
 
-    /* Section Cards */
+    /* Section Cards compatte */
     .lab-section {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 2rem;
-      padding: 1.75rem;
+      border-radius: 10px;
+      margin-bottom: 1.15rem;
+      padding: 1.25rem 1.4rem;
       box-shadow: var(--shadow-sm);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease;
     }
     .lab-section:focus-within {
       border-color: #93c5fd;
-      box-shadow: var(--shadow-md);
     }
 
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
       border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 0.95rem;
+      padding-bottom: 0.65rem;
     }
 
     .section-title-wrap {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
     .step-badge-num {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
       background: var(--primary-light);
       color: var(--primary-dark);
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -254,31 +329,31 @@
     }
 
     .section-title {
-      font-size: 1.25rem;
+      font-size: 1.12rem;
       font-weight: 800;
       color: var(--text-dark);
       display: flex;
       flex-direction: column;
     }
     .section-title small {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--primary);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
     }
 
-    /* DRITTE & SUGGERIMENTI (GUIDE BOXES) */
+    /* DRITTE & SUGGERIMENTI (COMPATTI) */
     .hint-box {
       background: #f8fafc;
       border: 1px solid #cbd5e1;
       border-left: 4px solid var(--primary);
-      border-radius: 8px;
-      padding: 0.95rem 1.15rem;
-      margin-bottom: 1.35rem;
-      font-size: 0.9rem;
+      border-radius: 6px;
+      padding: 0.65rem 0.95rem;
+      margin-bottom: 0.95rem;
+      font-size: 0.86rem;
       color: var(--text-body);
-      line-height: 1.6;
+      line-height: 1.5;
     }
     .hint-box--warning {
       background: #fffbeb;
@@ -293,60 +368,58 @@
     .hint-title {
       font-weight: 700;
       color: var(--text-dark);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
-    /* Action Link to External Tools */
+    /* External tool banner compatto */
     .ext-tool-banner {
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.35rem;
+      border-radius: 6px;
+      padding: 0.65rem 0.95rem;
+      margin-bottom: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
     }
     .ext-tool-text {
-      font-size: 0.92rem;
+      font-size: 0.86rem;
       color: #14532d;
     }
     .ext-tool-btn {
       text-decoration: none;
       background: var(--primary);
       color: #ffffff;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 5px 12px;
+      border-radius: 5px;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
-      transition: all 0.2s ease;
+      gap: 6px;
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
+      transition: all 0.15s ease;
       white-space: nowrap;
     }
     .ext-tool-btn:hover {
       background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
     }
 
     /* Form Fields */
     .form-grid-3 {
       display: grid;
       grid-template-columns: 1.3fr 1fr 1fr;
-      gap: 1.15rem;
+      gap: 0.85rem;
     }
     .form-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.15rem;
+      gap: 0.85rem;
     }
     @media (max-width: 768px) {
       .form-grid-3, .form-grid-2 { grid-template-columns: 1fr; }
@@ -355,11 +428,11 @@
     .field-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-bottom: 1.1rem;
+      gap: 4px;
+      margin-bottom: 0.85rem;
     }
     .field-label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-dark);
       display: flex;
@@ -367,7 +440,7 @@
       justify-content: space-between;
     }
     .field-hint {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 400;
       color: var(--text-muted);
     }
@@ -375,34 +448,34 @@
     .field-input, .field-textarea {
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 0.7rem 0.9rem;
+      border-radius: 5px;
+      padding: 0.55rem 0.75rem;
       color: var(--text-dark);
       font-family: var(--font-sans);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       outline: none;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
     .field-input:focus, .field-textarea:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
     }
     .field-input--mono {
       font-family: var(--font-mono);
-      font-size: 0.9rem;
+      font-size: 0.86rem;
     }
 
     /* Table Styles */
     .table-container {
       overflow-x: auto;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin: 1.25rem 0;
+      border-radius: 6px;
+      margin: 0.85rem 0;
     }
     .audit-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.86rem;
       background: #ffffff;
     }
     .audit-table th {
@@ -410,14 +483,14 @@
       color: var(--text-dark);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.78rem;
-      letter-spacing: 0.5px;
-      padding: 0.75rem 1rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.4px;
+      padding: 0.55rem 0.85rem;
       border-bottom: 2px solid var(--border);
       text-align: left;
     }
     .audit-table td {
-      padding: 0.85rem 1rem;
+      padding: 0.55rem 0.85rem;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
     }
@@ -431,10 +504,10 @@
     .pwd-badge {
       font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--accent-navy);
       background: #f1f5f9;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
       border: 1px solid #cbd5e1;
       display: inline-block;
@@ -446,14 +519,14 @@
       border: 1px solid #cbd5e1;
       color: var(--text-body);
       font-family: var(--font-mono);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 5px 11px;
-      border-radius: 6px;
+      padding: 3px 8px;
+      border-radius: 5px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.15s;
     }
     .copy-chip-btn:hover {
@@ -466,8 +539,8 @@
     .checklist-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.85rem;
-      margin: 1rem 0;
+      gap: 0.65rem;
+      margin: 0.75rem 0;
     }
     @media (max-width: 650px) {
       .checklist-grid { grid-template-columns: 1fr; }
@@ -475,11 +548,11 @@
     .check-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: #f8fafc;
       border: 1px solid var(--border);
-      padding: 0.75rem 0.95rem;
-      border-radius: 6px;
+      padding: 0.55rem 0.75rem;
+      border-radius: 5px;
       cursor: pointer;
       user-select: none;
       transition: all 0.15s;
@@ -489,13 +562,13 @@
       background: #ffffff;
     }
     .check-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       accent-color: var(--primary);
       cursor: pointer;
     }
     .check-item-text {
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-dark);
     }
@@ -503,15 +576,15 @@
     /* Glossary Accordion */
     .glossary-card {
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
       overflow: hidden;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
     }
     .glossary-header {
       background: #f1f5f9;
-      padding: 0.85rem 1.25rem;
+      padding: 0.65rem 1rem;
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.84rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -520,12 +593,12 @@
       user-select: none;
     }
     .glossary-body {
-      padding: 1.15rem 1.25rem;
+      padding: 0.95rem 1rem;
       background: #ffffff;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      font-size: 0.88rem;
+      gap: 0.95rem;
+      font-size: 0.82rem;
       border-top: 1px solid var(--border);
     }
     @media (max-width: 650px) {
@@ -535,112 +608,41 @@
       color: var(--text-dark);
       font-family: var(--font-mono);
       display: block;
-      margin-bottom: 3px;
-      font-size: 0.9rem;
+      margin-bottom: 2px;
+      font-size: 0.84rem;
     }
 
-    /* ============================================================
-       STICKY BOTTOM BAR
-       ============================================================ */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid var(--border);
-      padding: 0.85rem 1.75rem;
+    /* In-Page Bottom Action Box (in-flow, non fisso) */
+    .inpage-submit-box {
+      background: #f0f9ff;
+      border: 1px solid var(--primary-border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      z-index: 100;
-      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.04);
-    }
-    .progress-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .progress-bar-wrap {
-      width: 140px;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--primary);
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-    .progress-text {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-body);
-    }
-
-    .btn {
-      font-family: var(--font-sans);
-      font-size: 0.9rem;
-      font-weight: 700;
-      padding: 0.65rem 1.25rem;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      border: none;
-      outline: none;
-    }
-    .btn--secondary {
-      background: #ffffff;
-      color: var(--text-dark);
-      border: 1px solid #cbd5e1;
-    }
-    .btn--secondary:hover {
-      background: #f1f5f9;
-      border-color: #94a3b8;
-    }
-    .btn--primary {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
-    }
-    .btn--primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-    .btn--success {
-      background: #16a34a;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
-    }
-    .btn--success:hover {
-      background: #15803d;
-      transform: translateY(-1px);
+      flex-wrap: wrap;
     }
 
     /* Toast notification */
     #toast {
       position: fixed;
-      bottom: 85px;
+      top: 55px;
       right: 20px;
       background: var(--accent-navy);
       color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.84rem;
       font-weight: 600;
       box-shadow: var(--shadow-lg);
       display: none;
       z-index: 1000;
       animation: fadeIn 0.2s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ============================================================
        REPORT DI CONSEGNA COMPATTO (ANTEPRIMA & PRINT)
@@ -652,7 +654,7 @@
       background: rgba(15, 23, 42, 0.6);
       backdrop-filter: blur(4px);
       z-index: 1000;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
       overflow-y: auto;
     }
     #report-modal.active { display: block; }
@@ -664,7 +666,7 @@
       color: #0f172a;
       border-radius: 10px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-      padding: 2.2rem;
+      padding: 2rem;
       position: relative;
     }
 
@@ -672,8 +674,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
       border-bottom: 2px solid #e2e8f0;
       flex-wrap: wrap;
       gap: 10px;
@@ -689,8 +691,8 @@
 
     .print-header {
       border-bottom: 2px solid #0f172a;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1rem;
+      padding-bottom: 0.65rem;
+      margin-bottom: 0.85rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -716,7 +718,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
       font-size: 11px;
     }
     .print-meta-item span {
@@ -732,7 +734,7 @@
     }
 
     .print-section {
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
       border: 1px solid #e2e8f0;
       border-radius: 6px;
       overflow: hidden;
@@ -740,7 +742,7 @@
     .print-section-title {
       background: #0f172a;
       color: #ffffff;
-      padding: 5px 10px;
+      padding: 4px 10px;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.5px;
@@ -749,7 +751,7 @@
       justify-content: space-between;
     }
     .print-section-body {
-      padding: 8px 12px;
+      padding: 7px 10px;
       background: #ffffff;
     }
 
@@ -760,7 +762,7 @@
     }
     .print-table th, .print-table td {
       border: 1px solid #cbd5e1;
-      padding: 5px 8px;
+      padding: 4px 8px;
       text-align: left;
     }
     .print-table th {
@@ -774,7 +776,7 @@
     }
 
     .print-q-box {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .print-q-label {
       font-weight: 700;
@@ -785,9 +787,9 @@
     .print-q-answer {
       background: #f8fafc;
       border: 1px dashed #cbd5e1;
-      padding: 6px 10px;
+      padding: 5px 8px;
       border-radius: 4px;
-      font-size: 11.5px;
+      font-size: 11px;
       color: #0f172a;
       white-space: pre-wrap;
     }
@@ -796,14 +798,14 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
-      margin-top: 1.5rem;
-      padding-top: 1rem;
+      margin-top: 1.25rem;
+      padding-top: 0.85rem;
       border-top: 1px dashed #cbd5e1;
       font-size: 11px;
     }
     .print-sig-line {
       border-bottom: 1px solid #94a3b8;
-      height: 32px;
+      height: 30px;
       margin-top: 4px;
     }
 
@@ -833,7 +835,7 @@
         padding: 0;
         max-width: 100%;
       }
-      .modal-controls, .top-header, .bottom-bar, .container, #toast {
+      .modal-controls, .top-header, .container, #toast {
         display: none !important;
       }
       @page {
@@ -845,12 +847,22 @@
 </head>
 <body>
 
-  <!-- TOP HEADER -->
+  <!-- TOP HEADER (TUTTO SOPRA, ZERO BARRA SOTTO) -->
   <header class="top-header">
     <div class="top-header__left">
       <a id="back-btn" href="/#informatica" class="back-btn" title="Torna alla sezione">◀ INDIETRO</a>
-      <span class="header-tag">LABORATORIO INFORMATICA</span>
+      <span class="header-tag">🛡️ AUDIT LAB</span>
     </div>
+
+    <!-- Barra di completamento integrata nell'header -->
+    <div class="top-header__center">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-text" id="progressText">0 / 4 sezioni (0%)</span>
+    </div>
+
+    <!-- Timer e Pulsanti di Consegna tutti in alto -->
     <div class="top-header__right">
       <div class="timer-widget">
         <span>⏱️</span>
@@ -858,23 +870,29 @@
         <button class="timer-ctrl-btn" id="timerToggle" title="Avvia/Pausa Timer">▶</button>
         <button class="timer-ctrl-btn" id="timerReset" title="Resetta Timer">↺</button>
       </div>
+      <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
+        <span>👁️</span> Anteprima
+      </button>
+      <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera il Report in PDF">
+        <span>🖨️</span> CONSEGNA PDF
+      </button>
     </div>
   </header>
 
   <!-- MAIN CONTAINER -->
   <main class="container">
 
-    <!-- HERO BRIEFING -->
+    <!-- HERO BRIEFING COMPATTO -->
     <div class="hero-card">
       <div class="hero-meta">
         <span class="badge badge--blue">💻 Attività Pratica Guidata</span>
-        <span class="badge badge--amber">⏱️ Tempo Stimato: 30 Minuti</span>
-        <span class="badge badge--green">🛡️ Ruolo: Ethical Hacker</span>
+        <span class="badge badge--amber">⏱️ Durata: 30 Min</span>
+        <span class="badge badge--green">🛡️ Ethical Hacker</span>
       </div>
       <h1 class="hero-title">Cyber-Security Audit: <span>“Diventa un Hacker Etico”</span></h1>
       <p class="hero-desc">
-        Indosserai i panni di un <strong>ethical hacker</strong> (hacker etico): utilizzerai strumenti reali e banche dati globali per analizzare la robustezza delle password, testare gli attacchi a forza bruta e investigare su data breach storici.
-        Dovrai <strong>lavorare in prima persona</strong>, cercare le informazioni sul web e compilare le risposte per generare al termine il tuo <strong>Report di Vulnerabilità Digitale in PDF</strong>.
+        Indosserai i panni di un <strong>ethical hacker</strong>: utilizzerai strumenti reali e banche dati globali per analizzare la robustezza delle password, testare gli attacchi a forza bruta e investigare su data breach storici.
+        Cerca le informazioni sul web seguendo le dritte e compila il form: al termine genererai il tuo <strong>Report di Vulnerabilità Digitale in PDF</strong>.
       </p>
     </div>
 
@@ -926,8 +944,8 @@
       <!-- BANNER LINK STRUMENTO ESTERNO -->
       <div class="ext-tool-banner">
         <div>
-          <strong style="color:#0f172a; display:block; font-size:1rem; margin-bottom:2px;">🌐 Strumento Online: Security.org Password Strength</strong>
-          <span class="ext-tool-text">Apri il sito in una nuova scheda del browser per eseguire i tuoi calcoli reali.</span>
+          <strong style="color:#0f172a; display:block; font-size:0.92rem; margin-bottom:1px;">🌐 Strumento Online: Security.org Password Strength</strong>
+          <span class="ext-tool-text">Apri il sito in una nuova scheda del browser per eseguire i tuoi test.</span>
         </div>
         <a href="https://www.security.org/how-secure-is-my-password/" target="_blank" rel="noopener" class="ext-tool-btn">
           Apri Security.org ↗
@@ -943,7 +961,7 @@
       </div>
 
       <!-- TASK 1: TABELLA PASSWORD -->
-      <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin-bottom:0.75rem;">
+      <h3 style="font-size:0.98rem; font-weight:800; color:var(--text-dark); margin-bottom:0.65rem;">
         📋 TASK 1 — Analisi delle password comuni (Sezione 1 del Report)
       </h3>
 
@@ -952,8 +970,8 @@
           <thead>
             <tr>
               <th style="width: 45px;">#</th>
-              <th style="width: 210px;">Password da Testare</th>
-              <th>Copia Rapida</th>
+              <th style="width: 190px;">Password da Testare</th>
+              <th style="width: 110px;">Copia</th>
               <th>Tempo Esatto Rilevato sul Sito (Tua risposta) *</th>
             </tr>
           </thead>
@@ -1003,17 +1021,17 @@
       </div>
 
       <!-- TASK 2: LA SFIDA MASTER PASSWORD -->
-      <div style="margin-top: 2rem; border-top: 2px solid #f1f5f9; padding-top: 1.5rem;">
-        <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin-bottom:0.75rem;">
+      <div style="margin-top: 1.5rem; border-top: 2px solid #f1f5f9; padding-top: 1.25rem;">
+        <h3 style="font-size:0.98rem; font-weight:800; color:var(--text-dark); margin-bottom:0.65rem;">
           🏆 TASK 2 — La Sfida: crea la tua Master Password (Sezione 2 del Report)
         </h3>
 
         <div class="hint-box hint-box--warning">
           <div class="hint-title">📐 Regole obbligatorie della Sfida:</div>
           • <strong>Deve essere una Passphrase:</strong> una sequenza di parole che ha un senso logico per te (es: <code>IlMioGattoPippoOdiaI1Croccantini!</code>).<br>
-          • <strong>NON premere tasti a caso:</strong> deve essere una password che potresti davvero ricordare senza scriverla su un post-it.<br>
+          • <strong>NON premere tasti a caso:</strong> deve essere una password che potresti davvero ricordare.<br>
           • <strong>Mix di caratteri:</strong> usa lettere maiuscole, minuscole, numeri e simboli speciali (<code>! @ # $ % &</code>).<br>
-          • <strong>Obiettivo:</strong> ottenere sul sito un tempo di cracking dell'ordine dei <strong>miliardi o trilioni di anni</strong>.
+          • <strong>Obiettivo:</strong> ottenere sul sito un tempo di cracking nell'ordine dei <strong>miliardi o trilioni di anni</strong>.
         </div>
 
         <div class="form-grid-2">
@@ -1058,7 +1076,7 @@
       <!-- BANNER HAVE I BEEN PWNED -->
       <div class="ext-tool-banner">
         <div>
-          <strong style="color:#0f172a; display:block; font-size:1rem; margin-bottom:2px;">🌐 Banca Dati Globale: Have I Been Pwned</strong>
+          <strong style="color:#0f172a; display:block; font-size:0.92rem; margin-bottom:1px;">🌐 Banca Dati Globale: Have I Been Pwned</strong>
           <span class="ext-tool-text">Il database mondiale utilizzato da esperti e forze dell'ordine per verificare i furti di credenziali.</span>
         </div>
         <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener" class="ext-tool-btn">
@@ -1069,18 +1087,18 @@
       <!-- AVVISO PRIVACY -->
       <div class="hint-box hint-box--danger">
         <div class="hint-title">🔒 Avviso fondamentale sulla Privacy:</div>
-        Per proteggere i tuoi dati personali, <strong>NON inserire la tua email personale o istituzionale</strong>. Utilizzerai uno dei 3 indirizzi generici forniti qui sotto, scelti appositamente per mostrarti l'effetto devastante delle violazioni reali:
-        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('info@gmail.com')">📋 Copia info@gmail.com</button>
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('mario.rossi@hotmail.it')">📋 Copia mario.rossi@hotmail.it</button>
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('admin@yahoo.com')">📋 Copia admin@yahoo.com</button>
+        Per proteggere i tuoi dati personali, <strong>NON inserire la tua email personale o istituzionale</strong>. Utilizzerai uno dei 3 indirizzi generici forniti qui sotto, scelti appositamente per mostrarti l'effetto reale delle violazioni:
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('info@gmail.com')">📋 info@gmail.com</button>
+          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('mario.rossi@hotmail.it')">📋 mario.rossi@hotmail.it</button>
+          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('admin@yahoo.com')">📋 admin@yahoo.com</button>
         </div>
       </div>
 
       <!-- DRITTA INDAGINE STEP BY STEP -->
       <div class="hint-box">
         <div class="hint-title">🔍 Dritta per l'Indagine (Come trovare le risposte):</div>
-        <ol style="margin-left: 1.25rem; margin-top: 4px; display:flex; flex-direction:column; gap:4px;">
+        <ol style="margin-left: 1.15rem; margin-top: 3px; display:flex; flex-direction:column; gap:3px;">
           <li>Vai su <strong>haveibeenpwned.com</strong>, incolla l'indirizzo email e premi <strong>pwned?</strong>.</li>
           <li>La pagina diventerà rossa indicando che l'email è stata violata in numerosi servizi!</li>
           <li><strong>Scorri verso il basso la pagina:</strong> vedrai l'elenco delle aziende violate (es. <em>Adobe, Canva, LinkedIn, MySpace, Dropbox, Twitter/X...</em>).</li>
@@ -1090,7 +1108,7 @@
       </div>
 
       <!-- TASK 3: SCHEDA INDAGINE BREACH -->
-      <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin-bottom:0.85rem;">
+      <h3 style="font-size:0.98rem; font-weight:800; color:var(--text-dark); margin-bottom:0.65rem;">
         📝 TASK 3 — Scheda di Rilevamento Data Breach (Sezione 3 del Report)
       </h3>
 
@@ -1149,7 +1167,7 @@
         <label class="field-label" for="domandaFinale">
           ❓ Domanda Finale di Riflessione Critica (Rispondi in 3-4 righe) *
         </label>
-        <div style="background:#f0f9ff; border-left:4px solid var(--primary); padding:0.85rem 1.15rem; font-size:0.95rem; font-weight:700; color:#0369a1; margin-bottom:0.75rem; border-radius:0 6px 6px 0;">
+        <div style="background:#f0f9ff; border-left:4px solid var(--primary); padding:0.75rem 1rem; font-size:0.92rem; font-weight:700; color:#0369a1; margin-bottom:0.65rem; border-radius:0 6px 6px 0;">
           “Perché avere una password complessa (come quella che hai creato nella Sfida) è inutile se poi usi quella stessa password su 10 siti diversi?”
         </div>
         <div class="hint-box">
@@ -1160,8 +1178,8 @@
       </div>
 
       <!-- CHECKLIST DI AUTOVALUTAZIONE -->
-      <div style="margin-top: 1.5rem;">
-        <div class="field-label" style="margin-bottom:0.5rem">
+      <div style="margin-top: 1.25rem;">
+        <div class="field-label" style="margin-bottom:0.4rem">
           <span>✅ Checklist di Autovalutazione prima della Consegna</span>
         </div>
         <div class="checklist-grid">
@@ -1221,28 +1239,24 @@
           </div>
         </div>
       </div>
+
+      <!-- IN-PAGE CONSEGNA BOX (A FINE PAGINA) -->
+      <div class="inpage-submit-box">
+        <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+          <span>🏁</span> Hai completato il lavoro? Consegna il tuo report:
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima">
+            <span>👁️</span> Anteprima Report
+          </button>
+          <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera PDF">
+            <span>🖨️</span> CONSEGNA &amp; SALVA PDF
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
-
-  <!-- STICKY BOTTOM BAR -->
-  <footer class="bottom-bar">
-    <div class="progress-info">
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="progressBarFill"></div>
-      </div>
-      <span class="progress-text" id="progressText">0 / 4 sezioni compilate</span>
-    </div>
-
-    <div style="display:flex; align-items:center; gap:0.75rem;">
-      <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
-        <span>👁️</span> Anteprima Report
-      </button>
-      <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera il Report in PDF">
-        <span>🖨️</span> CONSEGNA &amp; SALVA PDF
-      </button>
-    </div>
-  </footer>
 
   <!-- TOAST FEEDBACK -->
   <div id="toast">Testo copiato negli appunti!</div>
@@ -1519,14 +1533,14 @@
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 2400);
+      setTimeout(() => { toast.style.display = 'none'; }, 2200);
     }
 
     function copyText(str) {
       navigator.clipboard.writeText(str).then(() => {
         showToast(`"${str}" copiato! Incollalo su security.org`);
       }).catch(() => {
-        showToast(`Seleziona e copia: ${str}`);
+        showToast(`Copia: ${str}`);
       });
     }
 
@@ -1537,7 +1551,7 @@
       navigator.clipboard.writeText(email).then(() => {
         showToast(`"${email}" copiato! Incollalo su haveibeenpwned.com`);
       }).catch(() => {
-        showToast(`Email inserita nel form!`);
+        showToast(`Email inserita!`);
       });
     }
 
@@ -1614,7 +1628,7 @@
 
       const pct = (count / 4) * 100;
       document.getElementById('progressBarFill').style.width = `${pct}%`;
-      document.getElementById('progressText').textContent = `${count} / 4 sezioni completate (${pct}%)`;
+      document.getElementById('progressText').textContent = `${count} / 4 sezioni (${pct}%)`;
 
       // Auto update checkboxes
       document.getElementById('chk1').checked = !!f1;
