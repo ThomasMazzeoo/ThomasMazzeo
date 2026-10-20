@@ -905,7 +905,7 @@
         </div>
         <div class="field-group">
           <label class="field-label" for="studenteClasse">Classe *</label>
-          <input type="text" id="studenteClasse" class="field-input" placeholder="Es. 3°L, 2H, 2G..." required>
+          <input type="text" id="studenteClasse" class="field-input" placeholder="Es. 3°L, 2H, 2G..." value="" autocomplete="off" required>
         </div>
         <div class="field-group">
           <label class="field-label" for="studenteData">Data dell'Audit</label>
@@ -1724,6 +1724,7 @@
     function saveToStorage() {
       const data = {};
       formFields.forEach(id => {
+        if (id === 'studenteClasse') return; // Mai salvare la classe per evitare pre-compilazioni indesiderate su PC condivisi o altre classi
         const el = document.getElementById(id);
         if (el) data[id] = el.value;
       });
@@ -1732,6 +1733,24 @@
     }
 
     function loadFromStorage() {
+      // Pulisce preventivamente eventuali residui storici della classe da localStorage
+      try {
+        ['sec_audit_data', 'sec_audit_data_v2'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.studenteClasse) {
+              delete parsed.studenteClasse;
+              localStorage.setItem(k, JSON.stringify(parsed));
+            }
+          }
+        });
+      } catch (e) {}
+
+      // Forza sempre il campo classe a essere vuoto
+      const clsEl = document.getElementById('studenteClasse');
+      if (clsEl) clsEl.value = '';
+
       const today = new Date().toISOString().split('T')[0];
       const dtEl = document.getElementById('studenteData');
       if (dtEl && !dtEl.value) dtEl.value = today;
@@ -1749,6 +1768,7 @@
         if (data.breachImpatto && !data.breachImpatto_1) data.breachImpatto_1 = data.breachImpatto;
 
         formFields.forEach(id => {
+          if (id === 'studenteClasse') return; // NON ripristinare mai la classe: deve sempre rimanere vuota
           const el = document.getElementById(id);
           if (el && data[id] !== undefined && !el.value) {
             el.value = data[id];
@@ -1757,6 +1777,7 @@
       } catch (e) {
         console.error(e);
       }
+      if (clsEl) clsEl.value = ''; // ulteriore garanzia
       checkProgress();
     }
 
