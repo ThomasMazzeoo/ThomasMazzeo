@@ -535,6 +535,70 @@
       color: var(--primary-dark);
     }
 
+    /* Breach Investigation Tabs */
+    .breach-tabs-nav {
+      display: flex;
+      gap: 6px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 0.95rem;
+      flex-wrap: wrap;
+    }
+    .breach-tab-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      position: relative;
+      top: 2px;
+    }
+    .breach-tab-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-dark);
+    }
+    .breach-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      border-color: var(--border);
+      border-bottom: 2px solid #ffffff;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03);
+    }
+    .breach-tab-pill {
+      font-size: 0.68rem;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-weight: 600;
+    }
+    .breach-tab-btn.active .breach-tab-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .breach-tab-pill.completed {
+      background: #dcfce7 !important;
+      color: #15803d !important;
+    }
+    .breach-pane {
+      display: none;
+    }
+    .breach-pane.active {
+      display: block;
+      animation: tabFadeIn 0.15s ease-in-out;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* Checklist */
     .checklist-grid {
       display: grid;
@@ -1086,12 +1150,12 @@
 
       <!-- AVVISO PRIVACY -->
       <div class="hint-box hint-box--danger">
-        <div class="hint-title">🔒 Avviso fondamentale sulla Privacy:</div>
-        Per proteggere i tuoi dati personali, <strong>NON inserire la tua email personale o istituzionale</strong>. Utilizzerai uno dei 3 indirizzi generici forniti qui sotto, scelti appositamente per mostrarti l'effetto reale delle violazioni:
-        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('info@gmail.com')">📋 info@gmail.com</button>
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('mario.rossi@hotmail.it')">📋 mario.rossi@hotmail.it</button>
-          <button type="button" class="copy-chip-btn" onclick="copyAndFillEmail('admin@yahoo.com')">📋 admin@yahoo.com</button>
+        <div class="hint-title">🔒 Avviso fondamentale sulla Privacy &amp; Scelta Email:</div>
+        Per proteggere i tuoi dati personali, <strong>NON inserire la tua vera email personale o istituzionale</strong>. Utilizza gli indirizzi di test qui sotto: clicca su un'email per copiarla e aprire la relativa scheda d'indagine:
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+          <button type="button" class="copy-chip-btn" onclick="selectAndCopyEmail(1, 'info@gmail.com')">📋 1. info@gmail.com</button>
+          <button type="button" class="copy-chip-btn" onclick="selectAndCopyEmail(2, 'mario.rossi@hotmail.it')">📋 2. mario.rossi@hotmail.it</button>
+          <button type="button" class="copy-chip-btn" onclick="selectAndCopyEmail(3, 'admin@yahoo.com')">📋 3. admin@yahoo.com</button>
         </div>
       </div>
 
@@ -1102,52 +1166,169 @@
           <li>Vai su <strong>haveibeenpwned.com</strong>, incolla l'indirizzo email e premi <strong>pwned?</strong>.</li>
           <li>La pagina diventerà rossa indicando che l'email è stata violata in numerosi servizi!</li>
           <li><strong>Scorri verso il basso la pagina:</strong> troverai l'elenco delle aziende e servizi violati associati a quell'email.</li>
-          <li><strong>Scegli un'azienda/sito reale a tua scelta</strong> tra quelli che vedi a schermo e compila i campi sottostanti.</li>
+          <li><strong>Scegli un'azienda/sito reale a tua scelta</strong> tra quelli che vedi a schermo e compila la scheda dell'email corrispondente.</li>
           <li><em>Dove trovo i dati rubati?</em> Sotto ogni scheda troverai la voce <strong>"Compromised data:"</strong> seguita dalle tipologie di dati sottratte.</li>
+          <li><em>Vuoi analizzare anche le altre email?</em> Puoi compilare le schede per tutte e 3 le email (1ª, 2ª e 3ª): appariranno tutte nel report di consegna finale!</li>
         </ol>
       </div>
 
-      <!-- TASK 3: SCHEDA INDAGINE BREACH -->
-      <h3 style="font-size:0.98rem; font-weight:800; color:var(--text-dark); margin-bottom:0.65rem;">
-        📝 TASK 3 — Scheda di Rilevamento Data Breach (Sezione 3 del Report)
-      </h3>
+      <!-- TASK 3: SCHEDE INDAGINE BREACH -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:0.45rem; flex-wrap:wrap; gap:6px;">
+        <h3 style="font-size:0.98rem; font-weight:800; color:var(--text-dark); margin-bottom:0;">
+          📝 TASK 3 — Schede di Rilevamento Data Breach (Sezione 3 del Report)
+        </h3>
+        <span style="font-size:0.75rem; color:var(--text-muted);">Compila almeno una scheda (puoi compilarne fino a 3)</span>
+      </div>
 
-      <div class="form-grid-2">
-        <div class="field-group">
-          <label class="field-label" for="breachEmail">Email che hai cercato su Have I Been Pwned *</label>
-          <input type="text" id="breachEmail" class="field-input field-input--mono" placeholder="Email cercata">
+      <!-- NAV SCHEDE TABS -->
+      <div class="breach-tabs-nav" role="tablist">
+        <button type="button" id="breachTabBtn_1" class="breach-tab-btn active" onclick="switchBreachTab(1)">
+          <span>📧 1ª Email: info@gmail.com</span>
+          <span class="breach-tab-pill" id="breachTabPill_1">1ª Email</span>
+        </button>
+        <button type="button" id="breachTabBtn_2" class="breach-tab-btn" onclick="switchBreachTab(2)">
+          <span>📧 2ª Email: mario.rossi@hotmail.it</span>
+          <span class="breach-tab-pill" id="breachTabPill_2">2ª Opzionale</span>
+        </button>
+        <button type="button" id="breachTabBtn_3" class="breach-tab-btn" onclick="switchBreachTab(3)">
+          <span>📧 3ª Email: admin@yahoo.com</span>
+          <span class="breach-tab-pill" id="breachTabPill_3">3ª Opzionale</span>
+        </button>
+      </div>
+
+      <!-- PANE 1 -->
+      <div id="breachPane_1" class="breach-pane active">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 0.85rem; margin-bottom:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <div>
+            <strong style="color:var(--primary-dark); font-size:0.85rem;">Indagine 1:</strong>
+            <span style="font-size:0.82rem; color:var(--text-dark);"> Analisi violazioni per l'indirizzo <code>info@gmail.com</code></span>
+          </div>
+          <button type="button" class="copy-chip-btn" onclick="copyText('info@gmail.com')">📋 Ricopia Email</button>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachEmail_1">Email analizzata *</label>
+            <input type="text" id="breachEmail_1" class="field-input field-input--mono" placeholder="Email analizzata" value="info@gmail.com">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachSite_1">Nome del sito / azienda violata che hai scelto *</label>
+            <input type="text" id="breachSite_1" class="field-input" placeholder="Nome del servizio / sito violato">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachYear_1">Anno della violazione indicato sul sito *</label>
+            <input type="text" id="breachYear_1" class="field-input field-input--mono" placeholder="Anno dell'attacco">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachAccounts_1">Numero di account coinvolti (riportato nella scheda) *</label>
+            <input type="text" id="breachAccounts_1" class="field-input" placeholder="Account totali coinvolti">
+          </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="breachSite">Nome del sito / azienda violata che hai scelto *</label>
-          <input type="text" id="breachSite" class="field-input" placeholder="Nome del servizio / sito violato">
+          <label class="field-label" for="breachDataTypes_1">
+            Quali dati sono stati rubati? (Leggi sotto "Compromised data") *
+            <span class="field-hint">Trascrivi tutti i tipi elencati sul sito</span>
+          </label>
+          <input type="text" id="breachDataTypes_1" class="field-input" placeholder="Trascrivi le categorie di dati sottratte...">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachImpatto_1">
+            Valutazione dell'Impatto (Secondo te) *
+            <span class="field-hint">Che rischi corrono gli utenti che avevano un account su quel sito?</span>
+          </label>
+          <textarea id="breachImpatto_1" class="field-textarea" rows="2" placeholder="Valuta i possibili rischi e conseguenze per gli utenti coinvolti..."></textarea>
         </div>
       </div>
 
-      <div class="form-grid-2">
-        <div class="field-group">
-          <label class="field-label" for="breachYear">Anno della violazione indicato sul sito *</label>
-          <input type="text" id="breachYear" class="field-input field-input--mono" placeholder="Anno dell'attacco">
+      <!-- PANE 2 -->
+      <div id="breachPane_2" class="breach-pane">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 0.85rem; margin-bottom:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <div>
+            <strong style="color:var(--primary-dark); font-size:0.85rem;">Indagine 2:</strong>
+            <span style="font-size:0.82rem; color:var(--text-dark);"> Analisi violazioni per l'indirizzo <code>mario.rossi@hotmail.it</code></span>
+          </div>
+          <button type="button" class="copy-chip-btn" onclick="copyText('mario.rossi@hotmail.it')">📋 Ricopia Email</button>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachEmail_2">Email analizzata</label>
+            <input type="text" id="breachEmail_2" class="field-input field-input--mono" placeholder="Email analizzata" value="mario.rossi@hotmail.it">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachSite_2">Nome del sito / azienda violata che hai scelto</label>
+            <input type="text" id="breachSite_2" class="field-input" placeholder="Nome del servizio / sito violato">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachYear_2">Anno della violazione indicato sul sito</label>
+            <input type="text" id="breachYear_2" class="field-input field-input--mono" placeholder="Anno dell'attacco">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachAccounts_2">Numero di account coinvolti (riportato nella scheda)</label>
+            <input type="text" id="breachAccounts_2" class="field-input" placeholder="Account totali coinvolti">
+          </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="breachAccounts">Numero di account coinvolti (riportato nella scheda) *</label>
-          <input type="text" id="breachAccounts" class="field-input" placeholder="Account totali coinvolti">
+          <label class="field-label" for="breachDataTypes_2">
+            Quali dati sono stati rubati? (Leggi sotto "Compromised data")
+            <span class="field-hint">Trascrivi tutti i tipi elencati sul sito</span>
+          </label>
+          <input type="text" id="breachDataTypes_2" class="field-input" placeholder="Trascrivi le categorie di dati sottratte...">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachImpatto_2">
+            Valutazione dell'Impatto (Secondo te)
+            <span class="field-hint">Che rischi corrono gli utenti che avevano un account su quel sito?</span>
+          </label>
+          <textarea id="breachImpatto_2" class="field-textarea" rows="2" placeholder="Valuta i possibili rischi e conseguenze per gli utenti coinvolti..."></textarea>
         </div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="breachDataTypes">
-          Quali dati sono stati rubati? (Leggi sotto "Compromised data") *
-          <span class="field-hint">Trascrivi tutti i tipi elencati sul sito</span>
-        </label>
-        <input type="text" id="breachDataTypes" class="field-input" placeholder="Trascrivi le categorie di dati sottratte...">
-      </div>
-
-      <div class="field-group">
-        <label class="field-label" for="breachImpatto">
-          Valutazione dell'Impatto (Secondo te) *
-          <span class="field-hint">Che rischi corrono gli utenti che avevano un account su quel sito?</span>
-        </label>
-        <textarea id="breachImpatto" class="field-textarea" rows="2" placeholder="Valuta i possibili rischi e conseguenze per gli utenti coinvolti..."></textarea>
+      <!-- PANE 3 -->
+      <div id="breachPane_3" class="breach-pane">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 0.85rem; margin-bottom:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <div>
+            <strong style="color:var(--primary-dark); font-size:0.85rem;">Indagine 3:</strong>
+            <span style="font-size:0.82rem; color:var(--text-dark);"> Analisi violazioni per l'indirizzo <code>admin@yahoo.com</code></span>
+          </div>
+          <button type="button" class="copy-chip-btn" onclick="copyText('admin@yahoo.com')">📋 Ricopia Email</button>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachEmail_3">Email analizzata</label>
+            <input type="text" id="breachEmail_3" class="field-input field-input--mono" placeholder="Email analizzata" value="admin@yahoo.com">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachSite_3">Nome del sito / azienda violata che hai scelto</label>
+            <input type="text" id="breachSite_3" class="field-input" placeholder="Nome del servizio / sito violato">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="breachYear_3">Anno della violazione indicato sul sito</label>
+            <input type="text" id="breachYear_3" class="field-input field-input--mono" placeholder="Anno dell'attacco">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="breachAccounts_3">Numero di account coinvolti (riportato nella scheda)</label>
+            <input type="text" id="breachAccounts_3" class="field-input" placeholder="Account totali coinvolti">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachDataTypes_3">
+            Quali dati sono stati rubati? (Leggi sotto "Compromised data")
+            <span class="field-hint">Trascrivi tutti i tipi elencati sul sito</span>
+          </label>
+          <input type="text" id="breachDataTypes_3" class="field-input" placeholder="Trascrivi le categorie di dati sottratte...">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachImpatto_3">
+            Valutazione dell'Impatto (Secondo te)
+            <span class="field-hint">Che rischi corrono gli utenti che avevano un account su quel sito?</span>
+          </label>
+          <textarea id="breachImpatto_3" class="field-textarea" rows="2" placeholder="Valuta i possibili rischi e conseguenze per gli utenti coinvolti..."></textarea>
+        </div>
       </div>
     </section>
 
@@ -1378,36 +1559,24 @@
         <!-- SEZIONE 3 -->
         <div class="print-section">
           <div class="print-section-title">
-            <span>SEZIONE 3 — Indagine sui Data Breach Mondiali</span>
+            <span>SEZIONE 3 — Indagine sui Data Breach Mondiali (Have I Been Pwned)</span>
             <span style="font-weight:400; font-size:9px;">TASK 3</span>
           </div>
-          <div class="print-section-body">
-            <div style="display:grid; grid-template-columns: 1fr 1fr 0.8fr 1fr; gap:8px; margin-bottom:6px;">
-              <div class="print-q-box">
-                <div class="print-q-label">Email Analizzata (Have I Been Pwned):</div>
-                <div class="print-q-answer mono" id="repPrintBreachEmail">--</div>
-              </div>
-              <div class="print-q-box">
-                <div class="print-q-label">Sito / Azienda Violata Rilevata:</div>
-                <div class="print-q-answer" id="repPrintBreachSite" style="font-weight:700;">--</div>
-              </div>
-              <div class="print-q-box">
-                <div class="print-q-label">Anno del Breach:</div>
-                <div class="print-q-answer mono" id="repPrintBreachYear">--</div>
-              </div>
-              <div class="print-q-box">
-                <div class="print-q-label">Account Coinvolti:</div>
-                <div class="print-q-answer" id="repPrintBreachAccounts">--</div>
-              </div>
-            </div>
-            <div class="print-q-box">
-              <div class="print-q-label">Tipologia di Dati Compromessi (Compromised data):</div>
-              <div class="print-q-answer" id="repPrintBreachDataTypes">--</div>
-            </div>
-            <div class="print-q-box">
-              <div class="print-q-label">Valutazione Personale dell'Impatto:</div>
-              <div class="print-q-answer" id="repPrintBreachImpatto">--</div>
-            </div>
+          <div class="print-section-body" style="padding:0">
+            <table class="print-table" id="repPrintBreachTable">
+              <thead>
+                <tr>
+                  <th style="width:130px">Email Analizzata</th>
+                  <th style="width:115px">Azienda Violata</th>
+                  <th style="width:45px">Anno</th>
+                  <th style="width:75px">Account</th>
+                  <th>Dati Compromessi &amp; Valutazione Impatto</th>
+                </tr>
+              </thead>
+              <tbody id="repPrintBreachTbody">
+                <!-- Verrà popolato dinamicamente con le email analizzate -->
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -1522,7 +1691,7 @@
     });
 
     // ══════════════════════════════════════════
-    // CLIPBOARD UTILS & TOAST
+    // CLIPBOARD UTILS, TABS & TOAST
     // ══════════════════════════════════════════
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -1533,21 +1702,35 @@
 
     function copyText(str) {
       navigator.clipboard.writeText(str).then(() => {
-        showToast(`"${str}" copiato! Incollalo su security.org`);
+        showToast(`"${str}" copiato negli appunti!`);
       }).catch(() => {
         showToast(`Copia: ${str}`);
       });
     }
 
-    function copyAndFillEmail(email) {
-      document.getElementById('breachEmail').value = email;
+    function switchBreachTab(tabIndex) {
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById(`breachTabBtn_${i}`);
+        const pane = document.getElementById(`breachPane_${i}`);
+        if (btn) btn.classList.toggle('active', i === tabIndex);
+        if (pane) pane.classList.toggle('active', i === tabIndex);
+      }
+    }
+
+    function selectAndCopyEmail(tabIndex, email) {
+      switchBreachTab(tabIndex);
+      const emailInput = document.getElementById(`breachEmail_${tabIndex}`);
+      if (emailInput && !emailInput.value) {
+        emailInput.value = email;
+      }
       checkProgress();
       saveToStorage();
       navigator.clipboard.writeText(email).then(() => {
-        showToast(`"${email}" copiato! Incollalo su haveibeenpwned.com`);
+        showToast(`"${email}" copiata! Scheda ${tabIndex} aperta.`);
       }).catch(() => {
-        showToast(`Email inserita!`);
+        showToast(`Scheda ${tabIndex} aperta.`);
       });
+      if (emailInput) emailInput.focus();
     }
 
     function toggleGlossary() {
@@ -1569,7 +1752,9 @@
       'studenteNome', 'studenteClasse', 'studenteData',
       'pwdRes1', 'pwdRes2', 'pwdRes3', 'pwdRes4',
       'masterPwdInput', 'masterPwdTime', 'masterPwdMotivazione',
-      'breachEmail', 'breachSite', 'breachYear', 'breachAccounts', 'breachDataTypes', 'breachImpatto',
+      'breachEmail_1', 'breachSite_1', 'breachYear_1', 'breachAccounts_1', 'breachDataTypes_1', 'breachImpatto_1',
+      'breachEmail_2', 'breachSite_2', 'breachYear_2', 'breachAccounts_2', 'breachDataTypes_2', 'breachImpatto_2',
+      'breachEmail_3', 'breachSite_3', 'breachYear_3', 'breachAccounts_3', 'breachDataTypes_3', 'breachImpatto_3',
       'domandaFinale'
     ];
 
@@ -1592,6 +1777,14 @@
       if (!raw) return;
       try {
         const data = JSON.parse(raw);
+        // Migrazione retrocompatibile per precedenti chiavi singole
+        if (data.breachEmail && !data.breachEmail_1) data.breachEmail_1 = data.breachEmail;
+        if (data.breachSite && !data.breachSite_1) data.breachSite_1 = data.breachSite;
+        if (data.breachYear && !data.breachYear_1) data.breachYear_1 = data.breachYear;
+        if (data.breachAccounts && !data.breachAccounts_1) data.breachAccounts_1 = data.breachAccounts;
+        if (data.breachDataTypes && !data.breachDataTypes_1) data.breachDataTypes_1 = data.breachDataTypes;
+        if (data.breachImpatto && !data.breachImpatto_1) data.breachImpatto_1 = data.breachImpatto;
+
         formFields.forEach(id => {
           const el = document.getElementById(id);
           if (el && data[id] !== undefined && !el.value) {
@@ -1612,7 +1805,12 @@
     function checkProgress() {
       let f1 = document.getElementById('studenteNome').value.trim() && document.getElementById('studenteClasse').value.trim();
       let f2 = document.getElementById('pwdRes1').value.trim() && document.getElementById('pwdRes2').value.trim() && document.getElementById('masterPwdInput').value.trim();
-      let f3 = document.getElementById('breachEmail').value.trim() && document.getElementById('breachSite').value.trim() && document.getElementById('breachYear').value.trim();
+      
+      const s1 = document.getElementById('breachSite_1') ? document.getElementById('breachSite_1').value.trim() : '';
+      const s2 = document.getElementById('breachSite_2') ? document.getElementById('breachSite_2').value.trim() : '';
+      const s3 = document.getElementById('breachSite_3') ? document.getElementById('breachSite_3').value.trim() : '';
+      let f3 = !!(s1 || s2 || s3);
+
       let f4 = document.getElementById('domandaFinale').value.trim().length > 10;
 
       let count = 0;
@@ -1624,6 +1822,21 @@
       const pct = (count / 4) * 100;
       document.getElementById('progressBarFill').style.width = `${pct}%`;
       document.getElementById('progressText').textContent = `${count} / 4 sezioni (${pct}%)`;
+
+      // Aggiorna stato tab pills
+      for (let i = 1; i <= 3; i++) {
+        const siteVal = document.getElementById(`breachSite_${i}`) ? document.getElementById(`breachSite_${i}`).value.trim() : '';
+        const pill = document.getElementById(`breachTabPill_${i}`);
+        if (pill) {
+          if (siteVal) {
+            pill.textContent = '✓ Compilata';
+            pill.classList.add('completed');
+          } else {
+            pill.textContent = i === 1 ? '1ª Email' : `${i}ª Opzionale`;
+            pill.classList.remove('completed');
+          }
+        }
+      }
 
       // Auto update checkboxes
       document.getElementById('chk1').checked = !!f1;
@@ -1656,12 +1869,43 @@
       document.getElementById('repPrintMasterTime').textContent = getVal('masterPwdTime', '--');
       document.getElementById('repPrintMasterMotivazione').textContent = getVal('masterPwdMotivazione', '--');
 
-      document.getElementById('repPrintBreachEmail').textContent = getVal('breachEmail', '--');
-      document.getElementById('repPrintBreachSite').textContent = getVal('breachSite', '--');
-      document.getElementById('repPrintBreachYear').textContent = getVal('breachYear', '--');
-      document.getElementById('repPrintBreachAccounts').textContent = getVal('breachAccounts', '--');
-      document.getElementById('repPrintBreachDataTypes').textContent = getVal('breachDataTypes', '--');
-      document.getElementById('repPrintBreachImpatto').textContent = getVal('breachImpatto', '--');
+      // Popola tabella dinamica Sezione 3 (Data Breach)
+      const breachTbody = document.getElementById('repPrintBreachTbody');
+      if (breachTbody) {
+        breachTbody.innerHTML = '';
+        let breachCount = 0;
+
+        for (let i = 1; i <= 3; i++) {
+          const mail = getVal(`breachEmail_${i}`, '');
+          const site = getVal(`breachSite_${i}`, '');
+          const year = getVal(`breachYear_${i}`, '');
+          const accs = getVal(`breachAccounts_${i}`, '');
+          const dtypes = getVal(`breachDataTypes_${i}`, '');
+          const impact = getVal(`breachImpatto_${i}`, '');
+
+          if (site || year || dtypes || impact) {
+            breachCount++;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="mono"><strong>${mail || ('Email ' + i)}</strong></td>
+              <td><strong>${site || '--'}</strong></td>
+              <td class="mono">${year || '--'}</td>
+              <td>${accs || '--'}</td>
+              <td>
+                <div style="margin-bottom:2px;"><strong>Dati:</strong> ${dtypes || '--'}</div>
+                <div style="font-size:10px; color:#334155;"><strong>Impatto:</strong> ${impact || '--'}</div>
+              </td>
+            `;
+            breachTbody.appendChild(tr);
+          }
+        }
+
+        if (breachCount === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="5" style="text-align:center; color:#94a3b8; padding:8px;">Nessun data breach registrato. Compila almeno una scheda nella Fase 3.</td>`;
+          breachTbody.appendChild(tr);
+        }
+      }
 
       document.getElementById('repPrintDomandaFinale').textContent = getVal('domandaFinale', '--');
     }
