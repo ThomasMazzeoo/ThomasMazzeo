@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio di Informatica — Cyber-Security Audit | Diventa un Hacker Etico</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- html2pdf.js per download PDF diretto -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* ============================================================
+       THEME VARIABLES & RESET
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070d17;
+      --bg-card: rgba(13, 23, 42, 0.75);
+      --bg-card-border: rgba(0, 245, 255, 0.18);
+      --cyan: #00f5ff;
+      --cyan-glow: rgba(0, 245, 255, 0.25);
+      --green: #00ff66;
+      --green-glow: rgba(0, 255, 102, 0.2);
+      --amber: #ffb703;
+      --amber-glow: rgba(255, 183, 3, 0.2);
+      --danger: #ff3366;
+      --danger-glow: rgba(255, 51, 102, 0.2);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', 'Share Tech Mono', monospace;
+      --font-pixel: 'VT323', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 0%, rgba(0, 245, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 100%, rgba(0, 255, 102, 0.05) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    /* Scanline effect */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ============================================================
+       TOP HEADER & NAV
+       ============================================================ */
+    .top-header {
+      position: sticky;
+      top: 0;
+      background: rgba(7, 13, 23, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bg-card-border);
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      z-index: 100;
+    }
+
+    .top-header__left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--cyan);
+      font-family: var(--font-pixel);
+      font-size: 1.25rem;
+      border: 1px solid rgba(0, 245, 255, 0.35);
+      padding: 3px 12px;
+      background: rgba(0, 245, 255, 0.06);
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      letter-spacing: 1px;
+    }
+    .back-btn:hover {
+      background: var(--cyan-glow);
+      box-shadow: 0 0 12px var(--cyan);
+      color: #fff;
+    }
+
+    .header-badge {
+      font-family: var(--font-pixel);
+      font-size: 1.15rem;
+      color: var(--amber);
+      letter-spacing: 1px;
+    }
+
+    .top-header__right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    /* Timer Widget */
+    .timer-widget {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 183, 3, 0.35);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+    }
+    .timer-display {
+      font-weight: 700;
+      color: var(--amber);
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+    }
+    .timer-ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .timer-ctrl-btn:hover {
+      color: var(--cyan);
+      background: rgba(0, 245, 255, 0.1);
+    }
+
+    /* ============================================================
+       CONTAINER & LAYOUT
+       ============================================================ */
+    .container {
+      max-width: 980px;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(13, 27, 52, 0.9) 0%, rgba(7, 13, 23, 0.95) 100%);
+      border: 1px solid var(--cyan);
+      border-left: 5px solid var(--cyan);
+      border-radius: 10px;
+      padding: 1.75rem;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.12);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: 'AUDIT_SEC';
+      position: absolute;
+      right: 1.5rem;
+      top: 1rem;
+      font-family: var(--font-pixel);
+      font-size: 3.5rem;
+      color: rgba(0, 245, 255, 0.05);
+      pointer-events: none;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 3px 9px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge--cyan { background: rgba(0, 245, 255, 0.12); color: var(--cyan); border: 1px solid rgba(0, 245, 255, 0.3); }
+    .badge--amber { background: rgba(255, 183, 3, 0.12); color: var(--amber); border: 1px solid rgba(255, 183, 3, 0.3); }
+    .badge--green { background: rgba(0, 255, 102, 0.12); color: var(--green); border: 1px solid rgba(0, 255, 102, 0.3); }
+
+    .hero-title {
+      font-family: var(--font-sans);
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.5px;
+    }
+    .hero-title span { color: var(--cyan); text-shadow: 0 0 14px var(--cyan-glow); }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 820px;
+    }
+
+    /* Section Cards */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      padding: 1.6rem;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.2s ease;
+      position: relative;
+    }
+    .lab-section:focus-within {
+      border-color: rgba(0, 245, 255, 0.45);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.08);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.85rem;
+    }
+
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-icon {
+      font-size: 1.6rem;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .section-title small {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Notice Boxes */
+    .notice-box {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 8px;
+      padding: 0.9rem 1.15rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.88rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border-left: 4px solid var(--cyan);
+    }
+    .notice-box--warning { border-left-color: var(--amber); background: rgba(255, 183, 3, 0.06); }
+    .notice-box--danger { border-left-color: var(--danger); background: rgba(255, 51, 102, 0.06); }
+    .notice-icon { font-size: 1.2rem; flex-shrink: 0; line-height: 1.4; }
+
+    /* Form Fields */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 1.1rem;
+    }
+    @media (max-width: 768px) {
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .field-hint {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .field-input, .field-select, .field-textarea {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .field-input:focus, .field-select:focus, .field-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
+      background: rgba(0, 15, 30, 0.7);
+    }
+    .field-input--mono, .field-textarea--mono {
+      font-family: var(--font-mono);
+    }
+
+    /* Password Table */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .audit-table th {
+      background: rgba(0, 0, 0, 0.45);
+      border-bottom: 2px solid var(--cyan);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .audit-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      vertical-align: middle;
+    }
+    .audit-table tr:hover {
+      background: rgba(0, 245, 255, 0.03);
+    }
+
+    .pwd-code {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-test-action {
+      background: rgba(0, 245, 255, 0.08);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 4px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-test-action:hover {
+      background: var(--cyan);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Live Simulator Box */
+    .simulator-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    .simulator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+    .simulator-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .simulator-output {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sim-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .sim-stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .sim-stat-val {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* External tool links */
+    .ext-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 183, 3, 0.08);
+      border: 1px solid rgba(255, 183, 3, 0.35);
+      color: var(--amber);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 5px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .ext-link-btn:hover {
+      background: var(--amber);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Quick Breach Cards */
+    .breach-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin: 1rem 0;
+    }
+    .breach-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .breach-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .breach-card__name {
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    }
+    .breach-card__year {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--amber);
+    }
+    .breach-card__accounts {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--cyan);
+      margin: 4px 0;
+    }
+    .breach-card__data {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Checklist */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    @media (max-width: 650px) {
+      .checklist-grid { grid-template-columns: 1fr; }
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .check-item:hover {
+      border-color: rgba(0, 255, 102, 0.4);
+    }
+    .check-item input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+    .check-item-text {
+      font-size: 0.84rem;
+      color: var(--text);
+    }
+
+    /* Glossary Accordion */
+    .glossary-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+    .glossary-header {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1.15rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      color: var(--cyan);
+    }
+    .glossary-body {
+      padding: 1rem 1.15rem;
+      background: rgba(0, 0, 0, 0.2);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 650px) {
+      .glossary-body { grid-template-columns: 1fr; }
+    }
+    .glossary-term {
+      margin-bottom: 0.5rem;
+    }
+    .glossary-term strong {
+      color: #fff;
+      font-family: var(--font-mono);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ============================================================
+       STICKY BOTTOM CONTROLS (BARRA DI CONSEGNA)
+       ============================================================ */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(7, 13, 23, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--bg-card-border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      z-index: 100;
+    }
+    .progress-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-bar-wrap {
+      width: 140px;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    .progress-text {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.6rem 1.15rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+      outline: none;
+    }
+    .btn--secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .btn--secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    .btn--primary {
+      background: linear-gradient(135deg, var(--cyan) 0%, #00b4d8 100%);
+      color: #030712;
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+    .btn--primary:hover {
+      box-shadow: 0 0 22px var(--cyan);
+      transform: translateY(-1px);
+    }
+    .btn--success {
+      background: linear-gradient(135deg, var(--green) 0%, #059669 100%);
+      color: #030712;
+      box-shadow: 0 0 15px var(--green-glow);
+    }
+    .btn--success:hover {
+      box-shadow: 0 0 22px var(--green);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       REPORT DI CONSEGNA COMPATTO (ANTEPRIMA & PRINT)
+       ============================================================ */
+    #report-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    #report-modal.active {
+      display: block;
+    }
+
+    .modal-dialog {
+      max-width: 820px;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #111827;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      padding: 2.2rem;
+      font-family: var(--font-sans);
+      position: relative;
+    }
+
+    .modal-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    /* Print Paper Styles */
+    .print-paper {
+      background: #fff;
+      color: #111827;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .print-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .print-school {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+    }
+    .print-doc-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+    .print-meta-grid {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 1rem;
+      font-size: 11px;
+    }
+    .print-meta-item span {
+      display: block;
+      color: #64748b;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .print-meta-item strong {
+      color: #0f172a;
+      font-size: 12px;
+    }
+
+    .print-section {
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .print-section-title {
+      background: #0f172a;
+      color: #fff;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+    .print-section-body {
+      padding: 8px 12px;
+      background: #fff;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .print-table th, .print-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 8px;
+      text-align: left;
+    }
+    .print-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .print-table td.mono {
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .print-q-box {
+      margin-bottom: 6px;
+    }
+    .print-q-label {
+      font-weight: 700;
+      font-size: 11px;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+    .print-q-answer {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #0f172a;
+      white-space: pre-wrap;
+    }
+
+    .print-footer-signatures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 11px;
+    }
+    .print-sig-line {
+      border-bottom: 1px solid #94a3b8;
+      height: 32px;
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       PRINT MEDIA QUERY (A4 COMPACT PERFECT FORMAT)
+       ============================================================ */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #report-modal {
+        position: static;
+        padding: 0;
+        background: transparent;
+      }
+      .modal-dialog {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .modal-controls, .top-header, .bottom-bar, .container, body::before {
+        display: none !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="top-header__left">
+      <a id="back-btn" href="/#informatica" class="back-btn" title="Torna alla sezione">◀ INDIETRO</a>
+      <span class="header-badge">AUDIT_LAB_01</span>
+    </div>
+    <div class="top-header__right">
+      <div class="timer-widget">
+        <span>⏱️</span>
+        <span class="timer-display" id="timerDisplay">30:00</span>
+        <button class="timer-ctrl-btn" id="timerToggle" title="Avvia/Pausa Timer">▶</button>
+        <button class="timer-ctrl-btn" id="timerReset" title="Resetta Timer">↺</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- HERO BRIEFING -->
+    <div class="hero-card">
+      <div class="hero-meta">
+        <span class="badge badge--cyan">💻 Laboratorio di Informatica</span>
+        <span class="badge badge--amber">⏱️ Durata: 30 Minuti</span>
+        <span class="badge badge--green">🛡️ Ruolo: Ethical Hacker</span>
+      </div>
+      <h1 class="hero-title">Cyber-Security Audit: <span>“Diventa un Hacker Etico”</span></h1>
+      <p class="hero-desc">
+        Indosserai i panni di un <strong>ethical hacker</strong> (hacker etico), cioè un professionista della sicurezza informatica il cui compito è <em>trovare le vulnerabilità prima che lo facciano i criminali</em>. Utilizzerai strumenti reali per analizzare la robustezza delle password e investigare violazioni di dati storiche su scala mondiale. Al termine genererai e consegnerai il tuo <strong>Report di Vulnerabilità Digitale in PDF</strong>.
+      </p>
+    </div>
+
+    <!-- FASE 1: PREPARAZIONE E DATI AUDIT -->
+    <section class="lab-section" id="fase1">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon">🗂️</span>
+          <div class="section-title">
+            <small>Fase 1 (0 – 5 min)</small>
+            Dati dell'Audit & Identificazione Studente
+          </div>
+        </div>
+      </div>
+
+      <div class="notice-box">
+        <span class="notice-icon">ℹ️</span>
+        <div>
+          Inserisci i tuoi dati reali. Questi dati costituiranno l'intestazione ufficiale del tuo <strong>Report di Vulnerabilità</strong> finale.
+        </div>
+      </div>
+
+      <div class="form-grid-3">
+        <div class="field-group">
+          <label class="field-label" for="studenteNome">Nome e Cognome *</label>
+          <input type="text" id="studenteNome" class="field-input" placeholder="Es. Mario Rossi" autocomplete="name" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="studenteClasse">Classe *</label>
+          <input type="text" id="studenteClasse" class="field-input" placeholder="Es. 3°L RIM, 2H AFM, 2G AFM" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="studenteData">Data di Svolgimento</label>
+          <input type="date" id="studenteData" class="field-input">
+        </div>
+      </div>
+    </section>
+
+    <!-- FASE 2: IL TEST DI FORZA BRUTA -->
+    <section class="lab-section" id="fase2">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon">🔑</span>
+          <div class="section-title">
+            <small>Fase 2 (5 – 15 min)</small>
+            SEZIONE 1 & 2 — Il Test di Forza Bruta (Brute Force)
+          </div>
+        </div>
+        <a href="https://www.security.org/how-secure-is-my-password/" target="_blank" rel="noopener" class="ext-link-btn" title="Apri il simulatore online in nuova scheda">
+          🌐 security.org ↗
+        </a>
+      </div>
+
+      <div class="notice-box">
+        <span class="notice-icon">⚡</span>
+        <div>
+          Il simulatore calcola il tempo necessario a una moderna GPU per indovinare una password tramite <strong>attacco a forza bruta</strong>. Puoi usare sia il simulatore integrato qui sotto, sia aprire la scheda di <code>security.org</code> o <code>passwordmonster.com</code>.
+        </div>
+      </div>
+
+      <!-- LIVE SIMULATOR WIDGET -->
+      <div class="simulator-box">
+        <div class="simulator-header">
+          <span class="simulator-title">🧪 Banco di Calcolo Forza Bruta Live</span>
+          <span id="simTag" class="badge badge--amber">PRONTO PER IL TEST</span>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <input type="text" id="simLiveInput" class="field-input field-input--mono" placeholder="Digita o incolla una password qui per calcolarla all'istante..." style="font-size:1rem; border-color:var(--cyan);">
+        </div>
+        <div class="simulator-output">
+          <div class="sim-stat">
+            <span class="sim-stat-label">Tempo Stimato di Cracking</span>
+            <span class="sim-stat-val" id="simLiveTime" style="color:var(--cyan)">--</span>
+          </div>
+          <div class="sim-stat">
+            <span class="sim-stat-label">Lunghezza & Caratteri</span>
+            <span class="sim-stat-val" id="simLiveLen">0 car.</span>
+          </div>
+          <div class="sim-stat">
+            <span class="sim-stat-label">Set di Caratteri Usati</span>
+            <span class="sim-stat-val" id="simLiveCharset" style="font-size:0.85rem">Nessuno</span>
+          </div>
+          <div class="sim-stat">
+            <span class="sim-stat-label">Combinazioni Possibili</span>
+            <span class="sim-stat-val" id="simLiveCombinations" style="font-size:0.85rem">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASK 1: ANALISI PASSWORD COMUNI -->
+      <div style="margin-top: 1.5rem;">
+        <h3 style="font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span>📋</span> TASK 1 — Analisi delle password comuni (Sezione 1 Report)
+        </h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin:0.35rem 0 0.85rem;">
+          Inserisci nel simulatore le 4 password qui sotto, una alla volta. Riporta il tempo esatto calcolato:
+        </p>
+
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Password da Testare</th>
+              <th style="width: 140px;">Azione Rapida</th>
+              <th>Tempo di Cracking Rilevato (Tua risposta)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1</strong></td>
+              <td><span class="pwd-code">juventus</span></td>
+              <td>
+                <button type="button" class="btn-test-action" onclick="testPasswordInSim('juventus')">⚡ Carica nel Sim</button>
+              </td>
+              <td>
+                <input type="text" id="pwdRes1" class="field-input field-input--mono" placeholder="Es. Istantaneo / 0 secondi" style="padding:4px 8px">
+              </td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td><span class="pwd-code">MarioRossi2009</span></td>
+              <td>
+                <button type="button" class="btn-test-action" onclick="testPasswordInSim('MarioRossi2009')">⚡ Carica nel Sim</button>
+              </td>
+              <td>
+                <input type="text" id="pwdRes2" class="field-input field-input--mono" placeholder="Es. 3 giorni / poche ore" style="padding:4px 8px">
+              </td>
+            </tr>
+            <tr>
+              <td><strong>3</strong></td>
+              <td><span class="pwd-code">qwerty12345!</span></td>
+              <td>
+                <button type="button" class="btn-test-action" onclick="testPasswordInSim('qwerty12345!')">⚡ Carica nel Sim</button>
+              </td>
+              <td>
+                <input type="text" id="pwdRes3" class="field-input field-input--mono" placeholder="Es. 400 anni" style="padding:4px 8px">
+              </td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td><span class="pwd-code">P@ssw0rd</span></td>
+              <td>
+                <button type="button" class="btn-test-action" onclick="testPasswordInSim('P@ssw0rd')">⚡ Carica nel Sim</button>
+              </td>
+              <td>
+                <input type="text" id="pwdRes4" class="field-input field-input--mono" placeholder="Es. Istantaneo / pochi secondi" style="padding:4px 8px">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TASK 2: LA SFIDA MASTER PASSWORD -->
+      <div style="margin-top: 2rem; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 1.5rem;">
+        <h3 style="font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span>🏆</span> TASK 2 — La Sfida: crea la tua Master Password (Sezione 2 Report)
+        </h3>
+
+        <div class="notice-box notice-box--warning" style="margin-top:0.75rem">
+          <span class="notice-icon">📐</span>
+          <div>
+            <strong>Regole obbligatorie per vincere la sfida:</strong><br>
+            • Deve essere una <strong>passphrase</strong> (sequenza di parole logiche, es: <code>IlMioGattoPippoOdiaI1Croccantini!</code>)<br>
+            • <strong>NON</strong> puoi premere tasti a caso sulla tastiera (deve essere memorizzabile)<br>
+            • Puoi usare lettere maiuscole, minuscole, numeri e simboli speciali (! @ # $ % & ...)<br>
+            • <strong>Obiettivo:</strong> tempo di cracking nell'ordine di <strong>miliardi o trilioni di anni</strong>.
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label class="field-label" for="masterPwdInput">a. La tua Master Password vincente *</label>
+            <input type="text" id="masterPwdInput" class="field-input field-input--mono" placeholder="Es. IlMioGattoPippoOdiaI1Croccantini!" oninput="onMasterPasswordChange(this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="masterPwdTime">b. Tempo esatto restituito *</label>
+            <input type="text" id="masterPwdTime" class="field-input field-input--mono" placeholder="Es. 43 trilioni di anni">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="masterPwdMotivazione">c. In una frase: perché hai scelto questa struttura? *</label>
+          <input type="text" id="masterPwdMotivazione" class="field-input" placeholder="Es. Ho unito 5 parole con senso compiuto facili da ricordare ma lunghissime da craccare per un computer.">
+        </div>
+      </div>
+    </section>
+
+    <!-- FASE 3: INDAGINE SUI DATA BREACH -->
+    <section class="lab-section" id="fase3">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon">🗄️</span>
+          <div class="section-title">
+            <small>Fase 3 (15 – 25 min)</small>
+            SEZIONE 3 — Indagine sui Data Breach Mondiali
+          </div>
+        </div>
+        <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener" class="ext-link-btn" title="Apri haveibeenpwned.com in nuova scheda">
+          🌐 haveibeenpwned.com ↗
+        </a>
+      </div>
+
+      <div class="notice-box notice-box--danger">
+        <span class="notice-icon">🛡️</span>
+        <div>
+          <strong>Attenzione alla Privacy:</strong> Per proteggere i tuoi dati personali, <u>NON inserire la tua email personale o scolastica</u>. Utilizzerai gli indirizzi generici forniti qui sotto, scelti appositamente per mostrare l'effetto reale dei breach storici:
+        </div>
+      </div>
+
+      <!-- Test Emails Buttons -->
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem;">
+        <button type="button" class="btn btn--secondary" onclick="selectBreachEmail('info@gmail.com')">
+          <span>📧</span> info@gmail.com
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="selectBreachEmail('mario.rossi@hotmail.it')">
+          <span>📧</span> mario.rossi@hotmail.it
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="selectBreachEmail('admin@yahoo.com')">
+          <span>📧</span> admin@yahoo.com
+        </button>
+      </div>
+
+      <!-- Quick breach examples from history -->
+      <div style="margin-bottom: 1.25rem;">
+        <div class="field-label">Archivio Rapido di Data Breach Storici (Clicca per pre-compilare o consulta il sito):</div>
+        <div class="breach-cards-grid">
+          <div class="breach-card" onclick="prefillBreach('Adobe', '2013', '153.000.000', 'Passwords, Hint password, Email, Usernames', 'Critico: password con crittografia debole 3DES esposte pubblicamente')">
+            <div class="breach-card__name">Adobe <span class="breach-card__year">2013</span></div>
+            <div class="breach-card__accounts">153M account</div>
+            <div class="breach-card__data">Passwords, Hint, Email</div>
+          </div>
+          <div class="breach-card" onclick="prefillBreach('LinkedIn', '2016', '164.000.000', 'Email addresses, Passwords (SHA1 non salate)', 'Altissimo: furto credenziali lavorative di milioni di professionisti')">
+            <div class="breach-card__name">LinkedIn <span class="breach-card__year">2016</span></div>
+            <div class="breach-card__accounts">164M account</div>
+            <div class="breach-card__data">Email, Passwords (SHA1)</div>
+          </div>
+          <div class="breach-card" onclick="prefillBreach('Canva', '2019', '137.000.000', 'Email, Nomi, Password (bcrypt), Città/Paese', 'Medio-Alto: esposizione anagrafica globale di grafici e studenti')">
+            <div class="breach-card__name">Canva <span class="breach-card__year">2019</span></div>
+            <div class="breach-card__accounts">137M account</div>
+            <div class="breach-card__data">Email, Nomi, Password bcrypt</div>
+          </div>
+          <div class="breach-card" onclick="prefillBreach('Dropbox', '2016', '68.000.000', 'Email addresses, Passwords (bcrypt / SHA1)', 'Grave: accesso potenziale ai file cloud sincronizzati degli utenti')">
+            <div class="breach-card__name">Dropbox <span class="breach-card__year">2016</span></div>
+            <div class="breach-card__accounts">68M account</div>
+            <div class="breach-card__data">Email, Passwords</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASK 3: SCHEDA INDAGINE BREACH -->
+      <h3 style="font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:8px; margin-bottom:0.85rem;">
+        <span>🔍</span> TASK 3 — Dati del Breach Rilevato (Sezione 3 Report)
+      </h3>
+
+      <div class="form-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="breachEmail">Email analizzata *</label>
+          <input type="text" id="breachEmail" class="field-input field-input--mono" placeholder="Es. info@gmail.com">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachSite">Nome del sito violato *</label>
+          <input type="text" id="breachSite" class="field-input" placeholder="Es. Adobe, LinkedIn, Canva...">
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="breachYear">Anno della violazione *</label>
+          <input type="text" id="breachYear" class="field-input field-input--mono" placeholder="Es. 2013, 2016, 2019...">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="breachAccounts">Quanti account coinvolti? *</label>
+          <input type="text" id="breachAccounts" class="field-input" placeholder="Es. 153 milioni">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="breachDataTypes">
+          Quali dati sono stati rubati? *
+          <span class="field-hint">Es. Passwords, IP addresses, Email, Usernames...</span>
+        </label>
+        <input type="text" id="breachDataTypes" class="field-input" placeholder="Es. Passwords, Indirizzi Email, Nomi utente, Indirizzi IP...">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="breachImpatto">Impatto secondo te (valutazione dello studente) *</label>
+        <input type="text" id="breachImpatto" class="field-input" placeholder="Es. Altissimo: i criminali possono riutilizzare queste password su altri servizi tramite attacchi di credential stuffing.">
+      </div>
+    </section>
+
+    <!-- FASE 4: DOMANDA FINALE E CONSEGNA -->
+    <section class="lab-section" id="fase4">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon">💡</span>
+          <div class="section-title">
+            <small>Fase 4 (25 – 30 min)</small>
+            SEZIONE 4 — Riflessione Critica & Consegna
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="domandaFinale">
+          ❓ Domanda Finale (Rispondi in 3-4 righe) *
+          <span class="field-hint">Suggerimento: pensa a cosa succederebbe se uno dei 10 siti venisse violato come quelli visti su Have I Been Pwned.</span>
+        </label>
+        <div style="background:rgba(0,245,255,0.06); border-left:3px solid var(--cyan); padding:0.65rem 0.95rem; font-size:0.9rem; color:#fff; margin-bottom:0.6rem; border-radius:0 4px 4px 0;">
+          <strong>“Perché avere una password complessa (come quella che hai creato nella Sfida) è inutile se poi usi quella stessa password su 10 siti diversi?”</strong>
+        </div>
+        <textarea id="domandaFinale" class="field-textarea" rows="4" placeholder="Scrivi qui la tua riflessione critica... (spiega il rischio del riutilizzo delle credenziali e cosa accade durante un data breach)"></textarea>
+      </div>
+
+      <!-- CHECKLIST -->
+      <div style="margin-top: 1.5rem;">
+        <div class="field-label" style="margin-bottom:0.5rem">
+          <span>✅ Checklist Finale di Autovalutazione</span>
+          <span class="field-hint">Verifica prima di generare il Report</span>
+        </div>
+        <div class="checklist-grid">
+          <label class="check-item">
+            <input type="checkbox" id="chk1">
+            <span class="check-item-text">Intestazione con nome, cognome e classe</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="chk2">
+            <span class="check-item-text">Sezione 1: 4 password testate con tempi esatti</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="chk3">
+            <span class="check-item-text">Sezione 2: Master Passphrase e motivazione</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="chk4">
+            <span class="check-item-text">Sezione 3: Indagine Data Breach completata</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="chk5">
+            <span class="check-item-text">Sezione 4: Risposta alla domanda critica</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="chk6">
+            <span class="check-item-text">Report pronto per la consegna entro 30 min</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- GLOSSARIO RAPIDO -->
+      <div class="glossary-card">
+        <div class="glossary-header" onclick="toggleGlossary()">
+          <span>📖 Glossario Rapido di Cybersecurity (Clicca per espandere/chiudere)</span>
+          <span id="glossaryToggleIcon">▼</span>
+        </div>
+        <div class="glossary-body" id="glossaryBody">
+          <div class="glossary-term">
+            <strong>Brute Force (Forza Bruta)</strong>
+            Tecnica di attacco informatico che prova tutte le combinazioni possibili di caratteri finché non trova la password corretta.
+          </div>
+          <div class="glossary-term">
+            <strong>Data Breach</strong>
+            Violazione della sicurezza di un sistema informatico con furto o esposizione di dati riservati degli utenti.
+          </div>
+          <div class="glossary-term">
+            <strong>Passphrase</strong>
+            Password composta da una sequenza di parole con senso logico: più lunga di una password classica, ma molto più facile da ricordare.
+          </div>
+          <div class="glossary-term">
+            <strong>Ethical Hacker</strong>
+            Esperto di sicurezza informatica autorizzato a testare i sistemi per trovarne le vulnerabilità prima dei criminali.
+          </div>
+          <div class="glossary-term" style="grid-column: 1 / -1;">
+            <strong>Password Manager</strong>
+            Software cifrato che memorizza e genera password complesse e uniche per ogni sito, proteggendole con un'unica Master Password.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STICKY BOTTOM BAR -->
+  <footer class="bottom-bar">
+    <div class="progress-info">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-text" id="progressText">0 / 4 sezioni completate</span>
+    </div>
+
+    <div class="actions-group">
+      <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
+        <span>👁️</span> Anteprima Report
+      </button>
+      <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera il Report in PDF">
+        <span>🖨️</span> CONSEGNA &amp; SALVA PDF
+      </button>
+    </div>
+  </footer>
+
+  <!-- MODAL / PRINT REPORT COMPATTO -->
+  <div id="report-modal">
+    <div class="modal-dialog">
+      <div class="modal-controls">
+        <div style="font-weight:700; color:#0f172a; font-size:1rem; display:flex; align-items:center; gap:8px;">
+          <span>📄</span> Anteprima Documento di Consegna (Formato A4 Compatto)
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn--secondary" onclick="closeReportPreview()" style="color:#0f172a; border-color:#cbd5e1;">Chiudi</button>
+          <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()" style="background:#0284c7; color:#fff;">📥 Scarica PDF Diretto</button>
+          <button type="button" class="btn btn--success" onclick="window.print()" style="background:#16a34a; color:#fff;">🖨️ Stampa / Salva PDF</button>
+        </div>
+      </div>
+
+      <!-- AREA EFFETTIVA DI STAMPA REPORT -->
+      <div id="print-area" class="print-paper">
+        <!-- HEADER SCUOLA -->
+        <div class="print-header">
+          <div>
+            <div class="print-school">ISTITUTO DI ISTRUZIONE SUPERIORE — LABORATORIO DI INFORMATICA</div>
+            <div class="print-doc-title">REPORT DI VULNERABILITÀ DIGITALE</div>
+            <div style="font-size:11px; color:#475569; font-weight:600;">CYBER-SECURITY AUDIT: “DIVENTA UN HACKER ETICO”</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:9px; color:#64748b; font-weight:700;">DOCUMENTO DI CONSEGNA</div>
+            <div style="font-family:var(--font-mono); font-size:12px; font-weight:700; color:#0f172a;">SEC_AUDIT_2026</div>
+          </div>
+        </div>
+
+        <!-- DATI STUDENTE -->
+        <div class="print-meta-grid">
+          <div class="print-meta-item">
+            <span>STUDENTE / AUDITOR:</span>
+            <strong id="repPrintNome">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>CLASSE:</span>
+            <strong id="repPrintClasse">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>DATA CONSEGNA:</span>
+            <strong id="repPrintData">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>DOCENTE:</span>
+            <strong>Prof. Thomas Mazzeo</strong>
+          </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="print-section">
+          <div class="print-section-title">
+            <span>SEZIONE 1 — Analisi di Forza Bruta (Brute Force Testing)</span>
+            <span style="font-weight:400; font-size:9px;">TASK 1</span>
+          </div>
+          <div class="print-section-body" style="padding:0">
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th style="width:30px">#</th>
+                  <th>Password Testata</th>
+                  <th>Tempo di Cracking Rilevato (GPU moderna)</th>
+                  <th>Valutazione Rischio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td class="mono"><strong>juventus</strong></td>
+                  <td id="repPrintPwd1">--</td>
+                  <td><span style="color:#b91c1c; font-weight:700;">Critico (Dizionario)</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td class="mono"><strong>MarioRossi2009</strong></td>
+                  <td id="repPrintPwd2">--</td>
+                  <td><span style="color:#c2410c; font-weight:700;">Alto (Dati Personali)</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td class="mono"><strong>qwerty12345!</strong></td>
+                  <td id="repPrintPwd3">--</td>
+                  <td><span style="color:#15803d; font-weight:700;">Medio-Alto (Pattern)</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td class="mono"><strong>P@ssw0rd</strong></td>
+                  <td id="repPrintPwd4">--</td>
+                  <td><span style="color:#b91c1c; font-weight:700;">Critico (Leet comune)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="print-section">
+          <div class="print-section-title">
+            <span>SEZIONE 2 — Master Password Vincente (Passphrase Challenge)</span>
+            <span style="font-weight:400; font-size:9px;">TASK 2</span>
+          </div>
+          <div class="print-section-body">
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-bottom:6px;">
+              <div class="print-q-box">
+                <div class="print-q-label">Master Passphrase Creata:</div>
+                <div class="print-q-answer mono" id="repPrintMasterPwd" style="font-weight:700; color:#0369a1;">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">Tempo Stimato di Cracking:</div>
+                <div class="print-q-answer mono" id="repPrintMasterTime" style="font-weight:700; color:#15803d;">--</div>
+              </div>
+            </div>
+            <div class="print-q-box">
+              <div class="print-q-label">Motivazione della Struttura Scelta:</div>
+              <div class="print-q-answer" id="repPrintMasterMotivazione">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="print-section">
+          <div class="print-section-title">
+            <span>SEZIONE 3 — Indagine sui Data Breach Mondiali</span>
+            <span style="font-weight:400; font-size:9px;">TASK 3</span>
+          </div>
+          <div class="print-section-body">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 0.8fr 1fr; gap:8px; margin-bottom:6px;">
+              <div class="print-q-box">
+                <div class="print-q-label">Email Analizzata:</div>
+                <div class="print-q-answer mono" id="repPrintBreachEmail">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">Sito / Servizio Violato:</div>
+                <div class="print-q-answer" id="repPrintBreachSite" style="font-weight:700;">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">Anno Breach:</div>
+                <div class="print-q-answer mono" id="repPrintBreachYear">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">Account Coinvolti:</div>
+                <div class="print-q-answer" id="repPrintBreachAccounts">--</div>
+              </div>
+            </div>
+            <div class="print-q-box">
+              <div class="print-q-label">Tipologia di Dati Rubati:</div>
+              <div class="print-q-answer" id="repPrintBreachDataTypes">--</div>
+            </div>
+            <div class="print-q-box">
+              <div class="print-q-label">Valutazione Personale dell'Impatto:</div>
+              <div class="print-q-answer" id="repPrintBreachImpatto">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4 -->
+        <div class="print-section">
+          <div class="print-section-title">
+            <span>SEZIONE 4 — Riflessione Critica Finale</span>
+            <span style="font-weight:400; font-size:9px;">TASK FINALE</span>
+          </div>
+          <div class="print-section-body">
+            <div class="print-q-box">
+              <div class="print-q-label">Domanda: “Perché avere una password complessa è inutile se poi usi quella stessa password su 10 siti diversi?”</div>
+              <div class="print-q-answer" id="repPrintDomandaFinale" style="min-height:48px;">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER FIRME -->
+        <div class="print-footer-signatures">
+          <div>
+            <span>Firma dello Studente (Auditor):</span>
+            <div class="print-sig-line"></div>
+          </div>
+          <div>
+            <span>Valutazione del Docente:</span>
+            <div class="print-sig-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // ══════════════════════════════════════════
+    // URL ROUTING & BACK BUTTON
+    // ══════════════════════════════════════════
+    (function initBackBtn() {
+      const p = new URLSearchParams(window.location.search);
+      const ref = document.referrer;
+      const back = document.getElementById('back-btn');
+      if (!back) return;
+      const c = p.get('classe');
+      if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
+        back.href = '/#3l-relazioni-internazionali';
+        back.textContent = '◀ 3°L RIM';
+        document.getElementById('studenteClasse').value = '3°L RIM';
+      } else if (c === '2h' || (ref && ref.includes('#2h-finanza-marketing'))) {
+        back.href = '/#2h-finanza-marketing';
+        back.textContent = '◀ 2H AFM';
+        document.getElementById('studenteClasse').value = '2H AFM';
+      } else if (c === '2g' || (ref && ref.includes('#2g-finanza-marketing'))) {
+        back.href = '/#2g-finanza-marketing';
+        back.textContent = '◀ 2G AFM';
+        document.getElementById('studenteClasse').value = '2G AFM';
+      } else {
+        back.href = '/#informatica';
+        back.textContent = '◀ INFORMATICA';
+      }
+    })();
+
+    // ══════════════════════════════════════════
+    // TIMER 30 MINUTI
+    // ══════════════════════════════════════════
+    let timerSeconds = 30 * 60;
+    let timerInterval = null;
+    let timerRunning = false;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerToggle = document.getElementById('timerToggle');
+    const timerReset = document.getElementById('timerReset');
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      if (timerSeconds <= 300) {
+        timerDisplay.style.color = 'var(--danger)';
+      } else {
+        timerDisplay.style.color = 'var(--amber)';
+      }
+    }
+
+    timerToggle.addEventListener('click', () => {
+      if (!timerRunning) {
+        timerRunning = true;
+        timerToggle.textContent = '⏸';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timerToggle.textContent = '▶';
+            alert('⏰ TEMPO SCADUTO! I 30 minuti del laboratorio sono terminati. Procedi alla generazione del report!');
+          }
+        }, 1000);
+      } else {
+        timerRunning = false;
+        timerToggle.textContent = '▶';
+        clearInterval(timerInterval);
+      }
+    });
+
+    timerReset.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerToggle.textContent = '▶';
+      timerSeconds = 30 * 60;
+      updateTimerDisplay();
+    });
+
+    // ══════════════════════════════════════════
+    // BRUTE FORCE TIME CALCULATOR ENGINE
+    // ══════════════════════════════════════════
+    function calculateCrackingStats(pwd) {
+      if (!pwd) {
+        return { time: '--', charsetDesc: 'Nessuno', combinations: '--', level: 'empty' };
+      }
+      let pool = 0;
+      let hasLower = /[a-z]/.test(pwd);
+      let hasUpper = /[A-Z]/.test(pwd);
+      let hasDigits = /[0-9]/.test(pwd);
+      let hasSymbols = /[^a-zA-Z0-9]/.test(pwd);
+
+      const parts = [];
+      if (hasLower) { pool += 26; parts.push('minuscole'); }
+      if (hasUpper) { pool += 26; parts.push('maiuscole'); }
+      if (hasDigits) { pool += 10; parts.push('numeri'); }
+      if (hasSymbols) { pool += 33; parts.push('simboli'); }
+
+      const len = pwd.length;
+      // Stima combinazioni: pool^len
+      // Velocità GPU moderna: 100 miliardi di tentativi al secondo = 10^11 / s
+      const speed = 1e11;
+
+      // Gestione dizionario / password comuni note
+      const lower = pwd.toLowerCase();
+      if (lower === 'juventus' || lower === 'password' || lower === 'p@ssw0rd' || lower === '123456' || lower === 'admin') {
+        return {
+          time: 'Istantaneo (pochi millisecondi)',
+          charsetDesc: parts.join(' + ') + ' [PRESENTE IN DIZIONARIO]',
+          combinations: 'Trovata via Rainbow Table / Dizionario',
+          level: 'danger'
+        };
+      }
+
+      // Log10 delle combinazioni
+      const logComb = len * Math.log10(pool);
+      const logSeconds = logComb - Math.log10(speed);
+
+      let timeText = '';
+      let level = 'ok';
+
+      if (logSeconds < 0) {
+        timeText = 'Meno di 1 secondo';
+        level = 'danger';
+      } else if (logSeconds < 1.77) {
+        timeText = `${Math.round(Math.pow(10, logSeconds))} secondi`;
+        level = 'danger';
+      } else if (logSeconds < 3.55) {
+        timeText = `${Math.round(Math.pow(10, logSeconds) / 60)} minuti`;
+        level = 'danger';
+      } else if (logSeconds < 4.93) {
+        timeText = `${Math.round(Math.pow(10, logSeconds) / 3600)} ore`;
+        level = 'warning';
+      } else if (logSeconds < 7.49) {
+        timeText = `${Math.round(Math.pow(10, logSeconds) / 86400)} giorni`;
+        level = 'warning';
+      } else if (logSeconds < 8.5) {
+        timeText = `${Math.round(Math.pow(10, logSeconds) / (86400 * 30))} mesi`;
+        level = 'warning';
+      } else if (logSeconds < 10.5) {
+        timeText = `${Math.round(Math.pow(10, logSeconds) / (86400 * 365))} anni`;
+        level = 'safe';
+      } else if (logSeconds < 14.5) {
+        const mln = Math.round(Math.pow(10, logSeconds - 6) / (86400 * 365));
+        timeText = `${mln.toLocaleString('it-IT')} milioni di anni`;
+        level = 'god';
+      } else if (logSeconds < 17.5) {
+        const mld = Math.round(Math.pow(10, logSeconds - 9) / (86400 * 365));
+        timeText = `${mld.toLocaleString('it-IT')} miliardi di anni`;
+        level = 'god';
+      } else {
+        const tri = Math.round(Math.pow(10, logSeconds - 12) / (86400 * 365));
+        timeText = `${tri.toLocaleString('it-IT')} trilioni di anni`;
+        level = 'god';
+      }
+
+      let combText = `~ 10^${Math.round(logComb)}`;
+      return { time: timeText, charsetDesc: parts.join(' + '), combinations: combText, level: level };
+    }
+
+    const simInput = document.getElementById('simLiveInput');
+    const simTime = document.getElementById('simLiveTime');
+    const simLen = document.getElementById('simLiveLen');
+    const simCharset = document.getElementById('simLiveCharset');
+    const simComb = document.getElementById('simLiveCombinations');
+    const simTag = document.getElementById('simTag');
+
+    simInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      const res = calculateCrackingStats(val);
+      simLen.textContent = `${val.length} caratteri`;
+      simCharset.textContent = res.charsetDesc;
+      simComb.textContent = res.combinations;
+      simTime.textContent = res.time;
+
+      if (res.level === 'danger') {
+        simTime.style.color = 'var(--danger)';
+        simTag.className = 'badge badge--danger';
+        simTag.textContent = 'VULNERABILE / DEBOLE';
+      } else if (res.level === 'warning') {
+        simTime.style.color = 'var(--amber)';
+        simTag.className = 'badge badge--amber';
+        simTag.textContent = 'RESISTENZA MEDIA';
+      } else if (res.level === 'safe' || res.level === 'god') {
+        simTime.style.color = 'var(--green)';
+        simTag.className = 'badge badge--green';
+        simTag.textContent = 'INVIOLABILE (FORTE)';
+      } else {
+        simTime.style.color = 'var(--cyan)';
+        simTag.className = 'badge badge--amber';
+        simTag.textContent = 'PRONTO PER IL TEST';
+      }
+    });
+
+    function testPasswordInSim(pwd) {
+      simInput.value = pwd;
+      simInput.dispatchEvent(new Event('input'));
+      simInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function onMasterPasswordChange(pwd) {
+      const stats = calculateCrackingStats(pwd);
+      document.getElementById('masterPwdTime').value = stats.time;
+      checkProgress();
+    }
+
+    // ══════════════════════════════════════════
+    // DATA BREACH HELPERS
+    // ══════════════════════════════════════════
+    function selectBreachEmail(email) {
+      document.getElementById('breachEmail').value = email;
+      checkProgress();
+    }
+
+    function prefillBreach(site, year, accounts, types, impatto) {
+      document.getElementById('breachSite').value = site;
+      document.getElementById('breachYear').value = year;
+      document.getElementById('breachAccounts').value = accounts;
+      document.getElementById('breachDataTypes').value = types;
+      document.getElementById('breachImpatto').value = impatto;
+      checkProgress();
+    }
+
+    function toggleGlossary() {
+      const body = document.getElementById('glossaryBody');
+      const icon = document.getElementById('glossaryToggleIcon');
+      if (body.style.display === 'none') {
+        body.style.display = 'grid';
+        icon.textContent = '▲';
+      } else {
+        body.style.display = 'none';
+        icon.textContent = '▼';
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // LOCAL STORAGE & PROGRESS TRACKING
+    // ══════════════════════════════════════════
+    const formFields = [
+      'studenteNome', 'studenteClasse', 'studenteData',
+      'pwdRes1', 'pwdRes2', 'pwdRes3', 'pwdRes4',
+      'masterPwdInput', 'masterPwdTime', 'masterPwdMotivazione',
+      'breachEmail', 'breachSite', 'breachYear', 'breachAccounts', 'breachDataTypes', 'breachImpatto',
+      'domandaFinale'
+    ];
+
+    function saveToStorage() {
+      const data = {};
+      formFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      localStorage.setItem('sec_audit_data', JSON.stringify(data));
+      checkProgress();
+    }
+
+    function loadFromStorage() {
+      // Data odierna di default se vuota
+      const today = new Date().toISOString().split('T')[0];
+      const dtEl = document.getElementById('studenteData');
+      if (dtEl && !dtEl.value) dtEl.value = today;
+
+      const raw = localStorage.getItem('sec_audit_data');
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        formFields.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && data[id] !== undefined && !el.value) {
+            el.value = data[id];
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      checkProgress();
+    }
+
+    formFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', saveToStorage);
+    });
+
+    function checkProgress() {
+      let f1 = document.getElementById('studenteNome').value && document.getElementById('studenteClasse').value;
+      let f2 = document.getElementById('pwdRes1').value && document.getElementById('pwdRes2').value && document.getElementById('masterPwdInput').value;
+      let f3 = document.getElementById('breachEmail').value && document.getElementById('breachSite').value;
+      let f4 = document.getElementById('domandaFinale').value.trim().length > 10;
+
+      let count = 0;
+      if (f1) count++;
+      if (f2) count++;
+      if (f3) count++;
+      if (f4) count++;
+
+      const pct = (count / 4) * 100;
+      document.getElementById('progressBarFill').style.width = `${pct}%`;
+      document.getElementById('progressText').textContent = `${count} / 4 sezioni compilate (${pct}%)`;
+
+      // Auto update checkboxes
+      document.getElementById('chk1').checked = !!f1;
+      document.getElementById('chk2').checked = !!(document.getElementById('pwdRes1').value && document.getElementById('pwdRes4').value);
+      document.getElementById('chk3').checked = !!document.getElementById('masterPwdInput').value;
+      document.getElementById('chk4').checked = !!f3;
+      document.getElementById('chk5').checked = !!f4;
+      document.getElementById('chk6').checked = count === 4;
+    }
+
+    // ══════════════════════════════════════════
+    // REPORT GENERATION & MODAL
+    // ══════════════════════════════════════════
+    function populatePrintReport() {
+      const getVal = (id, fallback = '--') => {
+        const el = document.getElementById(id);
+        return (el && el.value.trim()) ? el.value.trim() : fallback;
+      };
+
+      document.getElementById('repPrintNome').textContent = getVal('studenteNome', '[Nome e Cognome non inserito]');
+      document.getElementById('repPrintClasse').textContent = getVal('studenteClasse', '[Classe non inserita]');
+      document.getElementById('repPrintData').textContent = getVal('studenteData', new Date().toLocaleDateString('it-IT'));
+
+      document.getElementById('repPrintPwd1').textContent = getVal('pwdRes1', 'Istantaneo (< 1s)');
+      document.getElementById('repPrintPwd2').textContent = getVal('pwdRes2', 'Circa 3 giorni');
+      document.getElementById('repPrintPwd3').textContent = getVal('pwdRes3', 'Circa 400 anni');
+      document.getElementById('repPrintPwd4').textContent = getVal('pwdRes4', 'Istantaneo (comune)');
+
+      document.getElementById('repPrintMasterPwd').textContent = getVal('masterPwdInput', '[Passphrase non inserita]');
+      document.getElementById('repPrintMasterTime').textContent = getVal('masterPwdTime', '[Tempo non calcolato]');
+      document.getElementById('repPrintMasterMotivazione').textContent = getVal('masterPwdMotivazione', '[Nessuna motivazione inserita]');
+
+      document.getElementById('repPrintBreachEmail').textContent = getVal('breachEmail', 'info@gmail.com');
+      document.getElementById('repPrintBreachSite').textContent = getVal('breachSite', 'Adobe');
+      document.getElementById('repPrintBreachYear').textContent = getVal('breachYear', '2013');
+      document.getElementById('repPrintBreachAccounts').textContent = getVal('breachAccounts', '153 milioni');
+      document.getElementById('repPrintBreachDataTypes').textContent = getVal('breachDataTypes', 'Passwords, Hint, Email');
+      document.getElementById('repPrintBreachImpatto').textContent = getVal('breachImpatto', 'Critico');
+
+      document.getElementById('repPrintDomandaFinale').textContent = getVal('domandaFinale', '[Risposta critica non inserita dallo studente]');
+    }
+
+    function openReportPreview() {
+      const nome = document.getElementById('studenteNome').value.trim();
+      if (!nome) {
+        alert('⚠️ Attenzione: Inserisci almeno Nome e Cognome nella Fase 1 prima di visualizzare il Report!');
+        document.getElementById('studenteNome').focus();
+      }
+      populatePrintReport();
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportPreview() {
+      document.getElementById('report-modal').classList.remove('active');
+    }
+
+    function generateAndPrintPDF() {
+      const nome = document.getElementById('studenteNome').value.trim();
+      if (!nome) {
+        alert('⚠️ Inserisci Nome e Cognome nella Fase 1 prima di procedere alla consegna!');
+        document.getElementById('studenteNome').focus();
+        return;
+      }
+      populatePrintReport();
+      window.print();
+    }
+
+    function downloadDirectPDF() {
+      const nome = document.getElementById('studenteNome').value.trim() || 'Studente';
+      const cleanNome = nome.replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `Report_Audit_${cleanNome}.pdf`;
+
+      const element = document.getElementById('print-area');
+      const opt = {
+        margin: [8, 10, 8, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        window.html2pdf().set(opt).from(element).save();
+      } else {
+        window.print();
+      }
+    }
+
+    // Inizializzazione
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromStorage();
+      updateTimerDisplay();
+    });
+  </script>
+</body>
+</html>
