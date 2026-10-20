@@ -34,8 +34,8 @@ const MATERIE = [
                 url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=3l"
               },
               {
-                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — \"Diventa un Hacker Etico\"",
-                desc: "Attività pratica guidata (30 min): test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
+                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — Analisi delle Vulnerabilità",
+                desc: "Attività pratica guidata: test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
                 url: "/informatica/sicurezza/laboratorio-cybersecurity-audit.html?classe=3l"
               },
               {
@@ -77,8 +77,8 @@ const MATERIE = [
                 url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=2h"
               },
               {
-                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — \"Diventa un Hacker Etico\"",
-                desc: "Attività pratica guidata (30 min): test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
+                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — Analisi delle Vulnerabilità",
+                desc: "Attività pratica guidata: test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
                 url: "/informatica/sicurezza/laboratorio-cybersecurity-audit.html?classe=2h"
               },
               {
@@ -120,8 +120,8 @@ const MATERIE = [
                 url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=2g"
               },
               {
-                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — \"Diventa un Hacker Etico\"",
-                desc: "Attività pratica guidata (30 min): test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
+                title: "🧪 Laboratorio Pratico: Cyber-Security Audit — Analisi delle Vulnerabilità",
+                desc: "Attività pratica guidata: test di forza bruta, sfida Master Passphrase, indagine sui Data Breach e consegna Report di Vulnerabilità in PDF compatto.",
                 url: "/informatica/sicurezza/laboratorio-cybersecurity-audit.html?classe=2g"
               },
               {
