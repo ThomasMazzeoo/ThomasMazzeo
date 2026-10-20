@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicurezza Informatica — Resilienza Digitale: Backup e Aggiornamenti</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+  ROOT & RESET
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g: #00ff41;
+  --gdim: #00cc33;
+  --gdk: #003a0f;
+  --gglo: rgba(0,255,65,.10);
+  --a: #ffb000;
+  --adim: #cc8c00;
+  --aglo: rgba(255,176,0,.10);
+  --r: #ff3333;
+  --rdim: #990000;
+  --rglo: rgba(255,51,51,.15);
+  --b: #4488ff;
+  --bglo: rgba(68,136,255,.12);
+  --bg: #000;
+  --bgc: #050f05;
+  --bdr: rgba(0,255,65,.18);
+  --fm: 'Share Tech Mono','Courier New',monospace;
+  --fv: 'VT323',monospace;
+  --hh: 46px;
+  --fh: 28px;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--g);font-family:var(--fm)}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px)
+}
+
+/* ============================================================
+  HEADER
+============================================================ */
+#hd{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:var(--bg);border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;z-index:200
+}
+.logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
+.hd-right{display:flex;align-items:center;gap:18px}
+#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase}
+#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+  FOOTER
+============================================================ */
+#ft{
+  position:fixed;bottom:0;left:0;right:0;height:var(--fh);
+  background:var(--bg);border-top:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200
+}
+#pt{flex:1;height:7px;background:var(--gdk);border:1px solid rgba(0,255,65,.2)}
+#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
+#pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
+.flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
+
+/* ============================================================
+  NAV BUTTONS
+============================================================ */
+#nav{position:fixed;bottom:calc(var(--fh)+8px);right:14px;display:flex;gap:6px;z-index:200}
+.nb{
+  background:var(--bgc);border:1px solid var(--gdim);color:var(--g);
+  font-family:var(--fv);font-size:1.4rem;width:40px;height:40px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s
+}
+.nb:hover{background:var(--gglo);box-shadow:0 0 10px var(--g)}
+.nb:disabled{opacity:.2;cursor:not-allowed}
+
+/* ============================================================
+  STAGE & SLIDE BASE
+============================================================ */
+#stage{position:fixed;top:var(--hh);left:0;right:0;bottom:var(--fh);overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  padding:18px 40px 12px 40px;
+  display:flex;flex-direction:column;gap:0;
+  opacity:0;transform:translateX(50px);
+  transition:opacity .32s ease,transform .32s ease;
+  pointer-events:none;overflow:hidden
+}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit-left{opacity:0;transform:translateX(-50px)}
+
+/* ============================================================
+  TIPOGRAFIA
+============================================================ */
+.tag{font-size:.68rem;color:var(--gdim);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;flex-shrink:0}
+.title{
+  font-family:var(--fv);font-size:2.6rem;color:var(--g);
+  text-shadow:0 0 16px var(--g);line-height:1.05;
+  border-bottom:1px solid var(--bdr);padding-bottom:8px;margin-bottom:14px;flex-shrink:0
+}
+.title .a{color:var(--a);text-shadow:0 0 14px var(--adim)}
+.title .r{color:var(--r);text-shadow:0 0 14px var(--rdim)}
+.title .b{color:var(--b);text-shadow:0 0 14px rgba(68,136,255,.6)}
+
+.slide p{font-size:1.08rem;line-height:1.6;color:#c8ffc8;margin-bottom:8px}
+.slide p:last-child{margin-bottom:0}
+
+ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.pts li{font-size:1.05rem;line-height:1.5;color:#c8ffc8;padding-left:28px;position:relative}
+ul.pts li::before{content:'▶';position:absolute;left:0;color:var(--g)}
+ul.pts li.d::before{content:'✖';color:var(--r)}
+ul.pts li.w::before{content:'⚠';color:var(--a)}
+ul.pts li.k::before{content:'✔';color:var(--g)}
+ul.pts li.i::before{content:'◆';color:var(--a)}
+ul.pts li.n::before{content:'●';color:var(--b)}
+
+.hl{color:var(--a);font-weight:bold}
+.rd{color:var(--r)}
+.gn{color:var(--g)}
+.bl{color:var(--b)}
+code{font-family:var(--fm);color:var(--a);font-size:.92em}
+
+.box{
+  border:1px solid rgba(0,255,65,.3);background:var(--gglo);
+  padding:10px 16px;border-left:3px solid var(--g);flex-shrink:0
+}
+.box.d{border-color:var(--r);background:var(--rglo);border-left-color:var(--r)}
+.box.a{border-color:var(--a);background:var(--aglo);border-left-color:var(--a);color:var(--a)}
+.box.b{border-color:var(--b);background:var(--bglo);border-left-color:var(--b)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+
+.card{background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
+.ctitle{font-family:var(--fv);font-size:1.5rem;color:var(--a);margin-bottom:8px;border-bottom:1px solid var(--bdr);padding-bottom:4px;flex-shrink:0}
+
+.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{
+  counter-increment:s;padding:5px 8px 5px 38px;position:relative;
+  border-left:2px solid var(--gdk);font-size:1rem;line-height:1.45;color:#c8ffc8
+}
+.steps li::before{
+  content:counter(s);position:absolute;left:-1px;top:5px;
+  background:var(--g);color:var(--bg);
+  width:24px;height:24px;display:flex;align-items:center;
+  justify-content:center;font-size:.78rem;font-weight:bold;border-radius:2px
+}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--gdk);color:var(--g);padding:6px 12px;text-align:left;border:1px solid var(--bdr);font-size:.82rem;letter-spacing:1px}
+.tbl td{padding:5px 12px;border:1px solid var(--bdr);font-size:.95rem;color:#c8ffc8}
+.tbl tr:nth-child(even) td{background:var(--gglo)}
+.tr{color:var(--r)!important}.ta{color:var(--a)!important}.tg{color:var(--g)!important}.tb{color:var(--b)!important}
+
+.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}
+.flex1{flex:1;min-height:0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--fv);font-size:3rem;line-height:1;color:var(--a);text-shadow:0 0 16px var(--adim)}
+.huge{font-family:var(--fv);font-size:4rem;line-height:1;color:var(--r);text-shadow:0 0 20px var(--rdim)}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+
+/* Bottoni interattivi */
+.sin{
+  background:var(--bg);border:1px solid var(--gdim);color:var(--g);
+  font-family:var(--fm);font-size:1.1rem;padding:8px 12px;width:100%;
+  outline:none;caret-color:var(--g);transition:border-color .2s
+}
+.sin:focus{border-color:var(--g);box-shadow:0 0 6px var(--gglo)}
+.sbtn{
+  background:var(--bg);border:1px solid var(--g);color:var(--g);
+  font-family:var(--fm);font-size:.85rem;padding:7px 18px;cursor:pointer;
+  letter-spacing:1px;text-transform:uppercase;transition:all .18s
+}
+.sbtn:hover{background:var(--gglo);box-shadow:0 0 8px var(--g)}
+.sbtn.r{border-color:var(--r);color:var(--r)}
+.sbtn.r:hover{background:var(--rglo)}
+.sbtn.a{border-color:var(--a);color:var(--a)}
+.sbtn.a:hover{background:var(--aglo)}
+.slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
+
+/* ============================================================
+  COVER
+============================================================ */
+.cover-icon{font-size:5rem;filter:drop-shadow(0 0 18px var(--g));animation:gp 2.5s ease-in-out infinite}
+@keyframes gp{0%,100%{filter:drop-shadow(0 0 10px var(--g))}50%{filter:drop-shadow(0 0 28px var(--g))}}
+.cover-title{font-family:var(--fv);font-size:clamp(2.4rem,4.5vw,3.8rem);color:var(--g);text-shadow:0 0 24px var(--g);line-height:1.1}
+.cover-sub{font-family:var(--fv);font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--a);text-shadow:0 0 10px var(--adim)}
+.cover-div{width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.cover-meta{font-size:.78rem;color:var(--gdim);letter-spacing:2px}
+.typing{
+  font-size:.8rem;color:var(--gdim);letter-spacing:1px;overflow:hidden;
+  white-space:nowrap;width:0;border-right:2px solid var(--g);
+  animation:tin 2.2s steps(50) .5s forwards,bc .7s step-end infinite
+}
+@keyframes tin{to{width:100%}}
+@keyframes bc{50%{border-color:transparent}}
+
+/* ============================================================
+  LAB 1 — SPECCHIO E CASSAFORTE
+============================================================ */
+.sb-panel{
+  background:var(--bgc);border:1px solid var(--bdr);
+  padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  position:relative;overflow:hidden
+}
+.sb-panel.sync-panel{border-color:var(--a)}
+.sb-panel.bkp-panel{border-color:var(--g)}
+.sb-panel-title{font-family:var(--fv);font-size:1.6rem;margin-bottom:4px}
+.sb-device{
+  display:flex;gap:18px;align-items:center;justify-content:center;width:100%
+}
+.sb-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:.72rem;color:var(--gdim);letter-spacing:1px
+}
+.sb-icon{
+  font-size:2.4rem;transition:all .4s;
+  filter:drop-shadow(0 0 4px currentColor)
+}
+.sb-icon.gone{
+  opacity:0;transform:scale(0.2) rotate(30deg);
+  filter:drop-shadow(0 0 8px var(--r))
+}
+.sb-icon.burning{animation:burn .5s ease-out forwards}
+@keyframes burn{
+  0%{filter:drop-shadow(0 0 2px var(--r));transform:scale(1)}
+  50%{filter:drop-shadow(0 0 20px var(--r));transform:scale(1.3)}
+  100%{opacity:0;transform:scale(0.1) rotate(45deg)}
+}
+.sb-arrow{font-size:1.5rem;color:var(--a)}
+.sb-link{
+  width:60px;height:2px;background:var(--a);
+  position:relative;margin:0 4px;flex-shrink:0;
+  box-shadow:0 0 4px var(--a)
+}
+.sb-link::after{
+  content:'SYNC';position:absolute;top:-14px;left:50%;
+  transform:translateX(-50%);font-size:.6rem;color:var(--a);letter-spacing:1px
+}
+.sb-msg{
+  font-family:var(--fv);font-size:1.5rem;min-height:32px;text-align:center;
+  transition:all .3s
+}
+.sb-msg.lost{color:var(--r);text-shadow:0 0 10px var(--r)}
+.sb-msg.recovered{color:var(--g);text-shadow:0 0 10px var(--g)}
+.safe-btn{
+  background:var(--bg);border:2px solid var(--g);
+  font-size:2rem;cursor:pointer;padding:6px 12px;
+  transition:all .2s;animation:safepulse 1.5s ease-in-out infinite
+}
+@keyframes safepulse{0%,100%{box-shadow:0 0 4px var(--g)}50%{box-shadow:0 0 14px var(--g)}}
+.safe-btn:hover{background:var(--gglo)}
+.safe-btn.disabled{opacity:.35;cursor:not-allowed;animation:none}
+
+/* ============================================================
+  LAB 2 — COMPONI IL 3-2-1
+============================================================ */
+.rule-321{display:flex;flex-direction:column;gap:10px;flex:1;min-height:0}
+.rule-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bgc);border:1px solid var(--bdr);
+  padding:10px 14px;border-left:3px solid var(--gdim);transition:all .4s
+}
+.rule-row.active{border-left-color:var(--g);background:var(--gglo)}
+.rule-num{
+  font-family:var(--fv);font-size:3rem;color:var(--gdim);
+  min-width:50px;text-align:center;transition:color .4s
+}
+.rule-row.active .rule-num{color:var(--g);text-shadow:0 0 10px var(--g)}
+.rule-label{flex:1;font-size:.95rem;color:#c8ffc8}
+.rule-led{
+  width:20px;height:20px;border-radius:50%;background:var(--rdim);
+  border:1px solid var(--r);transition:all .4s;flex-shrink:0
+}
+.rule-led.on{background:var(--g);border-color:var(--g);box-shadow:0 0 8px var(--g)}
+
+.storage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex-shrink:0}
+.stor-item{
+  background:var(--bgc);border:1px solid var(--bdr);
+  padding:8px;text-align:center;cursor:pointer;transition:all .2s;user-select:none
+}
+.stor-item:hover:not(.selected):not(.disabled){border-color:var(--a);background:var(--aglo)}
+.stor-item.selected{border-color:var(--g);background:var(--gglo);cursor:not-allowed}
+.stor-item.disabled{opacity:.3;cursor:not-allowed}
+.stor-icon{font-size:2rem;display:block;margin-bottom:3px}
+.stor-name{font-size:.72rem;color:var(--gdim)}
+
+#status-321{
+  font-family:var(--fv);font-size:2.2rem;text-align:center;padding:8px;
+  border:1px solid var(--rdim);background:var(--rglo);color:var(--r);
+  transition:all .4s;flex-shrink:0
+}
+#status-321.safe{border-color:var(--g);background:var(--gglo);color:var(--g);text-shadow:0 0 12px var(--g)}
+
+/* ============================================================
+  LAB 3 — ZERO-DAY / PATCH
+============================================================ */
+#zd-arena{
+  position:relative;flex:1;min-height:0;
+  border:1px solid var(--bdr);background:var(--bgc);overflow:hidden
+}
+/* Il muro */
+#wall{
+  position:absolute;left:50%;top:0;bottom:0;
+  width:24px;transform:translateX(-50%);
+  background:linear-gradient(180deg,#1a1a1a 0%,#222 100%);
+  border-left:2px solid #444;border-right:2px solid #444;
+  z-index:10
+}
+/* La crepa */
+#crack{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  z-index:11;display:flex;flex-direction:column;align-items:center;gap:0
+}
+.crack-seg{
+  width:10px;height:10px;
+  background:transparent;
+  border-bottom:2px dashed var(--r);
+  border-right:2px dashed var(--r);
+  transform:rotate(45deg) skew(-15deg);
+  margin:1px 0;
+  filter:drop-shadow(0 0 3px var(--r));
+  animation:crackglow 1s ease-in-out infinite alternate
+}
+@keyframes crackglow{from{filter:drop-shadow(0 0 2px var(--r))}to{filter:drop-shadow(0 0 8px var(--r))}}
+/* La patch */
+#patch-block{
+  position:absolute;left:50%;top:0;bottom:0;
+  width:30px;transform:translateX(-50%);
+  background:linear-gradient(180deg,#00cc33 0%,#003a0f 100%);
+  border:2px solid var(--g);z-index:12;
+  display:none;
+  box-shadow:0 0 12px var(--g);
+}
+#patch-label{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  font-family:var(--fv);font-size:.85rem;color:var(--bg);
+  white-space:nowrap;font-weight:bold;letter-spacing:2px
+}
+/* Zona dati (destra) */
+#data-zone{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:5
+}
+#data-vault{font-size:3.5rem;transition:all .3s}
+#stolen-count{font-family:var(--fv);font-size:1.8rem;color:var(--r);text-shadow:0 0 6px var(--r)}
+#data-label{font-size:.65rem;color:var(--gdim);letter-spacing:1px}
+
+/* Zona sistema (sinistra) */
+#sys-zone{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;z-index:5
+}
+#sys-icon{font-size:3.5rem}
+#sys-label{font-size:.65rem;color:var(--gdim);letter-spacing:1px}
+
+/* Virus elements */
+.virus{
+  position:absolute;font-size:1.3rem;z-index:20;
+  transition:none;pointer-events:none;user-select:none
+}
+@keyframes virusFly{
+  from{left:calc(50% + 20px);opacity:1}
+  to{left:calc(100% - 60px);opacity:1}
+}
+@keyframes virusSplat{
+  0%{transform:scale(1);opacity:1}
+  50%{transform:scale(2.5);opacity:.8}
+  100%{transform:scale(0);opacity:0}
+}
+
+/* Pulsante patch */
+#patch-btn{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg);border:2px solid var(--r);color:var(--r);
+  font-family:var(--fv);font-size:1.5rem;padding:10px 22px;
+  cursor:pointer;letter-spacing:2px;transition:all .2s;flex-shrink:0;
+  animation:pblink 1s step-end infinite
+}
+@keyframes pblink{0%,100%{box-shadow:0 0 6px var(--r),inset 0 0 6px var(--rglo)}50%{box-shadow:0 0 18px var(--r),inset 0 0 14px var(--rglo)}}
+#patch-btn:hover{background:var(--rglo)}
+#patch-btn.done{
+  border-color:var(--g);color:var(--g);cursor:default;
+  animation:none;box-shadow:0 0 10px var(--g)
+}
+
+/* Contatore rubato */
+#zd-stats{
+  display:flex;gap:24px;flex-shrink:0;justify-content:center;
+  background:var(--bgc);border:1px solid var(--bdr);padding:8px 18px
+}
+.zd-stat{text-align:center}
+.zd-stat-n{font-family:var(--fv);font-size:2rem}
+.zd-stat-l{font-size:.65rem;color:var(--gdim);letter-spacing:1px}
+
+/* ============================================================
+  RIEPILOGO CARDS
+============================================================ */
+.rcg{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+.rc{background:var(--bgc);border:1px solid var(--bdr);border-left:3px solid var(--g);padding:12px 14px;overflow:hidden}
+.rc.rr{border-left-color:var(--r)}
+.rc.ra{border-left-color:var(--a)}
+.rc.rb{border-left-color:var(--b)}
+.rc h3{font-family:var(--fv);font-size:1.4rem;color:var(--a);margin-bottom:8px}
+
+.back-link-terminal{text-decoration:none;color:var(--g);font-family:var(--fv);font-size:1.15rem;border:1px solid var(--bdr);padding:2px 10px;background:var(--bgc);display:inline-flex;align-items:center;gap:6px;transition:all .18s;letter-spacing:1px}
+.back-link-terminal:hover{background:var(--gglo)!important;border-color:var(--g)!important;box-shadow:0 0 10px var(--g)!important;color:#fff!important}
+
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="hd">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a id="back-btn" href="/#informatica" class="back-link-terminal" title="Torna indietro">◀ TORNA</a>
+    <div class="logo">SEC_101<span class="blink">_</span></div>
+  </div>
+  <div class="hd-right">
+    <div id="slide-section">INTRODUZIONE</div>
+    <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+  </div>
+</header>
+
+<!-- ===== STAGE ===== -->
+<div id="stage">
+
+<!-- ================================================================
+  S00 — COPERTINA
+================================================================ -->
+<section class="slide active" id="s0">
+  <div class="center">
+    <div class="cover-icon">🛡️</div>
+    <div class="cover-title">
+      Resilienza Digitale<br>
+      <span style="color:var(--a);text-shadow:0 0 18px var(--adim)">Backup, Aggiornamenti<br>e Vulnerabilità Zero-Day</span>
+    </div>
+    <div class="cover-div"></div>
+    <div class="cover-sub">I dati non salvati sono dati già persi</div>
+    <div class="cover-meta">MODULO 5 &nbsp;·&nbsp; LABORATORIO INTERATTIVO &nbsp;·&nbsp; SCUOLA SUPERIORE</div>
+    <div class="typing">INIZIALIZZAZIONE SISTEMA... LEZIONE 5 CARICATA ▶ AVVIO</div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S01 — IL PROBLEMA: I DATI A RISCHIO
+================================================================ -->
+<section class="slide" id="s1">
+  <div class="tag">// 00 — IL CONTESTO</div>
+  <div class="title">Ogni Anno, Dati Persi per<br><span class="r">Miliardi di Euro</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
+      <div class="slbl">CAUSA #1 DI PERDITA DATI</div>
+      <div class="big">68%</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">degli attacchi ransomware<br>sfrutta software non aggiornato</div>
+      <div class="mt8 box d" style="font-size:.95rem">Un sistema senza patch è<br><strong class="rd">una porta spalancata</strong></div>
+    </div>
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
+      <div class="slbl">BACKUP: LA REALTÀ</div>
+      <div class="huge">29%</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">degli utenti non ha mai<br>eseguito un backup</div>
+      <div class="mt8 box a" style="font-size:.95rem">Tra chi fa backup, il 58%<br>non lo <strong>verifica mai</strong> — dati corrotti</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S02 — ROADMAP
+================================================================ -->
+<section class="slide" id="s2">
+  <div class="tag">// 00 — PERCORSO DI OGGI</div>
+  <div class="title">Argomenti del <span class="a">Modulo</span></div>
+  <div class="g4" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
+      <div style="font-size:3rem">🪞</div>
+      <div class="ctitle" style="color:var(--a);border:none;margin:0;padding:0">01</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Sync vs Backup<br>Lo Specchio e la Cassaforte</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
+      <div style="font-size:3rem">📐</div>
+      <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">02</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">La Regola 3-2-1<br>Standard d'Oro</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
+      <div style="font-size:3rem">💣</div>
+      <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">03</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Vulnerabilità<br>Zero-Day</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#4488ff">
+      <div style="font-size:3rem">🔧</div>
+      <div class="ctitle" style="color:#4488ff;border:none;margin:0;padding:0">04</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Patch di Sicurezza<br>Le Toppe Blindate</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S03 — SYNC VS BACKUP: TEORIA
+================================================================ -->
+<section class="slide" id="s3">
+  <div class="tag">// 01 — SINCRONIZZAZIONE VS BACKUP</div>
+  <div class="title">La Differenza <span class="a">Vitale</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:14px;border-color:var(--a)">
+      <div class="ctitle">🪞 Sincronizzazione (iCloud, Google Drive…)</div>
+      <p>La sync è uno <strong>specchio in tempo reale</strong>. Ogni modifica sul telefono si riflette istantaneamente nel cloud.</p>
+      <ul class="pts">
+        <li class="w">Cancello una foto → sparisce dal telefono</li>
+        <li class="d">La sync la elimina anche dal cloud <strong>in automatico</strong></li>
+        <li class="d">Ransomware cifra i file → il cloud li aggiorna… con i file cifrati</li>
+        <li class="d">Non è un backup: è un <strong class="rd">clone istantaneo</strong>, non una protezione</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:14px;border-color:var(--g)">
+      <div class="ctitle">🔒 Backup (Copia di Sicurezza)</div>
+      <p>Il backup è una <strong>fotografia congelata nel tempo</strong>. Viene salvata in un momento preciso e rimane <em>inalterabile</em>.</p>
+      <ul class="pts">
+        <li class="k">Cancello una foto → sparisce dal telefono</li>
+        <li class="k">Il backup <strong>conserva ancora la versione precedente</strong></li>
+        <li class="k">Ransomware cifra i file → ripristino dal backup</li>
+        <li class="k">È la vera rete di sicurezza: uno snapshot del passato</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S04 — SYNC VS BACKUP: SCENARI CONCRETI
+================================================================ -->
+<section class="slide" id="s4">
+  <div class="tag">// 01 — SINCRONIZZAZIONE VS BACKUP</div>
+  <div class="title">Come Funzionano<br><span class="a">nel Mondo Reale</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Sincronizzazione</th>
+            <th>Backup</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cancello per errore un documento</td>
+            <td class="tr">✖ Perso anche nel cloud</td>
+            <td class="tg">✔ Recupero dalla copia</td>
+          </tr>
+          <tr>
+            <td>Il PC si rompe fisicamente</td>
+            <td class="ta">⚠ I dati ci sono, ma solo quelli recenti sincronizzati</td>
+            <td class="tg">✔ Ripristino completo dall'ultimo snapshot</td>
+          </tr>
+          <tr>
+            <td>Ransomware cifra tutto</td>
+            <td class="tr">✖ Il cloud si aggiorna con i file cifrati</td>
+            <td class="tg">✔ Ripristino dalla copia pre-attacco</td>
+          </tr>
+          <tr>
+            <td>Foto modificata e salvata male</td>
+            <td class="tr">✖ La versione corrotta sostituisce quella buona</td>
+            <td class="tg">✔ Versione originale ancora nel backup</td>
+          </tr>
+          <tr>
+            <td>Tesi di laurea corrotta</td>
+            <td class="tr">✖ La corruzione si propaga a tutti i device</td>
+            <td class="tg">✔ Versione sana recuperata dal backup</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="box d mt10">
+        <strong>Conclusione:</strong> iCloud e Google Drive sono comodissimi, ma <span class="hl">non sostituiscono un vero backup</span>. Usali insieme, non in alternativa.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S05 — LAB: SPECCHIO E CASSAFORTE
+================================================================ -->
+<section class="slide" id="s5">
+  <div class="tag">// LAB 01 — SIMULATORE SYNC VS BACKUP</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Lo Specchio e la Cassaforte</span></div>
+  <p style="flex-shrink:0;font-size:.9rem;margin-bottom:10px">Clicca il bottone "Elimina per Errore" in ciascun pannello e osserva cosa succede.</p>
+  <div class="g2" style="flex:1;min-height:0">
+
+    <!-- Pannello Sync -->
+    <div class="sb-panel sync-panel">
+      <div class="sb-panel-title" style="color:var(--a)">🪞 SINCRONIZZAZIONE</div>
+      <div class="slbl" style="margin-bottom:8px">// iCloud / Google Drive</div>
+      <div class="sb-device" id="sync-device">
+        <div class="sb-item">
+          <div class="sb-icon" id="sync-phone-file">📄</div>
+          <span>TELEFONO</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div style="width:50px;height:2px;background:var(--a);box-shadow:0 0 4px var(--a)"></div>
+          <span style="font-size:.6rem;color:var(--a)">SYNC</span>
+        </div>
+        <div class="sb-item">
+          <div class="sb-icon" id="sync-cloud-file">☁️</div>
+          <span>CLOUD</span>
+        </div>
+      </div>
+      <div class="sb-msg" id="sync-msg">Documento: <span style="color:var(--a)">relazione_finale.docx</span></div>
+      <button class="sbtn r" id="sync-del">🗑️ ELIMINA PER ERRORE</button>
+      <button class="sbtn" id="sync-rst" style="display:none">↺ RESET</button>
+    </div>
+
+    <!-- Pannello Backup -->
+    <div class="sb-panel bkp-panel">
+      <div class="sb-panel-title" style="color:var(--g)">🔒 BACKUP</div>
+      <div class="slbl" style="margin-bottom:8px">// Copia di Sicurezza Offline</div>
+      <div class="sb-device" id="bkp-device">
+        <div class="sb-item">
+          <div class="sb-icon" id="bkp-phone-file">📄</div>
+          <span>TELEFONO</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div style="width:50px;height:2px;background:var(--gdim);"></div>
+          <span style="font-size:.6rem;color:var(--gdim)">PROTETTO</span>
+        </div>
+        <div class="sb-item">
+          <button class="safe-btn disabled" id="bkp-safe-btn" title="Clicca per ripristinare">🗄️</button>
+          <span>BACKUP</span>
+        </div>
+      </div>
+      <div class="sb-msg" id="bkp-msg">Documento: <span style="color:var(--g)">relazione_finale.docx</span></div>
+      <button class="sbtn r" id="bkp-del">🗑️ ELIMINA PER ERRORE</button>
+      <button class="sbtn" id="bkp-rst" style="display:none">↺ RESET</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+  S06 — REGOLA 3-2-1: INTRODUZIONE
+================================================================ -->
+<section class="slide" id="s6">
+  <div class="tag">// 02 — REGOLA 3-2-1</div>
+  <div class="title">La Regola <span class="a">3-2-1</span>:<br>Lo Standard d'Oro del Backup</div>
+  <div class="g3" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--g)">
+      <div style="font-family:var(--fv);font-size:5rem;color:var(--g);text-shadow:0 0 20px var(--g);line-height:1">3</div>
+      <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">COPIE TOTALI</div>
+      <p>Il file originale più <strong>due copie di backup</strong>. Se una copia è corrotta, ne rimangono due.</p>
+      <div class="box" style="font-size:.88rem;text-align:left">
+        ✔ Originale sul PC<br>✔ Copia su Hard Disk<br>✔ Copia sul Cloud
+      </div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--a)">
+      <div style="font-family:var(--fv);font-size:5rem;color:var(--a);text-shadow:0 0 20px var(--adim);line-height:1">2</div>
+      <div class="ctitle" style="border:none;margin:0;padding:0">SUPPORTI DIVERSI</div>
+      <p>Almeno <strong>2 tipi di supporto fisico differenti</strong>. Un disco che si rompe non porta con sé tutti i dati.</p>
+      <div class="box a" style="font-size:.88rem;text-align:left">
+        ✔ HDD/SSD interno del PC<br>✔ Hard Disk esterno USB<br>✔ Oppure: NAS di rete
+      </div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--r)">
+      <div style="font-family:var(--fv);font-size:5rem;color:var(--r);text-shadow:0 0 20px var(--rdim);line-height:1">1</div>
+      <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">COPIA FUORI SEDE</div>
+      <p>Almeno <strong>1 copia in luogo fisicamente diverso</strong>. In caso di furto, incendio o alluvione.</p>
+      <div class="box d" style="font-size:.88rem;text-align:left">
+        ✔ Cloud (Backblaze, pCloud…)<br>✔ Hard disk a casa di parenti<br>✔ Deposito sicuro remoto
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S07 — REGOLA 3-2-1: PASSO PER PASSO
+================================================================ -->
+<section class="slide" id="s7">
+  <div class="tag">// 02 — REGOLA 3-2-1</div>
+  <div class="title">Implementare il <span class="a">3-2-1</span>:<br>Passo per Passo</div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li><strong>Identifica i tuoi dati critici:</strong> documenti, foto, database, configurazioni di sistema — cosa non potresti mai perdere?</li>
+        <li><strong>Configura il backup locale:</strong> collega un Hard Disk esterno. Su Windows usa "Cronologia File"; su Mac usa "Time Machine". Pianifica backup automatici ogni 24 ore.</li>
+        <li><strong>Aggiungi il backup cloud:</strong> scegli un servizio dedicato al backup (Backblaze ~7€/mese, pCloud, Tresorit). <em>Diverso</em> dalla sync di Google Drive!</li>
+        <li><strong>Verifica il backup:</strong> ogni mese, fai un test di ripristino. Recupera un file dal backup e controlla che sia integro. Un backup non verificato non è un backup.</li>
+        <li><strong>Documenta la procedura:</strong> scrivi su carta dove si trovano i backup e come ripristinarli. In un momento di panico, le istruzioni scritte salvano.</li>
+      </ol>
+      <div class="g2 mt10">
+        <div class="box">
+          <strong>Frequenza consigliata:</strong> Backup locale ogni 24h · Backup cloud ogni 24h · Verifica mensile del ripristino
+        </div>
+        <div class="box d">
+          <strong>⚠ Errore comune:</strong> tenere il backup HD collegato sempre al PC. Se arriva ransomware, cifra anche il disco collegato. <span class="hl">Scollega dopo il backup!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S08 — LAB: COMPONI IL 3-2-1
+================================================================ -->
+<section class="slide" id="s8">
+  <div class="tag">// LAB 02 — COSTRUISCI LA TUA RESILIENZA</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Componi il 3-2-1</span></div>
+  <p style="flex-shrink:0;font-size:.88rem;margin-bottom:8px">Seleziona i componenti corretti per raggiungere la configurazione sicura.</p>
+
+  <div class="rule-321" id="rule321">
+    <div class="rule-row active" id="row-3">
+      <div class="rule-num" id="num-3">0</div>
+      <div class="rule-label">
+        <strong>3 copie totali</strong> — originale + 2 backup indipendenti<br>
+        <span id="copies-status" style="font-size:.8rem;color:var(--gdim)">Aggiungi supporti qui sotto →</span>
+      </div>
+      <div class="rule-led" id="led-3"></div>
+    </div>
+    <div class="rule-row" id="row-2">
+      <div class="rule-num" id="num-2">0</div>
+      <div class="rule-label">
+        <strong>2 supporti fisici diversi</strong> — almeno 2 tipi di storage distinti<br>
+        <span id="media-status" style="font-size:.8rem;color:var(--gdim)">Seleziona device di tipologie diverse →</span>
+      </div>
+      <div class="rule-led" id="led-2"></div>
+    </div>
+    <div class="rule-row" id="row-1">
+      <div class="rule-num" id="num-1">0</div>
+      <div class="rule-label">
+        <strong>1 copia fuori sede</strong> — cloud o location fisica remota<br>
+        <span id="offsite-status" style="font-size:.8rem;color:var(--gdim)">Aggiungi almeno 1 storage remoto →</span>
+      </div>
+      <div class="rule-led" id="led-1"></div>
+    </div>
+  </div>
+
+  <div class="slbl mt8">// SELEZIONA SUPPORTI DI BACKUP DA AGGIUNGERE</div>
+  <div class="storage-grid" id="stor-grid">
+    <div class="stor-item selected" id="stor-pc" data-type="local" data-offsite="0">
+      <span class="stor-icon">🖥️</span>
+      <div class="stor-name">PC INTERNO<br><span style="color:var(--g);font-size:.65rem">✔ già presente</span></div>
+    </div>
+    <div class="stor-item" id="stor-hd" data-type="external" data-offsite="0">
+      <span class="stor-icon">💾</span>
+      <div class="stor-name">HARD DISK<br><span style="font-size:.65rem">ESTERNO USB</span></div>
+    </div>
+    <div class="stor-item" id="stor-nas" data-type="nas" data-offsite="0">
+      <span class="stor-icon">📡</span>
+      <div class="stor-name">NAS DI RETE<br><span style="font-size:.65rem">LOCALE</span></div>
+    </div>
+    <div class="stor-item" id="stor-cloud" data-type="cloud" data-offsite="1">
+      <span class="stor-icon">☁️</span>
+      <div class="stor-name">CLOUD BACKUP<br><span style="font-size:.65rem">REMOTO</span></div>
+    </div>
+    <div class="stor-item" id="stor-tape" data-type="tape" data-offsite="0">
+      <span class="stor-icon">📼</span>
+      <div class="stor-name">NASTRO TAPE<br><span style="font-size:.65rem">OFFLINE</span></div>
+    </div>
+    <div class="stor-item" id="stor-remote" data-type="remote" data-offsite="1">
+      <span class="stor-icon">🏠</span>
+      <div class="stor-name">HD A CASA<br><span style="font-size:.65rem">DI PARENTI</span></div>
+    </div>
+    <div class="stor-item" id="stor-usb" data-type="usb" data-offsite="0">
+      <span class="stor-icon">🔌</span>
+      <div class="stor-name">CHIAVETTA USB<br><span style="font-size:.65rem">PORTATILE</span></div>
+    </div>
+    <div class="stor-item" id="stor-dvd" data-type="optical" data-offsite="1">
+      <span class="stor-icon">💿</span>
+      <div class="stor-name">DVD/BD<br><span style="font-size:.65rem">OFFSITE</span></div>
+    </div>
+  </div>
+
+  <div id="status-321" class="mt8">⚠ SISTEMA VULNERABILE — aggiungi supporti</div>
+
+  <div class="row mt6" style="flex-shrink:0">
+    <button class="sbtn" id="rst-321">↺ RESET</button>
+  </div>
+</section>
+
+<!-- ================================================================
+  S09 — ZERO-DAY: COS'È
+================================================================ -->
+<section class="slide" id="s9">
+  <div class="tag">// 03 — VULNERABILITÀ ZERO-DAY</div>
+  <div class="title">Vulnerabilità <span class="r">Zero-Day</span>:<br>Il Difetto di Fabbrica</div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:14px">
+      <div class="ctitle">Cos'è uno Zero-Day</div>
+      <p>Ogni software ha <strong>milioni di righe di codice</strong>. Statisticamente, ogni 1.000 righe esiste almeno un bug — un errore di programmazione.</p>
+      <p>Uno <span class="hl">Zero-Day</span> è un bug particolare: un errore che un attaccante trova <strong>prima che il produttore ne sia a conoscenza</strong>.</p>
+      <p>Il nome deriva dal fatto che il produttore ha avuto <strong>zero giorni</strong> per prepararsi — la falla esiste, gli hacker la sfruttano, ma la soluzione non c'è ancora.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--r)">Perché è Pericoloso</div>
+      <ul class="pts">
+        <li class="d">Il software sembra funzionare normalmente: l'utente non nota nulla</li>
+        <li class="d">L'antivirus non lo rileva: non sa cosa cercare</li>
+        <li class="d">Gli hacker lo sfruttano in silenzio per giorni o mesi</li>
+        <li class="w">Vengono venduti nel Dark Web: <span class="hl">fino a 2,5 milioni $</span> per un iOS zero-day</li>
+        <li class="i">Esempi reali: Stuxnet, WannaCry, Log4Shell</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S10 — ZERO-DAY: COME FUNZIONA
+================================================================ -->
+<section class="slide" id="s10">
+  <div class="tag">// 03 — VULNERABILITÀ ZERO-DAY</div>
+  <div class="title">Come Funziona<br><span class="r">un Attacco Zero-Day</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>Un ricercatore (o hacker) scopre una falla nel codice di Windows, Android o un'app popolare — ad esempio, un modo per far "traboccare" la memoria</li>
+        <li>La vulnerabilità viene tenuta segreta (o venduta): il produttore non sa ancora nulla — <span class="rd">zero giorni di preavviso</span></li>
+        <li>L'hacker crea un <strong>exploit</strong>: un piccolo programma che sfrutta esattamente quella falla per entrare nel sistema senza lasciare tracce evidenti</li>
+        <li>L'exploit viene distribuito: tramite email, sito web malevolo, USB infetta — basta aprire un PDF o visitare una pagina</li>
+        <li>Il sistema viene compromesso: furto di dati, installazione di ransomware, accesso remoto. <span class="hl">L'antivirus non lo blocca</span> perché non conosce la firma</li>
+        <li>Il produttore scopre la falla (spesso segnalata da chi viene attaccato) e inizia a scrivere la <strong>patch</strong> — la toppa che chiude la buca</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S11 — LE PATCH DI SICUREZZA
+================================================================ -->
+<section class="slide" id="s11">
+  <div class="tag">// 04 — PATCH DI SICUREZZA</div>
+  <div class="title">Le Patch:<br><span class="b">Non Solo "Aggiornamenti Grafici"</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px;border-color:var(--r)">
+      <div class="ctitle" style="color:var(--r)">Il Mito da Sfatare</div>
+      <ul class="pts">
+        <li class="d">"Gli aggiornamenti rallentano il telefono"</li>
+        <li class="d">"Cambiano solo l'interfaccia, inutili"</li>
+        <li class="d">"Lo faccio domani" — e poi non lo si fa mai</li>
+        <li class="d">"Ho l'antivirus, sono già protetto"</li>
+        <li class="d">Risultato: si usa un sistema con falle note, <span class="rd">già sfruttate attivamente</span></li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:12px;border-color:var(--g)">
+      <div class="ctitle">La Realtà delle Patch</div>
+      <p>Una patch è una <strong>"toppa blindata"</strong>: riscrive esattamente quella porzione di codice difettosa, chiudendo la porta che lo zero-day aveva aperto.</p>
+      <ul class="pts">
+        <li class="k">Ogni "Aggiornamento di sicurezza" tappa falle reali già sfruttate</li>
+        <li class="k">WannaCry (2017) ha infettato 200.000 PC in 3 giorni — tutti con Windows <span class="hl">non aggiornato</span></li>
+        <li class="k">Chi aveva applicato la patch di marzo era immune</li>
+        <li class="k">Aggiornare = applicare le toppe prima che qualcuno entri</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box a mt10" style="flex-shrink:0">
+    <strong>Regola pratica:</strong> attiva gli <strong>aggiornamenti automatici</strong> su tutti i device. Non aspettare: ogni giorno senza patch è un giorno vulnerabile.
+  </div>
+</section>
+
+<!-- ================================================================
+  S12 — PATCH: LA FINESTRA DI VULNERABILITÀ
+================================================================ -->
+<section class="slide" id="s12">
+  <div class="tag">// 04 — PATCH DI SICUREZZA</div>
+  <div class="title">La Finestra di<br><span class="r">Vulnerabilità</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Fase</th>
+            <th>Chi lo sa</th>
+            <th>Situazione per l'utente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🔍 Falla scoperta dagli hacker</td>
+            <td class="tr">Solo gli hacker</td>
+            <td class="tr">In pericolo senza saperlo</td>
+          </tr>
+          <tr>
+            <td>💣 Exploit sviluppato e distribuito</td>
+            <td class="tr">Comunità hacker</td>
+            <td class="tr">Attacchi attivi in corso</td>
+          </tr>
+          <tr>
+            <td>📢 Produttore notificato / scopre</td>
+            <td class="ta">Produttore + hacker</td>
+            <td class="ta">Corsa contro il tempo</td>
+          </tr>
+          <tr>
+            <td>🔧 Patch sviluppata e rilasciata</td>
+            <td class="tg">Tutti</td>
+            <td class="ta">Protetto <strong>solo se aggiorna</strong></td>
+          </tr>
+          <tr>
+            <td>✔ Utente installa l'aggiornamento</td>
+            <td class="tg">Tutti</td>
+            <td class="tg">Finalmente al sicuro</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="g2 mt10">
+        <div class="box d">
+          <strong>La "finestra":</strong> il tempo tra rilascio patch e installazione utente è in media <span class="hl">56 giorni</span>. Gli hacker lo sanno e aspettano.
+        </div>
+        <div class="box">
+          <strong>Con aggiornamenti automatici:</strong> la finestra si riduce a <span class="gn">ore o minuti</span> dal rilascio della patch.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S13 — LAB: SIMULATORE ZERO-DAY / PATCH
+================================================================ -->
+<section class="slide" id="s13">
+  <div class="tag">// LAB 03 — SIMULATORE ALLARME ZERO-DAY</div>
+  <div class="title">🔬 Laboratorio: <span class="r">Allarme Zero-Day</span></div>
+  <p style="flex-shrink:0;font-size:.88rem;margin-bottom:6px">I virus entrano dalla crepa nel muro e rubano i tuoi dati. Installa l'aggiornamento per tappare la falla!</p>
+
+  <div id="zd-stats" class="mb6">
+    <div class="zd-stat">
+      <div class="zd-stat-n" id="zd-stolen" style="color:var(--r)">0</div>
+      <div class="zd-stat-l">DATI RUBATI</div>
+    </div>
+    <div class="zd-stat">
+      <div class="zd-stat-n" id="zd-blocked" style="color:var(--g)">0</div>
+      <div class="zd-stat-l">VIRUS BLOCCATI</div>
+    </div>
+    <div class="zd-stat">
+      <div class="zd-stat-n" id="zd-status-txt" style="color:var(--r);font-size:1.3rem">● SISTEMA VULNERABILE</div>
+      <div class="zd-stat-l">STATO SISTEMA</div>
+    </div>
+  </div>
+
+  <div id="zd-arena">
+    <!-- Il muro -->
+    <div id="wall">
+      <div id="crack">
+        <div class="crack-seg"></div>
+        <div class="crack-seg" style="transform:rotate(35deg) skew(-20deg)"></div>
+        <div class="crack-seg"></div>
+        <div class="crack-seg" style="transform:rotate(55deg) skew(-10deg)"></div>
+        <div class="crack-seg"></div>
+      </div>
+      <div id="patch-block"><div id="patch-label">PATCH INSTALLED</div></div>
+    </div>
+
+    <!-- Zona sistema (sinistra) -->
+    <div id="sys-zone">
+      <div id="sys-icon">🖥️</div>
+      <div id="sys-label">SISTEMA</div>
+    </div>
+
+    <!-- Zona dati (destra) -->
+    <div id="data-zone">
+      <div id="data-vault">🗄️</div>
+      <div id="stolen-count">0 file rubati</div>
+      <div id="data-label">ARCHIVIO DATI</div>
+    </div>
+
+  </div><!-- #zd-arena -->
+
+  <div class="row mt8" style="flex-shrink:0;justify-content:center">
+    <button class="sbtn a" id="zd-start">▶ AVVIA SIMULAZIONE</button>
+    <button id="patch-btn" style="display:none">⚠ INSTALLA AGGIORNAMENTO ⚠</button>
+    <button class="sbtn" id="zd-rst" style="display:none">↺ RESET</button>
+  </div>
+</section>
+
+<!-- ================================================================
+  S14 — RIEPILOGO: NON FARE
+================================================================ -->
+<section class="slide" id="s14">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">❌ Comportamenti<br><span class="r">da Evitare Sempre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="d" style="font-size:1.12rem">Credere che iCloud o Google Drive siano backup sufficienti — <strong>non lo sono</strong></li>
+        <li class="d" style="font-size:1.12rem">Tenere il backup HD sempre collegato al PC (il ransomware lo cifra anche lui)</li>
+        <li class="d" style="font-size:1.12rem">Non verificare mai che il backup funzioni: un backup non testato è inutile</li>
+        <li class="d" style="font-size:1.12rem">Rimandare gli aggiornamenti di sicurezza: ogni giorno di ritardo è un giorno a rischio</li>
+        <li class="d" style="font-size:1.12rem">Fare backup in un solo posto: un disco rotto, un incendio, e perdi tutto</li>
+        <li class="d" style="font-size:1.12rem">Ignorare i messaggi "aggiornamento disponibile" su app, sistema operativo, router</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S15 — RIEPILOGO: FARE
+================================================================ -->
+<section class="slide" id="s15">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">✅ Comportamenti<br><span class="a">da Adottare Sempre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="k" style="font-size:1.12rem">Applica la <strong>Regola 3-2-1</strong>: 3 copie, 2 supporti fisici diversi, 1 fuori sede</li>
+        <li class="k" style="font-size:1.12rem">Usa <strong>Time Machine</strong> (Mac) o <strong>Cronologia File</strong> (Windows) per backup locali automatici</li>
+        <li class="k" style="font-size:1.12rem">Abbina un servizio cloud dedicato al backup (<code>Backblaze</code>, <code>pCloud</code>) — diverso da Google Drive</li>
+        <li class="k" style="font-size:1.12rem">Verifica il backup ogni mese: ripristina un file di prova e controlla che sia integro</li>
+        <li class="k" style="font-size:1.12rem">Attiva gli <strong>aggiornamenti automatici</strong> su tutti i dispositivi: phone, PC, tablet, router</li>
+        <li class="k" style="font-size:1.12rem">Non aspettare: una patch applicata oggi chiude la porta che gli hacker bussano già stasera</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S16 — SLIDE STRUMENTI
+================================================================ -->
+<section class="slide" id="s16">
+  <div class="tag">// STRUMENTI CONSIGLIATI</div>
+  <div class="title">Toolkit di <span class="a">Resilienza Digitale</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">🔒 Backup — Strumenti</div>
+      <table class="tbl">
+        <thead><tr><th>Strumento</th><th>Tipo</th><th>Costo</th></tr></thead>
+        <tbody>
+          <tr><td><code>Time Machine</code></td><td>Locale (Mac)</td><td class="tg">Gratuito</td></tr>
+          <tr><td><code>Cronologia File</code></td><td>Locale (Win)</td><td class="tg">Gratuito</td></tr>
+          <tr><td><code>Backblaze</code></td><td>Cloud illimitato</td><td class="ta">~7€/mese</td></tr>
+          <tr><td><code>pCloud</code></td><td>Cloud privacy</td><td class="ta">~5€/mese</td></tr>
+          <tr><td><code>Duplicati</code></td><td>Open source</td><td class="tg">Gratuito</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">🔧 Aggiornamenti — Come Attivarli</div>
+      <ol class="steps">
+        <li><strong>Windows:</strong> Impostazioni → Windows Update → "Avanzate" → Aggiornamenti automatici attivi</li>
+        <li><strong>Android:</strong> Impostazioni → Info sul telefono → Aggiornamenti software → Automatico</li>
+        <li><strong>iPhone/iPad:</strong> Impostazioni → Generali → Aggiornamento software → Aggiornamenti automatici</li>
+        <li><strong>App:</strong> App Store / Play Store → profilo → Aggiornamenti automatici → Attivato</li>
+        <li><strong>Router:</strong> accedi al pannello admin e cerca "Firmware update" — spesso trascurato!</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+  S17 — FINALE
+================================================================ -->
+<section class="slide" id="s17">
+  <div class="center">
+    <div style="font-size:4.5rem;animation:gp 2.5s infinite">🛡️</div>
+    <div style="font-family:var(--fv);font-size:clamp(2.2rem,4.5vw,3.5rem);color:var(--g);text-shadow:0 0 20px var(--g);line-height:1.1">
+      I dati non salvati<br>sono dati già persi.
+    </div>
+    <div style="font-family:var(--fv);font-size:clamp(1.4rem,2.8vw,2.2rem);color:var(--a);text-shadow:0 0 14px var(--adim)">
+      Un sistema non aggiornato è una porta aperta.
+    </div>
+    <div class="cover-div"></div>
+    <div style="font-size:.88rem;color:var(--gdim);letter-spacing:2px">
+      SICUREZZA INFORMATICA — MODULO 5 // FINE &nbsp;<span class="blink">█</span>
+    </div>
+  </div>
+</section>
+
+</div><!-- #stage -->
+
+<!-- NAV + FOOTER -->
+<div id="nav">
+  <button class="nb" id="bp">◀</button>
+  <button class="nb" id="bn">▶</button>
+</div>
+<footer id="ft">
+  <span class="flbl">AVANZAMENTO:</span>
+  <div id="pt"><div id="pf" style="width:0%"></div></div>
+  <span id="pp">0%</span>
+</footer>
+
+<script>
+/* ====================================================================
+  NAVIGAZIONE
+==================================================================== */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0;
+
+const labels = [
+  'COPERTINA',
+  'IL CONTESTO',
+  'ROADMAP',
+  'SYNC VS BACKUP — TEORIA',
+  'SYNC VS BACKUP — SCENARI',
+  'LAB: SPECCHIO E CASSAFORTE',
+  'REGOLA 3-2-1 — INTRODUZIONE',
+  'REGOLA 3-2-1 — PASSO PER PASSO',
+  'LAB: COMPONI IL 3-2-1',
+  'ZERO-DAY — COS\'È',
+  'ZERO-DAY — COME FUNZIONA',
+  'PATCH DI SICUREZZA',
+  'LA FINESTRA DI VULNERABILITÀ',
+  'LAB: SIMULATORE ZERO-DAY',
+  'RIEPILOGO — NON FARE',
+  'RIEPILOGO — FARE',
+  'STRUMENTI CONSIGLIATI',
+  'CONCLUSIONE'
+];
+
+document.getElementById('nt').textContent = String(N).padStart(2,'0');
+
+function goTo(i) {
+  if (i < 0 || i >= N) return;
+  const prev = slides[cur];
+  const next = slides[i];
+  const fwd = i > cur;
+  prev.classList.remove('active');
+  if (fwd) prev.classList.add('exit-left');
+  next.style.transition = 'none';
+  next.style.opacity = '0';
+  next.style.transform = fwd ? 'translateX(50px)' : 'translateX(-50px)';
+  next.classList.add('active');
+  void next.offsetWidth;
+  next.style.transition = '';
+  next.style.opacity = '';
+  next.style.transform = '';
+  setTimeout(() => prev.classList.remove('exit-left'), 360);
+  cur = i;
+  syncUI();
+  haltAll();
+}
+
+function syncUI() {
+  document.getElementById('nc').textContent = String(cur + 1).padStart(2,'0');
+  document.getElementById('slide-section').textContent = labels[cur] || '';
+  const p = N > 1 ? Math.round(cur / (N-1) * 100) : 100;
+  document.getElementById('pf').style.width = p + '%';
+  document.getElementById('pp').textContent = p + '%';
+  document.getElementById('bp').disabled = cur === 0;
+  document.getElementById('bn').disabled = cur === N - 1;
+}
+
+document.getElementById('bp').addEventListener('click', () => goTo(cur - 1));
+document.getElementById('bn').addEventListener('click', () => goTo(cur + 1));
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') goTo(cur + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') goTo(cur - 1);
+});
+syncUI();
+
+/* ====================================================================
+  LAB 1 — SIMULATORE SYNC VS BACKUP
+==================================================================== */
+
+/* --- Pannello Sync --- */
+let syncDone = false;
+document.getElementById('sync-del').addEventListener('click', () => {
+  if (syncDone) return;
+  syncDone = true;
+
+  const phoneFile = document.getElementById('sync-phone-file');
+  const cloudFile = document.getElementById('sync-cloud-file');
+  const msg = document.getElementById('sync-msg');
+
+  // File brucia sul telefono
+  phoneFile.classList.add('burning');
+
+  // Dopo 400ms, anche il cloud brucia (effetto sync istantanea)
+  setTimeout(() => {
+    cloudFile.classList.add('burning');
+    setTimeout(() => {
+      phoneFile.classList.add('gone');
+      cloudFile.classList.add('gone');
+      msg.className = 'sb-msg lost';
+      msg.textContent = '💀 DATO PERSO PER SEMPRE — nessuna copia disponibile';
+      document.getElementById('sync-del').style.display = 'none';
+      document.getElementById('sync-rst').style.display = 'inline-block';
+    }, 450);
+  }, 400);
+});
+
+document.getElementById('sync-rst').addEventListener('click', () => {
+  syncDone = false;
+  const phoneFile = document.getElementById('sync-phone-file');
+  const cloudFile = document.getElementById('sync-cloud-file');
+  phoneFile.classList.remove('burning','gone');
+  cloudFile.classList.remove('burning','gone');
+  document.getElementById('sync-msg').className = 'sb-msg';
+  document.getElementById('sync-msg').innerHTML = 'Documento: <span style="color:var(--a)">relazione_finale.docx</span>';
+  document.getElementById('sync-del').style.display = 'inline-block';
+  document.getElementById('sync-rst').style.display = 'none';
+});
+
+/* --- Pannello Backup --- */
+let bkpPhase = 'idle'; // idle → deleted → restored
+document.getElementById('bkp-del').addEventListener('click', () => {
+  if (bkpPhase !== 'idle') return;
+  bkpPhase = 'deleted';
+
+  const phoneFile = document.getElementById('bkp-phone-file');
+  const safeBtn = document.getElementById('bkp-safe-btn');
+  const msg = document.getElementById('bkp-msg');
+
+  phoneFile.classList.add('burning');
+  setTimeout(() => {
+    phoneFile.classList.add('gone');
+    msg.className = 'sb-msg lost';
+    msg.innerHTML = '⚠ File eliminato dal dispositivo — <span style="color:var(--g)">ma il backup è intatto!</span><br><span style="font-size:.8rem;color:var(--gdim)">Clicca la cassaforte per ripristinare →</span>';
+    safeBtn.classList.remove('disabled');
+    document.getElementById('bkp-del').style.display = 'none';
+    document.getElementById('bkp-rst').style.display = 'inline-block';
+  }, 500);
+});
+
+document.getElementById('bkp-safe-btn').addEventListener('click', () => {
+  if (bkpPhase !== 'deleted') return;
+  bkpPhase = 'restored';
+
+  const phoneFile = document.getElementById('bkp-phone-file');
+  const msg = document.getElementById('bkp-msg');
+  const safeBtn = document.getElementById('bkp-safe-btn');
+
+  phoneFile.classList.remove('burning','gone');
+  phoneFile.style.animation = 'none';
+  phoneFile.style.filter = 'drop-shadow(0 0 12px var(--g))';
+  safeBtn.classList.add('disabled');
+  msg.className = 'sb-msg recovered';
+  msg.innerHTML = '✔ DATO RECUPERATO — relazione_finale.docx ripristinata con successo!';
+});
+
+document.getElementById('bkp-rst').addEventListener('click', () => {
+  bkpPhase = 'idle';
+  const phoneFile = document.getElementById('bkp-phone-file');
+  phoneFile.classList.remove('burning','gone');
+  phoneFile.style.filter = '';
+  document.getElementById('bkp-safe-btn').classList.add('disabled');
+  document.getElementById('bkp-msg').className = 'sb-msg';
+  document.getElementById('bkp-msg').innerHTML = 'Documento: <span style="color:var(--g)">relazione_finale.docx</span>';
+  document.getElementById('bkp-del').style.display = 'inline-block';
+  document.getElementById('bkp-rst').style.display = 'none';
+});
+
+/* ====================================================================
+  LAB 2 — COMPONI IL 3-2-1
+==================================================================== */
+// Stato: PC è già selezionato all'avvio
+const storState = {
+  'stor-pc':     { selected: true,  type: 'local',    offsite: false },
+  'stor-hd':     { selected: false, type: 'external', offsite: false },
+  'stor-nas':    { selected: false, type: 'nas',      offsite: false },
+  'stor-cloud':  { selected: false, type: 'cloud',    offsite: true  },
+  'stor-tape':   { selected: false, type: 'tape',     offsite: false },
+  'stor-remote': { selected: false, type: 'remote',   offsite: true  },
+  'stor-usb':    { selected: false, type: 'usb',      offsite: false },
+  'stor-dvd':    { selected: false, type: 'optical',  offsite: true  }
+};
+
+function compute321() {
+  const selected = Object.entries(storState).filter(([,v]) => v.selected);
+  const totalCopies = selected.length; // original (PC) + backups
+  const uniqueTypes = new Set(selected.map(([,v]) => v.type)).size;
+  const offsiteCount = selected.filter(([,v]) => v.offsite).length;
+  const req3 = totalCopies >= 3;
+  const req2 = uniqueTypes >= 2;
+  const req1 = offsiteCount >= 1;
+
+  // Update numbers
+  document.getElementById('num-3').textContent = totalCopies;
+  document.getElementById('num-2').textContent = uniqueTypes;
+  document.getElementById('num-1').textContent = offsiteCount;
+
+  // Update rows
+  document.getElementById('row-3').classList.toggle('active', req3);
+  document.getElementById('row-2').classList.toggle('active', req2);
+  document.getElementById('row-1').classList.toggle('active', req1);
+
+  // Update LEDs
+  document.getElementById('led-3').classList.toggle('on', req3);
+  document.getElementById('led-2').classList.toggle('on', req2);
+  document.getElementById('led-1').classList.toggle('on', req1);
+
+  // Status labels
+  document.getElementById('copies-status').textContent = req3
+    ? `✔ ${totalCopies} copie — requisito soddisfatto`
+    : `✖ ${totalCopies} cop${totalCopies===1?'ia':'ie'} — ne servono almeno 3`;
+  document.getElementById('media-status').textContent = req2
+    ? `✔ ${uniqueTypes} tipi diversi — requisito soddisfatto`
+    : `✖ ${uniqueTypes} tip${uniqueTypes===1?'o':'i'} — ne servono almeno 2`;
+  document.getElementById('offsite-status').textContent = req1
+    ? `✔ ${offsiteCount} copia fuori sede — requisito soddisfatto`
+    : `✖ nessuna copia remota — aggiungine una`;
+
+  const statusEl = document.getElementById('status-321');
+  if (req3 && req2 && req1) {
+    statusEl.className = 'mt8 safe';
+    statusEl.textContent = '✔ SISTEMA SICURO — Regola 3-2-1 rispettata!';
+  } else {
+    statusEl.className = 'mt8';
+    statusEl.textContent = '⚠ SISTEMA VULNERABILE — ' +
+      (!req3 ? `aggiungi ${3-totalCopies} cop${3-totalCopies===1?'ia':'ie'}` :
+       !req2 ? 'usa tipi di supporto diversi' :
+       'aggiungi 1 copia fuori sede');
+  }
+}
+
+// Click su ogni stor-item (tranne PC che è già selezionato)
+document.querySelectorAll('.stor-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const id = item.id;
+    if (id === 'stor-pc') return; // non removibile
+    const state = storState[id];
+    if (!state) return;
+    if (state.selected) return; // non si deseleziona (semplicità)
+    state.selected = true;
+    item.classList.add('selected');
+    compute321();
+  });
+});
+
+document.getElementById('rst-321').addEventListener('click', () => {
+  Object.keys(storState).forEach(id => {
+    if (id === 'stor-pc') return;
+    storState[id].selected = false;
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('selected');
+  });
+  compute321();
+});
+
+compute321(); // init
+
+/* ====================================================================
+  LAB 3 — SIMULATORE ZERO-DAY / PATCH
+==================================================================== */
+let zdRunning = false;
+let zdPatched = false;
+let zdStolenCount = 0;
+let zdBlockedCount = 0;
+let zdInterval = null;
+let zdViruses = [];
+
+function zdReset() {
+  zdRunning = false;
+  zdPatched = false;
+  zdStolenCount = 0;
+  zdBlockedCount = 0;
+  clearInterval(zdInterval);
+
+  // Rimuovi tutti i virus dal DOM
+  zdViruses.forEach(v => { if (v.parentNode) v.parentNode.removeChild(v); });
+  zdViruses = [];
+
+  // Ripristina UI
+  document.getElementById('zd-stolen').textContent = '0';
+  document.getElementById('zd-stolen').style.color = 'var(--r)';
+  document.getElementById('zd-blocked').textContent = '0';
+  document.getElementById('stolen-count').textContent = '0 file rubati';
+  document.getElementById('data-vault').textContent = '🗄️';
+  document.getElementById('zd-status-txt').textContent = '● IN ATTESA';
+  document.getElementById('zd-status-txt').style.color = 'var(--gdim)';
+
+  // Ripristina crepa e patch
+  document.getElementById('crack').style.display = 'flex';
+  const pb = document.getElementById('patch-block');
+  pb.style.display = 'none';
+
+  // Pulsanti
+  document.getElementById('zd-start').style.display = 'inline-block';
+  document.getElementById('patch-btn').style.display = 'none';
+  document.getElementById('zd-rst').style.display = 'none';
+  const pBtn = document.getElementById('patch-btn');
+  pBtn.className = '';
+  pBtn.textContent = '⚠ INSTALLA AGGIORNAMENTO ⚠';
+}
+
+function spawnVirus() {
+  const arena = document.getElementById('zd-arena');
+  if (!arena) return;
+
+  const virusTypes = ['🦠','💀','🔴','☣️','👾'];
+  const v = document.createElement('div');
+  v.className = 'virus';
+  v.textContent = virusTypes[Math.floor(Math.random() * virusTypes.length)];
+
+  const arenaH = arena.offsetHeight;
+  const topPos = 20 + Math.random() * (arenaH - 60);
+  v.style.top = topPos + 'px';
+
+  if (!zdPatched) {
+    // Parte dalla sinistra del muro (posizione crepa) verso destra (dati)
+    v.style.left = 'calc(50% + 24px)';
+    v.style.transition = 'none';
+    arena.appendChild(v);
+    zdViruses.push(v);
+
+    // Animazione verso i dati
+    void v.offsetWidth;
+    const travelDuration = 900 + Math.random() * 600;
+    v.style.transition = `left ${travelDuration}ms linear`;
+    v.style.left = 'calc(100% - 70px)';
+
+    setTimeout(() => {
+      if (v.parentNode) {
+        v.parentNode.removeChild(v);
+        zdViruses = zdViruses.filter(x => x !== v);
+      }
+      if (!zdPatched && zdRunning) {
+        zdStolenCount++;
+        document.getElementById('zd-stolen').textContent = zdStolenCount;
+        document.getElementById('stolen-count').textContent = zdStolenCount + ' file rubati';
+        if (zdStolenCount > 5) {
+          document.getElementById('data-vault').textContent = '🔓';
+        }
+      }
+    }, travelDuration);
+
+  } else {
+    // Virus arriva al muro, rimbalza / esplode
+    v.style.left = 'calc(50% - 80px)';
+    v.style.transition = 'none';
+    arena.appendChild(v);
+    zdViruses.push(v);
+
+    void v.offsetWidth;
+    v.style.transition = `left 500ms linear`;
+    v.style.left = 'calc(50% - 20px)';
+
+    setTimeout(() => {
+      // Splat!
+      v.style.transition = 'transform 300ms ease-out, opacity 300ms ease-out';
+      v.style.transform = 'scale(2.5)';
+      v.style.opacity = '0';
+      zdBlockedCount++;
+      document.getElementById('zd-blocked').textContent = zdBlockedCount;
+      setTimeout(() => {
+        if (v.parentNode) v.parentNode.removeChild(v);
+        zdViruses = zdViruses.filter(x => x !== v);
+      }, 320);
+    }, 510);
+  }
+}
+
+document.getElementById('zd-start').addEventListener('click', () => {
+  zdRunning = true;
+  document.getElementById('zd-start').style.display = 'none';
+  document.getElementById('patch-btn').style.display = 'flex';
+  document.getElementById('zd-rst').style.display = 'inline-block';
+  document.getElementById('zd-status-txt').textContent = '⚠ SOTTO ATTACCO';
+  document.getElementById('zd-status-txt').style.color = 'var(--r)';
+
+  // Spawn virus ogni ~800ms
+  zdInterval = setInterval(() => {
+    if (!zdRunning) return;
+    spawnVirus();
+    // A volte spawnane due
+    if (Math.random() > 0.55) setTimeout(spawnVirus, 350);
+  }, 800);
+});
+
+document.getElementById('patch-btn').addEventListener('click', () => {
+  if (zdPatched) return;
+  zdPatched = true;
+
+  const pBtn = document.getElementById('patch-btn');
+  pBtn.className = 'done';
+  pBtn.textContent = '✔ PATCH INSTALLATA — SISTEMA PROTETTO';
+
+  // Chiudi la crepa con la patch
+  document.getElementById('crack').style.display = 'none';
+  document.getElementById('patch-block').style.display = 'block';
+
+  document.getElementById('zd-status-txt').textContent = '✔ SISTEMA PROTETTO';
+  document.getElementById('zd-status-txt').style.color = 'var(--g)';
+  document.getElementById('data-vault').textContent = '🔒';
+  document.getElementById('zd-stolen').style.color = 'var(--gdim)';
+});
+
+document.getElementById('zd-rst').addEventListener('click', zdReset);
+
+/* ====================================================================
+  HALT ALL — chiamato ad ogni cambio slide
+==================================================================== */
+function haltAll() {
+  // Ferma simulazione zero-day
+  if (zdRunning) {
+    clearInterval(zdInterval);
+    zdRunning = false;
+    zdViruses.forEach(v => { if (v.parentNode) v.parentNode.removeChild(v); });
+    zdViruses = [];
+  }
+}
+</script>
+
+<script>
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const ref = document.referrer;
+  const back = document.getElementById('back-btn');
+  if (!back) return;
+  const c = p.get('classe');
+  if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
+    back.href = '/#3l-relazioni-internazionali';
+    back.textContent = '◀ 3°L RIM';
+    back.title = 'Torna alla sezione 3°L Relazioni Internazionali';
+  } else if (c === '2h' || (ref && ref.includes('#2h-finanza-marketing'))) {
+    back.href = '/#2h-finanza-marketing';
+    back.textContent = '◀ 2H AFM';
+    back.title = 'Torna alla sezione 2H Finanza & Marketing';
+  } else if (c === '2g' || (ref && ref.includes('#2g-finanza-marketing'))) {
+    back.href = '/#2g-finanza-marketing';
+    back.textContent = '◀ 2G AFM';
+    back.title = 'Torna alla sezione 2G Finanza & Marketing';
+  } else {
+    back.href = '/#informatica';
+    back.textContent = '◀ INFORMATICA';
+    back.title = 'Torna a Informatica';
+  }
+})();
+</script>
+
+</body>
+</html>

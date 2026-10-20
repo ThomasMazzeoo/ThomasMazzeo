@@ -29,9 +29,29 @@ const MATERIE = [
             title: "Sicurezza informatica",
             topics: [
               {
-                title: "Slide Interattive: Autenticazione e Protezione dell'Identità Digitale",
-                desc: "Modulo 1 multimediale con simulatori interattivi: potenza di calcolo GPU, attacchi brute force, data breach, gestione password vault e autenticazione a due fattori (2FA TOTP).",
-                url: "/informatica/3l/sicurezza-informatica-1.html"
+                title: "Slide 1: Autenticazione e Protezione dell'Identità Digitale",
+                desc: "Modulo 1 con simulatori: potenza GPU per attacchi brute force, data breach, gestione password vault e 2FA TOTP.",
+                url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=3l"
+              },
+              {
+                title: "Slide 2: Ingegneria Sociale e Phishing",
+                desc: "Modulo 2 con simulatori: la mente umana come bersaglio, leve psicologiche (urgenza, autorità, paura), spoofing ed email malevole.",
+                url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=3l"
+              },
+              {
+                title: "Slide 3: I Permessi dello Smartphone e la Tua Privacy",
+                desc: "Modulo 3 con simulatori: modello di business delle app gratuite, data broker, analisi permessi (microfono, GPS, contatti) e privacy settings.",
+                url: "/informatica/sicurezza/sicurezza-informatica-3.html?classe=3l"
+              },
+              {
+                title: "Slide 4: Navigazione Invisibile e Reti Pubbliche",
+                desc: "Modulo 4 con simulatori: pericoli del Wi-Fi pubblico aperto, scanner tracciatori X-Ray, Man-in-the-Middle 'Il Postino Curioso', HTTPS e VPN.",
+                url: "/informatica/sicurezza/sicurezza-informatica-4.html?classe=3l"
+              },
+              {
+                title: "Slide 5: Resilienza Digitale (Backup e Aggiornamenti)",
+                desc: "Modulo 5 con simulatori: sincronizzazione vs backup effettivo, la regola 3-2-1, allarme vulnerabilità Zero-Day e patch di sicurezza.",
+                url: "/informatica/sicurezza/sicurezza-informatica-5.html?classe=3l"
               }
             ]
           }
@@ -45,7 +65,33 @@ const MATERIE = [
         chapters: [
           {
             title: "Sicurezza informatica",
-            topics: []
+            topics: [
+              {
+                title: "Slide 1: Autenticazione e Protezione dell'Identità Digitale",
+                desc: "Modulo 1 con simulatori: potenza GPU per attacchi brute force, data breach, gestione password vault e 2FA TOTP.",
+                url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=2h"
+              },
+              {
+                title: "Slide 2: Ingegneria Sociale e Phishing",
+                desc: "Modulo 2 con simulatori: la mente umana come bersaglio, leve psicologiche (urgenza, autorità, paura), spoofing ed email malevole.",
+                url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=2h"
+              },
+              {
+                title: "Slide 3: I Permessi dello Smartphone e la Tua Privacy",
+                desc: "Modulo 3 con simulatori: modello di business delle app gratuite, data broker, analisi permessi (microfono, GPS, contatti) e privacy settings.",
+                url: "/informatica/sicurezza/sicurezza-informatica-3.html?classe=2h"
+              },
+              {
+                title: "Slide 4: Navigazione Invisibile e Reti Pubbliche",
+                desc: "Modulo 4 con simulatori: pericoli del Wi-Fi pubblico aperto, scanner tracciatori X-Ray, Man-in-the-Middle 'Il Postino Curioso', HTTPS e VPN.",
+                url: "/informatica/sicurezza/sicurezza-informatica-4.html?classe=2h"
+              },
+              {
+                title: "Slide 5: Resilienza Digitale (Backup e Aggiornamenti)",
+                desc: "Modulo 5 con simulatori: sincronizzazione vs backup effettivo, la regola 3-2-1, allarme vulnerabilità Zero-Day e patch di sicurezza.",
+                url: "/informatica/sicurezza/sicurezza-informatica-5.html?classe=2h"
+              }
+            ]
           }
         ]
       },
@@ -57,7 +103,33 @@ const MATERIE = [
         chapters: [
           {
             title: "Sicurezza informatica",
-            topics: []
+            topics: [
+              {
+                title: "Slide 1: Autenticazione e Protezione dell'Identità Digitale",
+                desc: "Modulo 1 con simulatori: potenza GPU per attacchi brute force, data breach, gestione password vault e 2FA TOTP.",
+                url: "/informatica/sicurezza/sicurezza-informatica-1.html?classe=2g"
+              },
+              {
+                title: "Slide 2: Ingegneria Sociale e Phishing",
+                desc: "Modulo 2 con simulatori: la mente umana come bersaglio, leve psicologiche (urgenza, autorità, paura), spoofing ed email malevole.",
+                url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=2g"
+              },
+              {
+                title: "Slide 3: I Permessi dello Smartphone e la Tua Privacy",
+                desc: "Modulo 3 con simulatori: modello di business delle app gratuite, data broker, analisi permessi (microfono, GPS, contatti) e privacy settings.",
+                url: "/informatica/sicurezza/sicurezza-informatica-3.html?classe=2g"
+              },
+              {
+                title: "Slide 4: Navigazione Invisibile e Reti Pubbliche",
+                desc: "Modulo 4 con simulatori: pericoli del Wi-Fi pubblico aperto, scanner tracciatori X-Ray, Man-in-the-Middle 'Il Postino Curioso', HTTPS e VPN.",
+                url: "/informatica/sicurezza/sicurezza-informatica-4.html?classe=2g"
+              },
+              {
+                title: "Slide 5: Resilienza Digitale (Backup e Aggiornamenti)",
+                desc: "Modulo 5 con simulatori: sincronizzazione vs backup effettivo, la regola 3-2-1, allarme vulnerabilità Zero-Day e patch di sicurezza.",
+                url: "/informatica/sicurezza/sicurezza-informatica-5.html?classe=2g"
+              }
+            ]
           }
         ]
       }

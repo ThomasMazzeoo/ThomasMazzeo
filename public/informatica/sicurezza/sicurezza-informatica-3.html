@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicurezza — I Permessi dello Smartphone</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+ROOT & RESET
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#00ff41;--gdim:#00cc33;--gdk:#003a0f;--gglo:rgba(0,255,65,.10);
+  --a:#ffb000;--adim:#cc8c00;--r:#ff3333;--rdim:#990000;--rglo:rgba(255,51,51,.15);
+  --bg:#000;--bgc:#050f05;--bdr:rgba(0,255,65,.18);
+  --fm:'Share Tech Mono','Courier New',monospace;--fv:'VT323',monospace;
+  --hh:46px;--fh:28px;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--g);font-family:var(--fm)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px)}
+
+/* ============================================================ HEADER ============================================================ */
+#hd{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg);border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:200}
+.logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
+.hd-right{display:flex;align-items:center;gap:18px}
+#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase}
+#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================ FOOTER ============================================================ */
+#ft{position:fixed;bottom:0;left:0;right:0;height:var(--fh);background:var(--bg);border-top:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200}
+#pt{flex:1;height:7px;background:var(--gdk);border:1px solid rgba(0,255,65,.2)}
+#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
+#pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
+.flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
+
+/* ============================================================ NAV ============================================================ */
+#nav{position:fixed;bottom:calc(var(--fh)+8px);right:14px;display:flex;gap:6px;z-index:200}
+.nb{background:var(--bgc);border:1px solid var(--gdim);color:var(--g);font-family:var(--fv);font-size:1.4rem;
+  width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.nb:hover{background:var(--gglo);box-shadow:0 0 10px var(--g)}
+.nb:disabled{opacity:.2;cursor:not-allowed}
+
+/* ============================================================ STAGE & SLIDES ============================================================ */
+#stage{position:fixed;top:var(--hh);left:0;right:0;bottom:var(--fh);overflow:hidden}
+.slide{position:absolute;inset:0;padding:18px 40px 12px 40px;display:flex;flex-direction:column;gap:0;
+  opacity:0;transform:translateX(50px);transition:opacity .32s ease,transform .32s ease;pointer-events:none;overflow:hidden}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit-left{opacity:0;transform:translateX(-50px)}
+
+/* ============================================================ TYPOGRAPHY ============================================================ */
+.tag{font-size:.68rem;color:var(--gdim);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;flex-shrink:0}
+.title{font-family:var(--fv);font-size:2.6rem;color:var(--g);text-shadow:0 0 16px var(--g);line-height:1.05;
+  border-bottom:1px solid var(--bdr);padding-bottom:8px;margin-bottom:14px;flex-shrink:0}
+.title .a{color:var(--a);text-shadow:0 0 14px var(--adim)}
+.title .r{color:var(--r);text-shadow:0 0 14px var(--rdim)}
+.slide p{font-size:1.08rem;line-height:1.6;color:#c8ffc8;margin-bottom:8px}
+.slide p:last-child{margin-bottom:0}
+ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.pts li{font-size:1.05rem;line-height:1.5;color:#c8ffc8;padding-left:28px;position:relative}
+ul.pts li::before{content:'▶';position:absolute;left:0;color:var(--g)}
+ul.pts li.d::before{content:'✖';color:var(--r)}
+ul.pts li.w::before{content:'⚠';color:var(--a)}
+ul.pts li.k::before{content:'✔';color:var(--g)}
+ul.pts li.i::before{content:'◆';color:var(--a)}
+.hl{color:var(--a);font-weight:bold}.rd{color:var(--r)}.gn{color:var(--g)}
+code{font-family:var(--fm);color:var(--a);font-size:.92em}
+
+/* Callout box */
+.box{border:1px solid rgba(0,255,65,.3);background:var(--gglo);padding:10px 16px;border-left:3px solid var(--g);flex-shrink:0}
+.box.d{border-color:var(--r);background:var(--rglo);border-left-color:var(--r)}
+.box.a{border-color:var(--a);background:rgba(255,176,0,.07);border-left-color:var(--a);color:var(--a)}
+
+/* Grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+
+/* Card */
+.card{background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
+.ctitle{font-family:var(--fv);font-size:1.5rem;color:var(--a);margin-bottom:8px;border-bottom:1px solid var(--bdr);padding-bottom:4px;flex-shrink:0}
+
+/* Steps */
+.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{counter-increment:s;padding:5px 8px 5px 38px;position:relative;border-left:2px solid var(--gdk);font-size:1rem;line-height:1.45;color:#c8ffc8}
+.steps li::before{content:counter(s);position:absolute;left:-1px;top:5px;background:var(--g);color:var(--bg);width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:bold;border-radius:2px}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--gdk);color:var(--g);padding:6px 12px;text-align:left;border:1px solid var(--bdr);font-size:.82rem;letter-spacing:1px}
+.tbl td{padding:5px 12px;border:1px solid var(--bdr);font-size:.95rem;color:#c8ffc8}
+.tbl tr:nth-child(even) td{background:var(--gglo)}
+.tr{color:var(--r)!important}.ta{color:var(--a)!important}.tg{color:var(--g)!important}
+
+/* Utils */
+.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}
+.flex1{flex:1;min-height:0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--fv);font-size:3rem;line-height:1;color:var(--a);text-shadow:0 0 16px var(--adim)}
+.huge{font-family:var(--fv);font-size:3.4rem;line-height:1;color:var(--r);text-shadow:0 0 20px var(--rdim)}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+
+/* Cover */
+.cover-icon{font-size:5rem;filter:drop-shadow(0 0 18px var(--g));animation:gp 2.5s ease-in-out infinite}
+@keyframes gp{0%,100%{filter:drop-shadow(0 0 10px var(--g))}50%{filter:drop-shadow(0 0 28px var(--g))}}
+.cover-title{font-family:var(--fv);font-size:clamp(2.4rem,4.5vw,3.8rem);color:var(--g);text-shadow:0 0 24px var(--g);line-height:1.1}
+.cover-sub{font-family:var(--fv);font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--a);text-shadow:0 0 10px var(--adim)}
+.cover-div{width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.cover-meta{font-size:.78rem;color:var(--gdim);letter-spacing:2px}
+.typing{font-size:.8rem;color:var(--gdim);letter-spacing:1px;overflow:hidden;white-space:nowrap;width:0;
+  border-right:2px solid var(--g);animation:tin 2.2s steps(50) .5s forwards,bc .7s step-end infinite}
+@keyframes tin{to{width:100%}}
+@keyframes bc{50%{border-color:transparent}}
+
+/* Buttons & Inputs */
+.sin{background:var(--bg);border:1px solid var(--gdim);color:var(--g);font-family:var(--fm);font-size:1.1rem;
+  padding:8px 12px;width:100%;outline:none;caret-color:var(--g);transition:border-color .2s}
+.sin:focus{border-color:var(--g);box-shadow:0 0 6px var(--gglo)}
+.sbtn{background:var(--bg);border:1px solid var(--g);color:var(--g);font-family:var(--fm);font-size:.85rem;
+  padding:7px 18px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .18s}
+.sbtn:hover{background:var(--gglo);box-shadow:0 0 8px var(--g)}
+.sbtn.r{border-color:var(--r);color:var(--r)}.sbtn.r:hover{background:var(--rglo)}
+.sbtn.a{border-color:var(--a);color:var(--a)}.sbtn.a:hover{background:rgba(255,176,0,.1)}
+.slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
+
+/* ============================================================
+LAB 1 — ECONOMIA INVISIBILE
+============================================================ */
+#econ-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:0}
+.econ-entity{display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2}
+.econ-icon{font-size:3.2rem;filter:drop-shadow(0 0 8px var(--g))}
+.econ-label{font-family:var(--fv);font-size:1.1rem;color:var(--g);text-align:center;line-height:1.2}
+.econ-sublabel{font-size:.72rem;color:var(--gdim);text-align:center;max-width:110px}
+#econ-arrow1,#econ-arrow2{flex:1;position:relative;display:flex;align-items:center;min-width:80px;max-width:160px}
+.econ-line{height:2px;background:var(--bdr);flex:1;position:relative}
+.econ-line::after{content:'▶';position:absolute;right:-8px;top:-8px;color:var(--gdim);font-size:.9rem}
+.econ-packet{position:absolute;top:-14px;font-size:1.2rem;opacity:0;transition:none;pointer-events:none;white-space:nowrap}
+.econ-money{position:absolute;bottom:-14px;font-size:1.2rem;opacity:0;pointer-events:none;color:var(--a)}
+#econ-counter{font-family:var(--fv);font-size:1.8rem;color:var(--a);text-shadow:0 0 12px var(--adim);text-align:center;flex-shrink:0;min-height:36px}
+#econ-log{background:var(--bgc);border:1px solid var(--bdr);padding:6px 10px;font-size:.78rem;flex-shrink:0;height:64px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+
+/* ============================================================
+LAB 2 — GIOCO INQUISITORE
+============================================================ */
+.inq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+.inq-card{background:var(--bgc);border:1px solid var(--bdr);padding:14px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:border-color .3s}
+.inq-card.answered{opacity:.7}
+.inq-app-icon{font-size:2.2rem;text-align:center}
+.inq-app-name{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-align:center}
+.inq-perm{font-size:.88rem;color:#c8ffc8;text-align:center;padding:6px 0;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.inq-perm span{color:var(--a);font-weight:bold}
+.inq-btns{display:flex;gap:8px;justify-content:center}
+.inq-feedback{font-size:.82rem;text-align:center;min-height:36px;padding:4px 6px;border-radius:2px;display:none;line-height:1.35}
+.inq-feedback.ok{color:var(--g);background:var(--gglo);border:1px solid var(--g);display:block}
+.inq-feedback.ko{color:var(--r);background:var(--rglo);border:1px solid var(--r);display:block}
+.inq-overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(0,0,0,.65)}
+#inq-score{font-family:var(--fv);font-size:1.6rem;color:var(--a);text-align:center;flex-shrink:0;min-height:30px}
+
+/* ============================================================
+LAB 3 — CHIRURGO IMPOSTAZIONI
+============================================================ */
+#chir-wrap{display:flex;gap:16px;flex:1;min-height:0;align-items:stretch}
+#chir-phone{width:200px;flex-shrink:0;background:#07100a;border:2px solid #1a3a20;border-radius:20px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.ph-notch{width:60px;height:6px;background:#1a3a20;border-radius:3px;margin-bottom:4px}
+.ph-screen{width:100%;flex:1;background:#050f05;border-radius:10px;overflow:hidden;position:relative;min-height:0}
+.ph-status{font-size:.6rem;color:var(--gdim);display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #1a3a20}
+.ph-home-btn{width:36px;height:6px;background:#1a3a20;border-radius:3px;margin-top:6px}
+.chir-step{display:none;flex-direction:column;height:100%}
+.chir-step.active{display:flex}
+.chir-header{background:#0a1f0e;padding:6px 10px;font-size:.72rem;color:var(--g);border-bottom:1px solid #1a3a20;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.chir-back{color:var(--a);cursor:pointer;font-size:.7rem}
+.chir-menu-item{padding:8px 10px;font-size:.75rem;color:#c8ffc8;border-bottom:1px solid #0a1f0e;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s}
+.chir-menu-item:hover,.chir-menu-item:active{background:#0a2a10}
+.chir-menu-item .mi-icon{font-size:.9rem}
+.chir-menu-item .mi-arrow{margin-left:auto;color:var(--gdim)}
+/* toggle */
+.toggle-row{padding:7px 10px;font-size:.72rem;color:#c8ffc8;border-bottom:1px solid #0a1f0e;display:flex;align-items:center;gap:6px}
+.toggle-row .tr-name{flex:1}
+.toggle-row .tr-risk{font-size:.6rem;margin-right:4px}
+.tgl{width:28px;height:16px;border-radius:8px;border:1px solid var(--gdim);position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.tgl.on{background:var(--g);border-color:var(--g)}
+.tgl.off{background:#0a1f0e}
+.tgl::after{content:'';position:absolute;top:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:left .2s}
+.tgl.on::after{left:15px}.tgl.off::after{left:2px}
+#chir-guide{flex:1;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.chir-step-label{font-size:.82rem;color:#c8ffc8;padding:8px 12px;background:var(--bgc);border:1px solid var(--bdr);display:flex;align-items:center;gap:8px}
+.chir-step-label .csl-num{background:var(--g);color:var(--bg);width:20px;height:20px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:bold;flex-shrink:0}
+.chir-step-label.done{border-color:var(--g);background:var(--gglo)}
+.chir-step-label.active-step{border-color:var(--a);color:var(--a)}
+#chir-msg{font-family:var(--fv);font-size:1.2rem;min-height:28px;text-align:center;flex-shrink:0}
+#chir-result{flex-shrink:0;display:none}
+
+
+.back-link-terminal{text-decoration:none;color:var(--g);font-family:var(--fv);font-size:1.15rem;border:1px solid var(--bdr);padding:2px 10px;background:var(--bgc);display:inline-flex;align-items:center;gap:6px;transition:all .18s;letter-spacing:1px}
+.back-link-terminal:hover{background:var(--gglo)!important;border-color:var(--g)!important;box-shadow:0 0 10px var(--g)!important;color:#fff!important}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hd">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a id="back-btn" href="/#informatica" class="back-link-terminal" title="Torna indietro">◀ TORNA</a>
+    <div class="logo">PRIV_101<span class="blink">_</span></div>
+  </div>
+  <div class="hd-right">
+    <div id="slide-section">INTRODUZIONE</div>
+    <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+  </div>
+</header>
+
+<!-- STAGE -->
+<div id="stage">
+
+<!-- ================================================================
+S0 — COPERTINA
+================================================================ -->
+<section class="slide active" id="s0">
+  <div class="center">
+    <div class="cover-icon">📱</div>
+    <div class="cover-title">
+      Sicurezza Informatica<br>
+      <span style="color:var(--a);text-shadow:0 0 18px var(--adim)">I Permessi dello Smartphone<br>e la Tua Privacy</span>
+    </div>
+    <div class="cover-div"></div>
+    <div class="cover-sub">"Se un'app è gratuita, il prodotto sei tu."</div>
+    <div class="cover-meta">MODULO 3 &nbsp;·&nbsp; LABORATORIO INTERATTIVO &nbsp;·&nbsp; SCUOLA SUPERIORE</div>
+    <div class="typing">CARICAMENTO MODULO PRIVACY... OK &nbsp;▶ AVVIO</div>
+  </div>
+</section>
+
+<!-- ================================================================
+S1 — LA DOMANDA CHIAVE
+================================================================ -->
+<section class="slide" id="s1">
+  <div class="tag">// 00 — IL PUNTO DI PARTENZA</div>
+  <div class="title">Un'App Gratuita:<br><span class="a">Da Dove Arrivano i Soldi?</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:14px">
+      <div style="font-size:3rem">🤔</div>
+      <div class="ctitle">Sviluppare un'app costa:</div>
+      <ul class="pts" style="text-align:left">
+        <li>Sviluppatori: <span class="hl">50.000–500.000€</span> l'anno</li>
+        <li>Server e infrastruttura: <span class="hl">migliaia di € al mese</span></li>
+        <li>Aggiornamenti e supporto: <span class="hl">costo continuo</span></li>
+        <li>Marketing: <span class="hl">milioni di euro</span></li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:14px">
+      <div style="font-size:3rem">💰</div>
+      <div class="ctitle" style="color:var(--r)">Eppure tu paghi… zero?</div>
+      <div class="box d" style="font-size:1rem;width:100%">
+        Se il <strong class="rd">prodotto è gratis</strong>,<br>
+        allora il prodotto <strong class="rd">sei tu</strong>.<br><br>
+        I tuoi dati personali sono <span class="hl">la merce</span>.<br>
+        I permessi dello smartphone<br>sono <span class="hl">le chiavi della cassaforte</span>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S2 — COME GUADAGNANO LE APP GRATUITE
+================================================================ -->
+<section class="slide" id="s2">
+  <div class="tag">// 00 — IL MODELLO DI BUSINESS</div>
+  <div class="title">Come Guadagnano<br><span class="a">le App Gratuite</span></div>
+  <div class="g3" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
+      <div style="text-align:center;font-size:2.2rem">📍</div>
+      <div class="ctitle" style="text-align:center">Raccolta Posizione GPS</div>
+      <ul class="pts">
+        <li>Sanno dove vivi e lavori</li>
+        <li>Sanno dove fai la spesa</li>
+        <li>Sanno i tuoi spostamenti quotidiani</li>
+        <li class="d">Valore: <span class="hl">~0,003€</span> al giorno per utente</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--r)">
+      <div style="text-align:center;font-size:2.2rem">🎤</div>
+      <div class="ctitle" style="text-align:center">Abitudini di Navigazione</div>
+      <ul class="pts">
+        <li>Cosa cerchi online</li>
+        <li>Cosa guardi per quanto tempo</li>
+        <li>I tuoi interessi e preferenze</li>
+        <li class="d">Profilazione comportamentale</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--g)">
+      <div style="text-align:center;font-size:2.2rem">👥</div>
+      <div class="ctitle" style="text-align:center">Rubrica Contatti</div>
+      <ul class="pts">
+        <li>Nomi, numeri, email dei tuoi amici</li>
+        <li>Le tue relazioni sociali mappate</li>
+        <li>Costruzione di "grafi sociali"</li>
+        <li class="d">Dati su persone che non hanno mai installato l'app</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box a mt10" style="flex-shrink:0">
+    Questi dati vengono <strong>venduti ai Data Broker</strong> — aziende che comprano e rivendono informazioni personali agli inserzionisti.
+  </div>
+</section>
+
+<!-- ================================================================
+S3 — I DATA BROKER
+================================================================ -->
+<section class="slide" id="s3">
+  <div class="tag">// 00 — L'ECOSISTEMA INVISIBILE</div>
+  <div class="title">I Data Broker:<br><span class="r">Chi Compra i Tuoi Dati</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>Installi una <strong>app gratuita</strong> — es. una torcia, un gioco, un'app meteo</li>
+        <li>L'app richiede permessi (GPS, Microfono, Contatti) — tu premi <span class="hl">"Consenti tutto"</span></li>
+        <li>L'app raccoglie i tuoi dati e li invia ai suoi server ogni pochi minuti</li>
+        <li>I dati vengono <strong>venduti ai Data Broker</strong>: Acxiom, Oracle Data Cloud, Nielsen…</li>
+        <li>I Data Broker <strong>combinano dati da migliaia di fonti</strong> e costruiscono un profilo su di te</li>
+        <li>Il profilo viene venduto a inserzionisti, assicurazioni, banche, datori di lavoro</li>
+        <li>Risultato: pubblicità iper-mirate e <span class="rd">decisioni automatiche sulla tua vita</span></li>
+      </ol>
+      <div class="box d mt10">
+        <strong>Dato reale:</strong> Acxiom possiede profili dettagliati su oltre <span class="hl">2,5 miliardi</span> di persone nel mondo. Su di te, probabilmente, ci sono già centinaia di punti dati.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S4 — ROADMAP
+================================================================ -->
+<section class="slide" id="s4">
+  <div class="tag">// 00 — PERCORSO DI OGGI</div>
+  <div class="title">Argomenti del <span class="a">Modulo</span></div>
+  <div class="g4" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
+      <div style="font-size:3rem">💸</div>
+      <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">01</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Il Prodotto<br>Sei Tu</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
+      <div style="font-size:3rem">🔑</div>
+      <div class="ctitle" style="border:none;margin:0;padding:0">02</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">La Logica<br>dei Permessi</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
+      <div style="font-size:3rem">🔍</div>
+      <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">03</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Analisi<br>App Famose</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#88aaff">
+      <div style="font-size:3rem">⚙️</div>
+      <div class="ctitle" style="color:#88aaff;border:none;margin:0;padding:0">04</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">La Procedura<br>Pratica</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S5 — COSA SONO I PERMESSI
+================================================================ -->
+<section class="slide" id="s5">
+  <div class="tag">// 02 — LA LOGICA DEI PERMESSI</div>
+  <div class="title">Cosa Sono<br><span class="a">i Permessi</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Definizione</div>
+      <p>Un permesso è una <strong>richiesta esplicita</strong> che un'app fa al sistema operativo per accedere a una funzione hardware o a dati sensibili del telefono.</p>
+      <p>Senza il tuo consenso esplicito, l'app <span class="hl">non può accedere</span> a quelle risorse.</p>
+      <div class="box mt6" style="font-size:.92rem">
+        È come una <strong>serratura</strong>: l'app ha bisogno che tu le consegni la chiave. Una volta consegnata, l'app può usarla <span class="rd">quando vuole, anche di notte, anche in background</span>.
+      </div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Permessi Principali</div>
+      <table class="tbl">
+        <thead><tr><th>Permesso</th><th>Cosa Consente</th></tr></thead>
+        <tbody>
+          <tr><td>📍 Posizione</td><td>GPS in tempo reale e cronologia spostamenti</td></tr>
+          <tr><td>🎤 Microfono</td><td>Ascolto audio in qualsiasi momento</td></tr>
+          <tr><td>📷 Fotocamera</td><td>Accesso alle foto e scatto live</td></tr>
+          <tr><td>👥 Contatti</td><td>Lettura (e copia) di tutta la rubrica</td></tr>
+          <tr><td>📱 SMS</td><td>Lettura dei tuoi messaggi privati</td></tr>
+          <tr><td>📊 Memoria</td><td>Accesso a file e documenti salvati</td></tr>
+          <tr><td>📶 Rete</td><td>Connessione e invio dati a server remoti</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S6 — NECESSARIO VS ABUSIVO
+================================================================ -->
+<section class="slide" id="s6">
+  <div class="tag">// 02 — LA LOGICA DEI PERMESSI</div>
+  <div class="title">Permesso <span class="gn">Necessario</span><br>vs Permesso <span class="r">Abusivo</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--g)">
+      <div class="ctitle">✔ Permesso Necessario</div>
+      <p style="font-size:.95rem">Il permesso è <strong>indispensabile</strong> per la funzione principale dell'app. Senza di esso l'app non funzionerebbe.</p>
+      <ul class="pts">
+        <li class="k">GPS per <strong>Google Maps</strong>: senza posizione non può darti indicazioni</li>
+        <li class="k">Microfono per <strong>WhatsApp</strong>: senza mic non puoi fare chiamate vocali</li>
+        <li class="k">Fotocamera per <strong>Instagram</strong>: senza camera non puoi scattare foto</li>
+        <li class="k">Contatti per <strong>WhatsApp</strong>: serve per trovare chi hai in rubrica</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--r)">
+      <div class="ctitle" style="color:var(--r)">✖ Permesso Abusivo</div>
+      <p style="font-size:.95rem">Il permesso <strong>non ha nessuna relazione logica</strong> con la funzione dell'app. Viene chiesto solo per raccogliere dati.</p>
+      <ul class="pts">
+        <li class="d">GPS per una <strong>app torcia</strong>: una torcia non ha bisogno di sapere dove sei</li>
+        <li class="d">Microfono per un <strong>gioco di corse</strong>: le macchinette non ti ascoltano</li>
+        <li class="d">Rubrica per una <strong>calcolatrice</strong>: i numeri non telefonano</li>
+        <li class="d">SMS per un <strong>gioco puzzle</strong>: i mattoncini non mandano messaggi</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box a mt10" style="flex-shrink:0">
+    <strong>Regola d'oro:</strong> Prima di concedere un permesso, chiediti: <span class="hl">"Ha senso logico che questa app abbia bisogno di questo accesso?"</span>
+  </div>
+</section>
+
+<!-- ================================================================
+S7 — LAB 1: L'ECONOMIA INVISIBILE
+================================================================ -->
+<section class="slide" id="s7">
+  <div class="tag">// LAB 01 — SIMULATORE: L'ECONOMIA INVISIBILE</div>
+  <div class="title" style="margin-bottom:8px">🔬 Lab: <span class="a">Il Prodotto Sei Tu</span></div>
+
+  <div id="econ-stage">
+    <!-- USER -->
+    <div class="econ-entity" id="ec-user">
+      <div class="econ-icon">👤</div>
+      <div class="econ-label">TU</div>
+      <div class="econ-sublabel">utente ignaro</div>
+    </div>
+
+    <!-- ARROW 1: user → app -->
+    <div id="econ-arrow1" style="flex:1;position:relative;display:flex;align-items:center;min-width:70px;max-width:150px">
+      <div style="flex:1;height:2px;background:var(--bdr);position:relative">
+        <span style="position:absolute;right:-8px;top:-9px;color:var(--gdim);font-size:.9rem">▶</span>
+      </div>
+      <!-- packets user→app -->
+      <div class="econ-packet" id="pkt-gps" style="left:10%">📍GPS</div>
+      <div class="econ-packet" id="pkt-mic" style="left:35%">🎤MIC</div>
+      <div class="econ-packet" id="pkt-cnt" style="left:60%">👥CNT</div>
+    </div>
+
+    <!-- APP -->
+    <div class="econ-entity" id="ec-app" style="gap:6px">
+      <div class="econ-icon" style="font-size:2.8rem">🔦</div>
+      <div class="econ-label">Super Torcia<br>Gratis™</div>
+      <div class="econ-sublabel" style="color:var(--a)">raccoglitore dati</div>
+      <button class="sbtn" id="ec-btn" style="margin-top:4px;font-size:.78rem">▶ SCARICA GRATIS</button>
+      <button class="sbtn" id="ec-rst" style="margin-top:2px;font-size:.72rem;display:none">↺ RESET</button>
+    </div>
+
+    <!-- ARROW 2: app → server -->
+    <div id="econ-arrow2" style="flex:1;position:relative;display:flex;align-items:center;min-width:70px;max-width:150px">
+      <div style="flex:1;height:2px;background:var(--bdr);position:relative">
+        <span style="position:absolute;right:-8px;top:-9px;color:var(--gdim);font-size:.9rem">▶</span>
+      </div>
+      <!-- packets app→server (data) -->
+      <div class="econ-packet" id="pkt2-gps" style="top:-15px;left:15%">📍</div>
+      <div class="econ-packet" id="pkt2-mic" style="top:-15px;left:42%">🎤</div>
+      <div class="econ-packet" id="pkt2-cnt" style="top:-15px;left:68%">👥</div>
+      <!-- money back server→app -->
+      <div class="econ-money" id="pkt2-$" style="bottom:-15px;left:50%">💰</div>
+    </div>
+
+    <!-- SERVER -->
+    <div class="econ-entity" id="ec-srv">
+      <div class="econ-icon" style="filter:drop-shadow(0 0 10px var(--r));color:var(--r)">🖥️</div>
+      <div class="econ-label" style="color:var(--r)">SERVER<br>DATA BROKER</div>
+      <div class="econ-sublabel" style="color:var(--rdim)">acquirente dati</div>
+    </div>
+  </div>
+
+  <div id="econ-counter" style="margin-top:8px">[ premi SCARICA GRATIS per avviare ]</div>
+  <div class="slbl mt6">// LOG TRANSAZIONE DATI</div>
+  <div id="econ-log"><div style="color:var(--gdim)">[ in attesa... ]</div></div>
+</section>
+
+<!-- ================================================================
+S8 — ANALISI APP FAMOSE: LOGICA
+================================================================ -->
+<section class="slide" id="s8">
+  <div class="tag">// 03 — ANALISI APP FAMOSE</div>
+  <div class="title">La Domanda da Farsi<br><span class="a">Sempre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <div class="box a mb8" style="font-size:1.05rem">
+        Per ogni permesso richiesto, applica questo filtro logico in 3 passi:
+      </div>
+      <ol class="steps">
+        <li><strong>Funzione principale:</strong> A cosa serve questa app? Qual è la sua funzione dichiarata?</li>
+        <li><strong>Collegamento logico:</strong> Il permesso richiesto serve <em>direttamente</em> a quella funzione? Sì o No?</li>
+        <li><strong>Proporzionalità:</strong> L'accesso è limitato (es. GPS solo mentre usi l'app) oppure permanente (GPS anche quando l'app è chiusa)?</li>
+      </ol>
+      <div class="g2 mt10">
+        <div class="box">
+          <strong>Esempio corretto:</strong> WhatsApp + Microfono = ✔<br>
+          <span style="font-size:.9rem;color:#c8ffc8">WhatsApp serve per comunicare → le chiamate vocali richiedono il microfono → logico.</span>
+        </div>
+        <div class="box d">
+          <strong>Esempio sospetto:</strong> Gioco di corse + GPS = ✖<br>
+          <span style="font-size:.9rem;color:#c8ffc8">Un gioco arcade non ha bisogno del tuo indirizzo reale → permesso abusivo.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S9 — WHATSAPP E CONTATTI
+================================================================ -->
+<section class="slide" id="s9">
+  <div class="tag">// 03 — CASO STUDIO: WHATSAPP</div>
+  <div class="title">WhatsApp:<br><span class="a">Cosa Chiede e Perché</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Permessi GIUSTIFICATI ✔</div>
+      <table class="tbl">
+        <thead><tr><th>Permesso</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr><td>📞 Rubrica</td><td class="tg">Trovare amici già iscritti</td></tr>
+          <tr><td>🎤 Microfono</td><td class="tg">Messaggi vocali e chiamate</td></tr>
+          <tr><td>📷 Fotocamera</td><td class="tg">Foto e videochiamate</td></tr>
+          <tr><td>🔔 Notifiche</td><td class="tg">Avvertire di nuovi messaggi</td></tr>
+          <tr><td>💾 Memoria</td><td class="tg">Salvare file ricevuti</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--a)">Ma attenzione ⚠</div>
+      <ul class="pts">
+        <li class="w">La rubrica viene <strong>caricata sui server Meta</strong> — inclusi i numeri di chi non usa WhatsApp</li>
+        <li class="w">WhatsApp è di <strong>proprietà di Meta (Facebook)</strong>: i metadati (con chi parli, quando, dove) vengono condivisi</li>
+        <li class="w">I <strong>metadati</strong> rivelano molto anche senza leggere i messaggi cifrati</li>
+        <li class="i">Alternativa più privata: <strong>Signal</strong> (open source, zero metadati condivisi)</li>
+      </ul>
+      <div class="box a mt6" style="font-size:.88rem">
+        Concedere la rubrica a WhatsApp è <span class="hl">accettabile</span> per il suo scopo — ma sii consapevole di cosa succede ai dati.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S10 — GIOCHI E PERMESSI SOSPETTI
+================================================================ -->
+<section class="slide" id="s10">
+  <div class="tag">// 03 — CASO STUDIO: APP SOSPETTE</div>
+  <div class="title">App a Rischio:<br><span class="r">I Casi Più Diffusi</span></div>
+  <div class="g3" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--r)">
+      <div style="text-align:center;font-size:2.2rem">🔦</div>
+      <div class="ctitle" style="text-align:center">App Torcia</div>
+      <ul class="pts">
+        <li class="k">Serve: Fotocamera (LED flash)</li>
+        <li class="d">NON serve: GPS</li>
+        <li class="d">NON serve: Rubrica contatti</li>
+        <li class="d">NON serve: Microfono</li>
+      </ul>
+      <div class="box d" style="font-size:.82rem;margin-top:auto">Caso reale: "Brightest Flashlight" ha venduto dati GPS di milioni di utenti</div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
+      <div style="text-align:center;font-size:2.2rem">🏎️</div>
+      <div class="ctitle" style="text-align:center">Gioco di Corse 3D</div>
+      <ul class="pts">
+        <li class="k">Serve: Memoria (salvataggi)</li>
+        <li class="d">NON serve: GPS reale</li>
+        <li class="d">NON serve: Microfono</li>
+        <li class="d">NON serve: Contatti</li>
+      </ul>
+      <div class="box d" style="font-size:.82rem;margin-top:auto">Il GPS serve solo per mostrare pubblicità geo-localizzata durante il gioco</div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
+      <div style="text-align:center;font-size:2.2rem">🧹</div>
+      <div class="ctitle" style="text-align:center">App "Pulizia Telefono"</div>
+      <ul class="pts">
+        <li class="k">Serve: Memoria del dispositivo</li>
+        <li class="d">NON serve: Rubrica</li>
+        <li class="d">NON serve: Fotocamera</li>
+        <li class="d">NON serve: Microfono</li>
+      </ul>
+      <div class="box d" style="font-size:.82rem;margin-top:auto">Spesso sono vere e proprie spyware travestite da tool di ottimizzazione</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S11 — LAB 2: IL GIOCO DELL'INQUISITORE
+================================================================ -->
+<section class="slide" id="s11">
+  <div class="tag">// LAB 02 — SIMULATORE: IL GIOCO DELL'INQUISITORE</div>
+  <div class="title" style="margin-bottom:8px">🔬 Lab: <span class="a">Concedi o Revoca?</span></div>
+  <div id="inq-score" style="margin-bottom:6px">Punteggio: <span id="inq-pts">0</span> / 4 &nbsp;— premi i bottoni per decidere</div>
+  <div class="inq-grid">
+
+    <!-- CARD 1: Bussola → Microfono → REVOCA è giusto -->
+    <div class="inq-card" id="inq-c1">
+      <div class="inq-app-icon">🧭</div>
+      <div class="inq-app-name">App Bussola</div>
+      <div class="inq-perm">Richiede accesso: <span>🎤 Microfono</span></div>
+      <div class="inq-btns">
+        <button class="sbtn" onclick="inqAnswer(1,'concedi')">✔ CONCEDI</button>
+        <button class="sbtn r" onclick="inqAnswer(1,'revoca')">✖ REVOCA</button>
+      </div>
+      <div class="inq-feedback" id="inq-f1"></div>
+      <div class="inq-overlay" id="inq-o1"></div>
+    </div>
+
+    <!-- CARD 2: ChatVoce → Rubrica → CONCEDI è giusto -->
+    <div class="inq-card" id="inq-c2">
+      <div class="inq-app-icon">💬</div>
+      <div class="inq-app-name">ChatVoce</div>
+      <div class="inq-perm" style="font-size:.82rem">(app messaggistica)<br>Richiede accesso: <span>👥 Rubrica</span></div>
+      <div class="inq-btns">
+        <button class="sbtn" onclick="inqAnswer(2,'concedi')">✔ CONCEDI</button>
+        <button class="sbtn r" onclick="inqAnswer(2,'revoca')">✖ REVOCA</button>
+      </div>
+      <div class="inq-feedback" id="inq-f2"></div>
+      <div class="inq-overlay" id="inq-o2"></div>
+    </div>
+
+    <!-- CARD 3: Racing 3D → GPS → REVOCA è giusto -->
+    <div class="inq-card" id="inq-c3">
+      <div class="inq-app-icon">🏎️</div>
+      <div class="inq-app-name">Racing 3D</div>
+      <div class="inq-perm">Richiede accesso: <span>📍 Posizione GPS</span></div>
+      <div class="inq-btns">
+        <button class="sbtn" onclick="inqAnswer(3,'concedi')">✔ CONCEDI</button>
+        <button class="sbtn r" onclick="inqAnswer(3,'revoca')">✖ REVOCA</button>
+      </div>
+      <div class="inq-feedback" id="inq-f3"></div>
+      <div class="inq-overlay" id="inq-o3"></div>
+    </div>
+
+    <!-- CARD 4: Super Torcia → Rubrica → REVOCA è giusto -->
+    <div class="inq-card" id="inq-c4">
+      <div class="inq-app-icon">🔦</div>
+      <div class="inq-app-name">Super Torcia</div>
+      <div class="inq-perm">Richiede accesso: <span>👥 Rubrica Contatti</span></div>
+      <div class="inq-btns">
+        <button class="sbtn" onclick="inqAnswer(4,'concedi')">✔ CONCEDI</button>
+        <button class="sbtn r" onclick="inqAnswer(4,'revoca')">✖ REVOCA</button>
+      </div>
+      <div class="inq-feedback" id="inq-f4"></div>
+      <div class="inq-overlay" id="inq-o4"></div>
+    </div>
+
+  </div>
+  <div class="row mt6" style="flex-shrink:0">
+    <button class="sbtn" id="inq-rst">↺ RICOMINCIA</button>
+    <div id="inq-final" style="font-family:var(--fv);font-size:1.2rem;display:none"></div>
+  </div>
+</section>
+
+<!-- ================================================================
+S12 — PROCEDURA ANDROID
+================================================================ -->
+<section class="slide" id="s12">
+  <div class="tag">// 04 — PROCEDURA PRATICA: ANDROID</div>
+  <div class="title">Dove Trovare<br><span class="a">i Permessi su Android</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Metodo 1 — Per App</div>
+      <ol class="steps">
+        <li>Apri <strong>Impostazioni</strong> ⚙️</li>
+        <li>Vai su <strong>App</strong> (o "Applicazioni")</li>
+        <li>Seleziona l'app che vuoi controllare</li>
+        <li>Tocca <strong>Permessi</strong></li>
+        <li>Per ogni permesso: seleziona <strong>"Nega"</strong> o <strong>"Solo durante l'uso"</strong></li>
+      </ol>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Metodo 2 — Per Tipo di Permesso</div>
+      <ol class="steps">
+        <li>Apri <strong>Impostazioni</strong> ⚙️</li>
+        <li>Vai su <strong>Privacy</strong> → <strong>Gestione Permessi</strong></li>
+        <li>Seleziona il tipo: es. <strong>Microfono</strong></li>
+        <li>Vedi <em>tutte</em> le app che hanno accesso</li>
+        <li>Revoca alle app che non lo necessitano</li>
+      </ol>
+      <div class="box a mt6" style="font-size:.88rem">
+        ⚠ Su alcuni Android: <code>Impostazioni → Privacy → Dashboard privacy</code> mostra quali app hanno usato il microfono nelle ultime 24h
+      </div>
+    </div>
+  </div>
+  <div class="box mt10" style="flex-shrink:0;font-size:.92rem">
+    <strong>Consiglio:</strong> Preferisci sempre <span class="hl">"Solo durante l'uso dell'app"</span> invece di "Sempre". Evita che le app monitorino la posizione in background.
+  </div>
+</section>
+
+<!-- ================================================================
+S13 — PROCEDURA iOS
+================================================================ -->
+<section class="slide" id="s13">
+  <div class="tag">// 04 — PROCEDURA PRATICA: iOS (iPhone)</div>
+  <div class="title">Dove Trovare<br><span class="a">i Permessi su iPhone</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Metodo 1 — Per App</div>
+      <ol class="steps">
+        <li>Apri <strong>Impostazioni</strong> ⚙️</li>
+        <li>Scorri verso il basso fino all'<strong>app desiderata</strong></li>
+        <li>Tocca il nome dell'app</li>
+        <li>Visualizza e modifica ogni permesso</li>
+        <li>Per Posizione: scegli <strong>"Mai"</strong> o <strong>"Solo durante utilizzo"</strong></li>
+      </ol>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Metodo 2 — Per Tipo di Permesso</div>
+      <ol class="steps">
+        <li>Apri <strong>Impostazioni</strong> ⚙️</li>
+        <li>Vai su <strong>Privacy e Sicurezza</strong></li>
+        <li>Seleziona il tipo: es. <strong>Microfono</strong></li>
+        <li>Vedi tutte le app con quel permesso</li>
+        <li>Disattiva le app non necessarie</li>
+      </ol>
+      <div class="box a mt6" style="font-size:.88rem">
+        💡 iOS ha il <strong>"Report sulla Privacy dell'App"</strong>: va su Impostazioni → Privacy → Report sull'attività → mostra quando ogni app accede al microfono, fotocamera, GPS
+      </div>
+    </div>
+  </div>
+  <div class="box mt10" style="flex-shrink:0;font-size:.92rem">
+    <strong>Funzione unica iOS:</strong> il <span class="hl">puntino arancione</span> in alto a destra indica che il microfono è attivo. Il <span class="hl">puntino verde</span> indica che la fotocamera è attiva. Guardalo sempre!
+  </div>
+</section>
+
+<!-- ================================================================
+S14 — LAB 3: IL CHIRURGO DELLE IMPOSTAZIONI
+================================================================ -->
+<section class="slide" id="s14">
+  <div class="tag">// LAB 03 — SIMULATORE: IL CHIRURGO DELLE IMPOSTAZIONI</div>
+  <div class="title" style="margin-bottom:8px">🔬 Lab: <span class="a">Revocare un Permesso</span></div>
+  <div id="chir-wrap">
+
+    <!-- FAKE PHONE -->
+    <div id="chir-phone">
+      <div class="ph-notch"></div>
+      <div class="ph-status">
+        <span>🔋 100%</span><span>📶 5G</span>
+      </div>
+      <div class="ph-screen" id="chir-screen">
+
+        <!-- STEP 0: Home screen -->
+        <div class="chir-step active" id="chir-s0">
+          <div class="chir-header">📱 Home</div>
+          <div style="padding:8px 6px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:1.5rem;text-align:center">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="chirNav(1)">
+              <span style="font-size:1.8rem">⚙️</span>
+              <span style="font-size:.5rem;color:var(--gdim)">Impostaz.</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="font-size:1.8rem">📷</span><span style="font-size:.5rem;color:var(--gdim)">Camera</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="font-size:1.8rem">📧</span><span style="font-size:.5rem;color:var(--gdim)">Mail</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="font-size:1.8rem">🔦</span><span style="font-size:.5rem;color:var(--gdim)">Torcia</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="font-size:1.8rem">🎮</span><span style="font-size:.5rem;color:var(--gdim)">Giochi</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="font-size:1.8rem">🛒</span><span style="font-size:.5rem;color:var(--gdim)">Store</span>
+            </div>
+          </div>
+          <div style="padding:4px 8px;font-size:.6rem;color:var(--a);text-align:center">
+            ↑ Tocca ⚙️ Impostazioni
+          </div>
+        </div>
+
+        <!-- STEP 1: Impostazioni -->
+        <div class="chir-step" id="chir-s1">
+          <div class="chir-header"><span class="chir-back" onclick="chirNav(0)">◀</span> ⚙️ Impostazioni</div>
+          <div class="chir-menu-item" onclick="chirNav(2)"><span class="mi-icon">🔒</span>Privacy e Sicurezza<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📶</span>Rete e Internet<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">🔋</span>Batteria<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">🔊</span>Audio<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📱</span>App<span class="mi-arrow">›</span></div>
+          <div style="padding:4px 8px;font-size:.58rem;color:var(--a);text-align:center">↑ Tocca Privacy e Sicurezza</div>
+        </div>
+
+        <!-- STEP 2: Privacy -->
+        <div class="chir-step" id="chir-s2">
+          <div class="chir-header"><span class="chir-back" onclick="chirNav(1)">◀</span> 🔒 Privacy</div>
+          <div class="chir-menu-item" onclick="chirNav(3)"><span class="mi-icon">🔑</span>Gestione Permessi<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📊</span>Report Attività App<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">👁️</span>Tracciamento<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📍</span>Servizi Localizzazione<span class="mi-arrow">›</span></div>
+          <div style="padding:4px 8px;font-size:.58rem;color:var(--a);text-align:center">↑ Tocca Gestione Permessi</div>
+        </div>
+
+        <!-- STEP 3: Permessi -->
+        <div class="chir-step" id="chir-s3">
+          <div class="chir-header"><span class="chir-back" onclick="chirNav(2)">◀</span> 🔑 Permessi</div>
+          <div class="chir-menu-item" onclick="chirNav(4)"><span class="mi-icon">🎤</span>Microfono<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📍</span>Posizione<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📷</span>Fotocamera<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">👥</span>Contatti<span class="mi-arrow">›</span></div>
+          <div class="chir-menu-item"><span class="mi-icon">📱</span>SMS<span class="mi-arrow">›</span></div>
+          <div style="padding:4px 8px;font-size:.58rem;color:var(--a);text-align:center">↑ Tocca Microfono</div>
+        </div>
+
+        <!-- STEP 4: Microfono - lista app con toggle -->
+        <div class="chir-step" id="chir-s4">
+          <div class="chir-header"><span class="chir-back" onclick="chirNav(3)">◀</span> 🎤 Microfono</div>
+          <div style="padding:4px 8px;font-size:.58rem;color:var(--gdim)">App con accesso al Microfono</div>
+          <div class="toggle-row">
+            <span>📞</span><span class="tr-name" style="font-size:.68rem">WhatsApp</span>
+            <span class="tr-risk" style="color:var(--g)">✔</span>
+            <div class="tgl on" id="tgl-wa" onclick="toggleApp('wa')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>🎵</span><span class="tr-name" style="font-size:.68rem">TikTok</span>
+            <span class="tr-risk" style="color:var(--a)">⚠</span>
+            <div class="tgl on" id="tgl-tt" onclick="toggleApp('tt')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>🔦</span><span class="tr-name" style="font-size:.68rem">Super Torcia</span>
+            <span class="tr-risk" style="color:var(--r)">✖</span>
+            <div class="tgl on" id="tgl-to" onclick="toggleApp('to')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>🏎️</span><span class="tr-name" style="font-size:.68rem">Racing 3D</span>
+            <span class="tr-risk" style="color:var(--r)">✖</span>
+            <div class="tgl on" id="tgl-ra" onclick="toggleApp('ra')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>🎤</span><span class="tr-name" style="font-size:.68rem">Shazam</span>
+            <span class="tr-risk" style="color:var(--g)">✔</span>
+            <div class="tgl on" id="tgl-sh" onclick="toggleApp('sh')"></div>
+          </div>
+          <div style="padding:3px 8px;font-size:.52rem;color:var(--a);text-align:center">
+            ⚠ Tocca per REVOCARE Torcia e Racing
+          </div>
+        </div>
+
+      </div><!-- /ph-screen -->
+      <div class="ph-home-btn"></div>
+    </div><!-- /chir-phone -->
+
+    <!-- GUIDE -->
+    <div id="chir-guide">
+      <div class="slbl">// GUIDA PASSO-PASSO</div>
+      <div class="chir-step-label active-step" id="csl-0">
+        <div class="csl-num">1</div>
+        Tocca ⚙️ <strong>Impostazioni</strong> nella schermata home del telefono
+      </div>
+      <div class="chir-step-label" id="csl-1">
+        <div class="csl-num">2</div>
+        Seleziona <strong>Privacy e Sicurezza</strong> dall'elenco
+      </div>
+      <div class="chir-step-label" id="csl-2">
+        <div class="csl-num">3</div>
+        Tocca <strong>Gestione Permessi</strong>
+      </div>
+      <div class="chir-step-label" id="csl-3">
+        <div class="csl-num">4</div>
+        Scegli il permesso <strong>Microfono</strong>
+      </div>
+      <div class="chir-step-label" id="csl-4">
+        <div class="csl-num">5</div>
+        Disattiva le app non necessarie: <span style="color:var(--r)">Super Torcia</span> e <span style="color:var(--r)">Racing 3D</span>
+      </div>
+      <div id="chir-msg" style="margin-top:8px"></div>
+      <div id="chir-result" class="box" style="font-size:.88rem;margin-top:6px">
+        ✔ <strong>Ottimo!</strong> Hai revocato l'accesso al microfono alle app sospette. La torcia funziona ancora (usa il LED, non il mic). Racing 3D funziona ancora ma non può più ascoltarti.
+      </div>
+      <div class="box a" style="font-size:.82rem;flex-shrink:0">
+        <strong>Ricorda:</strong> Puoi sempre tornare indietro e ri-concedere un permesso se un'app ne avesse davvero bisogno.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+S15 — RIEPILOGO: NON FARE
+================================================================ -->
+<section class="slide" id="s15">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">❌ Comportamenti<br><span class="r">da Evitare</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="d" style="font-size:1.1rem">Premere <strong>"Consenti"</strong> a tutti i permessi senza leggere cosa si sta concedendo</li>
+        <li class="d" style="font-size:1.1rem">Concedere la posizione GPS <strong>"Sempre"</strong> invece di "Solo durante l'uso"</li>
+        <li class="d" style="font-size:1.1rem">Non controllare mai i permessi delle app già installate</li>
+        <li class="d" style="font-size:1.1rem">Installare app da fonti non ufficiali (siti di terze parti, APK sconosciuti)</li>
+        <li class="d" style="font-size:1.1rem">Pensare che se un'app è gratuita e famosa sia automaticamente sicura</li>
+        <li class="d" style="font-size:1.1rem">Dimenticare di verificare i permessi dopo un <strong>aggiornamento</strong> dell'app</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S16 — RIEPILOGO: FARE
+================================================================ -->
+<section class="slide" id="s16">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">✅ Comportamenti<br><span class="a">da Adottare</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="k" style="font-size:1.1rem">Prima di installlare un'app, <strong>leggi i permessi richiesti</strong> e chiediti se hanno senso logico</li>
+        <li class="k" style="font-size:1.1rem">Usa <strong>Privacy → Gestione Permessi</strong> ogni mese per fare un controllo generale</li>
+        <li class="k" style="font-size:1.1rem">Preferisci sempre <strong>"Solo durante l'uso"</strong> per GPS, microfono e fotocamera</li>
+        <li class="k" style="font-size:1.1rem">Se un'app non funziona senza un permesso sospetto, <strong>disinstallala</strong> e trova un'alternativa</li>
+        <li class="k" style="font-size:1.1rem">Su iOS: osserva il <span class="hl">puntino arancione/verde</span> in alto — indica accesso attivo a mic/camera</li>
+        <li class="k" style="font-size:1.1rem">Controlla il <strong>Report sull'Attività delle App</strong> (iOS) o la <strong>Dashboard Privacy</strong> (Android)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+S17 — FINALE
+================================================================ -->
+<section class="slide" id="s17">
+  <div class="center">
+    <div style="font-size:4.5rem;animation:gp 2.5s infinite">🔐</div>
+    <div style="font-family:var(--fv);font-size:clamp(2.2rem,4.5vw,3.5rem);color:var(--g);text-shadow:0 0 20px var(--g);line-height:1.1">
+      I tuoi dati personali<br>non sono gratis.
+    </div>
+    <div style="font-family:var(--fv);font-size:clamp(1.4rem,2.8vw,2.2rem);color:var(--a);text-shadow:0 0 14px var(--adim)">
+      Impara a scegliere a chi dare le chiavi.
+    </div>
+    <div class="cover-div"></div>
+    <div style="font-size:.88rem;color:var(--gdim);letter-spacing:2px">
+      SICUREZZA INFORMATICA — MODULO 3 // FINE &nbsp;<span class="blink">█</span>
+    </div>
+  </div>
+</section>
+
+</div><!-- #stage -->
+
+<!-- NAV + FOOTER -->
+<div id="nav">
+  <button class="nb" id="bp">◀</button>
+  <button class="nb" id="bn">▶</button>
+</div>
+<footer id="ft">
+  <span class="flbl">AVANZAMENTO:</span>
+  <div id="pt"><div id="pf" style="width:0%"></div></div>
+  <span id="pp">0%</span>
+</footer>
+
+<script>
+/* ====================================================================
+NAVIGAZIONE SLIDE
+==================================================================== */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0;
+
+const labels = [
+  'COPERTINA','IL PRODOTTO SEI TU','MODELLO DI BUSINESS APP',
+  'DATA BROKER','ROADMAP','COSA SONO I PERMESSI',
+  'NECESSARIO VS ABUSIVO','LAB: ECONOMIA INVISIBILE',
+  'ANALISI APP — LOGICA','CASO STUDIO: WHATSAPP',
+  'APP A RISCHIO','LAB: GIOCO INQUISITORE',
+  'PROCEDURA: ANDROID','PROCEDURA: iOS',
+  'LAB: CHIRURGO IMPOSTAZIONI','RIEPILOGO — NON FARE',
+  'RIEPILOGO — FARE','CONCLUSIONE'
+];
+
+document.getElementById('nt').textContent = String(N).padStart(2,'0');
+
+function goTo(i) {
+  if (i < 0 || i >= N) return;
+  const prev = slides[cur];
+  const next = slides[i];
+  const fwd = i > cur;
+  prev.classList.remove('active');
+  if (fwd) prev.classList.add('exit-left');
+  next.style.transition = 'none';
+  next.style.opacity = '0';
+  next.style.transform = fwd ? 'translateX(50px)' : 'translateX(-50px)';
+  next.classList.add('active');
+  void next.offsetWidth;
+  next.style.transition = '';
+  next.style.opacity = '';
+  next.style.transform = '';
+  setTimeout(() => prev.classList.remove('exit-left'), 360);
+  cur = i;
+  syncUI();
+  stopAllSims();
+}
+
+function syncUI() {
+  document.getElementById('nc').textContent = String(cur + 1).padStart(2,'0');
+  document.getElementById('slide-section').textContent = labels[cur] || '';
+  const p = N > 1 ? Math.round(cur / (N - 1) * 100) : 100;
+  document.getElementById('pf').style.width = p + '%';
+  document.getElementById('pp').textContent = p + '%';
+  document.getElementById('bp').disabled = cur === 0;
+  document.getElementById('bn').disabled = cur === N - 1;
+}
+
+document.getElementById('bp').addEventListener('click', () => goTo(cur - 1));
+document.getElementById('bn').addEventListener('click', () => goTo(cur + 1));
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown') goTo(cur + 1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp') goTo(cur - 1);
+});
+syncUI();
+
+/* ====================================================================
+LAB 1 — L'ECONOMIA INVISIBILE
+Animazione: utente → app → server con pacchetti dati e monete
+==================================================================== */
+let econTOs = [], econRunning = false, econValue = 0;
+
+/** Aggiunge una riga al log dell'animazione */
+function econLog(msg, col) {
+  const el = document.getElementById('econ-log');
+  const d = document.createElement('div');
+  d.style.color = col || 'var(--gdim)';
+  d.style.fontSize = '.75rem';
+  d.textContent = msg;
+  el.appendChild(d);
+  // Mantieni solo le ultime 4 righe
+  while (el.children.length > 4) el.removeChild(el.firstChild);
+}
+
+/** Anima un singolo packet da left% a left% sull'asse orizzontale */
+function animPacket(pktId, fromPct, toPct, color, duration, delay) {
+  const id = setTimeout(() => {
+    const el = document.getElementById(pktId);
+    if (!el) return;
+    el.style.transition = 'none';
+    el.style.left = fromPct + '%';
+    el.style.opacity = '1';
+    el.style.color = color || 'var(--g)';
+    void el.offsetWidth;
+    el.style.transition = `left ${duration}ms ease, opacity ${duration * 0.3}ms ease ${duration * 0.7}ms`;
+    el.style.left = toPct + '%';
+    setTimeout(() => { el.style.opacity = '0'; }, duration);
+  }, delay);
+  econTOs.push(id);
+}
+
+/** Aggiorna il contatore del valore dati */
+function updateCounter(val, label) {
+  document.getElementById('econ-counter').innerHTML =
+    `💰 Valore dati estratti: <span style="color:var(--r)">€ ${val.toFixed(3)}</span>&nbsp; — <span style="font-size:1rem;color:var(--gdim)">${label}</span>`;
+}
+
+/** Avvia la simulazione completa */
+function startEcon() {
+  if (econRunning) return;
+  econRunning = true;
+  econValue = 0;
+
+  document.getElementById('ec-btn').style.display = 'none';
+  document.getElementById('ec-rst').style.display = 'inline-block';
+  document.getElementById('econ-log').innerHTML = '';
+  updateCounter(0, 'raccolta in corso...');
+
+  const T = (delay, fn) => { const id = setTimeout(fn, delay); econTOs.push(id); };
+
+  // --- FASE 1: Utente → App (dati GPS) ---
+  T(300,  () => econLog('[+] APP: richiesta permesso GPS... CONCESSO', 'var(--a)'));
+  animPacket('pkt-gps', 5, 85, 'var(--a)', 900, 500);
+  T(1500, () => { econValue += 0.003; updateCounter(econValue, 'dati posizione GPS'); });
+
+  // --- FASE 1b: GPS poi Microfono ---
+  T(1700, () => econLog('[+] APP: richiesta permesso Microfono... CONCESSO', 'var(--a)'));
+  animPacket('pkt-mic', 5, 85, 'var(--r)', 900, 1900);
+  T(2900, () => { econValue += 0.008; updateCounter(econValue, '+ audio captato'); });
+
+  // --- FASE 1c: Contatti ---
+  T(3100, () => econLog('[+] APP: richiesta permesso Rubrica... CONCESSO', 'var(--a)'));
+  animPacket('pkt-cnt', 5, 85, 'var(--g)', 900, 3300);
+  T(4300, () => { econValue += 0.012; updateCounter(econValue, '+ rubrica 247 contatti'); });
+
+  // --- FASE 2: App → Server (vendita dati) ---
+  T(4800, () => econLog('[>>] APP → SERVER BROKER: invio pacchetto dati...', 'var(--r)'));
+  animPacket('pkt2-gps', 5, 85, 'var(--a)', 700, 5000);
+  animPacket('pkt2-mic', 5, 85, 'var(--r)', 700, 5350);
+  animPacket('pkt2-cnt', 5, 85, 'var(--g)', 700, 5700);
+
+  // --- FASE 3: Monete Server → App ---
+  T(6300, () => econLog('[$$] SERVER: pagamento ricevuto — 0.023€ per questo ciclo', 'var(--gdim)'));
+  const moneyEl = document.getElementById('pkt2-$');
+  T(6400, () => {
+    moneyEl.style.transition = 'none';
+    moneyEl.style.left = '85%';
+    moneyEl.style.opacity = '1';
+    void moneyEl.offsetWidth;
+    moneyEl.style.transition = 'left 900ms ease, opacity 300ms ease 600ms';
+    moneyEl.style.left = '5%';
+    setTimeout(() => { moneyEl.style.opacity = '0'; }, 900);
+  });
+
+  // --- FASE 4: Conclusione ---
+  T(7400, () => {
+    econValue += 0.023;
+    updateCounter(econValue, '— CICLO COMPLETATO');
+    econLog('[!] Questo ciclo si ripete ogni 15 minuti, ogni giorno', 'var(--r)');
+  });
+  T(8200, () => {
+    const daily = (econValue * 96).toFixed(2);
+    document.getElementById('econ-counter').innerHTML =
+      `📊 Valore/giorno stimato: <span style="color:var(--a)">€ ${daily}</span> — per <span style="color:var(--r)">ogni utente</span>`;
+    econRunning = false;
+  });
+}
+
+function resetEcon() {
+  econTOs.forEach(clearTimeout);
+  econTOs = [];
+  econRunning = false;
+  // Reset visibilità packets
+  ['pkt-gps','pkt-mic','pkt-cnt','pkt2-gps','pkt2-mic','pkt2-cnt','pkt2-$'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity = '0'; el.style.transition = 'none'; }
+  });
+  document.getElementById('econ-log').innerHTML = '<div style="color:var(--gdim)">[ in attesa... ]</div>';
+  document.getElementById('econ-counter').textContent = '[ premi SCARICA GRATIS per avviare ]';
+  document.getElementById('ec-btn').style.display = 'inline-block';
+  document.getElementById('ec-rst').style.display = 'none';
+}
+
+document.getElementById('ec-btn').addEventListener('click', startEcon);
+document.getElementById('ec-rst').addEventListener('click', resetEcon);
+
+/* ====================================================================
+LAB 2 — IL GIOCO DELL'INQUISITORE
+Permesso corretto per ogni card:
+  1: Bussola → Microfono → REVOCA
+  2: ChatVoce → Rubrica   → CONCEDI
+  3: Racing 3D → GPS      → REVOCA
+  4: Torcia → Contatti    → REVOCA
+==================================================================== */
+const INQ_CORRECT = { 1:'revoca', 2:'concedi', 3:'revoca', 4:'revoca' };
+const INQ_FEEDBACK_OK = {
+  1:'✔ Corretto! Una bussola usa solo i sensori magnetici. Il microfono non c\'è motivo di concederlo: vuole ascoltarti.',
+  2:'✔ Corretto! ChatVoce è un\'app di messaggistica — ha bisogno della rubrica per trovare chi hai in contatti.',
+  3:'✔ Corretto! Un gioco arcade non ha bisogno del GPS reale. Lo usa solo per mostrarti pubblicità geo-localizzata.',
+  4:'✔ Corretto! Una torcia usa il flash della fotocamera, non la tua rubrica. Richiesta chiaramente abusiva.'
+};
+const INQ_FEEDBACK_KO = {
+  1:'✖ Sbagliato! Una bussola usa solo i sensori magnetici. Concedere il microfono permette all\'app di ascoltarti anche a schermo spento. DATI VENDUTI! 🔴',
+  2:'✖ Attenzione! In questo caso la rubrica è necessaria: ChatVoce serve per comunicare e deve sapere chi hai nei contatti. Revocandola, l\'app non funziona.',
+  3:'✖ Sbagliato! Racing 3D non ha bisogno del GPS reale. Con la tua posizione, la app ti mostra pubblicità geo-localizzata e rivende la tua cronologia spostamenti. 🔴',
+  4:'✖ Sbagliato! Una torcia non ha NESSUN motivo di accedere ai tuoi contatti. Questa è raccolta dati abusiva pura. DATI VENDUTI! 🔴'
+};
+
+let inqScore = 0;
+let inqDone = {};
+
+function inqAnswer(cardNum, choice) {
+  if (inqDone[cardNum]) return; // già risposto
+  inqDone[cardNum] = true;
+
+  const card = document.getElementById('inq-c' + cardNum);
+  const feedback = document.getElementById('inq-f' + cardNum);
+  const overlay = document.getElementById('inq-o' + cardNum);
+  const correct = INQ_CORRECT[cardNum] === choice;
+
+  // Disabilita bottoni della card
+  card.querySelectorAll('button').forEach(b => b.disabled = true);
+  card.classList.add('answered');
+
+  if (correct) {
+    inqScore++;
+    card.style.borderColor = 'var(--g)';
+    feedback.textContent = INQ_FEEDBACK_OK[cardNum];
+    feedback.className = 'inq-feedback ok';
+    overlay.textContent = '✔';
+    overlay.style.color = 'var(--g)';
+  } else {
+    card.style.borderColor = 'var(--r)';
+    feedback.textContent = INQ_FEEDBACK_KO[cardNum];
+    feedback.className = 'inq-feedback ko';
+    overlay.textContent = choice === 'concedi' ? '💀' : '⚠';
+    overlay.style.color = correct ? 'var(--g)' : 'var(--r)';
+  }
+  overlay.style.display = 'flex';
+
+  // Aggiorna punteggio
+  document.getElementById('inq-pts').textContent = inqScore;
+
+  // Se tutte e 4 le carte sono state risposte, mostra risultato finale
+  if (Object.keys(inqDone).length === 4) {
+    const fin = document.getElementById('inq-final');
+    fin.style.display = 'block';
+    if (inqScore === 4) {
+      fin.style.color = 'var(--g)';
+      fin.textContent = '🛡️ PERFETTO! Sei un esperto di privacy!';
+    } else if (inqScore >= 2) {
+      fin.style.color = 'var(--a)';
+      fin.textContent = `⚠ ${inqScore}/4 — Buono, ma ripassiamo i permessi abusivi.`;
+    } else {
+      fin.style.color = 'var(--r)';
+      fin.textContent = `💀 ${inqScore}/4 — Rischio alto! Rileggi la teoria sui permessi.`;
+    }
+  }
+}
+
+function inqReset() {
+  inqScore = 0;
+  inqDone = {};
+  for (let i = 1; i <= 4; i++) {
+    const card = document.getElementById('inq-c' + i);
+    const feedback = document.getElementById('inq-f' + i);
+    const overlay = document.getElementById('inq-o' + i);
+    card.classList.remove('answered');
+    card.style.borderColor = '';
+    card.querySelectorAll('button').forEach(b => b.disabled = false);
+    feedback.className = 'inq-feedback';
+    feedback.textContent = '';
+    overlay.style.display = 'none';
+  }
+  document.getElementById('inq-pts').textContent = '0';
+  document.getElementById('inq-final').style.display = 'none';
+}
+
+document.getElementById('inq-rst').addEventListener('click', inqReset);
+
+/* ====================================================================
+LAB 3 — IL CHIRURGO DELLE IMPOSTAZIONI
+Navigazione step-by-step nello smartphone simulato
+==================================================================== */
+let chirCurrent = 0;
+let toggleState = { wa: true, tt: true, to: true, ra: true, sh: true };
+let chirRevoked = 0; // conta quante app sospette sono state revocate (target: to e ra)
+
+/** Naviga verso uno step del telefono simulato */
+function chirNav(stepNum) {
+  // Aggiorna screen del telefono
+  document.querySelectorAll('.chir-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('chir-s' + stepNum).classList.add('active');
+  chirCurrent = stepNum;
+
+  // Aggiorna la guida laterale
+  const guides = document.querySelectorAll('.chir-step-label');
+  guides.forEach((g, idx) => {
+    g.classList.remove('done','active-step');
+    if (idx < stepNum) g.classList.add('done');
+    if (idx === stepNum) g.classList.add('active-step');
+  });
+
+  // Messaggio guida
+  const msgs = [
+    '👆 Tocca l\'icona ⚙️ per aprire le Impostazioni',
+    '👆 Tocca "Privacy e Sicurezza"',
+    '👆 Tocca "Gestione Permessi"',
+    '👆 Tocca "Microfono" per vedere quali app vi accedono',
+    '👆 Disattiva le app che NON hanno bisogno del microfono'
+  ];
+  const msgEl = document.getElementById('chir-msg');
+  msgEl.textContent = msgs[stepNum] || '';
+  msgEl.style.color = 'var(--a)';
+}
+
+/** Toggle per i permessi app nel simulatore */
+function toggleApp(appId) {
+  const el = document.getElementById('tgl-' + appId);
+  toggleState[appId] = !toggleState[appId];
+  el.classList.toggle('on', toggleState[appId]);
+  el.classList.toggle('off', !toggleState[appId]);
+
+  // Controlla se le app sospette (to = torcia, ra = racing) sono state disattivate
+  const toRevoked = !toggleState['to'];
+  const raRevoked = !toggleState['ra'];
+
+  if (toRevoked && raRevoked) {
+    document.getElementById('chir-result').style.display = 'block';
+    document.getElementById('chir-msg').textContent = '✔ Missione completata!';
+    document.getElementById('chir-msg').style.color = 'var(--g)';
+    // Segna step 4 come done nella guida
+    document.querySelectorAll('.chir-step-label').forEach(g => {
+      g.classList.remove('active-step');
+      g.classList.add('done');
+    });
+  } else if (toRevoked || raRevoked) {
+    document.getElementById('chir-msg').textContent = '⚠ Bene! Ora disattiva anche l\'altra app sospetta.';
+    document.getElementById('chir-msg').style.color = 'var(--a)';
+  }
+}
+
+// Inizializzazione guida
+chirNav(0);
+
+/* ====================================================================
+STOP ALL SIMULATORS — chiamato ad ogni cambio slide
+==================================================================== */
+function stopAllSims() {
+  // Stop economia invisibile
+  if (econRunning) {
+    econTOs.forEach(clearTimeout);
+    econTOs = [];
+    econRunning = false;
+  }
+  // (inquisitore e chirurgo sono statici, nessun timer da fermare)
+}
+
+</script>
+
+<script>
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const ref = document.referrer;
+  const back = document.getElementById('back-btn');
+  if (!back) return;
+  const c = p.get('classe');
+  if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
+    back.href = '/#3l-relazioni-internazionali';
+    back.textContent = '◀ 3°L RIM';
+    back.title = 'Torna alla sezione 3°L Relazioni Internazionali';
+  } else if (c === '2h' || (ref && ref.includes('#2h-finanza-marketing'))) {
+    back.href = '/#2h-finanza-marketing';
+    back.textContent = '◀ 2H AFM';
+    back.title = 'Torna alla sezione 2H Finanza & Marketing';
+  } else if (c === '2g' || (ref && ref.includes('#2g-finanza-marketing'))) {
+    back.href = '/#2g-finanza-marketing';
+    back.textContent = '◀ 2G AFM';
+    back.title = 'Torna alla sezione 2G Finanza & Marketing';
+  } else {
+    back.href = '/#informatica';
+    back.textContent = '◀ INFORMATICA';
+    back.title = 'Torna a Informatica';
+  }
+})();
+</script>
+
+</body>
+</html>

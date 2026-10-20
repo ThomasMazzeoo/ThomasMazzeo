@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicurezza Informatica — Ingegneria Sociale e Phishing</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROOT & RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:    #00ff41;
+  --gdim: #00cc33;
+  --gdk:  #003a0f;
+  --gglo: rgba(0,255,65,.10);
+  --a:    #ffb000;
+  --adim: #cc8c00;
+  --r:    #ff3333;
+  --rdim: #990000;
+  --rglo: rgba(255,51,51,.15);
+  --bg:   #000;
+  --bgc:  #050f05;
+  --bdr:  rgba(0,255,65,.18);
+  --fm:   'Share Tech Mono','Courier New',monospace;
+  --fv:   'VT323',monospace;
+  --hh:   46px;
+  --fh:   28px;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--g);font-family:var(--fm)}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px)
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#hd{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:var(--bg);border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;z-index:200
+}
+.logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
+.hd-right{display:flex;align-items:center;gap:18px}
+#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase}
+#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+#ft{
+  position:fixed;bottom:0;left:0;right:0;height:var(--fh);
+  background:var(--bg);border-top:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200
+}
+#pt{flex:1;height:7px;background:var(--gdk);border:1px solid rgba(0,255,65,.2)}
+#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
+#pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
+.flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
+
+/* ============================================================
+   NAV BUTTONS
+   ============================================================ */
+#nav{position:fixed;bottom:calc(var(--fh)+8px);right:14px;display:flex;gap:6px;z-index:200}
+.nb{
+  background:var(--bgc);border:1px solid var(--gdim);color:var(--g);
+  font-family:var(--fv);font-size:1.4rem;width:40px;height:40px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s
+}
+.nb:hover{background:var(--gglo);box-shadow:0 0 10px var(--g)}
+.nb:disabled{opacity:.2;cursor:not-allowed}
+
+/* ============================================================
+   STAGE & SLIDE BASE
+   ============================================================ */
+#stage{position:fixed;top:var(--hh);left:0;right:0;bottom:var(--fh);overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  padding:18px 40px 12px 40px;
+  display:flex;flex-direction:column;gap:0;
+  opacity:0;transform:translateX(50px);
+  transition:opacity .32s ease,transform .32s ease;
+  pointer-events:none;overflow:hidden
+}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit-left{opacity:0;transform:translateX(-50px)}
+
+/* ============================================================
+   TIPOGRAFIA — GRANDE per LIM
+   ============================================================ */
+.tag{font-size:.68rem;color:var(--gdim);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;flex-shrink:0}
+.title{
+  font-family:var(--fv);font-size:2.6rem;color:var(--g);
+  text-shadow:0 0 16px var(--g);line-height:1.05;
+  border-bottom:1px solid var(--bdr);padding-bottom:8px;margin-bottom:14px;flex-shrink:0
+}
+.title .a{color:var(--a);text-shadow:0 0 14px var(--adim)}
+.title .r{color:var(--r);text-shadow:0 0 14px var(--rdim)}
+
+.slide p{font-size:1.08rem;line-height:1.6;color:#c8ffc8;margin-bottom:8px}
+.slide p:last-child{margin-bottom:0}
+
+ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.pts li{font-size:1.05rem;line-height:1.5;color:#c8ffc8;padding-left:28px;position:relative}
+ul.pts li::before{content:'▶';position:absolute;left:0;color:var(--g)}
+ul.pts li.d::before{content:'✖';color:var(--r)}
+ul.pts li.w::before{content:'⚠';color:var(--a)}
+ul.pts li.k::before{content:'✔';color:var(--g)}
+ul.pts li.i::before{content:'◆';color:var(--a)}
+
+.hl{color:var(--a);font-weight:bold}
+.rd{color:var(--r)}
+.gn{color:var(--g)}
+code{font-family:var(--fm);color:var(--a);font-size:.92em}
+
+/* Callout box */
+.box{
+  border:1px solid rgba(0,255,65,.3);background:var(--gglo);
+  padding:10px 16px;border-left:3px solid var(--g);flex-shrink:0
+}
+.box.d{border-color:var(--r);background:var(--rglo);border-left-color:var(--r)}
+.box.a{border-color:var(--a);background:rgba(255,176,0,.07);border-left-color:var(--a);color:var(--a)}
+
+/* Griglie */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+
+/* Card */
+.card{background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
+.ctitle{font-family:var(--fv);font-size:1.5rem;color:var(--a);margin-bottom:8px;border-bottom:1px solid var(--bdr);padding-bottom:4px;flex-shrink:0}
+
+/* Step list */
+.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{
+  counter-increment:s;padding:5px 8px 5px 38px;position:relative;
+  border-left:2px solid var(--gdk);font-size:1rem;line-height:1.45;color:#c8ffc8
+}
+.steps li::before{
+  content:counter(s);position:absolute;left:-1px;top:5px;
+  background:var(--g);color:var(--bg);
+  width:24px;height:24px;display:flex;align-items:center;
+  justify-content:center;font-size:.78rem;font-weight:bold;border-radius:2px
+}
+
+/* Tabella */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--gdk);color:var(--g);padding:6px 12px;text-align:left;border:1px solid var(--bdr);font-size:.82rem;letter-spacing:1px}
+.tbl td{padding:5px 12px;border:1px solid var(--bdr);font-size:.95rem;color:#c8ffc8}
+.tbl tr:nth-child(even) td{background:var(--gglo)}
+.tr{color:var(--r)!important}.ta{color:var(--a)!important}.tg{color:var(--g)!important}
+
+/* Utilities */
+.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}
+.flex1{flex:1;min-height:0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--fv);font-size:3rem;line-height:1;color:var(--a);text-shadow:0 0 16px var(--adim)}
+.huge{font-family:var(--fv);font-size:4rem;line-height:1;color:var(--r);text-shadow:0 0 20px var(--rdim)}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+
+/* ============================================================
+   COPERTINA
+   ============================================================ */
+.cover-icon{font-size:5rem;filter:drop-shadow(0 0 18px var(--g));animation:gp 2.5s ease-in-out infinite}
+@keyframes gp{0%,100%{filter:drop-shadow(0 0 10px var(--g))}50%{filter:drop-shadow(0 0 28px var(--g))}}
+.cover-title{font-family:var(--fv);font-size:clamp(2.4rem,4.5vw,3.8rem);color:var(--g);text-shadow:0 0 24px var(--g);line-height:1.1}
+.cover-sub{font-family:var(--fv);font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--a);text-shadow:0 0 10px var(--adim)}
+.cover-div{width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.cover-meta{font-size:.78rem;color:var(--gdim);letter-spacing:2px}
+.typing{
+  font-size:.8rem;color:var(--gdim);letter-spacing:1px;overflow:hidden;
+  white-space:nowrap;width:0;border-right:2px solid var(--g);
+  animation:tin 2.2s steps(50) .5s forwards,bc .7s step-end infinite
+}
+@keyframes tin{to{width:100%}}
+@keyframes bc{50%{border-color:transparent}}
+
+/* ============================================================
+   ELEMENTI SPECIFICI SIMULATORI
+   ============================================================ */
+
+/* --- SMARTPHONE SMS --- */
+.phone-shell{
+  width:220px;background:#0a0a12;border:2px solid #2a2a44;
+  border-radius:22px;padding:14px 12px;display:flex;flex-direction:column;
+  align-items:center;gap:8px;flex-shrink:0;
+  box-shadow:0 0 30px rgba(0,0,255,.1)
+}
+.phone-notch{width:60px;height:8px;background:#111120;border-radius:4px;margin-bottom:4px}
+.phone-screen{width:100%;background:#0d0d1a;border-radius:10px;padding:10px;min-height:160px;display:flex;flex-direction:column;gap:6px}
+.phone-time{font-size:.7rem;color:#4444aa;text-align:center;letter-spacing:2px}
+.sms-bubble{background:#1a1a3a;border-radius:8px;padding:8px 10px;border-left:2px solid #4444aa}
+.sms-sender{font-size:.65rem;color:#6666cc;letter-spacing:1px;margin-bottom:3px}
+.sms-text{font-size:.82rem;color:#ccccff;line-height:1.4}
+.sms-link{color:#4488ff;text-decoration:underline;font-size:.78rem}
+.phone-home{width:40px;height:5px;background:#1a1a2e;border-radius:3px;margin-top:4px}
+
+/* Token evidenziatore urgenza */
+.token{display:inline;border-radius:2px;transition:background .3s,color .3s}
+.token.highlight-danger{background:var(--r);color:#000;padding:1px 3px;font-weight:bold}
+.token.highlight-fear{background:var(--a);color:#000;padding:1px 3px;font-weight:bold}
+
+/* Reveal mittente */
+.sender-reveal{
+  background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;
+  border-radius:4px;margin-top:8px;font-size:.78rem;display:none
+}
+.sender-reveal.show{display:block}
+.fake-sender{color:var(--g);font-size:.85rem}
+.real-sender{color:var(--r);font-size:.85rem;margin-top:4px}
+
+/* --- URL ANALYZER --- */
+.url-bar{
+  background:#0a0a0a;border:2px solid var(--adim);border-radius:6px;
+  padding:12px 18px;font-family:var(--fm);font-size:1.15rem;
+  letter-spacing:.5px;line-height:1.6;word-break:break-all;flex-shrink:0;
+  position:relative
+}
+.url-segment{
+  display:inline;border-radius:2px;
+  transition:background .4s,color .4s,box-shadow .4s;
+  padding:2px 0
+}
+.url-segment.active-path{background:rgba(0,200,255,.15);color:#00ccff;box-shadow:0 0 8px rgba(0,200,255,.3)}
+.url-segment.active-tld{background:rgba(255,176,0,.2);color:var(--a);box-shadow:0 0 8px var(--adim)}
+.url-segment.active-domain{
+  background:var(--rglo);color:var(--r);
+  box-shadow:0 0 14px var(--rdim);
+  animation:pulse-r .6s ease-in-out infinite alternate
+}
+.url-segment.active-sub{background:rgba(0,255,65,.1);color:var(--gdim)}
+@keyframes pulse-r{from{box-shadow:0 0 8px var(--rdim)}to{box-shadow:0 0 20px var(--r)}}
+
+.url-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;flex-shrink:0}
+.url-leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem}
+.url-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* Descrizione passo URL */
+#url-step-desc{
+  background:var(--bgc);border:1px solid var(--bdr);border-left:3px solid var(--a);
+  padding:10px 14px;font-size:.95rem;color:#c8ffc8;min-height:52px;
+  transition:opacity .3s;flex-shrink:0
+}
+
+/* --- CHAT WHATSAPP --- */
+.wa-shell{
+  background:#0b0b0b;border:2px solid #1a3a1a;border-radius:12px;
+  overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;max-height:320px
+}
+.wa-header{
+  background:#1a1a1a;padding:8px 14px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid #2a2a2a;flex-shrink:0
+}
+.wa-avatar{width:32px;height:32px;background:#2a4a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.wa-name{color:#eee;font-size:.9rem}
+.wa-status{color:#888;font-size:.68rem}
+.wa-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;background:#0d1a0d}
+.wa-msg{max-width:78%;padding:7px 10px;border-radius:8px;font-size:.85rem;line-height:1.4}
+.wa-msg.recv{background:#1a2a1a;color:#ddd;align-self:flex-start;border-bottom-left-radius:2px}
+.wa-msg.sent{background:#0a3020;color:#c8ffc8;align-self:flex-end;border-bottom-right-radius:2px}
+.wa-link{color:#4af;text-decoration:underline}
+.wa-time{font-size:.6rem;color:#555;margin-top:2px;text-align:right}
+
+/* Schermate esito */
+.result-screen{
+  display:none;position:absolute;inset:0;
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;text-align:center;padding:20px;
+  z-index:50
+}
+.result-screen.show{display:flex}
+.result-screen.lose{background:rgba(80,0,0,.97)}
+.result-screen.win{background:rgba(0,40,10,.97)}
+.result-icon{font-size:4rem}
+.result-title{font-family:var(--fv);font-size:2.8rem;text-shadow:0 0 20px currentColor}
+.result-desc{font-size:.92rem;color:#c8ffc8;max-width:420px;line-height:1.6}
+
+/* Bottoni simulatori */
+.sbtn{
+  background:var(--bg);border:1px solid var(--g);color:var(--g);
+  font-family:var(--fm);font-size:.85rem;padding:7px 18px;cursor:pointer;
+  letter-spacing:1px;text-transform:uppercase;transition:all .18s
+}
+.sbtn:hover{background:var(--gglo);box-shadow:0 0 8px var(--g)}
+.sbtn.r{border-color:var(--r);color:var(--r)}
+.sbtn.r:hover{background:var(--rglo)}
+.sbtn.a{border-color:var(--a);color:var(--a)}
+.sbtn.a:hover{background:rgba(255,176,0,.07)}
+.slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
+
+.back-link-terminal{text-decoration:none;color:var(--g);font-family:var(--fv);font-size:1.15rem;border:1px solid var(--bdr);padding:2px 10px;background:var(--bgc);display:inline-flex;align-items:center;gap:6px;transition:all .18s;letter-spacing:1px}
+.back-link-terminal:hover{background:var(--gglo)!important;border-color:var(--g)!important;box-shadow:0 0 10px var(--g)!important;color:#fff!important}
+
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<header id="hd">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a id="back-btn" href="/#informatica" class="back-link-terminal" title="Torna indietro">◀ TORNA</a>
+    <div class="logo">SEC_102<span class="blink">_</span></div>
+  </div>
+  <div class="hd-right">
+    <div id="slide-section">INTRODUZIONE</div>
+    <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+  </div>
+</header>
+
+<!-- ================================================================
+     STAGE
+     ================================================================ -->
+<div id="stage">
+
+<!-- ================================================================
+     S00 — COPERTINA
+     ================================================================ -->
+<section class="slide active" id="s0">
+  <div class="center">
+    <div class="cover-icon">🧠</div>
+    <div class="cover-title">
+      Sicurezza Informatica<br>
+      <span style="color:var(--a);text-shadow:0 0 18px var(--adim)">Ingegneria Sociale<br>e Phishing</span>
+    </div>
+    <div class="cover-div"></div>
+    <div class="cover-sub">Il bersaglio principale non è il computer — è la mente umana</div>
+    <div class="cover-meta">MODULO 2 &nbsp;·&nbsp; LABORATORIO INTERATTIVO &nbsp;·&nbsp; SCUOLA SUPERIORE</div>
+    <div class="typing">CARICAMENTO MODULO ATTACCHI UMANI... OK &nbsp;▶ AVVIO</div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S01 — IL MESSAGGIO CENTRALE
+     ================================================================ -->
+<section class="slide" id="s1">
+  <div class="tag">// 00 — IL CONCETTO FONDAMENTALE</div>
+  <div class="title">Il Vero Bersaglio<br><span class="r">non è la Macchina</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:14px;border-color:var(--r)">
+      <div style="font-size:4rem">🖥️</div>
+      <div style="font-family:var(--fv);font-size:1.8rem;color:var(--r)">MITO COMUNE</div>
+      <p>"Gli hacker sono geni che scrivono<br>codice verde su schermo nero<br>e bucanno firewall in secondi."</p>
+    </div>
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:14px;border-color:var(--g)">
+      <div style="font-size:4rem">🧠</div>
+      <div style="font-family:var(--fv);font-size:1.8rem;color:var(--g)">REALTÀ</div>
+      <p>Nella maggior parte degli attacchi reali<br>l'attaccante <span class="hl">non rompe nessun sistema</span>.<br>Convince semplicemente <strong>una persona</strong><br>a dargli quello che vuole.</p>
+    </div>
+  </div>
+  <div class="box a mt10">
+    <strong>Statistica reale:</strong> l'82% delle violazioni informatiche documentate coinvolge un elemento umano (Verizon DBIR 2023). Il codice è difficile da forzare. <span class="hl">Le persone, molto meno.</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     S02 — ROADMAP
+     ================================================================ -->
+<section class="slide" id="s2">
+  <div class="tag">// 00 — PERCORSO DI OGGI</div>
+  <div class="title">Argomenti del <span class="a">Modulo</span></div>
+  <div class="g4" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#aa88ff">
+      <div style="font-size:2.8rem">🧠</div>
+      <div style="font-family:var(--fv);font-size:1.4rem;color:#aa88ff">01</div>
+      <div style="font-size:1rem;color:#c8ffc8">Ingegneria<br>Sociale</div>
+      <div style="font-size:.75rem;color:var(--gdim)">La manipolazione<br>psicologica</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
+      <div style="font-size:2.8rem">🎣</div>
+      <div style="font-family:var(--fv);font-size:1.4rem;color:var(--a)">02</div>
+      <div style="font-size:1rem;color:#c8ffc8">Phishing<br>e Smishing</div>
+      <div style="font-size:.75rem;color:var(--gdim)">Email e SMS<br>camuffati</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
+      <div style="font-size:2.8rem">🎭</div>
+      <div style="font-family:var(--fv);font-size:1.4rem;color:var(--r)">03</div>
+      <div style="font-size:1rem;color:#c8ffc8">Spoofing<br>del Mittente</div>
+      <div style="font-size:.75rem;color:var(--gdim)">Il nome che vedi<br>è solo un'etichetta</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
+      <div style="font-size:2.8rem">🔍</div>
+      <div style="font-family:var(--fv);font-size:1.4rem;color:var(--g)">04</div>
+      <div style="font-size:1rem;color:#c8ffc8">Anatomia<br>di un URL</div>
+      <div style="font-size:.75rem;color:var(--gdim)">Leggere da destra<br>verso sinistra</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S03 — INGEGNERIA SOCIALE: DEFINIZIONE
+     ================================================================ -->
+<section class="slide" id="s3">
+  <div class="tag">// 01 — INGEGNERIA SOCIALE</div>
+  <div class="title">Cos'è l'Ingegneria<br><span class="a">Sociale</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Definizione</div>
+      <p>L'<strong>ingegneria sociale</strong> è l'arte di manipolare le persone affinché compiano un'azione o rivelino informazioni riservate.</p>
+      <p>Non sfrutta vulnerabilità nel software. Sfrutta <span class="hl">vulnerabilità nella psicologia umana</span>: la fiducia, la paura, la curiosità, il senso di urgenza.</p>
+      <p>Il termine "ingegneria" non è casuale: è un processo <strong>studiato, pianificato e ripetibile</strong>.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Esempi dalla Vita Reale</div>
+      <ul class="pts">
+        <li>Una telefonata da un finto "tecnico Microsoft" che dice che il tuo PC è infetto</li>
+        <li>Un SMS da "PosteItaliane" con un pacco bloccato da sbloccare subito</li>
+        <li>Una email da "Amazon" con un acquisto sospetto da confermare</li>
+        <li>Un messaggio da un "amico" su WhatsApp che chiede un prestito urgente</li>
+        <li class="w">Nessuno di questi richiede codice hacker. Richiedono solo che <strong>tu agisca</strong>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S04 — LE LEVE PSICOLOGICHE
+     ================================================================ -->
+<section class="slide" id="s4">
+  <div class="tag">// 01 — INGEGNERIA SOCIALE</div>
+  <div class="title">Le 4 Leve<br><span class="r">Psicologiche</span></div>
+  <div class="g4" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
+      <div style="font-size:2.8rem">⏱️</div>
+      <div style="font-family:var(--fv);font-size:1.6rem;color:var(--r)">URGENZA</div>
+      <div style="font-size:.9rem;color:#c8ffc8;line-height:1.4">"Hai 12 ore o il tuo account verrà sospeso"</div>
+      <div class="box d mt6" style="font-size:.78rem;text-align:left">Obiettivo: <strong>impedire la riflessione</strong>. Se non pensi, non noti i segnali d'allarme.</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
+      <div style="font-size:2.8rem">😨</div>
+      <div style="font-family:var(--fv);font-size:1.6rem;color:var(--a)">PAURA</div>
+      <div style="font-size:.9rem;color:#c8ffc8;line-height:1.4">"Il tuo pacco verrà distrutto" / "Attività sospetta sul conto"</div>
+      <div class="box a mt6" style="font-size:.78rem;text-align:left">Obiettivo: attivare la <strong>risposta di panico</strong>. Chi ha paura vuole solo risolvere, subito.</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#aa88ff">
+      <div style="font-size:2.8rem">🎁</div>
+      <div style="font-family:var(--fv);font-size:1.6rem;color:#aa88ff">CURIOSITÀ</div>
+      <div style="font-size:.9rem;color:#c8ffc8;line-height:1.4">"Hai vinto un premio" / "Qualcuno ha visto il tuo profilo"</div>
+      <div class="box mt6" style="font-size:.78rem;text-align:left;border-color:#aa88ff">Obiettivo: innescare il <strong>desiderio di sapere</strong>. La curiosità abbassa la guardia.</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
+      <div style="font-size:2.8rem">👔</div>
+      <div style="font-family:var(--fv);font-size:1.6rem;color:var(--g)">AUTORITÀ</div>
+      <div style="font-size:.9rem;color:#c8ffc8;line-height:1.4">"La tua banca" / "Guardia di Finanza" / "Supporto Apple"</div>
+      <div class="box mt6" style="font-size:.78rem;text-align:left">Obiettivo: sfruttare il <strong>rispetto per le istituzioni</strong>. Non si mette in discussione chi "comanda".</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S05 — IL MECCANISMO: PASSO PER PASSO
+     ================================================================ -->
+<section class="slide" id="s5">
+  <div class="tag">// 01 — INGEGNERIA SOCIALE</div>
+  <div class="title">Come Funziona<br><span class="a">Passo per Passo</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li><strong>RACCOLTA INFORMAZIONI:</strong> L'attaccante studia la vittima. Dai social trova nome, città, azienda, interessi, amici. Più info ha, più credibile sarà l'attacco.</li>
+        <li><strong>COSTRUZIONE DEL PRETESTO:</strong> Crea uno scenario convincente. "Sei cliente di Poste Italiane? Perfetto, ti mando un SMS con logo Poste." Il pretesto usa le info raccolte.</li>
+        <li><strong>INNESCO PSICOLOGICO:</strong> Inserisce una delle 4 leve (urgenza, paura, curiosità, autorità). Questo <span class="hl">disattiva il senso critico</span> della vittima.</li>
+        <li><strong>RICHIESTA DI AZIONE:</strong> "Clicca qui", "Inserisci i dati", "Richiama questo numero", "Trasferisci i soldi". L'azione deve sembrare semplice e necessaria.</li>
+        <li><strong>ESECUZIONE E FUGA:</strong> La vittima compie l'azione. L'attaccante raccoglie credenziali, dati bancari, o installa malware. Il danno è fatto.</li>
+      </ol>
+      <div class="box d mt10">
+        <strong class="rd">Punto critico:</strong> il momento più vulnerabile è il <span class="hl">Passo 3</span>. Se riconosci la leva psicologica in uso, puoi fermarti e ragionare.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S06 — PHISHING: DEFINIZIONE
+     ================================================================ -->
+<section class="slide" id="s6">
+  <div class="tag">// 02 — PHISHING E SMISHING</div>
+  <div class="title">Phishing:<br><span class="a">Il Camuffamento Digitale</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Definizione</div>
+      <p>Il termine <strong>phishing</strong> deriva da "fishing" (pescare): l'attaccante <span class="hl">lancia l'esca</span> e aspetta che qualcuno abbocchi.</p>
+      <p>Consiste nel camuffare una comunicazione (email, SMS, chiamata) per farla sembrare provenire da una fonte <strong>fidata e legittima</strong>.</p>
+      <p>L'obiettivo è sempre lo stesso: portare la vittima su un sito falso dove inserisce le proprie credenziali o dati bancari.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Le Varianti Principali</div>
+      <ul class="pts">
+        <li><strong>Email Phishing:</strong> Finta email da Amazon, PayPal, banca. La più diffusa.</li>
+        <li><strong>Smishing (SMS Phishing):</strong> Finto SMS da corriere, banca, pubblica amministrazione.</li>
+        <li><strong>Vishing (Voice Phishing):</strong> Telefonata da falso operatore bancario o tecnico.</li>
+        <li class="i"><strong>Spear Phishing:</strong> Attacco mirato a una singola persona, altamente personalizzato e difficilissimo da riconoscere.</li>
+        <li class="w"><strong>Whaling:</strong> Spear phishing rivolto a dirigenti e CEO di aziende.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S07 — ESEMPI PRATICI EMAIL
+     ================================================================ -->
+<section class="slide" id="s7">
+  <div class="tag">// 02 — PHISHING</div>
+  <div class="title">Anatomia di una<br><span class="r">Email di Phishing</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <!-- Email falsa -->
+    <div class="card" style="gap:0;padding:0;overflow:hidden;border-color:var(--r)">
+      <div style="background:#1a0505;padding:8px 12px;border-bottom:1px solid var(--bdr)">
+        <div style="font-size:.65rem;color:var(--r);letter-spacing:2px;margin-bottom:4px">// EMAIL PHISHING — ESEMPIO REALE</div>
+        <div style="font-size:.78rem;color:#c8ffc8"><span style="color:var(--gdim)">DA: </span><span style="color:var(--r)">noreply@amazon-sicurezza-it.com</span></div>
+        <div style="font-size:.78rem;color:#c8ffc8"><span style="color:var(--gdim)">A: </span>mario.rossi@email.it</div>
+        <div style="font-size:.78rem;color:#c8ffc8"><span style="color:var(--gdim)">OGG: </span><span style="color:var(--a)">⚠ Acquisto sospetto rilevato — verifica immediata richiesta</span></div>
+      </div>
+      <div style="padding:10px 12px;flex:1;overflow-y:auto">
+        <div style="font-size:.82rem;color:#c8ffc8;line-height:1.6">
+          <p style="margin-bottom:6px">Gentile Cliente Amazon,</p>
+          <p style="margin-bottom:6px">abbiamo rilevato un <span style="color:var(--r)">acquisto non autorizzato</span> sul tuo account per un totale di <strong style="color:var(--r)">€ 349,99</strong>.</p>
+          <p style="margin-bottom:6px">Se non riconosci questo acquisto, devi <span style="color:var(--a)">verificare la tua identità entro 24 ore</span> per evitare la sospensione dell'account.</p>
+          <div style="background:#0a1a0a;border:1px solid var(--gdim);padding:6px 10px;text-align:center;margin:8px 0;cursor:pointer">
+            <span style="color:var(--g);font-size:.88rem">▶ VERIFICA ORA IL TUO ACCOUNT</span>
+          </div>
+          <p style="font-size:.72rem;color:var(--gdim)">Amazon Customer Service</p>
+        </div>
+      </div>
+    </div>
+    <!-- Segnali d'allarme -->
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--r)">Segnali d'Allarme — Trova i 5 Errori</div>
+      <ul class="pts">
+        <li class="d"><strong>Mittente sospetto:</strong> <code style="color:var(--r)">amazon-sicurezza-it.com</code> non è Amazon. Amazon usa solo <code>@amazon.it</code></li>
+        <li class="d"><strong>Urgenza artificiale:</strong> "entro 24 ore" e "sospensione account" sono leve di paura classiche</li>
+        <li class="d"><strong>Importo inventato:</strong> un numero preciso (€349,99) aumenta la credibilità ma è completamente falso</li>
+        <li class="d"><strong>Nessun dettaglio:</strong> nessun numero ordine, nessun prodotto specificato</li>
+        <li class="d"><strong>Saluto generico:</strong> "Gentile Cliente" — Amazon conosce il tuo nome e lo usa sempre</li>
+      </ul>
+      <div class="box mt6" style="font-size:.88rem">
+        <strong>Regola pratica:</strong> se hai dubbi, vai direttamente sul sito ufficiale digitando l'URL nel browser. <span class="hl">Non cliccare mai il link nell'email.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S08 — SMISHING
+     ================================================================ -->
+<section class="slide" id="s8">
+  <div class="tag">// 02 — SMISHING</div>
+  <div class="title">Smishing:<br><span class="a">Il Phishing via SMS</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Perché gli SMS sono più Pericolosi</div>
+      <ol class="steps">
+        <li>Gli SMS appaiono nel <strong>thread del mittente reale</strong> — il finto SMS di Poste Italiane appare nella stessa conversazione degli SMS autentici di Poste</li>
+        <li>Sul telefono non si vede l'indirizzo email del mittente: si vede solo il <strong>nome visualizzato</strong>, facile da falsificare</li>
+        <li>Gli schermi piccoli rendono gli URL <strong>troncati e illeggibili</strong></li>
+        <li>Siamo abituati ad agire subito sugli SMS, più che sulle email</li>
+      </ol>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Esempi Smishing Più Diffusi in Italia</div>
+      <ul class="pts">
+        <li class="d"><strong>Finto corriere:</strong> "Il tuo pacco non può essere consegnato. Paga €1,99 di spese qui: [link]"</li>
+        <li class="d"><strong>Finta banca:</strong> "Accesso sospetto al tuo conto. Verifica subito: [link]"</li>
+        <li class="d"><strong>Finta pubblica amm.:</strong> "Hai un rimborso INPS di €340 in attesa. Richiedi qui: [link]"</li>
+        <li class="d"><strong>Finto operatore TLC:</strong> "La tua SIM scade tra 48h. Rinnovala: [link]"</li>
+        <li class="w">Tutti usano le stesse leve: urgenza, paura di perdere qualcosa, autorità istituzionale.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S09 — LAB SIMULATORE SMISHING "DIETRO LA MASCHERA"
+     ================================================================ -->
+<section class="slide" id="s9">
+  <div class="tag">// LAB 01 — SIMULATORE "DIETRO LA MASCHERA"</div>
+  <div class="title">🔬 Lab: <span class="a">Dietro la Maschera</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:start">
+
+    <!-- Colonna sinistra: telefono -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div class="phone-shell">
+        <div class="phone-notch"></div>
+        <div style="font-size:.62rem;color:#4444aa;letter-spacing:2px;margin-bottom:2px">MESSAGGI</div>
+        <div class="phone-screen">
+          <div class="phone-time">14:32</div>
+          <div class="sms-bubble">
+            <div class="sms-sender" id="sms-sender-name">Poste Italiane</div>
+            <div class="sms-text" id="sms-body">
+              <!-- Ogni parola è wrappata in un token per poterla evidenziare -->
+              Il tuo
+              <span class="token" data-type="normal"> pacco </span>
+              <span class="token" data-type="fear">è bloccato</span>
+              presso il nostro deposito.
+              <span class="token" data-type="danger"> Clicca qui </span>
+              <span class="token" data-type="urgency">entro 12 ore</span>
+              <span class="token" data-type="danger"> o verrà distrutto</span>!<br><br>
+              <span class="sms-link" id="sms-link-text">https://poste-it-tracking.xyz/sblocca</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-home"></div>
+      </div>
+      <!-- Reveal mittente reale -->
+      <div id="sender-reveal-box" style="width:220px;display:none">
+        <div class="sender-reveal show" style="width:100%">
+          <div style="font-size:.6rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px">// ANALISI MITTENTE</div>
+          <div class="fake-sender">✅ Visualizzato: <strong>Poste Italiane</strong></div>
+          <div class="real-sender">⚠ Numero reale nascosto: <strong>+355 68 XXX XXXX</strong><br><span style="font-size:.72rem;color:var(--gdim)">(Albania — numero estero usa-e-getta)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonna destra: analisi -->
+    <div style="display:flex;flex-direction:column;gap:10px;height:100%">
+      <div class="box a">
+        <strong>Come funziona lo spoofing SMS:</strong> i gateway SMS permettono di impostare un <strong>nome alfanumerico</strong> come mittente al posto di un numero. È legale per le aziende, ma viene abusato dai truffatori.
+      </div>
+
+      <div id="lab1-idle" style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:.9rem;color:#c8ffc8">Clicca il pulsante per analizzare il messaggio. Il simulatore evidenzierà le tecniche di manipolazione e rivelerà l'identità reale del mittente.</div>
+        <button class="sbtn a" id="btn-scan" style="width:100%">🔬 SCANSIONA TRUFFA</button>
+      </div>
+
+      <div id="lab1-result" style="display:none;flex-direction:column;gap:8px;flex:1">
+        <div class="slbl">// LEVE PSICOLOGICHE RILEVATE</div>
+        <div id="legend-danger" class="box d" style="display:none;font-size:.88rem">
+          <strong style="color:var(--r)">🔴 CHIAMATA ALL'AZIONE FORZATA</strong><br>
+          Parole evidenziate in rosso: ti spingono a cliccare immediatamente, senza pensare. Primo segnale di truffa.
+        </div>
+        <div id="legend-urgency" class="box d" style="display:none;font-size:.88rem">
+          <strong style="color:var(--r)">🔴 URGENZA ARTIFICIALE</strong><br>
+          "12 ore / verrà distrutto": termine inventato per attivare il panico. Le aziende reali non usano questi toni.
+        </div>
+        <div id="legend-fear" class="box a" style="display:none;font-size:.88rem">
+          <strong style="color:var(--a)">🟡 LEVA DELLA PAURA</strong><br>
+          "È bloccato": la minaccia di perdere qualcosa (il pacco) attiva una risposta emotiva immediata.
+        </div>
+        <div id="legend-sender" style="display:none;background:var(--rglo);border:1px solid var(--r);border-left:3px solid var(--r);padding:10px 14px;font-size:.88rem">
+          <strong style="color:var(--r)">🔴 MITTENTE FALSIFICATO (SPOOFING)</strong><br>
+          Il nome "Poste Italiane" è un'etichetta testuale liberamente impostabile da chiunque.<br>
+          Il numero reale proviene dall'estero ed è usa-e-getta.
+        </div>
+        <button class="sbtn" id="btn-scan-reset" style="width:100%;margin-top:auto">↺ RESET</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     S10 — SPOOFING: TEORIA
+     ================================================================ -->
+<section class="slide" id="s10">
+  <div class="tag">// 03 — SPOOFING DEL MITTENTE</div>
+  <div class="title">Spoofing:<br><span class="r">Il Nome che Vedi È una Bugia</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Il Concetto Fondamentale</div>
+      <p>Il nome del mittente che appare sul tuo schermo — sia in un'email che in un SMS — è <strong>solo un'etichetta testuale</strong>.</p>
+      <p>Non è un dato verificato. Non è una firma digitale. È semplicemente un campo di testo che <span class="hl">chiunque può compilare con qualsiasi valore</span>.</p>
+      <p>È come scrivere "Banca d'Italia" sul mittente di una busta cartacea: tecnicamente nessuno te lo impedisce.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Come Funziona — Email</div>
+      <ol class="steps">
+        <li>Il protocollo email (SMTP) include un campo <code>From:</code> che può contenere qualsiasi testo: <code>From: "Apple Support" &lt;truffa@mail.ru&gt;</code></li>
+        <li>Il client email (Gmail, Outlook) mostra all'utente solo il <strong>nome visualizzato</strong>, nascondendo l'indirizzo reale</li>
+        <li>Per vedere l'indirizzo reale devi <strong>espandere i dettagli del mittente</strong> o cliccare sul nome</li>
+        <li>Esistono servizi online gratuiti che permettono di inviare email con qualsiasi mittente apparente</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S11 — SPOOFING SMS: DETTAGLIO TECNICO
+     ================================================================ -->
+<section class="slide" id="s11">
+  <div class="tag">// 03 — SPOOFING DEL MITTENTE</div>
+  <div class="title">Spoofing SMS:<br><span class="a">Il Dettaglio Tecnico</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>Il protocollo SMS (GSM) permette di usare un <strong>Originator alfanumerico</strong>: invece del numero del telefono, si imposta un nome testuale fino a 11 caratteri</li>
+        <li>I gateway SMS professionali (usati legittimamente da banche e negozi) offrono questa funzione. Ma questi servizi sono accessibili anche ai truffatori</li>
+        <li>Quando il telefono riceve un SMS con lo stesso nome testuale di un mittente già in memoria, lo <strong>inserisce automaticamente nel thread esistente</strong></li>
+        <li>Risultato: il finto SMS di "Poste Italiane" appare <span class="hl">nella stessa conversazione</span> degli SMS autentici di Poste Italiane, senza alcun avviso</li>
+        <li>Non esiste lato utente un modo per verificare l'autenticità del mittente testuale di un SMS</li>
+      </ol>
+      <div class="g2 mt10">
+        <div class="box d">
+          <strong>⚠ Conseguenza pratica:</strong> non fidarti mai dell'identità di un SMS solo perché è nel thread giusto. Quel thread può essere iniettato da chiunque.
+        </div>
+        <div class="box">
+          <strong>✔ Difesa:</strong> non cliccare mai link negli SMS. Se sei cliente Poste/banca, apri l'app ufficiale o il sito digitando l'URL a mano.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S12 — ANATOMIA DI UN URL: TEORIA
+     ================================================================ -->
+<section class="slide" id="s12">
+  <div class="tag">// 04 — ANATOMIA DI UN URL</div>
+  <div class="title">Leggere un URL:<br><span class="a">La Regola d'Oro</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Struttura di un URL</div>
+      <div style="background:var(--bg);border:1px solid var(--bdr);padding:10px;font-size:.9rem;font-family:var(--fm);line-height:2;word-break:break-all">
+        <span style="color:#88aaff">https://</span><span style="color:var(--gdim)">www.</span><span style="color:var(--g);font-weight:bold">amazon</span><span style="color:var(--a);font-weight:bold">.it</span><span style="color:#888">/prodotti/scarpe</span>
+      </div>
+      <ul class="pts" style="margin-top:4px">
+        <li><span style="color:#88aaff">https://</span> — Protocollo (la "s" = cifratura, ma NON significa sicuro!)</li>
+        <li><span style="color:var(--gdim)">www.</span> — Sottodominio (opzionale, può essere qualsiasi cosa)</li>
+        <li><span style="color:var(--g)">amazon</span> — <strong>Secondo livello (SLD)</strong> — Il nome del proprietario del dominio</li>
+        <li><span style="color:var(--a)">.it</span> — <strong>Primo livello (TLD)</strong> — .com .it .org ecc.</li>
+        <li><span style="color:#888">/prodotti/scarpe</span> — Percorso (path) — Dopo il dominio principale</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">La Regola d'Oro</div>
+      <div class="box a" style="font-size:1rem">
+        <strong>Leggi sempre da destra verso sinistra</strong>, partendo dalla prima barra ( / ) che trovi dopo il dominio.
+      </div>
+      <p>Il <strong>dominio reale</strong> (il proprietario vero del sito) è sempre quello immediatamente a sinistra del TLD (.com, .it, .org).</p>
+      <p>Tutto ciò che viene prima (a sinistra) di quel punto può essere inventato dal truffatore come sottodominio.</p>
+      <div class="box d mt6">
+        <strong class="rd">Trappola classica:</strong><br>
+        <code style="color:var(--r)">amazon.it.login-sicuro.com</code><br>
+        Il dominio reale è <strong style="color:var(--r)">login-sicuro.com</strong>.<br>
+        "amazon.it" è solo un sottodominio esca!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S13 — LAB URL ANALYZER
+     ================================================================ -->
+<section class="slide" id="s13">
+  <div class="tag">// LAB 02 — SIMULATORE MACCHINA A RAGGI X PER URL</div>
+  <div class="title">🔬 Lab: <span class="a">Raggi X sull'URL</span></div>
+  <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:10px">
+
+    <!-- URL bar -->
+    <div class="slbl">// LINK SOSPETTO RICEVUTO VIA SMS</div>
+    <div class="url-bar">
+      <span class="url-segment" id="us-proto">https://</span><span class="url-segment" id="us-sub">www.amazon.it</span><span class="url-segment" id="us-dot1">.</span><span class="url-segment" id="us-dom">login-sicuro</span><span class="url-segment" id="us-tld">.com</span><span class="url-segment" id="us-path">/accesso/verifica-identita</span>
+    </div>
+
+    <!-- Legenda colori -->
+    <div class="url-legend">
+      <div class="url-leg-item"><div class="url-dot" style="background:#888"></div><span style="color:#888">Percorso (path)</span></div>
+      <div class="url-leg-item"><div class="url-dot" style="background:var(--a)"></div><span style="color:var(--a)">TLD — primo livello</span></div>
+      <div class="url-leg-item"><div class="url-dot" style="background:var(--r)"></div><span style="color:var(--r)">DOMINIO REALE — proprietario del sito</span></div>
+      <div class="url-leg-item"><div class="url-dot" style="background:var(--gdim)"></div><span style="color:var(--gdim)">Sottodominio (esca)</span></div>
+    </div>
+
+    <!-- Descrizione step -->
+    <div id="url-step-desc">
+      Clicca <strong>"ANALIZZA"</strong> per scomporre l'URL da destra verso sinistra. Ogni click rivela una nuova parte.
+    </div>
+
+    <!-- Bottoni -->
+    <div class="row">
+      <button class="sbtn a" id="btn-url-next">🔍 ANALIZZA →</button>
+      <button class="sbtn" id="btn-url-reset">↺ RESET</button>
+    </div>
+
+    <!-- Spiegazione finale -->
+    <div id="url-final" style="display:none">
+      <div style="background:var(--rglo);border:1px solid var(--r);border-left:3px solid var(--r);padding:10px 14px;font-size:.9rem">
+        <strong style="color:var(--r);font-size:1.1rem">⚠ SITO TRUFFA CONFERMATO</strong><br>
+        Il dominio reale è <code style="color:var(--r)">login-sicuro.com</code> — non ha nulla a che fare con Amazon.<br>
+        <span style="color:#c8ffc8">"www.amazon.it" è solo un sottodominio che l'attaccante ha aggiunto per ingannare l'utente frettoloso.<br>
+        Chiunque può creare un sottodominio con qualsiasi nome su un dominio di sua proprietà.</span>
+      </div>
+    </div>
+
+    <!-- Ulteriore esempio comparativo -->
+    <div class="g2 mt6" style="flex-shrink:0">
+      <div class="box d" style="font-size:.85rem">
+        <strong class="rd">FALSO:</strong> <code style="color:var(--r)">amazon.it.login-sicuro.com</code><br>
+        Dominio reale: <strong>login-sicuro.com</strong> (truffatore)
+      </div>
+      <div class="box" style="font-size:.85rem">
+        <strong class="gn">VERO:</strong> <code style="color:var(--g)">www.amazon.it/accesso</code><br>
+        Dominio reale: <strong>amazon.it</strong> (Amazon)
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     S14 — LAB AMICO HACKERATO
+     ================================================================ -->
+<section class="slide" id="s14">
+  <div class="tag">// LAB 03 — SIMULATORE "L'AMICO HACKERATO"</div>
+  <div class="title">🔬 Lab: <span class="a">L'Amico Hackerato</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:start;position:relative">
+
+    <!-- Chat WhatsApp finta -->
+    <div style="display:flex;flex-direction:column;gap:8px;height:100%">
+      <div class="slbl">// SIMULAZIONE CHAT WHATSAPP</div>
+      <div class="wa-shell">
+        <div class="wa-header">
+          <div class="wa-avatar">👦</div>
+          <div>
+            <div class="wa-name">Marco (Migliore Amico)</div>
+            <div class="wa-status">online</div>
+          </div>
+        </div>
+        <div class="wa-body" id="wa-body">
+          <div class="wa-msg recv">
+            Ehi! Sei online?
+            <div class="wa-time">14:45</div>
+          </div>
+          <div class="wa-msg sent">
+            Sì, tutto ok! 👋
+            <div class="wa-time">14:46</div>
+          </div>
+          <div class="wa-msg recv">
+            Ascolta, ho un problema urgente 😟 Mi hanno bloccato il conto e devo pagare una cosa entro stasera. Mi presti 50 euro? Te li ridò domani, giuro.
+            <div class="wa-time">14:47</div>
+          </div>
+          <div class="wa-msg recv">
+            Clicca qui per mandarli subito: <span class="wa-link" id="wa-link">bit.ly/pagamento-rapido-7743</span>
+            <div class="wa-time">14:47</div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottoni scelta -->
+      <div id="lab3-choice" style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:.88rem;color:#c8ffc8">Cosa fai?</div>
+        <button class="sbtn r" id="btn-click-link" style="width:100%">💸 Clicca il link e manda i soldi</button>
+        <button class="sbtn" id="btn-call-marco" style="width:100%">📞 Chiama Marco al telefono</button>
+      </div>
+    </div>
+
+    <!-- Area risultato (overlay) -->
+    <div style="position:relative;height:100%;display:flex;flex-direction:column;gap:10px">
+      <!-- Stato iniziale: spiegazione -->
+      <div id="lab3-explain" style="display:flex;flex-direction:column;gap:10px;height:100%">
+        <div class="box a">
+          <strong>Scenario tipico di Account Takeover</strong><br>
+          L'account WhatsApp di Marco è stato <span class="rd">rubato da un hacker</span>. L'attaccante ora scrive ai suoi contatti spacciandosi per lui, sfruttando la fiducia pre-esistente.
+        </div>
+        <div class="card" style="gap:8px;flex:1">
+          <div class="ctitle">Perché questo attacco funziona</div>
+          <ul class="pts">
+            <li>Conosce il tuo nome e la relazione con Marco</li>
+            <li>Il numero e la foto profilo sono quelli veri di Marco</li>
+            <li class="d">Usa la leva dell'urgenza ("entro stasera")</li>
+            <li class="d">Usa la leva della fiducia (un amico non ti truffarebbe)</li>
+            <li class="w">L'unica verifica possibile è <strong>fuori canale</strong>: chiamare Marco su un altro numero</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Risultato LOSE -->
+      <div id="lab3-lose" style="display:none;flex-direction:column;gap:10px;height:100%">
+        <div style="background:var(--rglo);border:2px solid var(--r);padding:16px;text-align:center;flex-shrink:0">
+          <div style="font-size:3rem">💀</div>
+          <div style="font-family:var(--fv);font-size:2rem;color:var(--r);text-shadow:0 0 10px var(--r)">TRUFFATO</div>
+        </div>
+        <div class="card" style="gap:8px;flex:1">
+          <div class="ctitle" style="color:var(--r)">Cosa è successo</div>
+          <ul class="pts">
+            <li class="d">Hai cliccato un link che ha rubato le tue credenziali bancarie</li>
+            <li class="d">I €50 non sono mai arrivati a Marco — Marco non sa nulla</li>
+            <li class="d">Il tuo account potrebbe essere il prossimo ad essere compromesso</li>
+            <li class="d">Il ciclo si ripete sui tuoi contatti</li>
+          </ul>
+        </div>
+        <button class="sbtn" id="btn-lab3-reset-lose" style="width:100%">↺ RIPROVA</button>
+      </div>
+
+      <!-- Risultato WIN -->
+      <div id="lab3-win" style="display:none;flex-direction:column;gap:10px;height:100%">
+        <div style="background:var(--gglo);border:2px solid var(--g);padding:16px;text-align:center;flex-shrink:0">
+          <div style="font-size:3rem">🛡️</div>
+          <div style="font-family:var(--fv);font-size:2rem;color:var(--g);text-shadow:0 0 10px var(--g)">DIFESO!</div>
+        </div>
+        <div class="card" style="gap:8px;flex:1">
+          <div class="ctitle">Perché hai vinto</div>
+          <ul class="pts">
+            <li class="k">Hai verificato <strong>fuori canale</strong>: una telefonata reale è impossibile da falsificare da remoto</li>
+            <li class="k">Marco ha confermato che il suo account è stato rubato</li>
+            <li class="k">Ha potuto avvisare gli altri contatti prima che venissero truffati</li>
+            <li class="k">Nessun danno economico, nessun dato rubato</li>
+          </ul>
+          <div class="box mt6" style="font-size:.88rem">
+            <strong>Regola d'oro:</strong> qualsiasi richiesta insolita da un contatto fidato va <span class="hl">sempre verificata su un canale diverso</span>: telefono, voce, di persona.
+          </div>
+        </div>
+        <button class="sbtn" id="btn-lab3-reset-win" style="width:100%">↺ RICOMINCIA</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     S15 — DIFENDERSI: REGOLE D'ORO
+     ================================================================ -->
+<section class="slide" id="s15">
+  <div class="tag">// DIFESA — REGOLE PRATICHE</div>
+  <div class="title">Come Difendersi:<br><span class="a">Le Regole d'Oro</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--r)">Segnali d'Allarme Universali</div>
+      <ul class="pts">
+        <li class="d">Messaggi che creano <strong>urgenza artificiale</strong> ("entro X ore", "immediatamente")</li>
+        <li class="d">Richieste di <strong>dati sensibili</strong> via email, SMS o chat (PIN, password, CVV)</li>
+        <li class="d">Link accorciati (bit.ly, tinyurl) che nascondono la destinazione reale</li>
+        <li class="d">Errori grammaticali o ortografici nel testo (spesso traduzione automatica)</li>
+        <li class="d">Mittenti con domini sospetti o leggermente diversi dall'originale</li>
+        <li class="d">Saluti generici ("Gentile Cliente" invece del tuo nome)</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Cosa Fare Sempre</div>
+      <ul class="pts">
+        <li class="k"><strong>Pausa:</strong> quando senti urgenza o paura, fermati 30 secondi. L'urgenza è la trappola.</li>
+        <li class="k"><strong>Non cliccare link</strong> in email/SMS sospetti. Vai sul sito ufficiale digitandolo tu.</li>
+        <li class="k"><strong>Verifica il mittente reale:</strong> clicca sul nome e guarda l'indirizzo email completo.</li>
+        <li class="k"><strong>Leggi l'URL da destra</strong> a sinistra per trovare il dominio reale.</li>
+        <li class="k"><strong>Verifica fuori canale</strong> qualsiasi richiesta insolita da un contatto fidato.</li>
+        <li class="k"><strong>Chiedi a qualcuno</strong> se hai dubbi: mostrare il messaggio a un'altra persona rompe l'incantesimo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S16 — RIEPILOGO CONCETTI
+     ================================================================ -->
+<section class="slide" id="s16">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">Riepilogo dei<br><span class="a">4 Concetti Chiave</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="border-color:#aa88ff;gap:8px">
+      <div style="font-family:var(--fv);font-size:1.5rem;color:#aa88ff">01 — INGEGNERIA SOCIALE</div>
+      <ul class="pts">
+        <li>Non è hacking tecnico: è manipolazione psicologica</li>
+        <li>Leve: urgenza, paura, curiosità, autorità</li>
+        <li>Difesa: fermati, riconosci la leva in uso, ragiona</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--a);gap:8px">
+      <div style="font-family:var(--fv);font-size:1.5rem;color:var(--a)">02 — PHISHING / SMISHING</div>
+      <ul class="pts">
+        <li>Comunicazioni camuffate da fonti affidabili</li>
+        <li>Obiettivo: portarti su un sito falso</li>
+        <li>Difesa: non cliccare mai link. Vai sul sito direttamente.</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--r);gap:8px">
+      <div style="font-family:var(--fv);font-size:1.5rem;color:var(--r)">03 — SPOOFING DEL MITTENTE</div>
+      <ul class="pts">
+        <li>Il nome visualizzato è solo un'etichetta modificabile</li>
+        <li>SMS appare nel thread legittimo ma è iniettato</li>
+        <li>Difesa: guarda sempre l'indirizzo reale, non il nome</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--g);gap:8px">
+      <div style="font-family:var(--fv);font-size:1.5rem;color:var(--g)">04 — ANATOMIA URL</div>
+      <ul class="pts">
+        <li>Leggi da destra verso sinistra fino alla prima slash</li>
+        <li>Il dominio reale è quello subito prima del TLD</li>
+        <li>Sottodomini come "amazon.it" sono esche</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S17 — NON FARE / FARE
+     ================================================================ -->
+<section class="slide" id="s17">
+  <div class="tag">// RIEPILOGO FINALE</div>
+  <div class="title">La Tua Lista<br><span class="a">di Controllo</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--r)">❌ Non Fare Mai</div>
+      <ul class="pts">
+        <li class="d" style="font-size:1.1rem">Cliccare link in SMS o email non richiesti</li>
+        <li class="d" style="font-size:1.1rem">Inserire dati bancari o password su siti raggiungibili da link</li>
+        <li class="d" style="font-size:1.1rem">Agire d'impulso quando un messaggio crea urgenza o paura</li>
+        <li class="d" style="font-size:1.1rem">Fidarsi del nome del mittente senza verificare l'indirizzo reale</li>
+        <li class="d" style="font-size:1.1rem">Mandare soldi o dati a contatti "fidati" senza verifica vocale</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">✅ Fai Sempre</div>
+      <ul class="pts">
+        <li class="k" style="font-size:1.1rem">Metti in pausa quando senti urgenza artificiale</li>
+        <li class="k" style="font-size:1.1rem">Digita tu l'URL del sito nel browser invece di cliccare link</li>
+        <li class="k" style="font-size:1.1rem">Leggi l'URL da destra verso sinistra per trovare il vero dominio</li>
+        <li class="k" style="font-size:1.1rem">Verifica richieste insolite con una telefonata su un altro canale</li>
+        <li class="k" style="font-size:1.1rem">Mostra messaggi sospetti a qualcuno di fiducia prima di agire</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S18 — SLIDE FINALE
+     ================================================================ -->
+<section class="slide" id="s18">
+  <div class="center">
+    <div style="font-size:4.5rem;animation:gp 2.5s infinite">🧠</div>
+    <div style="font-family:var(--fv);font-size:clamp(2.2rem,4.5vw,3.5rem);color:var(--g);text-shadow:0 0 20px var(--g);line-height:1.1">
+      L'hacker più pericoloso<br>non scrive codice.
+    </div>
+    <div style="font-family:var(--fv);font-size:clamp(1.4rem,2.8vw,2.2rem);color:var(--a);text-shadow:0 0 14px var(--adim)">
+      Ti chiede gentilmente di aprirgli la porta.
+    </div>
+    <div class="cover-div"></div>
+    <div class="box a" style="max-width:500px;text-align:center">
+      Il tuo senso critico è la migliore difesa.<br>
+      <strong>Pausa · Riconosci la leva · Verifica fuori canale</strong>
+    </div>
+    <div style="font-size:.88rem;color:var(--gdim);letter-spacing:2px">
+      SICUREZZA INFORMATICA — MODULO 2 // FINE &nbsp;<span class="blink">█</span>
+    </div>
+  </div>
+</section>
+
+</div><!-- #stage -->
+
+<!-- NAV + FOOTER -->
+<div id="nav">
+  <button class="nb" id="bp">◀</button>
+  <button class="nb" id="bn">▶</button>
+</div>
+<footer id="ft">
+  <span class="flbl">AVANZAMENTO:</span>
+  <div id="pt"><div id="pf" style="width:0%"></div></div>
+  <span id="pp">0%</span>
+</footer>
+
+<script>
+/* ====================================================================
+   NAVIGAZIONE GENERALE
+   Gestisce: cambio slide, progress bar, etichette header,
+   frecce tastiera, pulsanti nav, halt dei simulatori al cambio slide.
+   ==================================================================== */
+
+// Array di tutte le slide nel DOM
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0; // indice slide corrente
+
+// Etichette sezione mostrate nell'header per ogni slide
+const labels = [
+  'COPERTINA',
+  'IL CONCETTO FONDAMENTALE',
+  'ROADMAP',
+  'INGEGNERIA SOCIALE — COS\'È',
+  'LE LEVE PSICOLOGICHE',
+  'IL MECCANISMO — STEP BY STEP',
+  'PHISHING — DEFINIZIONE',
+  'ANATOMIA PHISHING EMAIL',
+  'SMISHING',
+  'LAB: DIETRO LA MASCHERA',
+  'SPOOFING — TEORIA',
+  'SPOOFING SMS — TECNICO',
+  'ANATOMIA DI UN URL',
+  'LAB: RAGGI X URL',
+  'LAB: L\'AMICO HACKERATO',
+  'DIFESA — REGOLE D\'ORO',
+  'RIEPILOGO 4 CONCETTI',
+  'LISTA DI CONTROLLO',
+  'CONCLUSIONE'
+];
+
+// Imposta il totale slide nell'header
+document.getElementById('nt').textContent = String(N).padStart(2,'0');
+
+/**
+ * Naviga alla slide con indice i.
+ * Gestisce animazione entrata/uscita (sinistra/destra),
+ * aggiorna l'UI (header, progress bar, pulsanti nav),
+ * ferma tutti i simulatori attivi.
+ */
+function goTo(i) {
+  if (i < 0 || i >= N) return;
+  const prev = slides[cur];
+  const next = slides[i];
+  const fwd  = i > cur; // direzione: avanti o indietro
+
+  // Rimuovi active dalla slide corrente e aggiungi classe uscita
+  prev.classList.remove('active');
+  if (fwd) prev.classList.add('exit-left');
+
+  // Prepara la slide successiva fuori schermo (senza transizione per posizionamento istantaneo)
+  next.style.transition = 'none';
+  next.style.opacity    = '0';
+  next.style.transform  = fwd ? 'translateX(50px)' : 'translateX(-50px)';
+  next.classList.add('active');
+  void next.offsetWidth; // forza reflow per applicare stili senza transizione
+  // Riattiva la transizione e porta la slide in posizione finale
+  next.style.transition = '';
+  next.style.opacity    = '';
+  next.style.transform  = '';
+
+  // Pulisci classe exit dopo l'animazione
+  setTimeout(() => prev.classList.remove('exit-left'), 360);
+
+  cur = i;
+  syncUI();
+  haltAll(); // ferma tutti i simulatori quando si cambia slide
+}
+
+/** Aggiorna header (numero, etichetta), progress bar e stato pulsanti nav. */
+function syncUI() {
+  document.getElementById('nc').textContent = String(cur + 1).padStart(2,'0');
+  document.getElementById('slide-section').textContent = labels[cur] || '';
+  const p = N > 1 ? Math.round(cur / (N - 1) * 100) : 100;
+  document.getElementById('pf').style.width = p + '%';
+  document.getElementById('pp').textContent  = p + '%';
+  document.getElementById('bp').disabled = (cur === 0);
+  document.getElementById('bn').disabled = (cur === N - 1);
+}
+
+// Event listener pulsanti freccia sullo schermo
+document.getElementById('bp').addEventListener('click', () => goTo(cur - 1));
+document.getElementById('bn').addEventListener('click', () => goTo(cur + 1));
+
+// Navigazione da tastiera (frecce, PageUp/Down)
+document.addEventListener('keydown', e => {
+  // Ignora eventi tastiera quando l'utente sta digitando in un campo di testo
+  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === 'PageDown') goTo(cur + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'    || e.key === 'PageUp')   goTo(cur - 1);
+});
+
+// Inizializzazione UI
+syncUI();
+
+
+/* ====================================================================
+   LAB 01 — SIMULATORE "DIETRO LA MASCHERA"
+   Scompone il messaggio SMS evidenziando:
+   - Le parole di pericolo/azione (rosse)
+   - Le parole di urgenza (rosse)
+   - Le parole di paura (ambra)
+   - Rivela il mittente reale nascosto
+   ==================================================================== */
+
+let lab1Phase = 0;       // fase corrente dell'animazione
+let lab1Running = false; // blocca click multipli durante l'animazione
+let lab1Timeout = null;  // timeout animazione
+
+/**
+ * Avvia la sequenza di scansione: evidenzia progressivamente
+ * i token del messaggio SMS e mostra le legende.
+ */
+function runLab1() {
+  if (lab1Running) return;
+  lab1Running = true;
+
+  // Nasconde lo stato idle, mostra il pannello risultato
+  document.getElementById('lab1-idle').style.display = 'none';
+  document.getElementById('lab1-result').style.display = 'flex';
+
+  // Recupera tutti i token del messaggio
+  const tokens = document.querySelectorAll('#sms-body .token');
+
+  // Step 1: evidenzia token "danger" (rosse) con leggero ritardo tra uno e l'altro
+  let delay = 200;
+  tokens.forEach(tok => {
+    if (tok.dataset.type === 'danger') {
+      lab1Timeout = setTimeout(() => {
+        tok.classList.add('highlight-danger');
+        document.getElementById('legend-danger').style.display = 'block';
+      }, delay);
+      delay += 300;
+    }
+  });
+
+  // Step 2: evidenzia token "urgency" dopo quelli danger
+  tokens.forEach(tok => {
+    if (tok.dataset.type === 'urgency') {
+      lab1Timeout = setTimeout(() => {
+        tok.classList.add('highlight-danger');
+        document.getElementById('legend-urgency').style.display = 'block';
+      }, delay);
+      delay += 300;
+    }
+  });
+
+  // Step 3: evidenzia token "fear" (ambra)
+  tokens.forEach(tok => {
+    if (tok.dataset.type === 'fear') {
+      lab1Timeout = setTimeout(() => {
+        tok.classList.add('highlight-fear');
+        document.getElementById('legend-fear').style.display = 'block';
+      }, delay);
+      delay += 300;
+    }
+  });
+
+  // Step 4: evidenzia il link SMS e rivela il mittente reale
+  lab1Timeout = setTimeout(() => {
+    document.getElementById('sms-link-text').style.color = 'var(--r)';
+    document.getElementById('sms-link-text').style.textDecoration = 'line-through';
+    document.getElementById('sms-sender-name').style.color = 'var(--r)';
+    document.getElementById('sms-sender-name').style.textDecoration = 'line-through';
+    document.getElementById('sender-reveal-box').style.display = 'block';
+    document.getElementById('legend-sender').style.display = 'block';
+    lab1Running = false;
+  }, delay);
+}
+
+/** Ripristina lo stato iniziale del Lab 1. */
+function resetLab1() {
+  if (lab1Timeout) clearTimeout(lab1Timeout);
+  lab1Running = false;
+
+  // Rimuove le evidenziazioni dai token
+  document.querySelectorAll('#sms-body .token').forEach(tok => {
+    tok.classList.remove('highlight-danger', 'highlight-fear');
+  });
+
+  // Ripristina stili del mittente e del link
+  document.getElementById('sms-sender-name').style.color = '';
+  document.getElementById('sms-sender-name').style.textDecoration = '';
+  document.getElementById('sms-link-text').style.color = '';
+  document.getElementById('sms-link-text').style.textDecoration = '';
+
+  // Nascondi il box del mittente e le legende
+  document.getElementById('sender-reveal-box').style.display = 'none';
+  ['legend-danger','legend-urgency','legend-fear','legend-sender'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+
+  // Ripristina pannelli
+  document.getElementById('lab1-idle').style.display = 'flex';
+  document.getElementById('lab1-result').style.display = 'none';
+}
+
+document.getElementById('btn-scan').addEventListener('click', runLab1);
+document.getElementById('btn-scan-reset').addEventListener('click', resetLab1);
+
+
+/* ====================================================================
+   LAB 02 — SIMULATORE RAGGI X PER URL
+   Analizza l'URL sospetto da destra verso sinistra:
+   Step 0 → evidenzia path (grigio)
+   Step 1 → evidenzia TLD (ambra)
+   Step 2 → evidenzia dominio reale (rosso lampeggiante)
+   Step 3 → evidenzia sottodominio esca (verde scuro) e mostra conclusione
+   ==================================================================== */
+
+let urlStep = 0; // passo corrente dell'analisi URL
+
+// Descrizioni mostrate sotto la URL bar ad ogni step
+const urlStepDescs = [
+  'Clicca <strong>"ANALIZZA"</strong> per scomporre l\'URL da destra verso sinistra. Ogni click rivela una nuova parte.',
+  '<strong>Step 1 — PATH (percorso):</strong> <code>/accesso/verifica-identita</code> — Questa è la pagina all\'interno del sito. Non dice nulla sull\'identità del proprietario. Continua →',
+  '<strong>Step 2 — TLD (primo livello):</strong> <code>.com</code> — Dominio di primo livello. Notiamo che NON è ".it" come ci aspetteremmo da un sito italiano legittimo. Segnale sospetto! →',
+  '<strong style="color:var(--r)">Step 3 — DOMINIO REALE: <code>login-sicuro</code></strong> — Questo è il proprietario effettivo del sito! Non "amazon", non "it". Un dominio inventato da un truffatore. →',
+  '<strong style="color:var(--gdim)">Step 4 — SOTTODOMINIO ESCA:</strong> <code>www.amazon.it</code> — Questa parte è completamente inventata dal truffatore. Chiunque può creare sottodomini con qualsiasi nome sul proprio dominio.'
+];
+
+/**
+ * Avanza di un passo nell'analisi dell'URL,
+ * evidenziando il segmento corrispondente.
+ */
+function advanceUrl() {
+  urlStep++;
+
+  // Rimuovi tutte le classi attive prima di applicarne una nuova
+  ['us-proto','us-sub','us-dot1','us-dom','us-tld','us-path'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'url-segment';
+  });
+
+  const desc = document.getElementById('url-step-desc');
+  desc.style.opacity = '0';
+  setTimeout(() => {
+    desc.innerHTML = urlStepDescs[urlStep] || '';
+    desc.style.opacity = '1';
+  }, 200);
+
+  if (urlStep === 1) {
+    // Evidenzia path
+    document.getElementById('us-path').classList.add('active-path');
+  } else if (urlStep === 2) {
+    // Evidenzia TLD
+    document.getElementById('us-path').classList.add('active-path');
+    document.getElementById('us-tld').classList.add('active-tld');
+  } else if (urlStep === 3) {
+    // Evidenzia dominio reale (quello pericoloso)
+    document.getElementById('us-path').classList.add('active-path');
+    document.getElementById('us-tld').classList.add('active-tld');
+    document.getElementById('us-dom').classList.add('active-domain');
+  } else if (urlStep === 4) {
+    // Evidenzia sottodominio esca e mostra la conclusione finale
+    document.getElementById('us-path').classList.add('active-path');
+    document.getElementById('us-tld').classList.add('active-tld');
+    document.getElementById('us-dom').classList.add('active-domain');
+    document.getElementById('us-sub').classList.add('active-sub');
+    document.getElementById('url-final').style.display = 'block';
+    // Disabilita il pulsante avanti perché l'analisi è completa
+    document.getElementById('btn-url-next').disabled = true;
+    document.getElementById('btn-url-next').style.opacity = '0.3';
+  }
+}
+
+/** Ripristina lo stato iniziale del Lab URL. */
+function resetUrl() {
+  urlStep = 0;
+  ['us-proto','us-sub','us-dot1','us-dom','us-tld','us-path'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'url-segment';
+  });
+  document.getElementById('url-step-desc').innerHTML = urlStepDescs[0];
+  document.getElementById('url-final').style.display = 'none';
+  const btn = document.getElementById('btn-url-next');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+document.getElementById('btn-url-next').addEventListener('click', advanceUrl);
+document.getElementById('btn-url-reset').addEventListener('click', resetUrl);
+
+
+/* ====================================================================
+   LAB 03 — SIMULATORE "L'AMICO HACKERATO"
+   Due scelte: clic sul link (LOSE) o chiamata telefonica (WIN).
+   Mostra un pannello risultato diverso con spiegazione didattica.
+   ==================================================================== */
+
+/** Mostra il pannello "hai perso" quando l'utente clicca il link. */
+function lab3Lose() {
+  document.getElementById('lab3-choice').style.display = 'none';
+  document.getElementById('lab3-explain').style.display = 'none';
+  document.getElementById('lab3-lose').style.display = 'flex';
+
+  // Aggiunge alla chat il messaggio "successo truffa"
+  const body = document.getElementById('wa-body');
+  const msg = document.createElement('div');
+  msg.className = 'wa-msg recv';
+  msg.innerHTML = '😈 Ottimo... i tuoi soldi sono arrivati. Grazie per la collaborazione 🙂<div class="wa-time">14:52</div>';
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
+}
+
+/** Mostra il pannello "hai vinto" quando l'utente chiama Marco. */
+function lab3Win() {
+  document.getElementById('lab3-choice').style.display = 'none';
+  document.getElementById('lab3-explain').style.display = 'none';
+  document.getElementById('lab3-win').style.display = 'flex';
+
+  // Aggiunge alla chat il messaggio di verifica andata a buon fine
+  const body = document.getElementById('wa-body');
+  const msg = document.createElement('div');
+  msg.className = 'wa-msg sent';
+  msg.innerHTML = '📞 [Chiamata a Marco — 14:48]<br>"Marco sei tu?" — "NO! Il mio WhatsApp è stato rubato! Non mandare niente!"<div class="wa-time">14:49</div>';
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
+}
+
+/** Ripristina il Lab 3 allo stato iniziale. */
+function resetLab3() {
+  document.getElementById('lab3-choice').style.display = 'flex';
+  document.getElementById('lab3-explain').style.display = 'flex';
+  document.getElementById('lab3-lose').style.display  = 'none';
+  document.getElementById('lab3-win').style.display   = 'none';
+
+  // Ripristina la chat rimuovendo i messaggi aggiunti dinamicamente
+  const body = document.getElementById('wa-body');
+  // Tieni solo i primi 4 messaggi (quelli originali)
+  while (body.children.length > 4) {
+    body.removeChild(body.lastChild);
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+document.getElementById('btn-click-link').addEventListener('click', lab3Lose);
+document.getElementById('btn-call-marco').addEventListener('click', lab3Win);
+document.getElementById('btn-lab3-reset-lose').addEventListener('click', resetLab3);
+document.getElementById('btn-lab3-reset-win').addEventListener('click', resetLab3);
+
+
+/* ====================================================================
+   HALT ALL SIMULATORS
+   Chiamato ogni volta che si cambia slide.
+   Reimposta tutti i lab al loro stato di riposo per evitare
+   stati intermedi incoerenti quando si torna su una slide.
+   ==================================================================== */
+function haltAll() {
+  // Lab 1: reset completo se l'animazione era in corso
+  if (lab1Running) {
+    if (lab1Timeout) clearTimeout(lab1Timeout);
+    resetLab1();
+  }
+  // Lab 2: il reset non è automatico (l'utente potrebbe voler tornare a vederlo)
+  // Lab 3: nessun timer da fermare, la UI rimane nello stato scelto
+}
+</script>
+
+<script>
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const ref = document.referrer;
+  const back = document.getElementById('back-btn');
+  if (!back) return;
+  const c = p.get('classe');
+  if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
+    back.href = '/#3l-relazioni-internazionali';
+    back.textContent = '◀ 3°L RIM';
+    back.title = 'Torna alla sezione 3°L Relazioni Internazionali';
+  } else if (c === '2h' || (ref && ref.includes('#2h-finanza-marketing'))) {
+    back.href = '/#2h-finanza-marketing';
+    back.textContent = '◀ 2H AFM';
+    back.title = 'Torna alla sezione 2H Finanza & Marketing';
+  } else if (c === '2g' || (ref && ref.includes('#2g-finanza-marketing'))) {
+    back.href = '/#2g-finanza-marketing';
+    back.textContent = '◀ 2G AFM';
+    back.title = 'Torna alla sezione 2G Finanza & Marketing';
+  } else {
+    back.href = '/#informatica';
+    back.textContent = '◀ INFORMATICA';
+    back.title = 'Torna a Informatica';
+  }
+})();
+</script>
+
+</body>
+</html>
