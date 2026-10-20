@@ -81,7 +81,7 @@ const MATERIE = [
             id: "giordano-bruno-prime",
             title: "1° classi",
             icon: "🧪",
-            desc: "Attività sperimentali, misure e protocolli di laboratorio per le classi prime.",
+            desc: "Attività sperimentali, misure, vettori e protocolli di laboratorio per le classi prime.",
             chapters: [
               {
                 title: "La Relazione di Laboratorio",
@@ -92,15 +92,7 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            id: "giordano-bruno-seconde",
-            title: "2° classi",
-            icon: "📐",
-            desc: "Attività sperimentali, vettori e dinamica per le classi seconde.",
-            chapters: [
+              },
               {
                 title: "I Vettori",
                 topics: [
@@ -112,6 +104,13 @@ const MATERIE = [
                 ]
               }
             ]
+          },
+          {
+            id: "giordano-bruno-seconde",
+            title: "2° classi",
+            icon: "📐",
+            desc: "Attività sperimentali e simulazioni avanzate per le classi seconde.",
+            chapters: []
           }
         ]
       },
