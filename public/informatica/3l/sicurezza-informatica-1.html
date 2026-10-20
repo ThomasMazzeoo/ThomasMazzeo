@@ -35,20 +35,36 @@ body::before{
 }
 
 /* ============================================================
-   HEADER
+   HEADER & NAV CONTROLS
    ============================================================ */
 #hd{
   position:fixed;top:0;left:0;right:0;height:var(--hh);
   background:var(--bg);border-bottom:1px solid var(--bdr);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;z-index:200
+  padding:0 18px;z-index:200
 }
 .logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
-.hd-right{display:flex;align-items:center;gap:18px}
-#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase}
-#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px}
+.hd-right{display:flex;align-items:center;gap:12px}
+#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
+#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px;white-space:nowrap;user-select:none;min-width:88px;text-align:center}
 .blink{animation:blink 1s step-end infinite}
 @keyframes blink{50%{opacity:0}}
+
+/* Integrated Nav controls */
+#nav{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  position:static;
+}
+.nb{
+  background:var(--bgc);border:1px solid var(--bdr);color:var(--g);
+  font-family:var(--fv);font-size:1.15rem;width:30px;height:30px;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:all .18s;border-radius:3px;padding:0;line-height:1;
+}
+.nb:hover:not(:disabled){background:var(--gglo);border-color:var(--g);box-shadow:0 0 8px var(--g)}
+.nb:disabled{opacity:.25;cursor:not-allowed}
 
 /* ============================================================
    FOOTER
@@ -62,18 +78,6 @@ body::before{
 #pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
 #pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
 .flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
-
-/* ============================================================
-   NAV BUTTONS
-   ============================================================ */
-#nav{position:fixed;bottom:calc(var(--fh)+8px);right:14px;display:flex;gap:6px;z-index:200}
-.nb{
-  background:var(--bgc);border:1px solid var(--gdim);color:var(--g);
-  font-family:var(--fv);font-size:1.4rem;width:40px;height:40px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s
-}
-.nb:hover{background:var(--gglo);box-shadow:0 0 10px var(--g)}
-.nb:disabled{opacity:.2;cursor:not-allowed}
 
 /* ============================================================
    STAGE & SLIDE BASE
@@ -273,9 +277,344 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 .back-link-terminal{text-decoration:none;color:var(--g);font-family:var(--fv);font-size:1.15rem;border:1px solid var(--bdr);padding:2px 10px;background:var(--bgc);display:inline-flex;align-items:center;gap:6px;transition:all .18s;letter-spacing:1px}
 .back-link-terminal:hover{background:var(--gglo)!important;border-color:var(--g)!important;box-shadow:0 0 10px var(--g)!important;color:#fff!important}
 
+/* ============================================================
+   TEMA CHIARO / SCURO TOGGLE & LIGHT THEME STYLES
+   ============================================================ */
+.theme-toggle-btn {
+  background: var(--bgc);
+  border: 1px solid var(--bdr);
+  color: var(--g);
+  font-family: var(--fm);
+  font-size: 0.74rem;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.theme-toggle-btn:hover {
+  background: var(--gglo);
+  border-color: var(--g);
+  box-shadow: 0 0 8px var(--g);
+}
+
+body.light-theme {
+  --bg:   #ffffff;
+  --bgc:  #f8fafc;
+  --bdr:  #cbd5e1;
+  --g:    #047857;
+  --gdim: #065f46;
+  --gdk:  #d1fae5;
+  --gglo: rgba(4, 120, 87, 0.08);
+  --a:    #b45309;
+  --adim: #92400e;
+  --r:    #dc2626;
+  --rdim: #991b1b;
+  --rglo: rgba(220, 38, 38, 0.08);
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body.light-theme::before {
+  display: none !important;
+}
+
+body.light-theme #hd,
+body.light-theme #ft {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme .theme-toggle-btn {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+body.light-theme .theme-toggle-btn:hover {
+  background: #e2e8f0;
+  border-color: #047857;
+  color: #047857;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+body.light-theme .slide p,
+body.light-theme ul.pts li,
+body.light-theme .steps li,
+body.light-theme .tbl td,
+body.light-theme .pml,
+body.light-theme .flbl {
+  color: #1e293b !important;
+}
+
+body.light-theme .title {
+  color: #065f46 !important;
+  text-shadow: none !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+body.light-theme .title .a {
+  color: #b45309 !important;
+  text-shadow: none !important;
+}
+body.light-theme .title .r {
+  color: #dc2626 !important;
+  text-shadow: none !important;
+}
+body.light-theme .tag {
+  color: #047857 !important;
+  font-weight: 700;
+}
+body.light-theme .logo {
+  color: #047857 !important;
+  text-shadow: none !important;
+}
+body.light-theme #slide-section {
+  color: #b45309 !important;
+}
+body.light-theme #num {
+  color: #475569 !important;
+}
+
+body.light-theme .cover-title {
+  color: #047857 !important;
+  text-shadow: none !important;
+}
+body.light-theme .cover-sub {
+  color: #b45309 !important;
+  text-shadow: none !important;
+}
+body.light-theme .cover-icon {
+  filter: none !important;
+  animation: none !important;
+}
+body.light-theme .cover-meta {
+  color: #64748b !important;
+}
+body.light-theme .typing {
+  color: #047857 !important;
+  border-right-color: #047857 !important;
+}
+
+body.light-theme .card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+body.light-theme .ctitle {
+  color: #b45309 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+body.light-theme .box {
+  background: #f0fdf4 !important;
+  border: 1px solid #86efac !important;
+  border-left: 3px solid #059669 !important;
+  color: #065f46 !important;
+}
+body.light-theme .box.d {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  border-left-color: #dc2626 !important;
+  color: #991b1b !important;
+}
+body.light-theme .box.a {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  border-left-color: #d97706 !important;
+  color: #92400e !important;
+}
+
+body.light-theme .steps li {
+  border-left-color: #cbd5e1 !important;
+}
+body.light-theme .steps li::before {
+  background: #059669 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .tbl th {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .tbl td {
+  border-color: #e2e8f0 !important;
+}
+body.light-theme .tbl tr:nth-child(even) td {
+  background: #f8fafc !important;
+}
+
+body.light-theme .back-link-terminal {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .back-link-terminal:hover {
+  background: #e2e8f0 !important;
+  color: #047857 !important;
+  border-color: #047857 !important;
+  box-shadow: none !important;
+}
+
+body.light-theme .nb {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-theme .nb:hover {
+  background: #e2e8f0 !important;
+  color: #047857 !important;
+  box-shadow: none !important;
+}
+
+body.light-theme .sin {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-theme .sin:focus {
+  border-color: #059669 !important;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15) !important;
+}
+
+body.light-theme .sbtn {
+  background: #f1f5f9 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
+}
+body.light-theme .sbtn:hover {
+  background: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+body.light-theme .sbtn.r {
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+body.light-theme .sbtn.r:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .slbl {
+  color: #64748b !important;
+}
+body.light-theme #pt {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme #pf {
+  background: #059669 !important;
+  box-shadow: none !important;
+}
+body.light-theme #pp {
+  color: #059669 !important;
+}
+
+body.light-theme #blog {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .ll {
+  color: #475569 !important;
+}
+
+body.light-theme .sb {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .sb .sn {
+  color: #0f172a !important;
+}
+body.light-theme .sb .sp {
+  color: #64748b !important;
+}
+body.light-theme .sb.breached {
+  border-color: #f87171 !important;
+  background: #fef2f2 !important;
+}
+body.light-theme .sb.compromised {
+  border-color: #fde68a !important;
+  background: #fffbeb !important;
+}
+body.light-theme .sb.safe-s {
+  border-color: #86efac !important;
+  background: #f0fdf4 !important;
+}
+
+body.light-theme #pm-vault {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .pmr {
+  border-bottom-color: #e2e8f0 !important;
+}
+body.light-theme .pms {
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+body.light-theme .pmp {
+  color: #64748b !important;
+}
+
+body.light-theme #tfa-login {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .rc {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  border-left: 3px solid #059669 !important;
+}
+body.light-theme .rc.rr { border-left-color: #dc2626 !important; }
+body.light-theme .rc.ra { border-left-color: #d97706 !important; }
+body.light-theme .rc.rb { border-left-color: #2563eb !important; }
+body.light-theme .rc h3 {
+  color: #0f172a !important;
+}
+
+body.light-theme .big {
+  color: #b45309 !important;
+  text-shadow: none !important;
+}
+body.light-theme .huge {
+  color: #dc2626 !important;
+  text-shadow: none !important;
+}
+body.light-theme #bf-attempt {
+  color: #dc2626 !important;
+  text-shadow: none !important;
+}
+body.light-theme code {
+  color: #b45309 !important;
+  background: #f1f5f9 !important;
+  padding: 1px 4px !important;
+  border-radius: 3px !important;
+}
+
+@media (max-width: 860px) {
+  #slide-section { display: none; }
+  .hd-right { gap: 8px; }
+  #hd { padding: 0 10px; }
+}
+@media (max-width: 600px) {
+  .logo { display: none; }
+  #lab-btn, .back-link-terminal { font-size: 0.85rem; padding: 2px 6px; }
+}
+
 </style>
 </head>
 <body>
+<script>
+  if (localStorage.getItem('sec_slides_theme') === 'light') {
+    document.body.classList.add('light-theme');
+  }
+</script>
 
 <!-- HEADER -->
 <header id="hd">
@@ -286,7 +625,15 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
   </div>
   <div class="hd-right">
     <div id="slide-section">INTRODUZIONE</div>
-    <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+    <div id="nav">
+      <button class="nb" id="bp" title="Slide precedente (←)">◀</button>
+      <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+      <button class="nb" id="bn" title="Slide successiva (→)">▶</button>
+    </div>
+    <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Passa a modalità chiara">
+      <span id="theme-toggle-icon">☀️</span>
+      <span id="theme-toggle-text">CHIARO</span>
+    </button>
   </div>
 </header>
 
@@ -997,11 +1344,7 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 
 </div><!-- #stage -->
 
-<!-- NAV + FOOTER -->
-<div id="nav">
-  <button class="nb" id="bp">◀</button>
-  <button class="nb" id="bn">▶</button>
-</div>
+<!-- FOOTER -->
 <footer id="ft">
   <span class="flbl">AVANZAMENTO:</span>
   <div id="pt"><div id="pf" style="width:0%"></div></div>
@@ -1465,14 +1808,53 @@ function haltAll() {
 </script>
 
 <script>
+// ══════════════════════════════════════════
+// THEME TOGGLE (LIGHT / DARK)
+// ══════════════════════════════════════════
+function initTheme() {
+  const isLight = document.body.classList.contains('light-theme') || localStorage.getItem('sec_slides_theme') === 'light';
+  const btn = document.getElementById('theme-toggle-btn');
+  const icon = document.getElementById('theme-toggle-icon');
+  const txt = document.getElementById('theme-toggle-text');
+  if (isLight) {
+    document.body.classList.add('light-theme');
+    if (icon) icon.textContent = '🌙';
+    if (txt) txt.textContent = 'SCURO';
+    if (btn) btn.title = 'Passa a modalità scura (terminale hacker)';
+  } else {
+    document.body.classList.remove('light-theme');
+    if (icon) icon.textContent = '☀️';
+    if (txt) txt.textContent = 'CHIARO';
+    if (btn) btn.title = 'Passa a modalità chiara';
+  }
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('sec_slides_theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle-btn');
+  const icon = document.getElementById('theme-toggle-icon');
+  const txt = document.getElementById('theme-toggle-text');
+  if (isLight) {
+    if (icon) icon.textContent = '🌙';
+    if (txt) txt.textContent = 'SCURO';
+    if (btn) btn.title = 'Passa a modalità scura (terminale hacker)';
+  } else {
+    if (icon) icon.textContent = '☀️';
+    if (txt) txt.textContent = 'CHIARO';
+    if (btn) btn.title = 'Passa a modalità chiara';
+  }
+}
+initTheme();
+
 (function() {
   const p = new URLSearchParams(window.location.search);
   const ref = document.referrer;
   const back = document.getElementById('back-btn');
   const lab = document.getElementById('lab-btn');
+  const c = p.get('classe');
   if (lab && c) lab.href = `/informatica/sicurezza/laboratorio-cybersecurity-audit.html?classe=${c}`;
   if (!back) return;
-  const c = p.get('classe');
   if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
     back.href = '/#3l-relazioni-internazionali';
     back.textContent = '◀ 3°L RIM';
