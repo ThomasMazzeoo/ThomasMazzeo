@@ -27,7 +27,13 @@ const MATERIE = [
         chapters: [
           {
             title: "Sicurezza informatica",
-            topics: []
+            topics: [
+              {
+                title: "Slide Interattive: Autenticazione e Protezione dell'Identità Digitale",
+                desc: "Modulo 1 multimediale con simulatori interattivi: potenza di calcolo GPU, attacchi brute force, data breach, gestione password vault e autenticazione a due fattori (2FA TOTP).",
+                url: "/informatica/3l/sicurezza-informatica-1.html"
+              }
+            ]
           }
         ]
       },

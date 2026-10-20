@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicurezza Informatica — Autenticazione e Identità Digitale</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROOT & RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:    #00ff41;
+  --gdim: #00cc33;
+  --gdk:  #003a0f;
+  --gglo: rgba(0,255,65,.10);
+  --a:    #ffb000;
+  --adim: #cc8c00;
+  --r:    #ff3333;
+  --rdim: #990000;
+  --rglo: rgba(255,51,51,.15);
+  --bg:   #000;
+  --bgc:  #050f05;
+  --bdr:  rgba(0,255,65,.18);
+  --fm:   'Share Tech Mono','Courier New',monospace;
+  --fv:   'VT323',monospace;
+  --hh:   46px;   /* header height */
+  --fh:   28px;   /* footer height */
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--g);font-family:var(--fm)}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px)
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#hd{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:var(--bg);border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;z-index:200
+}
+.logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
+.hd-right{display:flex;align-items:center;gap:18px}
+#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase}
+#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+#ft{
+  position:fixed;bottom:0;left:0;right:0;height:var(--fh);
+  background:var(--bg);border-top:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200
+}
+#pt{flex:1;height:7px;background:var(--gdk);border:1px solid rgba(0,255,65,.2)}
+#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
+#pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
+.flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
+
+/* ============================================================
+   NAV BUTTONS
+   ============================================================ */
+#nav{position:fixed;bottom:calc(var(--fh)+8px);right:14px;display:flex;gap:6px;z-index:200}
+.nb{
+  background:var(--bgc);border:1px solid var(--gdim);color:var(--g);
+  font-family:var(--fv);font-size:1.4rem;width:40px;height:40px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s
+}
+.nb:hover{background:var(--gglo);box-shadow:0 0 10px var(--g)}
+.nb:disabled{opacity:.2;cursor:not-allowed}
+
+/* ============================================================
+   STAGE & SLIDE BASE
+   ============================================================ */
+#stage{position:fixed;top:var(--hh);left:0;right:0;bottom:var(--fh);overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  padding:18px 40px 12px 40px;
+  display:flex;flex-direction:column;gap:0;
+  opacity:0;transform:translateX(50px);
+  transition:opacity .32s ease,transform .32s ease;
+  pointer-events:none;overflow:hidden
+}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit-left{opacity:0;transform:translateX(-50px)}
+
+/* ============================================================
+   TIPOGRAFIA — GRANDE per LIM
+   ============================================================ */
+.tag{font-size:.68rem;color:var(--gdim);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;flex-shrink:0}
+.title{
+  font-family:var(--fv);font-size:2.6rem;color:var(--g);
+  text-shadow:0 0 16px var(--g);line-height:1.05;
+  border-bottom:1px solid var(--bdr);padding-bottom:8px;margin-bottom:14px;flex-shrink:0
+}
+.title .a{color:var(--a);text-shadow:0 0 14px var(--adim)}
+.title .r{color:var(--r);text-shadow:0 0 14px var(--rdim)}
+
+/* Testo corpo: generoso per leggibilità a 3m */
+.slide p{font-size:1.08rem;line-height:1.6;color:#c8ffc8;margin-bottom:8px}
+.slide p:last-child{margin-bottom:0}
+
+ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.pts li{font-size:1.05rem;line-height:1.5;color:#c8ffc8;padding-left:28px;position:relative}
+ul.pts li::before{content:'▶';position:absolute;left:0;color:var(--g)}
+ul.pts li.d::before{content:'✖';color:var(--r)}
+ul.pts li.w::before{content:'⚠';color:var(--a)}
+ul.pts li.k::before{content:'✔';color:var(--g)}
+ul.pts li.i::before{content:'◆';color:var(--a)}
+
+.hl{color:var(--a);font-weight:bold}
+.rd{color:var(--r)}
+.gn{color:var(--g)}
+code{font-family:var(--fm);color:var(--a);font-size:.92em}
+
+/* Callout box */
+.box{
+  border:1px solid rgba(0,255,65,.3);background:var(--gglo);
+  padding:10px 16px;border-left:3px solid var(--g);flex-shrink:0
+}
+.box.d{border-color:var(--r);background:var(--rglo);border-left-color:var(--r)}
+.box.a{border-color:var(--a);background:rgba(255,176,0,.07);border-left-color:var(--a);color:var(--a)}
+
+/* Griglia 2 e 3 colonne */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+
+/* Card */
+.card{background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
+.ctitle{font-family:var(--fv);font-size:1.5rem;color:var(--a);margin-bottom:8px;border-bottom:1px solid var(--bdr);padding-bottom:4px;flex-shrink:0}
+
+/* Step list */
+.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{
+  counter-increment:s;padding:5px 8px 5px 38px;position:relative;
+  border-left:2px solid var(--gdk);font-size:1rem;line-height:1.45;color:#c8ffc8
+}
+.steps li::before{
+  content:counter(s);position:absolute;left:-1px;top:5px;
+  background:var(--g);color:var(--bg);
+  width:24px;height:24px;display:flex;align-items:center;
+  justify-content:center;font-size:.78rem;font-weight:bold;border-radius:2px
+}
+
+/* Tabella */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--gdk);color:var(--g);padding:6px 12px;text-align:left;border:1px solid var(--bdr);font-size:.82rem;letter-spacing:1px}
+.tbl td{padding:5px 12px;border:1px solid var(--bdr);font-size:.95rem;color:#c8ffc8}
+.tbl tr:nth-child(even) td{background:var(--gglo)}
+.tr{color:var(--r)!important}.ta{color:var(--a)!important}.tg{color:var(--g)!important}
+
+/* Util */
+.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}
+.flex1{flex:1;min-height:0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--fv);font-size:3rem;line-height:1;color:var(--a);text-shadow:0 0 16px var(--adim)}
+.huge{font-family:var(--fv);font-size:4rem;line-height:1;color:var(--r);text-shadow:0 0 20px var(--rdim)}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+
+/* ============================================================
+   SLIDE 0 — COPERTINA
+   ============================================================ */
+.cover-icon{font-size:5rem;filter:drop-shadow(0 0 18px var(--g));animation:gp 2.5s ease-in-out infinite}
+@keyframes gp{0%,100%{filter:drop-shadow(0 0 10px var(--g))}50%{filter:drop-shadow(0 0 28px var(--g))}}
+.cover-title{font-family:var(--fv);font-size:clamp(2.4rem,4.5vw,3.8rem);color:var(--g);text-shadow:0 0 24px var(--g);line-height:1.1}
+.cover-sub{font-family:var(--fv);font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--a);text-shadow:0 0 10px var(--adim)}
+.cover-div{width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.cover-meta{font-size:.78rem;color:var(--gdim);letter-spacing:2px}
+.typing{
+  font-size:.8rem;color:var(--gdim);letter-spacing:1px;overflow:hidden;
+  white-space:nowrap;width:0;border-right:2px solid var(--g);
+  animation:tin 2.2s steps(50) .5s forwards,bc .7s step-end infinite
+}
+@keyframes tin{to{width:100%}}
+@keyframes bc{50%{border-color:transparent}}
+
+/* ============================================================
+   SIMULATORI INPUT/BUTTON
+   ============================================================ */
+.sin{
+  background:var(--bg);border:1px solid var(--gdim);color:var(--g);
+  font-family:var(--fm);font-size:1.1rem;padding:8px 12px;width:100%;
+  outline:none;caret-color:var(--g);transition:border-color .2s
+}
+.sin:focus{border-color:var(--g);box-shadow:0 0 6px var(--gglo)}
+.sbtn{
+  background:var(--bg);border:1px solid var(--g);color:var(--g);
+  font-family:var(--fm);font-size:.85rem;padding:7px 18px;cursor:pointer;
+  letter-spacing:1px;text-transform:uppercase;transition:all .18s
+}
+.sbtn:hover{background:var(--gglo);box-shadow:0 0 8px var(--g)}
+.sbtn.r{border-color:var(--r);color:var(--r)}
+.sbtn.r:hover{background:var(--rglo)}
+.slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
+
+/* BF */
+#bf-attempt{font-family:var(--fv);font-size:2.5rem;color:var(--r);text-shadow:0 0 8px var(--rdim);letter-spacing:4px;min-height:50px}
+#bf-result{font-family:var(--fv);font-size:1.4rem;min-height:32px}
+.cracked{color:var(--r);text-shadow:0 0 10px var(--r)}
+.safe{color:var(--g);text-shadow:0 0 10px var(--g)}
+
+/* BREACH */
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex-shrink:0}
+.sb{background:var(--bgc);border:1px solid var(--gdim);padding:12px;text-align:center;position:relative;transition:all .35s}
+.si{font-size:2rem;display:block;margin-bottom:4px}
+.sn{font-family:var(--fv);font-size:1.3rem;color:var(--g)}
+.sp{font-size:.8rem;color:var(--gdim);margin-top:3px}
+.sbadge{position:absolute;top:5px;right:6px;font-size:.65rem;padding:2px 6px}
+.bok{background:var(--gdk);color:var(--g)}
+.bha{background:var(--rdim);color:#fff}
+.bpw{background:var(--adim);color:#000}
+.sb.breached{border-color:var(--r);background:var(--rglo)}
+.sb.compromised{border-color:var(--a);background:rgba(255,176,0,.07)}
+.sb.safe-s{border-color:var(--g);background:var(--gglo)}
+#blog{
+  background:var(--bg);border:1px solid var(--bdr);
+  padding:8px 12px;font-size:.82rem;
+  flex:1;min-height:0;max-height:100px;
+  overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end
+}
+.ll{color:var(--gdim)}.ll.e{color:var(--r)}.ll.w{color:var(--a)}.ll.g{color:var(--g)}
+#bsvg{position:absolute;top:0;left:0;width:100%;pointer-events:none;overflow:visible;z-index:10}
+
+/* PM VAULT */
+#pm-vault{background:var(--bgc);border:1px solid var(--bdr);padding:8px 14px;flex-shrink:0}
+.pmr{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bdr)}
+.pmr:last-child{border-bottom:none}
+.pms{flex:0 0 110px;color:var(--a);font-size:.88rem}
+.pml{flex:1;color:#c8ffc8;font-size:.82rem}
+.pmp{flex:1;font-size:.8rem;color:var(--gdim);letter-spacing:2px;transition:color .3s}
+.sbar{height:5px;border-radius:2px;margin-top:2px}
+.sh{background:var(--g);box-shadow:0 0 4px var(--g);width:100%}
+.sm{background:var(--a);width:55%}
+.sl{background:var(--r);width:22%}
+
+/* 2FA */
+#tfa-wrap{display:flex;gap:16px;flex:1;min-height:0;align-items:stretch}
+#tfa-login{flex:1;background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+#tfa-phone{
+  width:175px;background:#08080f;border:2px solid #334;border-radius:16px;
+  padding:12px 10px;display:none;flex-direction:column;align-items:center;gap:7px
+}
+#tfa-phone.show{display:flex}
+.ph-n{width:48px;height:6px;background:#1a1a2e;border-radius:3px}
+.ph-a{font-family:var(--fv);font-size:1rem;color:#88aaff;letter-spacing:2px}
+.ph-l{font-size:.6rem;color:#445;letter-spacing:1px}
+#tcd{font-family:var(--fv);font-size:2.2rem;color:var(--a);text-shadow:0 0 10px var(--adim);letter-spacing:6px}
+#tsvg{transform:rotate(-90deg)}
+#tbg{fill:none;stroke:#223;stroke-width:5}
+#tfg{fill:none;stroke:var(--g);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+#ttx{font-family:var(--fv);font-size:1rem;fill:var(--g);dominant-baseline:middle;text-anchor:middle}
+#tfa-status{font-family:var(--fv);font-size:1.3rem;min-height:28px}
+.granted{color:var(--g);text-shadow:0 0 8px var(--g)}
+.denied{color:var(--r);text-shadow:0 0 8px var(--r)}
+.tpha{font-size:.72rem;letter-spacing:1px;color:var(--gdim)}
+
+/* RIEPILOGO */
+.rcg{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+.rc{background:var(--bgc);border:1px solid var(--bdr);border-left:3px solid var(--g);padding:12px 14px;overflow:hidden}
+.rc.rr{border-left-color:var(--r)}
+.rc.ra{border-left-color:var(--a)}
+.rc.rb{border-left-color:#88aaff}
+.rc h3{font-family:var(--fv);font-size:1.4rem;color:var(--a);margin-bottom:8px}
+a[href*="#3l-relazioni-internazionali"]:hover{background:var(--gglo)!important;border-color:var(--g)!important;box-shadow:0 0 10px var(--g)!important;color:#fff!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hd">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="/#3l-relazioni-internazionali" style="text-decoration:none;color:var(--g);font-family:var(--fv);font-size:1.15rem;border:1px solid var(--bdr);padding:2px 10px;background:var(--bgc);display:inline-flex;align-items:center;gap:6px;transition:all .18s;letter-spacing:1px" title="Torna alla sezione 3°L">◀ 3°L RIM</a>
+    <div class="logo">SEC_101<span class="blink">_</span></div>
+  </div>
+  <div class="hd-right">
+    <div id="slide-section">INTRODUZIONE</div>
+    <div id="num">SLIDE <span id="nc">01</span> / <span id="nt">--</span></div>
+  </div>
+</header>
+
+<!-- STAGE -->
+<div id="stage">
+
+<!-- ================================================================
+     S00 — COPERTINA
+     ================================================================ -->
+<section class="slide active" id="s0">
+  <div class="center">
+    <div class="cover-icon">🔐</div>
+    <div class="cover-title">
+      Sicurezza Informatica<br>
+      <span style="color:var(--a);text-shadow:0 0 18px var(--adim)">Autenticazione e Protezione<br>dell'Identità Digitale</span>
+    </div>
+    <div class="cover-div"></div>
+    <div class="cover-sub">Perché le password tradizionali non sono più sufficienti</div>
+    <div class="cover-meta">MODULO 1 &nbsp;·&nbsp; LABORATORIO INTERATTIVO &nbsp;·&nbsp; SCUOLA SUPERIORE</div>
+    <div class="typing">CARICAMENTO MODULO SICUREZZA... OK &nbsp;▶ AVVIO</div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S01 — IERI VS OGGI (numeri)
+     ================================================================ -->
+<section class="slide" id="s1">
+  <div class="tag">// 00 — IL CONTESTO</div>
+  <div class="title">Quanto è Cambiata<br><span class="a">la Potenza di Calcolo</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
+      <div class="slbl">ANNI '90 — UN PC NORMALE</div>
+      <div class="big">~100</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">password testate al secondo</div>
+      <div class="mt8" style="font-size:.95rem;color:var(--gdim)">Una password di 6 caratteri<br>richiedeva ore o giorni</div>
+    </div>
+    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
+      <div class="slbl">OGGI — UNA GPU MODERNA</div>
+      <div class="huge">1.000.000.000+</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">password testate al secondo</div>
+      <div class="mt8 box d" style="font-size:.95rem">Una password di 6 caratteri:<br><strong class="rd">crackata in millisecondi</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S02 — IL PROBLEMA UMANO
+     ================================================================ -->
+<section class="slide" id="s2">
+  <div class="tag">// 00 — IL PROBLEMA CENTRALE</div>
+  <div class="title">Il Compromesso <span class="a">Fatale</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Cosa chiede la sicurezza</div>
+      <ul class="pts">
+        <li>Password lunga (16+ caratteri)</li>
+        <li>Password casuale (nessun senso compiuto)</li>
+        <li>Password unica per ogni sito</li>
+        <li>Cambiata regolarmente</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle" style="color:var(--r)">Cosa può fare il cervello umano</div>
+      <ul class="pts">
+        <li class="d">Memorizzare ~5 password complesse al massimo</li>
+        <li class="d">Ogni persona ha in media 80-100 account online</li>
+        <li class="d">Risultato: si riusa sempre la stessa password</li>
+        <li class="d">Oppure: si usano password semplici e prevedibili</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box a mt10" style="flex-shrink:0">
+    <strong>Questo è l'anello debole della catena.</strong> Oggi esploreremo 4 strumenti per risolverlo.
+  </div>
+</section>
+
+<!-- ================================================================
+     S03 — ROADMAP
+     ================================================================ -->
+<section class="slide" id="s3">
+  <div class="tag">// 00 — PERCORSO DI OGGI</div>
+  <div class="title">Argomenti del <span class="a">Modulo</span></div>
+  <div class="g4" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
+      <div style="font-size:3rem">⚡</div>
+      <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">01</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Attacco<br>Brute Force</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
+      <div style="font-size:3rem">💥</div>
+      <div class="ctitle" style="border:none;margin:0;padding:0">02</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Data Breach<br>Effetto Domino</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
+      <div style="font-size:3rem">🔒</div>
+      <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">03</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Password<br>Manager</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#88aaff">
+      <div style="font-size:3rem">📱</div>
+      <div class="ctitle" style="color:#88aaff;border:none;margin:0;padding:0">04</div>
+      <div style="font-size:1.1rem;color:#c8ffc8">Autenticazione<br>a Due Fattori</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S04 — BRUTE FORCE: COS'È
+     ================================================================ -->
+<section class="slide" id="s4">
+  <div class="tag">// 01 — BRUTE FORCE</div>
+  <div class="title">Attacco Brute Force:<br><span class="a">Di Cosa Si Tratta</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:14px">
+      <div class="ctitle">Definizione</div>
+      <p>Un software prova <strong>sistematicamente tutte le combinazioni possibili</strong> di caratteri finché non trova quella giusta.</p>
+      <p>Non richiede intelligenza: è pura <span class="hl">potenza di calcolo bruta</span>.</p>
+      <p>È come provare ogni chiave di un mazzo enorme — ma a velocità sovrumana, senza mai stancarsi.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Perché è così efficace</div>
+      <ul class="pts">
+        <li>Le GPU (schede video) sono ottimizzate per calcoli paralleli</li>
+        <li>Il software non si stanca e non fa errori</li>
+        <li>Servizi cloud affittabili da ~3€/ora</li>
+        <li>Completamente automatico: nessuna supervisione umana</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S05 — BRUTE FORCE: IL PROCESSO
+     ================================================================ -->
+<section class="slide" id="s5">
+  <div class="tag">// 01 — BRUTE FORCE</div>
+  <div class="title">Come Funziona<br><span class="a">Passo per Passo</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>Il software riceve l'<strong>hash</strong> della password — un'impronta digitale cifrata, non la password in chiaro</li>
+        <li>Genera la prima combinazione: <code>"a"</code> → calcola il suo hash → confronta con il target</li>
+        <li>Non corrisponde: prova <code>"b"</code>, <code>"c"</code> … <code>"z"</code>, poi <code>"aa"</code>, <code>"ab"</code> … e così via</li>
+        <li>Con una GPU moderna: <span class="hl">oltre 1 miliardo di tentativi al secondo</span></li>
+        <li>4 cifre numeriche = 10.000 combinazioni → trovata in <span class="rd">meno di 1 millisecondo</span></li>
+        <li>6 lettere minuscole = ~309 milioni di combinazioni → trovata in <span class="rd">meno di 1 secondo</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S06 — DICTIONARY ATTACK
+     ================================================================ -->
+<section class="slide" id="s6">
+  <div class="tag">// 01b — VARIANTE PIÙ VELOCE</div>
+  <div class="title">Dictionary Attack:<br><span class="a">L'Attacco con il Dizionario</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Come funziona</div>
+      <ol class="steps">
+        <li>Si parte da un file con milioni di password <strong>già rubate</strong> in violazioni precedenti</li>
+        <li>Si provano prima le più usate, in ordine di frequenza</li>
+        <li>Si aggiungono varianti prevedibili: <code>password</code> → <code>P@ssw0rd!</code></li>
+        <li>Si aggiungono anni e nomi propri: <code>mario1998</code>, <code>juve2024</code></li>
+      </ol>
+      <div class="box d mt6" style="font-size:.92rem">
+        <strong>RockYou2021:</strong> un file da 100 GB con <span class="hl">8,4 miliardi</span> di password reali, liberamente scaricabile
+      </div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Top password 2024 — tutte crackate in &lt;1ms</div>
+      <table class="tbl">
+        <thead><tr><th>Password</th><th>Utenti stimati</th><th>Tempo</th></tr></thead>
+        <tbody>
+          <tr><td><code>123456</code></td><td>~4 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>password</code></td><td>~3.6 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>qwerty123</code></td><td>~2.2 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>iloveyou</code></td><td>~1.5 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>P@ssw0rd!</code></td><td>molto diffusa</td><td class="ta">~2 min</td></tr>
+          <tr><td><code>Juve2024!</code></td><td>diffusa in IT</td><td class="ta">~8 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S07 — LAB BRUTE FORCE
+     ================================================================ -->
+<section class="slide" id="s7">
+  <div class="tag">// LAB 01 — SIMULATORE BRUTE FORCE</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Simulatore Brute Force</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:start">
+    <!-- Colonna simulatore -->
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:12px 14px">
+        <div class="slbl">// PASSWORD DI TEST (usa una password fittizia)</div>
+        <input type="text" class="sin" id="bf-in" placeholder="Digita una password..." maxlength="18" autocomplete="off" spellcheck="false">
+        <div class="row mt8">
+          <button class="sbtn r" id="bf-start">⚡ LANCIA ATTACCO</button>
+          <button class="sbtn" id="bf-reset" style="display:none">↺ RESET</button>
+        </div>
+        <div id="bf-out" style="display:none;margin-top:10px">
+          <div class="slbl">// TENTATIVO CORRENTE</div>
+          <div id="bf-attempt">________</div>
+          <div style="font-size:.8rem;color:var(--gdim);margin-top:4px">
+            Tentativi: <strong id="bf-cnt">0</strong> &nbsp;|&nbsp;
+            Tempo: <strong id="bf-ms">0</strong> ms &nbsp;|&nbsp;
+            Spazio: <strong id="bf-sp">—</strong>
+          </div>
+          <div id="bf-result" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="box a" style="font-size:.88rem">
+        <strong>Velocità simulata:</strong> 1 miliardo di tentativi/sec (GPU gaming consumer)
+      </div>
+    </div>
+    <!-- Tabella tempi -->
+    <div class="card" style="justify-content:center;gap:8px">
+      <div class="ctitle">Tabella Tempi Reali (1 Mld tentativi/sec)</div>
+      <table class="tbl">
+        <thead><tr><th>Tipo password</th><th>Esempio</th><th>Combinazioni</th><th>Tempo crack</th></tr></thead>
+        <tbody>
+          <tr><td>4 cifre</td><td><code>1234</code></td><td>10.000</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td>6 minuscole</td><td><code>ciaoblu</code></td><td>~309 M</td><td class="tr">0.3 sec</td></tr>
+          <tr><td>8 minuscole</td><td><code>marioblu</code></td><td>~208 Mld</td><td class="ta">3.5 min</td></tr>
+          <tr><td>8 misto (maiusc+num+sym)</td><td><code>Mar1o#99</code></td><td>~6.000 Mld</td><td class="ta">1.7 ore</td></tr>
+          <tr><td>12 caratteri misti</td><td><code>K#9mP!qRz2Lw</code></td><td>~95¹²</td><td class="tg">~200 anni</td></tr>
+          <tr><td>16 caratteri misti</td><td><code>frase casuale</code></td><td>astronomico</td><td class="tg">miliardi di anni</td></tr>
+        </tbody>
+      </table>
+      <div class="box mt6" style="font-size:.88rem">
+        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> conta più della complessità.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S08 — DATA BREACH: COS'È
+     ================================================================ -->
+<section class="slide" id="s8">
+  <div class="tag">// 02 — DATA BREACH</div>
+  <div class="title">Data Breach:<br><span class="a">Cos'è una Violazione dei Dati</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:12px">
+      <div class="ctitle">Definizione</div>
+      <p>Un attaccante penetra nei <strong>server di un'azienda</strong> e sottrae il database degli utenti: email, password, dati personali.</p>
+      <p>Le password rubate vengono vendute nel <span class="hl">Dark Web</span> per pochi euro e usate immediatamente in attacchi automatizzati.</p>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Violazioni Storiche — Numeri Reali</div>
+      <ul class="pts">
+        <li class="d"><strong>Yahoo (2013–14):</strong> <span class="hl">3 miliardi</span> di account rubati</li>
+        <li class="d"><strong>LinkedIn (2021):</strong> <span class="hl">700 milioni</span> di utenti esposti</li>
+        <li class="d"><strong>Facebook (2021):</strong> <span class="hl">533 milioni</span> di numeri di telefono</li>
+        <li class="w"><strong>RockYou2021:</strong> <span class="hl">8,4 miliardi</span> di password in un unico file</li>
+        <li class="i">Verifica la tua email: <code>haveibeenpwned.com</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S09 — CREDENTIAL STUFFING
+     ================================================================ -->
+<section class="slide" id="s9">
+  <div class="tag">// 02 — DATA BREACH</div>
+  <div class="title">Credential Stuffing:<br><span class="r">L'Attacco Automatico</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>L'hacker acquista il database rubato: milioni di coppie <code>email : password</code></li>
+        <li>Avvia un tool automatico che testa quelle credenziali su <strong>centinaia di siti diversi</strong></li>
+        <li>Il tool prova: Gmail, PayPal, Amazon, home banking… tutto in automatico</li>
+        <li>Se hai usato la <span class="rd">stessa password</span> su più siti, tutti vengono compromessi</li>
+        <li>L'intero processo è completamente automatizzato: <span class="hl">milioni di account testati ogni ora</span></li>
+      </ol>
+      <div class="box d mt10">
+        <strong class="rd">Questo si chiama "Credential Stuffing".</strong> Non richiede alcuna abilità tecnica: basta acquistare il file e avviare il software.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S10 — EFFETTO DOMINO (spiegazione)
+     ================================================================ -->
+<section class="slide" id="s10">
+  <div class="tag">// 02 — DATA BREACH</div>
+  <div class="title">L'Effetto <span class="r">Domino</span></div>
+  <div class="g3" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--r)">
+      <div style="text-align:center;font-size:2.5rem">🎮</div>
+      <div class="ctitle" style="text-align:center">Forum Gaming</div>
+      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--r)">calcio99</code></div>
+      <div class="box d mt6" style="font-size:.85rem;text-align:center">
+        ⚠ SERVER VIOLATO<br>Database scaricato
+      </div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
+      <div style="text-align:center;font-size:2.5rem">📧</div>
+      <div class="ctitle" style="text-align:center">Webmail</div>
+      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--a)">calcio99</code></div>
+      <div class="box a mt6" style="font-size:.85rem;text-align:center">
+        ✖ COMPROMESSO<br>stessa password!
+      </div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
+      <div style="text-align:center;font-size:2.5rem">🏦</div>
+      <div class="ctitle" style="text-align:center">Home Banking</div>
+      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--a)">calcio99</code></div>
+      <div class="box a mt6" style="font-size:.85rem;text-align:center">
+        ✖ COMPROMESSO<br>stessa password!
+      </div>
+    </div>
+  </div>
+  <div class="box d mt10" style="flex-shrink:0">
+    <strong>Un solo sito violato → tutti gli account con la stessa password sono immediatamente a rischio.</strong>
+  </div>
+</section>
+
+<!-- ================================================================
+     S11 — LAB DATA BREACH
+     ================================================================ -->
+<section class="slide" id="s11">
+  <div class="tag">// LAB 02 — SIMULATORE EFFETTO DOMINO</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Simulatore Data Breach</span></div>
+  <p style="flex-shrink:0;font-size:.9rem;margin-bottom:8px">Premi il bottone e osserva come la stessa password compromette automaticamente tutti i servizi.</p>
+  <!-- Scenario A: stessa password -->
+  <div id="bsa" style="flex-shrink:0;position:relative">
+    <svg id="bsvg" style="height:0"><defs><marker id="arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="var(--r)"/></marker></defs><g id="blines"></g></svg>
+    <div class="sg" id="sblocks">
+      <div class="sb" id="sb-forum">
+        <span class="sbadge bok" id="badge-forum">● ONLINE</span>
+        <span class="si">🎮</span><div class="sn">FORUM GAMING</div>
+        <div class="sp">pwd: <strong>calcio99</strong></div>
+        <div id="fe" style="display:none;font-size:.72rem;color:var(--r);margin-top:4px">⚠ DB SCARICATO</div>
+      </div>
+      <div class="sb" id="sb-mail">
+        <span class="sbadge bok" id="badge-mail">● SICURO</span>
+        <span class="si">📧</span><div class="sn">WEBMAIL</div>
+        <div class="sp">pwd: <strong>calcio99</strong></div>
+        <div id="me" style="display:none;font-size:.72rem;color:var(--a);margin-top:4px">✖ ACCESSO HACKER</div>
+      </div>
+      <div class="sb" id="sb-bank">
+        <span class="sbadge bok" id="badge-bank">● SICURO</span>
+        <span class="si">🏦</span><div class="sn">HOME BANKING</div>
+        <div class="sp">pwd: <strong>calcio99</strong></div>
+        <div id="be" style="display:none;font-size:.72rem;color:var(--a);margin-top:4px">✖ ACCESSO HACKER</div>
+      </div>
+    </div>
+  </div>
+  <!-- Scenario B: password diverse -->
+  <div id="bsb" style="display:none;flex-shrink:0">
+    <div class="sg">
+      <div class="sb breached"><span class="sbadge bha" style="position:absolute;top:5px;right:6px">✖ BREACH</span><span class="si">🎮</span><div class="sn">FORUM GAMING</div><div class="sp" style="color:var(--r)">pwd: <strong>forum_k9#Lp!</strong></div></div>
+      <div class="sb safe-s"><span class="sbadge bok" style="position:absolute;top:5px;right:6px">✔ SALVO</span><span class="si">📧</span><div class="sn">WEBMAIL</div><div class="sp" style="color:var(--g)">pwd: <strong>mail_Tz8$vQr!</strong></div></div>
+      <div class="sb safe-s"><span class="sbadge bok" style="position:absolute;top:5px;right:6px">✔ SALVO</span><span class="si">🏦</span><div class="sn">HOME BANKING</div><div class="sp" style="color:var(--g)">pwd: <strong>banca_9Xm#Wr!</strong></div></div>
+    </div>
+    <div class="box mt8">✔ Con <strong>password diverse</strong> per ogni sito il breach si ferma al Forum. Gli altri account sono <span class="gn">al sicuro</span>.</div>
+  </div>
+  <div class="row mt8" style="flex-shrink:0">
+    <button class="sbtn r" id="br-atk">💥 SIMULA BREACH</button>
+    <button class="sbtn" id="br-safe" style="display:none">✔ SCENARIO SICURO</button>
+    <button class="sbtn" id="br-rst">↺ RESET</button>
+  </div>
+  <div class="slbl mt6" style="flex-shrink:0">// LOG ATTACCO</div>
+  <div id="blog" style="flex:1;min-height:0;max-height:85px"><div class="ll">[ in attesa... ]</div></div>
+</section>
+
+<!-- ================================================================
+     S12 — PASSWORD MANAGER: PROBLEMA
+     ================================================================ -->
+<section class="slide" id="s12">
+  <div class="tag">// 03 — PASSWORD MANAGER</div>
+  <div class="title">Password Manager:<br><span class="a">La Soluzione al Problema</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle" style="color:var(--r)">Senza Password Manager</div>
+      <ul class="pts">
+        <li class="d">Stessa password su tutti i siti → un breach compromette tutto</li>
+        <li class="d">Password "facili" da ricordare = facili da craccare</li>
+        <li class="d">Password scritte su carta o file di testo non protetto</li>
+        <li class="d">Il cervello non scala: impossibile gestire 80 password complesse</li>
+      </ul>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Con Password Manager</div>
+      <ul class="pts">
+        <li class="k">Password unica e casuale per ogni sito, generata in automatico</li>
+        <li class="k">Es: <code>K#9mP!qRz2Lw@v7N</code> — 16 caratteri, impossibile da indovinare</li>
+        <li class="k">Non la devi ricordare: il software la inserisce in automatico</li>
+        <li class="k">Il vault è cifrato con <strong>AES-256</strong>: illeggibile senza la master key</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S13 — PASSWORD MANAGER: COME FUNZIONA
+     ================================================================ -->
+<section class="slide" id="s13">
+  <div class="tag">// 03 — PASSWORD MANAGER</div>
+  <div class="title">Come Funziona<br><span class="a">Passo per Passo</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ol class="steps">
+        <li>Scegli <strong>una sola Master Password</strong> — lunga, memorabile, mai usata altrove. Es: <code>"Gatto!Blu_Salta92"</code></li>
+        <li>Il PM usa quella chiave per <strong>cifrare un vault</strong> (cassaforte digitale) sul tuo dispositivo con AES-256</li>
+        <li>Per ogni nuovo sito, il PM <strong>genera automaticamente</strong> una password casuale di 16+ caratteri</li>
+        <li>Il browser la inserisce in automatico (autofill) — non devi digitarla mai</li>
+        <li>Se un sito viene violato, <strong>solo quella password è esposta</strong> — le altre rimangono al sicuro nel vault</li>
+      </ol>
+      <div class="box a mt10">
+        <strong>PM consigliati (gratuiti):</strong> &nbsp;
+        <code>Bitwarden</code> (open source, cloud) &nbsp;·&nbsp;
+        <code>KeePassXC</code> (open source, solo locale) &nbsp;·&nbsp;
+        <code>Proton Pass</code> (privacy-focused)
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S14 — LAB PASSWORD MANAGER
+     ================================================================ -->
+<section class="slide" id="s14">
+  <div class="tag">// LAB 03 — DEMO VAULT CIFRATO</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Demo Password Manager</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="box a">Il vault è <strong>cifrato</strong>. Senza la Master Password le password rimangono illeggibili. Prova a sbloccarle.</div>
+      <div id="pm-vault">
+        <div class="slbl">// VAULT — VOCI MEMORIZZATE</div>
+        <div class="pmr"><div class="pms">📧 Gmail</div><div class="pml">mario.rossi@gmail.com</div><div class="pmp" id="pv-g">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
+        <div class="pmr"><div class="pms">🏦 Banca</div><div class="pml">mario.rossi</div><div class="pmp" id="pv-b">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
+        <div class="pmr"><div class="pms">🛒 Amazon</div><div class="pml">mario.rossi@gmail.com</div><div class="pmp" id="pv-a">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
+        <div class="pmr"><div class="pms">🎮 Forum</div><div class="pml">mario_gamer</div><div class="pmp" id="pv-f">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
+      </div>
+      <div class="row">
+        <span id="pm-lock" style="font-size:1.5rem">🔒</span>
+        <input type="password" class="sin" id="pm-in" placeholder="Inserisci Master Password..." style="flex:1">
+        <button class="sbtn" id="pm-btn">SBLOCCA</button>
+      </div>
+      <div id="pm-msg" style="font-size:.9rem;min-height:20px"></div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Perché il Vault è Sicuro</div>
+      <ol class="steps">
+        <li>Ogni password è <strong>casuale</strong>: nessun schema umano, impossibile da indovinare</li>
+        <li>Sono <strong>uniche per ogni sito</strong>: un breach non si propaga agli altri</li>
+        <li>Resistono al brute force: <span class="hl">secoli di calcolo</span> per crackarne una</li>
+        <li>Il file sul disco è <strong>AES-256</strong>: illeggibile senza la master key</li>
+        <li>La Master Password <strong>non lascia mai</strong> il tuo dispositivo</li>
+      </ol>
+      <div class="box d mt6" style="font-size:.88rem">
+        <strong>⚠ Attenzione:</strong> se dimentichi la Master Password il vault è irrecuperabile. Scrivila su carta e conservala in luogo fisico sicuro.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S15 — 2FA: I TRE FATTORI
+     ================================================================ -->
+<section class="slide" id="s15">
+  <div class="tag">// 04 — AUTENTICAZIONE A DUE FATTORI</div>
+  <div class="title">Autenticazione:<br><span class="a">I Tre Fattori Fondamentali</span></div>
+  <div class="g3" style="flex:1;min-height:0">
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--a)">
+      <div style="font-size:3rem">🧠</div>
+      <div class="ctitle" style="color:var(--a);border:none;margin:0;padding:0">Fattore 1 — SAPERE</div>
+      <p>Qualcosa che <strong>conosci</strong></p>
+      <ul class="pts" style="text-align:left">
+        <li>Password o PIN</li>
+        <li>Risposta segreta</li>
+      </ul>
+      <div style="font-size:.85rem;color:var(--a);margin-top:4px">⚠ Può essere rubato</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--g)">
+      <div style="font-size:3rem">📱</div>
+      <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">Fattore 2 — AVERE</div>
+      <p>Qualcosa che <strong>possiedi</strong></p>
+      <ul class="pts" style="text-align:left">
+        <li>Smartphone con app TOTP</li>
+        <li>Chiavetta hardware (YubiKey)</li>
+      </ul>
+      <div style="font-size:.85rem;color:var(--g);margin-top:4px">✔ Richiede accesso fisico</div>
+    </div>
+    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:#88aaff">
+      <div style="font-size:3rem">👁️</div>
+      <div class="ctitle" style="color:#88aaff;border:none;margin:0;padding:0">Fattore 3 — ESSERE</div>
+      <p>Qualcosa che <strong>sei</strong></p>
+      <ul class="pts" style="text-align:left">
+        <li>Impronta digitale</li>
+        <li>Riconoscimento facciale</li>
+      </ul>
+      <div style="font-size:.85rem;color:#88aaff;margin-top:4px">✔ Difficile da replicare</div>
+    </div>
+  </div>
+  <div class="box a mt10" style="flex-shrink:0">
+    <strong>2FA = Fattore 1 + Fattore 2.</strong> Anche se l'hacker ruba la password (SAPERE), senza il tuo telefono fisico (AVERE) non può accedere.
+  </div>
+</section>
+
+<!-- ================================================================
+     S16 — 2FA: COME FUNZIONA TOTP
+     ================================================================ -->
+<section class="slide" id="s16">
+  <div class="tag">// 04 — 2FA: IL CODICE TOTP</div>
+  <div class="title">Come Funziona<br><span class="a">il Codice a 6 Cifre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <p class="mb8">TOTP = <span class="hl">Time-based One-Time Password</span> — il codice cambia ogni 30 secondi e non può essere riusato.</p>
+      <ol class="steps">
+        <li>Il sito genera una <strong>chiave segreta condivisa</strong>, trasmessa al tuo telefono via QR code una volta sola</li>
+        <li>L'app salva questa chiave nel dispositivo (non la invia mai in rete)</li>
+        <li>Ogni 30 secondi: <code>TOTP = HMAC(chiave_segreta + timestamp_attuale)</code></li>
+        <li>Il server calcola lo stesso valore e confronta: se coincide → accesso garantito</li>
+        <li>Il codice <strong>scade dopo 30 secondi</strong>: anche se intercettato, è inutilizzabile</li>
+        <li>Senza la chiave nel telefono è <strong>impossibile generare il codice corretto</strong></li>
+      </ol>
+      <div class="g2 mt10">
+        <div class="box">
+          <strong>App consigliate:</strong> Aegis (Android, open source) · Google Authenticator · Authy · Microsoft Authenticator
+        </div>
+        <div class="box d">
+          <strong>⚠ 2FA via SMS è meno sicuro</strong> (attacchi SIM Swap). Usare sempre le <strong>app TOTP</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S17 — LAB 2FA
+     ================================================================ -->
+<section class="slide" id="s17">
+  <div class="tag">// LAB 04 — SIMULATORE LOGIN CON 2FA</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Simulatore 2FA</span></div>
+  <p style="flex-shrink:0;font-size:.88rem;margin-bottom:8px">Segui le due fasi: prima le credenziali, poi il codice generato dallo smartphone.</p>
+  <div id="tfa-wrap">
+    <div id="tfa-login">
+      <!-- FASE 1 -->
+      <div id="tfa-p1">
+        <div class="tpha">FASE 1 di 2 — CREDENZIALI</div>
+        <div class="slbl mt8">USERNAME</div>
+        <input type="text" class="sin" value="mario.rossi" readonly style="opacity:.65;margin-bottom:8px">
+        <div class="slbl">PASSWORD</div>
+        <input type="password" class="sin" id="tfa-pwd" placeholder="Inserisci la password..." autocomplete="off">
+        <button class="sbtn" id="tfa-go" style="margin-top:8px;width:100%">▶ ACCEDI</button>
+        <div style="margin-top:5px;font-size:.72rem;color:var(--gdim)">Suggerimento: <code>Sup3rSecur0!</code></div>
+      </div>
+      <!-- FASE 2 -->
+      <div id="tfa-p2" style="display:none">
+        <div class="tpha" style="color:var(--a)">FASE 2 di 2 — VERIFICA DISPOSITIVO</div>
+        <div class="box a mt8 mb8" style="font-size:.88rem">✔ Credenziali corrette. Inserisci il codice a 6 cifre generato dallo smartphone →</div>
+        <div class="slbl">CODICE TOTP (6 CIFRE)</div>
+        <input type="text" class="sin" id="tfa-code" placeholder="_ _ _ _ _ _" maxlength="6" autocomplete="off" style="font-size:1.5rem;letter-spacing:8px;text-align:center">
+        <button class="sbtn" id="tfa-verify" style="margin-top:8px;width:100%">✔ VERIFICA CODICE</button>
+        <button class="sbtn r" id="tfa-wrong" style="margin-top:6px;width:100%;font-size:.78rem">✖ Simula codice sbagliato / scaduto</button>
+      </div>
+      <div id="tfa-status" style="margin-top:8px"></div>
+    </div>
+    <!-- SMARTPHONE -->
+    <div id="tfa-phone">
+      <div class="ph-n"></div>
+      <div class="ph-a">🔐 AUTH</div>
+      <div class="ph-l">PORTALE SICURO</div>
+      <svg id="tsvg" width="70" height="70">
+        <circle id="tbg" cx="35" cy="35" r="28"/>
+        <circle id="tfg" cx="35" cy="35" r="28" stroke-dasharray="176" stroke-dashoffset="0"/>
+        <text id="ttx" x="35" y="35">30</text>
+      </svg>
+      <div id="tcd">------</div>
+      <div class="ph-l">valido: <span id="tsec">30</span>s</div>
+      <div class="ph-l" style="color:#334;font-size:.58rem">TOTP · SHA-1 · 30s</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S18 — RIEPILOGO: NON FARE
+     ================================================================ -->
+<section class="slide" id="s18">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">❌ Comportamenti<br><span class="r">da Evitare Sempre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="d" style="font-size:1.12rem">Riusare la stessa password su più siti</li>
+        <li class="d" style="font-size:1.12rem">Usare password brevi o di senso compiuto (nome, data, squadra del cuore)</li>
+        <li class="d" style="font-size:1.12rem">Usare varianti prevedibili: <code>Password1!</code> o <code>Mario1998!</code> non sono sicure</li>
+        <li class="d" style="font-size:1.12rem">Condividere password via chat, SMS o email</li>
+        <li class="d" style="font-size:1.12rem">Salvare password in file di testo o note non protette</li>
+        <li class="d" style="font-size:1.12rem">Ignorare gli avvisi di violazione dei dati ricevuti via email</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S19 — RIEPILOGO: FARE
+     ================================================================ -->
+<section class="slide" id="s19">
+  <div class="tag">// RIEPILOGO</div>
+  <div class="title">✅ Comportamenti<br><span class="a">da Adottare Sempre</span></div>
+  <div style="flex:1;min-height:0;display:flex;align-items:center">
+    <div style="width:100%">
+      <ul class="pts" style="gap:12px">
+        <li class="k" style="font-size:1.12rem">Usa un <strong>Password Manager</strong> (Bitwarden o KeePassXC) per generare e memorizzare password</li>
+        <li class="k" style="font-size:1.12rem">Ogni sito deve avere una <strong>password unica e casuale</strong> di almeno 16 caratteri</li>
+        <li class="k" style="font-size:1.12rem">Attiva il <strong>2FA</strong> su email, banca, social network e ogni account importante</li>
+        <li class="k" style="font-size:1.12rem">Usa una <strong>passphrase</strong> come Master Password: <code>"Gatto!Blu_Salta_Alto92"</code></li>
+        <li class="k" style="font-size:1.12rem">Controlla periodicamente la tua email su <code>haveibeenpwned.com</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ================================================================
+     S21 — FINALE
+     ================================================================ -->
+<section class="slide" id="s21">
+  <div class="center">
+    <div style="font-size:4.5rem;animation:gp 2.5s infinite">🛡️</div>
+    <div style="font-family:var(--fv);font-size:clamp(2.2rem,4.5vw,3.5rem);color:var(--g);text-shadow:0 0 20px var(--g);line-height:1.1">
+      La sicurezza digitale<br>non è un'opzione.
+    </div>
+    <div style="font-family:var(--fv);font-size:clamp(1.4rem,2.8vw,2.2rem);color:var(--a);text-shadow:0 0 14px var(--adim)">
+      È una competenza che si impara.
+    </div>
+    <div class="cover-div"></div>
+    <div style="font-size:.88rem;color:var(--gdim);letter-spacing:2px">
+      SICUREZZA INFORMATICA — MODULO 1 // FINE &nbsp;<span class="blink">█</span>
+    </div>
+  </div>
+</section>
+
+</div><!-- #stage -->
+
+<!-- NAV + FOOTER -->
+<div id="nav">
+  <button class="nb" id="bp">◀</button>
+  <button class="nb" id="bn">▶</button>
+</div>
+<footer id="ft">
+  <span class="flbl">AVANZAMENTO:</span>
+  <div id="pt"><div id="pf" style="width:0%"></div></div>
+  <span id="pp">0%</span>
+</footer>
+
+<script>
+/* ====================================================================
+   NAVIGAZIONE
+   ==================================================================== */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0;
+
+// Etichetta sezione per ogni slide
+const labels = [
+  'COPERTINA',
+  'IL CONTESTO',
+  'IL PROBLEMA',
+  'ROADMAP',
+  'BRUTE FORCE — TEORIA',
+  'BRUTE FORCE — PROCESSO',
+  'DICTIONARY ATTACK',
+  'LAB: BRUTE FORCE',
+  'DATA BREACH — TEORIA',
+  'CREDENTIAL STUFFING',
+  'EFFETTO DOMINO',
+  'LAB: DATA BREACH',
+  'PASSWORD MANAGER — PROBLEMA',
+  'PASSWORD MANAGER — COME FUNZIONA',
+  'LAB: DEMO VAULT',
+  '2FA — I TRE FATTORI',
+  '2FA — CODICE TOTP',
+  'LAB: SIMULATORE 2FA',
+  'RIEPILOGO — NON FARE',
+  'RIEPILOGO — FARE',
+  'STRUMENTI CONSIGLIATI',
+  'CONCLUSIONE'
+];
+
+document.getElementById('nt').textContent = String(N).padStart(2,'0');
+
+function goTo(i) {
+  if (i < 0 || i >= N) return;
+  const prev = slides[cur];
+  const next = slides[i];
+  const fwd  = i > cur;
+
+  prev.classList.remove('active');
+  if (fwd) prev.classList.add('exit-left');
+
+  next.style.transition = 'none';
+  next.style.opacity    = '0';
+  next.style.transform  = fwd ? 'translateX(50px)' : 'translateX(-50px)';
+  next.classList.add('active');
+  void next.offsetWidth;
+  next.style.transition = '';
+  next.style.opacity    = '';
+  next.style.transform  = '';
+
+  setTimeout(() => prev.classList.remove('exit-left'), 360);
+  cur = i;
+  syncUI();
+  haltAll();
+}
+
+function syncUI() {
+  document.getElementById('nc').textContent = String(cur + 1).padStart(2,'0');
+  document.getElementById('slide-section').textContent = labels[cur] || '';
+  const p = N > 1 ? Math.round(cur / (N-1) * 100) : 100;
+  document.getElementById('pf').style.width = p + '%';
+  document.getElementById('pp').textContent  = p + '%';
+  document.getElementById('bp').disabled = cur === 0;
+  document.getElementById('bn').disabled = cur === N - 1;
+}
+
+document.getElementById('bp').addEventListener('click', () => goTo(cur - 1));
+document.getElementById('bn').addEventListener('click', () => goTo(cur + 1));
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === 'PageDown') goTo(cur + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'    || e.key === 'PageUp')   goTo(cur - 1);
+});
+syncUI();
+
+/* ====================================================================
+   SIMULATORE BRUTE FORCE
+   ==================================================================== */
+let bfOn = false, bfRaf = null;
+
+function bfStats(pwd) {
+  const lo = /[a-z]/.test(pwd), up = /[A-Z]/.test(pwd);
+  const di = /[0-9]/.test(pwd), sp = /[^a-zA-Z0-9]/.test(pwd);
+  let cs = 0;
+  if (lo) cs += 26; if (up) cs += 26;
+  if (di) cs += 10; if (sp) cs += 32;
+  if (cs === 0) cs = 26;
+  const len  = pwd.length;
+  const comb = BigInt(cs) ** BigInt(len);
+  const tms  = (comb * 1000n) / (1_000_000_000n * 2n);
+  return { cs, len, comb, tms };
+}
+
+function rndAttempt(len, cs) {
+  const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_+-=?';
+  let r = '';
+  for (let i = 0; i < len; i++) r += pool[Math.floor(Math.random() * Math.min(cs, pool.length))];
+  return r;
+}
+
+function fmtBig(n) {
+  if (n < 1000n) return n.toString();
+  if (n < 1_000_000n) return (Number(n)/1e3).toFixed(1)+' mila';
+  if (n < 1_000_000_000n) return (Number(n)/1e6).toFixed(1)+' M';
+  if (n < 1_000_000_000_000n) return (Number(n)/1e9).toFixed(2)+' Mld';
+  return n.toLocaleString('it-IT');
+}
+
+function fmtTime(ms) {
+  if (ms < 1n) return '< 1 millisecondo';
+  if (ms < 1000n) return ms+' ms';
+  const s = ms/1000n; if (s < 60n) return s+' secondi';
+  const m = s/60n;    if (m < 60n) return m+' minuti';
+  const h = m/60n;    if (h < 24n) return h+' ore';
+  const d = h/24n;    if (d < 365n) return d+' giorni';
+  const y = d/365n;   if (y < 1_000_000n) return y.toLocaleString('it-IT')+' anni';
+  return 'MILIARDI DI ANNI 🛡️';
+}
+
+function startBF() {
+  const pwd = document.getElementById('bf-in').value.trim();
+  if (!pwd) {
+    const el = document.getElementById('bf-in');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => el.style.borderColor = '', 1200);
+    return;
+  }
+  const st = bfStats(pwd);
+  bfOn = true;
+  document.getElementById('bf-out').style.display = 'block';
+  document.getElementById('bf-start').style.display = 'none';
+  document.getElementById('bf-reset').style.display = 'inline-block';
+  document.getElementById('bf-result').textContent = '';
+  document.getElementById('bf-attempt').style.color = 'var(--r)';
+  document.getElementById('bf-sp').textContent = st.cs+'^'+st.len;
+  let animMs = st.tms < 1000n ? 700 : st.tms < 3_600_000n ? 1800 : 3000;
+  const t0 = Date.now();
+  function frame() {
+    if (!bfOn) return;
+    const el = Date.now() - t0;
+    const pr = Math.min(el / animMs, 1);
+    document.getElementById('bf-cnt').textContent = Math.floor(pr*pr*60_000_000).toLocaleString('it-IT');
+    document.getElementById('bf-ms').textContent  = el;
+    document.getElementById('bf-attempt').textContent = rndAttempt(pwd.length, st.cs);
+    if (pr < 1) { bfRaf = requestAnimationFrame(frame); return; }
+    document.getElementById('bf-attempt').textContent = pwd;
+    const res = document.getElementById('bf-result');
+    const safe = st.tms > 31_536_000_000n;
+    if (safe) {
+      res.className = 'safe';
+      document.getElementById('bf-attempt').style.color = 'var(--g)';
+      res.innerHTML = `✔ TEMPO STIMATO: ${fmtTime(st.tms)} — password resistente.<br><span style="font-size:.88rem;color:#c8ffc8">Combinazioni: ${fmtBig(st.comb)}</span>`;
+    } else {
+      res.className = 'cracked';
+      res.innerHTML = `💀 CRACKATA — Tempo: ${fmtTime(st.tms)}<br><span style="font-size:.88rem">Combinazioni: ${fmtBig(st.comb)}</span>`;
+    }
+    bfOn = false;
+  }
+  bfRaf = requestAnimationFrame(frame);
+}
+
+function resetBF() {
+  bfOn = false;
+  if (bfRaf) cancelAnimationFrame(bfRaf);
+  document.getElementById('bf-out').style.display = 'none';
+  document.getElementById('bf-start').style.display = 'inline-block';
+  document.getElementById('bf-reset').style.display = 'none';
+  document.getElementById('bf-in').value = '';
+}
+
+document.getElementById('bf-start').addEventListener('click', startBF);
+document.getElementById('bf-reset').addEventListener('click', resetBF);
+document.getElementById('bf-in').addEventListener('keydown', e => { if(e.key==='Enter') startBF(); });
+
+/* ====================================================================
+   SIMULATORE DATA BREACH
+   ==================================================================== */
+let bTOs = [], bState = 'idle';
+
+function blogAdd(msg, type='') {
+  const log = document.getElementById('blog');
+  const d = document.createElement('div');
+  d.className = 'll ' + type;
+  const now = new Date();
+  const ts = [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  d.textContent = `[${ts}] ${msg}`;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+function blogClear() {
+  document.getElementById('blog').innerHTML = '<div class="ll">[ in attesa... ]</div>';
+}
+
+function drawLine(a, b) {
+  const svg = document.getElementById('bsvg');
+  const grp = document.getElementById('blines');
+  const con = document.getElementById('bsa');
+  const ae  = document.getElementById(a);
+  const be  = document.getElementById(b);
+  if (!ae || !be) return;
+  const cr = con.getBoundingClientRect();
+  const ar = ae.getBoundingClientRect();
+  const br = be.getBoundingClientRect();
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', ar.right - cr.left);
+  line.setAttribute('y1', ar.top - cr.top + ar.height/2);
+  line.setAttribute('x2', br.left - cr.left);
+  line.setAttribute('y2', br.top - cr.top + br.height/2);
+  line.setAttribute('stroke','var(--r)');
+  line.setAttribute('stroke-width','2');
+  line.setAttribute('marker-end','url(#arr)');
+  line.setAttribute('stroke-dasharray','7 3');
+  line.style.opacity = '0';
+  line.style.transition = 'opacity .5s';
+  grp.appendChild(line);
+  svg.style.height = con.offsetHeight + 'px';
+  setTimeout(() => line.style.opacity = '1', 50);
+}
+
+function clearLines() {
+  document.getElementById('blines').innerHTML = '';
+  document.getElementById('bsvg').style.height = '0';
+}
+
+function resetBVis() {
+  ['forum','mail','bank'].forEach(id => {
+    document.getElementById('sb-'+id).className = 'sb';
+    const bg = document.getElementById('badge-'+id);
+    if (bg) bg.className = 'sbadge bok';
+  });
+  document.getElementById('badge-forum').textContent = '● ONLINE';
+  document.getElementById('badge-mail').textContent  = '● SICURO';
+  document.getElementById('badge-bank').textContent  = '● SICURO';
+  ['fe','me','be'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function runBreach() {
+  if (bState === 'running') return;
+  bState = 'running';
+  blogClear(); clearLines(); resetBVis();
+  document.getElementById('bsb').style.display = 'none';
+  document.getElementById('sblocks').style.display = 'grid';
+  document.getElementById('br-atk').style.display = 'none';
+  const T = (d,f) => { const id=setTimeout(f,d); bTOs.push(id); };
+  blogAdd('>> SCANSIONE VULNERABILITÀ SU forum-gaming.it...','');
+  T(900,  () => blogAdd('!! SQL INJECTION TROVATA — campo login non sanificato','e'));
+  T(1700, () => {
+    blogAdd('>> DATABASE SCARICATO: 847.293 record — mario.rossi@email.it : calcio99','e');
+    document.getElementById('sb-forum').classList.add('breached');
+    document.getElementById('badge-forum').textContent = '⚠ BREACH!';
+    document.getElementById('badge-forum').className = 'sbadge bha';
+    document.getElementById('fe').style.display = 'block';
+  });
+  T(2600, () => blogAdd('>> AVVIO CREDENTIAL STUFFING — provo "calcio99" su altri siti...','w'));
+  T(3400, () => {
+    blogAdd('>> LOGIN WEBMAIL: mario.rossi@email.it : calcio99','w');
+    T(250, () => drawLine('sb-forum','sb-mail'));
+  });
+  T(4300, () => {
+    blogAdd('!! WEBMAIL: ACCESSO CONCESSO — email compromessa!','e');
+    document.getElementById('sb-mail').classList.add('compromised');
+    document.getElementById('badge-mail').textContent = '✖ PWNED';
+    document.getElementById('badge-mail').className = 'sbadge bpw';
+    document.getElementById('me').style.display = 'block';
+  });
+  T(5100, () => {
+    blogAdd('>> LOGIN BANKING: mario.rossi : calcio99','w');
+    T(250, () => drawLine('sb-mail','sb-bank'));
+  });
+  T(6000, () => {
+    blogAdd('!! BANKING: ACCESSO CONCESSO — conto esposto!','e');
+    document.getElementById('sb-bank').classList.add('compromised');
+    document.getElementById('badge-bank').textContent = '✖ PWNED';
+    document.getElementById('badge-bank').className = 'sbadge bpw';
+    document.getElementById('be').style.display = 'block';
+  });
+  T(6800, () => {
+    blogAdd('=== FINE: 3/3 account compromessi. Causa: password identica su tutti i siti.','e');
+    document.getElementById('br-safe').style.display = 'inline-block';
+    bState = 'done';
+  });
+}
+
+function showSafe() {
+  clearLines(); blogClear();
+  document.getElementById('sblocks').style.display = 'none';
+  document.getElementById('bsb').style.display = 'block';
+  const T = (d,f) => { const id=setTimeout(f,d); bTOs.push(id); };
+  blogAdd('>> STESSO ATTACCO — Forum violato, password forum_k9#Lp! rubata','e');
+  T(1000, () => blogAdd('>> PROVO forum_k9#Lp! SU WEBMAIL...','w'));
+  T(1900, () => blogAdd('!! WEBMAIL: ACCESSO NEGATO — password diversa!','g'));
+  T(2700, () => blogAdd('>> PROVO forum_k9#Lp! SU HOME BANKING...','w'));
+  T(3600, () => blogAdd('!! BANKING: ACCESSO NEGATO — password diversa!','g'));
+  T(4400, () => blogAdd('=== ATTACCO FERMATO: 1/3. Mail e banca sono al sicuro.','g'));
+}
+
+function resetBreach() {
+  bTOs.forEach(clearTimeout); bTOs = []; bState = 'idle';
+  clearLines(); blogClear(); resetBVis();
+  document.getElementById('sblocks').style.display = 'grid';
+  document.getElementById('bsb').style.display = 'none';
+  document.getElementById('br-atk').style.display = 'inline-block';
+  document.getElementById('br-safe').style.display = 'none';
+}
+
+document.getElementById('br-atk').addEventListener('click', runBreach);
+document.getElementById('br-safe').addEventListener('click', showSafe);
+document.getElementById('br-rst').addEventListener('click', resetBreach);
+
+/* ====================================================================
+   DEMO PASSWORD MANAGER
+   ==================================================================== */
+const VAULT = { 'pv-g':'K#9mP!qRz2Lw@v7N', 'pv-b':'Tz8$vQrXp!2mL9@K', 'pv-a':'9Xm#Wr2!pK7vQz@L', 'pv-f':'Rb5!kP3@nW8$mQvZ' };
+const MASTER = 'Gatto!Blu_Salta92';
+
+document.getElementById('pm-btn').addEventListener('click', () => {
+  const v   = document.getElementById('pm-in').value;
+  const msg = document.getElementById('pm-msg');
+  if (v === MASTER) {
+    Object.entries(VAULT).forEach(([id, pwd]) => {
+      const el = document.getElementById(id);
+      el.textContent = pwd;
+      el.style.color = 'var(--g)';
+    });
+    document.getElementById('pm-lock').textContent = '🔓';
+    msg.style.color = 'var(--g)';
+    msg.textContent = '✔ Vault sbloccato — password decifrate in memoria RAM, mai in chiaro su disco.';
+  } else if (!v) {
+    msg.style.color = 'var(--a)';
+    msg.textContent = 'Suggerimento: la master password è "Gatto!Blu_Salta92"';
+  } else {
+    msg.style.color = 'var(--r)';
+    msg.textContent = '✖ Master Password errata — vault rimane cifrato.';
+    const el = document.getElementById('pm-in');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => el.style.borderColor = '', 1200);
+  }
+});
+document.getElementById('pm-in').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pm-btn').click();
+});
+
+/* ====================================================================
+   SIMULATORE 2FA
+   ==================================================================== */
+const CIRC = 2 * Math.PI * 28;
+let tfaTimer = null, tfaCode = '', tfaSec = 30, tfaPhase = 1;
+
+document.getElementById('tfg').style.strokeDasharray = CIRC;
+
+function genCode() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+function updCircle(s) {
+  const fg = document.getElementById('tfg');
+  const tx = document.getElementById('ttx');
+  fg.style.strokeDashoffset = CIRC * (1 - s/30);
+  const col = s > 15 ? 'var(--g)' : s > 8 ? 'var(--a)' : 'var(--r)';
+  fg.style.stroke = col; tx.style.fill = col;
+  tx.textContent  = s;
+  const se = document.getElementById('tsec');
+  if (se) se.textContent = s;
+}
+
+function startTOTP() {
+  tfaCode = genCode(); tfaSec = 30;
+  document.getElementById('tcd').textContent = tfaCode;
+  updCircle(30);
+  tfaTimer = setInterval(() => {
+    tfaSec--;
+    updCircle(tfaSec);
+    if (tfaSec <= 0) {
+      tfaCode = genCode(); tfaSec = 30;
+      const d = document.getElementById('tcd');
+      d.style.opacity = '0';
+      setTimeout(() => { d.textContent = tfaCode; d.style.transition='opacity .3s'; d.style.opacity='1'; }, 200);
+    }
+  }, 1000);
+}
+
+function stopTOTP() { if (tfaTimer) { clearInterval(tfaTimer); tfaTimer = null; } }
+
+document.getElementById('tfa-go').addEventListener('click', () => {
+  const pwd = document.getElementById('tfa-pwd').value;
+  const st  = document.getElementById('tfa-status');
+  if (pwd === 'Sup3rSecur0!') {
+    document.getElementById('tfa-p1').style.display = 'none';
+    document.getElementById('tfa-p2').style.display = 'block';
+    document.getElementById('tfa-phone').classList.add('show');
+    tfaPhase = 2; startTOTP();
+    st.style.color = 'var(--a)'; st.className = '';
+    st.textContent = '⏳ In attesa del codice TOTP...';
+  } else {
+    st.className = 'denied'; st.textContent = '✖ ACCESSO NEGATO — Credenziali errate.';
+    const el = document.getElementById('tfa-pwd');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => { el.style.borderColor = ''; st.textContent = ''; }, 2000);
+  }
+});
+
+document.getElementById('tfa-verify').addEventListener('click', () => {
+  const inp = document.getElementById('tfa-code').value.trim();
+  const st  = document.getElementById('tfa-status');
+  if (tfaPhase !== 2) return;
+  if (inp === tfaCode && tfaSec > 0) {
+    stopTOTP(); tfaPhase = 0;
+    st.className = 'granted';
+    st.innerHTML = '✔ ACCESSO CONCESSO<br><span style="font-size:.88rem;color:#c8ffc8">Autenticazione a due fattori completata.</span>';
+    document.getElementById('tfa-phone').style.borderColor = 'var(--g)';
+    document.getElementById('tfa-phone').style.boxShadow  = '0 0 16px var(--g)';
+  } else {
+    st.className = 'denied';
+    st.textContent = tfaSec <= 0 ? '✖ CODICE SCADUTO — Usa il nuovo codice generato.' : '✖ CODICE ERRATO — Riprova.';
+    const el = document.getElementById('tfa-code');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => el.style.borderColor = '', 1200);
+  }
+});
+
+document.getElementById('tfa-wrong').addEventListener('click', () => {
+  if (tfaPhase !== 2) return;
+  const st = document.getElementById('tfa-status');
+  tfaSec = 0; updCircle(0);
+  st.className = 'denied';
+  st.textContent = '✖ CODICE SCADUTO — Senza lo smartphone fisico è impossibile generare il codice!';
+  setTimeout(() => {
+    if (tfaPhase === 2) {
+      tfaCode = genCode(); tfaSec = 30;
+      document.getElementById('tcd').textContent = tfaCode;
+      updCircle(30); st.textContent = '';
+    }
+  }, 2500);
+});
+
+document.getElementById('tfa-code').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('tfa-verify').click();
+});
+
+/* ====================================================================
+   HALT ALL SIMULATORS — chiamato ad ogni cambio slide
+   ==================================================================== */
+function haltAll() {
+  bfOn = false;
+  if (bfRaf) cancelAnimationFrame(bfRaf);
+  stopTOTP();
+}
+</script>
+</body>
+</html>
