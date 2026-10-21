@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro Punti Bonus (+) — Informatica | Thomas Mazzeo</title>
+  <meta name="description" content="Registro ufficiale e tabella dei crediti e punti bonus (+) acquisiti dagli studenti nelle verifiche ed esercitazioni di Informatica." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       THEME VARIABLES & RESET
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Dark Theme (Default Retro Cyberpunk) */
+      --color-bg: #07090e;
+      --color-bg-card: rgba(14, 20, 32, 0.85);
+      --color-bg-card-hover: rgba(22, 32, 52, 0.9);
+      --color-border: rgba(0, 245, 255, 0.22);
+      --color-border-glow: rgba(0, 245, 255, 0.5);
+      --color-text: #e2e8f0;
+      --color-text-dim: #94a3b8;
+      --color-text-muted: #64748b;
+      --color-cyan: #00f5ff;
+      --color-magenta: #ff007f;
+      --color-yellow: #ffd700;
+      --color-green: #39ff14;
+      --color-orange: #ff9100;
+      --color-danger: #ff3366;
+      --color-row-alt: rgba(255, 255, 255, 0.02);
+      --color-row-hover: rgba(0, 245, 255, 0.07);
+
+      --font-pixel: 'Press Start 2P', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --glow-cyan: 0 0 16px rgba(0, 245, 255, 0.35);
+      --glow-gold: 0 0 16px rgba(255, 215, 0, 0.4);
+      --glow-green: 0 0 14px rgba(57, 255, 20, 0.35);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    /* Light Theme Toggle */
+    body.light-theme {
+      --color-bg: #f4f6fa;
+      --color-bg-card: #ffffff;
+      --color-bg-card-hover: #f8fafc;
+      --color-border: #cbd5e1;
+      --color-border-glow: #0284c7;
+      --color-text: #0f172a;
+      --color-text-dim: #334155;
+      --color-text-muted: #64748b;
+      --color-cyan: #0284c7;
+      --color-magenta: #be185d;
+      --color-yellow: #b45309;
+      --color-green: #15803d;
+      --color-orange: #c2410c;
+      --color-danger: #dc2626;
+      --color-row-alt: #f8fafc;
+      --color-row-hover: #e0f2fe;
+
+      --glow-cyan: 0 2px 8px rgba(2, 132, 199, 0.2);
+      --glow-gold: 0 2px 8px rgba(180, 83, 9, 0.2);
+      --glow-green: 0 2px 8px rgba(21, 128, 61, 0.2);
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      line-height: 1.5;
+      position: relative;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+      padding-bottom: 4rem;
+    }
+
+    /* Retro CRT Scanlines Overlay (only on dark mode) */
+    body:not(.light-theme)::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 0, 0, 0.18) 3px,
+        rgba(0, 0, 0, 0.18) 4px
+      );
+      opacity: 0.6;
+    }
+
+    /* CRT Vignette */
+    body:not(.light-theme)::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 998;
+      background: radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.6) 100%);
+    }
+
+    /* ============================================================
+       TOP NAVIGATION BAR
+       ============================================================ */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: var(--color-bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .nav-brand__title {
+      font-family: var(--font-pixel);
+      font-size: 0.85rem;
+      color: var(--color-cyan);
+      letter-spacing: 1px;
+      text-shadow: var(--glow-cyan);
+    }
+
+    .nav-brand__sub {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.85rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      border-color: var(--color-cyan);
+      color: var(--color-cyan);
+      box-shadow: var(--glow-cyan);
+      transform: translateY(-1px);
+    }
+
+    .btn-nav--back {
+      color: var(--color-cyan);
+      border-color: rgba(0, 245, 255, 0.4);
+    }
+
+    .btn-theme-toggle {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-yellow);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      border-color: var(--color-yellow);
+      box-shadow: var(--glow-gold);
+      transform: scale(1.05);
+    }
+
+    /* ============================================================
+       CONTAINER & HEADER
+       ============================================================ */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-pixel);
+      font-size: 0.65rem;
+      color: var(--color-yellow);
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .page-title {
+      font-family: var(--font-pixel);
+      font-size: 1.6rem;
+      line-height: 1.35;
+      color: var(--color-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    .page-subtitle {
+      font-size: 1rem;
+      color: var(--color-text-dim);
+      max-width: 780px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       CLASS SELECTOR TABS
+       ============================================================ */
+    .class-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 2rem 0 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    .class-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--color-bg-card);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-dim);
+      font-family: var(--font-pixel);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 1px;
+    }
+
+    .class-tab:hover {
+      border-color: var(--color-cyan);
+      color: var(--color-cyan);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .class-tab.active {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: var(--color-cyan);
+      color: var(--color-cyan);
+      box-shadow: var(--glow-cyan), inset 0 0 15px rgba(0, 245, 255, 0.1);
+    }
+
+    .class-tab__badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(0, 245, 255, 0.2);
+      color: var(--color-cyan);
+    }
+
+    /* ============================================================
+       STATS CARDS ROW
+       ============================================================ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--card-accent, var(--color-cyan));
+    }
+
+    .stat-card:hover {
+      border-color: var(--color-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card__icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .stat-card__content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card__value {
+      font-family: var(--font-pixel);
+      font-size: 1.25rem;
+      color: var(--card-accent, var(--color-cyan));
+      line-height: 1.2;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-card__label {
+      font-size: 0.75rem;
+      color: var(--color-text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card__sub {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ============================================================
+       TOOLBAR (SEARCH & FILTERS)
+       ============================================================ */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+      max-width: 420px;
+    }
+
+    .search-box__input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.4rem;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      transition: all 0.2s ease;
+    }
+
+    .search-box__input:focus {
+      outline: none;
+      border-color: var(--color-cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .search-box__icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.45rem 0.85rem;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-dim);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-cyan);
+      color: var(--color-cyan);
+    }
+
+    .filter-btn.active {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: var(--color-cyan);
+      color: var(--color-cyan);
+    }
+
+    .action-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tool:hover {
+      border-color: var(--color-yellow);
+      color: var(--color-yellow);
+      box-shadow: var(--glow-gold);
+    }
+
+    /* ============================================================
+       MAIN BONUS TABLE
+       ============================================================ */
+    .table-container {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .bonus-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .bonus-table thead th {
+      background: rgba(0, 245, 255, 0.05);
+      border-bottom: 2px solid var(--color-border);
+      padding: 1rem 1.15rem;
+      font-family: var(--font-pixel);
+      font-size: 0.65rem;
+      color: var(--color-cyan);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .bonus-table th.col-num {
+      width: 60px;
+      text-align: center;
+    }
+
+    .bonus-table th.col-student {
+      min-width: 260px;
+    }
+
+    .bonus-table th.col-assessment {
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .bonus-table th.col-total {
+      width: 130px;
+      text-align: center;
+      color: var(--color-yellow);
+    }
+
+    .bonus-table tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background-color 0.15s ease;
+    }
+
+    body.light-theme .bonus-table tbody tr {
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .bonus-table tbody tr:nth-child(even) {
+      background: var(--color-row-alt);
+    }
+
+    .bonus-table tbody tr:hover {
+      background: var(--color-row-hover);
+    }
+
+    .bonus-table td {
+      padding: 0.85rem 1.15rem;
+      vertical-align: middle;
+    }
+
+    .bonus-table td.cell-num {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+    }
+
+    .bonus-table td.cell-student {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .student-name-box {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .student-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0, 245, 255, 0.12);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: var(--color-cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-pixel);
+      font-size: 0.65rem;
+      flex-shrink: 0;
+    }
+
+    .student-fullname {
+      font-size: 0.92rem;
+      letter-spacing: 0.3px;
+    }
+
+    .student-surname {
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .student-firstname {
+      font-weight: 500;
+      color: var(--color-text-dim);
+    }
+
+    .bonus-table td.cell-assessment {
+      text-align: center;
+    }
+
+    /* Bonus Badges */
+    .bonus-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-pixel);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .bonus-badge--plus {
+      background: rgba(57, 255, 20, 0.12);
+      border: 1px solid rgba(57, 255, 20, 0.4);
+      color: var(--color-green);
+      box-shadow: var(--glow-green);
+    }
+
+    body.light-theme .bonus-badge--plus {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #15803d;
+      box-shadow: none;
+    }
+
+    .bonus-badge--none {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+    }
+
+    body.light-theme .bonus-badge--none {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #94a3b8;
+    }
+
+    /* Total Bonus Cell */
+    .bonus-table td.cell-total {
+      text-align: center;
+    }
+
+    .total-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      min-width: 65px;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-family: var(--font-pixel);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .total-pill--positive {
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      color: var(--color-yellow);
+      box-shadow: var(--glow-gold);
+    }
+
+    body.light-theme .total-pill--positive {
+      background: #fef3c7;
+      border-color: #fde047;
+      color: #b45309;
+      box-shadow: none;
+    }
+
+    .total-pill--zero {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--color-text-muted);
+    }
+
+    /* Assessment Header Info */
+    .th-subinfo {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      margin-top: 0.25rem;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* Empty state inside table */
+    .table-empty {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+
+    .table-empty__icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ============================================================
+       EXTENSIBILITY BANNER (HOW TO ADD FUTURE WEEKS)
+       ============================================================ */
+    .info-footer-card {
+      margin-top: 2rem;
+      background: var(--color-bg-card);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .info-footer-card__icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--color-cyan);
+    }
+
+    .info-footer-card__title {
+      font-family: var(--font-pixel);
+      font-size: 0.8rem;
+      color: var(--color-cyan);
+      margin-bottom: 0.4rem;
+      letter-spacing: 1px;
+    }
+
+    .info-footer-card__desc {
+      font-size: 0.85rem;
+      color: var(--color-text-dim);
+      line-height: 1.6;
+    }
+
+    .info-footer-card__desc code {
+      font-family: var(--font-mono);
+      background: rgba(0, 245, 255, 0.1);
+      color: var(--color-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    /* ============================================================
+       MODAL (ADD / EDIT BONUS POINTS)
+       ============================================================ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--color-bg-card);
+      border: 2px solid var(--color-cyan);
+      box-shadow: 0 0 35px rgba(0, 245, 255, 0.35);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 580px;
+      padding: 1.75rem;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.85rem;
+    }
+
+    .modal-title {
+      font-family: var(--font-pixel);
+      font-size: 0.95rem;
+      color: var(--color-cyan);
+      letter-spacing: 1px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--color-text-dim);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.2rem;
+    }
+
+    .modal-close:hover {
+      color: var(--color-danger);
+    }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-text-dim);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+    }
+
+    body.light-theme .form-input, body.light-theme .form-select {
+      background: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--color-cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .btn-primary {
+      padding: 0.65rem 1.25rem;
+      background: var(--color-cyan);
+      border: none;
+      color: #050a14;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-pixel);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--glow-cyan);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       PRINT STYLES
+       ============================================================ */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+      }
+      body::before, body::after, .top-nav, .class-tabs, .table-toolbar, .info-footer-card, .btn-tool {
+        display: none !important;
+      }
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .page-header {
+        margin-bottom: 1.5rem !important;
+      }
+      .page-title {
+        color: #000 !important;
+        font-size: 1.3rem !important;
+        text-shadow: none !important;
+      }
+      .stats-row {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1rem !important;
+      }
+      .stat-card {
+        background: #fff !important;
+        border: 1px solid #999 !important;
+        padding: 0.5rem !important;
+        box-shadow: none !important;
+      }
+      .table-container {
+        border: 1px solid #333 !important;
+        box-shadow: none !important;
+      }
+      .bonus-table th {
+        background: #eee !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000 !important;
+      }
+      .bonus-table td {
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+      }
+      .bonus-badge--plus {
+        background: #ddd !important;
+        border-color: #666 !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .total-pill--positive {
+        background: #eee !important;
+        border-color: #666 !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      .top-nav {
+        padding: 0.65rem 1rem;
+      }
+      .nav-brand__sub {
+        display: none;
+      }
+      .page-title {
+        font-size: 1.25rem;
+      }
+      .page-subtitle {
+        font-size: 0.88rem;
+      }
+      .class-tabs {
+        gap: 0.5rem;
+      }
+      .class-tab {
+        padding: 0.6rem 1rem;
+        font-size: 0.7rem;
+      }
+      .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box {
+        max-width: 100%;
+      }
+      .filter-pills {
+        justify-content: flex-start;
+      }
+      .bonus-table th, .bonus-table td {
+        padding: 0.65rem 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="top-nav">
+    <a href="/" class="nav-brand" id="link-brand">
+      <span style="font-size: 1.3rem;">💻</span>
+      <div>
+        <div class="nav-brand__title">THOMAS MAZZEO</div>
+        <div class="nav-brand__sub">ARCHIVIO DIDATTICO &amp; RISORSE</div>
+      </div>
+    </a>
+
+    <div class="nav-actions">
+      <a href="/#2h-finanza-marketing" class="btn-nav btn-nav--back" id="btn-back-class">
+        <span>←</span>
+        <span id="label-back-class">Torna alla Classe</span>
+      </a>
+      <button class="btn-tool" id="btn-print" title="Stampa o Salva PDF">
+        <span>🖨️</span>
+        <span>Stampa PDF</span>
+      </button>
+      <button class="btn-theme-toggle" id="btn-theme-toggle" title="Cambia tema chiaro/scuro" aria-label="Cambia tema">
+        <span id="theme-icon">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container">
+
+    <!-- Header Section -->
+    <div class="page-header">
+      <div class="page-badge">
+        <span>⭐</span>
+        <span>REGISTRO UFFICIALE CREDITI &amp; BONUS</span>
+      </div>
+      <h1 class="page-title" id="class-title-heading">REGISTRO PUNTI BONUS (+)</h1>
+      <p class="page-subtitle" id="class-desc-subtitle">
+        Elenco completo degli studenti con i relativi crediti formativi e punti <strong>+</strong> acquisiti durante la <strong>1ª Verifica sulla Sicurezza Informatica (21/10/2026)</strong> e le successive attività settimanali.
+      </p>
+    </div>
+
+    <!-- Class Selector Tabs -->
+    <div class="class-tabs" role="tablist">
+      <button class="class-tab active" data-class="2h" role="tab" id="tab-2h">
+        <span>📈</span>
+        <span>CLASSE 2H (AFM)</span>
+        <span class="class-tab__badge" id="badge-count-2h">20 studenti</span>
+      </button>
+      <button class="class-tab" data-class="2g" role="tab" id="tab-2g">
+        <span>💼</span>
+        <span>CLASSE 2G (AFM)</span>
+        <span class="class-tab__badge" id="badge-count-2g">17 studenti</span>
+      </button>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card" style="--card-accent: var(--color-cyan);">
+        <span class="stat-card__icon">👥</span>
+        <div class="stat-card__content">
+          <span class="stat-card__value" id="stat-total-students">0</span>
+          <span class="stat-card__label">Studenti Iscritti</span>
+          <span class="stat-card__sub" id="stat-class-name">Classe 2H AFM</span>
+        </div>
+      </div>
+
+      <div class="stat-card" style="--card-accent: var(--color-green);">
+        <span class="stat-card__icon">⭐</span>
+        <div class="stat-card__content">
+          <span class="stat-card__value" id="stat-students-with-bonus">0</span>
+          <span class="stat-card__label">Studenti con Bonus (+)</span>
+          <span class="stat-card__sub" id="stat-percent-bonus">0% della classe</span>
+        </div>
+      </div>
+
+      <div class="stat-card" style="--card-accent: var(--color-yellow);">
+        <span class="stat-card__icon">🏆</span>
+        <div class="stat-card__content">
+          <span class="stat-card__value" id="stat-total-points">0</span>
+          <span class="stat-card__label">Totale Punti (+)</span>
+          <span class="stat-card__sub">Crediti accumulati</span>
+        </div>
+      </div>
+
+      <div class="stat-card" style="--card-accent: var(--color-orange);">
+        <span class="stat-card__icon">📅</span>
+        <div class="stat-card__content">
+          <span class="stat-card__value" style="font-size: 0.95rem;">21/10/2026</span>
+          <span class="stat-card__label">1ª Verifica</span>
+          <span class="stat-card__sub">Sicurezza Informatica</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Toolbar: Search, Filters & Actions -->
+    <div class="table-toolbar">
+      <div class="search-box">
+        <span class="search-box__icon">🔍</span>
+        <input type="text" class="search-box__input" id="search-input" placeholder="Cerca studente (cognome o nome)..." autocomplete="off" />
+      </div>
+
+      <div class="filter-pills">
+        <button class="filter-btn active" data-filter="all">Tutti (<span id="count-all">0</span>)</button>
+        <button class="filter-btn" data-filter="with-bonus">Con Bonus (+) (<span id="count-with-bonus">0</span>)</button>
+        <button class="filter-btn" data-filter="no-bonus">Senza Bonus (<span id="count-no-bonus">0</span>)</button>
+      </div>
+
+      <div class="action-tools">
+        <button class="btn-tool" id="btn-add-column" title="Aggiungi una nuova verifica o settimana">
+          <span>➕</span>
+          <span>Nuova Colonna / Verifica</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Bonus Table Container -->
+    <div class="table-container">
+      <table class="bonus-table" id="bonus-table">
+        <thead>
+          <tr id="table-head-row">
+            <!-- Populated dynamically by JS based on active assessments -->
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Populated dynamically by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Extensibility & Architectural Documentation Card -->
+    <div class="info-footer-card">
+      <div class="info-footer-card__icon">💡</div>
+      <div>
+        <h4 class="info-footer-card__title">SISTEMA DI AGGIORNAMENTO SETTIMANALE DEI BONUS</h4>
+        <p class="info-footer-card__desc">
+          Questo registro è progettato per espandersi facilmente settimana dopo settimana. I punti visualizzati fanno riferimento alla <strong>1ª Verifica sulla Sicurezza Informatica (21/10/2026)</strong>. Per le prossime verifiche e attività pratiche di laboratorio, è possibile aggiungere nuove colonne semplicemente configurando il relativo identificativo in <code>ASSESSMENTS[classe]</code> o cliccando sul pulsante <strong>"Nuova Colonna / Verifica"</strong> sopra.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal: Add New Assessment Column -->
+  <div class="modal-backdrop" id="modal-add-column">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">AGGIUNGI NUOVA VERIFICA / ATTIVITÀ</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="form-add-column">
+        <div class="form-group">
+          <label class="form-label" for="col-title">Titolo Verifica / Attività Didattica</label>
+          <input type="text" id="col-title" class="form-input" placeholder="Es. 2ª Verifica — Reti e Web Sicuro" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="col-date">Data Svolgimento</label>
+          <input type="text" id="col-date" class="form-input" placeholder="Es. 28/10/2026" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="col-desc">Argomento / Modulo Didattico</label>
+          <input type="text" id="col-desc" class="form-input" placeholder="Es. Phishing, Spoofing e Password Vault" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-tool" id="btn-cancel-modal">Annulla</button>
+          <button type="submit" class="btn-primary">Aggiungi Colonna</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // ============================================================
+    // DATA STORE: ASSESSMENTS CONFIGURATION (EXTENSIBLE ARCHITECTURE)
+    // ============================================================
+    const DEFAULT_ASSESSMENTS = {
+      '2h': [
+        {
+          id: 'v1_sicurezza',
+          title: '1ª Verifica: Sicurezza Informatica',
+          date: '21/10/2026',
+          topic: 'Modulo 1 — Autenticazione & Master Passphrase',
+          badgeText: '+1'
+        }
+      ],
+      '2g': [
+        {
+          id: 'v1_sicurezza',
+          title: '1ª Verifica: Sicurezza Informatica',
+          date: '21/10/2026',
+          topic: 'Modulo 1 — Autenticazione & Master Passphrase',
+          badgeText: '+1'
+        }
+      ]
+    };
+
+    // ============================================================
+    // DATA STORE: STUDENTS ROSTER & BONUS POINTS
+    // (Exact handwritten sheet records dated 21/10/2026)
+    // ============================================================
+    const DEFAULT_STUDENTS = {
+      '2h': [
+        { id: 1, surname: "ERCOLESI", name: "BENJAMIN", bonuses: { v1_sicurezza: 1 } },
+        { id: 2, surname: "PEREZ", name: "DANIEL", bonuses: { v1_sicurezza: 1 } },
+        { id: 3, surname: "PELLEGRINI ZANINI", name: "EDOARDO", bonuses: { v1_sicurezza: 0 } },
+        { id: 4, surname: "ZIRONI", name: "ELEONORA", bonuses: { v1_sicurezza: 1 } },
+        { id: 5, surname: "DE BELLIS", name: "ANDREA", bonuses: { v1_sicurezza: 1 } },
+        { id: 6, surname: "FAHIM", name: "MEHEDY HASAN", bonuses: { v1_sicurezza: 1 } },
+        { id: 7, surname: "MAGNONI", name: "TOMAS", bonuses: { v1_sicurezza: 1 } },
+        { id: 8, surname: "SINGH", name: "ABHIJOT", bonuses: { v1_sicurezza: 1 } },
+        { id: 9, surname: "BARETTI", name: "MATILDE", bonuses: { v1_sicurezza: 1 } },
+        { id: 10, surname: "VALLONE", name: "MATTIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 11, surname: "MONTI", name: "THOMAS", bonuses: { v1_sicurezza: 1 } },
+        { id: 12, surname: "CALCHERA", name: "ILARIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 13, surname: "BOTTAZZI", name: "LORENZO", bonuses: { v1_sicurezza: 1 } },
+        { id: 14, surname: "SALICI", name: "MANUEL", bonuses: { v1_sicurezza: 1 } },
+        { id: 15, surname: "PULEGA", name: "GIULIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 16, surname: "MUOTRI", name: "MARISOL", bonuses: { v1_sicurezza: 1 } },
+        { id: 17, surname: "ORSI", name: "CHIARA", bonuses: { v1_sicurezza: 1 } },
+        { id: 18, surname: "AHAD", name: "ZOYA", bonuses: { v1_sicurezza: 1 } },
+        { id: 19, surname: "PEDAU", name: "SIMONE", bonuses: { v1_sicurezza: 1 } },
+        { id: 20, surname: "HDANA", name: "RITAJ", bonuses: { v1_sicurezza: 0 } }
+      ],
+      '2g': [
+        { id: 1, surname: "GATTI", name: "EMANUELE", bonuses: { v1_sicurezza: 1 } },
+        { id: 2, surname: "MARCHESINI", name: "MATTIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 3, surname: "GREVEGLIERI", name: "MATTEO", bonuses: { v1_sicurezza: 1 } },
+        { id: 4, surname: "LA PORTA SCARAMELLA", name: "GAIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 5, surname: "BRUNO", name: "MATTIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 6, surname: "DONATINI", name: "ENRICO", bonuses: { v1_sicurezza: 1 } },
+        { id: 7, surname: "SAFRONII", name: "ERIKA", bonuses: { v1_sicurezza: 1 } },
+        { id: 8, surname: "CAPUZZO", name: "SOFIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 9, surname: "PASQUALI", name: "ALISEA", bonuses: { v1_sicurezza: 1 } },
+        { id: 10, surname: "SPATAFORA", name: "RAFFAELE", bonuses: { v1_sicurezza: 1 } },
+        { id: 11, surname: "LOQUACE", name: "GENNARO", bonuses: { v1_sicurezza: 1 } },
+        { id: 12, surname: "BOCCOLIERO", name: "GLORIA", bonuses: { v1_sicurezza: 1 } },
+        { id: 13, surname: "BUCATARU", name: "MARCO", bonuses: { v1_sicurezza: 1 } },
+        { id: 14, surname: "GHIRARDINI", name: "DANIELE", bonuses: { v1_sicurezza: 1 } },
+        { id: 15, surname: "MONTI", name: "AXEL", bonuses: { v1_sicurezza: 1 } },
+        { id: 16, surname: "RUSCAGNO", name: "SEBASTIAN", bonuses: { v1_sicurezza: 1 } },
+        { id: 17, surname: "LAKHDAR", name: "DOUAA", bonuses: { v1_sicurezza: 1 } }
+      ]
+    };
+
+    // Load persisted overrides from localStorage if present
+    function getAssessments(classe) {
+      try {
+        const stored = localStorage.getItem(`tm_assessments_${classe}`);
+        return stored ? JSON.parse(stored) : DEFAULT_ASSESSMENTS[classe];
+      } catch (e) {
+        return DEFAULT_ASSESSMENTS[classe];
+      }
+    }
+
+    function saveAssessments(classe, assessments) {
+      try {
+        localStorage.setItem(`tm_assessments_${classe}`, JSON.stringify(assessments));
+      } catch (e) {}
+    }
+
+    function getStudents(classe) {
+      try {
+        const stored = localStorage.getItem(`tm_students_${classe}`);
+        return stored ? JSON.parse(stored) : DEFAULT_STUDENTS[classe];
+      } catch (e) {
+        return DEFAULT_STUDENTS[classe];
+      }
+    }
+
+    function saveStudents(classe, students) {
+      try {
+        localStorage.setItem(`tm_students_${classe}`, JSON.stringify(students));
+      } catch (e) {}
+    }
+
+    // ============================================================
+    // APPLICATION STATE
+    // ============================================================
+    let activeClass = '2h';
+    let searchQuery = '';
+    let activeFilter = 'all'; // 'all' | 'with-bonus' | 'no-bonus'
+    let sortColumn = 'num';    // 'num' | 'name' | 'total'
+    let sortAsc = true;
+
+    // Parse URL parameter ?classe=2h or ?classe=2g
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramClass = urlParams.get('classe');
+    if (paramClass && (paramClass === '2h' || paramClass === '2g')) {
+      activeClass = paramClass;
+    }
+
+    // ============================================================
+    // DOM ELEMENTS
+    // ============================================================
+    const tab2H = document.getElementById('tab-2h');
+    const tab2G = document.getElementById('tab-2g');
+    const classTitleHeading = document.getElementById('class-title-heading');
+    const classDescSubtitle = document.getElementById('class-desc-subtitle');
+    const btnBackClass = document.getElementById('btn-back-class');
+    const labelBackClass = document.getElementById('label-back-class');
+
+    const statTotalStudents = document.getElementById('stat-total-students');
+    const statStudentsWithBonus = document.getElementById('stat-students-with-bonus');
+    const statPercentBonus = document.getElementById('stat-percent-bonus');
+    const statTotalPoints = document.getElementById('stat-total-points');
+    const statClassName = document.getElementById('stat-class-name');
+
+    const searchInput = document.getElementById('search-input');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const countAll = document.getElementById('count-all');
+    const countWithBonus = document.getElementById('count-with-bonus');
+    const countNoBonus = document.getElementById('count-no-bonus');
+
+    const tableHeadRow = document.getElementById('table-head-row');
+    const tableBody = document.getElementById('table-body');
+
+    const btnThemeToggle = document.getElementById('btn-theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const btnPrint = document.getElementById('btn-print');
+
+    const btnAddColumn = document.getElementById('btn-add-column');
+    const modalAddColumn = document.getElementById('modal-add-column');
+    const modalClose = document.getElementById('modal-close');
+    const btnCancelModal = document.getElementById('btn-cancel-modal');
+    const formAddColumn = document.getElementById('form-add-column');
+
+    // ============================================================
+    // THEME MANAGEMENT
+    // ============================================================
+    function initTheme() {
+      const savedTheme = localStorage.getItem('tm_theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.textContent = '🌙';
+      } else {
+        document.body.classList.remove('light-theme');
+        themeIcon.textContent = '☀️';
+      }
+    }
+
+    btnThemeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('tm_theme', isLight ? 'light' : 'dark');
+      themeIcon.textContent = isLight ? '🌙' : '☀️';
+    });
+
+    initTheme();
+
+    // ============================================================
+    // CLASS SWITCHER
+    // ============================================================
+    function switchClass(classe) {
+      activeClass = classe;
+      
+      // Update Tab Buttons
+      tab2H.classList.toggle('active', classe === '2h');
+      tab2G.classList.toggle('active', classe === '2g');
+
+      // Update URL query string without reloading page
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('classe', classe);
+      window.history.replaceState({}, '', newUrl);
+
+      // Update Back Button Link
+      if (classe === '2h') {
+        btnBackClass.href = '/#2h-finanza-marketing';
+        labelBackClass.textContent = 'Torna a 2H AFM';
+        statClassName.textContent = 'Classe 2H AFM';
+        classTitleHeading.textContent = 'REGISTRO PUNTI BONUS (+) — CLASSE 2H';
+      } else {
+        btnBackClass.href = '/#2g-finanza-marketing';
+        labelBackClass.textContent = 'Torna a 2G AFM';
+        statClassName.textContent = 'Classe 2G AFM';
+        classTitleHeading.textContent = 'REGISTRO PUNTI BONUS (+) — CLASSE 2G';
+      }
+
+      // Re-render table & stats
+      renderAll();
+    }
+
+    tab2H.addEventListener('click', () => switchClass('2h'));
+    tab2G.addEventListener('click', () => switchClass('2g'));
+
+    // ============================================================
+    // RENDER FUNCTIONS
+    // ============================================================
+    function calculateTotalBonus(student, assessments) {
+      if (!student.bonuses) return 0;
+      return assessments.reduce((acc, ass) => acc + (student.bonuses[ass.id] || 0), 0);
+    }
+
+    function toggleStudentBonus(studentId, assessmentId) {
+      const students = getStudents(activeClass);
+      const student = students.find(s => s.id === studentId);
+      if (student) {
+        if (!student.bonuses) student.bonuses = {};
+        student.bonuses[assessmentId] = student.bonuses[assessmentId] ? 0 : 1;
+        saveStudents(activeClass, students);
+        renderAll();
+      }
+    }
+
+    function renderAll() {
+      const assessments = getAssessments(activeClass);
+      let students = getStudents(activeClass);
+
+      // Update counts for badge pills
+      document.getElementById('badge-count-2h').textContent = `${getStudents('2h').length} studenti`;
+      document.getElementById('badge-count-2g').textContent = `${getStudents('2g').length} studenti`;
+
+      // Filter and search
+      const totalStudentsCount = students.length;
+      const studentsWithBonusCount = students.filter(s => calculateTotalBonus(s, assessments) > 0).length;
+      const totalPointsCount = students.reduce((acc, s) => acc + calculateTotalBonus(s, assessments), 0);
+
+      statTotalStudents.textContent = totalStudentsCount;
+      statStudentsWithBonus.textContent = studentsWithBonusCount;
+      statPercentBonus.textContent = totalStudentsCount > 0 
+        ? `${Math.round((studentsWithBonusCount / totalStudentsCount) * 100)}% della classe`
+        : '0%';
+      statTotalPoints.textContent = `+${totalPointsCount}`;
+
+      countAll.textContent = totalStudentsCount;
+      countWithBonus.textContent = studentsWithBonusCount;
+      countNoBonus.textContent = totalStudentsCount - studentsWithBonusCount;
+
+      // Apply Filter Pill
+      if (activeFilter === 'with-bonus') {
+        students = students.filter(s => calculateTotalBonus(s, assessments) > 0);
+      } else if (activeFilter === 'no-bonus') {
+        students = students.filter(s => calculateTotalBonus(s, assessments) === 0);
+      }
+
+      // Apply Search Query
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase().trim();
+        students = students.filter(s => 
+          s.surname.toLowerCase().includes(q) || 
+          s.name.toLowerCase().includes(q) ||
+          `${s.surname} ${s.name}`.toLowerCase().includes(q)
+        );
+      }
+
+      // Apply Sorting
+      students.sort((a, b) => {
+        if (sortColumn === 'name') {
+          const comp = a.surname.localeCompare(b.surname);
+          return sortAsc ? comp : -comp;
+        } else if (sortColumn === 'total') {
+          const tA = calculateTotalBonus(a, assessments);
+          const tB = calculateTotalBonus(b, assessments);
+          return sortAsc ? tA - tB : tB - tA;
+        } else {
+          return sortAsc ? a.id - b.id : b.id - a.id;
+        }
+      });
+
+      // Render Table Headers
+      tableHeadRow.innerHTML = `
+        <th class="col-num" style="cursor: pointer;" title="Ordina per numero progressivo">
+          # ${sortColumn === 'num' ? (sortAsc ? '▲' : '▼') : ''}
+        </th>
+        <th class="col-student" style="cursor: pointer;" title="Ordina alfabeticamente per cognome">
+          COGNOME E NOME ${sortColumn === 'name' ? (sortAsc ? '▲' : '▼') : ''}
+        </th>
+        ${assessments.map(ass => `
+          <th class="col-assessment">
+            <div>${ass.title}</div>
+            <span class="th-subinfo">${ass.date} • ${ass.topic || 'Bonus acquisito'}</span>
+          </th>
+        `).join('')}
+        <th class="col-total" style="cursor: pointer;" title="Ordina per totale punti bonus">
+          TOTALE BONUS (+) ${sortColumn === 'total' ? (sortAsc ? '▲' : '▼') : ''}
+        </th>
+      `;
+
+      // Attach header sorting handlers
+      const ths = tableHeadRow.querySelectorAll('th');
+      ths[0].addEventListener('click', () => {
+        if (sortColumn === 'num') sortAsc = !sortAsc;
+        else { sortColumn = 'num'; sortAsc = true; }
+        renderAll();
+      });
+      ths[1].addEventListener('click', () => {
+        if (sortColumn === 'name') sortAsc = !sortAsc;
+        else { sortColumn = 'name'; sortAsc = true; }
+        renderAll();
+      });
+      ths[ths.length - 1].addEventListener('click', () => {
+        if (sortColumn === 'total') sortAsc = !sortAsc;
+        else { sortColumn = 'total'; sortAsc = false; }
+        renderAll();
+      });
+
+      // Render Table Body
+      if (students.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="${assessments.length + 3}">
+              <div class="table-empty">
+                <div class="table-empty__icon">🔍</div>
+                <p>Nessuno studente trovato con i criteri selezionati.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = students.map((student) => {
+        const totalBonus = calculateTotalBonus(student, assessments);
+        const initials = `${student.surname.charAt(0)}${student.name.charAt(0)}`;
+
+        return `
+          <tr>
+            <td class="cell-num">${String(student.id).padStart(2, '0')}</td>
+            <td class="cell-student">
+              <div class="student-name-box">
+                <div class="student-avatar">${initials}</div>
+                <div class="student-fullname">
+                  <span class="student-surname">${student.surname}</span>
+                  <span class="student-firstname">${student.name}</span>
+                </div>
+              </div>
+            </td>
+            ${assessments.map(ass => {
+              const hasBonus = student.bonuses && student.bonuses[ass.id] > 0;
+              return `
+                <td class="cell-assessment">
+                  <span class="bonus-badge ${hasBonus ? 'bonus-badge--plus' : 'bonus-badge--none'}" 
+                        onclick="toggleStudentBonus(${student.id}, '${ass.id}')"
+                        style="cursor: pointer;"
+                        title="Clicca per commutare il punto bonus per ${student.surname}">
+                    ${hasBonus ? '⭐ +1' : '—'}
+                  </span>
+                </td>
+              `;
+            }).join('')}
+            <td class="cell-total">
+              <span class="total-pill ${totalBonus > 0 ? 'total-pill--positive' : 'total-pill--zero'}">
+                ${totalBonus > 0 ? `+${totalBonus}` : '0'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Expose toggleStudentBonus globally for onclick handlers
+    window.toggleStudentBonus = toggleStudentBonus;
+
+    // Search input handler
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderAll();
+    });
+
+    // Filter buttons handler
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderAll();
+      });
+    });
+
+    // Print Button
+    btnPrint.addEventListener('click', () => {
+      window.print();
+    });
+
+    // ============================================================
+    // MODAL: ADD NEW ASSESSMENT COLUMN (FUTURE WEEKS)
+    // ============================================================
+    btnAddColumn.addEventListener('click', () => {
+      modalAddColumn.classList.add('open');
+      document.getElementById('col-title').focus();
+    });
+
+    function closeModal() {
+      modalAddColumn.classList.remove('open');
+      formAddColumn.reset();
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    btnCancelModal.addEventListener('click', closeModal);
+    modalAddColumn.addEventListener('click', (e) => {
+      if (e.target === modalAddColumn) closeModal();
+    });
+
+    formAddColumn.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('col-title').value.trim();
+      const date = document.getElementById('col-date').value.trim();
+      const topic = document.getElementById('col-desc').value.trim() || 'Attività Pratica';
+
+      if (!title || !date) return;
+
+      const newId = `ass_${Date.now()}`;
+      const assessments = getAssessments(activeClass);
+      assessments.push({
+        id: newId,
+        title: title,
+        date: date,
+        topic: topic,
+        badgeText: '+1'
+      });
+
+      saveAssessments(activeClass, assessments);
+      closeModal();
+      renderAll();
+    });
+
+    // Initial load
+    switchClass(activeClass);
+  </script>
+</body>
+</html>
