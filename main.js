@@ -1188,7 +1188,7 @@ function renderChaptersView() {
     </div>
     ${bonusUrl ? `
       <div class="chapters-header__actions">
-        <a href="${bonusUrl}" class="chapters-bonus-btn" title="Visualizza registro punti bonus e crediti verifiche">
+        <a href="${bonusUrl}" class="chapters-bonus-btn" title="Punti bonus delle lezioni validi per la 1ª verifica">
           <span class="chapters-bonus-btn__icon">⭐</span>
           <span class="chapters-bonus-btn__text pixel-text">PUNTI BONUS (+)</span>
           <span class="chapters-bonus-btn__badge">1ª VERIFICA</span>
