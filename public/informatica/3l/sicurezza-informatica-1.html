@@ -205,12 +205,12 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 .sbtn.r:hover{background:var(--rglo)}
 .slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
 
-/* BF (Brute Force) Visual Simulator */
+/* BF (Brute Force) Step-by-Step Simulator */
 .bf-visual-card{
   background:#020703;border:1px solid var(--bdr);
   display:flex;flex-direction:column;flex:1;min-height:0;
   overflow:hidden;box-shadow:inset 0 0 24px rgba(0,0,0,0.85);border-radius:2px;
-  padding:8px 10px;gap:8px
+  padding:8px 10px;gap:6px
 }
 .bf-visual-header{
   background:var(--bgc);border-bottom:1px solid var(--bdr);
@@ -223,103 +223,79 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
   font-weight:bold;letter-spacing:1px;transition:all .2s
 }
 .bf-visual-badge.idle{background:var(--bg);color:var(--gdim);border:1px solid var(--bdr)}
-.bf-visual-badge.running{background:rgba(255,176,0,0.18);color:var(--a);border:1px solid var(--a);animation:gp 1s infinite alternate}
-.bf-visual-badge.cracked{background:var(--rglo);color:var(--r);border:1px solid var(--r)}
+.bf-visual-badge.step{background:rgba(255,176,0,0.18);color:var(--a);border:1px solid var(--a)}
+.bf-visual-badge.turbo{background:rgba(255,51,51,0.18);color:var(--r);border:1px solid var(--r);animation:gp 1s infinite alternate}
+.bf-visual-badge.found{background:var(--gglo);color:var(--g);border:1px solid var(--g)}
 .bf-visual-badge.safe{background:var(--gglo);color:var(--g);border:1px solid var(--g)}
 
 .bf-sub-lbl{
-  font-size:.65rem;color:var(--gdim);letter-spacing:1px;margin-bottom:3px
+  font-size:.62rem;color:var(--gdim);letter-spacing:1px;margin-bottom:2px
 }
 
-/* Character Tumbler Matrix */
-.bf-tumblers-box{
-  display:flex;flex-direction:column;flex-shrink:0
-}
-.bf-tumblers-row{
-  display:flex;align-items:center;gap:5px;padding:5px 8px;
-  background:rgba(0,0,0,0.5);border:1px solid rgba(0,255,65,.15);
-  border-radius:2px;min-height:50px;overflow-x:auto
+/* Slots for Target & Attempt */
+.bf-slots-row{
+  display:flex;align-items:center;gap:4px;overflow-x:auto;padding:2px 0;
 }
 .bf-slot{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:36px;height:42px;background:rgba(0,255,65,.04);
+  width:32px;height:38px;background:rgba(0,255,65,.04);
   border:1px solid rgba(0,255,65,.25);border-radius:3px;
-  font-family:var(--fv);color:var(--g);transition:all .15s ease;
-  flex-shrink:0;user-select:none
+  font-family:var(--fv);color:var(--g);transition:all .12s ease;
+  flex-shrink:0;user-select:none;position:relative
 }
 .bf-slot-char{
-  font-size:1.55rem;line-height:1;text-shadow:0 0 6px var(--g)
+  font-size:1.45rem;line-height:1;text-shadow:0 0 6px var(--g)
 }
 .bf-slot-idx{
-  font-family:var(--fm);font-size:.52rem;color:var(--gdim);margin-top:1px
+  font-family:var(--fm);font-size:.5rem;color:var(--gdim);margin-top:1px
+}
+.bf-slot.target-slot{
+  background:rgba(0,255,65,.08);border-color:rgba(0,255,65,.45);
+}
+.bf-slot.match{
+  border-color:#22c55e;background:rgba(34,197,94,0.18);color:#4ade80;
+}
+.bf-slot.match .bf-slot-char{
+  text-shadow:0 0 8px #22c55e;
+}
+.bf-slot.mismatch{
+  border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.02);color:#777;
+}
+.bf-slot.mismatch .bf-slot-char{
+  text-shadow:none;
+}
+.bf-slot.found{
+  border-color:#22c55e;background:rgba(34,197,94,0.32);color:#fff;
+  box-shadow:0 0 10px #22c55e;transform:scale(1.05);
 }
 .bf-slot.spinning{
-  border-color:var(--a);color:var(--a);background:rgba(255,176,0,0.08);
-  box-shadow:0 0 8px rgba(255,176,0,0.3)
-}
-.bf-slot.spinning .bf-slot-char{
-  text-shadow:0 0 8px var(--a)
-}
-.bf-slot.cracked{
-  border-color:var(--r);color:var(--r);background:var(--rglo);
-  box-shadow:0 0 10px var(--r);transform:scale(1.04)
-}
-.bf-slot.cracked .bf-slot-char{
-  text-shadow:0 0 10px var(--r)
+  border-color:var(--a);color:var(--a);background:rgba(255,176,0,0.1);
+  box-shadow:0 0 6px rgba(255,176,0,0.3);
 }
 .bf-slot.shielded{
   border-color:var(--g);color:var(--g);background:var(--gglo);
-  box-shadow:0 0 10px var(--g)
-}
-.bf-slot.shielded .bf-slot-char{
-  text-shadow:0 0 10px var(--g)
+  box-shadow:0 0 10px var(--g);
 }
 .bf-slot-dots{
-  font-family:var(--fm);font-size:.78rem;color:var(--gdim);
-  padding:0 4px;letter-spacing:1px;white-space:nowrap
+  font-family:var(--fm);font-size:.75rem;color:var(--gdim);
+  padding:0 3px;letter-spacing:1px;white-space:nowrap
 }
 
-/* GPU Multicore telemetry */
-.bf-cores-box{
-  display:flex;flex-direction:column;flex-shrink:0
-}
-.bf-cores-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:5px
-}
-.bf-core-box{
-  background:rgba(0,0,0,0.45);border:1px solid var(--bdr);
-  padding:4px 6px;border-radius:2px;display:flex;flex-direction:column;gap:2px
-}
-.bf-core-head{
-  display:flex;justify-content:space-between;font-size:.62rem;
-  font-family:var(--fm);color:var(--gdim)
-}
-.bf-core-load{
-  font-weight:bold;color:var(--g)
-}
-.bf-core-bar{
-  height:4px;background:rgba(0,255,65,.1);border-radius:2px;overflow:hidden
-}
-.bf-core-fill{
-  height:100%;width:0%;background:var(--g);box-shadow:0 0 5px var(--g);
-  transition:width .15s ease,background-color .15s ease
-}
-.bf-core-fill.active{
-  background:var(--a);box-shadow:0 0 5px var(--a)
-}
-.bf-core-sub{
-  font-size:.52rem;color:var(--gdim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+/* Didactic note */
+.bf-didactic-box{
+  background:rgba(0,255,65,.04);border:1px dashed rgba(0,255,65,.25);
+  padding:5px 8px;font-size:.74rem;line-height:1.3;border-radius:2px;color:#c8ffc8
 }
 
-/* Permutations Stream Box */
+/* Stream Box */
 .bf-stream-container{
-  display:flex;flex-direction:column;flex:1;min-height:70px
+  display:flex;flex-direction:column;flex:1;min-height:65px
 }
 .bf-stream-box{
   background:#000;border:1px solid rgba(0,255,65,.15);border-radius:2px;
-  padding:5px 8px;font-family:var(--fm);font-size:.7rem;color:#88ff88;
+  padding:4px 6px;font-family:var(--fm);font-size:.68rem;color:#88ff88;
   flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-  justify-content:flex-end;gap:2px;line-height:1.3
+  justify-content:flex-end;gap:2px;line-height:1.25
 }
 .bf-stream-line{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.75
@@ -328,10 +304,10 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
   opacity:1;color:#fff;font-weight:bold
 }
 .bf-stream-line.hit{
-  color:var(--r) !important;text-shadow:0 0 6px var(--r)
+  color:var(--g) !important;text-shadow:0 0 6px var(--g)
 }
 .bf-stream-line.abort{
-  color:var(--g) !important;text-shadow:0 0 6px var(--g)
+  color:var(--a) !important;text-shadow:0 0 6px var(--a)
 }
 
 /* Resistance Spectrum Gauge */
@@ -339,12 +315,12 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
   display:flex;flex-direction:column;flex-shrink:0
 }
 .bf-gauge-track{
-  position:relative;display:flex;height:20px;border:1px solid var(--bdr);
+  position:relative;display:flex;height:18px;border:1px solid var(--bdr);
   border-radius:2px;background:#000;margin-top:2px
 }
 .bf-gauge-seg{
   flex:1;display:flex;align-items:center;justify-content:center;
-  font-size:.58rem;font-family:var(--fm);letter-spacing:.5px;
+  font-size:.56rem;font-family:var(--fm);letter-spacing:.5px;
   border-right:1px solid rgba(255,255,255,.1);user-select:none
 }
 .bf-gauge-seg:last-child{border-right:none}
@@ -362,7 +338,7 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
   font-size:9px;color:#fff;text-shadow:0 0 6px #fff
 }
 
-#bf-result{font-family:var(--fm);font-size:.9rem}
+#bf-result{font-family:var(--fm);font-size:.88rem}
 .cracked{color:var(--r);text-shadow:0 0 8px var(--r)}
 .safe{color:var(--g);text-shadow:0 0 8px var(--g)}
 
@@ -849,9 +825,8 @@ body.light-theme .bf-visual-header {
 body.light-theme .bf-sub-lbl {
   color: #64748b !important;
 }
-body.light-theme .bf-tumblers-row {
+body.light-theme .bf-slots-row {
   background: #ffffff !important;
-  border-color: #e2e8f0 !important;
 }
 body.light-theme .bf-slot {
   background: #f8fafc !important;
@@ -861,44 +836,39 @@ body.light-theme .bf-slot {
 body.light-theme .bf-slot-char {
   text-shadow: none !important;
 }
+body.light-theme .bf-slot.target-slot {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+body.light-theme .bf-slot.match {
+  background: #f0fdf4 !important;
+  border-color: #22c55e !important;
+  color: #16a34a !important;
+}
+body.light-theme .bf-slot.mismatch {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+}
+body.light-theme .bf-slot.found {
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
+  color: #15803d !important;
+}
 body.light-theme .bf-slot.spinning {
   background: #fffbeb !important;
   border-color: #f59e0b !important;
   color: #d97706 !important;
-}
-body.light-theme .bf-slot.cracked {
-  background: #fef2f2 !important;
-  border-color: #ef4444 !important;
-  color: #dc2626 !important;
 }
 body.light-theme .bf-slot.shielded {
   background: #f0fdf4 !important;
   border-color: #22c55e !important;
   color: #16a34a !important;
 }
-body.light-theme .bf-core-box {
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-}
-body.light-theme .bf-core-head {
-  color: #475569 !important;
-}
-body.light-theme .bf-core-load {
-  color: #059669 !important;
-}
-body.light-theme .bf-core-bar {
-  background: #e2e8f0 !important;
-}
-body.light-theme .bf-core-fill {
-  background: #059669 !important;
-  box-shadow: none !important;
-}
-body.light-theme .bf-core-fill.active {
-  background: #d97706 !important;
-  box-shadow: none !important;
-}
-body.light-theme .bf-core-sub {
-  color: #94a3b8 !important;
+body.light-theme .bf-didactic-box {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
 }
 body.light-theme .bf-stream-box {
   background: #0f172a !important;
@@ -1187,12 +1157,12 @@ body.light-theme .threat-card.fail {
   <div style="flex:1;min-height:0;display:flex;align-items:center">
     <div style="width:100%">
       <ol class="steps">
-        <li>Il software riceve l'<strong>hash</strong> della password — un'impronta digitale cifrata, non la password in chiaro</li>
-        <li>Genera la prima combinazione: <code>"a"</code> → calcola il suo hash → confronta con il target</li>
-        <li>Non corrisponde: prova <code>"b"</code>, <code>"c"</code> … <code>"z"</code>, poi <code>"aa"</code>, <code>"ab"</code> … e così via</li>
-        <li>Con una GPU moderna: <span class="hl">oltre 1 miliardo di tentativi al secondo</span></li>
-        <li>4 cifre numeriche = 10.000 combinazioni → trovata in <span class="rd">meno di 1 millisecondo</span></li>
-        <li>6 lettere minuscole = ~309 milioni di combinazioni → trovata in <span class="rd">meno di 1 secondo</span></li>
+        <li>L'attaccante punta a <strong>scoprire la password bersaglio</strong> provando tutte le combinazioni possibili</li>
+        <li>Parte dalla prima combinazione: prova <code>"a"</code> → non coincide → prova <code>"b"</code>, <code>"c"</code> … <code>"z"</code></li>
+        <li>Avanza sistematicamente: finite le lettere singole, prova quelle a due caratteri: <code>"aa"</code>, <code>"ab"</code> … e così via</li>
+        <li>Velocità del computer: <span class="hl">oltre 1 miliardo di combinazioni provate al secondo</span></li>
+        <li>Password corta a 4 cifre: 10.000 combinazioni → trovata in <span class="rd">meno di 1 millisecondo</span></li>
+        <li>Password corta a 6 lettere: ~309 milioni di combinazioni → trovata in <span class="rd">meno di 1 secondo</span></li>
       </ol>
     </div>
   </div>
@@ -1206,119 +1176,110 @@ body.light-theme .threat-card.fail {
   <div class="title">🔬 Laboratorio: <span class="a">Simulatore Brute Force</span></div>
   <div class="g2" style="flex:1;min-height:0;align-items:stretch">
     <!-- COLONNA SINISTRA: COMANDI & TELEMETRIA -->
-    <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
-      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;display:flex;flex-direction:column;gap:6px">
-        <div class="slbl">// PASSWORD BERSAGLIO DA TESTARE A FORZA BRUTA</div>
-        <input type="text" class="sin" id="bf-in" placeholder="Digita una password da testare..." maxlength="36" autocomplete="off" spellcheck="false" style="font-size:1rem;padding:6px 10px">
+    <div style="display:flex;flex-direction:column;gap:7px;flex:1;min-height:0">
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;display:flex;flex-direction:column;gap:5px">
+        <div class="slbl">// PASSWORD BERSAGLIO DA TESTARE</div>
+        <input type="text" class="sin" id="bf-in" placeholder="Digita una password da testare..." maxlength="36" autocomplete="off" spellcheck="false" style="font-size:1rem;padding:5px 10px">
         
         <div class="slbl" style="margin-top:2px">// ESEMPI RAPIDI:</div>
         <div class="row" style="gap:5px;margin-bottom:2px">
-          <button type="button" class="preset-chip bad" onclick="setBfExample('1234')">1234</button>
-          <button type="button" class="preset-chip bad" onclick="setBfExample('ciaoblu')">ciaoblu</button>
-          <button type="button" class="preset-chip bad" onclick="setBfExample('Mar1o#99')">Mar1o#99</button>
-          <button type="button" class="preset-chip win" onclick="setBfExample('K#9mP!qRz2Lw')">K#9mP!qRz2Lw</button>
-          <button type="button" class="preset-chip win" onclick="setBfExample('galassia-matita-vulcano-salto-92!')">🛡️ Passphrase 33 car</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('1234')">1234 (4 cifre)</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('ciao')">ciao (4 lett.)</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('Mar1o')">Mar1o (5 misti)</button>
+          <button type="button" class="preset-chip win" onclick="setBfExample('K#9mP!qRz2Lw')">K#9mP!qR (12 car)</button>
+          <button type="button" class="preset-chip win" onclick="setBfExample('galassia-matita-vulcano-salto-92!')">🛡️ Passphrase</button>
         </div>
 
-        <div class="row" style="gap:8px;margin-top:4px">
-          <button class="sbtn r" id="bf-start" style="flex:1">⚡ AVVIA ATTACCO BRUTE FORCE</button>
-          <button class="sbtn" id="bf-reset" style="display:none">↺ RESET</button>
+        <div class="row" style="gap:6px;margin-top:4px">
+          <button class="sbtn" id="bf-step-btn" style="flex:1;border-color:var(--a);color:var(--a);font-size:.78rem;padding:6px 8px">🐢 PASSO-PASSO</button>
+          <button class="sbtn" id="bf-single-btn" style="border-color:#38bdf8;color:#38bdf8;font-size:.78rem;padding:6px 8px">⏭️ PASSO SINGOLO</button>
+        </div>
+        <div class="row" style="gap:6px;margin-top:2px">
+          <button class="sbtn r" id="bf-turbo-btn" style="flex:1;font-size:.8rem;padding:6px 8px">⚡ VELOCIZZA AL MASSIMO</button>
+          <button class="sbtn" id="bf-reset-btn" style="display:none;font-size:.8rem;padding:6px 12px">↺ RESET</button>
         </div>
       </div>
 
-      <!-- Telemetria Attacco Brute Force -->
-      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;font-size:.82rem;display:flex;flex-direction:column;gap:4px">
+      <!-- Telemetria Avanzamento -->
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:7px 12px;font-size:.8rem;display:flex;flex-direction:column;gap:3px">
         <div style="display:flex;justify-content:space-between">
-          <span style="color:var(--gdim)">STATO BRUTE FORCE:</span>
+          <span style="color:var(--gdim)">STATO SIMULATORE:</span>
           <strong id="bf-status" style="color:var(--g)">IN ATTESA...</strong>
         </div>
         <div style="display:flex;justify-content:space-between">
-          <span style="color:var(--gdim)">TENTATIVI COMBINATORI:</span>
+          <span style="color:var(--gdim)">TENTATIVO ATTUALE:</span>
+          <strong id="bf-cur-try" style="color:var(--a);font-family:var(--fm)">—</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">COMBINAZIONI TESTATE:</span>
           <strong id="bf-cnt" style="color:#c8ffc8">0</strong>
         </div>
         <div style="display:flex;justify-content:space-between">
-          <span style="color:var(--gdim)">SPAZIO COMBINATORIO:</span>
+          <span style="color:var(--gdim)">SPAZIO COMBINATORIO TOTALE:</span>
           <strong id="bf-sp" style="color:var(--a);font-family:var(--fm)">—</strong>
         </div>
         <div style="display:flex;justify-content:space-between">
-          <span style="color:var(--gdim)">TEMPO EFFETTIVO CALCOLO:</span>
-          <strong id="bf-ms" style="color:#c8ffc8">0 ms</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between">
-          <span style="color:var(--gdim)">TEMPO STIMATO (1 GigaHash/s):</span>
+          <span style="color:var(--gdim)">TEMPO STIMATO:</span>
           <strong id="bf-est-time" style="color:var(--a);font-family:var(--fm)">—</strong>
         </div>
       </div>
 
       <!-- Box Risultato Finale -->
-      <div id="bf-result-box" style="display:none;background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;font-size:.86rem;line-height:1.4">
+      <div id="bf-result-box" style="display:none;background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;font-size:.84rem;line-height:1.35">
         <div id="bf-result"></div>
       </div>
 
-      <div class="box a" style="font-size:.8rem;padding:6px 10px;margin-top:auto">
-        <strong>Principio Brute Force:</strong> Prova sistematicamente ogni combinazione carattere per carattere (\(N^L\)). La lunghezza vince sempre sulla complessità sintetica!
+      <div class="box a" style="font-size:.78rem;padding:5px 8px;margin-top:auto">
+        <strong>Concetto chiave:</strong> Il Brute Force prova tutte le possibilità in ordine. Una password corta cade all'istante, ma ogni carattere aggiunto moltiplica esponenzialmente le combinazioni!
       </div>
     </div>
 
-    <!-- COLONNA DESTRA: VISUALIZZATORE ANIMATO HARDWARE & PERMUTAZIONI -->
+    <!-- COLONNA DESTRA: VISUALIZZATORE PASSO-PASSO E TURBO -->
     <div class="bf-visual-card">
       <!-- Header Visualizzatore -->
       <div class="bf-visual-header">
         <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:1.1rem">⚡</span>
-          <span style="font-weight:bold;color:var(--a)">GPU CRACK CLUSTER</span>
-          <span style="color:var(--gdim);font-size:.72rem">(4x RTX 4090 • 1 GigaHash/s)</span>
+          <span style="font-size:1.05rem">🔍</span>
+          <span style="font-weight:bold;color:var(--a)">MECCANISMO BRUTE FORCE (PASSO-PASSO &amp; TURBO)</span>
         </div>
         <span class="bf-visual-badge idle" id="bf-badge">IN ATTESA</span>
       </div>
 
-      <!-- Matrice Tumbler Caratteri -->
-      <div class="bf-tumblers-box">
-        <div class="bf-sub-lbl">// MATRICE CARATTERI — COMBINAZIONE IN ESAME:</div>
-        <div class="bf-tumblers-row" id="bf-tumblers-row">
-          <!-- Popolato dinamicamente da renderBfSlots() -->
+      <!-- Area Confronto Visuale: Bersaglio vs Tentativo -->
+      <div style="background:rgba(0,0,0,0.45);border:1px solid rgba(0,255,65,.15);border-radius:2px;padding:6px 8px;display:flex;flex-direction:column;gap:5px">
+        <!-- Riga Bersaglio -->
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="font-size:.65rem;color:var(--gdim);width:85px;flex-shrink:0;letter-spacing:1px">🔒 BERSAGLIO:</div>
+          <div class="bf-slots-row" id="bf-target-slots" style="flex:1"></div>
+        </div>
+        <!-- Riga Tentativo Corrente -->
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="font-size:.65rem;color:var(--a);width:85px;flex-shrink:0;letter-spacing:1px">⚙️ TENTATIVO:</div>
+          <div class="bf-slots-row" id="bf-attempt-slots" style="flex:1"></div>
+        </div>
+        <!-- Indicatore confronto -->
+        <div id="bf-match-indicator" style="font-size:.72rem;font-family:var(--fm);color:var(--gdim);text-align:right">
+          In attesa di avvio simulazione...
         </div>
       </div>
 
-      <!-- Co-Processori GPU Paralleli -->
-      <div class="bf-cores-box">
-        <div class="bf-sub-lbl">// TELEMETRIA CO-PROCESSORI GPU PARALLELI:</div>
-        <div class="bf-cores-grid">
-          <div class="bf-core-box">
-            <div class="bf-core-head"><span>CORE #0</span><span class="bf-core-load" id="bf-load-0">0%</span></div>
-            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-0"></div></div>
-            <div class="bf-core-sub">range: [a... - f...]</div>
-          </div>
-          <div class="bf-core-box">
-            <div class="bf-core-head"><span>CORE #1</span><span class="bf-core-load" id="bf-load-1">0%</span></div>
-            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-1"></div></div>
-            <div class="bf-core-sub">range: [g... - m...]</div>
-          </div>
-          <div class="bf-core-box">
-            <div class="bf-core-head"><span>CORE #2</span><span class="bf-core-load" id="bf-load-2">0%</span></div>
-            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-2"></div></div>
-            <div class="bf-core-sub">range: [n... - s...]</div>
-          </div>
-          <div class="bf-core-box">
-            <div class="bf-core-head"><span>CORE #3</span><span class="bf-core-load" id="bf-load-3">0%</span></div>
-            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-3"></div></div>
-            <div class="bf-core-sub">range: [t... - z...]</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Terminale Flusso Permutazioni -->
+      <!-- Terminale Flusso Tentativi -->
       <div class="bf-stream-container">
-        <div class="bf-sub-lbl">// FLUSSO PERMUTAZIONI GPU IN TEMPO REALE:</div>
+        <div class="bf-sub-lbl">// CRONOLOGIA COMBINAZIONI TESTATE:</div>
         <div class="bf-stream-box" id="bf-stream-box">
-          <div class="bf-stream-line">[GPU-CLUSTER] In attesa di avvio permutazioni combinatorie...</div>
+          <div class="bf-stream-line">[SIMULATORE] Scegli un esempio e premi PASSO-PASSO o VELOCIZZA AL MASSIMO...</div>
         </div>
+      </div>
+
+      <!-- Spiegazione Didattica Ruote -->
+      <div class="bf-didactic-box">
+        <strong>⚙️ Come le rotelle di una cassaforte:</strong> Il computer incrementa il primo carattere a destra. Raggiunto l'ultimo simbolo (9 o z), scatta il carattere a sinistra come il contachilometri!
       </div>
 
       <!-- Spettro Resistenza Combinatoria -->
       <div class="bf-gauge-box">
         <div class="bf-sub-lbl" style="display:flex;justify-content:space-between">
-          <span>// LIVELLO RESISTENZA TEMPORALE:</span>
+          <span>// RESISTENZA TEMPORALE STIMATA:</span>
           <span id="bf-gauge-label" style="font-weight:bold;color:var(--g)">IN ATTESA</span>
         </div>
         <div class="bf-gauge-track">
@@ -1428,7 +1389,7 @@ body.light-theme .threat-card.fail {
       </div>
 
       <div class="box a" style="font-size:.8rem;padding:6px 10px;margin-top:auto">
-        <strong>Come funziona:</strong> Il tool legge il file di dizionario linea per linea calcolandone l'hash e confrontandolo col bersaglio. Se presente, cade all'istante!
+        <strong>Come funziona:</strong> Il programma scorre il file di testo parola per parola e le confronta in sequenza con la password da trovare. Se la parola è nel dizionario, viene trovata all'istante!
       </div>
     </div>
 
@@ -1448,7 +1409,7 @@ body.light-theme .threat-card.fail {
       </div>
       <div class="da-file-footer">
         <span id="da-file-info">Cursore: riga 1 • File aperto in sola lettura</span>
-        <span style="color:var(--gdim)">Hashcat / John Rule Engine</span>
+        <span style="color:var(--gdim)">Archivio Dizionario Password</span>
       </div>
     </div>
   </div>
@@ -1831,7 +1792,7 @@ body.light-theme .threat-card.fail {
       <ol class="steps">
         <li>Il sito genera una <strong>chiave segreta condivisa</strong>, trasmessa al tuo telefono via QR code una volta sola</li>
         <li>L'app salva questa chiave nel dispositivo (non la invia mai in rete)</li>
-        <li>Ogni 30 secondi: <code>TOTP = HMAC(chiave_segreta + timestamp_attuale)</code></li>
+        <li>Ogni 30 secondi: l'app calcola un nuovo codice a 6 cifre combinando la chiave con l'orario attuale</li>
         <li>Il server calcola lo stesso valore e confronta: se coincide → accesso garantito</li>
         <li>Il codice <strong>scade dopo 30 secondi</strong>: anche se intercettato, è inutilizzabile</li>
         <li>Senza la chiave nel telefono è <strong>impossibile generare il codice corretto</strong></li>
@@ -1890,7 +1851,7 @@ body.light-theme .threat-card.fail {
       </svg>
       <div id="tcd">------</div>
       <div class="ph-l">valido: <span id="tsec">30</span>s</div>
-      <div class="ph-l" style="color:#334;font-size:.58rem">TOTP · SHA-1 · 30s</div>
+      <div class="ph-l" style="color:#334;font-size:.58rem">TOTP · Codice 30s</div>
     </div>
   </div>
 </section>
@@ -2193,7 +2154,7 @@ function startDA() {
   badge.textContent = 'SCANSIONE ATTIVA';
 
   document.getElementById('da-result-box').style.display = 'block';
-  document.getElementById('da-result').innerHTML = '<span style="color:var(--a)">⏳ Calcolo hash e confronto riga per riga con il file rockyou.txt...</span>';
+  document.getElementById('da-result').innerHTML = '<span style="color:var(--a)">⏳ Scansione e confronto riga per riga con il file rockyou.txt...</span>';
 
   const t0 = Date.now();
   let curLine = 0;
@@ -2230,7 +2191,7 @@ function startDA() {
       if (curEl) {
         curEl.classList.add('da-line-scanning');
         const curLs = document.getElementById(`da-ls-${curLine}`);
-        if (curLs) curLs.textContent = '⚡ CHECK HASH...';
+        if (curLs) curLs.textContent = '⚡ CONFRONTO...';
         curEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
@@ -2250,7 +2211,7 @@ function startDA() {
         matchEl.classList.remove('da-line-scanning');
         matchEl.classList.add('da-line-match');
         const matchLs = document.getElementById(`da-ls-${matchIdx}`);
-        if (matchLs) matchLs.textContent = '✔ HASH MATCH! CRACKATA';
+        if (matchLs) matchLs.textContent = '✔ TROVATA NEL FILE!';
         matchEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
 
@@ -2347,18 +2308,46 @@ document.getElementById('da-in').addEventListener('keydown', e => { if (e.key ==
 initDaFile();
 
 /* ====================================================================
-   SIMULATORE BRUTE FORCE (ANIMAZIONE VISIVA HARDWARE & PERMUTAZIONI)
+   SIMULATORE BRUTE FORCE (PASSO-PASSO DIDATTICO & VELOCITÀ TURBO)
    ==================================================================== */
-let bfOn = false, bfRaf = null;
-let bfStreamTimer = null, bfCoreTimer = null;
+let bfOn = false, bfMode = 'idle'; // 'idle' | 'step' | 'turbo'
+let bfStepTimer = null, bfTurboRaf = null;
+let bfAttemptIndex = 0n;
+
+function getBfPool(pwd) {
+  if (/^[0-9]+$/.test(pwd)) return '0123456789';
+  if (/^[a-z]+$/.test(pwd)) return 'abcdefghijklmnopqrstuvwxyz';
+  if (/^[a-zA-Z0-9]+$/.test(pwd)) return 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_+-=?';
+}
+
+function getBfAttemptString(idx, len, pool) {
+  const base = BigInt(pool.length);
+  let rem = idx;
+  let chars = [];
+  for (let i = 0; i < len; i++) {
+    const digit = Number(rem % base);
+    chars.unshift(pool[digit]);
+    rem = rem / base;
+  }
+  return chars.join('');
+}
+
+function getBfIndexOfPwd(pwd, pool) {
+  const base = BigInt(pool.length);
+  let idx = 0n;
+  for (let i = 0; i < pwd.length; i++) {
+    const pos = pool.indexOf(pwd[i]);
+    if (pos === -1) return null;
+    idx = idx * base + BigInt(pos);
+  }
+  return idx;
+}
 
 function setBfExample(val) {
   const inp = document.getElementById('bf-in');
-  if (inp) {
-    inp.value = val;
-    renderBfSlots(val);
-  }
-  startBF();
+  if (inp) inp.value = val;
+  initBfBoard();
 }
 
 function bfStats(pwd) {
@@ -2372,14 +2361,6 @@ function bfStats(pwd) {
   const comb = BigInt(cs) ** BigInt(len);
   const tms  = (comb * 1000n) / (1_000_000_000n * 2n);
   return { cs, len, comb, tms };
-}
-
-function rndAttempt(len, cs) {
-  const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_+-=?';
-  let r = '';
-  const maxPool = Math.min(cs, pool.length);
-  for (let i = 0; i < len; i++) r += pool[Math.floor(Math.random() * maxPool)];
-  return r;
 }
 
 function fmtBig(n) {
@@ -2401,52 +2382,11 @@ function fmtTime(ms) {
   return 'MILIARDI DI ANNI 🛡️';
 }
 
-function renderBfSlots(pwd) {
-  const container = document.getElementById('bf-tumblers-row');
-  if (!container) return;
-  container.innerHTML = '';
-  if (!pwd || pwd.length === 0) {
-    for (let i = 0; i < 6; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'bf-slot';
-      slot.innerHTML = '<span class="bf-slot-char">—</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
-      container.appendChild(slot);
-    }
-    return;
-  }
-  const maxDirect = 14;
-  if (pwd.length <= maxDirect) {
-    for (let i = 0; i < pwd.length; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'bf-slot';
-      slot.id = 'bf-slot-' + i;
-      slot.dataset.char = pwd[i];
-      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
-      container.appendChild(slot);
-    }
-  } else {
-    // Show first 6 chars, separator, and last 3 chars
-    for (let i = 0; i < 6; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'bf-slot';
-      slot.id = 'bf-slot-' + i;
-      slot.dataset.char = pwd[i];
-      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
-      container.appendChild(slot);
-    }
-    const dots = document.createElement('div');
-    dots.className = 'bf-slot-dots';
-    dots.textContent = '... [+' + (pwd.length - 9) + ' car] ...';
-    container.appendChild(dots);
-    for (let i = pwd.length - 3; i < pwd.length; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'bf-slot';
-      slot.id = 'bf-slot-' + i;
-      slot.dataset.char = pwd[i];
-      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
-      container.appendChild(slot);
-    }
-  }
+function setBfGauge(percent, labelText) {
+  const marker = document.getElementById('bf-gauge-marker');
+  const label = document.getElementById('bf-gauge-label');
+  if (marker) marker.style.left = Math.min(Math.max(percent, 0), 98) + '%';
+  if (label) label.textContent = labelText;
 }
 
 function addBfStreamLine(text, cls = '') {
@@ -2461,242 +2401,363 @@ function addBfStreamLine(text, cls = '') {
   }
 }
 
-function setBfCores(l0, l1, l2, l3, active = false) {
-  const loads = [l0, l1, l2, l3];
-  for (let i = 0; i < 4; i++) {
-    const elLoad = document.getElementById('bf-load-' + i);
-    const elBar = document.getElementById('bf-bar-' + i);
-    if (elLoad) elLoad.textContent = loads[i] + '%';
-    if (elBar) {
-      elBar.style.width = loads[i] + '%';
-      if (active) elBar.classList.add('active');
-      else elBar.classList.remove('active');
+function stopBF() {
+  bfOn = false;
+  bfMode = 'idle';
+  if (bfStepTimer) { clearInterval(bfStepTimer); bfStepTimer = null; }
+  if (bfTurboRaf) { cancelAnimationFrame(bfTurboRaf); bfTurboRaf = null; }
+}
+
+function initBfBoard() {
+  stopBF();
+  bfAttemptIndex = 0n;
+
+  const pwd = (document.getElementById('bf-in').value || '').trim();
+  const tRow = document.getElementById('bf-target-slots');
+  const aRow = document.getElementById('bf-attempt-slots');
+  const ind = document.getElementById('bf-match-indicator');
+  const badge = document.getElementById('bf-badge');
+  const resBox = document.getElementById('bf-result-box');
+
+  if (badge) { badge.className = 'bf-visual-badge idle'; badge.textContent = 'PRONTO'; }
+  if (resBox) resBox.style.display = 'none';
+
+  document.getElementById('bf-status').textContent = 'IN ATTESA...';
+  document.getElementById('bf-status').style.color = 'var(--g)';
+  document.getElementById('bf-cur-try').textContent = '—';
+  document.getElementById('bf-cnt').textContent = '0';
+
+  const stepBtn = document.getElementById('bf-step-btn');
+  const turboBtn = document.getElementById('bf-turbo-btn');
+  const resetBtn = document.getElementById('bf-reset-btn');
+  if (stepBtn) stepBtn.textContent = '🐢 PASSO-PASSO';
+  if (turboBtn) turboBtn.style.display = 'inline-block';
+  if (resetBtn) resetBtn.style.display = 'none';
+
+  if (!tRow || !aRow) return;
+  tRow.innerHTML = '';
+  aRow.innerHTML = '';
+
+  if (!pwd) {
+    document.getElementById('bf-sp').textContent = '—';
+    document.getElementById('bf-est-time').textContent = '—';
+    if (ind) ind.textContent = 'Digita o seleziona una password di prova per iniziare.';
+    for (let i = 0; i < 4; i++) {
+      tRow.innerHTML += '<div class="bf-slot target-slot"><span class="bf-slot-char">—</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+      aRow.innerHTML += '<div class="bf-slot mismatch"><span class="bf-slot-char">—</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+    }
+    setBfGauge(0, 'IN ATTESA');
+    return;
+  }
+
+  const st = bfStats(pwd);
+  document.getElementById('bf-sp').textContent = st.cs + '^' + st.len + ' (~' + fmtBig(st.comb) + ')';
+  document.getElementById('bf-est-time').textContent = fmtTime(st.tms);
+
+  const maxVisible = 10;
+  if (pwd.length <= maxVisible) {
+    for (let i = 0; i < pwd.length; i++) {
+      tRow.innerHTML += '<div class="bf-slot target-slot" id="bf-tslot-' + i + '"><span class="bf-slot-char">' + pwd[i] + '</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+      aRow.innerHTML += '<div class="bf-slot mismatch" id="bf-aslot-' + i + '"><span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+    }
+  } else {
+    for (let i = 0; i < 5; i++) {
+      tRow.innerHTML += '<div class="bf-slot target-slot" id="bf-tslot-' + i + '"><span class="bf-slot-char">' + pwd[i] + '</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+      aRow.innerHTML += '<div class="bf-slot mismatch" id="bf-aslot-' + i + '"><span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+    }
+    tRow.innerHTML += '<div class="bf-slot-dots">... [+' + (pwd.length - 8) + ' car] ...</div>';
+    aRow.innerHTML += '<div class="bf-slot-dots">... [+' + (pwd.length - 8) + ' car] ...</div>';
+    for (let i = pwd.length - 3; i < pwd.length; i++) {
+      tRow.innerHTML += '<div class="bf-slot target-slot" id="bf-tslot-' + i + '"><span class="bf-slot-char">' + pwd[i] + '</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+      aRow.innerHTML += '<div class="bf-slot mismatch" id="bf-aslot-' + i + '"><span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i+1) + '</span></div>';
+    }
+  }
+
+  if (ind) ind.textContent = 'Pronto. Premi PASSO-PASSO per osservare il meccanismo, oppure VELOCIZZA AL MASSIMO.';
+  const sBox = document.getElementById('bf-stream-box');
+  if (sBox) sBox.innerHTML = '<div class="bf-stream-line">[SIMULATORE] Password bersaglio: \"' + pwd + '\" (' + pwd.length + ' caratteri). In attesa di avvio...</div>';
+  setBfGauge(0, 'IN ATTESA');
+}
+
+function renderAttemptSlots(attemptStr, targetStr) {
+  let matches = 0;
+  const isExact = (attemptStr === targetStr);
+
+  const maxVisible = 10;
+  if (targetStr.length <= maxVisible) {
+    for (let i = 0; i < targetStr.length; i++) {
+      const slot = document.getElementById('bf-aslot-' + i);
+      if (!slot) continue;
+      const ch = attemptStr[i] || '—';
+      slot.querySelector('.bf-slot-char').textContent = ch;
+      if (isExact) {
+        slot.className = 'bf-slot found';
+        slot.querySelector('.bf-slot-idx').textContent = '✔ OK';
+      } else if (ch === targetStr[i]) {
+        matches++;
+        slot.className = 'bf-slot match';
+        slot.querySelector('.bf-slot-idx').textContent = '✔ OK';
+      } else {
+        slot.className = 'bf-slot mismatch';
+        slot.querySelector('.bf-slot-idx').textContent = '#' + (i + 1);
+      }
+    }
+  } else {
+    // Large passwords
+    for (let i = 0; i < 5; i++) {
+      const slot = document.getElementById('bf-aslot-' + i);
+      if (!slot) continue;
+      const ch = attemptStr[i] || '—';
+      slot.querySelector('.bf-slot-char').textContent = ch;
+      if (ch === targetStr[i]) { matches++; slot.className = 'bf-slot match'; }
+      else slot.className = 'bf-slot mismatch';
+    }
+    for (let i = targetStr.length - 3; i < targetStr.length; i++) {
+      const slot = document.getElementById('bf-aslot-' + i);
+      if (!slot) continue;
+      const ch = attemptStr[i] || '—';
+      slot.querySelector('.bf-slot-char').textContent = ch;
+      if (ch === targetStr[i]) { matches++; slot.className = 'bf-slot match'; }
+      else slot.className = 'bf-slot mismatch';
+    }
+  }
+
+  const ind = document.getElementById('bf-match-indicator');
+  if (ind) {
+    if (isExact) {
+      ind.innerHTML = '<span style="color:var(--g);font-weight:bold">✔ TUTTI I CARATTERI COMBACIANO! PASSWORD TROVATA!</span>';
+    } else {
+      ind.innerHTML = '<span style="color:var(--a)">Tentativo \"' + attemptStr + '\":</span> ' +
+        (matches > 0 ? ('<strong style="color:var(--g)">' + matches + ' caratteri combaciano</strong>') : '<span style="color:var(--r)">0 combaciano</span>') +
+        ' su ' + targetStr.length;
     }
   }
 }
 
-function setBfGauge(percent, labelText) {
-  const marker = document.getElementById('bf-gauge-marker');
-  const label = document.getElementById('bf-gauge-label');
-  if (marker) marker.style.left = Math.min(Math.max(percent, 0), 98) + '%';
-  if (label) label.textContent = labelText;
+function executeBfSingleStep() {
+  const pwd = (document.getElementById('bf-in').value || '').trim();
+  if (!pwd) return false;
+
+  const pool = getBfPool(pwd);
+  const st = bfStats(pwd);
+  const attempt = getBfAttemptString(bfAttemptIndex, pwd.length, pool);
+
+  document.getElementById('bf-reset-btn').style.display = 'inline-block';
+  document.getElementById('bf-cur-try').textContent = attempt;
+  document.getElementById('bf-cnt').textContent = (bfAttemptIndex + 1n).toLocaleString('it-IT');
+
+  renderAttemptSlots(attempt, pwd);
+
+  const isHit = (attempt === pwd);
+  addBfStreamLine('[TENTATIVO #' + (bfAttemptIndex + 1n) + '] Prova \"' + attempt + '\" -> ' + (isHit ? '✔ TROVATA!' : '❌ Errata'), isHit ? 'hit' : '');
+
+  if (isHit) {
+    onBfFound(bfAttemptIndex + 1n, pwd, st);
+    return true;
+  }
+
+  bfAttemptIndex++;
+  return false;
 }
 
-function stopBF() {
-  bfOn = false;
-  if (bfRaf) { cancelAnimationFrame(bfRaf); bfRaf = null; }
-  if (bfStreamTimer) { clearInterval(bfStreamTimer); bfStreamTimer = null; }
-  if (bfCoreTimer) { clearInterval(bfCoreTimer); bfCoreTimer = null; }
-}
-
-function startBF() {
-  stopBF();
-  const pwd = document.getElementById('bf-in').value.trim();
+function toggleBfStep() {
+  const pwd = (document.getElementById('bf-in').value || '').trim();
   if (!pwd) {
     const el = document.getElementById('bf-in');
     el.style.borderColor = 'var(--r)';
     setTimeout(() => el.style.borderColor = '', 1200);
     return;
   }
-  const st = bfStats(pwd);
-  bfOn = true;
 
-  document.getElementById('bf-start').style.display = 'none';
-  document.getElementById('bf-reset').style.display = 'inline-block';
-  document.getElementById('bf-result-box').style.display = 'none';
-  document.getElementById('bf-result').textContent = '';
+  const stepBtn = document.getElementById('bf-step-btn');
 
-  document.getElementById('bf-status').textContent = 'PERMUTAZIONE IN CORSO...';
-  document.getElementById('bf-status').style.color = 'var(--a)';
-  document.getElementById('bf-sp').textContent = st.cs + '^' + st.len + ' (~' + fmtBig(st.comb) + ')';
-  document.getElementById('bf-est-time').textContent = fmtTime(st.tms);
-
-  const badge = document.getElementById('bf-badge');
-  if (badge) {
-    badge.className = 'bf-visual-badge running';
-    badge.textContent = 'PERMUTANDO...';
+  if (bfMode === 'step') {
+    // Pausa
+    stopBF();
+    stepBtn.textContent = '▶ RIPRENDI';
+    document.getElementById('bf-status').textContent = 'IN PAUSA';
+    document.getElementById('bf-badge').textContent = 'IN PAUSA';
+    document.getElementById('bf-badge').className = 'bf-visual-badge step';
+    return;
   }
 
-  renderBfSlots(pwd);
+  stopBF();
+  bfMode = 'step';
+  bfOn = true;
 
-  const allSlots = document.querySelectorAll('.bf-slot');
+  stepBtn.textContent = '⏸️ PAUSA';
+  document.getElementById('bf-reset-btn').style.display = 'inline-block';
+  document.getElementById('bf-status').textContent = 'PASSO-PASSO IN CORSO...';
+  document.getElementById('bf-status').style.color = 'var(--a)';
+  document.getElementById('bf-badge').textContent = 'PASSO-PASSO 🐢';
+  document.getElementById('bf-badge').className = 'bf-visual-badge step';
+
+  bfStepTimer = setInterval(() => {
+    const done = executeBfSingleStep();
+    if (done) stopBF();
+  }, 220);
+}
+
+function onSingleStepClick() {
+  if (bfMode === 'step') {
+    stopBF();
+    document.getElementById('bf-step-btn').textContent = '▶ RIPRENDI';
+  }
+  executeBfSingleStep();
+}
+
+function startBfTurbo() {
+  const pwd = (document.getElementById('bf-in').value || '').trim();
+  if (!pwd) {
+    const el = document.getElementById('bf-in');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => el.style.borderColor = '', 1200);
+    return;
+  }
+
+  stopBF();
+  bfMode = 'turbo';
+  bfOn = true;
+
+  document.getElementById('bf-step-btn').textContent = '🐢 PASSO-PASSO';
+  document.getElementById('bf-turbo-btn').style.display = 'none';
+  document.getElementById('bf-reset-btn').style.display = 'inline-block';
+  document.getElementById('bf-result-box').style.display = 'none';
+
+  document.getElementById('bf-status').textContent = 'CALCOLO AD ALTA VELOCITÀ...';
+  document.getElementById('bf-status').style.color = 'var(--r)';
+  document.getElementById('bf-badge').textContent = 'TURBO ⚡';
+  document.getElementById('bf-badge').className = 'bf-visual-badge turbo';
+
+  const allSlots = document.querySelectorAll('#bf-attempt-slots .bf-slot');
   allSlots.forEach(s => s.classList.add('spinning'));
 
-  const streamBox = document.getElementById('bf-stream-box');
-  if (streamBox) streamBox.innerHTML = '';
-  addBfStreamLine('[GPU-CLUSTER] Allocazione 4 thread paralleli su RTX 4090...');
-  addBfStreamLine('[TARGET] Test password di lunghezza ' + pwd.length + ' su ' + st.cs + ' simboli...');
+  addBfStreamLine('[TURBO] Accelerazione massima attivata: scansione ad alta frequenza...');
 
-  setBfCores(99, 100, 98, 100, true);
-  bfCoreTimer = setInterval(() => {
-    if (!bfOn) return;
-    const rndLoads = [
-      (96 + Math.random() * 4).toFixed(1),
-      (97 + Math.random() * 3).toFixed(1),
-      (95 + Math.random() * 5).toFixed(1),
-      (98 + Math.random() * 2).toFixed(1)
-    ];
-    setBfCores(rndLoads[0], rndLoads[1], rndLoads[2], rndLoads[3], true);
-  }, 120);
+  const st = bfStats(pwd);
+  const pool = getBfPool(pwd);
+  const targetIdx = getBfIndexOfPwd(pwd, pool);
+  const canCrackInDemo = (targetIdx !== null && targetIdx <= 1_500_000n);
 
-  let streamCounter = 1000;
-  bfStreamTimer = setInterval(() => {
-    if (!bfOn) return;
-    streamCounter += Math.floor(Math.random() * 8000) + 2000;
-    const core = Math.floor(Math.random() * 4);
-    const testSample = rndAttempt(pwd.length, st.cs);
-    addBfStreamLine('[GPU-' + core + '] #' + streamCounter.toLocaleString('it-IT') + ' test \'' + testSample + '\' -> HASH MISMATCH');
-  }, 90);
-
-  // Calcolo tempo animazione
-  let animMs = st.tms < 1000n ? 800 : st.tms < 31_536_000_000n ? 1600 : 2200;
   const t0 = Date.now();
+  const animMs = canCrackInDemo ? 900 : 1800;
+  const startIdx = bfAttemptIndex;
+  const endIdx = canCrackInDemo ? targetIdx : 15_000_000n;
 
-  function frame() {
-    if (!bfOn) return;
+  function turboFrame() {
+    if (!bfOn || bfMode !== 'turbo') return;
     const el = Date.now() - t0;
     const pr = Math.min(el / animMs, 1);
 
-    // Tentativi contatore visivo
-    const simulatedTries = BigInt(Math.floor(pr * pr * 120_000_000));
-    const dispTries = simulatedTries > st.comb ? st.comb : simulatedTries;
-    document.getElementById('bf-cnt').textContent = fmtBig(dispTries);
-    document.getElementById('bf-ms').textContent = el + ' ms';
+    const curVal = startIdx + BigInt(Math.floor(Number(endIdx - startIdx) * (pr * pr)));
+    bfAttemptIndex = curVal;
+    document.getElementById('bf-cnt').textContent = curVal.toLocaleString('it-IT');
 
-    // Tumblers scramble
+    // Random characters display during turbo
     allSlots.forEach(s => {
-      if (s.classList.contains('spinning')) {
-        const charSpan = s.querySelector('.bf-slot-char');
-        if (charSpan) charSpan.textContent = rndAttempt(1, st.cs);
-      }
+      const chSpan = s.querySelector('.bf-slot-char');
+      if (chSpan) chSpan.textContent = pool[Math.floor(Math.random() * pool.length)];
     });
 
     if (pr < 1) {
-      bfRaf = requestAnimationFrame(frame);
+      bfTurboRaf = requestAnimationFrame(turboFrame);
       return;
     }
 
-    // Completamento attacco
+    // Terminato
     stopBF();
-    const safe = st.tms >= 31_536_000_000n; // >= 1 anno
-
-    if (safe) {
-      // RESISTENTE / IMPOSSIBILE
-      if (badge) {
-        badge.className = 'bf-visual-badge safe';
-        badge.textContent = 'RESISTENTE 🛡️';
-      }
-      document.getElementById('bf-status').textContent = 'CLUSTER STOP (COMBINAZIONI ASTRONOMICHE)';
-      document.getElementById('bf-status').style.color = 'var(--g)';
-
-      allSlots.forEach(s => {
-        s.classList.remove('spinning');
-        s.classList.add('shielded');
-        const charSpan = s.querySelector('.bf-slot-char');
-        const idxSpan = s.querySelector('.bf-slot-idx');
-        if (charSpan) charSpan.textContent = s.dataset.char || '🛡️';
-        if (idxSpan) idxSpan.textContent = '🔒 OK';
-      });
-
-      setBfCores(0, 0, 0, 0, false);
-      setBfGauge(95, 'MILIARDI DI ANNI 🛡️');
-
-      addBfStreamLine('[CLUSTER ABORT] Spazio combinatorio impenetrabile: testato solo 0.0000000001%!', 'abort');
-      addBfStreamLine('[STATUS VITTORIA] Tempo calcolo stimato: ' + fmtTime(st.tms) + ' -> INVIOLABILE!', 'abort');
-
-      const resBox = document.getElementById('bf-result-box');
-      const res = document.getElementById('bf-result');
-      if (resBox && res) {
-        resBox.style.display = 'block';
-        res.className = 'safe';
-        res.innerHTML = '<strong style="color:var(--g);font-size:1.02rem">✔ PASSWORD RESISTENTE AL BRUTE FORCE!</strong><br>' +
-          '<span style="font-size:.85rem;color:#c8ffc8">Spazio combinatorio astronomico: <strong>' + fmtBig(st.comb) + '</strong> varianti possibili.<br>' +
-          'Anche a 1 miliardo di tentativi al secondo occorrerebbero <strong>' + fmtTime(st.tms) + '</strong>. La lunghezza batte sempre la forza bruta!</span>';
-      }
+    if (canCrackInDemo) {
+      bfAttemptIndex = targetIdx;
+      document.getElementById('bf-cur-try').textContent = pwd;
+      document.getElementById('bf-cnt').textContent = (targetIdx + 1n).toLocaleString('it-IT');
+      renderAttemptSlots(pwd, pwd);
+      onBfFound(targetIdx + 1n, pwd, st);
     } else {
-      // CRACKABILE
-      const isInstant = st.tms < 86_400_000n; // < 1 giorno
-      if (badge) {
-        badge.className = 'bf-visual-badge ' + (isInstant ? 'cracked' : 'running');
-        badge.textContent = isInstant ? 'CRACKATA 💀' : 'VULNERABILE ⚠️';
-      }
-      document.getElementById('bf-status').textContent = isInstant ? 'CRACKATA IN TEMPO REALE!' : 'VULNERABILE (CALCOLABILE)';
-      document.getElementById('bf-status').style.color = isInstant ? 'var(--r)' : 'var(--a)';
-
-      allSlots.forEach(s => {
-        s.classList.remove('spinning');
-        s.classList.add(isInstant ? 'cracked' : 'spinning');
-        const charSpan = s.querySelector('.bf-slot-char');
-        const idxSpan = s.querySelector('.bf-slot-idx');
-        if (charSpan) charSpan.textContent = s.dataset.char || '?';
-        if (idxSpan) idxSpan.textContent = isInstant ? '💀 HIT' : '⚠️ WARN';
-      });
-
-      setBfCores(0, 0, 0, 0, false);
-
-      let gaugePos = 3;
-      if (st.tms < 1000n) gaugePos = 2;
-      else if (st.tms < 60_000n) gaugePos = 12;
-      else if (st.tms < 3_600_000n) gaugePos = 28;
-      else if (st.tms < 86_400_000n) gaugePos = 42;
-      else gaugePos = 65;
-      setBfGauge(gaugePos, fmtTime(st.tms).toUpperCase());
-
-      addBfStreamLine('[GPU-MATCH] HASH CORRISPONDENTE IDENTIFICATO!', 'hit');
-      addBfStreamLine('[CRACK SUCCESS] Password in chiaro: \'' + pwd + '\' in ' + fmtTime(st.tms), 'hit');
-
-      const resBox = document.getElementById('bf-result-box');
-      const res = document.getElementById('bf-result');
-      if (resBox && res) {
-        resBox.style.display = 'block';
-        res.className = isInstant ? 'cracked' : '';
-        res.innerHTML = '<strong style="color:var(--r);font-size:1.02rem">💀 PASSWORD CRACKATA IN ' + fmtTime(st.tms).toUpperCase() + '!</strong><br>' +
-          '<span style="font-size:.85rem;color:#ffaaaa">Con sole <strong>' + fmtBig(st.comb) + '</strong> combinazioni, una moderna GPU consumer decifra la password in pochi istanti. Evita password corte o prive di varietà!</span>';
-      }
+      onBfResistant(pwd, st);
     }
   }
 
-  bfRaf = requestAnimationFrame(frame);
+  bfTurboRaf = requestAnimationFrame(turboFrame);
+}
+
+function onBfFound(tries, pwd, st) {
+  const badge = document.getElementById('bf-badge');
+  if (badge) {
+    badge.className = 'bf-visual-badge found';
+    badge.textContent = 'TROVATA! ✔';
+  }
+  document.getElementById('bf-status').textContent = 'TROVATA IN TEMPO REALE!';
+  document.getElementById('bf-status').style.color = 'var(--g)';
+
+  setBfGauge(st.tms < 1000n ? 3 : 25, fmtTime(st.tms).toUpperCase());
+  addBfStreamLine('[SUCCESSO] ✔ Password \"' + pwd + '\" trovata al tentativo #' + tries.toLocaleString('it-IT') + '!', 'hit');
+
+  const resBox = document.getElementById('bf-result-box');
+  const res = document.getElementById('bf-result');
+  if (resBox && res) {
+    resBox.style.display = 'block';
+    res.className = 'safe';
+    res.innerHTML = '<strong style="color:var(--g);font-size:.95rem">✔ PASSWORD TROVATA AL TENTATIVO #' + tries.toLocaleString('it-IT') + '!</strong><br>' +
+      '<span style="font-size:.82rem;color:#c8ffc8">Per una password corta (' + pwd.length + ' caratteri), un normale computer esaurisce tutte le combinazioni in <strong>' + fmtTime(st.tms) + '</strong>. La brevità è il punto debole!</span>';
+  }
+
+  const stepBtn = document.getElementById('bf-step-btn');
+  const turboBtn = document.getElementById('bf-turbo-btn');
+  if (stepBtn) stepBtn.textContent = '🐢 PASSO-PASSO';
+  if (turboBtn) turboBtn.style.display = 'inline-block';
+}
+
+function onBfResistant(pwd, st) {
+  const badge = document.getElementById('bf-badge');
+  if (badge) {
+    badge.className = 'bf-visual-badge safe';
+    badge.textContent = 'INVIOLABILE 🛡️';
+  }
+  document.getElementById('bf-status').textContent = 'SPAZIO ASTRONOMICO / INTERROTTO';
+  document.getElementById('bf-status').style.color = 'var(--g)';
+
+  const allSlots = document.querySelectorAll('#bf-attempt-slots .bf-slot');
+  allSlots.forEach(s => {
+    s.className = 'bf-slot shielded';
+    const chSpan = s.querySelector('.bf-slot-char');
+    const idxSpan = s.querySelector('.bf-slot-idx');
+    if (chSpan) chSpan.textContent = '🔒';
+    if (idxSpan) idxSpan.textContent = 'PROTETTA';
+  });
+
+  setBfGauge(95, 'MILIARDI DI ANNI 🛡️');
+  addBfStreamLine('[BLOCCO] Spazio combinatorio impenetrabile: provate oltre 15 milioni di combinazioni!', 'abort');
+  addBfStreamLine('[ESITO] Tempo stimato reale: ' + fmtTime(st.tms) + ' -> IMPOSSIBILE DA INDOVINARE!', 'abort');
+
+  const resBox = document.getElementById('bf-result-box');
+  const res = document.getElementById('bf-result');
+  if (resBox && res) {
+    resBox.style.display = 'block';
+    res.className = 'safe';
+    res.innerHTML = '<strong style="color:var(--g);font-size:.95rem">🛡️ RESISTENTE AL BRUTE FORCE!</strong><br>' +
+      '<span style="font-size:.82rem;color:#c8ffc8">Spazio totale: <strong>' + fmtBig(st.comb) + '</strong> combinazioni.<br>' +
+      'Anche provando 1 miliardo di combinazioni al secondo, servirebbero <strong>' + fmtTime(st.tms) + '</strong>. La lunghezza vince sempre!</span>';
+  }
+
+  const stepBtn = document.getElementById('bf-step-btn');
+  const turboBtn = document.getElementById('bf-turbo-btn');
+  if (stepBtn) stepBtn.textContent = '🐢 PASSO-PASSO';
+  if (turboBtn) turboBtn.style.display = 'inline-block';
 }
 
 function resetBF() {
-  stopBF();
-  document.getElementById('bf-start').style.display = 'inline-block';
-  document.getElementById('bf-reset').style.display = 'none';
   document.getElementById('bf-in').value = '';
-  document.getElementById('bf-result-box').style.display = 'none';
-
-  document.getElementById('bf-status').textContent = 'IN ATTESA...';
-  document.getElementById('bf-status').style.color = 'var(--g)';
-  document.getElementById('bf-cnt').textContent = '0';
-  document.getElementById('bf-ms').textContent = '0 ms';
-  document.getElementById('bf-sp').textContent = '—';
-  document.getElementById('bf-est-time').textContent = '—';
-
-  const badge = document.getElementById('bf-badge');
-  if (badge) {
-    badge.className = 'bf-visual-badge idle';
-    badge.textContent = 'IN ATTESA';
-  }
-
-  const streamBox = document.getElementById('bf-stream-box');
-  if (streamBox) {
-    streamBox.innerHTML = '<div class="bf-stream-line">[GPU-CLUSTER] In attesa di avvio permutazioni combinatorie...</div>';
-  }
-
-  setBfCores(0, 0, 0, 0, false);
-  setBfGauge(0, 'IN ATTESA');
-  renderBfSlots('');
+  initBfBoard();
 }
 
-document.getElementById('bf-start').addEventListener('click', startBF);
-document.getElementById('bf-reset').addEventListener('click', resetBF);
-document.getElementById('bf-in').addEventListener('keydown', e => { if (e.key === 'Enter') startBF(); });
-document.getElementById('bf-in').addEventListener('input', e => {
-  if (!bfOn) renderBfSlots(e.target.value.trim());
-});
+document.getElementById('bf-step-btn').addEventListener('click', toggleBfStep);
+document.getElementById('bf-single-btn').addEventListener('click', onSingleStepClick);
+document.getElementById('bf-turbo-btn').addEventListener('click', startBfTurbo);
+document.getElementById('bf-reset-btn').addEventListener('click', resetBF);
+document.getElementById('bf-in').addEventListener('keydown', e => { if (e.key === 'Enter') startBfTurbo(); });
+document.getElementById('bf-in').addEventListener('input', () => initBfBoard());
 
-renderBfSlots('');
+initBfBoard();
 
 /* ====================================================================
    SIMULATORE DATA BREACH
