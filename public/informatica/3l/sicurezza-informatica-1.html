@@ -205,11 +205,166 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 .sbtn.r:hover{background:var(--rglo)}
 .slbl{font-size:.68rem;color:var(--gdim);letter-spacing:2px;margin-bottom:4px}
 
-/* BF */
-#bf-attempt{font-family:var(--fv);font-size:2.5rem;color:var(--r);text-shadow:0 0 8px var(--rdim);letter-spacing:4px;min-height:50px}
-#bf-result{font-family:var(--fv);font-size:1.4rem;min-height:32px}
-.cracked{color:var(--r);text-shadow:0 0 10px var(--r)}
-.safe{color:var(--g);text-shadow:0 0 10px var(--g)}
+/* BF (Brute Force) Visual Simulator */
+.bf-visual-card{
+  background:#020703;border:1px solid var(--bdr);
+  display:flex;flex-direction:column;flex:1;min-height:0;
+  overflow:hidden;box-shadow:inset 0 0 24px rgba(0,0,0,0.85);border-radius:2px;
+  padding:8px 10px;gap:8px
+}
+.bf-visual-header{
+  background:var(--bgc);border-bottom:1px solid var(--bdr);
+  padding:5px 8px;margin:-8px -10px 0 -10px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--fm);font-size:.78rem;flex-shrink:0
+}
+.bf-visual-badge{
+  font-size:.68rem;padding:2px 8px;border-radius:2px;
+  font-weight:bold;letter-spacing:1px;transition:all .2s
+}
+.bf-visual-badge.idle{background:var(--bg);color:var(--gdim);border:1px solid var(--bdr)}
+.bf-visual-badge.running{background:rgba(255,176,0,0.18);color:var(--a);border:1px solid var(--a);animation:gp 1s infinite alternate}
+.bf-visual-badge.cracked{background:var(--rglo);color:var(--r);border:1px solid var(--r)}
+.bf-visual-badge.safe{background:var(--gglo);color:var(--g);border:1px solid var(--g)}
+
+.bf-sub-lbl{
+  font-size:.65rem;color:var(--gdim);letter-spacing:1px;margin-bottom:3px
+}
+
+/* Character Tumbler Matrix */
+.bf-tumblers-box{
+  display:flex;flex-direction:column;flex-shrink:0
+}
+.bf-tumblers-row{
+  display:flex;align-items:center;gap:5px;padding:5px 8px;
+  background:rgba(0,0,0,0.5);border:1px solid rgba(0,255,65,.15);
+  border-radius:2px;min-height:50px;overflow-x:auto
+}
+.bf-slot{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:36px;height:42px;background:rgba(0,255,65,.04);
+  border:1px solid rgba(0,255,65,.25);border-radius:3px;
+  font-family:var(--fv);color:var(--g);transition:all .15s ease;
+  flex-shrink:0;user-select:none
+}
+.bf-slot-char{
+  font-size:1.55rem;line-height:1;text-shadow:0 0 6px var(--g)
+}
+.bf-slot-idx{
+  font-family:var(--fm);font-size:.52rem;color:var(--gdim);margin-top:1px
+}
+.bf-slot.spinning{
+  border-color:var(--a);color:var(--a);background:rgba(255,176,0,0.08);
+  box-shadow:0 0 8px rgba(255,176,0,0.3)
+}
+.bf-slot.spinning .bf-slot-char{
+  text-shadow:0 0 8px var(--a)
+}
+.bf-slot.cracked{
+  border-color:var(--r);color:var(--r);background:var(--rglo);
+  box-shadow:0 0 10px var(--r);transform:scale(1.04)
+}
+.bf-slot.cracked .bf-slot-char{
+  text-shadow:0 0 10px var(--r)
+}
+.bf-slot.shielded{
+  border-color:var(--g);color:var(--g);background:var(--gglo);
+  box-shadow:0 0 10px var(--g)
+}
+.bf-slot.shielded .bf-slot-char{
+  text-shadow:0 0 10px var(--g)
+}
+.bf-slot-dots{
+  font-family:var(--fm);font-size:.78rem;color:var(--gdim);
+  padding:0 4px;letter-spacing:1px;white-space:nowrap
+}
+
+/* GPU Multicore telemetry */
+.bf-cores-box{
+  display:flex;flex-direction:column;flex-shrink:0
+}
+.bf-cores-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:5px
+}
+.bf-core-box{
+  background:rgba(0,0,0,0.45);border:1px solid var(--bdr);
+  padding:4px 6px;border-radius:2px;display:flex;flex-direction:column;gap:2px
+}
+.bf-core-head{
+  display:flex;justify-content:space-between;font-size:.62rem;
+  font-family:var(--fm);color:var(--gdim)
+}
+.bf-core-load{
+  font-weight:bold;color:var(--g)
+}
+.bf-core-bar{
+  height:4px;background:rgba(0,255,65,.1);border-radius:2px;overflow:hidden
+}
+.bf-core-fill{
+  height:100%;width:0%;background:var(--g);box-shadow:0 0 5px var(--g);
+  transition:width .15s ease,background-color .15s ease
+}
+.bf-core-fill.active{
+  background:var(--a);box-shadow:0 0 5px var(--a)
+}
+.bf-core-sub{
+  font-size:.52rem;color:var(--gdim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+
+/* Permutations Stream Box */
+.bf-stream-container{
+  display:flex;flex-direction:column;flex:1;min-height:70px
+}
+.bf-stream-box{
+  background:#000;border:1px solid rgba(0,255,65,.15);border-radius:2px;
+  padding:5px 8px;font-family:var(--fm);font-size:.7rem;color:#88ff88;
+  flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  justify-content:flex-end;gap:2px;line-height:1.3
+}
+.bf-stream-line{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.75
+}
+.bf-stream-line:last-child{
+  opacity:1;color:#fff;font-weight:bold
+}
+.bf-stream-line.hit{
+  color:var(--r) !important;text-shadow:0 0 6px var(--r)
+}
+.bf-stream-line.abort{
+  color:var(--g) !important;text-shadow:0 0 6px var(--g)
+}
+
+/* Resistance Spectrum Gauge */
+.bf-gauge-box{
+  display:flex;flex-direction:column;flex-shrink:0
+}
+.bf-gauge-track{
+  position:relative;display:flex;height:20px;border:1px solid var(--bdr);
+  border-radius:2px;background:#000;margin-top:2px
+}
+.bf-gauge-seg{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  font-size:.58rem;font-family:var(--fm);letter-spacing:.5px;
+  border-right:1px solid rgba(255,255,255,.1);user-select:none
+}
+.bf-gauge-seg:last-child{border-right:none}
+.seg-red{background:rgba(255,51,51,0.28);color:#ff8888}
+.seg-orange{background:rgba(255,176,0,0.25);color:#ffd37a}
+.seg-yellow{background:rgba(234,179,8,0.22);color:#fde047}
+.seg-green{background:rgba(0,255,65,0.22);color:#86efac}
+.bf-gauge-marker{
+  position:absolute;top:-5px;bottom:-5px;width:3px;
+  background:#ffffff;box-shadow:0 0 8px #ffffff;
+  transition:left .5s cubic-bezier(0.2,0.8,0.2,1);pointer-events:none;z-index:10
+}
+.bf-gauge-marker::before{
+  content:'▼';position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:#fff;text-shadow:0 0 6px #fff
+}
+
+#bf-result{font-family:var(--fm);font-size:.9rem}
+.cracked{color:var(--r);text-shadow:0 0 8px var(--r)}
+.safe{color:var(--g);text-shadow:0 0 8px var(--g)}
 
 /* DA (Dictionary Attack) File Viewer */
 .da-file-card{
@@ -682,8 +837,88 @@ body.light-theme .huge {
   color: #dc2626 !important;
   text-shadow: none !important;
 }
-body.light-theme #bf-attempt {
+body.light-theme .bf-visual-card {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light-theme .bf-visual-header {
+  background: #f1f5f9 !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+body.light-theme .bf-sub-lbl {
+  color: #64748b !important;
+}
+body.light-theme .bf-tumblers-row {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme .bf-slot {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-theme .bf-slot-char {
+  text-shadow: none !important;
+}
+body.light-theme .bf-slot.spinning {
+  background: #fffbeb !important;
+  border-color: #f59e0b !important;
+  color: #d97706 !important;
+}
+body.light-theme .bf-slot.cracked {
+  background: #fef2f2 !important;
+  border-color: #ef4444 !important;
   color: #dc2626 !important;
+}
+body.light-theme .bf-slot.shielded {
+  background: #f0fdf4 !important;
+  border-color: #22c55e !important;
+  color: #16a34a !important;
+}
+body.light-theme .bf-core-box {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme .bf-core-head {
+  color: #475569 !important;
+}
+body.light-theme .bf-core-load {
+  color: #059669 !important;
+}
+body.light-theme .bf-core-bar {
+  background: #e2e8f0 !important;
+}
+body.light-theme .bf-core-fill {
+  background: #059669 !important;
+  box-shadow: none !important;
+}
+body.light-theme .bf-core-fill.active {
+  background: #d97706 !important;
+  box-shadow: none !important;
+}
+body.light-theme .bf-core-sub {
+  color: #94a3b8 !important;
+}
+body.light-theme .bf-stream-box {
+  background: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  color: #38bdf8 !important;
+}
+body.light-theme .bf-gauge-track {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .seg-red { background: #fee2e2 !important; color: #b91c1c !important; }
+body.light-theme .seg-orange { background: #ffedd5 !important; color: #c2410c !important; }
+body.light-theme .seg-yellow { background: #fef9c3 !important; color: #a16207 !important; }
+body.light-theme .seg-green { background: #dcfce7 !important; color: #15803d !important; }
+body.light-theme .bf-gauge-marker {
+  background: #0f172a !important;
+  box-shadow: 0 0 6px rgba(15,23,42,0.4) !important;
+}
+body.light-theme .bf-gauge-marker::before {
+  color: #0f172a !important;
   text-shadow: none !important;
 }
 body.light-theme code {
@@ -969,55 +1204,130 @@ body.light-theme .threat-card.fail {
 <section class="slide" id="s7">
   <div class="tag">// LAB 01 — SIMULATORE BRUTE FORCE</div>
   <div class="title">🔬 Laboratorio: <span class="a">Simulatore Brute Force</span></div>
-  <div class="g2" style="flex:1;min-height:0;align-items:start">
-    <!-- Colonna simulatore -->
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:12px 14px">
-        <div class="slbl">// PASSWORD DI TEST (prova corta vs lunga passphrase)</div>
-        <input type="text" class="sin" id="bf-in" placeholder="Digita una password da testare a forza bruta..." maxlength="36" autocomplete="off" spellcheck="false">
-        <div class="slbl mt6">// SELEZIONA ESEMPI RAPIDI:</div>
-        <div class="row" style="gap:6px;margin-bottom:8px">
-          <button type="button" class="preset-chip bad" onclick="setBfExample('1234')">1234 (4 cifre)</button>
-          <button type="button" class="preset-chip bad" onclick="setBfExample('ciaoblu')">ciaoblu (7 car)</button>
-          <button type="button" class="preset-chip bad" onclick="setBfExample('Mar1o#99')">Mar1o#99 (8 misti)</button>
-          <button type="button" class="preset-chip win" onclick="setBfExample('K#9mP!qRz2Lw')">K#9mP!qRz2Lw (12 car)</button>
+  <div class="g2" style="flex:1;min-height:0;align-items:stretch">
+    <!-- COLONNA SINISTRA: COMANDI & TELEMETRIA -->
+    <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;display:flex;flex-direction:column;gap:6px">
+        <div class="slbl">// PASSWORD BERSAGLIO DA TESTARE A FORZA BRUTA</div>
+        <input type="text" class="sin" id="bf-in" placeholder="Digita una password da testare..." maxlength="36" autocomplete="off" spellcheck="false" style="font-size:1rem;padding:6px 10px">
+        
+        <div class="slbl" style="margin-top:2px">// ESEMPI RAPIDI:</div>
+        <div class="row" style="gap:5px;margin-bottom:2px">
+          <button type="button" class="preset-chip bad" onclick="setBfExample('1234')">1234</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('ciaoblu')">ciaoblu</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('Mar1o#99')">Mar1o#99</button>
+          <button type="button" class="preset-chip win" onclick="setBfExample('K#9mP!qRz2Lw')">K#9mP!qRz2Lw</button>
           <button type="button" class="preset-chip win" onclick="setBfExample('galassia-matita-vulcano-salto-92!')">🛡️ Passphrase 33 car</button>
         </div>
-        <div class="row mt8">
-          <button class="sbtn r" id="bf-start">⚡ LANCIA BRUTE FORCE</button>
+
+        <div class="row" style="gap:8px;margin-top:4px">
+          <button class="sbtn r" id="bf-start" style="flex:1">⚡ AVVIA ATTACCO BRUTE FORCE</button>
           <button class="sbtn" id="bf-reset" style="display:none">↺ RESET</button>
         </div>
-        <div id="bf-out" style="display:none;margin-top:10px">
-          <div class="slbl">// TENTATIVO CORRENTE (PERMUTAZIONE COMBINATORIA)</div>
-          <div id="bf-attempt">________</div>
-          <div style="font-size:.8rem;color:var(--gdim);margin-top:4px">
-            Tentativi: <strong id="bf-cnt">0</strong> &nbsp;|&nbsp;
-            Tempo calcolo: <strong id="bf-ms">0</strong> ms &nbsp;|&nbsp;
-            Spazio combinatorio: <strong id="bf-sp">—</strong>
-          </div>
-          <div id="bf-result" style="margin-top:8px"></div>
+      </div>
+
+      <!-- Telemetria Attacco Brute Force -->
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;font-size:.82rem;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">STATO BRUTE FORCE:</span>
+          <strong id="bf-status" style="color:var(--g)">IN ATTESA...</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">TENTATIVI COMBINATORI:</span>
+          <strong id="bf-cnt" style="color:#c8ffc8">0</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">SPAZIO COMBINATORIO:</span>
+          <strong id="bf-sp" style="color:var(--a);font-family:var(--fm)">—</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">TEMPO EFFETTIVO CALCOLO:</span>
+          <strong id="bf-ms" style="color:#c8ffc8">0 ms</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">TEMPO STIMATO (1 GigaHash/s):</span>
+          <strong id="bf-est-time" style="color:var(--a);font-family:var(--fm)">—</strong>
         </div>
       </div>
-      <div class="box a" style="font-size:.88rem">
-        <strong>Come funziona il calcolo:</strong> Il software genera e prova sistematicamente <em>ogni singola combinazione carattere per carattere</em>. Velocità stimata: 1 miliardo di tentativi/sec (GPU consumer).
+
+      <!-- Box Risultato Finale -->
+      <div id="bf-result-box" style="display:none;background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;font-size:.86rem;line-height:1.4">
+        <div id="bf-result"></div>
+      </div>
+
+      <div class="box a" style="font-size:.8rem;padding:6px 10px;margin-top:auto">
+        <strong>Principio Brute Force:</strong> Prova sistematicamente ogni combinazione carattere per carattere (\(N^L\)). La lunghezza vince sempre sulla complessità sintetica!
       </div>
     </div>
-    <!-- Tabella tempi -->
-    <div class="card" style="justify-content:center;gap:8px">
-      <div class="ctitle">Tabella Tempi Reali Brute Force (1 Mld tentativi/sec)</div>
-      <table class="tbl">
-        <thead><tr><th>Tipo password</th><th>Esempio</th><th>Combinazioni</th><th>Tempo crack</th></tr></thead>
-        <tbody>
-          <tr><td>4 cifre</td><td><code>1234</code></td><td>10.000</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td>6 minuscole</td><td><code>ciaoblu</code></td><td>~309 M</td><td class="tr">0.3 sec</td></tr>
-          <tr><td>8 minuscole</td><td><code>marioblu</code></td><td>~208 Mld</td><td class="ta">3.5 min</td></tr>
-          <tr><td>8 misto (maiusc+num+sym)</td><td><code>Mar1o#99</code></td><td>~6.000 Mld</td><td class="ta">1.7 ore</td></tr>
-          <tr><td>12 caratteri misti</td><td><code>K#9mP!qRz2Lw</code></td><td>~95¹²</td><td class="tg">~200 anni</td></tr>
-          <tr><td>Passphrase 30+ car.</td><td><code>galassia-matita...</code></td><td>astronomico</td><td class="tg">miliardi di miliardi di anni</td></tr>
-        </tbody>
-      </table>
-      <div class="box mt6" style="font-size:.88rem">
-        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> batte sempre la complessità sintetica. Ma cosa succede se la password è una parola di senso compiuto? 👉 Lo vediamo nella <em>slide successiva</em> con il <strong>Dictionary Attack</strong>!
+
+    <!-- COLONNA DESTRA: VISUALIZZATORE ANIMATO HARDWARE & PERMUTAZIONI -->
+    <div class="bf-visual-card">
+      <!-- Header Visualizzatore -->
+      <div class="bf-visual-header">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:1.1rem">⚡</span>
+          <span style="font-weight:bold;color:var(--a)">GPU CRACK CLUSTER</span>
+          <span style="color:var(--gdim);font-size:.72rem">(4x RTX 4090 • 1 GigaHash/s)</span>
+        </div>
+        <span class="bf-visual-badge idle" id="bf-badge">IN ATTESA</span>
+      </div>
+
+      <!-- Matrice Tumbler Caratteri -->
+      <div class="bf-tumblers-box">
+        <div class="bf-sub-lbl">// MATRICE CARATTERI — COMBINAZIONE IN ESAME:</div>
+        <div class="bf-tumblers-row" id="bf-tumblers-row">
+          <!-- Popolato dinamicamente da renderBfSlots() -->
+        </div>
+      </div>
+
+      <!-- Co-Processori GPU Paralleli -->
+      <div class="bf-cores-box">
+        <div class="bf-sub-lbl">// TELEMETRIA CO-PROCESSORI GPU PARALLELI:</div>
+        <div class="bf-cores-grid">
+          <div class="bf-core-box">
+            <div class="bf-core-head"><span>CORE #0</span><span class="bf-core-load" id="bf-load-0">0%</span></div>
+            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-0"></div></div>
+            <div class="bf-core-sub">range: [a... - f...]</div>
+          </div>
+          <div class="bf-core-box">
+            <div class="bf-core-head"><span>CORE #1</span><span class="bf-core-load" id="bf-load-1">0%</span></div>
+            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-1"></div></div>
+            <div class="bf-core-sub">range: [g... - m...]</div>
+          </div>
+          <div class="bf-core-box">
+            <div class="bf-core-head"><span>CORE #2</span><span class="bf-core-load" id="bf-load-2">0%</span></div>
+            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-2"></div></div>
+            <div class="bf-core-sub">range: [n... - s...]</div>
+          </div>
+          <div class="bf-core-box">
+            <div class="bf-core-head"><span>CORE #3</span><span class="bf-core-load" id="bf-load-3">0%</span></div>
+            <div class="bf-core-bar"><div class="bf-core-fill" id="bf-bar-3"></div></div>
+            <div class="bf-core-sub">range: [t... - z...]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terminale Flusso Permutazioni -->
+      <div class="bf-stream-container">
+        <div class="bf-sub-lbl">// FLUSSO PERMUTAZIONI GPU IN TEMPO REALE:</div>
+        <div class="bf-stream-box" id="bf-stream-box">
+          <div class="bf-stream-line">[GPU-CLUSTER] In attesa di avvio permutazioni combinatorie...</div>
+        </div>
+      </div>
+
+      <!-- Spettro Resistenza Combinatoria -->
+      <div class="bf-gauge-box">
+        <div class="bf-sub-lbl" style="display:flex;justify-content:space-between">
+          <span>// LIVELLO RESISTENZA TEMPORALE:</span>
+          <span id="bf-gauge-label" style="font-weight:bold;color:var(--g)">IN ATTESA</span>
+        </div>
+        <div class="bf-gauge-track">
+          <div class="bf-gauge-seg seg-red"><span>&lt; 1s (PESSIMA)</span></div>
+          <div class="bf-gauge-seg seg-orange"><span>MINUTI / ORE</span></div>
+          <div class="bf-gauge-seg seg-yellow"><span>ANNI</span></div>
+          <div class="bf-gauge-seg seg-green"><span>MILIARDI DI ANNI 🛡️</span></div>
+          <div class="bf-gauge-marker" id="bf-gauge-marker" style="left:0%"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2037,12 +2347,17 @@ document.getElementById('da-in').addEventListener('keydown', e => { if (e.key ==
 initDaFile();
 
 /* ====================================================================
-   SIMULATORE BRUTE FORCE
+   SIMULATORE BRUTE FORCE (ANIMAZIONE VISIVA HARDWARE & PERMUTAZIONI)
    ==================================================================== */
 let bfOn = false, bfRaf = null;
+let bfStreamTimer = null, bfCoreTimer = null;
 
 function setBfExample(val) {
-  document.getElementById('bf-in').value = val;
+  const inp = document.getElementById('bf-in');
+  if (inp) {
+    inp.value = val;
+    renderBfSlots(val);
+  }
   startBF();
 }
 
@@ -2062,7 +2377,8 @@ function bfStats(pwd) {
 function rndAttempt(len, cs) {
   const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_+-=?';
   let r = '';
-  for (let i = 0; i < len; i++) r += pool[Math.floor(Math.random() * Math.min(cs, pool.length))];
+  const maxPool = Math.min(cs, pool.length);
+  for (let i = 0; i < len; i++) r += pool[Math.floor(Math.random() * maxPool)];
   return r;
 }
 
@@ -2085,7 +2401,96 @@ function fmtTime(ms) {
   return 'MILIARDI DI ANNI 🛡️';
 }
 
+function renderBfSlots(pwd) {
+  const container = document.getElementById('bf-tumblers-row');
+  if (!container) return;
+  container.innerHTML = '';
+  if (!pwd || pwd.length === 0) {
+    for (let i = 0; i < 6; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'bf-slot';
+      slot.innerHTML = '<span class="bf-slot-char">—</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
+      container.appendChild(slot);
+    }
+    return;
+  }
+  const maxDirect = 14;
+  if (pwd.length <= maxDirect) {
+    for (let i = 0; i < pwd.length; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'bf-slot';
+      slot.id = 'bf-slot-' + i;
+      slot.dataset.char = pwd[i];
+      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
+      container.appendChild(slot);
+    }
+  } else {
+    // Show first 6 chars, separator, and last 3 chars
+    for (let i = 0; i < 6; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'bf-slot';
+      slot.id = 'bf-slot-' + i;
+      slot.dataset.char = pwd[i];
+      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
+      container.appendChild(slot);
+    }
+    const dots = document.createElement('div');
+    dots.className = 'bf-slot-dots';
+    dots.textContent = '... [+' + (pwd.length - 9) + ' car] ...';
+    container.appendChild(dots);
+    for (let i = pwd.length - 3; i < pwd.length; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'bf-slot';
+      slot.id = 'bf-slot-' + i;
+      slot.dataset.char = pwd[i];
+      slot.innerHTML = '<span class="bf-slot-char">?</span><span class="bf-slot-idx">#' + (i + 1) + '</span>';
+      container.appendChild(slot);
+    }
+  }
+}
+
+function addBfStreamLine(text, cls = '') {
+  const box = document.getElementById('bf-stream-box');
+  if (!box) return;
+  const line = document.createElement('div');
+  line.className = 'bf-stream-line ' + cls;
+  line.textContent = text;
+  box.appendChild(line);
+  while (box.children.length > 5) {
+    box.removeChild(box.firstChild);
+  }
+}
+
+function setBfCores(l0, l1, l2, l3, active = false) {
+  const loads = [l0, l1, l2, l3];
+  for (let i = 0; i < 4; i++) {
+    const elLoad = document.getElementById('bf-load-' + i);
+    const elBar = document.getElementById('bf-bar-' + i);
+    if (elLoad) elLoad.textContent = loads[i] + '%';
+    if (elBar) {
+      elBar.style.width = loads[i] + '%';
+      if (active) elBar.classList.add('active');
+      else elBar.classList.remove('active');
+    }
+  }
+}
+
+function setBfGauge(percent, labelText) {
+  const marker = document.getElementById('bf-gauge-marker');
+  const label = document.getElementById('bf-gauge-label');
+  if (marker) marker.style.left = Math.min(Math.max(percent, 0), 98) + '%';
+  if (label) label.textContent = labelText;
+}
+
+function stopBF() {
+  bfOn = false;
+  if (bfRaf) { cancelAnimationFrame(bfRaf); bfRaf = null; }
+  if (bfStreamTimer) { clearInterval(bfStreamTimer); bfStreamTimer = null; }
+  if (bfCoreTimer) { clearInterval(bfCoreTimer); bfCoreTimer = null; }
+}
+
 function startBF() {
+  stopBF();
   const pwd = document.getElementById('bf-in').value.trim();
   if (!pwd) {
     const el = document.getElementById('bf-in');
@@ -2095,50 +2500,203 @@ function startBF() {
   }
   const st = bfStats(pwd);
   bfOn = true;
-  document.getElementById('bf-out').style.display = 'block';
+
   document.getElementById('bf-start').style.display = 'none';
   document.getElementById('bf-reset').style.display = 'inline-block';
+  document.getElementById('bf-result-box').style.display = 'none';
   document.getElementById('bf-result').textContent = '';
-  document.getElementById('bf-attempt').style.color = 'var(--r)';
-  document.getElementById('bf-sp').textContent = st.cs+'^'+st.len;
-  let animMs = st.tms < 1000n ? 700 : st.tms < 3_600_000n ? 1800 : 3000;
+
+  document.getElementById('bf-status').textContent = 'PERMUTAZIONE IN CORSO...';
+  document.getElementById('bf-status').style.color = 'var(--a)';
+  document.getElementById('bf-sp').textContent = st.cs + '^' + st.len + ' (~' + fmtBig(st.comb) + ')';
+  document.getElementById('bf-est-time').textContent = fmtTime(st.tms);
+
+  const badge = document.getElementById('bf-badge');
+  if (badge) {
+    badge.className = 'bf-visual-badge running';
+    badge.textContent = 'PERMUTANDO...';
+  }
+
+  renderBfSlots(pwd);
+
+  const allSlots = document.querySelectorAll('.bf-slot');
+  allSlots.forEach(s => s.classList.add('spinning'));
+
+  const streamBox = document.getElementById('bf-stream-box');
+  if (streamBox) streamBox.innerHTML = '';
+  addBfStreamLine('[GPU-CLUSTER] Allocazione 4 thread paralleli su RTX 4090...');
+  addBfStreamLine('[TARGET] Test password di lunghezza ' + pwd.length + ' su ' + st.cs + ' simboli...');
+
+  setBfCores(99, 100, 98, 100, true);
+  bfCoreTimer = setInterval(() => {
+    if (!bfOn) return;
+    const rndLoads = [
+      (96 + Math.random() * 4).toFixed(1),
+      (97 + Math.random() * 3).toFixed(1),
+      (95 + Math.random() * 5).toFixed(1),
+      (98 + Math.random() * 2).toFixed(1)
+    ];
+    setBfCores(rndLoads[0], rndLoads[1], rndLoads[2], rndLoads[3], true);
+  }, 120);
+
+  let streamCounter = 1000;
+  bfStreamTimer = setInterval(() => {
+    if (!bfOn) return;
+    streamCounter += Math.floor(Math.random() * 8000) + 2000;
+    const core = Math.floor(Math.random() * 4);
+    const testSample = rndAttempt(pwd.length, st.cs);
+    addBfStreamLine('[GPU-' + core + '] #' + streamCounter.toLocaleString('it-IT') + ' test \'' + testSample + '\' -> HASH MISMATCH');
+  }, 90);
+
+  // Calcolo tempo animazione
+  let animMs = st.tms < 1000n ? 800 : st.tms < 31_536_000_000n ? 1600 : 2200;
   const t0 = Date.now();
+
   function frame() {
     if (!bfOn) return;
     const el = Date.now() - t0;
     const pr = Math.min(el / animMs, 1);
-    document.getElementById('bf-cnt').textContent = Math.floor(pr*pr*60_000_000).toLocaleString('it-IT');
-    document.getElementById('bf-ms').textContent  = el;
-    document.getElementById('bf-attempt').textContent = rndAttempt(pwd.length, st.cs);
-    if (pr < 1) { bfRaf = requestAnimationFrame(frame); return; }
-    document.getElementById('bf-attempt').textContent = pwd;
-    const res = document.getElementById('bf-result');
-    const safe = st.tms > 31_536_000_000n;
-    if (safe) {
-      res.className = 'safe';
-      document.getElementById('bf-attempt').style.color = 'var(--g)';
-      res.innerHTML = `✔ TEMPO STIMATO: ${fmtTime(st.tms)} — password resistente.<br><span style="font-size:.88rem;color:#c8ffc8">Combinazioni: ${fmtBig(st.comb)}</span>`;
-    } else {
-      res.className = 'cracked';
-      res.innerHTML = `💀 CRACKATA — Tempo: ${fmtTime(st.tms)}<br><span style="font-size:.88rem">Combinazioni: ${fmtBig(st.comb)}</span>`;
+
+    // Tentativi contatore visivo
+    const simulatedTries = BigInt(Math.floor(pr * pr * 120_000_000));
+    const dispTries = simulatedTries > st.comb ? st.comb : simulatedTries;
+    document.getElementById('bf-cnt').textContent = fmtBig(dispTries);
+    document.getElementById('bf-ms').textContent = el + ' ms';
+
+    // Tumblers scramble
+    allSlots.forEach(s => {
+      if (s.classList.contains('spinning')) {
+        const charSpan = s.querySelector('.bf-slot-char');
+        if (charSpan) charSpan.textContent = rndAttempt(1, st.cs);
+      }
+    });
+
+    if (pr < 1) {
+      bfRaf = requestAnimationFrame(frame);
+      return;
     }
-    bfOn = false;
+
+    // Completamento attacco
+    stopBF();
+    const safe = st.tms >= 31_536_000_000n; // >= 1 anno
+
+    if (safe) {
+      // RESISTENTE / IMPOSSIBILE
+      if (badge) {
+        badge.className = 'bf-visual-badge safe';
+        badge.textContent = 'RESISTENTE 🛡️';
+      }
+      document.getElementById('bf-status').textContent = 'CLUSTER STOP (COMBINAZIONI ASTRONOMICHE)';
+      document.getElementById('bf-status').style.color = 'var(--g)';
+
+      allSlots.forEach(s => {
+        s.classList.remove('spinning');
+        s.classList.add('shielded');
+        const charSpan = s.querySelector('.bf-slot-char');
+        const idxSpan = s.querySelector('.bf-slot-idx');
+        if (charSpan) charSpan.textContent = s.dataset.char || '🛡️';
+        if (idxSpan) idxSpan.textContent = '🔒 OK';
+      });
+
+      setBfCores(0, 0, 0, 0, false);
+      setBfGauge(95, 'MILIARDI DI ANNI 🛡️');
+
+      addBfStreamLine('[CLUSTER ABORT] Spazio combinatorio impenetrabile: testato solo 0.0000000001%!', 'abort');
+      addBfStreamLine('[STATUS VITTORIA] Tempo calcolo stimato: ' + fmtTime(st.tms) + ' -> INVIOLABILE!', 'abort');
+
+      const resBox = document.getElementById('bf-result-box');
+      const res = document.getElementById('bf-result');
+      if (resBox && res) {
+        resBox.style.display = 'block';
+        res.className = 'safe';
+        res.innerHTML = '<strong style="color:var(--g);font-size:1.02rem">✔ PASSWORD RESISTENTE AL BRUTE FORCE!</strong><br>' +
+          '<span style="font-size:.85rem;color:#c8ffc8">Spazio combinatorio astronomico: <strong>' + fmtBig(st.comb) + '</strong> varianti possibili.<br>' +
+          'Anche a 1 miliardo di tentativi al secondo occorrerebbero <strong>' + fmtTime(st.tms) + '</strong>. La lunghezza batte sempre la forza bruta!</span>';
+      }
+    } else {
+      // CRACKABILE
+      const isInstant = st.tms < 86_400_000n; // < 1 giorno
+      if (badge) {
+        badge.className = 'bf-visual-badge ' + (isInstant ? 'cracked' : 'running');
+        badge.textContent = isInstant ? 'CRACKATA 💀' : 'VULNERABILE ⚠️';
+      }
+      document.getElementById('bf-status').textContent = isInstant ? 'CRACKATA IN TEMPO REALE!' : 'VULNERABILE (CALCOLABILE)';
+      document.getElementById('bf-status').style.color = isInstant ? 'var(--r)' : 'var(--a)';
+
+      allSlots.forEach(s => {
+        s.classList.remove('spinning');
+        s.classList.add(isInstant ? 'cracked' : 'spinning');
+        const charSpan = s.querySelector('.bf-slot-char');
+        const idxSpan = s.querySelector('.bf-slot-idx');
+        if (charSpan) charSpan.textContent = s.dataset.char || '?';
+        if (idxSpan) idxSpan.textContent = isInstant ? '💀 HIT' : '⚠️ WARN';
+      });
+
+      setBfCores(0, 0, 0, 0, false);
+
+      let gaugePos = 3;
+      if (st.tms < 1000n) gaugePos = 2;
+      else if (st.tms < 60_000n) gaugePos = 12;
+      else if (st.tms < 3_600_000n) gaugePos = 28;
+      else if (st.tms < 86_400_000n) gaugePos = 42;
+      else gaugePos = 65;
+      setBfGauge(gaugePos, fmtTime(st.tms).toUpperCase());
+
+      addBfStreamLine('[GPU-MATCH] HASH CORRISPONDENTE IDENTIFICATO!', 'hit');
+      addBfStreamLine('[CRACK SUCCESS] Password in chiaro: \'' + pwd + '\' in ' + fmtTime(st.tms), 'hit');
+
+      const resBox = document.getElementById('bf-result-box');
+      const res = document.getElementById('bf-result');
+      if (resBox && res) {
+        resBox.style.display = 'block';
+        res.className = isInstant ? 'cracked' : '';
+        res.innerHTML = '<strong style="color:var(--r);font-size:1.02rem">💀 PASSWORD CRACKATA IN ' + fmtTime(st.tms).toUpperCase() + '!</strong><br>' +
+          '<span style="font-size:.85rem;color:#ffaaaa">Con sole <strong>' + fmtBig(st.comb) + '</strong> combinazioni, una moderna GPU consumer decifra la password in pochi istanti. Evita password corte o prive di varietà!</span>';
+      }
+    }
   }
+
   bfRaf = requestAnimationFrame(frame);
 }
 
 function resetBF() {
-  bfOn = false;
-  if (bfRaf) cancelAnimationFrame(bfRaf);
-  document.getElementById('bf-out').style.display = 'none';
+  stopBF();
   document.getElementById('bf-start').style.display = 'inline-block';
   document.getElementById('bf-reset').style.display = 'none';
   document.getElementById('bf-in').value = '';
+  document.getElementById('bf-result-box').style.display = 'none';
+
+  document.getElementById('bf-status').textContent = 'IN ATTESA...';
+  document.getElementById('bf-status').style.color = 'var(--g)';
+  document.getElementById('bf-cnt').textContent = '0';
+  document.getElementById('bf-ms').textContent = '0 ms';
+  document.getElementById('bf-sp').textContent = '—';
+  document.getElementById('bf-est-time').textContent = '—';
+
+  const badge = document.getElementById('bf-badge');
+  if (badge) {
+    badge.className = 'bf-visual-badge idle';
+    badge.textContent = 'IN ATTESA';
+  }
+
+  const streamBox = document.getElementById('bf-stream-box');
+  if (streamBox) {
+    streamBox.innerHTML = '<div class="bf-stream-line">[GPU-CLUSTER] In attesa di avvio permutazioni combinatorie...</div>';
+  }
+
+  setBfCores(0, 0, 0, 0, false);
+  setBfGauge(0, 'IN ATTESA');
+  renderBfSlots('');
 }
 
 document.getElementById('bf-start').addEventListener('click', startBF);
 document.getElementById('bf-reset').addEventListener('click', resetBF);
-document.getElementById('bf-in').addEventListener('keydown', e => { if(e.key==='Enter') startBF(); });
+document.getElementById('bf-in').addEventListener('keydown', e => { if (e.key === 'Enter') startBF(); });
+document.getElementById('bf-in').addEventListener('input', e => {
+  if (!bfOn) renderBfSlots(e.target.value.trim());
+});
+
+renderBfSlots('');
 
 /* ====================================================================
    SIMULATORE DATA BREACH
@@ -2511,8 +3069,7 @@ document.getElementById('tfa-code').addEventListener('keydown', e => {
    HALT ALL SIMULATORS — chiamato ad ogni cambio slide
    ==================================================================== */
 function haltAll() {
-  bfOn = false;
-  if (bfRaf) cancelAnimationFrame(bfRaf);
+  stopBF();
   stopDA();
   stopTOTP();
 }
