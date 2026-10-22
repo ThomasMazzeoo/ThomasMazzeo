@@ -211,6 +211,22 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 .cracked{color:var(--r);text-shadow:0 0 10px var(--r)}
 .safe{color:var(--g);text-shadow:0 0 10px var(--g)}
 
+/* DA (Dictionary Attack) */
+#da-scan-word{font-family:var(--fv);font-size:2rem;color:var(--a);text-shadow:0 0 8px var(--adim);letter-spacing:2px;min-height:42px;word-break:break-all}
+#da-result{font-family:var(--fv);font-size:1.2rem;min-height:32px;line-height:1.35}
+.preset-chip{background:var(--bgc);border:1px solid var(--bdr);color:var(--g);font-family:var(--fm);font-size:.78rem;padding:4px 8px;cursor:pointer;border-radius:2px;transition:all .15s}
+.preset-chip:hover{background:var(--gglo);border-color:var(--g)}
+.preset-chip.bad{color:var(--r);border-color:rgba(255,68,68,0.4)}
+.preset-chip.bad:hover{background:var(--rglo);border-color:var(--r)}
+.preset-chip.win{color:var(--g);border-color:var(--g);font-weight:bold}
+.preset-chip.win:hover{box-shadow:0 0 8px var(--g)}
+
+/* Threat Grid for Vault Audit */
+.threat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.threat-card{background:var(--bg);border:1px solid var(--bdr);padding:6px 10px;font-size:.82rem;border-radius:2px;transition:all .2s}
+.threat-card.pass{border-color:var(--g);background:var(--gglo)}
+.threat-card.fail{border-color:var(--r);background:var(--rglo)}
+
 /* BREACH */
 .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex-shrink:0}
 .sb{background:var(--bgc);border:1px solid var(--gdim);padding:12px;text-align:center;position:relative;transition:all .35s}
@@ -597,6 +613,47 @@ body.light-theme code {
   border-radius: 3px !important;
 }
 
+body.light-theme #da-scan-word {
+  color: #b45309 !important;
+  text-shadow: none !important;
+}
+body.light-theme .preset-chip {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-theme .preset-chip:hover {
+  background: #e2e8f0 !important;
+  border-color: #047857 !important;
+  color: #047857 !important;
+}
+body.light-theme .preset-chip.bad {
+  color: #dc2626 !important;
+  border-color: #fca5a5 !important;
+  background: #fef2f2 !important;
+}
+body.light-theme .preset-chip.bad:hover {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+}
+body.light-theme .preset-chip.win {
+  color: #047857 !important;
+  border-color: #059669 !important;
+  background: #f0fdf4 !important;
+}
+body.light-theme .threat-card {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .threat-card.pass {
+  border-color: #86efac !important;
+  background: #f0fdf4 !important;
+}
+body.light-theme .threat-card.fail {
+  border-color: #fca5a5 !important;
+  background: #fef2f2 !important;
+}
+
 @media (max-width: 860px) {
   #slide-section { display: none; }
   .hd-right { gap: 8px; }
@@ -720,7 +777,7 @@ body.light-theme code {
     <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
       <div style="font-size:3rem">⚡</div>
       <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">01</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">Attacco<br>Brute Force</div>
+      <div style="font-size:1.05rem;color:#c8ffc8">Dictionary Attack<br>&amp; Brute Force</div>
     </div>
     <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
       <div style="font-size:3rem">💥</div>
@@ -822,39 +879,104 @@ body.light-theme code {
 </section>
 
 <!-- ================================================================
+     S06B — LAB DICTIONARY ATTACK
+     ================================================================ -->
+<section class="slide" id="s6b">
+  <div class="tag">// LAB 01a — SIMULATORE DICTIONARY ATTACK</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Simulatore Dictionary Attack</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:start">
+    <!-- Colonna simulatore -->
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:12px 14px">
+        <div class="slbl">// PASSWORD DA TESTARE NEL DIZIONARIO</div>
+        <input type="text" class="sin" id="da-in" placeholder="Digita una password da verificare..." maxlength="36" autocomplete="off" spellcheck="false">
+        <div class="slbl mt6">// SELEZIONA ESEMPI RAPIDI:</div>
+        <div class="row" style="gap:6px;margin-bottom:8px">
+          <button type="button" class="preset-chip bad" onclick="setDaExample('123456')">123456</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('password')">password</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('iloveyou')">iloveyou</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('mario1998')">mario1998</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('P@ssw0rd!')">P@ssw0rd!</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('Juve2024!')">Juve2024!</button>
+          <button type="button" class="preset-chip win" onclick="setDaExample('galassia-matita-vulcano-2026')">🛡️ galassia-matita-vulcano-2026</button>
+        </div>
+        <div class="row mt8">
+          <button class="sbtn r" id="da-start">⚡ VERIFICA NEL DIZIONARIO</button>
+          <button class="sbtn" id="da-reset" style="display:none">↺ RESET</button>
+        </div>
+        <div id="da-out" style="display:none;margin-top:10px">
+          <div class="slbl">// SCANSIONE DATABASE ROCKYOU2021 (8,4 MILIARDI DI VOCI)</div>
+          <div id="da-scan-word">________</div>
+          <div style="font-size:.8rem;color:var(--gdim);margin-top:4px">
+            Record testati: <strong id="da-cnt">0</strong> &nbsp;|&nbsp;
+            Tempo: <strong id="da-ms">0</strong> ms &nbsp;|&nbsp;
+            Algoritmo: <strong id="da-algo">Wordlist + Mangling Rules</strong>
+          </div>
+          <div id="da-result" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="box a" style="font-size:.88rem">
+        <strong>Database simulato:</strong> <em>RockYou2021</em> + vocabolario italiano + oltre 50 regole automatiche di sostituzione simboli (l33tspeak) e suffissi anno.
+      </div>
+    </div>
+    <!-- Spiegazione / Confronto -->
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Perché il Dizionario Batte le Password "Umane"</div>
+      <ol class="steps">
+        <li><strong>Nessun calcolo a caso:</strong> l'hacker non tira a indovinare combinazioni casuali, ma scansiona liste di miliardi di password già rubate in violazioni precedenti.</li>
+        <li><strong>Regole di Mangling (mutazione):</strong> i tool automatici (es. <em>Hashcat</em>, <em>John the Ripper</em>) applicano all'istante regole come <code>a</code>→<code>@</code>, <code>e</code>→<code>3</code>, <code>o</code>→<code>0</code> e aggiungono suffissi come <code>1998</code>, <code>2024</code>, <code>!</code>.</li>
+        <li><strong>Caduta istantanea:</strong> password percepite come "difficili" come <code>P@ssw0rd!</code> o <code>Juve2024!</code> vengono scoperte in meno di 0.01 secondi!</li>
+        <li><strong>L'unica difesa:</strong> combinare <strong>4 o più parole slegate</strong> (passphrase). La combinazione di 4 vocaboli non esiste in nessun file di leak!</li>
+      </ol>
+      <div class="box mt6" style="font-size:.88rem">
+        <strong>E se il dizionario fallisce?</strong> 👉 Nella <em>slide successiva</em> l'hacker è costretto a ricorrere al <strong>Brute Force</strong> puro!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
      S07 — LAB BRUTE FORCE
      ================================================================ -->
 <section class="slide" id="s7">
-  <div class="tag">// LAB 01 — SIMULATORE BRUTE FORCE</div>
+  <div class="tag">// LAB 01b — SIMULATORE BRUTE FORCE</div>
   <div class="title">🔬 Laboratorio: <span class="a">Simulatore Brute Force</span></div>
   <div class="g2" style="flex:1;min-height:0;align-items:start">
     <!-- Colonna simulatore -->
     <div style="display:flex;flex-direction:column;gap:10px">
       <div style="background:var(--bgc);border:1px solid var(--bdr);padding:12px 14px">
-        <div class="slbl">// PASSWORD DI TEST (usa una password fittizia)</div>
-        <input type="text" class="sin" id="bf-in" placeholder="Digita una password..." maxlength="18" autocomplete="off" spellcheck="false">
+        <div class="slbl">// PASSWORD DI TEST (prova corta vs lunga passphrase)</div>
+        <input type="text" class="sin" id="bf-in" placeholder="Digita una password da testare a forza bruta..." maxlength="36" autocomplete="off" spellcheck="false">
+        <div class="slbl mt6">// SELEZIONA ESEMPI RAPIDI:</div>
+        <div class="row" style="gap:6px;margin-bottom:8px">
+          <button type="button" class="preset-chip bad" onclick="setBfExample('1234')">1234 (4 cifre)</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('ciaoblu')">ciaoblu (7 car)</button>
+          <button type="button" class="preset-chip bad" onclick="setBfExample('Mar1o#99')">Mar1o#99 (8 misti)</button>
+          <button type="button" class="preset-chip win" onclick="setBfExample('K#9mP!qRz2Lw')">K#9mP!qRz2Lw (12 car)</button>
+          <button type="button" class="preset-chip win" onclick="setBfExample('galassia-matita-vulcano-salto-92!')">🛡️ Passphrase 33 car</button>
+        </div>
         <div class="row mt8">
-          <button class="sbtn r" id="bf-start">⚡ LANCIA ATTACCO</button>
+          <button class="sbtn r" id="bf-start">⚡ LANCIA BRUTE FORCE</button>
           <button class="sbtn" id="bf-reset" style="display:none">↺ RESET</button>
         </div>
         <div id="bf-out" style="display:none;margin-top:10px">
-          <div class="slbl">// TENTATIVO CORRENTE</div>
+          <div class="slbl">// TENTATIVO CORRENTE (PERMUTAZIONE COMBINATORIA)</div>
           <div id="bf-attempt">________</div>
           <div style="font-size:.8rem;color:var(--gdim);margin-top:4px">
             Tentativi: <strong id="bf-cnt">0</strong> &nbsp;|&nbsp;
-            Tempo: <strong id="bf-ms">0</strong> ms &nbsp;|&nbsp;
-            Spazio: <strong id="bf-sp">—</strong>
+            Tempo calcolo: <strong id="bf-ms">0</strong> ms &nbsp;|&nbsp;
+            Spazio combinatorio: <strong id="bf-sp">—</strong>
           </div>
           <div id="bf-result" style="margin-top:8px"></div>
         </div>
       </div>
       <div class="box a" style="font-size:.88rem">
-        <strong>Velocità simulata:</strong> 1 miliardo di tentativi/sec (GPU gaming consumer)
+        <strong>Cosa succede:</strong> quando il Dictionary Attack fallisce, l'hacker non ha altra scelta che calcolare <em>ogni singola permutazione carattere per carattere</em>. Velocità stimata: 1 miliardo di tentativi/sec (GPU consumer).
       </div>
     </div>
     <!-- Tabella tempi -->
     <div class="card" style="justify-content:center;gap:8px">
-      <div class="ctitle">Tabella Tempi Reali (1 Mld tentativi/sec)</div>
+      <div class="ctitle">Tabella Tempi Reali Brute Force (1 Mld tentativi/sec)</div>
       <table class="tbl">
         <thead><tr><th>Tipo password</th><th>Esempio</th><th>Combinazioni</th><th>Tempo crack</th></tr></thead>
         <tbody>
@@ -863,11 +985,11 @@ body.light-theme code {
           <tr><td>8 minuscole</td><td><code>marioblu</code></td><td>~208 Mld</td><td class="ta">3.5 min</td></tr>
           <tr><td>8 misto (maiusc+num+sym)</td><td><code>Mar1o#99</code></td><td>~6.000 Mld</td><td class="ta">1.7 ore</td></tr>
           <tr><td>12 caratteri misti</td><td><code>K#9mP!qRz2Lw</code></td><td>~95¹²</td><td class="tg">~200 anni</td></tr>
-          <tr><td>16 caratteri misti</td><td><code>frase casuale</code></td><td>astronomico</td><td class="tg">miliardi di anni</td></tr>
+          <tr><td>Passphrase 30+ car.</td><td><code>galassia-matita...</code></td><td>astronomico</td><td class="tg">miliardi di miliardi di anni</td></tr>
         </tbody>
       </table>
       <div class="box mt6" style="font-size:.88rem">
-        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> conta più della complessità.
+        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> batte sempre la complessità sintetica.
       </div>
     </div>
   </div>
@@ -1043,13 +1165,18 @@ body.light-theme code {
   <div style="flex:1;min-height:0;display:flex;align-items:center">
     <div style="width:100%">
       <ol class="steps">
-        <li>Scegli <strong>una sola Master Password</strong> — lunga, memorabile, mai usata altrove. Es: <code>"Gatto!Blu_Salta92"</code></li>
+        <li>Scegli <strong>una sola Master Passphrase</strong> — deve essere <strong>totalmente immune sia al Dictionary Attack che al Brute Force</strong> (es. <code>galassia-matita-vulcano-salto-92!</code>, 4 parole slegate + separatori + numero)</li>
         <li>Il PM usa quella chiave per <strong>cifrare un vault</strong> (cassaforte digitale) sul tuo dispositivo con AES-256</li>
         <li>Per ogni nuovo sito, il PM <strong>genera automaticamente</strong> una password casuale di 16+ caratteri</li>
         <li>Il browser la inserisce in automatico (autofill) — non devi digitarla mai</li>
         <li>Se un sito viene violato, <strong>solo quella password è esposta</strong> — le altre rimangono al sicuro nel vault</li>
       </ol>
-      <div class="box a mt10">
+      <div class="box mt10" style="font-size:.9rem">
+        <strong>🛡️ Perché la Master Passphrase è immune a entrambi?</strong><br>
+        1. <strong>Immune al Dizionario:</strong> 4 parole casuali slegate non esistono in nessun file di leak né nel vocabolario.<br>
+        2. <strong>Immune al Brute Force:</strong> con oltre 30 caratteri, una GPU impiegherebbe trilioni di volte l'età dell'universo per calcolarla!
+      </div>
+      <div class="box a mt6" style="font-size:.85rem">
         <strong>PM consigliati (gratuiti):</strong> &nbsp;
         <code>Bitwarden</code> (open source, cloud) &nbsp;·&nbsp;
         <code>KeePassXC</code> (open source, solo locale) &nbsp;·&nbsp;
@@ -1063,36 +1190,63 @@ body.light-theme code {
      S14 — LAB PASSWORD MANAGER
      ================================================================ -->
 <section class="slide" id="s14">
-  <div class="tag">// LAB 03 — DEMO VAULT CIFRATO</div>
-  <div class="title">🔬 Laboratorio: <span class="a">Demo Password Manager</span></div>
+  <div class="tag">// LAB 03 — DEMO VAULT &amp; MASTER PASSPHRASE</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Test Master Password &amp; Vault Cifrato</span></div>
   <div class="g2" style="flex:1;min-height:0;align-items:start">
     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="box a">Il vault è <strong>cifrato</strong>. Senza la Master Password le password rimangono illeggibili. Prova a sbloccarle.</div>
+      <div class="box a" style="font-size:.88rem">
+        Il vault è protetto con <strong>AES-256</strong>. Per sbloccarlo serve una Master Password <strong>immune sia al Dictionary Attack sia al Brute Force</strong>.
+      </div>
       <div id="pm-vault">
-        <div class="slbl">// VAULT — VOCI MEMORIZZATE</div>
+        <div class="slbl">// VAULT — CREDENZIALI CIFRATE</div>
         <div class="pmr"><div class="pms">📧 Gmail</div><div class="pml">mario.rossi@gmail.com</div><div class="pmp" id="pv-g">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
         <div class="pmr"><div class="pms">🏦 Banca</div><div class="pml">mario.rossi</div><div class="pmp" id="pv-b">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
         <div class="pmr"><div class="pms">🛒 Amazon</div><div class="pml">mario.rossi@gmail.com</div><div class="pmp" id="pv-a">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
         <div class="pmr"><div class="pms">🎮 Forum</div><div class="pml">mario_gamer</div><div class="pmp" id="pv-f">●●●●●●●●●●●●●●●●</div><div style="flex:0 0 55px"><div style="font-size:.65rem;color:var(--g)">FORTE</div><div class="sbar sh"></div></div></div>
       </div>
-      <div class="row">
-        <span id="pm-lock" style="font-size:1.5rem">🔒</span>
-        <input type="password" class="sin" id="pm-in" placeholder="Inserisci Master Password..." style="flex:1">
-        <button class="sbtn" id="pm-btn">SBLOCCA</button>
+
+      <!-- Test presets -->
+      <div class="slbl">// TESTA ESEMPI RAPIDI:</div>
+      <div class="row" style="gap:6px">
+        <button type="button" class="preset-chip bad" onclick="setPmExample('123456')">123456</button>
+        <button type="button" class="preset-chip bad" onclick="setPmExample('mario1998')">mario1998</button>
+        <button type="button" class="preset-chip bad" onclick="setPmExample('P@ssw0rd!')">P@ssw0rd!</button>
+        <button type="button" class="preset-chip bad" onclick="setPmExample('K#9mP!')">K#9mP! (6 car)</button>
+        <button type="button" class="preset-chip win" onclick="setPmExample('galassia-matita-vulcano-salto-92!')">🛡️ galassia-matita-vulcano-salto-92!</button>
+        <button type="button" class="preset-chip" onclick="genRandomDiceware()">🎲 Genera Nuova</button>
       </div>
-      <div id="pm-msg" style="font-size:.9rem;min-height:20px"></div>
+
+      <div class="row mt6">
+        <span id="pm-lock" style="font-size:1.5rem">🔒</span>
+        <input type="text" class="sin" id="pm-in" placeholder="Inserisci o seleziona una Master Password..." style="flex:1" autocomplete="off" spellcheck="false">
+        <button class="sbtn" id="pm-btn">SBLOCCA VAULT</button>
+      </div>
+
+      <!-- Dual audit status -->
+      <div class="threat-grid" id="pm-audit-grid">
+        <div class="threat-card" id="pm-threat-da">
+          <div style="font-size:.72rem;letter-spacing:1px;color:var(--gdim)">TEST 1: DICTIONARY ATTACK</div>
+          <div id="pm-threat-da-val" style="font-weight:bold;margin-top:2px;color:var(--gdim)">⏳ In attesa...</div>
+        </div>
+        <div class="threat-card" id="pm-threat-bf">
+          <div style="font-size:.72rem;letter-spacing:1px;color:var(--gdim)">TEST 2: BRUTE FORCE</div>
+          <div id="pm-threat-bf-val" style="font-weight:bold;margin-top:2px;color:var(--gdim)">⏳ In attesa...</div>
+        </div>
+      </div>
+
+      <div id="pm-msg" style="font-size:.88rem;min-height:22px;line-height:1.35"></div>
     </div>
+
     <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Perché il Vault è Sicuro</div>
+      <div class="ctitle">I Criteri di Immunità della Master Passphrase</div>
       <ol class="steps">
-        <li>Ogni password è <strong>casuale</strong>: nessun schema umano, impossibile da indovinare</li>
-        <li>Sono <strong>uniche per ogni sito</strong>: un breach non si propaga agli altri</li>
-        <li>Resistono al brute force: <span class="hl">secoli di calcolo</span> per crackarne una</li>
-        <li>Il file sul disco è <strong>AES-256</strong>: illeggibile senza la master key</li>
-        <li>La Master Password <strong>non lascia mai</strong> il tuo dispositivo</li>
+        <li><strong>Immunità al Dictionary Attack:</strong> non usare mai parole singole, nomi propri, date o sostituzioni note (<code>P@ssw0rd</code>). Usare il metodo <em>Diceware</em> (almeno 4 parole casuali e slegate).</li>
+        <li><strong>Immunità al Brute Force:</strong> la passphrase deve superare abbondantemente i 20 caratteri. Una stringa di 30+ caratteri ha uno spazio combinatorio astronomico (&gt; 10⁴⁵).</li>
+        <li><strong>Zero-Knowledge:</strong> la Master Passphrase non viene mai inviata a nessun server; la decifratura avviene esclusivamente nella memoria RAM del tuo dispositivo.</li>
+        <li><strong>Facile per l'umano, impossibile per il computer:</strong> visualizzare l'immagine mentale di <em>"galassia, matita, vulcano, salto"</em> è immediato per il cervello umano, ma impenetrabile per qualsiasi bot.</li>
       </ol>
-      <div class="box d mt6" style="font-size:.88rem">
-        <strong>⚠ Attenzione:</strong> se dimentichi la Master Password il vault è irrecuperabile. Scrivila su carta e conservala in luogo fisico sicuro.
+      <div class="box d mt6" style="font-size:.85rem">
+        <strong>⚠ Regola fondamentale:</strong> la Master Passphrase è l'unica password che devi ricordare. Non dimenticarla e non condividerla mai!
       </div>
     </div>
   </div>
@@ -1314,7 +1468,7 @@ body.light-theme code {
         <li class="k" style="font-size:1.12rem">Usa un <strong>Password Manager</strong> (Bitwarden o KeePassXC) per generare e memorizzare password</li>
         <li class="k" style="font-size:1.12rem">Ogni sito deve avere una <strong>password unica e casuale</strong> di almeno 16 caratteri</li>
         <li class="k" style="font-size:1.12rem">Attiva il <strong>2FA</strong> su email, banca, social network e ogni account importante</li>
-        <li class="k" style="font-size:1.12rem">Usa una <strong>passphrase</strong> come Master Password: <code>"Gatto!Blu_Salta_Alto92"</code></li>
+        <li class="k" style="font-size:1.12rem">Usa una <strong>passphrase</strong> come Master Password (4+ parole slegate, es. <code>"galassia-matita-vulcano-salto-92!"</code>): immune sia al Dictionary Attack che al Brute Force</li>
         <li class="k" style="font-size:1.12rem">Controlla periodicamente la tua email su <code>haveibeenpwned.com</code></li>
       </ul>
     </div>
@@ -1367,7 +1521,8 @@ const labels = [
   'ROADMAP',
   'BRUTE FORCE — TEORIA',
   'BRUTE FORCE — PROCESSO',
-  'DICTIONARY ATTACK',
+  'DICTIONARY ATTACK — TEORIA',
+  'LAB: DICTIONARY ATTACK',
   'LAB: BRUTE FORCE',
   'DATA BREACH — TEORIA',
   'CREDENTIAL STUFFING',
@@ -1375,7 +1530,7 @@ const labels = [
   'LAB: DATA BREACH',
   'PASSWORD MANAGER — PROBLEMA',
   'PASSWORD MANAGER — COME FUNZIONA',
-  'LAB: DEMO VAULT',
+  'LAB: DEMO VAULT & MASTER PASSPHRASE',
   'PM — IL PARADOSSO DELL\'UNICA CHIAVE',
   'PM — CRITTOGRAFIA & 2FA',
   '2FA — I TRE FATTORI',
@@ -1432,9 +1587,189 @@ document.addEventListener('keydown', e => {
 syncUI();
 
 /* ====================================================================
+   SIMULATORE DICTIONARY ATTACK
+   ==================================================================== */
+let daOn = false, daRaf = null, daTimeout = null;
+
+function normalizeDa(str) {
+  return str.toLowerCase()
+    .replace(/@/g, 'a')
+    .replace(/3/g, 'e')
+    .replace(/1|!/g, 'i')
+    .replace(/0/g, 'o')
+    .replace(/\$|5/g, 's')
+    .replace(/7/g, 't')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function checkDictionaryAttack(pwd) {
+  const p = (pwd || '').trim();
+  if (!p) return { found: false, empty: true, reason: '' };
+
+  const commonWords = [
+    '123456', '12345678', '123456789', '000000', '111111', '123123',
+    'password', 'qwerty', 'qwerty123', 'admin', 'iloveyou', 'princess',
+    'dragon', 'football', 'monkey', 'superman', 'welcome', 'master',
+    'sunshine', 'charlie', 'shadow', 'freedom', 'batman', 'pass123',
+    'ciao', 'ciaoblu', 'mario', 'calcio', 'calcio99', 'juve', 'juventus',
+    'inter', 'milan', 'napoli', 'roma', 'italia', 'amore', 'stella',
+    'musica', 'bella', 'scuola', 'gatto', 'cane', 'sole'
+  ];
+
+  const lower = p.toLowerCase();
+  const norm = normalizeDa(p);
+  const strippedNumber = norm.replace(/\d+$/, '');
+
+  // 1. Corrispondenza diretta esatta (wordlist RockYou top)
+  if (commonWords.includes(lower) || commonWords.includes(norm)) {
+    return {
+      found: true,
+      reason: 'Trovata direttamente nel vocabolario RockYou (tra le password più usate al mondo).'
+    };
+  }
+
+  // 2. Parola di dizionario + anno/numero (mario1998, juve2024, calcio99)
+  if (strippedNumber && commonWords.includes(strippedNumber)) {
+    return {
+      found: true,
+      reason: `Trovata tramite regole di mangling: vocabolo base "${strippedNumber}" + suffisso numerico/anno.`
+    };
+  }
+
+  // 3. Password con l33tspeak (P@ssw0rd!, P4ssw0rd...)
+  if (norm.includes('password') || norm.includes('admin') || norm.includes('qwerty') || norm.includes('juve') || norm.includes('mario') || norm.includes('calcio')) {
+    return {
+      found: true,
+      reason: 'Trovata tramite regole di mutazione automatica (l33tspeak @=a, 0=o, 3=e, ! finale).'
+    };
+  }
+
+  // 4. Singola parola breve priva di separatori
+  if (/^[a-zA-Z]{1,7}$/.test(p)) {
+    return {
+      found: true,
+      reason: 'Trovata nel vocabolario standard di lingua: singola parola breve priva di complessità.'
+    };
+  }
+
+  // 5. Passphrase a 3+ parole slegate o lunghezza >= 18
+  const words = p.split(/[\s\-_.,!@#$%^&*0-9]+/).filter(w => w.length >= 3);
+  if (words.length >= 3 && p.length >= 18) {
+    return {
+      found: false,
+      reason: 'IMMUNE: Passphrase a più parole slegate. Nessuna corrispondenza nei file di leak RockYou (8,4 Mld record).'
+    };
+  }
+
+  // 6. Altre stringhe lunghe con alta casualità
+  if (p.length >= 16) {
+    return {
+      found: false,
+      reason: 'IMMUNE: Sequenza assente dai dizionari e non generabile tramite pattern prevedibili.'
+    };
+  }
+
+  return {
+    found: true,
+    reason: 'Trovata nel database RockYou per similarità a pattern frequenti o lunghezza ridotta.'
+  };
+}
+
+const DA_SCAN_POOL = [
+  '123456', 'password', 'welcome', 'admin', 'ninja', 'dragon', 'football',
+  'monkey', 'sunshine', 'mario1998', 'qwerty', 'starwars', 'superman',
+  'juventus', 'iloveyou', 'P@ssw0rd!', 'matrix', 'shadow', 'freedom',
+  'batman', 'pass123', 'computer', 'italia2024', 'calcio99', 'rockyou_8.4B'
+];
+
+function startDA() {
+  const pwd = document.getElementById('da-in').value.trim();
+  if (!pwd) {
+    const el = document.getElementById('da-in');
+    el.style.borderColor = 'var(--r)';
+    setTimeout(() => el.style.borderColor = '', 1200);
+    return;
+  }
+
+  stopDA();
+  daOn = true;
+  document.getElementById('da-out').style.display = 'block';
+  document.getElementById('da-start').style.display = 'none';
+  document.getElementById('da-reset').style.display = 'inline-block';
+  document.getElementById('da-result').textContent = '';
+  document.getElementById('da-scan-word').style.color = 'var(--a)';
+
+  const t0 = Date.now();
+  const animMs = 900;
+  let counter = 0;
+
+  function frame() {
+    if (!daOn) return;
+    const el = Date.now() - t0;
+    const pr = Math.min(el / animMs, 1);
+    counter = Math.floor(pr * 8_420_000_000);
+    document.getElementById('da-cnt').textContent = counter.toLocaleString('it-IT');
+    document.getElementById('da-ms').textContent = el;
+    const rndWord = DA_SCAN_POOL[Math.floor(Math.random() * DA_SCAN_POOL.length)];
+    document.getElementById('da-scan-word').textContent = rndWord;
+
+    if (pr < 1) {
+      daRaf = requestAnimationFrame(frame);
+      return;
+    }
+
+    const check = checkDictionaryAttack(pwd);
+    const res = document.getElementById('da-result');
+    const wordEl = document.getElementById('da-scan-word');
+
+    if (check.found) {
+      wordEl.textContent = pwd;
+      wordEl.style.color = 'var(--r)';
+      res.className = 'cracked';
+      res.innerHTML = `💀 TROVATA NEL DIZIONARIO in < 0.005 sec!<br><span style="font-size:.88rem;color:#ff9999">${check.reason}</span><br><span style="font-size:.82rem;color:var(--gdim)">I software provano automaticamente varianti leet, anni e simboli.</span>`;
+    } else {
+      wordEl.textContent = pwd;
+      wordEl.style.color = 'var(--g)';
+      res.className = 'safe';
+      res.innerHTML = `🛡️ IMMUNE AL DICTIONARY ATTACK!<br><span style="font-size:.88rem;color:#c8ffc8">${check.reason}</span><br><span style="font-size:.84rem;color:var(--a)">👉 L'hacker è costretto al BRUTE FORCE: prova la slide successiva!</span>`;
+    }
+    daOn = false;
+  }
+  daRaf = requestAnimationFrame(frame);
+}
+
+function resetDA() {
+  stopDA();
+  document.getElementById('da-out').style.display = 'none';
+  document.getElementById('da-start').style.display = 'inline-block';
+  document.getElementById('da-reset').style.display = 'none';
+  document.getElementById('da-in').value = '';
+}
+
+function stopDA() {
+  daOn = false;
+  if (daRaf) { cancelAnimationFrame(daRaf); daRaf = null; }
+  if (daTimeout) { clearTimeout(daTimeout); daTimeout = null; }
+}
+
+function setDaExample(val) {
+  document.getElementById('da-in').value = val;
+  startDA();
+}
+
+document.getElementById('da-start').addEventListener('click', startDA);
+document.getElementById('da-reset').addEventListener('click', resetDA);
+document.getElementById('da-in').addEventListener('keydown', e => { if (e.key === 'Enter') startDA(); });
+
+/* ====================================================================
    SIMULATORE BRUTE FORCE
    ==================================================================== */
 let bfOn = false, bfRaf = null;
+
+function setBfExample(val) {
+  document.getElementById('bf-in').value = val;
+  startBF();
+}
 
 function bfStats(pwd) {
   const lo = /[a-z]/.test(pwd), up = /[A-Z]/.test(pwd);
@@ -1670,36 +2005,136 @@ document.getElementById('br-safe').addEventListener('click', showSafe);
 document.getElementById('br-rst').addEventListener('click', resetBreach);
 
 /* ====================================================================
-   DEMO PASSWORD MANAGER
+   DEMO PASSWORD MANAGER & MASTER PASSPHRASE
    ==================================================================== */
 const VAULT = { 'pv-g':'K#9mP!qRz2Lw@v7N', 'pv-b':'Tz8$vQrXp!2mL9@K', 'pv-a':'9Xm#Wr2!pK7vQz@L', 'pv-f':'Rb5!kP3@nW8$mQvZ' };
-const MASTER = 'Gatto!Blu_Salta92';
+const DICEWARE_WORDS = [
+  'galassia', 'matita', 'vulcano', 'salto', 'orizzonte', 'lanterna',
+  'pianeta', 'vela', 'cometa', 'bussola', 'sentiero', 'faro',
+  'radice', 'quercia', 'nuvola', 'cristallo', 'tempesta', 'marea',
+  'diamante', 'castello', 'falco', 'fiume', 'aquila', 'tramonto'
+];
 
-document.getElementById('pm-btn').addEventListener('click', () => {
-  const v   = document.getElementById('pm-in').value;
+function evaluateMasterPassword(pwd) {
+  const p = (pwd || '').trim();
+  if (!p) return { empty: true };
+
+  const daCheck = checkDictionaryAttack(p);
+  const daPassed = !daCheck.found;
+
+  const st = bfStats(p);
+  const bfPassed = p.length >= 18 && st.tms > 31_536_000_000_000n;
+
+  return {
+    empty: false,
+    daPassed,
+    daReason: daCheck.reason,
+    bfPassed,
+    bfTime: fmtTime(st.tms),
+    bfLen: p.length,
+    isWinner: daPassed && bfPassed
+  };
+}
+
+function testMasterPassword() {
+  const inp = document.getElementById('pm-in');
+  const v = inp.value.trim();
   const msg = document.getElementById('pm-msg');
-  if (v === MASTER) {
+  const cardDa = document.getElementById('pm-threat-da');
+  const valDa = document.getElementById('pm-threat-da-val');
+  const cardBf = document.getElementById('pm-threat-bf');
+  const valBf = document.getElementById('pm-threat-bf-val');
+  const lock = document.getElementById('pm-lock');
+
+  if (!v) {
+    msg.style.color = 'var(--a)';
+    msg.textContent = '💡 Digita una Master Password o seleziona un esempio rapido sopra.';
+    cardDa.className = 'threat-card';
+    valDa.style.color = 'var(--gdim)';
+    valDa.textContent = '⏳ In attesa...';
+    cardBf.className = 'threat-card';
+    valBf.style.color = 'var(--gdim)';
+    valBf.textContent = '⏳ In attesa...';
+    return;
+  }
+
+  const evalRes = evaluateMasterPassword(v);
+
+  // Update Test 1 (Dictionary Attack)
+  if (evalRes.daPassed) {
+    cardDa.className = 'threat-card pass';
+    valDa.style.color = 'var(--g)';
+    valDa.textContent = '✔ IMMUNE (Assente dai dizionari / leak)';
+  } else {
+    cardDa.className = 'threat-card fail';
+    valDa.style.color = 'var(--r)';
+    valDa.textContent = '❌ VULNERABILE (Trovata in RockYou / mangling)';
+  }
+
+  // Update Test 2 (Brute Force)
+  if (evalRes.bfPassed) {
+    cardBf.className = 'threat-card pass';
+    valBf.style.color = 'var(--g)';
+    valBf.textContent = `✔ IMMUNE (${evalRes.bfLen} car. — ${evalRes.bfTime})`;
+  } else {
+    cardBf.className = 'threat-card fail';
+    valBf.style.color = 'var(--r)';
+    valBf.textContent = `❌ VULNERABILE (${evalRes.bfLen} car. — tempo calcolo: ${evalRes.bfTime})`;
+  }
+
+  // Combined verdict
+  if (evalRes.isWinner) {
     Object.entries(VAULT).forEach(([id, pwd]) => {
       const el = document.getElementById(id);
-      el.textContent = pwd;
-      el.style.color = 'var(--g)';
+      if (el) {
+        el.textContent = pwd;
+        el.style.color = 'var(--g)';
+      }
     });
-    document.getElementById('pm-lock').textContent = '🔓';
+    lock.textContent = '🔓';
     msg.style.color = 'var(--g)';
-    msg.textContent = '✔ Vault sbloccato — password decifrate in memoria RAM, mai in chiaro su disco.';
-  } else if (!v) {
-    msg.style.color = 'var(--a)';
-    msg.textContent = 'Suggerimento: la master password è "Gatto!Blu_Salta92"';
+    msg.innerHTML = '✔ <strong>MASTER PASSPHRASE VINCENTE!</strong> Vault decifrato con successo in memoria RAM.<br><span style="color:#c8ffc8">Totalmente immune sia al Dictionary Attack che al Brute Force.</span>';
   } else {
+    Object.keys(VAULT).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = '●●●●●●●●●●●●●●●●';
+        el.style.color = 'var(--gdim)';
+      }
+    });
+    lock.textContent = '🔒';
     msg.style.color = 'var(--r)';
-    msg.textContent = '✖ Master Password errata — vault rimane cifrato.';
-    const el = document.getElementById('pm-in');
-    el.style.borderColor = 'var(--r)';
-    setTimeout(() => el.style.borderColor = '', 1200);
+    if (!evalRes.daPassed && !evalRes.bfPassed) {
+      msg.textContent = '✖ SBLOCCO FALLITO — Vulnerabile a ENTRAMBI gli attacchi (Dizionario e Brute Force)!';
+    } else if (!evalRes.daPassed) {
+      msg.textContent = '✖ SBLOCCO FALLITO — Vulnerabile al Dictionary Attack (troppo prevedibile o presente nei leak).';
+    } else {
+      msg.textContent = '✖ SBLOCCO FALLITO — Resiste al dizionario ma è vulnerabile al Brute Force (serve > 18 caratteri).';
+    }
+    inp.style.borderColor = 'var(--r)';
+    setTimeout(() => inp.style.borderColor = '', 1200);
   }
-});
+}
+
+function setPmExample(val) {
+  document.getElementById('pm-in').value = val;
+  testMasterPassword();
+}
+
+function genRandomDiceware() {
+  const shuffled = [...DICEWARE_WORDS].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, 4);
+  const num = Math.floor(10 + Math.random() * 89);
+  const syms = ['!', '?', '#', '$'];
+  const sym = syms[Math.floor(Math.random() * syms.length)];
+  const generated = selected.join('-') + '-' + num + sym;
+  document.getElementById('pm-in').value = generated;
+  testMasterPassword();
+}
+
+document.getElementById('pm-btn').addEventListener('click', testMasterPassword);
 document.getElementById('pm-in').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('pm-btn').click();
+  if (e.key === 'Enter') testMasterPassword();
 });
 
 /* ====================================================================
@@ -1803,6 +2238,7 @@ document.getElementById('tfa-code').addEventListener('keydown', e => {
 function haltAll() {
   bfOn = false;
   if (bfRaf) cancelAnimationFrame(bfRaf);
+  stopDA();
   stopTOTP();
 }
 </script>
