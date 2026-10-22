@@ -211,9 +211,89 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 .cracked{color:var(--r);text-shadow:0 0 10px var(--r)}
 .safe{color:var(--g);text-shadow:0 0 10px var(--g)}
 
-/* DA (Dictionary Attack) */
-#da-scan-word{font-family:var(--fv);font-size:2rem;color:var(--a);text-shadow:0 0 8px var(--adim);letter-spacing:2px;min-height:42px;word-break:break-all}
-#da-result{font-family:var(--fv);font-size:1.2rem;min-height:32px;line-height:1.35}
+/* DA (Dictionary Attack) File Viewer */
+.da-file-card{
+  background:#020703;border:1px solid var(--bdr);
+  display:flex;flex-direction:column;flex:1;min-height:0;
+  overflow:hidden;box-shadow:inset 0 0 24px rgba(0,0,0,0.85);border-radius:2px
+}
+.da-file-header{
+  background:var(--bgc);border-bottom:1px solid var(--bdr);
+  padding:6px 12px;display:flex;align-items:center;
+  justify-content:space-between;font-family:var(--fm);font-size:.8rem;flex-shrink:0
+}
+.da-file-badge{
+  font-size:.68rem;padding:2px 8px;border-radius:2px;
+  font-weight:bold;letter-spacing:1px;transition:all .2s
+}
+.da-file-badge.idle{background:var(--bg);color:var(--gdim);border:1px solid var(--bdr)}
+.da-file-badge.scanning{background:rgba(255,176,0,0.18);color:var(--a);border:1px solid var(--a);animation:gp 1s infinite alternate}
+.da-file-badge.found{background:var(--rglo);color:var(--r);border:1px solid var(--r)}
+.da-file-badge.safe{background:var(--gglo);color:var(--g);border:1px solid var(--g)}
+
+.da-file-viewport{
+  flex:1;min-height:0;overflow-y:auto;padding:4px 0;
+  font-family:var(--fm);font-size:.82rem;line-height:1.5;
+  position:relative;scroll-behavior:smooth
+}
+.da-file-viewport::-webkit-scrollbar{width:6px}
+.da-file-viewport::-webkit-scrollbar-track{background:rgba(0,0,0,0.3)}
+.da-file-viewport::-webkit-scrollbar-thumb{background:var(--gdim);border-radius:3px}
+
+.da-file-line{
+  display:flex;align-items:center;padding:2px 10px;
+  border-left:3px solid transparent;transition:background .12s,border-color .12s;
+  white-space:nowrap
+}
+.da-file-line .da-ln{
+  width:48px;color:var(--gdim);user-select:none;font-size:.72rem;
+  flex-shrink:0;opacity:.7
+}
+.da-file-line .da-lw{
+  color:#c8ffc8;font-weight:normal;flex:1;letter-spacing:0.5px
+}
+.da-file-line .da-ls{
+  font-size:.68rem;letter-spacing:1px;margin-left:8px;
+  opacity:0;transition:opacity .15s
+}
+
+.da-file-line.da-line-scanning{
+  background:rgba(255,176,0,0.22);border-left-color:var(--a)
+}
+.da-file-line.da-line-scanning .da-lw{
+  color:var(--a);font-weight:bold
+}
+.da-file-line.da-line-scanning .da-ls{
+  opacity:1;color:var(--a)
+}
+
+.da-file-line.da-line-match{
+  background:rgba(220,38,38,0.38)!important;border-left-color:var(--r)!important
+}
+.da-file-line.da-line-match .da-lw{
+  color:var(--r)!important;font-weight:bold;text-shadow:0 0 8px var(--r)
+}
+.da-file-line.da-line-match .da-ls{
+  opacity:1;color:var(--r);font-weight:bold
+}
+
+.da-file-line.da-line-nomatch{
+  background:rgba(4,120,87,0.35)!important;border-left-color:var(--g)!important
+}
+.da-file-line.da-line-nomatch .da-lw{
+  color:var(--g)!important;font-weight:bold
+}
+.da-file-line.da-line-nomatch .da-ls{
+  opacity:1;color:var(--g);font-weight:bold
+}
+
+.da-file-footer{
+  background:var(--bgc);border-top:1px solid var(--bdr);
+  padding:4px 10px;display:flex;align-items:center;
+  justify-content:space-between;font-size:.72rem;color:var(--gdim);flex-shrink:0
+}
+
+#da-result{font-family:var(--fv);font-size:1.15rem;min-height:30px;line-height:1.35}
 .preset-chip{background:var(--bgc);border:1px solid var(--bdr);color:var(--g);font-family:var(--fm);font-size:.78rem;padding:4px 8px;cursor:pointer;border-radius:2px;transition:all .15s}
 .preset-chip:hover{background:var(--gglo);border-color:var(--g)}
 .preset-chip.bad{color:var(--r);border-color:rgba(255,68,68,0.4)}
@@ -613,9 +693,50 @@ body.light-theme code {
   border-radius: 3px !important;
 }
 
-body.light-theme #da-scan-word {
+body.light-theme .da-file-card {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light-theme .da-file-header {
+  background: #f1f5f9 !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+body.light-theme .da-file-footer {
+  background: #f1f5f9 !important;
+  border-top-color: #cbd5e1 !important;
+  color: #64748b !important;
+}
+body.light-theme .da-file-line {
+  color: #475569 !important;
+}
+body.light-theme .da-file-line .da-ln {
+  color: #94a3b8 !important;
+}
+body.light-theme .da-file-line .da-lw {
+  color: #1e293b !important;
+}
+body.light-theme .da-file-line.da-line-scanning {
+  background: #fef3c7 !important;
+  border-left-color: #d97706 !important;
+}
+body.light-theme .da-file-line.da-line-scanning .da-lw {
   color: #b45309 !important;
+}
+body.light-theme .da-file-line.da-line-match {
+  background: #fee2e2 !important;
+  border-left-color: #dc2626 !important;
+}
+body.light-theme .da-file-line.da-line-match .da-lw {
+  color: #dc2626 !important;
   text-shadow: none !important;
+}
+body.light-theme .da-file-line.da-line-nomatch {
+  background: #d1fae5 !important;
+  border-left-color: #059669 !important;
+}
+body.light-theme .da-file-line.da-line-nomatch .da-lw {
+  color: #047857 !important;
 }
 body.light-theme .preset-chip {
   background: #f1f5f9 !important;
@@ -843,103 +964,10 @@ body.light-theme .threat-card.fail {
 </section>
 
 <!-- ================================================================
-     S06 — DICTIONARY ATTACK
-     ================================================================ -->
-<section class="slide" id="s6">
-  <div class="tag">// 01b — VARIANTE PIÙ VELOCE</div>
-  <div class="title">Dictionary Attack:<br><span class="a">L'Attacco con il Dizionario</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Come funziona</div>
-      <ol class="steps">
-        <li>Si parte da un file con milioni di password <strong>già rubate</strong> in violazioni precedenti</li>
-        <li>Si provano prima le più usate, in ordine di frequenza</li>
-        <li>Si aggiungono varianti prevedibili: <code>password</code> → <code>P@ssw0rd!</code></li>
-        <li>Si aggiungono anni e nomi propri: <code>mario1998</code>, <code>juve2024</code></li>
-      </ol>
-      <div class="box d mt6" style="font-size:.92rem">
-        <strong>RockYou2021:</strong> un file da 100 GB con <span class="hl">8,4 miliardi</span> di password reali, liberamente scaricabile
-      </div>
-    </div>
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Top password 2024 — tutte crackate in &lt;1ms</div>
-      <table class="tbl">
-        <thead><tr><th>Password</th><th>Utenti stimati</th><th>Tempo</th></tr></thead>
-        <tbody>
-          <tr><td><code>123456</code></td><td>~4 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>password</code></td><td>~3.6 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>qwerty123</code></td><td>~2.2 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>iloveyou</code></td><td>~1.5 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>P@ssw0rd!</code></td><td>molto diffusa</td><td class="ta">~2 min</td></tr>
-          <tr><td><code>Juve2024!</code></td><td>diffusa in IT</td><td class="ta">~8 min</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================================
-     S06B — LAB DICTIONARY ATTACK
-     ================================================================ -->
-<section class="slide" id="s6b">
-  <div class="tag">// LAB 01a — SIMULATORE DICTIONARY ATTACK</div>
-  <div class="title">🔬 Laboratorio: <span class="a">Simulatore Dictionary Attack</span></div>
-  <div class="g2" style="flex:1;min-height:0;align-items:start">
-    <!-- Colonna simulatore -->
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:12px 14px">
-        <div class="slbl">// PASSWORD DA TESTARE NEL DIZIONARIO</div>
-        <input type="text" class="sin" id="da-in" placeholder="Digita una password da verificare..." maxlength="36" autocomplete="off" spellcheck="false">
-        <div class="slbl mt6">// SELEZIONA ESEMPI RAPIDI:</div>
-        <div class="row" style="gap:6px;margin-bottom:8px">
-          <button type="button" class="preset-chip bad" onclick="setDaExample('123456')">123456</button>
-          <button type="button" class="preset-chip bad" onclick="setDaExample('password')">password</button>
-          <button type="button" class="preset-chip bad" onclick="setDaExample('iloveyou')">iloveyou</button>
-          <button type="button" class="preset-chip bad" onclick="setDaExample('mario1998')">mario1998</button>
-          <button type="button" class="preset-chip bad" onclick="setDaExample('P@ssw0rd!')">P@ssw0rd!</button>
-          <button type="button" class="preset-chip bad" onclick="setDaExample('Juve2024!')">Juve2024!</button>
-          <button type="button" class="preset-chip win" onclick="setDaExample('galassia-matita-vulcano-2026')">🛡️ galassia-matita-vulcano-2026</button>
-        </div>
-        <div class="row mt8">
-          <button class="sbtn r" id="da-start">⚡ VERIFICA NEL DIZIONARIO</button>
-          <button class="sbtn" id="da-reset" style="display:none">↺ RESET</button>
-        </div>
-        <div id="da-out" style="display:none;margin-top:10px">
-          <div class="slbl">// SCANSIONE DATABASE ROCKYOU2021 (8,4 MILIARDI DI VOCI)</div>
-          <div id="da-scan-word">________</div>
-          <div style="font-size:.8rem;color:var(--gdim);margin-top:4px">
-            Record testati: <strong id="da-cnt">0</strong> &nbsp;|&nbsp;
-            Tempo: <strong id="da-ms">0</strong> ms &nbsp;|&nbsp;
-            Algoritmo: <strong id="da-algo">Wordlist + Mangling Rules</strong>
-          </div>
-          <div id="da-result" style="margin-top:8px"></div>
-        </div>
-      </div>
-      <div class="box a" style="font-size:.88rem">
-        <strong>Database simulato:</strong> <em>RockYou2021</em> + vocabolario italiano + oltre 50 regole automatiche di sostituzione simboli (l33tspeak) e suffissi anno.
-      </div>
-    </div>
-    <!-- Spiegazione / Confronto -->
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Perché il Dizionario Batte le Password "Umane"</div>
-      <ol class="steps">
-        <li><strong>Nessun calcolo a caso:</strong> l'hacker non tira a indovinare combinazioni casuali, ma scansiona liste di miliardi di password già rubate in violazioni precedenti.</li>
-        <li><strong>Regole di Mangling (mutazione):</strong> i tool automatici (es. <em>Hashcat</em>, <em>John the Ripper</em>) applicano all'istante regole come <code>a</code>→<code>@</code>, <code>e</code>→<code>3</code>, <code>o</code>→<code>0</code> e aggiungono suffissi come <code>1998</code>, <code>2024</code>, <code>!</code>.</li>
-        <li><strong>Caduta istantanea:</strong> password percepite come "difficili" come <code>P@ssw0rd!</code> o <code>Juve2024!</code> vengono scoperte in meno di 0.01 secondi!</li>
-        <li><strong>L'unica difesa:</strong> combinare <strong>4 o più parole slegate</strong> (passphrase). La combinazione di 4 vocaboli non esiste in nessun file di leak!</li>
-      </ol>
-      <div class="box mt6" style="font-size:.88rem">
-        <strong>E se il dizionario fallisce?</strong> 👉 Nella <em>slide successiva</em> l'hacker è costretto a ricorrere al <strong>Brute Force</strong> puro!
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================================
      S07 — LAB BRUTE FORCE
      ================================================================ -->
 <section class="slide" id="s7">
-  <div class="tag">// LAB 01b — SIMULATORE BRUTE FORCE</div>
+  <div class="tag">// LAB 01 — SIMULATORE BRUTE FORCE</div>
   <div class="title">🔬 Laboratorio: <span class="a">Simulatore Brute Force</span></div>
   <div class="g2" style="flex:1;min-height:0;align-items:start">
     <!-- Colonna simulatore -->
@@ -971,7 +999,7 @@ body.light-theme .threat-card.fail {
         </div>
       </div>
       <div class="box a" style="font-size:.88rem">
-        <strong>Cosa succede:</strong> quando il Dictionary Attack fallisce, l'hacker non ha altra scelta che calcolare <em>ogni singola permutazione carattere per carattere</em>. Velocità stimata: 1 miliardo di tentativi/sec (GPU consumer).
+        <strong>Come funziona il calcolo:</strong> Il software genera e prova sistematicamente <em>ogni singola combinazione carattere per carattere</em>. Velocità stimata: 1 miliardo di tentativi/sec (GPU consumer).
       </div>
     </div>
     <!-- Tabella tempi -->
@@ -989,7 +1017,128 @@ body.light-theme .threat-card.fail {
         </tbody>
       </table>
       <div class="box mt6" style="font-size:.88rem">
-        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> batte sempre la complessità sintetica.
+        <strong>Regola chiave:</strong> la <span class="hl">lunghezza</span> batte sempre la complessità sintetica. Ma cosa succede se la password è una parola di senso compiuto? 👉 Lo vediamo nella <em>slide successiva</em> con il <strong>Dictionary Attack</strong>!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S06 — DICTIONARY ATTACK
+     ================================================================ -->
+<section class="slide" id="s6">
+  <div class="tag">// 01b — VARIANTE PIÙ VELOCE</div>
+  <div class="title">Dictionary Attack:<br><span class="a">L'Attacco con il Dizionario</span></div>
+  <div class="g2" style="flex:1;min-height:0">
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Come funziona</div>
+      <ol class="steps">
+        <li>Si parte da un file con milioni di password <strong>già rubate</strong> in violazioni precedenti</li>
+        <li>Si provano prima le più usate, in ordine di frequenza</li>
+        <li>Si aggiungono varianti prevedibili: <code>password</code> → <code>P@ssw0rd!</code></li>
+        <li>Si aggiungono anni e nomi propri: <code>mario1998</code>, <code>juve2024</code></li>
+      </ol>
+      <div class="box d mt6" style="font-size:.92rem">
+        <strong>RockYou2021:</strong> un file da 100 GB con <span class="hl">8,4 miliardi</span> di password reali, liberamente scaricabile
+      </div>
+    </div>
+    <div class="card" style="justify-content:center;gap:10px">
+      <div class="ctitle">Top password 2024 — tutte crackate in &lt;1ms</div>
+      <table class="tbl">
+        <thead><tr><th>Password</th><th>Utenti stimati</th><th>Tempo</th></tr></thead>
+        <tbody>
+          <tr><td><code>123456</code></td><td>~4 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>password</code></td><td>~3.6 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>qwerty123</code></td><td>~2.2 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>iloveyou</code></td><td>~1.5 milioni</td><td class="tr">&lt;1 ms</td></tr>
+          <tr><td><code>P@ssw0rd!</code></td><td>molto diffusa</td><td class="ta">~2 min</td></tr>
+          <tr><td><code>Juve2024!</code></td><td>diffusa in IT</td><td class="ta">~8 min</td></tr>
+        </tbody>
+      </table>
+      <div class="box mt6" style="font-size:.88rem">
+        👉 Nella <em>slide successiva</em> vediamo il <strong>Simulatore Dictionary Attack</strong> in azione dentro il file di dizionario <code>rockyou.txt</code>!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     S06B — LAB DICTIONARY ATTACK
+     ================================================================ -->
+<section class="slide" id="s6b">
+  <div class="tag">// LAB 01b — SIMULATORE DICTIONARY ATTACK</div>
+  <div class="title">🔬 Laboratorio: <span class="a">Simulatore Dictionary Attack</span></div>
+  <div class="g2" style="flex:1;min-height:0;align-items:stretch">
+    <!-- COLONNA SINISTRA: ESECUZIONE DELLA CRACK -->
+    <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;display:flex;flex-direction:column;gap:6px">
+        <div class="slbl">// PASSWORD BERSAGLIO DA CRACCARE</div>
+        <input type="text" class="sin" id="da-in" placeholder="Digita una password da verificare..." maxlength="36" autocomplete="off" spellcheck="false" style="font-size:1rem;padding:6px 10px">
+        
+        <div class="slbl" style="margin-top:2px">// ESEMPI RAPIDI:</div>
+        <div class="row" style="gap:5px;margin-bottom:2px">
+          <button type="button" class="preset-chip bad" onclick="setDaExample('123456')">123456</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('password')">password</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('iloveyou')">iloveyou</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('mario1998')">mario1998</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('P@ssw0rd!')">P@ssw0rd!</button>
+          <button type="button" class="preset-chip bad" onclick="setDaExample('Juve2024!')">Juve2024!</button>
+          <button type="button" class="preset-chip win" onclick="setDaExample('galassia-matita-vulcano-2026')">🛡️ Passphrase</button>
+        </div>
+
+        <div class="row" style="gap:8px;margin-top:4px">
+          <button class="sbtn r" id="da-start" style="flex:1">⚡ AVVIA CRACK CON DIZIONARIO</button>
+          <button class="sbtn" id="da-reset" style="display:none">↺ RESET</button>
+        </div>
+      </div>
+
+      <!-- Telemetria Scansione -->
+      <div style="background:var(--bgc);border:1px solid var(--bdr);padding:8px 12px;font-size:.82rem;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">STATO CRACK:</span>
+          <strong id="da-status" style="color:var(--g)">IN ATTESA...</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">PAROLE TESTATE NEL FILE:</span>
+          <strong id="da-cnt" style="color:#c8ffc8">0 / 8.420.000.000</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">TEMPO IMPIEGATO:</span>
+          <strong id="da-ms" style="color:#c8ffc8">0 ms</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--gdim)">PAROLA ATTUALMENTE IN ESAME:</span>
+          <strong id="da-cur-word" style="color:var(--a);font-family:var(--fm)">—</strong>
+        </div>
+      </div>
+
+      <!-- Box Risultato Finale -->
+      <div id="da-result-box" style="display:none;background:var(--bgc);border:1px solid var(--bdr);padding:10px 12px;font-size:.86rem;line-height:1.4">
+        <div id="da-result"></div>
+      </div>
+
+      <div class="box a" style="font-size:.8rem;padding:6px 10px;margin-top:auto">
+        <strong>Come funziona:</strong> Il tool legge il file di dizionario linea per linea calcolandone l'hash e confrontandolo col bersaglio. Se presente, cade all'istante!
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: INTERNO DEL FILE DI TESTO DIZIONARIO (rockyou.txt) -->
+    <div class="da-file-card">
+      <div class="da-file-header">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:1.1rem">📄</span>
+          <span style="font-weight:bold;color:var(--a)">rockyou.txt</span>
+          <span style="font-size:.68rem;color:var(--gdim)">[FILE DIZIONARIO • UTF-8 • 8.420.000.000 RIGHE]</span>
+        </div>
+        <div id="da-file-badge" class="da-file-badge idle">PRONTO</div>
+      </div>
+      <div class="da-file-viewport" id="da-file-viewport">
+        <!-- Righe del file generate dinamicamente e animate -->
+        <div id="da-file-lines"></div>
+      </div>
+      <div class="da-file-footer">
+        <span id="da-file-info">Cursore: riga 1 • File aperto in sola lettura</span>
+        <span style="color:var(--gdim)">Hashcat / John Rule Engine</span>
       </div>
     </div>
   </div>
@@ -1520,10 +1669,10 @@ const labels = [
   'IL PROBLEMA',
   'ROADMAP',
   'BRUTE FORCE — TEORIA',
-  'BRUTE FORCE — PROCESSO',
+  'BRUTE FORCE — COME FUNZIONA',
+  'LAB: BRUTE FORCE',
   'DICTIONARY ATTACK — TEORIA',
   'LAB: DICTIONARY ATTACK',
-  'LAB: BRUTE FORCE',
   'DATA BREACH — TEORIA',
   'CREDENTIAL STUFFING',
   'EFFETTO DOMINO',
@@ -1587,9 +1736,24 @@ document.addEventListener('keydown', e => {
 syncUI();
 
 /* ====================================================================
-   SIMULATORE DICTIONARY ATTACK
+   SIMULATORE DICTIONARY ATTACK (CON VISUALIZZATORE FILE rockyou.txt)
    ==================================================================== */
-let daOn = false, daRaf = null, daTimeout = null;
+let daOn = false, daInterval = null, daTimeout = null;
+
+const ROCKYOU_WORDS = [
+  "123456", "password", "12345678", "qwerty", "123456789",
+  "12345", "1234", "111111", "1234567", "dragon",
+  "welcome", "iloveyou", "princess", "superman", "ninja",
+  "football", "monkey", "charlie", "shadow", "freedom",
+  "batman", "scuola", "musica", "stella", "sole",
+  "amore", "calcio", "calcio99", "italia", "mario",
+  "mario1998", "juve", "juve2024", "Juve2024!", "P@ssw0rd!",
+  "password123", "admin", "admin123", "ciao", "ciaoblu",
+  "computer", "inter", "milan", "napoli", "roma",
+  "principessa", "hunter2", "matrix", "starwars", "letmein",
+  "trustno1", "sunshine", "master", "secret", "pokemon",
+  "whatever", "qwerty123"
+];
 
 function normalizeDa(str) {
   return str.toLowerCase()
@@ -1675,12 +1839,19 @@ function checkDictionaryAttack(pwd) {
   };
 }
 
-const DA_SCAN_POOL = [
-  '123456', 'password', 'welcome', 'admin', 'ninja', 'dragon', 'football',
-  'monkey', 'sunshine', 'mario1998', 'qwerty', 'starwars', 'superman',
-  'juventus', 'iloveyou', 'P@ssw0rd!', 'matrix', 'shadow', 'freedom',
-  'batman', 'pass123', 'computer', 'italia2024', 'calcio99', 'rockyou_8.4B'
-];
+let daActiveWords = [...ROCKYOU_WORDS];
+
+function initDaFile() {
+  const container = document.getElementById('da-file-lines');
+  if (!container) return;
+  let html = '';
+  daActiveWords.forEach((word, idx) => {
+    const ln = String(idx + 1).padStart(5, '0');
+    html += `<div class="da-file-line" id="da-line-${idx}" data-word="${word}"><span class="da-ln">${ln}</span><span class="da-lw">${word}</span><span class="da-ls" id="da-ls-${idx}"></span></div>`;
+  });
+  html += `<div class="da-file-line da-eof" id="da-line-eof"><span class="da-ln">8420M</span><span class="da-lw">[... oltre 8,4 miliardi di righe scansionate ...]</span><span class="da-ls" id="da-ls-eof"></span></div>`;
+  container.innerHTML = html;
+}
 
 function startDA() {
   const pwd = document.getElementById('da-in').value.trim();
@@ -1693,62 +1864,164 @@ function startDA() {
 
   stopDA();
   daOn = true;
-  document.getElementById('da-out').style.display = 'block';
+
+  const check = checkDictionaryAttack(pwd);
+  let matchIdx = daActiveWords.findIndex(w => w.toLowerCase() === pwd.toLowerCase() || normalizeDa(w) === normalizeDa(pwd));
+
+  if (check.found && matchIdx === -1) {
+    matchIdx = 32;
+    daActiveWords[matchIdx] = pwd;
+    initDaFile();
+  }
+
   document.getElementById('da-start').style.display = 'none';
   document.getElementById('da-reset').style.display = 'inline-block';
-  document.getElementById('da-result').textContent = '';
-  document.getElementById('da-scan-word').style.color = 'var(--a)';
+  document.getElementById('da-status').textContent = 'SCANSIONE FILE ROCKYOU.TXT IN CORSO...';
+  document.getElementById('da-status').style.color = 'var(--a)';
+  const badge = document.getElementById('da-file-badge');
+  badge.className = 'da-file-badge scanning';
+  badge.textContent = 'SCANSIONE ATTIVA';
+
+  document.getElementById('da-result-box').style.display = 'block';
+  document.getElementById('da-result').innerHTML = '<span style="color:var(--a)">⏳ Calcolo hash e confronto riga per riga con il file rockyou.txt...</span>';
 
   const t0 = Date.now();
-  const animMs = 900;
-  let counter = 0;
+  let curLine = 0;
+  const targetStop = check.found ? matchIdx : daActiveWords.length;
+  const totalCount = 8_420_000_000;
 
-  function frame() {
-    if (!daOn) return;
-    const el = Date.now() - t0;
-    const pr = Math.min(el / animMs, 1);
-    counter = Math.floor(pr * 8_420_000_000);
-    document.getElementById('da-cnt').textContent = counter.toLocaleString('it-IT');
-    document.getElementById('da-ms').textContent = el;
-    const rndWord = DA_SCAN_POOL[Math.floor(Math.random() * DA_SCAN_POOL.length)];
-    document.getElementById('da-scan-word').textContent = rndWord;
+  document.querySelectorAll('.da-file-line').forEach(el => {
+    el.classList.remove('da-line-scanning', 'da-line-match', 'da-line-nomatch');
+  });
+  document.querySelectorAll('.da-ls').forEach(el => el.textContent = '');
 
-    if (pr < 1) {
-      daRaf = requestAnimationFrame(frame);
+  const viewport = document.getElementById('da-file-viewport');
+  if (viewport) viewport.scrollTop = 0;
+
+  const stepMs = Math.max(16, Math.min(42, Math.floor(850 / Math.max(1, targetStop))));
+
+  daInterval = setInterval(() => {
+    if (!daOn) { clearInterval(daInterval); return; }
+
+    const elapsed = Date.now() - t0;
+    document.getElementById('da-ms').textContent = elapsed + ' ms';
+
+    if (curLine > 0) {
+      const prevEl = document.getElementById(`da-line-${curLine - 1}`);
+      if (prevEl) {
+        prevEl.classList.remove('da-line-scanning');
+        const prevLs = document.getElementById(`da-ls-${curLine - 1}`);
+        if (prevLs) prevLs.textContent = '• no match';
+      }
+    }
+
+    if (curLine <= targetStop && curLine < daActiveWords.length) {
+      const curEl = document.getElementById(`da-line-${curLine}`);
+      if (curEl) {
+        curEl.classList.add('da-line-scanning');
+        const curLs = document.getElementById(`da-ls-${curLine}`);
+        if (curLs) curLs.textContent = '⚡ CHECK HASH...';
+        curEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      const currentWord = daActiveWords[curLine];
+      document.getElementById('da-cur-word').textContent = currentWord;
+      const scannedSoFar = Math.floor((curLine + 1) / Math.max(1, targetStop) * (check.found ? 1_450_000 : totalCount));
+      document.getElementById('da-cnt').textContent = scannedSoFar.toLocaleString('it-IT') + ' / 8,4 Mld';
+      document.getElementById('da-file-info').textContent = `Cursore: riga ${curLine + 1} (${currentWord}) • Scansione attiva`;
+    }
+
+    if (check.found && curLine >= matchIdx) {
+      clearInterval(daInterval);
+      daOn = false;
+
+      const matchEl = document.getElementById(`da-line-${matchIdx}`);
+      if (matchEl) {
+        matchEl.classList.remove('da-line-scanning');
+        matchEl.classList.add('da-line-match');
+        const matchLs = document.getElementById(`da-ls-${matchIdx}`);
+        if (matchLs) matchLs.textContent = '✔ HASH MATCH! CRACKATA';
+        matchEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      badge.className = 'da-file-badge found';
+      badge.textContent = 'PASSWORD TROVATA!';
+      document.getElementById('da-status').textContent = '💀 TROVATA NEL FILE!';
+      document.getElementById('da-status').style.color = 'var(--r)';
+      document.getElementById('da-cnt').textContent = `${(matchIdx * 142_800 + 42).toLocaleString('it-IT')} / 8,4 Mld`;
+      document.getElementById('da-file-info').textContent = `✔ TROVATA ALLA RIGA ${matchIdx + 1} di rockyou.txt`;
+
+      const resBox = document.getElementById('da-result');
+      resBox.className = 'cracked';
+      resBox.innerHTML = `💀 <strong>PASSWORD CRACKATA NEL DIZIONARIO!</strong><br>` +
+        `<span style="color:#ff9999">Trovata alla riga #${matchIdx + 1} del file <code>rockyou.txt</code> in ${(elapsed/1000).toFixed(3)} sec.</span><br>` +
+        `<span style="font-size:.8rem;color:var(--gdim)">Dettaglio: ${check.reason}</span><br>` +
+        `<span style="font-size:.82rem;color:var(--a)">▶ Un hacker scarica il file dal Dark Web e cracka la password all'istante senza tentativi a caso!</span>`;
       return;
     }
 
-    const check = checkDictionaryAttack(pwd);
-    const res = document.getElementById('da-result');
-    const wordEl = document.getElementById('da-scan-word');
+    if (!check.found && curLine >= daActiveWords.length) {
+      clearInterval(daInterval);
+      daOn = false;
 
-    if (check.found) {
-      wordEl.textContent = pwd;
-      wordEl.style.color = 'var(--r)';
-      res.className = 'cracked';
-      res.innerHTML = `💀 TROVATA NEL DIZIONARIO in < 0.005 sec!<br><span style="font-size:.88rem;color:#ff9999">${check.reason}</span><br><span style="font-size:.82rem;color:var(--gdim)">I software provano automaticamente varianti leet, anni e simboli.</span>`;
-    } else {
-      wordEl.textContent = pwd;
-      wordEl.style.color = 'var(--g)';
-      res.className = 'safe';
-      res.innerHTML = `🛡️ IMMUNE AL DICTIONARY ATTACK!<br><span style="font-size:.88rem;color:#c8ffc8">${check.reason}</span><br><span style="font-size:.84rem;color:var(--a)">👉 L'hacker è costretto al BRUTE FORCE: prova la slide successiva!</span>`;
+      const eofEl = document.getElementById('da-line-eof');
+      if (eofEl) {
+        eofEl.classList.add('da-line-nomatch');
+        const eofLs = document.getElementById('da-ls-eof');
+        if (eofLs) eofLs.textContent = '🛡️ 0 MATCHES TROVATI';
+        eofEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      badge.className = 'da-file-badge safe';
+      badge.textContent = 'IMMUNE AL DIZIONARIO';
+      document.getElementById('da-status').textContent = '🛡️ IMMUNE — 0 CORRISPONDENZE';
+      document.getElementById('da-status').style.color = 'var(--g)';
+      document.getElementById('da-cnt').textContent = '8.420.000.000 / 8,4 Mld (100%)';
+      document.getElementById('da-cur-word').textContent = 'NESSUN MATCH';
+      document.getElementById('da-file-info').textContent = `Fine file: 8,4 miliardi di righe scansionate • 0 corrispondenze`;
+
+      const resBox = document.getElementById('da-result');
+      resBox.className = 'safe';
+      resBox.innerHTML = `🛡️ <strong>IMMUNE AL DICTIONARY ATTACK!</strong><br>` +
+        `<span style="color:#c8ffc8">Scansionato l'intero dizionario (8,4 Mld di record): NESSUNA CORRISPONDENZA TROVATA.</span><br>` +
+        `<span style="font-size:.8rem;color:var(--gdim)">Dettaglio: ${check.reason}</span><br>` +
+        `<span style="font-size:.84rem;color:var(--g)">✔ L'attacco con dizionario è completamente FALLITO. La passphrase resiste!</span>`;
+      return;
     }
-    daOn = false;
-  }
-  daRaf = requestAnimationFrame(frame);
+
+    curLine++;
+  }, stepMs);
 }
 
 function resetDA() {
   stopDA();
-  document.getElementById('da-out').style.display = 'none';
   document.getElementById('da-start').style.display = 'inline-block';
   document.getElementById('da-reset').style.display = 'none';
+  document.getElementById('da-status').textContent = 'IN ATTESA...';
+  document.getElementById('da-status').style.color = 'var(--g)';
+  document.getElementById('da-cnt').textContent = '0 / 8.420.000.000';
+  document.getElementById('da-ms').textContent = '0 ms';
+  document.getElementById('da-cur-word').textContent = '—';
+  document.getElementById('da-result-box').style.display = 'none';
   document.getElementById('da-in').value = '';
+
+  const badge = document.getElementById('da-file-badge');
+  if (badge) {
+    badge.className = 'da-file-badge idle';
+    badge.textContent = 'PRONTO';
+  }
+  document.getElementById('da-file-info').textContent = 'Cursore: riga 1 • File aperto in sola lettura';
+
+  daActiveWords = [...ROCKYOU_WORDS];
+  initDaFile();
+
+  const viewport = document.getElementById('da-file-viewport');
+  if (viewport) viewport.scrollTop = 0;
 }
 
 function stopDA() {
   daOn = false;
-  if (daRaf) { cancelAnimationFrame(daRaf); daRaf = null; }
+  if (daInterval) { clearInterval(daInterval); daInterval = null; }
   if (daTimeout) { clearTimeout(daTimeout); daTimeout = null; }
 }
 
@@ -1760,6 +2033,8 @@ function setDaExample(val) {
 document.getElementById('da-start').addEventListener('click', startDA);
 document.getElementById('da-reset').addEventListener('click', resetDA);
 document.getElementById('da-in').addEventListener('keydown', e => { if (e.key === 'Enter') startDA(); });
+
+initDaFile();
 
 /* ====================================================================
    SIMULATORE BRUTE FORCE
