@@ -62,7 +62,7 @@ def create_scheda_laboratorio(output_path):
     ws["B2"].font = font_title
 
     ws.merge_cells("B3:E3")
-    ws["B3"] = "Esperienza con rotaia e carrello: studio del moto rettilineo con andata e ritorno (punta 2,30 m)"
+    ws["B3"] = "Esperienza con rotaia e carrello: studio del moto rettilineo con andata e ritorno (punta 1,80 m)"
     ws["B3"].font = font_subtitle
 
     # Student Info Box (G1:L3)
@@ -112,7 +112,7 @@ def create_scheda_laboratorio(output_path):
         ("Andata", None, 0.50, "Traguardo 1", fill_andata_bg, fill_andata_acc),
         ("Andata", None, 1.00, "Traguardo 2", fill_andata_bg, fill_andata_acc),
         ("Andata", None, 1.50, "Traguardo 3 (andata)", fill_andata_bg, fill_andata_acc),
-        ("Punta",   None, 2.30, "Inversione (punta)", fill_inv_bg, fill_inv_acc),
+        ("Punta",   None, 1.80, "Inversione (punta)", fill_inv_bg, fill_inv_acc),
         ("Ritorno", None, 1.50, "Traguardo 3 (ritorno)", fill_rit_bg, fill_rit_acc),
         ("Ritorno", None, 1.00, "Traguardo 2 (ritorno)", fill_rit_bg, fill_rit_acc),
         ("Ritorno", None, 0.50, "Traguardo 1 (ritorno)", fill_rit_bg, fill_rit_acc),
@@ -158,7 +158,7 @@ def create_scheda_laboratorio(output_path):
     ws["B16"].alignment = Alignment(horizontal="left", vertical="center", indent=1)
 
     ws.merge_cells("B17:E17")
-    ws["B17"] = "Punta di inversione a 2,30 m • Il carrello passa due volte per s = 1,50 m (andata e ritorno)."
+    ws["B17"] = "Punta di inversione a 1,80 m • Il carrello passa due volte per s = 1,50 m (andata e ritorno)."
     ws["B17"].font = Font(name="Segoe UI", size=7.2, color="334155")
     ws["B17"].fill = fill_gray_card
     ws["B17"].alignment = Alignment(horizontal="left", vertical="center", indent=1)
@@ -201,7 +201,7 @@ def create_scheda_laboratorio(output_path):
 
     # Calculations row (19-21) CON FORMULE PROTETTE DA #DIV/0!
     ws.merge_cells("B19:D19")
-    ws["B19"] = "Pendenza Andata: v_andata = (2,30 m - 0,00 m)/(t_punta - t_0)"
+    ws["B19"] = "Pendenza Andata: v_andata = (1,80 m - 0,00 m)/(t_punta - t_0)"
     ws["B19"].font = font_footer
     ws["E19"] = '=IF(AND(ISNUMBER(C11), ISNUMBER(C7), C11>C7), ROUND((D11-D7)/(C11-C7), 2), "")'
     ws["E19"].font = Font(name="Segoe UI", size=9, bold=True, color="1E3A8A")
@@ -209,7 +209,7 @@ def create_scheda_laboratorio(output_path):
     ws["E19"].number_format = "0.00"
 
     ws.merge_cells("B20:D20")
-    ws["B20"] = "Pendenza Ritorno: v_ritorno = (0,00 m - 2,30 m)/(t_fine - t_punta)"
+    ws["B20"] = "Pendenza Ritorno: v_ritorno = (0,00 m - 1,80 m)/(t_fine - t_punta)"
     ws["B20"].font = font_footer
     ws["E20"] = '=IF(AND(ISNUMBER(C15), ISNUMBER(C11), C15>C11), ROUND((D15-D11)/(C15-C11), 2), "")'
     ws["E20"].font = Font(name="Segoe UI", size=9, bold=True, color="B91C1C")
@@ -379,8 +379,8 @@ def create_scheda_velocita(output_path):
         ("Andata", None, '=IF(AND(ISNUMBER(C8), ISNUMBER(C7), C8>C7), ROUND(0.50/(C8-C7), 2), "")', "Traguardo 1 (0,50 m)", fill_andata_bg),
         ("Andata", None, '=IF(AND(ISNUMBER(C9), ISNUMBER(C8), C9>C8), ROUND(0.50/(C9-C8), 2), "")', "Traguardo 2 (1,00 m)", fill_andata_bg),
         ("Andata", None, '=IF(AND(ISNUMBER(C10), ISNUMBER(C9), C10>C9), ROUND(0.50/(C10-C9), 2), "")', "Traguardo 3 (1,50 m)", fill_andata_bg),
-        ("Punta",   None, '=IF(AND(ISNUMBER(C11), ISNUMBER(C10), C11>C10), ROUND(0.80/(C11-C10), 2), "")', "Inversione (2,30 m)", fill_inv_bg),
-        ("Ritorno", None, '=IF(AND(ISNUMBER(C12), ISNUMBER(C11), C12>C11), ROUND(-0.80/(C12-C11), 2), "")', "Traguardo 3 rit. (1,50 m)", fill_rit_bg),
+        ("Punta",   None, '=IF(AND(ISNUMBER(C11), ISNUMBER(C10), C11>C10), ROUND(0.30/(C11-C10), 2), "")', "Inversione (1,80 m)", fill_inv_bg),
+        ("Ritorno", None, '=IF(AND(ISNUMBER(C12), ISNUMBER(C11), C12>C11), ROUND(-0.30/(C12-C11), 2), "")', "Traguardo 3 rit. (1,50 m)", fill_rit_bg),
         ("Ritorno", None, '=IF(AND(ISNUMBER(C13), ISNUMBER(C12), C13>C12), ROUND(-0.50/(C13-C12), 2), "")', "Traguardo 2 rit. (1,00 m)", fill_rit_bg),
         ("Ritorno", None, '=IF(AND(ISNUMBER(C14), ISNUMBER(C13), C14>C13), ROUND(-0.50/(C14-C13), 2), "")', "Traguardo 1 rit. (0,50 m)", fill_rit_bg),
         ("Ritorno", None, '=IF(AND(ISNUMBER(C15), ISNUMBER(C14), C15>C14), ROUND(-0.50/(C15-C14), 2), "")', "Rientro alla partenza (0,00 m)", fill_rit_bg),
@@ -469,17 +469,17 @@ def create_scheda_velocita(output_path):
 
     # Overall Average Velocities
     ws.merge_cells("B19:D19")
-    ws["B19"] = "Velocità Media Andata (tratto 0 m -> 2,30 m):"
+    ws["B19"] = "Velocità Media Andata (tratto 0 m -> 1,80 m):"
     ws["B19"].font = font_footer
-    ws["E19"] = '=IF(AND(ISNUMBER(C11), C11>0), ROUND(2.30/C11, 2), "")'
+    ws["E19"] = '=IF(AND(ISNUMBER(C11), C11>0), ROUND(1.80/C11, 2), "")'
     ws["E19"].font = Font(name="Segoe UI", size=9, bold=True, color="16A34A")
     ws["E19"].alignment = Alignment(horizontal="center", vertical="center")
     ws["E19"].number_format = "+0.00;-0.00;0.00"
 
     ws.merge_cells("B20:D20")
-    ws["B20"] = "Velocità Media Ritorno (tratto 2,30 m -> 0 m):"
+    ws["B20"] = "Velocità Media Ritorno (tratto 1,80 m -> 0 m):"
     ws["B20"].font = font_footer
-    ws["E20"] = '=IF(AND(ISNUMBER(C15), ISNUMBER(C11), C15>C11), ROUND(-2.30/(C15-C11), 2), "")'
+    ws["E20"] = '=IF(AND(ISNUMBER(C15), ISNUMBER(C11), C15>C11), ROUND(-1.80/(C15-C11), 2), "")'
     ws["E20"].font = Font(name="Segoe UI", size=9, bold=True, color="DC2626")
     ws["E20"].alignment = Alignment(horizontal="center", vertical="center")
     ws["E20"].number_format = "+0.00;-0.00;0.00"
@@ -541,6 +541,7 @@ def create_scheda_velocita(output_path):
 if __name__ == "__main__":
     targets = [
         ("public/fisica/archimede/seconda-elettronica/scheda_laboratorio_A4.xlsx", "public/fisica/archimede/seconda-elettronica/scheda_velocita_A4.xlsx"),
+        ("dist/fisica/archimede/seconda-elettronica/scheda_laboratorio_A4.xlsx", "dist/fisica/archimede/seconda-elettronica/scheda_velocita_A4.xlsx"),
         ("C:/Users/thoma/Desktop/LAB FISICA/ESPERIMENTO SECONDA ELETTRONICA 1/scheda_laboratorio_A4.xlsx", "C:/Users/thoma/Desktop/LAB FISICA/ESPERIMENTO SECONDA ELETTRONICA 1/scheda_velocita_A4.xlsx"),
     ]
     for p_lab, p_vel in targets:
