@@ -14,12 +14,11 @@
 
 <style>
 /* ═══════════════════════════════════════════════════════════
-   PROGETTATO SPECIFICAMENTE PER PROIEZIONE SU SCHERMO LIM
-   - Alto contrasto per aule illuminate
-   - Zero scroll verticale su schermi 16:9 / 1080p
-   - Bottoni touch extra-large e ben spaziati
-   - Animazioni vettoriali passo-passo ad altissima leggibilità
-   - MAI menzionata la sottrazione tra vettori
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Barre sopra e sotto nascoste in modalità Schermo Intero
+   - Zoom dinamico e manuale (Zoom In/Out, Pan, Auto-Fit)
+   - Testi e formule extra-large ad altissima visibilità
+   - ZERO menzioni di sottrazione vettoriale
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -42,17 +41,15 @@
   --vec-comp: #6366f1;     /* Viola indaco (Componenti proiettate) */
   --accent-gold: #d97706;  /* Oro / Ambra per evidenziazioni */
 
-  --grid-line: #e2e8f0;
-  --grid-axis: #334155;
-  --grid-text: #475569;
-
   --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
   --font-title: 'Orbitron', sans-serif;
   --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
 }
 
-/* Modalità scura facoltativa (3Blue1Brown style per stanze buie) */
+/* Modalità Scura (3Blue1Brown) */
 body.dark-mode {
   --bg-page: #0b0f19;
   --bg-panel: #131b2e;
@@ -62,13 +59,18 @@ body.dark-mode {
   --text-muted: #94a3b8;
   --border-ui: #334155;
   --border-light: #1e293b;
-  --grid-line: rgba(148, 163, 184, 0.12);
-  --grid-axis: rgba(226, 232, 240, 0.85);
-  --grid-text: #94a3b8;
   --vec-a: #38bdf8;
   --vec-b: #fb923c;
   --vec-sum: #4ade80;
   --vec-comp: #818cf8;
+}
+
+/* Modalità Testo Ingrandito per LIM */
+body.font-large {
+  --base-font-size: 18px;
+}
+body.font-extra-large {
+  --base-font-size: 20px;
 }
 
 * {
@@ -85,21 +87,20 @@ html, body {
   background-color: var(--bg-page);
   color: var(--text-primary);
   font-family: var(--font-main);
+  font-size: var(--base-font-size);
 }
-
-/* ═══════════════════════════════════════════
-   LAYOUT STRUTTURATO PER LIM (16:9 VIEWPORT)
-   Header (54px) | Main Stage (calc) | Nav Bar (70px)
-   ═══════════════════════════════════════════ */
 
 .lim-app {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  position: relative;
 }
 
-/* ── HEADER SUPERIORE ── */
+/* ═══════════════════════════════════════════
+   HEADER SUPERIORE (VISIBILE SOLO IN NORMALE)
+   ═══════════════════════════════════════════ */
 .lim-header {
   height: 52px;
   min-height: 52px;
@@ -126,9 +127,9 @@ html, body {
   color: #15803d;
   border: 1.5px solid #86efac;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 5px 10px;
+  padding: 5px 11px;
   border-radius: 6px;
   text-decoration: none;
   transition: all 0.15s;
@@ -153,7 +154,7 @@ html, body {
 }
 
 .lim-header-title {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: var(--text-primary);
   display: flex;
@@ -163,7 +164,7 @@ html, body {
 .lim-pill-tag {
   background: #e0f2fe;
   color: #0369a1;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 999px;
@@ -182,21 +183,32 @@ html, body {
   color: var(--text-secondary);
   border: 1.5px solid var(--border-ui);
   border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
+  padding: 6px 12px;
+  font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   transition: all 0.15s;
 }
 .btn-lim-tool:hover {
   background: var(--border-light);
   color: var(--text-primary);
 }
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
 
-/* ── STAGE PRINCIPALE A DUE COLONNE (LIM SPLIT) ── */
+/* ═══════════════════════════════════════════
+   STAGE PRINCIPALE
+   ═══════════════════════════════════════════ */
 .lim-stage {
   flex: 1;
   display: grid;
@@ -205,6 +217,7 @@ html, body {
   padding: 12px 14px;
   overflow: hidden;
   min-height: 0;
+  transition: all 0.2s ease;
 }
 
 /* COLONNA SINISTRA: CANVAS INTERATTIVO */
@@ -220,8 +233,8 @@ html, body {
 }
 
 .canvas-toolbar {
-  height: 40px;
-  min-height: 40px;
+  height: 42px;
+  min-height: 42px;
   background: var(--bg-panel);
   border-bottom: 1.5px solid var(--border-light);
   display: flex;
@@ -229,7 +242,7 @@ html, body {
   justify-content: space-between;
   padding: 0 12px;
   font-family: var(--font-tech);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
 }
 
@@ -237,18 +250,20 @@ html, body {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
 }
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-weight: 700;
+  font-family: var(--font-mono);
 }
 .legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
+  display: inline-block;
 }
 
 .canvas-view-wrap {
@@ -258,6 +273,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active {
+  cursor: grabbing;
 }
 
 #vecCanvas {
@@ -269,7 +288,49 @@ html, body {
   display: block;
 }
 
-/* Overlay animazione / indicatore sulla lavagna */
+/* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
+.canvas-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.btn-zoom {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 2px solid var(--border-ui);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s;
+  user-select: none;
+}
+.btn-zoom:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: scale(1.08);
+}
+.btn-zoom.fit-btn {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  width: auto;
+  padding: 0 10px;
+  height: 34px;
+}
+
+/* Badge dinamico in alto a sinistra del canvas */
 .canvas-lim-overlay {
   position: absolute;
   top: 10px;
@@ -283,13 +344,13 @@ html, body {
 .canvas-live-badge {
   background: rgba(15, 23, 42, 0.85);
   color: #ffffff;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   font-weight: 700;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -307,7 +368,7 @@ html, body {
 }
 
 .step-card-header {
-  padding: 12px 16px;
+  padding: 12px 18px;
   border-bottom: 2px solid var(--border-light);
   background: var(--bg-panel);
 }
@@ -316,32 +377,32 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .step-num-badge {
   font-family: var(--font-title);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: var(--vec-a);
   background: var(--vec-a-bg);
-  padding: 3px 10px;
+  padding: 3px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
   letter-spacing: 1px;
 }
 
 .step-lim-badge {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: #15803d;
   background: #dcfce7;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 4px;
 }
 
 .step-main-title {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1.25;
@@ -349,19 +410,19 @@ html, body {
 
 .step-card-body {
   flex: 1;
-  padding: 14px 16px;
+  padding: 16px 18px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 /* Box pedagogici con alta leggibilità */
 .pedagogy-box {
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.9rem;
-  line-height: 1.45;
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-size: 0.98rem;
+  line-height: 1.52;
   border-left: 5px solid transparent;
 }
 
@@ -393,8 +454,8 @@ html, body {
 
 .box-title {
   font-weight: 800;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
+  font-size: 0.92rem;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -409,20 +470,21 @@ html, body {
 .lim-math-card {
   background: #ffffff;
   border: 2px solid var(--border-ui);
-  border-radius: 8px;
-  padding: 10px 14px;
+  border-radius: 9px;
+  padding: 12px 16px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 body.dark-mode .lim-math-card {
   background: #0f172a;
 }
 .lim-math-card .math-line {
-  font-size: 1.25rem;
-  margin: 4px 0;
+  font-size: 1.45rem;
+  margin: 6px 0;
+  font-weight: 700;
 }
 .lim-math-card .math-comment {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
   margin-top: 4px;
@@ -433,13 +495,13 @@ body.dark-mode .lim-math-card {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 0.88rem;
+  gap: 7px;
+  font-size: 0.95rem;
 }
 .lim-bullet-list li {
   position: relative;
-  padding-left: 20px;
-  line-height: 1.4;
+  padding-left: 22px;
+  line-height: 1.45;
 }
 .lim-bullet-list li::before {
   content: "▸";
@@ -448,10 +510,12 @@ body.dark-mode .lim-math-card {
   top: 0;
   color: var(--vec-a);
   font-weight: 900;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
-/* ── BARRA DI NAVIGAZIONE INFERIORE PER LIM ── */
+/* ═══════════════════════════════════════════
+   BARRA DI NAVIGAZIONE INFERIORE (MODALITÀ NORMALE)
+   ═══════════════════════════════════════════ */
 .lim-nav-bar {
   height: 64px;
   min-height: 64px;
@@ -467,9 +531,9 @@ body.dark-mode .lim-math-card {
 
 .nav-btn-big {
   font-family: var(--font-main);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  padding: 10px 18px;
+  padding: 11px 20px;
   border-radius: 8px;
   cursor: pointer;
   display: inline-flex;
@@ -478,6 +542,7 @@ body.dark-mode .lim-math-card {
   border: 2px solid transparent;
   transition: all 0.15s;
   user-select: none;
+  white-space: nowrap;
 }
 .nav-btn-big:disabled {
   opacity: 0.35;
@@ -508,35 +573,38 @@ body.dark-mode .lim-math-card {
   background: #f8fafc;
   color: var(--text-secondary);
   border: 2px solid var(--border-ui);
-  padding: 10px 14px;
+  padding: 11px 16px;
 }
 .btn-replay:hover {
   background: #f1f5f9;
   color: var(--text-primary);
 }
 
-/* Indicatore di step centrale per LIM */
+/* Indicatore di step centrale */
 .steps-selector-bar {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .step-circle-pill {
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 18px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
   border: 2px solid var(--border-ui);
   background: var(--bg-page);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 .step-circle-pill:hover {
   border-color: var(--vec-a);
@@ -556,13 +624,157 @@ body.dark-mode .lim-math-card {
 }
 
 /* ═══════════════════════════════════════════
+   MODALITÀ SCHERMO INTERO LIM (SENZA BARRE)
+   ═══════════════════════════════════════════ */
+
+/* Quando lo schermo intero è attivo, nascondi la barra sopra e quella sotto! */
+:fullscreen .lim-header,
+body.is-fullscreen .lim-header,
+:-webkit-full-screen .lim-header {
+  display: none !important;
+}
+
+:fullscreen .lim-nav-bar,
+body.is-fullscreen .lim-nav-bar,
+:-webkit-full-screen .lim-nav-bar {
+  display: none !important;
+}
+
+:fullscreen .lim-stage,
+body.is-fullscreen .lim-stage,
+:-webkit-full-screen .lim-stage {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  padding: 10px 14px 74px 14px !important; /* Spazio per la barra comandi fluttuante */
+}
+
+/* Aumento automatico dimensioni in Schermo Intero */
+:fullscreen .step-main-title,
+body.is-fullscreen .step-main-title,
+:-webkit-full-screen .step-main-title {
+  font-size: 1.45rem !important;
+}
+
+:fullscreen .pedagogy-box,
+body.is-fullscreen .pedagogy-box,
+:-webkit-full-screen .pedagogy-box {
+  font-size: 1.08rem !important;
+  line-height: 1.58 !important;
+  padding: 14px 18px !important;
+}
+
+:fullscreen .lim-math-card .math-line,
+body.is-fullscreen .lim-math-card .math-line,
+:-webkit-full-screen .lim-math-card .math-line {
+  font-size: 1.75rem !important;
+}
+
+/* BARRA FLUTTUANTE SOTTO IN SCHERMO INTERO */
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  gap: 8px;
+}
+
+:fullscreen .lim-fullscreen-hud,
+body.is-fullscreen .lim-fullscreen-hud,
+:-webkit-full-screen .lim-fullscreen-hud {
+  display: flex !important;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.hud-btn.primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+.hud-btn.primary:hover {
+  background: #0369a1;
+}
+.hud-btn.exit {
+  background: #dc2626;
+  border-color: #f87171;
+}
+.hud-btn.exit:hover {
+  background: #b91c1c;
+}
+
+.hud-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hud-pill {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hud-pill:hover {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.25);
+}
+.hud-pill.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+.hud-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+/* ═══════════════════════════════════════════
    RESPONSIVITÀ PER SCHERMI PIÙ PICCOLI O TABLET
    ═══════════════════════════════════════════ */
 @media (max-width: 992px) {
   html, body { overflow-y: auto; height: auto; }
   .lim-app { height: auto; min-height: 100vh; }
   .lim-stage { grid-template-columns: 1fr; height: auto; }
-  .lim-canvas-card { height: 420px; }
+  .lim-canvas-card { height: 440px; }
   .step-card-body { height: auto; max-height: none; }
   .step-circle-pill span.pill-label { display: none; }
   .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
@@ -573,8 +785,8 @@ body.dark-mode .lim-math-card {
 
 <div class="lim-app" id="limApp">
 
-  <!-- HEADER SUPERIORE -->
-  <header class="lim-header">
+  <!-- HEADER SUPERIORE (visibile solo a schermo normale) -->
+  <header class="lim-header" id="limHeader">
     <div class="lim-header-left">
       <a href="/#giordano-bruno-prime" class="btn-back-course" title="Torna alla pagina del corso">
         ◀ 1° CLASSI
@@ -590,10 +802,13 @@ body.dark-mode .lim-math-card {
     </div>
 
     <div class="lim-header-tools">
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci il testo delle spiegazioni">
+        <span id="textScaleIcon">A+</span> Ingrandisci Testo
+      </button>
       <button class="btn-lim-tool" onclick="toggleTheme()" title="Alterna modalità Chiara/Scura">
         <span id="themeIcon">🌙</span> <span id="themeLabel">Modalità Scura</span>
       </button>
-      <button class="btn-lim-tool" onclick="toggleFullscreen()" title="Proietta a Schermo Intero sulla LIM">
+      <button class="btn-lim-tool primary" onclick="toggleFullscreen()" title="Proietta a Schermo Intero sulla LIM (senza barre)">
         ⛶ Schermo Intero LIM
       </button>
     </div>
@@ -611,19 +826,27 @@ body.dark-mode .lim-math-card {
         </div>
         <div class="canvas-legend">
           <div class="legend-item" style="color:var(--vec-a)">
-            <span class="legend-dot" style="background:var(--vec-a)"></span> Vettore \(\vec{s}_1\)
+            <span class="legend-dot" style="background:var(--vec-a)"></span> Vettore s₁ (4, 3) m
           </div>
           <div class="legend-item" style="color:var(--vec-b)" id="legVecB" style="opacity:0.3">
-            <span class="legend-dot" style="background:var(--vec-b)"></span> Vettore \(\vec{s}_2\)
+            <span class="legend-dot" style="background:var(--vec-b)"></span> Vettore s₂ (2, 5) m
           </div>
           <div class="legend-item" style="color:var(--vec-sum)" id="legVecSum" style="opacity:0.3">
-            <span class="legend-dot" style="background:var(--vec-sum)"></span> Somma \(\vec{s}_{\text{tot}}\)
+            <span class="legend-dot" style="background:var(--vec-sum)"></span> Somma s_tot (6, 8) m
           </div>
         </div>
       </div>
 
       <div class="canvas-view-wrap" id="canvasWrap">
         <canvas id="vecCanvas"></canvas>
+
+        <!-- CONTROLLI ZOOM FLUTTUANTI SUL CANVAS -->
+        <div class="canvas-zoom-controls">
+          <button class="btn-zoom" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom (rotella su)">+</button>
+          <button class="btn-zoom" onclick="zoomCanvas(0.8)" title="Riduci Zoom (rotella giù)">−</button>
+          <button class="btn-zoom fit-btn" onclick="resetCanvasZoom()" title="Adatta zoom automaticamente al passaggio attuale">🎯 Adatta</button>
+        </div>
+
         <div class="canvas-lim-overlay">
           <div class="canvas-live-badge" id="canvasBadge">
             <span>📍</span> <span id="canvasBadgeText">Passo 1: Il Sistema di Riferimento</span>
@@ -649,8 +872,8 @@ body.dark-mode .lim-math-card {
 
   </main>
 
-  <!-- BARRA DI NAVIGAZIONE INFERIORE PER LIM -->
-  <footer class="lim-nav-bar">
+  <!-- BARRA DI NAVIGAZIONE INFERIORE (visibile solo a schermo normale) -->
+  <footer class="lim-nav-bar" id="limNavBar">
     <button class="nav-btn-big btn-prev" id="btnPrev" onclick="prevStep()" disabled>
       ◄ Precedente
     </button>
@@ -669,13 +892,33 @@ body.dark-mode .lim-math-card {
     </div>
   </footer>
 
+  <!-- BARRA FLUTTUANTE HUD PER SCHERMO INTERO LIM (sostituisce le barre sopra e sotto) -->
+  <div class="lim-fullscreen-hud" id="limHud">
+    <button class="hud-btn" onclick="prevStep()" id="hudBtnPrev">◄ Prec</button>
+    <div class="hud-pills" id="hudPills"></div>
+    <button class="hud-btn" onclick="replayCurrentStepAnimation()" title="Riavvia l'animazione">🔁</button>
+    <button class="hud-btn primary" onclick="nextStep()" id="hudBtnNext">Succ ►</button>
+
+    <div class="hud-divider"></div>
+
+    <button class="hud-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas">🔍+</button>
+    <button class="hud-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas">🔍−</button>
+    <button class="hud-btn" onclick="resetCanvasZoom()" title="Adatta visuale al passo">🎯 Adatta</button>
+
+    <div class="hud-divider"></div>
+
+    <button class="hud-btn" onclick="toggleTextSize()" title="Ingrandisci testo delle spiegazioni">A+</button>
+    <button class="hud-btn" onclick="toggleTheme()" title="Cambia tema chiaro/scuro">🌓</button>
+    <button class="hud-btn exit" onclick="toggleFullscreen()" title="Esci dalla modalità Schermo Intero">✖ Esci LIM</button>
+  </div>
+
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════════════
 // DATI RIGOROSI DELL'ESERCIZIO (TERNA PITAGORICA PULITA)
 // Nessun decimale casuale: 3-4-5 e 6-8-10.
-// Zero menzioni di sottrazione vettoriale!
+// ZERO menzioni di sottrazione vettoriale!
 // ═══════════════════════════════════════════════════════════
 
 const PROBLEM = {
@@ -692,12 +935,18 @@ let animDuration = 900; // ms
 let animRunning = false;
 let animId = null;
 
-// Coordinate Grid Config (-1 to +10 on X, -1 to +10 on Y)
-const GRID_CONFIG = {
-  minX: -1,
-  maxX: 9,
-  minY: -1,
-  maxY: 10
+// ═══════════════════════════════════════════════════════════
+// AUTO-FRAMING OTTIMIZZATO PER OGNI SINGOLO PASSO
+// Quando si disegna solo s1 (passi 2 e 3), si zooma su [0..5] x [0..4]
+// così il vettore è ENORME e occupa tutto il canvas!
+// ═══════════════════════════════════════════════════════════
+const STEP_FRAMES = {
+  1: { minX: -1.0, maxX: 6.5, minY: -1.0, maxY: 5.5 },  // Centrato su O(0,0) con scala metri
+  2: { minX: -0.8, maxX: 5.2, minY: -0.8, maxY: 4.2 },  // ZOOM MASSIMO su s1 (4, 3) -> 2.5x PIÙ GRANDE!
+  3: { minX: -0.8, maxX: 5.2, minY: -0.8, maxY: 4.2 },  // ZOOM MASSIMO su triangolo Pitagora 4-3-5
+  4: { minX: -1.0, maxX: 7.8, minY: -1.0, maxY: 9.6 },  // Inquadratura completa per s1 + s2 fino a (6, 8)
+  5: { minX: -1.0, maxX: 7.8, minY: -1.0, maxY: 9.6 },  // Inquadratura completa per risultante s_tot
+  6: { minX: -1.0, maxX: 7.8, minY: -1.0, maxY: 9.6 }   // Inquadratura triangolo complessivo 6-8-10
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -768,8 +1017,8 @@ const STEPS_DATA = [
       </div>
 
       <div class="pedagogy-box gold">
-        <div class="box-title">👀 Guarda la LIM a sinistra:</div>
-        Osserva le linee tratteggiate viola: formano con il vettore blu un perfetto <strong>triangolo rettangolo</strong> avente i cateti lunghi 4 e 3!
+        <div class="box-title">👀 Guarda la LIM a sinistra (Zoom Ingrandito):</div>
+        Il canvas si è zoomato automaticamente per mostrarti il vettore in grande! Osserva il perfetto triangolo rettangolo con cateti 4 e 3!
       </div>
     `
   },
@@ -859,7 +1108,7 @@ const STEPS_DATA = [
       </div>
 
       <div class="pedagogy-box gold">
-        <div class="box-title">👀 Osserva gli assi sulla LIM:</div>
+        <div class="box-title">👀 Guarda le proiezioni sugli assi:</div>
         Sull'asse \\(X\\) vedi la barra continua da 0 a 6; sull'asse \\(Y\\) vedi la barra continua da 0 a 8.
       </div>
     `
@@ -897,7 +1146,7 @@ const STEPS_DATA = [
 ];
 
 // ═══════════════════════════════════════════════════════════
-// MOTORE GRAFICO HTML5 CANVAS PER LIM
+// MOTORE GRAFICO HTML5 CANVAS PER LIM CON ZOOM & PAN
 // ═══════════════════════════════════════════════════════════
 
 class VectorExerciseCanvas {
@@ -906,7 +1155,17 @@ class VectorExerciseCanvas {
     this.ctx = this.canvas.getContext('2d');
     this.wrap = document.getElementById('canvasWrap');
     this.dpr = window.devicePixelRatio || 1;
+
+    // Zoom e Pan interattivi
+    this.userZoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.isDragging = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
     this.initResize();
+    this.initInteractions();
   }
 
   initResize() {
@@ -915,6 +1174,51 @@ class VectorExerciseCanvas {
       this.resize();
       this.draw(currentStep, animProgress);
     });
+  }
+
+  initInteractions() {
+    // Trascinamento Pan con mouse / touch sulla LIM
+    this.wrap.addEventListener('pointerdown', (e) => {
+      this.isDragging = true;
+      this.dragStartX = e.clientX - this.panX;
+      this.dragStartY = e.clientY - this.panY;
+      this.wrap.setPointerCapture(e.pointerId);
+    });
+
+    this.wrap.addEventListener('pointermove', (e) => {
+      if (!this.isDragging) return;
+      this.panX = e.clientX - this.dragStartX;
+      this.panY = e.clientY - this.dragStartY;
+      this.draw(currentStep, animProgress);
+    });
+
+    const stopDrag = (e) => {
+      if (this.isDragging) {
+        this.isDragging = false;
+        try { this.wrap.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+    };
+    this.wrap.addEventListener('pointerup', stopDrag);
+    this.wrap.addEventListener('pointercancel', stopDrag);
+
+    // Zoom con rotella del mouse
+    this.wrap.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+      this.zoom(zoomFactor);
+    }, { passive: false });
+  }
+
+  zoom(factor) {
+    this.userZoom = Math.max(0.5, Math.min(4.0, this.userZoom * factor));
+    this.draw(currentStep, animProgress);
+  }
+
+  resetZoom() {
+    this.userZoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.draw(currentStep, animProgress);
   }
 
   resize() {
@@ -931,25 +1235,28 @@ class VectorExerciseCanvas {
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.w = w;
     this.h = h;
+  }
 
-    // Calcolo scala griglia per centrare perfettamente (X: -1..9, Y: -1..10)
-    const margin = 32;
-    const availW = w - margin * 2;
-    const availH = h - margin * 2;
+  // Calcolo trasformazione coordinate in base al frame del passo corrente + zoom/pan
+  updateTransform(step) {
+    const frame = STEP_FRAMES[step] || STEP_FRAMES[1];
+    const margin = 36;
+    const availW = this.w - margin * 2;
+    const availH = this.h - margin * 2;
 
-    const rangeX = GRID_CONFIG.maxX - GRID_CONFIG.minX; // 10
-    const rangeY = GRID_CONFIG.maxY - GRID_CONFIG.minY; // 11
+    const rangeX = frame.maxX - frame.minX;
+    const rangeY = frame.maxY - frame.minY;
 
-    const unitW = availW / rangeX;
-    const unitH = availH / rangeY;
-    this.unit = Math.min(unitW, unitH);
+    const baseUnit = Math.min(availW / rangeX, availH / rangeY);
+    this.unit = baseUnit * this.userZoom;
 
-    // Coordinate origine O(0,0) in pixel
-    const totalGridW = rangeX * this.unit;
-    const totalGridH = rangeY * this.unit;
+    // Coordinate pixel dell'origine cartesiana O(0,0)
+    const baseGridW = rangeX * this.unit;
+    const baseGridH = rangeY * this.unit;
 
-    this.originX = (w - totalGridW) / 2 + Math.abs(GRID_CONFIG.minX) * this.unit;
-    this.originY = (h - totalGridH) / 2 + GRID_CONFIG.maxY * this.unit;
+    this.originX = (this.w - baseGridW) / 2 + Math.abs(frame.minX) * this.unit + this.panX;
+    this.originY = (this.h - baseGridH) / 2 + frame.maxY * this.unit + this.panY;
+    this.currentFrame = frame;
   }
 
   toScreen(x, y) {
@@ -967,120 +1274,130 @@ class VectorExerciseCanvas {
     const ctx = this.ctx;
     const isDark = document.body.classList.contains('dark-mode');
 
-    const lineColor = isDark ? 'rgba(148, 163, 184, 0.12)' : '#e2e8f0';
-    const axisColor = isDark ? 'rgba(226, 232, 240, 0.9)' : '#1e293b';
+    const lineColor = isDark ? 'rgba(148, 163, 184, 0.14)' : '#e2e8f0';
+    const axisColor = isDark ? 'rgba(226, 232, 240, 0.95)' : '#1e293b';
     const labelColor = isDark ? '#94a3b8' : '#64748b';
 
-    // Linee griglia
+    // Disegna griglia estesa su un raggio ampio
+    const startX = -3;
+    const endX = 12;
+    const startY = -3;
+    const endY = 13;
+
     ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.2;
 
-    for (let x = GRID_CONFIG.minX; x <= GRID_CONFIG.maxX; x++) {
-      const p1 = this.toScreen(x, GRID_CONFIG.minY);
-      const p2 = this.toScreen(x, GRID_CONFIG.maxY);
+    for (let x = startX; x <= endX; x++) {
+      const p1 = this.toScreen(x, startY);
+      const p2 = this.toScreen(x, endY);
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
     }
 
-    for (let y = GRID_CONFIG.minY; y <= GRID_CONFIG.maxY; y++) {
-      const p1 = this.toScreen(GRID_CONFIG.minX, y);
-      const p2 = this.toScreen(GRID_CONFIG.maxX, y);
+    for (let y = startY; y <= endY; y++) {
+      const p1 = this.toScreen(startX, y);
+      const p2 = this.toScreen(endX, y);
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
     }
 
-    // Assi Cartesiani X e Y
+    // Assi Cartesiani X e Y ben marcati per LIM
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
     ctx.strokeStyle = axisColor;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = isFs ? 3.5 : 2.8;
 
     // Asse X
-    const xStart = this.toScreen(GRID_CONFIG.minX, 0);
-    const xEnd = this.toScreen(GRID_CONFIG.maxX, 0);
+    const xStart = this.toScreen(startX, 0);
+    const xEnd = this.toScreen(endX, 0);
     ctx.beginPath();
     ctx.moveTo(xStart.x, xStart.y);
     ctx.lineTo(xEnd.x, xEnd.y);
     ctx.stroke();
-    this.drawArrowHead(xEnd.x - 12, xEnd.y, xEnd.x, xEnd.y, axisColor, 10);
+    this.drawArrowHead(xEnd.x - 14, xEnd.y, xEnd.x, xEnd.y, axisColor, 12);
 
     // Asse Y
-    const yStart = this.toScreen(0, GRID_CONFIG.minY);
-    const yEnd = this.toScreen(0, GRID_CONFIG.maxY);
+    const yStart = this.toScreen(0, startY);
+    const yEnd = this.toScreen(0, endY);
     ctx.beginPath();
     ctx.moveTo(yStart.x, yStart.y);
     ctx.lineTo(yEnd.x, yEnd.y);
     ctx.stroke();
-    this.drawArrowHead(yEnd.x, yEnd.y + 12, yEnd.x, yEnd.y, axisColor, 10);
+    this.drawArrowHead(yEnd.x, yEnd.y + 14, yEnd.x, yEnd.y, axisColor, 12);
 
-    // Etichette assi
-    ctx.font = 'bold 13px "Share Tech Mono", monospace';
+    // Etichette assi grandi e leggibili
+    const axisFontSize = isFs ? 16 : 13;
+    ctx.font = `bold ${axisFontSize}px "Share Tech Mono", monospace`;
     ctx.fillStyle = axisColor;
-    ctx.fillText('X (metri)', xEnd.x - 48, xEnd.y + 20);
-    ctx.fillText('Y (metri)', yEnd.x + 10, yEnd.y + 12);
+    ctx.fillText('X (metri)', xEnd.x - 60, xEnd.y + (isFs ? 26 : 22));
+    ctx.fillText('Y (metri)', yEnd.x + (isFs ? 14 : 10), yEnd.y + 14);
 
-    // Numerazione quadretti
-    ctx.font = '11px "Share Tech Mono", monospace';
+    // Numerazione quadretti grandi
+    const tickFontSize = isFs ? 14 : 11;
+    ctx.font = `bold ${tickFontSize}px "Share Tech Mono", monospace`;
     ctx.fillStyle = labelColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
-    for (let x = 1; x <= GRID_CONFIG.maxX - 1; x++) {
+    for (let x = 1; x <= endX - 1; x++) {
       const p = this.toScreen(x, 0);
-      ctx.fillText(x, p.x, p.y + 5);
-      // tacca
+      ctx.fillText(x, p.x, p.y + (isFs ? 6 : 5));
       ctx.beginPath();
-      ctx.moveTo(p.x, p.y - 3);
-      ctx.lineTo(p.x, p.y + 3);
+      ctx.moveTo(p.x, p.y - 4);
+      ctx.lineTo(p.x, p.y + 4);
       ctx.strokeStyle = axisColor;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
 
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    for (let y = 1; y <= GRID_CONFIG.maxY - 1; y++) {
+    for (let y = 1; y <= endY - 1; y++) {
       const p = this.toScreen(0, y);
-      ctx.fillText(y, p.x - 6, p.y);
-      // tacca
+      ctx.fillText(y, p.x - (isFs ? 8 : 6), p.y);
       ctx.beginPath();
-      ctx.moveTo(p.x - 3, p.y);
-      ctx.lineTo(p.x + 3, p.y);
+      ctx.moveTo(p.x - 4, p.y);
+      ctx.lineTo(p.x + 4, p.y);
       ctx.strokeStyle = axisColor;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
 
     // Origine O(0,0)
     const o = this.toScreen(0, 0);
-    ctx.font = 'bold 12px "Share Tech Mono", monospace';
+    ctx.font = `bold ${isFs ? 15 : 12}px "Share Tech Mono", monospace`;
     ctx.fillStyle = isDark ? '#ffffff' : '#0f172a';
-    ctx.fillText('O(0,0)', o.x - 8, o.y + 14);
+    ctx.fillText('O(0,0)', o.x - 8, o.y + (isFs ? 18 : 14));
 
     ctx.beginPath();
-    ctx.arc(o.x, o.y, 4, 0, Math.PI * 2);
+    ctx.arc(o.x, o.y, isFs ? 6 : 5, 0, Math.PI * 2);
     ctx.fillStyle = axisColor;
     ctx.fill();
   }
 
-  drawArrow(fromX, fromY, toX, toY, color, width = 3.5, headSize = 13) {
+  drawArrow(fromX, fromY, toX, toY, color, width = 4, headSize = 15) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const finalWidth = isFs ? width * 1.3 : width;
+    const finalHead = isFs ? headSize * 1.3 : headSize;
+
     const ctx = this.ctx;
     const p1 = this.toScreen(fromX, fromY);
     const p2 = this.toScreen(toX, toY);
 
     ctx.strokeStyle = color;
-    ctx.lineWidth = width;
+    ctx.lineWidth = finalWidth;
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.stroke();
 
-    this.drawArrowHead(p1.x, p1.y, p2.x, p2.y, color, headSize);
+    this.drawArrowHead(p1.x, p1.y, p2.x, p2.y, color, finalHead);
   }
 
-  drawArrowHead(fromPxX, fromPxY, toPxX, toPxY, color, size = 12) {
+  drawArrowHead(fromPxX, fromPxY, toPxX, toPxY, color, size = 15) {
     const ctx = this.ctx;
     const angle = Math.atan2(toPxY - fromPxY, toPxX - fromPxX);
 
@@ -1100,24 +1417,27 @@ class VectorExerciseCanvas {
   }
 
   drawBadge(x, y, text, bgColor, textColor = '#ffffff', fontSize = 12) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const finalFont = isFs ? fontSize + 3 : fontSize;
+
     const ctx = this.ctx;
     const p = this.toScreen(x, y);
 
-    ctx.font = `bold ${fontSize}px "IBM Plex Mono", monospace`;
+    ctx.font = `bold ${finalFont}px "IBM Plex Mono", monospace`;
     const tw = ctx.measureText(text).width;
-    const padX = 8;
-    const padY = 5;
+    const padX = isFs ? 10 : 8;
+    const padY = isFs ? 6 : 5;
     const bw = tw + padX * 2;
-    const bh = fontSize + padY * 2;
+    const bh = finalFont + padY * 2;
 
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.18)';
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(0,0,0,0.22)';
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 2;
 
     ctx.fillStyle = bgColor;
     ctx.beginPath();
-    ctx.roundRect(p.x - bw / 2, p.y - bh / 2, bw, bh, 6);
+    ctx.roundRect(p.x - bw / 2, p.y - bh / 2, bw, bh, 7);
     ctx.fill();
 
     ctx.restore();
@@ -1128,15 +1448,16 @@ class VectorExerciseCanvas {
     ctx.fillText(text, p.x, p.y);
   }
 
-  drawDashedLine(fromX, fromY, toX, toY, color = '#64748b', lineWidth = 1.8) {
+  drawDashedLine(fromX, fromY, toX, toY, color = '#64748b', lineWidth = 2) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
     const ctx = this.ctx;
     const p1 = this.toScreen(fromX, fromY);
     const p2 = this.toScreen(toX, toY);
 
     ctx.save();
     ctx.strokeStyle = color;
-    ctx.lineWidth = lineWidth;
-    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = isFs ? lineWidth * 1.3 : lineWidth;
+    ctx.setLineDash([6, 5]);
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
@@ -1144,82 +1465,77 @@ class VectorExerciseCanvas {
     ctx.restore();
   }
 
-  drawComponentBar(xStart, yStart, xEnd, yEnd, label, color) {
-    this.drawDashedLine(xStart, yStart, xEnd, yEnd, color, 2.5);
-    const midX = (xStart + xEnd) / 2;
-    const midY = (yStart + yEnd) / 2;
-    this.drawBadge(midX, midY, label, color, '#ffffff', 11);
-  }
-
   drawPointMarker(x, y, label, color = '#0f172a') {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
     const ctx = this.ctx;
     const p = this.toScreen(x, y);
 
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, isFs ? 7 : 5.5, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.fill();
-    ctx.lineWidth = 2;
+    ctx.lineWidth = isFs ? 2.5 : 2;
     ctx.strokeStyle = '#ffffff';
     ctx.stroke();
 
-    ctx.font = 'bold 13px "IBM Plex Mono", monospace';
+    ctx.font = `bold ${isFs ? 16 : 13}px "IBM Plex Mono", monospace`;
     ctx.fillStyle = color;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(` ${label}(${x}, ${y})`, p.x + 4, p.y - 4);
+    ctx.fillText(` ${label}(${x}, ${y})`, p.x + 5, p.y - 5);
   }
 
-  // ── DISEGNO PRINCIPALE DELLO SCENARIO ──
+  // ── DISEGNO DELLO SCENARIO ──
   draw(step, progress) {
+    this.updateTransform(step);
     this.clear();
     this.drawGrid();
 
     // STEP 1: Solo griglia + punto O(0,0) evidenziato
     if (step === 1) {
       const o = this.toScreen(0, 0);
-      const pulse = 4 + Math.sin(Date.now() / 200) * 2;
+      const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+      const pulse = (isFs ? 7 : 5) + Math.sin(Date.now() / 200) * 2;
       this.ctx.beginPath();
       this.ctx.arc(o.x, o.y, pulse, 0, Math.PI * 2);
       this.ctx.fillStyle = '#0284c7';
       this.ctx.fill();
-      this.drawBadge(0, -0.6, "Stazione Base O(0,0)", "#0284c7", "#ffffff", 11);
+      this.drawBadge(0, -0.6, "Stazione Base O(0,0)", "#0284c7", "#ffffff", 12);
       return;
     }
 
-    // STEP 2: Tracciamento s1 = (4, 3) con componenti
+    // STEP 2: Tracciamento s1 = (4, 3) con componenti (ZOOM INGRANDITO!)
     if (step === 2) {
       const curX = 4 * progress;
       const curY = 3 * progress;
 
       // Componenti tratteggiate
-      this.drawDashedLine(0, 0, curX, 0, 'rgba(2, 132, 199, 0.4)', 2);
-      this.drawDashedLine(curX, 0, curX, curY, 'rgba(2, 132, 199, 0.4)', 2);
+      this.drawDashedLine(0, 0, curX, 0, 'rgba(2, 132, 199, 0.45)', 2.5);
+      this.drawDashedLine(curX, 0, curX, curY, 'rgba(2, 132, 199, 0.45)', 2.5);
 
-      // Componente Dx e Dy se progress > 0.6
       if (progress > 0.4) {
-        this.drawBadge(2, -0.4, "Δx₁ = +4 m", "rgba(2, 132, 199, 0.9)", "#ffffff", 10);
-        this.drawBadge(4.6, 1.5, "Δy₁ = +3 m", "rgba(2, 132, 199, 0.9)", "#ffffff", 10);
+        this.drawBadge(2, -0.4, "Δx₁ = +4 m", "rgba(2, 132, 199, 0.95)", "#ffffff", 11);
+        this.drawBadge(4.65, 1.5, "Δy₁ = +3 m", "rgba(2, 132, 199, 0.95)", "#ffffff", 11);
       }
 
       // Freccia vettore s1
-      this.drawArrow(0, 0, curX, curY, PROBLEM.v1.color, 4, 14);
+      this.drawArrow(0, 0, curX, curY, PROBLEM.v1.color, 4.8, 16);
 
       if (progress >= 0.98) {
         this.drawPointMarker(4, 3, "A", PROBLEM.v1.color);
-        this.drawBadge(1.8, 1.9, "vettore s₁", PROBLEM.v1.color, "#ffffff", 12);
+        this.drawBadge(1.8, 1.9, "vettore s₁ = (4, 3) m", PROBLEM.v1.color, "#ffffff", 13);
       }
       return;
     }
 
-    // STEP 3: Modulo di s1 evidenziato (Pitagora con triangolo)
+    // STEP 3: Modulo di s1 evidenziato (Pitagora con triangolo INGRANDITO!)
     if (step === 3) {
-      // Triangolo rettangolo evidenziato con riempimento leggero
       const o = this.toScreen(0, 0);
       const pCorner = this.toScreen(4, 0);
       const pTip = this.toScreen(4, 3);
 
-      this.ctx.fillStyle = 'rgba(2, 132, 199, 0.12)';
+      // Triangolo rettangolo evidenziato
+      this.ctx.fillStyle = 'rgba(2, 132, 199, 0.14)';
       this.ctx.beginPath();
       this.ctx.moveTo(o.x, o.y);
       this.ctx.lineTo(pCorner.x, pCorner.y);
@@ -1228,25 +1544,25 @@ class VectorExerciseCanvas {
       this.ctx.fill();
 
       // Angolo retto
-      const rSize = 14;
+      const rSize = 16;
       this.ctx.strokeStyle = '#0284c7';
-      this.ctx.lineWidth = 1.5;
+      this.ctx.lineWidth = 2;
       this.ctx.strokeRect(pCorner.x - rSize, pCorner.y - rSize, rSize, rSize);
 
       // Componenti ben marcate
-      this.drawDashedLine(0, 0, 4, 0, '#0284c7', 2.5);
-      this.drawDashedLine(4, 0, 4, 3, '#0284c7', 2.5);
-      this.drawBadge(2, -0.4, "cateto Δx₁ = 4 m", "#0284c7", "#ffffff", 10);
-      this.drawBadge(4.8, 1.5, "cateto Δy₁ = 3 m", "#0284c7", "#ffffff", 10);
+      this.drawDashedLine(0, 0, 4, 0, '#0284c7', 3);
+      this.drawDashedLine(4, 0, 4, 3, '#0284c7', 3);
+      this.drawBadge(2, -0.42, "cateto Δx₁ = 4 m", "#0284c7", "#ffffff", 12);
+      this.drawBadge(4.8, 1.5, "cateto Δy₁ = 3 m", "#0284c7", "#ffffff", 12);
 
       // Vettore s1 completo
-      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 4, 14);
+      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 5, 17);
       this.drawPointMarker(4, 3, "A", PROBLEM.v1.color);
 
       // Badge modulo calcolato
       const bounce = Math.min(1, progress * 1.2);
-      if (bounce > 0.5) {
-        this.drawBadge(1.7, 2.1, "|s₁| = 5 m (Ipotenusa)", "#0369a1", "#ffffff", 12);
+      if (bounce > 0.4) {
+        this.drawBadge(1.7, 2.1, "|s₁| = 5 m (Ipotenusa)", "#0369a1", "#ffffff", 13);
       }
       return;
     }
@@ -1254,37 +1570,36 @@ class VectorExerciseCanvas {
     // STEP 4: s2 = (2, 5) con METODO PUNTA-CODA
     if (step === 4) {
       // Vettore s1 fisso
-      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 3.5, 12);
+      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 4, 13);
       this.drawPointMarker(4, 3, "A (coda di s₂)", PROBLEM.v1.color);
-      this.drawBadge(1.8, 1.9, "s₁ = (4, 3)", PROBLEM.v1.color, "#ffffff", 10);
+      this.drawBadge(1.8, 1.9, "s₁ = (4, 3)", PROBLEM.v1.color, "#ffffff", 11);
 
       // Vettore s2 che si allunga a partire da A(4, 3) verso B(6, 8)
       const curX = 4 + 2 * progress;
       const curY = 3 + 5 * progress;
 
-      // Tratteggio locale per s2 (cateti locali: dx=2, dy=5)
-      this.drawDashedLine(4, 3, curX, 3, 'rgba(234, 88, 12, 0.4)', 2);
-      this.drawDashedLine(curX, 3, curX, curY, 'rgba(234, 88, 12, 0.4)', 2);
+      // Tratteggio locale per s2
+      this.drawDashedLine(4, 3, curX, 3, 'rgba(234, 88, 12, 0.45)', 2.5);
+      this.drawDashedLine(curX, 3, curX, curY, 'rgba(234, 88, 12, 0.45)', 2.5);
 
-      if (progress > 0.5) {
-        this.drawBadge(5, 2.6, "+2 m", "#ea580c", "#ffffff", 10);
-        this.drawBadge(6.6, 5.5, "+5 m", "#ea580c", "#ffffff", 10);
+      if (progress > 0.4) {
+        this.drawBadge(5, 2.55, "+2 m", "#ea580c", "#ffffff", 11);
+        this.drawBadge(6.75, 5.5, "+5 m", "#ea580c", "#ffffff", 11);
       }
 
-      this.drawArrow(4, 3, curX, curY, PROBLEM.v2.color, 4, 14);
+      this.drawArrow(4, 3, curX, curY, PROBLEM.v2.color, 4.5, 15);
 
       if (progress >= 0.98) {
-        this.drawPointMarker(6, 8, "B (traguardo finale)", PROBLEM.v2.color);
-        this.drawBadge(4.6, 6.2, "vettore s₂", PROBLEM.v2.color, "#ffffff", 12);
+        this.drawPointMarker(6, 8, "B (traguardo)", PROBLEM.v2.color);
+        this.drawBadge(4.6, 6.2, "vettore s₂", PROBLEM.v2.color, "#ffffff", 13);
       }
       return;
     }
 
     // STEP 5: Vettore Somma Risultante s_tot da O(0,0) a B(6,8)
     if (step === 5) {
-      // s1 e s2 in trasparenza / solidi
-      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 3, 11);
-      this.drawArrow(4, 3, 6, 8, PROBLEM.v2.color, 3, 11);
+      this.drawArrow(0, 0, 4, 3, PROBLEM.v1.color, 3.5, 12);
+      this.drawArrow(4, 3, 6, 8, PROBLEM.v2.color, 3.5, 12);
       this.drawPointMarker(4, 3, "A", PROBLEM.v1.color);
       this.drawPointMarker(6, 8, "B", PROBLEM.v2.color);
 
@@ -1292,31 +1607,31 @@ class VectorExerciseCanvas {
       const curX = 6 * progress;
       const curY = 8 * progress;
 
-      this.drawArrow(0, 0, curX, curY, PROBLEM.vTot.color, 4.5, 16);
+      this.drawArrow(0, 0, curX, curY, PROBLEM.vTot.color, 5.2, 18);
 
       // Componenti totali proiettate
-      this.drawDashedLine(0, 0, 6, 0, 'rgba(22, 163, 74, 0.45)', 2.5);
-      this.drawDashedLine(6, 0, 6, 8, 'rgba(22, 163, 74, 0.45)', 2.5);
+      this.drawDashedLine(0, 0, 6, 0, 'rgba(22, 163, 74, 0.5)', 3);
+      this.drawDashedLine(6, 0, 6, 8, 'rgba(22, 163, 74, 0.5)', 3);
 
-      if (progress > 0.6) {
-        this.drawBadge(3, -0.45, "X_tot = 4 + 2 = 6 m", "#16a34a", "#ffffff", 11);
-        this.drawBadge(6.9, 4, "Y_tot = 3 + 5 = 8 m", "#16a34a", "#ffffff", 11);
+      if (progress > 0.5) {
+        this.drawBadge(3, -0.48, "X_tot = 4 + 2 = 6 m", "#16a34a", "#ffffff", 12);
+        this.drawBadge(7.1, 4, "Y_tot = 3 + 5 = 8 m", "#16a34a", "#ffffff", 12);
       }
 
       if (progress >= 0.98) {
-        this.drawBadge(2.7, 4.6, "RISULTANTE s_tot = s₁ + s₂", PROBLEM.vTot.color, "#ffffff", 12);
+        this.drawBadge(2.7, 4.6, "RISULTANTE s_tot = s₁ + s₂", PROBLEM.vTot.color, "#ffffff", 13);
       }
       return;
     }
 
     // STEP 6: Modulo finale con Pitagora & Confronto
     if (step === 6) {
-      // Triangolo complessivo illuminato
       const o = this.toScreen(0, 0);
       const pCorner = this.toScreen(6, 0);
       const pTip = this.toScreen(6, 8);
 
-      this.ctx.fillStyle = 'rgba(22, 163, 74, 0.12)';
+      // Triangolo complessivo illuminato
+      this.ctx.fillStyle = 'rgba(22, 163, 74, 0.14)';
       this.ctx.beginPath();
       this.ctx.moveTo(o.x, o.y);
       this.ctx.lineTo(pCorner.x, pCorner.y);
@@ -1325,27 +1640,27 @@ class VectorExerciseCanvas {
       this.ctx.fill();
 
       // Angolo retto grande
-      const rSize = 16;
+      const rSize = 18;
       this.ctx.strokeStyle = '#16a34a';
-      this.ctx.lineWidth = 2;
+      this.ctx.lineWidth = 2.5;
       this.ctx.strokeRect(pCorner.x - rSize, pCorner.y - rSize, rSize, rSize);
 
       // Vettori originali tratteggiati per memoria
-      this.drawArrow(0, 0, 4, 3, 'rgba(2, 132, 199, 0.5)', 2.5, 10);
-      this.drawArrow(4, 3, 6, 8, 'rgba(234, 88, 12, 0.5)', 2.5, 10);
+      this.drawArrow(0, 0, 4, 3, 'rgba(2, 132, 199, 0.5)', 2.5, 11);
+      this.drawArrow(4, 3, 6, 8, 'rgba(234, 88, 12, 0.5)', 2.5, 11);
 
       // Componenti totali marcate
-      this.drawDashedLine(0, 0, 6, 0, '#16a34a', 2.5);
-      this.drawDashedLine(6, 0, 6, 8, '#16a34a', 2.5);
-      this.drawBadge(3, -0.45, "Cateto X_tot = 6 m", "#16a34a", "#ffffff", 11);
-      this.drawBadge(7.1, 4, "Cateto Y_tot = 8 m", "#16a34a", "#ffffff", 11);
+      this.drawDashedLine(0, 0, 6, 0, '#16a34a', 3);
+      this.drawDashedLine(6, 0, 6, 8, '#16a34a', 3);
+      this.drawBadge(3, -0.48, "Cateto X_tot = 6 m", "#16a34a", "#ffffff", 12);
+      this.drawBadge(7.2, 4, "Cateto Y_tot = 8 m", "#16a34a", "#ffffff", 12);
 
       // Vettore risultante definitivo
-      this.drawArrow(0, 0, 6, 8, PROBLEM.vTot.color, 5, 16);
+      this.drawArrow(0, 0, 6, 8, PROBLEM.vTot.color, 5.5, 18);
       this.drawPointMarker(6, 8, "B(6, 8)", PROBLEM.vTot.color);
 
       // Badge modulo finale 10m
-      this.drawBadge(2.7, 4.7, "|s_tot| = 10 m (In linea d'aria)", "#15803d", "#ffffff", 13);
+      this.drawBadge(2.7, 4.7, "|s_tot| = 10 m (In linea d'aria)", "#15803d", "#ffffff", 14);
     }
   }
 }
@@ -1353,7 +1668,7 @@ class VectorExerciseCanvas {
 let vCanvas = null;
 
 // ═══════════════════════════════════════════════════════════
-// GESTIONE ANIMAZIONE FLUIDA (REQUEST ANIMATION FRAME)
+// GESTIONE ANIMAZIONE FLUIDA
 // ═══════════════════════════════════════════════════════════
 
 function startStepAnimation() {
@@ -1365,8 +1680,6 @@ function startStepAnimation() {
   function loop(now) {
     const elapsed = now - animStartTime;
     animProgress = Math.min(1, elapsed / animDuration);
-
-    // Easing quad out
     const eased = 1 - (1 - animProgress) * (1 - animProgress);
 
     vCanvas.draw(currentStep, eased);
@@ -1384,6 +1697,14 @@ function startStepAnimation() {
 
 function replayCurrentStepAnimation() {
   startStepAnimation();
+}
+
+function zoomCanvas(factor) {
+  if (vCanvas) vCanvas.zoom(factor);
+}
+
+function resetCanvasZoom() {
+  if (vCanvas) vCanvas.resetZoom();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1410,7 +1731,6 @@ function renderStep(stepIndex) {
       katex.render("|\\vec{s}_{\\text{tot}}| = 10\\text{ m}", document.getElementById('mathTot3'), { displayMode: true });
     }
   } else {
-    // Fallback pulito se KaTeX non è raggiungibile offline
     const mk1 = document.getElementById('mathK1');
     if (mk1) {
       mk1.innerHTML = '<strong>|s₁| = √(Δx₁² + Δy₁²)</strong>';
@@ -1440,7 +1760,7 @@ function renderStep(stepIndex) {
     }
   }
 
-  // Aggiorna stato bottoni di navigazione
+  // Aggiorna bottoni navigazione standard
   document.getElementById('btnPrev').disabled = (stepIndex === 1);
   const btnNext = document.getElementById('btnNext');
   if (stepIndex === TOTAL_STEPS) {
@@ -1451,6 +1771,14 @@ function renderStep(stepIndex) {
     btnNext.style.background = 'var(--vec-a)';
   }
 
+  // Aggiorna bottoni HUD fullscreen
+  const hudBtnPrev = document.getElementById('hudBtnPrev');
+  if (hudBtnPrev) hudBtnPrev.disabled = (stepIndex === 1);
+  const hudBtnNext = document.getElementById('hudBtnNext');
+  if (hudBtnNext) {
+    hudBtnNext.innerHTML = stepIndex === TOTAL_STEPS ? '✓ Fine' : 'Succ ►';
+  }
+
   // Aggiorna pills
   renderStepsPills();
 
@@ -1458,29 +1786,48 @@ function renderStep(stepIndex) {
   document.getElementById('legVecB').style.opacity = stepIndex >= 4 ? '1' : '0.3';
   document.getElementById('legVecSum').style.opacity = stepIndex >= 5 ? '1' : '0.3';
 
+  // Reimposta zoom e pan per inquadrare automaticamente la nuova geometria
+  if (vCanvas) {
+    vCanvas.userZoom = 1.0;
+    vCanvas.panX = 0;
+    vCanvas.panY = 0;
+  }
+
   // Avvia animazione
   startStepAnimation();
 }
 
 function renderStepsPills() {
   const bar = document.getElementById('stepsBar');
+  const hudPills = document.getElementById('hudPills');
+
   bar.innerHTML = '';
+  hudPills.innerHTML = '';
 
   const pillLabels = [
     '1. Dati',
     '2. Vettore s₁',
     '3. Modulo s₁',
-    '4. Punta-Coda s₂',
-    '5. Risultante',
-    '6. Modulo & Sintesi'
+    '4. Punta-Coda',
+    '5. Somma s_tot',
+    '6. Modulo Totale'
   ];
 
   for (let i = 1; i <= TOTAL_STEPS; i++) {
+    // Pill normale (barra sotto)
     const btn = document.createElement('button');
     btn.className = `step-circle-pill ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'completed' : ''}`;
-    btn.innerHTML = `<span>Passo ${i}</span><span class="pill-label">: ${pillLabels[i-1]}</span>`;
+    btn.innerHTML = `<span>${pillLabels[i-1]}</span>`;
     btn.onclick = () => goToStep(i);
     bar.appendChild(btn);
+
+    // Pill circolare fluttuante (HUD fullscreen)
+    const hudP = document.createElement('button');
+    hudP.className = `hud-pill ${i === currentStep ? 'active' : ''}`;
+    hudP.textContent = i;
+    hudP.title = pillLabels[i-1];
+    hudP.onclick = () => goToStep(i);
+    hudPills.appendChild(hudP);
   }
 }
 
@@ -1505,18 +1852,60 @@ function prevStep() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// STRUMENTI LIM: FULLSCREEN, TEMA SCURO, SCORCIATOIE TASTIERA
+// STRUMENTI LIM: FULLSCREEN SENZA BARRE, ZOOM TESTO, TEMA SCURO
 // ═══════════════════════════════════════════════════════════
 
 function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      console.warn("Fullscreen non consentito:", err);
-    });
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
+  const isFs = !!document.fullscreenElement || !!document.webkitFullscreenElement || document.body.classList.contains('is-fullscreen');
+
+  if (!isFs) {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {
+        document.body.classList.add('is-fullscreen');
+      });
+    } else {
+      document.body.classList.add('is-fullscreen');
     }
+  } else {
+    if (document.exitFullscreen && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      document.exitFullscreen().catch(() => {});
+    }
+    document.body.classList.remove('is-fullscreen');
+  }
+
+  setTimeout(() => {
+    if (vCanvas) {
+      vCanvas.resize();
+      vCanvas.draw(currentStep, 1);
+    }
+  }, 120);
+}
+
+// Sincronizza classe quando l'utente preme ESC o tasto F11 di sistema
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('is-fullscreen', isFs);
+  setTimeout(() => {
+    if (vCanvas) {
+      vCanvas.resize();
+      vCanvas.draw(currentStep, 1);
+    }
+  }, 120);
+});
+
+// Ingrandimento progressivo del testo (Normale -> Large -> Extra Large)
+let textScaleLevel = 0;
+function toggleTextSize() {
+  textScaleLevel = (textScaleLevel + 1) % 3;
+  document.body.classList.remove('font-large', 'font-extra-large');
+  if (textScaleLevel === 1) {
+    document.body.classList.add('font-large');
+    document.getElementById('textScaleIcon').textContent = 'A++';
+  } else if (textScaleLevel === 2) {
+    document.body.classList.add('font-extra-large');
+    document.getElementById('textScaleIcon').textContent = 'A-';
+  } else {
+    document.getElementById('textScaleIcon').textContent = 'A+';
   }
 }
 
@@ -1525,7 +1914,7 @@ function toggleTheme() {
   const isDark = document.body.classList.contains('dark-mode');
   document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
   document.getElementById('themeLabel').textContent = isDark ? 'Modalità Chiara' : 'Modalità Scura';
-  vCanvas.draw(currentStep, 1);
+  if (vCanvas) vCanvas.draw(currentStep, 1);
 }
 
 // Scorciatoie da tastiera utili per il docente alla LIM o col telecomando
@@ -1542,6 +1931,15 @@ window.addEventListener('keydown', (e) => {
   } else if (e.key.toLowerCase() === 'f') {
     e.preventDefault();
     toggleFullscreen();
+  } else if (e.key === '+' || e.key === '=') {
+    e.preventDefault();
+    zoomCanvas(1.25);
+  } else if (e.key === '-' || e.key === '_') {
+    e.preventDefault();
+    zoomCanvas(0.8);
+  } else if (e.key.toLowerCase() === '0') {
+    e.preventDefault();
+    resetCanvasZoom();
   }
 });
 
