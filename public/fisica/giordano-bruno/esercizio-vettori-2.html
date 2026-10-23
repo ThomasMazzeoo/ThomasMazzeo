@@ -18,6 +18,7 @@
    - Barre sopra e sotto nascoste in modalità Schermo Intero
    - Zoom dinamico e manuale (Zoom In/Out, Pan, Auto-Fit)
    - Testi e formule extra-large ad altissima visibilità
+   - ZERO concetti di forze (vettori geometrici / spostamenti in metri)
    - ZERO menzioni di sottrazione vettoriale
    ═══════════════════════════════════════════════════════════ */
 
@@ -32,11 +33,11 @@
   --border-light: #e2e8f0;
 
   /* Colori Vettori ad altissima visibilità */
-  --vec-a: #0284c7;        /* Blu brillante (Forza F1) */
+  --vec-a: #0284c7;        /* Blu brillante (Vettore a) */
   --vec-a-bg: rgba(2, 132, 199, 0.08);
-  --vec-b: #ea580c;        /* Arancione vivo (Forza F2) */
+  --vec-b: #ea580c;        /* Arancione vivo (Vettore b) */
   --vec-b-bg: rgba(234, 88, 12, 0.08);
-  --vec-sum: #16a34a;      /* Verde smeraldo (Diagonale Risultante R) */
+  --vec-sum: #16a34a;      /* Verde smeraldo (Diagonale Vettore Somma s) */
   --vec-sum-bg: rgba(22, 163, 74, 0.09);
   --vec-comp: #6366f1;     /* Viola indaco (Costruzione parallele) */
   --accent-gold: #d97706;  /* Oro / Ambra per evidenziazioni */
@@ -98,78 +99,78 @@ html, body {
   position: relative;
 }
 
-/* ═══════════════════════════════════════════
-   HEADER SUPERIORE (VISIBILE SOLO IN NORMALE)
-   ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   HEADER SUPERIORE (Visibile solo in modalità standard)
+   ═══════════════════════════════════════════════════════════ */
 .lim-header {
-  height: 52px;
-  min-height: 52px;
+  height: 60px;
   background: var(--bg-panel);
   border-bottom: 2px solid var(--border-ui);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
+  padding: 0 20px;
+  flex-shrink: 0;
   z-index: 20;
 }
 
 .lim-header-left {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 16px;
 }
 
 .btn-back-course {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1.5px solid #86efac;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 5px 11px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--border-light);
+  color: var(--text-primary);
   text-decoration: none;
-  transition: all 0.15s;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.15s ease;
+  border: 1px solid var(--border-ui);
 }
 .btn-back-course:hover {
-  background: #dcfce7;
-  border-color: #22c55e;
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
 }
 
 .lim-school-badge {
-  font-family: var(--font-mono);
+  font-family: var(--font-tech);
   font-size: 0.82rem;
-  font-weight: 700;
+  letter-spacing: 1px;
   color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  text-transform: uppercase;
 }
 .lim-school-badge span {
-  color: var(--vec-a);
-  font-weight: 800;
+  color: #0284c7;
+  font-weight: 700;
 }
 
 .lim-header-title {
-  font-size: 0.98rem;
+  font-family: var(--font-title);
+  font-size: 1.05rem;
   font-weight: 800;
+  letter-spacing: 0.5px;
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
-.lim-pill-tag {
-  background: #fef3c7;
-  color: #b45309;
-  font-size: 0.7rem;
-  font-weight: 800;
+.lim-header-title .lim-pill-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   padding: 3px 8px;
   border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  background: var(--vec-sum-bg);
+  color: var(--vec-sum);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  font-weight: 700;
 }
 
 .lim-header-tools {
@@ -179,408 +180,331 @@ html, body {
 }
 
 .btn-lim-tool {
-  background: var(--bg-panel);
-  color: var(--text-secondary);
-  border: 1.5px solid var(--border-ui);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-ui);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
 }
 .btn-lim-tool:hover {
-  background: var(--border-light);
-  color: var(--text-primary);
+  border-color: #0284c7;
+  color: #0284c7;
 }
 .btn-lim-tool.primary {
   background: #0284c7;
   color: #ffffff;
   border-color: #0284c7;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
 }
 .btn-lim-tool.primary:hover {
   background: #0369a1;
 }
 
-/* ═══════════════════════════════════════════
-   STAGE PRINCIPALE
-   ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   STAGE CENTRALE (CANVAS A SINISTRA + TESTO A DESTRA)
+   ═══════════════════════════════════════════════════════════ */
 .lim-stage {
   flex: 1;
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 14px;
-  padding: 12px 14px;
+  grid-template-columns: 58% 42%;
+  height: calc(100vh - 128px);
+  position: relative;
+  background: var(--bg-page);
   overflow: hidden;
-  min-height: 0;
-  transition: all 0.2s ease;
 }
 
-/* COLONNA SINISTRA: CANVAS INTERATTIVO */
+/* Colonna Sinistra (Canvas) */
 .lim-canvas-card {
+  position: relative;
   background: var(--bg-canvas);
-  border: 2px solid var(--border-ui);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  border-right: 2px solid var(--border-ui);
   display: flex;
   flex-direction: column;
-  position: relative;
   overflow: hidden;
 }
 
 .canvas-toolbar {
-  height: 42px;
-  min-height: 42px;
-  background: var(--bg-panel);
-  border-bottom: 1.5px solid var(--border-light);
+  height: 40px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
-  font-family: var(--font-tech);
-  font-size: 0.88rem;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-panel);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--text-secondary);
+  z-index: 10;
+  flex-shrink: 0;
 }
 
 .canvas-legend {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.82rem;
+  gap: 14px;
 }
 .legend-item {
   display: flex;
   align-items: center;
   gap: 6px;
   font-weight: 700;
-  font-family: var(--font-mono);
 }
 .legend-dot {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  display: inline-block;
 }
 
 .canvas-view-wrap {
   flex: 1;
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: var(--bg-canvas);
+  height: calc(100% - 40px);
   cursor: grab;
+  touch-action: none;
+  overflow: hidden;
 }
 .canvas-view-wrap:active {
   cursor: grabbing;
 }
 
 #vecCanvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
 }
 
-/* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
+/* Controlli Zoom Fluttuanti sul Canvas */
 .canvas-zoom-controls {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 10;
+  z-index: 15;
 }
 .btn-zoom {
-  background: var(--bg-panel);
-  color: var(--text-primary);
-  border: 2px solid var(--border-ui);
-  border-radius: 8px;
   width: 38px;
   height: 38px;
-  font-size: 1.15rem;
-  font-weight: 900;
+  border-radius: 10px;
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-ui);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  transition: all 0.15s;
+  transition: all 0.15s ease;
   user-select: none;
 }
 .btn-zoom:hover {
-  background: #f1f5f9;
   border-color: #0284c7;
   color: #0284c7;
-  transform: scale(1.08);
+  transform: translateY(-1px);
 }
 .btn-zoom.fit-btn {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
   font-weight: 800;
   width: auto;
   padding: 0 10px;
-  height: 34px;
 }
 
-/* Badge dinamico in alto a sinistra del canvas */
+/* Overlay animazione / badge informativo nel canvas */
 .canvas-lim-overlay {
   position: absolute;
-  top: 10px;
-  left: 12px;
-  pointer-events: none;
+  bottom: 14px;
+  left: 14px;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 5;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 15;
 }
 .canvas-live-badge {
   background: rgba(15, 23, 42, 0.85);
-  color: #ffffff;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 700;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f8fafc;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* COLONNA DESTRA: GUIDA PASSO-PASSO */
+/* Colonna Destra (Spiegazioni & Formule LIM) */
 .lim-explain-card {
   background: var(--bg-panel);
-  border: 2px solid var(--border-ui);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .step-card-header {
-  padding: 12px 18px;
+  padding: 16px 22px 14px;
   border-bottom: 2px solid var(--border-light);
-  background: var(--bg-panel);
+  flex-shrink: 0;
 }
-
 .step-meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
 }
-
 .step-num-badge {
-  font-family: var(--font-title);
+  font-family: var(--font-tech);
   font-size: 0.82rem;
-  font-weight: 800;
-  color: var(--vec-a);
-  background: var(--vec-a-bg);
-  padding: 3px 12px;
-  border-radius: 6px;
-  border: 1.5px solid rgba(2, 132, 199, 0.3);
+  font-weight: 700;
+  color: #0284c7;
+  text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 .step-lim-badge {
+  font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 800;
-  color: #b45309;
-  background: #fef3c7;
-  padding: 2px 9px;
+  padding: 2px 8px;
   border-radius: 4px;
+  background: var(--border-light);
+  color: var(--text-secondary);
+  font-weight: 600;
 }
-
 .step-main-title {
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--text-primary);
+  font-size: 1.32rem;
+  font-weight: 800;
   line-height: 1.25;
+  color: var(--text-primary);
 }
 
 .step-card-body {
   flex: 1;
-  padding: 16px 18px;
+  padding: 20px 22px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
-/* Box pedagogici con alta leggibilità */
+/* Box didattici ad alto impatto per LIM */
 .pedagogy-box {
-  border-radius: 9px;
-  padding: 12px 16px;
+  border-radius: 12px;
+  padding: 14px 18px;
+  line-height: 1.45;
   font-size: 0.98rem;
-  line-height: 1.52;
+  position: relative;
   border-left: 5px solid transparent;
 }
-
 .pedagogy-box.problem {
-  background: #f8fafc;
-  border: 1.5px solid var(--border-ui);
-  border-left: 5px solid var(--text-secondary);
+  background: var(--bg-page);
+  border-left-color: #64748b;
+  color: var(--text-primary);
 }
 .pedagogy-box.blue {
-  background: #f0f9ff;
-  border: 1.5px solid #bae6fd;
-  border-left: 5px solid var(--vec-a);
+  background: var(--vec-a-bg);
+  border-left-color: var(--vec-a);
+  color: var(--text-primary);
 }
 .pedagogy-box.orange {
-  background: #fff7ed;
-  border: 1.5px solid #fed7aa;
-  border-left: 5px solid var(--vec-b);
+  background: var(--vec-b-bg);
+  border-left-color: var(--vec-b);
+  color: var(--text-primary);
 }
 .pedagogy-box.green {
-  background: #f0fdf4;
-  border: 1.5px solid #bbf7d0;
-  border-left: 5px solid var(--vec-sum);
+  background: var(--vec-sum-bg);
+  border-left-color: var(--vec-sum);
+  color: var(--text-primary);
 }
 .pedagogy-box.gold {
-  background: #fffbeb;
-  border: 1.5px solid #fde68a;
-  border-left: 5px solid var(--accent-gold);
+  background: rgba(217, 119, 6, 0.08);
+  border-left-color: var(--accent-gold);
+  color: var(--text-primary);
 }
 
-.box-title {
+.pedagogy-box .box-title {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
   font-weight: 800;
-  font-size: 0.92rem;
-  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.pedagogy-box.problem .box-title { color: var(--text-secondary); }
-.pedagogy-box.blue .box-title { color: #0284c7; }
-.pedagogy-box.orange .box-title { color: #ea580c; }
-.pedagogy-box.green .box-title { color: #16a34a; }
-.pedagogy-box.gold .box-title { color: #d97706; }
 
-/* Riquadri formule matematiche per LIM */
-.lim-math-card {
-  background: #ffffff;
-  border: 2px solid var(--border-ui);
-  border-radius: 9px;
-  padding: 12px 16px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-body.dark-mode .lim-math-card {
-  background: #0f172a;
-}
-.lim-math-card .math-line {
-  font-size: 1.45rem;
-  margin: 6px 0;
-  font-weight: 700;
-}
-.lim-math-card .math-comment {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  margin-top: 4px;
-}
-
-/* Elenchi puntati chiari */
 .lim-bullet-list {
   list-style: none;
+  margin-top: 6px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  font-size: 0.95rem;
+  gap: 6px;
 }
 .lim-bullet-list li {
   position: relative;
-  padding-left: 22px;
-  line-height: 1.45;
+  padding-left: 20px;
 }
 .lim-bullet-list li::before {
-  content: "▸";
+  content: '▶';
   position: absolute;
   left: 2px;
-  top: 0;
-  color: var(--vec-a);
-  font-weight: 900;
-  font-size: 1.15rem;
+  top: 1px;
+  font-size: 0.65rem;
+  color: #0284c7;
 }
 
-/* ═══════════════════════════════════════════
-   BARRA DI NAVIGAZIONE INFERIORE (MODALITÀ NORMALE)
-   ═══════════════════════════════════════════ */
+/* Card Matematica e Formule KaTeX per LIM */
+.lim-math-card {
+  background: var(--bg-page);
+  border: 2px dashed var(--border-ui);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.lim-math-card .math-line {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+.lim-math-card .math-comment {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BARRA INFERIORE DI NAVIGAZIONE STANDARD
+   ═══════════════════════════════════════════════════════════ */
 .lim-nav-bar {
-  height: 64px;
-  min-height: 64px;
+  height: 68px;
   background: var(--bg-panel);
   border-top: 2px solid var(--border-ui);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
+  padding: 0 24px;
+  flex-shrink: 0;
   z-index: 20;
-  gap: 12px;
 }
 
-.nav-btn-big {
-  font-family: var(--font-main);
-  font-size: 0.95rem;
-  font-weight: 800;
-  padding: 11px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 2px solid transparent;
-  transition: all 0.15s;
-  user-select: none;
-  white-space: nowrap;
-}
-.nav-btn-big:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-.btn-prev {
-  background: var(--bg-page);
-  color: var(--text-primary);
-  border-color: var(--border-ui);
-}
-.btn-prev:not(:disabled):hover {
-  background: #e2e8f0;
-}
-
-.btn-next {
-  background: var(--vec-a);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
-}
-.btn-next:not(:disabled):hover {
-  background: #0369a1;
-  transform: translateY(-1px);
-}
-
-.btn-replay {
-  background: #f8fafc;
-  color: var(--text-secondary);
-  border: 2px solid var(--border-ui);
-  padding: 11px 16px;
-}
-.btn-replay:hover {
-  background: #f1f5f9;
-  color: var(--text-primary);
-}
-
-/* Indicatore di step centrale */
 .steps-selector-bar {
   display: flex;
   align-items: center;
@@ -592,40 +516,88 @@ body.dark-mode .lim-math-card {
 .step-circle-pill {
   height: 38px;
   padding: 0 14px;
-  border-radius: 19px;
-  border: 2px solid var(--border-ui);
+  border-radius: 999px;
+  border: 1.5px solid var(--border-ui);
   background: var(--bg-page);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  display: inline-flex;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   gap: 6px;
-  cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
+  user-select: none;
   white-space: nowrap;
 }
 .step-circle-pill:hover {
-  border-color: var(--vec-a);
-  color: var(--text-primary);
+  border-color: #0284c7;
+  color: #0284c7;
 }
 .step-circle-pill.active {
-  background: var(--vec-a);
-  border-color: var(--vec-a);
+  background: #0284c7;
   color: #ffffff;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
 }
 .step-circle-pill.completed {
-  border-color: #86efac;
-  color: #15803d;
-  background: #f0fdf4;
+  background: var(--vec-sum-bg);
+  color: var(--vec-sum);
+  border-color: rgba(22, 163, 74, 0.4);
 }
 
-/* ═══════════════════════════════════════════
-   MODALITÀ SCHERMO INTERO LIM (SENZA BARRE)
-   ═══════════════════════════════════════════ */
+.nav-btn-big {
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: var(--font-main);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.nav-btn-big:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.btn-prev {
+  background: var(--border-light);
+  color: var(--text-primary);
+  border: 1px solid var(--border-ui);
+}
+.btn-prev:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+.btn-next {
+  background: #0284c7;
+  color: #ffffff;
+}
+.btn-next:hover:not(:disabled) {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+.btn-replay {
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-ui);
+}
+.btn-replay:hover {
+  border-color: #ea580c;
+  color: #ea580c;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODALITÀ SCHERMO INTERO OTTIMIZZATA PER LIM
+   - Niente barre sopra e sotto per guadagnare il 100% dell'altezza
+   - Tutto più grande e visibile da 10 metri di distanza
+   - HUD fluttuante per telecomando o tocco rapido
+   ═══════════════════════════════════════════════════════════ */
 
 :fullscreen .lim-header,
 body.is-fullscreen .lim-header,
@@ -643,8 +615,7 @@ body.is-fullscreen .lim-nav-bar,
 body.is-fullscreen .lim-stage,
 :-webkit-full-screen .lim-stage {
   height: 100vh !important;
-  max-height: 100vh !important;
-  padding: 10px 14px 74px 14px !important;
+  grid-template-columns: 60% 40% !important;
 }
 
 :fullscreen .step-main-title,
@@ -657,8 +628,8 @@ body.is-fullscreen .step-main-title,
 body.is-fullscreen .pedagogy-box,
 :-webkit-full-screen .pedagogy-box {
   font-size: 1.08rem !important;
-  line-height: 1.58 !important;
-  padding: 14px 18px !important;
+  padding: 16px 20px !important;
+  line-height: 1.5 !important;
 }
 
 :fullscreen .lim-math-card .math-line,
@@ -667,22 +638,22 @@ body.is-fullscreen .lim-math-card .math-line,
   font-size: 1.75rem !important;
 }
 
-/* BARRA FLUTTUANTE SOTTO IN SCHERMO INTERO */
+/* HUD fluttuante compatto in basso a tutto schermo */
 .lim-fullscreen-hud {
   display: none;
   position: fixed;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
   background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   padding: 6px 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
   align-items: center;
   gap: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 :fullscreen .lim-fullscreen-hud,
@@ -692,86 +663,76 @@ body.is-fullscreen .lim-fullscreen-hud,
 }
 
 .hud-btn {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
-  padding: 7px 14px;
-  font-family: var(--font-main);
+  padding: 6px 14px;
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 700;
+  font-family: var(--font-main);
   cursor: pointer;
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.15s;
+  gap: 6px;
   user-select: none;
-  white-space: nowrap;
 }
 .hud-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.22);
 }
 .hud-btn.primary {
   background: #0284c7;
-  border-color: #38bdf8;
+  border-color: #0284c7;
+  color: #ffffff;
 }
 .hud-btn.primary:hover {
   background: #0369a1;
 }
 .hud-btn.exit {
-  background: #dc2626;
-  border-color: #f87171;
-}
-.hud-btn.exit:hover {
-  background: #b91c1c;
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
 }
 
 .hud-pills {
   display: flex;
   align-items: center;
   gap: 5px;
+  padding: 0 4px;
 }
 .hud-pill {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  border: none;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.hud-pill:hover {
-  border-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.25);
+  transition: all 0.15s ease;
 }
 .hud-pill.active {
   background: #0284c7;
-  border-color: #38bdf8;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+  color: #ffffff;
+  transform: scale(1.15);
 }
 
 .hud-divider {
   width: 1px;
-  height: 22px;
+  height: 20px;
   background: rgba(255, 255, 255, 0.2);
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
-@media (max-width: 992px) {
-  html, body { overflow-y: auto; height: auto; }
-  .lim-app { height: auto; min-height: 100vh; }
-  .lim-stage { grid-template-columns: 1fr; height: auto; }
-  .lim-canvas-card { height: 440px; }
-  .step-card-body { height: auto; max-height: none; }
-  .step-circle-pill span.pill-label { display: none; }
+@media (max-width: 1024px) {
+  .lim-stage { grid-template-columns: 1fr; grid-template-rows: 50% 50%; }
+  .lim-header-title { font-size: 0.9rem; }
   .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
 }
 </style>
@@ -793,7 +754,7 @@ body.is-fullscreen .lim-fullscreen-hud,
 
     <div class="lim-header-title">
       📐 VETTORI 2: IL METODO DEL PARALLELOGRAMMA
-      <span class="lim-pill-tag">Vettori Concorrenti</span>
+      <span class="lim-pill-tag">Origine Comune O(0, 0)</span>
     </div>
 
     <div class="lim-header-tools">
@@ -816,18 +777,18 @@ body.is-fullscreen .lim-fullscreen-hud,
     <div class="lim-canvas-card">
       <div class="canvas-toolbar">
         <div>
-          <span>GRIGLIA CARTESIANA</span>
-          <span style="color:var(--text-muted); font-size:0.75rem; margin-left:6px;">(1 quadretto = 1 Newton)</span>
+          <span>GRIGLIA CARTESIANA ORTOGONALE</span>
+          <span style="color:var(--text-muted); font-size:0.75rem; margin-left:6px;">(1 quadretto = 1 metro)</span>
         </div>
         <div class="canvas-legend">
           <div class="legend-item" style="color:var(--vec-a)">
-            <span class="legend-dot" style="background:var(--vec-a)"></span> Forza F₁ (5, 0) N
+            <span class="legend-dot" style="background:var(--vec-a)"></span> Vettore a (5, 0) m
           </div>
           <div class="legend-item" style="color:var(--vec-b)" id="legVecB">
-            <span class="legend-dot" style="background:var(--vec-b)"></span> Forza F₂ (3, 6) N
+            <span class="legend-dot" style="background:var(--vec-b)"></span> Vettore b (3, 6) m
           </div>
           <div class="legend-item" style="color:var(--vec-sum)" id="legVecSum" style="opacity:0.3">
-            <span class="legend-dot" style="background:var(--vec-sum)"></span> Diagonale R (8, 6) N
+            <span class="legend-dot" style="background:var(--vec-sum)"></span> Somma s (8, 6) m
           </div>
         </div>
       </div>
@@ -844,7 +805,7 @@ body.is-fullscreen .lim-fullscreen-hud,
 
         <div class="canvas-lim-overlay">
           <div class="canvas-live-badge" id="canvasBadge">
-            <span>📍</span> <span id="canvasBadgeText">Passo 1: Vettori con Coda in Comune</span>
+            <span>📍</span> <span id="canvasBadgeText">Passo 1: Due Vettori con Origine in Comune</span>
           </div>
         </div>
       </div>
@@ -857,7 +818,7 @@ body.is-fullscreen .lim-fullscreen-hud,
           <span class="step-num-badge" id="stepMetaNum">PASSO 1 DI 6</span>
           <span class="step-lim-badge">METODO PARALLELOGRAMMA</span>
         </div>
-        <h2 class="step-main-title" id="stepMetaTitle">Il Problema delle Forze Concorrenti</h2>
+        <h2 class="step-main-title" id="stepMetaTitle">Due Vettori con la Stessa Origine</h2>
       </div>
 
       <div class="step-card-body" id="stepCardBody">
@@ -912,15 +873,15 @@ body.is-fullscreen .lim-fullscreen-hud,
 <script>
 // ═══════════════════════════════════════════════════════════
 // DATI RIGOROSI DELL'ESERCIZIO 2 — PARALLELOGRAMMA
-// Due forze concorrenti applicate allo stesso corpo O(0, 0)
-// F1 = (5, 0) N e F2 = (3, 6) N -> Risultante R = (8, 6) N, |R| = 10 N
-// ZERO menzioni di sottrazione vettoriale!
+// Due vettori geometrici / spostamenti con la stessa coda O(0, 0)
+// a = (5, 0) m e b = (3, 6) m -> Vettore Somma s = (8, 6) m, |s| = 10 m
+// ZERO concetti di forze, ZERO menzioni di sottrazione vettoriale!
 // ═══════════════════════════════════════════════════════════
 
 const PROBLEM2 = {
-  f1: { name: 'F1', dx: 5, dy: 0, color: '#0284c7', label: 'F₁' },
-  f2: { name: 'F2', dx: 3, dy: 6, color: '#ea580c', label: 'F₂' },
-  r: { name: 'R', dx: 8, dy: 6, len: 10, color: '#16a34a', label: 'R' }
+  a: { name: 'a', dx: 5, dy: 0, color: '#0284c7', label: 'a' },
+  b: { name: 'b', dx: 3, dy: 6, color: '#ea580c', label: 'b' },
+  s: { name: 's', dx: 8, dy: 6, len: 10, color: '#16a34a', label: 's' }
 };
 
 let currentStep = 1;
@@ -934,11 +895,11 @@ let animId = null;
 // Inquadratura ottimizzata per ogni passo
 const STEP_FRAMES = {
   1: { minX: -1.0, maxX: 7.0, minY: -1.0, maxY: 6.0 },  // Introduzione
-  2: { minX: -0.8, maxX: 6.2, minY: -0.8, maxY: 6.8 },  // Zoom sui due vettori applicati in O
-  3: { minX: -1.0, maxX: 9.0, minY: -1.0, maxY: 7.2 },  // Costruzione delle due rette parallele
-  4: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 },  // Tracciamento diagonale risultante
-  5: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 },  // Dimostrazione commutativa (due triangoli)
-  6: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 }   // Pitagora su componenti 8 e 6 -> 10 N
+  2: { minX: -0.8, maxX: 6.2, minY: -0.8, maxY: 6.8 },  // Due vettori con origine in O
+  3: { minX: -0.8, maxX: 9.2, minY: -0.8, maxY: 7.0 },  // Costruzione parallelogramma
+  4: { minX: -0.8, maxX: 9.4, minY: -0.8, maxY: 7.2 },  // Diagonale Somma
+  5: { minX: -0.8, maxX: 9.4, minY: -0.8, maxY: 7.2 },  // Due percorsi Punta-Coda
+  6: { minX: -0.8, maxX: 9.5, minY: -1.0, maxY: 7.2 }   // Modulo e Pitagora
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -949,31 +910,32 @@ const STEPS_DATA = [
   // ── PASSO 1 ──
   {
     num: 1,
-    title: "1. Il Problema: Forze Concorrenti Applicate in O(0,0)",
+    title: "1. Il Problema: Due Vettori con Origine Comune O(0,0)",
     badge: "PASSO 1 DI 6 — CODA IN COMUNE",
-    canvasBadge: "Passo 1: Il Corpo nel Punto O(0, 0)",
+    canvasBadge: "Passo 1: Origine Comune O(0, 0)",
     render: () => `
       <div class="pedagogy-box problem">
         <div class="box-title">📖 Testo dell'Esercizio:</div>
-        Una cassa di massa considerevole si trova ferma nell'origine <strong>\\(O(0, 0)\\)</strong>.<br>
-        Due ragazzi la tirano contemporaneamente mediante due funi applicate nello <strong>stesso punto</strong> \\(O\\):<br>
-        • Il primo ragazzo esercita una forza orizzontale <strong>\\(\\vec{F}_1 = (5, 0)\\text{ N}\\)</strong> diretta a Est.<br>
-        • Il secondo ragazzo esercita una forza obliqua <strong>\\(\\vec{F}_2 = (3, 6)\\text{ N}\\)</strong> diretta a Nord-Est.<br>
-        <strong>Richieste:</strong><br>
-        1. Rappresenta le due forze e costruisci la forza risultante con la <strong>regola del parallelogramma</strong>.<br>
-        2. Spiega perché la diagonale corrisponde alla somma vettoriale.<br>
-        3. Calcola le componenti complessive e il modulo della forza risultante <strong>\\(\\vec{R} = \\vec{F}_1 + \\vec{F}_2\\)</strong>.
+        Su un piano cartesiano ortogonale (in cui <strong>1 quadretto = 1 metro</strong>), sono assegnati due vettori che partono entrambi dalla <strong>stessa origine comune \(O(0, 0)\)</strong>:<br>
+        • Il primo vettore è orizzontale: <strong>\(\vec{a} = (5, 0)\text{ m}\)</strong> diretto verso destra.<br>
+        • Il secondo vettore è obliquo: <strong>\(\vec{b} = (3, 6)\text{ m}\)</strong> diretto verso l'alto a destra.<br>
+        <strong>Richieste della traccia:</strong><br>
+        1. Rappresenta graficamente i due vettori \(\vec{a}\) e \(\vec{b}\) con la stessa coda in \(O(0, 0)\).<br>
+        2. Costruisci il <strong>vettore somma \(\vec{s} = \vec{a} + \vec{b}\)</strong> applicando il <strong>metodo del parallelogramma</strong>.<br>
+        3. Spiega perché la diagonale principale corrisponde all'addizione tra i vettori.<br>
+        4. Determina le componenti cartesiane e calcola il modulo del vettore somma \(|\vec{s}|\).
       </div>
 
       <div class="pedagogy-box blue">
-        <div class="box-title">❓ Perché non usiamo subito il Punta-Coda classico?</div>
-        Nel metodo punta-coda visto nel moto del drone, i vettori erano consecutivi (uno dopo l'altro nel tempo).<br>
-        Qui invece le due forze <strong>agiscono nello stesso istante sullo stesso punto</strong>: entrambe hanno la <strong>CODA nell'origine \\(O(0, 0)\\)</strong>! Si dicono <strong>vettori concorrenti</strong>.
+        <div class="box-title">❓ Perché non usiamo subito il Punta-Coda semplice?</div>
+        Nel metodo punta-coda visto nel primo esercizio, i vettori erano consecutivi (il secondo partiva dove finiva il primo).<br>
+        In questo caso, invece, entrambi i vettori partono <strong>dallo stesso identico punto \(O(0, 0)\)</strong>: hanno la coda in comune!<br>
+        Quando due vettori condividono la stessa origine, il metodo geometrico fondamentale è la <strong>regola del parallelogramma</strong>.
       </div>
 
       <div class="pedagogy-box gold">
-        <div class="box-title">💡 La Regola del Parallelogramma (Pagina 90 del libro):</div>
-        Quando due vettori partono dalla stessa coda comune, la loro somma è data dalla <strong>diagonale</strong> del parallelogramma costruito prendendo i due vettori come lati consecutivi!
+        <div class="box-title">💡 La Regola del Parallelogramma:</div>
+        Quando due vettori partono dalla stessa origine comune, il loro <strong>vettore somma</strong> coincide con la <strong>diagonale</strong> del parallelogramma costruito prendendo i due vettori come lati consecutivi!
       </div>
     `
   },
@@ -981,29 +943,29 @@ const STEPS_DATA = [
   // ── PASSO 2 ──
   {
     num: 2,
-    title: "2. Disegno delle Due Forze Concorrenti F₁ e F₂",
+    title: "2. Disegno dei Vettori \(\vec{a}\) e \(\vec{b}\) con Coda in O(0,0)",
     badge: "PASSO 2 DI 6 — TRACCIAMENTO",
-    canvasBadge: "Passo 2: Disegno di F₁ e F₂ dall'Origine",
+    canvasBadge: "Passo 2: Disegno di a e b dall'Origine O(0,0)",
     render: () => `
       <div class="pedagogy-box blue">
-        <div class="box-title">🔵 Disegno del 1° Vettore \\(\\vec{F}_1 = (5, 0)\\text{ N}\\):</div>
-        • <strong>Punto di applicazione:</strong> origine \\(O(0, 0)\\).<br>
-        • <strong>Componente orizzontale:</strong> \\(\\Delta x_1 = +5\\text{ N}\\) (5 quadretti a destra lungo l'asse \\(X\\)).<br>
-        • <strong>Componente verticale:</strong> \\(\\Delta y_1 = 0\\text{ N}\\) (giace esattamente sull'asse \\(X\\)).<br>
-        • La punta della freccia blu si trova nel punto <strong>\\(A(5, 0)\\)</strong>.
+        <div class="box-title">🔵 Disegno del 1° Vettore \(\vec{a} = (5, 0)\text{ m}\):</div>
+        • <strong>Punto iniziale (coda):</strong> origine \(O(0, 0)\).<br>
+        • <strong>Componente orizzontale:</strong> \(a_x = +5\text{ m}\) (5 quadretti a destra lungo l'asse \(X\)).<br>
+        • <strong>Componente verticale:</strong> \(a_y = 0\text{ m}\) (giace esattamente sull'asse \(X\)).<br>
+        • La punta della freccia blu si trova nel punto <strong>\(A(5, 0)\)</strong>.
       </div>
 
       <div class="pedagogy-box orange">
-        <div class="box-title">🟠 Disegno del 2° Vettore \\(\\vec{F}_2 = (3, 6)\\text{ N}\\):</div>
-        • <strong>Punto di applicazione:</strong> la stessa origine \\(O(0, 0)\\)!<br>
-        • <strong>Componente orizzontale:</strong> \\(\\Delta x_2 = +3\\text{ N}\\) (3 quadretti a destra).<br>
-        • <strong>Componente verticale:</strong> \\(\\Delta y_2 = +6\\text{ N}\\) (6 quadretti in alto).<br>
-        • La punta della freccia arancione si trova nel punto <strong>\\(C(3, 6)\\)</strong>.
+        <div class="box-title">🟠 Disegno del 2° Vettore \(\vec{b} = (3, 6)\text{ m}\):</div>
+        • <strong>Punto iniziale (coda):</strong> la stessa identica origine \(O(0, 0)\)!<br>
+        • <strong>Componente orizzontale:</strong> \(b_x = +3\text{ m}\) (3 quadretti a destra).<br>
+        • <strong>Componente verticale:</strong> \(b_y = +6\text{ m}\) (6 quadretti in alto lungo l'asse \(Y\)).<br>
+        • La punta della freccia arancione si trova nel punto <strong>\(C(3, 6)\)</strong>.
       </div>
 
       <div class="pedagogy-box gold">
-        <div class="box-title">👀 Guarda la lavagna:</div>
-        Abbiamo due frecce che si aprono a ventaglio partendo dallo stesso punto \\(O\\). Formano i primi due lati del nostro futuro parallelogramma!
+        <div class="box-title">👀 Osserva la Lavagna:</div>
+        I due vettori partono entrambi da \(O(0, 0)\) e si aprono a ventaglio. Formano i primi due lati adiacenti del parallelogramma che completeremo nel prossimo passaggio!
       </div>
     `
   },
@@ -1017,19 +979,19 @@ const STEPS_DATA = [
     render: () => `
       <div class="pedagogy-box blue">
         <div class="box-title">📐 Come si completa il Parallelogramma:</div>
-        Per completare la figura geometrica dobbiamo tracciare due rette parallele ai vettori:
+        Dalla punta di ciascun vettore tracciamo una retta (o segmento tratteggiato) parallela all'altro vettore:
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li><strong>1ª Parallela (in alto):</strong> dalla punta di \\(\\vec{F}_2\\) (punto \\(C(3, 6)\\)), tracciamo un segmento parallelo a \\(\\vec{F}_1\\) lungo esattamente <strong>5 quadretti a destra</strong>.</li>
-          <li><strong>2ª Parallela (a destra):</strong> dalla punta di \\(\\vec{F}_1\\) (punto \\(A(5, 0)\\)), tracciamo un segmento parallelo a \\(\\vec{F}_2\\) inclinato di <strong>3 a destra e 6 in alto</strong>.</li>
+          <li><strong>1ª Parallela (in alto):</strong> dalla punta di \(\vec{b}\) (punto \(C(3, 6)\)), tracciamo un segmento parallelo ad \(\vec{a}\) lungo esattamente <strong>5 quadretti a destra</strong>.</li>
+          <li><strong>2ª Parallela (a destra):</strong> dalla punta di \(\vec{a}\) (punto \(A(5, 0)\)), tracciamo un segmento parallelo a \(\vec{b}\) inclinato di <strong>3 a destra e 6 in alto</strong>.</li>
         </ul>
       </div>
 
       <div class="pedagogy-box green">
-        <div class="box-title">🎯 Il Punto d'Incontro \\(D(8, 6)\\):</div>
-        Le due rette parallele tratteggiate si incontrano perfettamente nel punto <strong>\\(D(8, 6)\\)</strong>!<br>
-        • Da \\(C(3, 6)\\): \\((3 + 5, 6 + 0) = \\mathbf{(8, 6)}\\).<br>
-        • Da \\(A(5, 0)\\): \\((5 + 3, 0 + 6) = \\mathbf{(8, 6)}\\).<br>
-        I quattro vertici formano il parallelogramma perfetto <strong>\\(O - A - D - C\\)</strong>.
+        <div class="box-title">🎯 Il Punto d'Incontro \(D(8, 6)\):</div>
+        Le due rette parallele tratteggiate si incontrano perfettamente nel punto <strong>\(D(8, 6)\)</strong>!<br>
+        • Da \(C(3, 6)\) aggiungendo le componenti di \(\vec{a}\): \((3 + 5, 6 + 0) = \mathbf{(8, 6)}\).<br>
+        • Da \(A(5, 0)\) aggiungendo le componenti di \(\vec{b}\): \((5 + 3, 0 + 6) = \mathbf{(8, 6)}\).<br>
+        I quattro vertici individuano il parallelogramma perfetto <strong>\(O - A - D - C\)</strong>.
       </div>
     `
   },
@@ -1037,26 +999,26 @@ const STEPS_DATA = [
   // ── PASSO 4 ──
   {
     num: 4,
-    title: "4. La Diagonale = Vettore Risultante R = F₁ + F₂",
+    title: "4. La Diagonale = Vettore Somma \(\vec{s} = \vec{a} + \vec{b}\)",
     badge: "PASSO 4 DI 6 — LA DIAGONALE",
-    canvasBadge: "Passo 4: Tracciamento della Diagonale Risultante",
+    canvasBadge: "Passo 4: Tracciamento della Diagonale Somma",
     render: () => `
       <div class="pedagogy-box green">
-        <div class="box-title">🚀 Definizione della Risultante:</div>
-        La <strong>forza risultante \\(\\vec{R}\\)</strong> è il vettore rappresentato dalla <strong>DIAGONALE</strong> che parte dalla coda comune \\(O(0, 0)\\) e arriva al vertice opposto <strong>\\(D(8, 6)\\)</strong>!
+        <div class="box-title">🚀 Definizione del Vettore Somma:</div>
+        Il <strong>vettore somma \(\vec{s} = \vec{a} + \vec{b}\)</strong> è rappresentato dalla <strong>DIAGONALE PRINCIPALE</strong> del parallelogramma, che parte dalla coda comune \(O(0, 0)\) e arriva al vertice opposto <strong>\(D(8, 6)\)</strong>!
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li>È la grande freccia <strong>verde smeraldo</strong> \\(\\vec{R}\\).</li>
-          <li>Fisicamente, la cassa si muoverà <strong>esattamente lungo questa diagonale</strong>, come se al posto dei due ragazzi ci fosse un solo gigante che tira con la forza \\(\\vec{R}\\)!</li>
+          <li>È la grande freccia <strong>verde smeraldo</strong> \(\vec{s}\).</li>
+          <li>Collega l'origine comune \(O\) con il vertice opposto \(D\).</li>
         </ul>
       </div>
 
       <div class="pedagogy-box blue">
-        <div class="box-title">📊 Componenti Cartesiane della Diagonale:</div>
-        Per trovare le componenti della risultante si sommano le componenti dei singoli vettori:
+        <div class="box-title">📊 Componenti Cartesiane del Vettore Somma:</div>
+        Per determinare le componenti del vettore somma basta sommare le coordinate dei singoli vettori:
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li><strong>Componente orizzontale:</strong> \\(X_{\\text{tot}} = F_{1x} + F_{2x} = 5 + 3 = \\mathbf{8\\text{ N}}\\).</li>
-          <li><strong>Componente verticale:</strong> \\(Y_{\\text{tot}} = F_{1y} + F_{2y} = 0 + 6 = \\mathbf{6\\text{ N}}\\).</li>
-          <li>Quindi il vettore risultante ha coordinate: <strong>\\(\\vec{R} = (8, 6)\\text{ N}\\)</strong>.</li>
+          <li><strong>Componente orizzontale:</strong> \(s_x = a_x + b_x = 5 + 3 = \mathbf{8\text{ m}}\).</li>
+          <li><strong>Componente verticale:</strong> \(s_y = a_y + b_y = 0 + 6 = \mathbf{6\text{ m}}\).</li>
+          <li>Quindi il vettore somma ha coordinate cartesiane: <strong>\(\vec{s} = (8, 6)\text{ m}\)</strong>.</li>
         </ul>
       </div>
     `
@@ -1067,27 +1029,27 @@ const STEPS_DATA = [
     num: 5,
     title: "5. Perché Funziona? Parallelogramma = 2 Punta-Coda",
     badge: "PASSO 5 DI 6 — PROPRIETÀ COMMUTATIVA",
-    canvasBadge: "Passo 5: La Proprietà Commutativa F₁ + F₂ = F₂ + F₁",
+    canvasBadge: "Passo 5: Proprietà Commutativa a + b = b + a",
     render: () => `
       <div class="pedagogy-box gold">
         <div class="box-title">💡 La Diagonale divide il Parallelogramma in 2 Triangoli:</div>
-        Osserva attentamente la lavagna! La diagonale verde divide la figura in due triangoli identici, ciascuno corrispondente a una somma con il <strong>metodo punta-coda</strong>:
+        Osserva attentamente la lavagna! La diagonale verde divide la figura in due triangoli speculari, ciascuno corrispondente a una somma con il <strong>metodo punta-coda</strong>:
       </div>
 
       <div class="pedagogy-box blue">
-        <strong>1. Percorso Inferiore \\(\\vec{F}_1 + \\vec{F}_2\\):</strong><br>
-        Parti da \\(O\\), percorri \\(\\vec{F}_1\\) fino ad \\(A\\), poi dalla punta di \\(\\vec{F}_1\\) percorri \\(\\vec{F}_2\\) (il lato destro \\(AD\\)). Arrivi in <strong>\\(D(8, 6)\\)</strong>!
+        <strong>1. Percorso Inferiore \(\vec{a} + \vec{b}\):</strong><br>
+        Parti da \(O\), percorri \(\vec{a}\) fino al punto \(A(5, 0)\), poi dalla punta di \(\vec{a}\) percorri \(\vec{b}\) (il lato destro \(AD\)). Arrivi in <strong>\(D(8, 6)\)</strong>!
       </div>
 
       <div class="pedagogy-box orange">
-        <strong>2. Percorso Superiore \\(\\vec{F}_2 + \\vec{F}_1\\):</strong><br>
-        Parti da \\(O\\), percorri prima \\(\\vec{F}_2\\) fino a \\(C\\), poi dalla punta di \\(\\vec{F}_2\\) percorri \\(\\vec{F}_1\\) (il lato superiore \\(CD\\)). Arrivi di nuovo in <strong>\\(D(8, 6)\\)</strong>!
+        <strong>2. Percorso Superiore \(\vec{b} + \vec{a}\):</strong><br>
+        Parti da \(O\), percorri prima \(\vec{b}\) fino al punto \(C(3, 6)\), poi dalla punta di \(\vec{b}\) percorri \(\vec{a}\) (il lato superiore \(CD\)). Arrivi di nuovo esattamente in <strong>\(D(8, 6)\)</strong>!
       </div>
 
       <div class="lim-math-card">
-        <div class="math-comment">PROPRIETÀ COMMUTATIVA DELL'ADDIZIONE VETTORIALE:</div>
-        <div class="math-line" style="color:var(--vec-sum);">\\(\\vec{F}_1 + \\vec{F}_2 = \\vec{F}_2 + \\vec{F}_1\\)</div>
-        <div class="math-comment">L'ordine con cui sommi i vettori non cambia il risultato finale!</div>
+        <div class="math-comment">PROPRIETÀ COMMUTATIVA DELLA SOMMA VETTORIALE:</div>
+        <div class="math-line" style="color:var(--vec-sum);">\(\vec{a} + \vec{b} = \vec{b} + \vec{a}\)</div>
+        <div class="math-comment">L'ordine con cui sommiamo i due vettori non cambia il risultato finale!</div>
       </div>
     `
   },
@@ -1095,27 +1057,27 @@ const STEPS_DATA = [
   // ── PASSO 6 ──
   {
     num: 6,
-    title: "6. Calcolo del Modulo Risultante con Pitagora",
+    title: "6. Calcolo del Modulo con il Teorema di Pitagora",
     badge: "PASSO 6 DI 6 — MODULO FINALE",
-    canvasBadge: "Passo 6: Calcolo del Modulo di R = 10 N",
+    canvasBadge: "Passo 6: Modulo del Vettore Somma |s| = 10 m",
     render: () => `
       <div class="pedagogy-box green">
-        <div class="box-title">📐 Teorema di Pitagora sulla Diagonale \\(\\vec{R}\\):</div>
-        La diagonale verde \\(\\vec{R}\\) è l'ipotenusa del grande triangolo rettangolo con base \\(X_{\\text{tot}} = 8\\text{ N}\\) e altezza \\(Y_{\\text{tot}} = 6\\text{ N}\\):
+        <div class="box-title">📐 Teorema di Pitagora sulla Diagonale \(\vec{s}\):</div>
+        La diagonale verde \(\vec{s}\) è l'ipotenusa del grande triangolo rettangolo formato dai due cateti \(s_x = 8\text{ m}\) e \(s_y = 6\text{ m}\):
       </div>
 
       <div class="lim-math-card">
-        <div class="math-comment">CALCOLO DEL MODULO DELLA FORZA RISULTANTE:</div>
+        <div class="math-comment">CALCOLO DEL MODULO DEL VETTORE SOMMA:</div>
         <div class="math-line" id="mathR1"></div>
         <div class="math-line" id="mathR2"></div>
         <div class="math-line" id="mathR3" style="font-weight:800; color:var(--vec-sum);"></div>
       </div>
 
       <div class="pedagogy-box problem">
-        <div class="box-title">🎯 Risposta Finale del Problema:</div>
-        • La forza complessiva applicata alla cassa è pari a <strong>10 Newton</strong>.<br>
-        • La cassa accelererà e si muoverà lungo la diagonale inclinata passante per \\(O(0, 0)\\) e \\(D(8, 6)\\).<br>
-        • La regola del parallelogramma ci ha permesso di sommare due forze aventi direzioni differenti senza errori!
+        <div class="box-title">🎯 Risposta Conclusiva dell'Esercizio:</div>
+        • Il vettore somma ottenuto con la regola del parallelogramma ha coordinate <strong>\(\vec{s} = (8, 6)\text{ m}\)</strong>.<br>
+        • La sua lunghezza (modulo) in linea retta è esattamente pari a <strong>10 metri</strong>.<br>
+        • La regola del parallelogramma ci permette di determinare la somma tra vettori con origine comune in modo visivo, geometrico ed esatto!
       </div>
     `
   }
@@ -1129,135 +1091,166 @@ class VectorExerciseCanvas {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d');
-    this.wrap = document.getElementById('canvasWrap');
     this.dpr = window.devicePixelRatio || 1;
 
-    // Zoom e Pan interattivi
+    // Vista logica del piano cartesiano (quadretti)
+    this.view = {
+      minX: -1.0,
+      maxX: 9.5,
+      minY: -1.0,
+      maxY: 7.5
+    };
+
+    // Zoom e Pan interattivi dell'utente
     this.userZoom = 1.0;
     this.panX = 0;
     this.panY = 0;
     this.isDragging = false;
-    this.dragStartX = 0;
-    this.dragStartY = 0;
+    this.dragStart = { x: 0, y: 0 };
 
-    this.initResize();
-    this.initInteractions();
+    this.bindEvents();
+    this.resize();
   }
 
-  initResize() {
-    this.resize();
+  bindEvents() {
     window.addEventListener('resize', () => {
       this.resize();
       this.draw(currentStep, animProgress);
     });
-  }
 
-  initInteractions() {
-    this.wrap.addEventListener('pointerdown', (e) => {
+    const wrap = document.getElementById('canvasWrap');
+
+    // Pan con mouse
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
       this.isDragging = true;
-      this.dragStartX = e.clientX - this.panX;
-      this.dragStartY = e.clientY - this.panY;
-      this.wrap.setPointerCapture(e.pointerId);
+      this.dragStart = { x: e.clientX - this.panX, y: e.clientY - this.panY };
     });
 
-    this.wrap.addEventListener('pointermove', (e) => {
+    window.addEventListener('mousemove', (e) => {
       if (!this.isDragging) return;
-      this.panX = e.clientX - this.dragStartX;
-      this.panY = e.clientY - this.dragStartY;
+      this.panX = e.clientX - this.dragStart.x;
+      this.panY = e.clientY - this.dragStart.y;
       this.draw(currentStep, animProgress);
     });
 
-    const stopDrag = (e) => {
-      if (this.isDragging) {
-        this.isDragging = false;
-        try { this.wrap.releasePointerCapture(e.pointerId); } catch(err){}
-      }
-    };
-    this.wrap.addEventListener('pointerup', stopDrag);
-    this.wrap.addEventListener('pointercancel', stopDrag);
+    window.addEventListener('mouseup', () => {
+      this.isDragging = false;
+    });
 
-    this.wrap.addEventListener('wheel', (e) => {
+    // Zoom con rotella mouse
+    wrap.addEventListener('wheel', (e) => {
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
-      this.zoom(zoomFactor);
+      this.userZoom = Math.max(0.4, Math.min(4.0, this.userZoom * zoomFactor));
+      this.draw(currentStep, animProgress);
     }, { passive: false });
-  }
 
-  zoom(factor) {
-    this.userZoom = Math.max(0.5, Math.min(4.0, this.userZoom * factor));
-    this.draw(currentStep, animProgress);
-  }
+    // Touch per LIM (Pan con tocco)
+    wrap.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        this.isDragging = true;
+        this.dragStart = { x: e.touches[0].clientX - this.panX, y: e.touches[0].clientY - this.panY };
+      }
+    }, { passive: true });
 
-  resetZoom() {
-    this.userZoom = 1.0;
-    this.panX = 0;
-    this.panY = 0;
-    this.draw(currentStep, animProgress);
+    wrap.addEventListener('touchmove', (e) => {
+      if (!this.isDragging || e.touches.length !== 1) return;
+      this.panX = e.touches[0].clientX - this.dragStart.x;
+      this.panY = e.touches[0].clientY - this.dragStart.y;
+      this.draw(currentStep, animProgress);
+    }, { passive: true });
+
+    wrap.addEventListener('touchend', () => {
+      this.isDragging = false;
+    });
   }
 
   resize() {
-    const rect = this.wrap.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
-    this.dpr = window.devicePixelRatio || 1;
-
-    this.canvas.width = w * this.dpr;
-    this.canvas.height = h * this.dpr;
-    this.canvas.style.width = w + 'px';
-    this.canvas.style.height = h + 'px';
-
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    this.w = w;
-    this.h = h;
   }
 
+  // Centratura automatica della vista in base al passo
   updateTransform(step) {
     const frame = STEP_FRAMES[step] || STEP_FRAMES[1];
-    const margin = 36;
-    const availW = this.w - margin * 2;
-    const availH = this.h - margin * 2;
+    this.view.minX = frame.minX;
+    this.view.maxX = frame.maxX;
+    this.view.minY = frame.minY;
+    this.view.maxY = frame.maxY;
 
-    const rangeX = frame.maxX - frame.minX;
-    const rangeY = frame.maxY - frame.minY;
+    const spanX = this.view.maxX - this.view.minX;
+    const spanY = this.view.maxY - this.view.minY;
 
-    const baseUnit = Math.min(availW / rangeX, availH / rangeY);
-    this.unit = baseUnit * this.userZoom;
+    // Scala base per contenere la geometria
+    const scaleX = (this.width - 90) / spanX;
+    const scaleY = (this.height - 80) / spanY;
+    this.scale = Math.min(scaleX, scaleY) * this.userZoom;
 
-    const baseGridW = rangeX * this.unit;
-    const baseGridH = rangeY * this.unit;
+    // Offset per centrare nel canvas + pan utente
+    const centerX = (this.view.minX + this.view.maxX) / 2;
+    const centerY = (this.view.minY + this.view.maxY) / 2;
 
-    this.originX = (this.w - baseGridW) / 2 + Math.abs(frame.minX) * this.unit + this.panX;
-    this.originY = (this.h - baseGridH) / 2 + frame.maxY * this.unit + this.panY;
-    this.currentFrame = frame;
+    this.originScreenX = (this.width / 2) - (centerX * this.scale) + this.panX;
+    this.originScreenY = (this.height / 2) + (centerY * this.scale) + this.panY;
   }
 
   toScreen(x, y) {
     return {
-      x: this.originX + x * this.unit,
-      y: this.originY - y * this.unit
+      x: this.originScreenX + x * this.scale,
+      y: this.originScreenY - y * this.scale
     };
   }
 
   clear() {
-    this.ctx.clearRect(0, 0, this.w, this.h);
+    this.ctx.clearRect(0, 0, this.width, this.height);
   }
 
+  // Disegno Griglia Cartesiana con numerazione chiara
   drawGrid() {
     const ctx = this.ctx;
     const isDark = document.body.classList.contains('dark-mode');
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
 
-    const lineColor = isDark ? 'rgba(148, 163, 184, 0.14)' : '#e2e8f0';
-    const axisColor = isDark ? 'rgba(226, 232, 240, 0.95)' : '#1e293b';
-    const labelColor = isDark ? '#94a3b8' : '#64748b';
+    const gridColor = isDark ? '#1e293b' : '#e2e8f0';
+    const subGridColor = isDark ? '#162032' : '#f1f5f9';
+    const axisColor = isDark ? '#94a3b8' : '#334155';
+    const labelColor = isDark ? '#cbd5e1' : '#475569';
 
-    const startX = -2;
-    const endX = 12;
-    const startY = -2;
-    const endY = 11;
+    const startX = Math.floor(this.view.minX) - 2;
+    const endX = Math.ceil(this.view.maxX) + 3;
+    const startY = Math.floor(this.view.minY) - 2;
+    const endY = Math.ceil(this.view.maxY) + 2;
 
-    ctx.strokeStyle = lineColor;
+    // Linee griglia secondaria
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = subGridColor;
+    for (let x = startX; x <= endX; x += 0.5) {
+      if (Math.abs(x % 1) < 0.01) continue;
+      const p1 = this.toScreen(x, startY);
+      const p2 = this.toScreen(x, endY);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    for (let y = startY; y <= endY; y += 0.5) {
+      if (Math.abs(y % 1) < 0.01) continue;
+      const p1 = this.toScreen(startX, y);
+      const p2 = this.toScreen(endX, y);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+
+    // Linee griglia principale (interi)
     ctx.lineWidth = 1.2;
-
+    ctx.strokeStyle = gridColor;
     for (let x = startX; x <= endX; x++) {
       const p1 = this.toScreen(x, startY);
       const p2 = this.toScreen(x, endY);
@@ -1266,7 +1259,6 @@ class VectorExerciseCanvas {
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
     }
-
     for (let y = startY; y <= endY; y++) {
       const p1 = this.toScreen(startX, y);
       const p2 = this.toScreen(endX, y);
@@ -1276,9 +1268,9 @@ class VectorExerciseCanvas {
       ctx.stroke();
     }
 
-    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    // ASSI CARTESIANI X e Y
+    ctx.lineWidth = isFs ? 3.0 : 2.4;
     ctx.strokeStyle = axisColor;
-    ctx.lineWidth = isFs ? 3.5 : 2.8;
 
     // Asse X
     const xStart = this.toScreen(startX, 0);
@@ -1301,8 +1293,8 @@ class VectorExerciseCanvas {
     const axisFontSize = isFs ? 16 : 13;
     ctx.font = `bold ${axisFontSize}px "Share Tech Mono", monospace`;
     ctx.fillStyle = axisColor;
-    ctx.fillText('X (Newton)', xEnd.x - 65, xEnd.y + (isFs ? 26 : 22));
-    ctx.fillText('Y (Newton)', yEnd.x + (isFs ? 14 : 10), yEnd.y + 14);
+    ctx.fillText('X (metri)', xEnd.x - 65, xEnd.y + (isFs ? 26 : 22));
+    ctx.fillText('Y (metri)', yEnd.x + (isFs ? 14 : 10), yEnd.y + 14);
 
     const tickFontSize = isFs ? 14 : 11;
     ctx.font = `bold ${tickFontSize}px "Share Tech Mono", monospace`;
@@ -1334,123 +1326,131 @@ class VectorExerciseCanvas {
       ctx.stroke();
     }
 
-    // Origine O(0,0)
+    // Origine O(0, 0)
     const o = this.toScreen(0, 0);
-    ctx.font = `bold ${isFs ? 15 : 12}px "Share Tech Mono", monospace`;
-    ctx.fillStyle = isDark ? '#ffffff' : '#0f172a';
-    ctx.fillText('O(0,0)', o.x - 8, o.y + (isFs ? 18 : 14));
-
-    ctx.beginPath();
-    ctx.arc(o.x, o.y, isFs ? 6 : 5, 0, Math.PI * 2);
-    ctx.fillStyle = axisColor;
-    ctx.fill();
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('O(0,0)', o.x - 6, o.y + 6);
   }
 
-  drawArrow(fromX, fromY, toX, toY, color, width = 4, headSize = 15) {
-    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
-    const finalWidth = isFs ? width * 1.3 : width;
-    const finalHead = isFs ? headSize * 1.3 : headSize;
-
-    const ctx = this.ctx;
+  drawArrow(fromX, fromY, toX, toY, color, width = 4, arrowSize = 14) {
     const p1 = this.toScreen(fromX, fromY);
     const p2 = this.toScreen(toX, toY);
+    const ctx = this.ctx;
 
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 4) return;
+
+    ctx.save();
     ctx.strokeStyle = color;
-    ctx.lineWidth = finalWidth;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.stroke();
 
-    this.drawArrowHead(p1.x, p1.y, p2.x, p2.y, color, finalHead);
+    this.drawArrowHead(p1.x, p1.y, p2.x, p2.y, color, arrowSize);
+    ctx.restore();
   }
 
-  drawArrowHead(fromPxX, fromPxY, toPxX, toPxY, color, size = 15) {
+  drawArrowHead(fromX, fromY, toX, toY, color, size = 14) {
     const ctx = this.ctx;
-    const angle = Math.atan2(toPxY - fromPxY, toPxX - fromPxX);
+    const angle = Math.atan2(toY - fromY, toX - fromX);
 
+    ctx.save();
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.moveTo(toPxX, toPxY);
+    ctx.moveTo(toX, toY);
     ctx.lineTo(
-      toPxX - size * Math.cos(angle - Math.PI / 6),
-      toPxY - size * Math.sin(angle - Math.PI / 6)
+      toX - size * Math.cos(angle - Math.PI / 6),
+      toY - size * Math.sin(angle - Math.PI / 6)
     );
     ctx.lineTo(
-      toPxX - size * Math.cos(angle + Math.PI / 6),
-      toPxY - size * Math.sin(angle + Math.PI / 6)
+      toX - (size * 0.7) * Math.cos(angle),
+      toY - (size * 0.7) * Math.sin(angle)
+    );
+    ctx.lineTo(
+      toX - size * Math.cos(angle + Math.PI / 6),
+      toY - size * Math.sin(angle + Math.PI / 6)
     );
     ctx.closePath();
     ctx.fill();
+    ctx.restore();
   }
 
-  drawBadge(x, y, text, bgColor, textColor = '#ffffff', fontSize = 12) {
-    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
-    const finalFont = isFs ? fontSize + 3 : fontSize;
-
+  drawDashedLine(fromX, fromY, toX, toY, color, width = 2.5, pattern = [6, 6]) {
+    const p1 = this.toScreen(fromX, fromY);
+    const p2 = this.toScreen(toX, toY);
     const ctx = this.ctx;
-    const p = this.toScreen(x, y);
-
-    ctx.font = `bold ${finalFont}px "IBM Plex Mono", monospace`;
-    const tw = ctx.measureText(text).width;
-    const padX = isFs ? 10 : 8;
-    const padY = isFs ? 6 : 5;
-    const bw = tw + padX * 2;
-    const bh = finalFont + padY * 2;
 
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.22)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.setLineDash(pattern);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawBadge(x, y, text, bgColor = '#0f172a', textColor = '#ffffff', fontSize = 12) {
+    const p = this.toScreen(x, y);
+    const ctx = this.ctx;
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const fs = isFs ? fontSize + 3 : fontSize;
+
+    ctx.save();
+    ctx.font = `bold ${fs}px "IBM Plex Mono", monospace`;
+    const paddingX = 10;
+    const paddingY = 5;
+    const textW = ctx.measureText(text).width;
+    const w = textW + paddingX * 2;
+    const h = fs + paddingY * 2;
 
     ctx.fillStyle = bgColor;
     ctx.beginPath();
-    ctx.roundRect(p.x - bw / 2, p.y - bh / 2, bw, bh, 7);
+    ctx.roundRect(p.x - w / 2, p.y - h / 2, w, h, 6);
     ctx.fill();
 
-    ctx.restore();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
     ctx.fillStyle = textColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, p.x, p.y);
-  }
-
-  drawDashedLine(fromX, fromY, toX, toY, color = '#64748b', lineWidth = 2) {
-    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
-    const ctx = this.ctx;
-    const p1 = this.toScreen(fromX, fromY);
-    const p2 = this.toScreen(toX, toY);
-
-    ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = isFs ? lineWidth * 1.3 : lineWidth;
-    ctx.setLineDash([6, 5]);
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.stroke();
     ctx.restore();
   }
 
-  drawPointMarker(x, y, label, color = '#0f172a') {
-    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
-    const ctx = this.ctx;
+  drawPointMarker(x, y, label, color = '#0284c7', radius = 6) {
     const p = this.toScreen(x, y);
+    const ctx = this.ctx;
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const r = isFs ? radius + 2 : radius;
 
+    ctx.save();
     ctx.beginPath();
-    ctx.arc(p.x, p.y, isFs ? 7 : 5.5, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.fill();
-    ctx.lineWidth = isFs ? 2.5 : 2;
     ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.font = `bold ${isFs ? 16 : 13}px "IBM Plex Mono", monospace`;
+    const fontSize = isFs ? 14 : 11;
+    ctx.font = `bold ${fontSize}px "Share Tech Mono", monospace`;
     ctx.fillStyle = color;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
     ctx.fillText(` ${label}(${x}, ${y})`, p.x + 5, p.y - 5);
+    ctx.restore();
   }
 
   // ── DISEGNO DELLO SCENARIO ──
@@ -1468,64 +1468,64 @@ class VectorExerciseCanvas {
       this.ctx.arc(o.x, o.y, pulse, 0, Math.PI * 2);
       this.ctx.fillStyle = '#ea580c';
       this.ctx.fill();
-      this.drawBadge(0, -0.65, "Cassa nel Punto O(0,0)", "#0f172a", "#ffffff", 12);
+      this.drawBadge(0, -0.65, "Origine Comune O(0, 0)", "#0f172a", "#ffffff", 12);
       return;
     }
 
-    // STEP 2: Disegno delle due forze concorrenti F1 e F2 da O(0,0)
+    // STEP 2: Disegno dei due vettori a e b da O(0,0)
     if (step === 2) {
       const curX1 = 5 * progress;
       const curX2 = 3 * progress;
       const curY2 = 6 * progress;
 
-      // Forza F1 (blu)
-      this.drawArrow(0, 0, curX1, 0, PROBLEM2.f1.color, 4.8, 16);
+      // Vettore a (blu)
+      this.drawArrow(0, 0, curX1, 0, PROBLEM2.a.color, 4.8, 16);
       if (progress >= 0.98) {
-        this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
-        this.drawBadge(2.5, -0.45, "F₁ = (5, 0) N", PROBLEM2.f1.color, "#ffffff", 12);
+        this.drawPointMarker(5, 0, "A", PROBLEM2.a.color);
+        this.drawBadge(2.5, -0.45, "a = (5, 0) m", PROBLEM2.a.color, "#ffffff", 12);
       }
 
-      // Forza F2 (arancione)
-      this.drawArrow(0, 0, curX2, curY2, PROBLEM2.f2.color, 4.8, 16);
+      // Vettore b (arancione)
+      this.drawArrow(0, 0, curX2, curY2, PROBLEM2.b.color, 4.8, 16);
       if (progress >= 0.98) {
-        this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
-        this.drawBadge(1.2, 3.2, "F₂ = (3, 6) N", PROBLEM2.f2.color, "#ffffff", 12);
+        this.drawPointMarker(3, 6, "C", PROBLEM2.b.color);
+        this.drawBadge(1.2, 3.2, "b = (3, 6) m", PROBLEM2.b.color, "#ffffff", 12);
       }
       return;
     }
 
     // STEP 3: Tracciamento dei lati paralleli (completamento parallelogramma)
     if (step === 3) {
-      // Vettori F1 e F2 fissi
-      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 4, 14);
-      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 4, 14);
-      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
-      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
-      this.drawBadge(2.5, -0.45, "F₁ = 5 N", PROBLEM2.f1.color, "#ffffff", 11);
-      this.drawBadge(1.2, 3.2, "F₂ = (3, 6) N", PROBLEM2.f2.color, "#ffffff", 11);
+      // Vettori a e b fissi
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.a.color, 4, 14);
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.b.color, 4, 14);
+      this.drawPointMarker(5, 0, "A", PROBLEM2.a.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.b.color);
+      this.drawBadge(2.5, -0.45, "a = 5 m", PROBLEM2.a.color, "#ffffff", 11);
+      this.drawBadge(1.2, 3.2, "b = (3, 6) m", PROBLEM2.b.color, "#ffffff", 11);
 
-      // Parallela a F1 che parte da C(3, 6) verso D(8, 6)
+      // Parallela ad a che parte da C(3, 6) verso D(8, 6)
       const curTopX = 3 + 5 * progress;
       this.drawDashedLine(3, 6, curTopX, 6, '#0284c7', 3);
       if (progress > 0.4) {
-        this.drawBadge(3 + 2.5 * progress, 6.4, "parallela a F₁ (lunghezza 5)", "#0284c7", "#ffffff", 10);
+        this.drawBadge(3 + 2.5 * progress, 6.4, "parallela ad a (lunghezza 5 m)", "#0284c7", "#ffffff", 10);
       }
 
-      // Parallela a F2 che parte da A(5, 0) verso D(8, 6)
+      // Parallela a b che parte da A(5, 0) verso D(8, 6)
       const curRightX = 5 + 3 * progress;
       const curRightY = 0 + 6 * progress;
       this.drawDashedLine(5, 0, curRightX, curRightY, '#ea580c', 3);
       if (progress > 0.4) {
-        this.drawBadge(5 + 1.5 * progress, 3 * progress, "parallela a F₂", "#ea580c", "#ffffff", 10);
+        this.drawBadge(5 + 1.5 * progress, 3 * progress, "parallela a b", "#ea580c", "#ffffff", 10);
       }
 
       if (progress >= 0.98) {
-        this.drawPointMarker(8, 6, "D (intersezione)", '#16a34a');
+        this.drawPointMarker(8, 6, "D (vertice opposto)", '#16a34a');
       }
       return;
     }
 
-    // STEP 4: Diagonale Risultante R da O(0,0) a D(8,6)
+    // STEP 4: Diagonale Somma s da O(0,0) a D(8,6)
     if (step === 4) {
       // Sfondo parallelogramma ombreggiato
       const o = this.toScreen(0, 0);
@@ -1543,22 +1543,22 @@ class VectorExerciseCanvas {
       this.ctx.fill();
 
       // Vettori base e lati tratteggiati
-      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 3.8, 13);
-      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 3.8, 13);
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.a.color, 3.8, 13);
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.b.color, 3.8, 13);
       this.drawDashedLine(3, 6, 8, 6, '#0284c7', 2);
       this.drawDashedLine(5, 0, 8, 6, '#ea580c', 2);
 
-      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
-      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+      this.drawPointMarker(5, 0, "A", PROBLEM2.a.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.b.color);
       this.drawPointMarker(8, 6, "D", '#16a34a');
 
-      // Animazione della Diagonale Risultante R
+      // Animazione della Diagonale Somma s
       const curX = 8 * progress;
       const curY = 6 * progress;
-      this.drawArrow(0, 0, curX, curY, PROBLEM2.r.color, 5.2, 18);
+      this.drawArrow(0, 0, curX, curY, PROBLEM2.s.color, 5.2, 18);
 
       if (progress >= 0.98) {
-        this.drawBadge(3.8, 3.6, "RISULTANTE R = F₁ + F₂", PROBLEM2.r.color, "#ffffff", 13);
+        this.drawBadge(3.8, 3.6, "VETTORE SOMMA s = a + b", PROBLEM2.s.color, "#ffffff", 13);
       }
       return;
     }
@@ -1570,7 +1570,7 @@ class VectorExerciseCanvas {
       const d = this.toScreen(8, 6);
       const c = this.toScreen(3, 6);
 
-      // Triangolo inferiore 1 (F1 + F2)
+      // Triangolo inferiore 1 (a + b)
       this.ctx.fillStyle = 'rgba(2, 132, 199, 0.1)';
       this.ctx.beginPath();
       this.ctx.moveTo(o.x, o.y);
@@ -1579,7 +1579,7 @@ class VectorExerciseCanvas {
       this.ctx.closePath();
       this.ctx.fill();
 
-      // Triangolo superiore 2 (F2 + F1)
+      // Triangolo superiore 2 (b + a)
       this.ctx.fillStyle = 'rgba(234, 88, 12, 0.1)';
       this.ctx.beginPath();
       this.ctx.moveTo(o.x, o.y);
@@ -1589,26 +1589,26 @@ class VectorExerciseCanvas {
       this.ctx.fill();
 
       // Frecce sui 4 lati del parallelogramma (due percorsi punta-coda)
-      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 3.8, 13);
-      this.drawArrow(5, 0, 8, 6, PROBLEM2.f2.color, 3.8, 13); // F2 traslato a destra
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.a.color, 3.8, 13);
+      this.drawArrow(5, 0, 8, 6, PROBLEM2.b.color, 3.8, 13); // b traslato a destra
 
-      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 3.8, 13);
-      this.drawArrow(3, 6, 8, 6, PROBLEM2.f1.color, 3.8, 13); // F1 traslato in alto
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.b.color, 3.8, 13);
+      this.drawArrow(3, 6, 8, 6, PROBLEM2.a.color, 3.8, 13); // a traslato in alto
 
-      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
-      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+      this.drawPointMarker(5, 0, "A", PROBLEM2.a.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.b.color);
       this.drawPointMarker(8, 6, "D", '#16a34a');
 
       // Diagonale centrale
-      this.drawArrow(0, 0, 8, 6, PROBLEM2.r.color, 5, 17);
+      this.drawArrow(0, 0, 8, 6, PROBLEM2.s.color, 5, 17);
 
-      this.drawBadge(3.2, 1.4, "Percorso 1: F₁ + F₂", "#0284c7", "#ffffff", 11);
-      this.drawBadge(4.8, 5.2, "Percorso 2: F₂ + F₁", "#ea580c", "#ffffff", 11);
-      this.drawBadge(4.0, 3.3, "R = F₁ + F₂ = F₂ + F₁", PROBLEM2.r.color, "#ffffff", 13);
+      this.drawBadge(3.2, 1.4, "Percorso 1: a + b", "#0284c7", "#ffffff", 11);
+      this.drawBadge(4.8, 5.2, "Percorso 2: b + a", "#ea580c", "#ffffff", 11);
+      this.drawBadge(4.0, 3.3, "s = a + b = b + a", PROBLEM2.s.color, "#ffffff", 13);
       return;
     }
 
-    // STEP 6: Teorema di Pitagora sulla Diagonale R = (8, 6) -> 10 N
+    // STEP 6: Teorema di Pitagora sulla Diagonale s = (8, 6) -> 10 m
     if (step === 6) {
       const o = this.toScreen(0, 0);
       const pCorner = this.toScreen(8, 0);
@@ -1639,15 +1639,15 @@ class VectorExerciseCanvas {
       this.drawDashedLine(0, 0, 8, 0, '#16a34a', 3.2);
       this.drawDashedLine(8, 0, 8, 6, '#16a34a', 3.2);
 
-      this.drawBadge(4, -0.48, "Cateto X_tot = 5 + 3 = 8 N", "#16a34a", "#ffffff", 12);
-      this.drawBadge(8.9, 3, "Cateto Y_tot = 0 + 6 = 6 N", "#16a34a", "#ffffff", 12);
+      this.drawBadge(4, -0.48, "Cateto s_x = 5 + 3 = 8 m", "#16a34a", "#ffffff", 12);
+      this.drawBadge(8.9, 3, "Cateto s_y = 0 + 6 = 6 m", "#16a34a", "#ffffff", 12);
 
-      // Diagonale risultante definitiva
-      this.drawArrow(0, 0, 8, 6, PROBLEM2.r.color, 5.5, 19);
-      this.drawPointMarker(8, 6, "D(8, 6)", PROBLEM2.r.color);
+      // Diagonale somma definitiva
+      this.drawArrow(0, 0, 8, 6, PROBLEM2.s.color, 5.5, 19);
+      this.drawPointMarker(8, 6, "D(8, 6)", PROBLEM2.s.color);
 
-      // Badge modulo finale 10 N
-      this.drawBadge(3.6, 3.8, "|R| = 10 N (Forza Risultante)", "#15803d", "#ffffff", 14);
+      // Badge modulo finale 10 m
+      this.drawBadge(3.6, 3.8, "|s| = 10 m (Vettore Somma)", "#15803d", "#ffffff", 14);
     }
   }
 }
@@ -1659,27 +1659,34 @@ let vCanvas = null;
 // ═══════════════════════════════════════════════════════════
 
 function startStepAnimation() {
-  if (animId) cancelAnimationFrame(animId);
+  if (animRunning) {
+    cancelAnimationFrame(animId);
+    animRunning = false;
+  }
   animStartTime = performance.now();
-  animProgress = 0;
   animRunning = true;
+  animProgress = 0;
 
-  function loop(now) {
+  function frame(now) {
     const elapsed = now - animStartTime;
-    animProgress = Math.min(1, elapsed / animDuration);
-    const eased = 1 - (1 - animProgress) * (1 - animProgress);
+    const t = Math.min(1, elapsed / animDuration);
+    // Easing cubic out
+    animProgress = 1 - Math.pow(1 - t, 3);
 
-    vCanvas.draw(currentStep, eased);
+    if (vCanvas) {
+      vCanvas.draw(currentStep, animProgress);
+    }
 
-    if (animProgress < 1) {
-      animId = requestAnimationFrame(loop);
+    if (t < 1) {
+      animId = requestAnimationFrame(frame);
     } else {
+      animProgress = 1;
       animRunning = false;
-      vCanvas.draw(currentStep, 1);
+      if (vCanvas) vCanvas.draw(currentStep, 1);
     }
   }
 
-  animId = requestAnimationFrame(loop);
+  animId = requestAnimationFrame(frame);
 }
 
 function replayCurrentStepAnimation() {
@@ -1687,15 +1694,21 @@ function replayCurrentStepAnimation() {
 }
 
 function zoomCanvas(factor) {
-  if (vCanvas) vCanvas.zoom(factor);
+  if (!vCanvas) return;
+  vCanvas.userZoom = Math.max(0.4, Math.min(4.0, vCanvas.userZoom * factor));
+  vCanvas.draw(currentStep, animProgress);
 }
 
 function resetCanvasZoom() {
-  if (vCanvas) vCanvas.resetZoom();
+  if (!vCanvas) return;
+  vCanvas.userZoom = 1.0;
+  vCanvas.panX = 0;
+  vCanvas.panY = 0;
+  vCanvas.draw(currentStep, animProgress);
 }
 
 // ═══════════════════════════════════════════════════════════
-// RENDERING STEP & MATH (KATEX)
+// RENDERING DEL PASSO DIDATTICO ATTUALE
 // ═══════════════════════════════════════════════════════════
 
 function renderStep(stepIndex) {
@@ -1706,19 +1719,19 @@ function renderStep(stepIndex) {
   document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
   document.getElementById('stepCardBody').innerHTML = data.render();
 
-  // KaTeX rendering condizionale
+  // KaTeX rendering formule del modulo (Passo 6)
   if (window.katex) {
     if (stepIndex === 6) {
-      katex.render("|\\vec{R}| = \\sqrt{X_{\\text{tot}}^2 + Y_{\\text{tot}}^2}", document.getElementById('mathR1'), { displayMode: true });
-      katex.render("|\\vec{R}| = \\sqrt{8^2 + 6^2} = \\sqrt{64 + 36} = \\sqrt{100}", document.getElementById('mathR2'), { displayMode: true });
-      katex.render("|\\vec{R}| = 10\\text{ N}", document.getElementById('mathR3'), { displayMode: true });
+      katex.render("|\vec{s}| = \sqrt{s_x^2 + s_y^2}", document.getElementById('mathR1'), { displayMode: true });
+      katex.render("|\vec{s}| = \sqrt{8^2 + 6^2} = \sqrt{64 + 36} = \sqrt{100}", document.getElementById('mathR2'), { displayMode: true });
+      katex.render("|\vec{s}| = 10\text{ m}", document.getElementById('mathR3'), { displayMode: true });
     }
   } else {
     const mr1 = document.getElementById('mathR1');
     if (mr1) {
-      mr1.innerHTML = '<strong>|R| = √(X_tot² + Y_tot²)</strong>';
-      document.getElementById('mathR2').innerHTML = '|R| = √(8² + 6²) = √(64 + 36) = √100';
-      document.getElementById('mathR3').innerHTML = '<strong>|R| = 10 N</strong>';
+      mr1.innerHTML = '<strong>|s| = √(s_x² + s_y²)</strong>';
+      document.getElementById('mathR2').innerHTML = '|s| = √(8² + 6²) = √(64 + 36) = √100';
+      document.getElementById('mathR3').innerHTML = '<strong>|s| = 10 m</strong>';
     }
   }
 
@@ -1727,8 +1740,8 @@ function renderStep(stepIndex) {
     try {
       renderMathInElement(document.getElementById('stepCardBody'), {
         delimiters: [
-          { left: '\\(', right: '\\)', display: false },
-          { left: '\\[', right: '\\]', display: true }
+          { left: '\(', right: '\)', display: false },
+          { left: '\[', right: '\]', display: true }
         ],
         throwOnError: false
       });
@@ -1769,7 +1782,6 @@ function renderStep(stepIndex) {
     vCanvas.panY = 0;
   }
 
-  // Avvia animazione
   startStepAnimation();
 }
 
@@ -1782,11 +1794,11 @@ function renderStepsPills() {
 
   const pillLabels = [
     '1. Dati',
-    '2. F₁ & F₂',
+    '2. a & b',
     '3. Parallelogramma',
-    '4. Diagonale R',
+    '4. Diagonale s',
     '5. Commutativa',
-    '6. Modulo 10 N'
+    '6. Modulo'
   ];
 
   for (let i = 1; i <= TOTAL_STEPS; i++) {
@@ -1796,6 +1808,7 @@ function renderStepsPills() {
     btn.onclick = () => goToStep(i);
     bar.appendChild(btn);
 
+    // Pill circolare fluttuante (HUD fullscreen)
     const hudP = document.createElement('button');
     hudP.className = `hud-pill ${i === currentStep ? 'active' : ''}`;
     hudP.textContent = i;
@@ -1852,9 +1865,10 @@ function toggleFullscreen() {
       vCanvas.resize();
       vCanvas.draw(currentStep, 1);
     }
-  }, 120);
+  }, 150);
 }
 
+// Sincronizza classe quando l'utente preme ESC o tasto F11 di sistema
 document.addEventListener('fullscreenchange', () => {
   const isFs = !!document.fullscreenElement;
   document.body.classList.toggle('is-fullscreen', isFs);
@@ -1863,19 +1877,19 @@ document.addEventListener('fullscreenchange', () => {
       vCanvas.resize();
       vCanvas.draw(currentStep, 1);
     }
-  }, 120);
+  }, 100);
 });
 
-let textScaleLevel = 0;
+let textSizeLevel = 0; // 0 = standard, 1 = large, 2 = extra-large
 function toggleTextSize() {
-  textScaleLevel = (textScaleLevel + 1) % 3;
+  textSizeLevel = (textSizeLevel + 1) % 3;
   document.body.classList.remove('font-large', 'font-extra-large');
-  if (textScaleLevel === 1) {
+  if (textSizeLevel === 1) {
     document.body.classList.add('font-large');
     document.getElementById('textScaleIcon').textContent = 'A++';
-  } else if (textScaleLevel === 2) {
+  } else if (textSizeLevel === 2) {
     document.body.classList.add('font-extra-large');
-    document.getElementById('textScaleIcon').textContent = 'A-';
+    document.getElementById('textScaleIcon').textContent = 'A';
   } else {
     document.getElementById('textScaleIcon').textContent = 'A+';
   }

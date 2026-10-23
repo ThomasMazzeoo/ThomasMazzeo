@@ -396,7 +396,7 @@ const MATERIE = [
 
                     title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
 
-                    desc: "Risoluzione animata passo-passo per LIM: forze concorrenti applicate allo stesso punto, costruzione del parallelogramma, proprietà commutativa e diagonale risultante.",
+                    desc: "Risoluzione animata passo-passo per LIM: vettori con origine comune sul piano cartesiano, costruzione geometrica del parallelogramma, diagonale risultante e proprietà commutativa.",
 
                     url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
 
