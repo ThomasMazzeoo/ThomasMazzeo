@@ -380,6 +380,16 @@ const MATERIE = [
 
                     url: "/fisica/giordano-bruno/vettori-parte-2.html"
 
+                  },
+
+                  {
+
+                    title: "📐 Esercizio Guidato LIM: La Prima Parte dei Vettori",
+
+                    desc: "Risoluzione animata passo-passo ottimizzata per LIM: coordinate cartesiane, modulo con Pitagora, metodo punta-coda e vettore risultante.",
+
+                    url: "/fisica/giordano-bruno/esercizio-vettori-1.html"
+
                   }
 
                 ]
