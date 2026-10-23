@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sicurezza Informatica — Autenticazione e Identità Digitale</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    ROOT & RESET
@@ -20,15 +22,22 @@
   --r:    #ff3333;
   --rdim: #990000;
   --rglo: rgba(255,51,51,.15);
-  --bg:   #000;
-  --bgc:  #050f05;
-  --bdr:  rgba(0,255,65,.18);
+  --bg:   #020904;
+  --bgc:  #08170d;
+  --bdr:  rgba(0,255,65,.24);
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fm:   'Share Tech Mono','Courier New',monospace;
   --fv:   'VT323',monospace;
-  --hh:   46px;   /* header height */
-  --fh:   28px;   /* footer height */
+  --hh:   48px;   /* header height */
+  --fh:   30px;   /* footer height */
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--g);font-family:var(--fm)}
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  background:var(--bg);color:#f1f5f9;
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px)
@@ -44,9 +53,9 @@ body::before{
   padding:0 18px;z-index:200
 }
 .logo{font-family:var(--fv);font-size:1.4rem;color:var(--g);text-shadow:0 0 8px var(--g);letter-spacing:2px}
-.hd-right{display:flex;align-items:center;gap:12px}
-#slide-section{font-size:.72rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
-#num{font-size:.78rem;color:var(--gdim);letter-spacing:1px;white-space:nowrap;user-select:none;min-width:88px;text-align:center}
+.hd-right{display:flex;align-items:center;gap:10px}
+#slide-section{font-family:var(--fm);font-size:.78rem;color:var(--adim);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
+#num{font-family:var(--fm);font-size:.82rem;color:var(--gdim);letter-spacing:1px;white-space:nowrap;user-select:none;min-width:88px;text-align:center}
 .blink{animation:blink 1s step-end infinite}
 @keyframes blink{50%{opacity:0}}
 
@@ -59,9 +68,9 @@ body::before{
 }
 .nb{
   background:var(--bgc);border:1px solid var(--bdr);color:var(--g);
-  font-family:var(--fv);font-size:1.15rem;width:30px;height:30px;
+  font-family:var(--fv);font-size:1.25rem;width:32px;height:32px;
   cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
-  transition:all .18s;border-radius:3px;padding:0;line-height:1;
+  transition:all .18s;border-radius:4px;padding:0;line-height:1;
 }
 .nb:hover:not(:disabled){background:var(--gglo);border-color:var(--g);box-shadow:0 0 8px var(--g)}
 .nb:disabled{opacity:.25;cursor:not-allowed}
@@ -74,10 +83,10 @@ body::before{
   background:var(--bg);border-top:1px solid var(--bdr);
   display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200
 }
-#pt{flex:1;height:7px;background:var(--gdk);border:1px solid rgba(0,255,65,.2)}
-#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 5px var(--g)}
-#pp{font-size:.68rem;color:var(--g);min-width:32px;text-align:right}
-.flbl{font-size:.68rem;color:var(--gdim);white-space:nowrap}
+#pt{flex:1;height:8px;background:var(--gdk);border:1px solid rgba(0,255,65,.25);border-radius:3px;overflow:hidden}
+#pf{height:100%;background:var(--g);transition:width .4s ease;box-shadow:0 0 6px var(--g)}
+#pp{font-family:var(--fm);font-size:.74rem;color:var(--g);min-width:36px;text-align:right;font-weight:bold}
+.flbl{font-family:var(--fm);font-size:.74rem;color:var(--gdim);white-space:nowrap;letter-spacing:1px}
 
 /* ============================================================
    STAGE & SLIDE BASE
@@ -85,89 +94,116 @@ body::before{
 #stage{position:fixed;top:var(--hh);left:0;right:0;bottom:var(--fh);overflow:hidden}
 .slide{
   position:absolute;inset:0;
-  padding:18px 40px 12px 40px;
+  padding:20px 48px 16px 48px;
   display:flex;flex-direction:column;gap:0;
   opacity:0;transform:translateX(50px);
   transition:opacity .32s ease,transform .32s ease;
-  pointer-events:none;overflow:hidden
+  pointer-events:none;overflow-y:auto;overflow-x:hidden
 }
+.slide::-webkit-scrollbar{width:6px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:rgba(0,255,65,.25);border-radius:3px}
 .slide.active{opacity:1;transform:translateX(0);pointer-events:all}
 .slide.exit-left{opacity:0;transform:translateX(-50px)}
 
 /* ============================================================
-   TIPOGRAFIA — GRANDE per LIM
+   TIPOGRAFIA — GRANDE & AD ALTO CONTRASTO per LIM / PROIETTORE
    ============================================================ */
-.tag{font-size:.68rem;color:var(--gdim);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;flex-shrink:0}
+.tag{font-family:var(--fm);font-size:.82rem;color:var(--g);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;flex-shrink:0;font-weight:700;display:inline-flex;align-items:center;gap:8px}
 .title{
-  font-family:var(--fv);font-size:2.6rem;color:var(--g);
-  text-shadow:0 0 16px var(--g);line-height:1.05;
-  border-bottom:1px solid var(--bdr);padding-bottom:8px;margin-bottom:14px;flex-shrink:0
+  font-family:var(--font-body);font-size:clamp(2rem,3.2vw,2.75rem);font-weight:800;color:#ffffff;
+  letter-spacing:-0.5px;line-height:1.16;
+  border-bottom:2px solid var(--bdr);padding-bottom:10px;margin-bottom:16px;flex-shrink:0
 }
-.title .a{color:var(--a);text-shadow:0 0 14px var(--adim)}
-.title .r{color:var(--r);text-shadow:0 0 14px var(--rdim)}
+.title .a{color:var(--a);text-shadow:0 0 16px rgba(255,176,0,.35)}
+.title .r{color:#f87171;text-shadow:0 0 16px rgba(248,113,113,.35)}
 
-/* Testo corpo: generoso per leggibilità a 3m */
-.slide p{font-size:1.08rem;line-height:1.6;color:#c8ffc8;margin-bottom:8px}
+/* Testo corpo: generoso per leggibilità su LIM */
+.slide p{font-size:clamp(1.15rem,1.4vw,1.28rem);line-height:1.62;color:#f1f5f9;margin-bottom:12px;font-weight:400}
 .slide p:last-child{margin-bottom:0}
+.slide strong{font-weight:700;color:#ffffff}
 
-ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
-ul.pts li{font-size:1.05rem;line-height:1.5;color:#c8ffc8;padding-left:28px;position:relative}
-ul.pts li::before{content:'▶';position:absolute;left:0;color:var(--g)}
-ul.pts li.d::before{content:'✖';color:var(--r)}
-ul.pts li.w::before{content:'⚠';color:var(--a)}
-ul.pts li.k::before{content:'✔';color:var(--g)}
-ul.pts li.i::before{content:'◆';color:var(--a)}
+ul.pts{list-style:none;padding:0;display:flex;flex-direction:column;gap:12px}
+ul.pts li{font-size:clamp(1.15rem,1.35vw,1.24rem);line-height:1.55;color:#f1f5f9;padding-left:32px;position:relative;font-weight:400}
+ul.pts li::before{content:'▶';position:absolute;left:2px;top:1px;color:var(--g);font-size:1rem}
+ul.pts li.d::before{content:'✖';color:#ef4444;font-weight:800}
+ul.pts li.w::before{content:'⚠';color:#f59e0b;font-weight:800}
+ul.pts li.k::before{content:'✔';color:#10b981;font-weight:800}
+ul.pts li.i::before{content:'◆';color:#38bdf8}
 
-.hl{color:var(--a);font-weight:bold}
-.rd{color:var(--r)}
-.gn{color:var(--g)}
-code{font-family:var(--fm);color:var(--a);font-size:.92em}
+.hl{color:var(--a);font-weight:700}
+.rd{color:#f87171;font-weight:700}
+.gn{color:#4ade80;font-weight:700}
+code{font-family:var(--fm);color:#fef08a;background:rgba(255,255,255,.08);padding:2px 7px;border-radius:4px;font-size:.95em;border:1px solid rgba(255,255,255,.15)}
 
 /* Callout box */
 .box{
-  border:1px solid rgba(0,255,65,.3);background:var(--gglo);
-  padding:10px 16px;border-left:3px solid var(--g);flex-shrink:0
+  border:1.5px solid rgba(0,255,65,.35);background:rgba(0,255,65,.08);
+  padding:14px 18px;border-left:5px solid var(--g);border-radius:8px;
+  font-size:clamp(1.1rem,1.3vw,1.2rem);line-height:1.55;color:#f1f5f9;flex-shrink:0
 }
-.box.d{border-color:var(--r);background:var(--rglo);border-left-color:var(--r)}
-.box.a{border-color:var(--a);background:rgba(255,176,0,.07);border-left-color:var(--a);color:var(--a)}
+.box.d{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);border-left-color:#ef4444;color:#fee2e2}
+.box.a{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.12);border-left-color:#f59e0b;color:#fef3c7}
+.box.k{border-color:rgba(16,185,129,.45);background:rgba(16,185,129,.12);border-left-color:#10b981;color:#d1fae5}
 
-/* Griglia 2 e 3 colonne */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;min-height:0}
+/* Griglie */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;min-height:0}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;flex:1;min-height:0}
 
 /* Card */
-.card{background:var(--bgc);border:1px solid var(--bdr);padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
-.ctitle{font-family:var(--fv);font-size:1.5rem;color:var(--a);margin-bottom:8px;border-bottom:1px solid var(--bdr);padding-bottom:4px;flex-shrink:0}
+.card{
+  background:rgba(8,24,14,.88);border:1.5px solid rgba(0,255,65,.28);
+  border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);backdrop-filter:blur(8px)
+}
+.ctitle{
+  font-family:var(--font-body);font-size:1.45rem;font-weight:800;color:var(--a);
+  margin-bottom:4px;border-bottom:1.5px solid rgba(255,176,0,.28);padding-bottom:8px;
+  flex-shrink:0;letter-spacing:-0.2px;display:flex;align-items:center;gap:8px
+}
 
 /* Step list */
-.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps{counter-reset:s;list-style:none;padding:0;display:flex;flex-direction:column;gap:12px}
 .steps li{
-  counter-increment:s;padding:5px 8px 5px 38px;position:relative;
-  border-left:2px solid var(--gdk);font-size:1rem;line-height:1.45;color:#c8ffc8
+  counter-increment:s;padding:8px 14px 8px 46px;position:relative;
+  border-left:3px solid rgba(0,255,65,.35);font-size:clamp(1.12rem,1.3vw,1.22rem);
+  line-height:1.55;color:#f1f5f9;font-weight:400;background:rgba(0,255,65,.04);border-radius:0 8px 8px 0
 }
 .steps li::before{
-  content:counter(s);position:absolute;left:-1px;top:5px;
-  background:var(--g);color:var(--bg);
-  width:24px;height:24px;display:flex;align-items:center;
-  justify-content:center;font-size:.78rem;font-weight:bold;border-radius:2px
+  content:counter(s);position:absolute;left:-2px;top:9px;
+  background:var(--g);color:#000;
+  width:28px;height:28px;display:flex;align-items:center;
+  justify-content:center;font-size:.95rem;font-weight:800;font-family:var(--font-body);
+  border-radius:6px;box-shadow:0 0 10px rgba(0,255,65,.4)
 }
 
 /* Tabella */
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{background:var(--gdk);color:var(--g);padding:6px 12px;text-align:left;border:1px solid var(--bdr);font-size:.82rem;letter-spacing:1px}
-.tbl td{padding:5px 12px;border:1px solid var(--bdr);font-size:.95rem;color:#c8ffc8}
-.tbl tr:nth-child(even) td{background:var(--gglo)}
-.tr{color:var(--r)!important}.ta{color:var(--a)!important}.tg{color:var(--g)!important}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;border-radius:8px;overflow:hidden;border:1.5px solid var(--bdr)}
+.tbl th{background:rgba(0,58,15,.9);color:var(--g);padding:11px 16px;text-align:left;font-size:1.05rem;letter-spacing:1px;font-weight:700;border-bottom:1.5px solid var(--bdr)}
+.tbl td{padding:10px 16px;border-bottom:1px solid rgba(0,255,65,.15);font-size:1.18rem;color:#f1f5f9}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:nth-child(even) td{background:rgba(0,255,65,.05)}
+.tr{color:#f87171!important;font-weight:700}.ta{color:#fbbf24!important;font-weight:700}.tg{color:#4ade80!important;font-weight:700}
 
 /* Util */
 .mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
 .mb6{margin-bottom:6px}.mb8{margin-bottom:8px}
 .flex1{flex:1;min-height:0}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.big{font-family:var(--fv);font-size:3rem;line-height:1;color:var(--a);text-shadow:0 0 16px var(--adim)}
-.huge{font-family:var(--fv);font-size:4rem;line-height:1;color:var(--r);text-shadow:0 0 20px var(--rdim)}
+.big{font-family:var(--font-body);font-weight:900;font-size:3.5rem;line-height:1;color:var(--a);text-shadow:0 0 16px rgba(255,176,0,.4)}
+.huge{font-family:var(--font-body);font-weight:900;font-size:3.5rem;line-height:1;color:#f87171;text-shadow:0 0 20px rgba(248,113,113,.4)}
 .center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+
+/* Scala Caratteri LIM */
+body.font-scale-1 .slide p,
+body.font-scale-1 ul.pts li,
+body.font-scale-1 .steps li{font-size:1.35rem!important}
+body.font-scale-1 .ctitle{font-size:1.6rem!important}
+body.font-scale-2 .slide p,
+body.font-scale-2 ul.pts li,
+body.font-scale-2 .steps li{font-size:1.5rem!important}
+body.font-scale-2 .ctitle{font-size:1.75rem!important}
 
 /* ============================================================
    SLIDE 0 — COPERTINA
@@ -530,19 +566,19 @@ code{font-family:var(--fm);color:var(--a);font-size:.92em}
 }
 
 body.light-theme {
-  --bg:   #ffffff;
-  --bgc:  #f8fafc;
+  --bg:   #f8fafc;
+  --bgc:  #ffffff;
   --bdr:  #cbd5e1;
-  --g:    #047857;
-  --gdim: #065f46;
-  --gdk:  #d1fae5;
-  --gglo: rgba(4, 120, 87, 0.08);
-  --a:    #b45309;
-  --adim: #92400e;
+  --g:    #059669;
+  --gdim: #047857;
+  --gdk:  #e2e8f0;
+  --gglo: rgba(5, 150, 105, 0.08);
+  --a:    #d97706;
+  --adim: #b45309;
   --r:    #dc2626;
   --rdim: #991b1b;
   --rglo: rgba(220, 38, 38, 0.08);
-  background: #ffffff !important;
+  background: #f8fafc !important;
   color: #0f172a !important;
 }
 
@@ -563,8 +599,8 @@ body.light-theme .theme-toggle-btn {
 }
 body.light-theme .theme-toggle-btn:hover {
   background: #e2e8f0;
-  border-color: #047857;
-  color: #047857;
+  border-color: #059669;
+  color: #059669;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -574,16 +610,19 @@ body.light-theme .steps li,
 body.light-theme .tbl td,
 body.light-theme .pml,
 body.light-theme .flbl {
-  color: #1e293b !important;
+  color: #0f172a !important;
+}
+body.light-theme .slide strong {
+  color: #0f172a !important;
 }
 
 body.light-theme .title {
-  color: #065f46 !important;
+  color: #0f172a !important;
   text-shadow: none !important;
   border-bottom-color: #cbd5e1 !important;
 }
 body.light-theme .title .a {
-  color: #b45309 !important;
+  color: #d97706 !important;
   text-shadow: none !important;
 }
 body.light-theme .title .r {
@@ -591,26 +630,26 @@ body.light-theme .title .r {
   text-shadow: none !important;
 }
 body.light-theme .tag {
-  color: #047857 !important;
+  color: #059669 !important;
   font-weight: 700;
 }
 body.light-theme .logo {
-  color: #047857 !important;
+  color: #059669 !important;
   text-shadow: none !important;
 }
 body.light-theme #slide-section {
-  color: #b45309 !important;
+  color: #d97706 !important;
 }
 body.light-theme #num {
   color: #475569 !important;
 }
 
 body.light-theme .cover-title {
-  color: #047857 !important;
+  color: #059669 !important;
   text-shadow: none !important;
 }
 body.light-theme .cover-sub {
-  color: #b45309 !important;
+  color: #d97706 !important;
   text-shadow: none !important;
 }
 body.light-theme .cover-icon {
@@ -621,45 +660,54 @@ body.light-theme .cover-meta {
   color: #64748b !important;
 }
 body.light-theme .typing {
-  color: #047857 !important;
-  border-right-color: #047857 !important;
+  color: #059669 !important;
+  border-right-color: #059669 !important;
 }
 
 body.light-theme .card {
   background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
 }
 body.light-theme .ctitle {
-  color: #b45309 !important;
+  color: #0f172a !important;
   border-bottom-color: #e2e8f0 !important;
 }
 
 body.light-theme .box {
-  background: #f0fdf4 !important;
-  border: 1px solid #86efac !important;
-  border-left: 3px solid #059669 !important;
-  color: #065f46 !important;
+  background: #ecfdf5 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  border-left: 5px solid #059669 !important;
+  color: #064e3b !important;
 }
 body.light-theme .box.d {
   background: #fef2f2 !important;
-  border-color: #fca5a5 !important;
-  border-left-color: #dc2626 !important;
+  border: 1.5px solid #fecaca !important;
+  border-left: 5px solid #dc2626 !important;
   color: #991b1b !important;
 }
 body.light-theme .box.a {
   background: #fffbeb !important;
-  border-color: #fde68a !important;
-  border-left-color: #d97706 !important;
+  border: 1.5px solid #fef3c7 !important;
+  border-left: 5px solid #d97706 !important;
   color: #92400e !important;
+}
+body.light-theme .box.k {
+  background: #ecfdf5 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  border-left: 5px solid #059669 !important;
+  color: #064e3b !important;
 }
 
 body.light-theme .steps li {
-  border-left-color: #cbd5e1 !important;
+  background: #f1f5f9 !important;
+  border-left-color: #059669 !important;
+  color: #0f172a !important;
 }
 body.light-theme .steps li::before {
   background: #059669 !important;
   color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3) !important;
 }
 
 body.light-theme .tbl th {
@@ -669,6 +717,7 @@ body.light-theme .tbl th {
 }
 body.light-theme .tbl td {
   border-color: #e2e8f0 !important;
+  color: #0f172a !important;
 }
 body.light-theme .tbl tr:nth-child(even) td {
   background: #f8fafc !important;
@@ -681,8 +730,8 @@ body.light-theme .back-link-terminal {
 }
 body.light-theme .back-link-terminal:hover {
   background: #e2e8f0 !important;
-  color: #047857 !important;
-  border-color: #047857 !important;
+  color: #059669 !important;
+  border-color: #059669 !important;
   box-shadow: none !important;
 }
 
@@ -693,7 +742,7 @@ body.light-theme .nb {
 }
 body.light-theme .nb:hover {
   background: #e2e8f0 !important;
-  color: #047857 !important;
+  color: #059669 !important;
   box-shadow: none !important;
 }
 
@@ -710,7 +759,7 @@ body.light-theme .sin:focus {
 body.light-theme .sbtn {
   background: #f1f5f9 !important;
   border-color: #059669 !important;
-  color: #047857 !important;
+  color: #059669 !important;
 }
 body.light-theme .sbtn:hover {
   background: #059669 !important;
@@ -796,7 +845,7 @@ body.light-theme #tfa-login {
 body.light-theme .rc {
   background: #ffffff !important;
   border-color: #cbd5e1 !important;
-  border-left: 3px solid #059669 !important;
+  border-left: 4px solid #059669 !important;
 }
 body.light-theme .rc.rr { border-left-color: #dc2626 !important; }
 body.light-theme .rc.ra { border-left-color: #d97706 !important; }
@@ -806,7 +855,7 @@ body.light-theme .rc h3 {
 }
 
 body.light-theme .big {
-  color: #b45309 !important;
+  color: #d97706 !important;
   text-shadow: none !important;
 }
 body.light-theme .huge {
@@ -919,7 +968,7 @@ body.light-theme .da-file-line .da-ln {
   color: #94a3b8 !important;
 }
 body.light-theme .da-file-line .da-lw {
-  color: #1e293b !important;
+  color: #0f172a !important;
 }
 body.light-theme .da-file-line.da-line-scanning {
   background: #fef3c7 !important;
@@ -950,8 +999,8 @@ body.light-theme .preset-chip {
 }
 body.light-theme .preset-chip:hover {
   background: #e2e8f0 !important;
-  border-color: #047857 !important;
-  color: #047857 !important;
+  border-color: #059669 !important;
+  color: #059669 !important;
 }
 body.light-theme .preset-chip.bad {
   color: #dc2626 !important;
@@ -963,7 +1012,7 @@ body.light-theme .preset-chip.bad:hover {
   border-color: #dc2626 !important;
 }
 body.light-theme .preset-chip.win {
-  color: #047857 !important;
+  color: #059669 !important;
   border-color: #059669 !important;
   background: #f0fdf4 !important;
 }
@@ -1473,6 +1522,9 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   if (localStorage.getItem('sec_slides_theme') === 'light') {
     document.body.classList.add('light-theme');
   }
+  const savedScale = localStorage.getItem('sec_slides_font_scale');
+  if (savedScale === '1') document.body.classList.add('font-scale-1');
+  else if (savedScale === '2') document.body.classList.add('font-scale-2');
 </script>
 
 <!-- HEADER -->
@@ -1488,6 +1540,10 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
     </button>
     <button type="button" id="wb-open-btn" class="lim-hdr-btn white-btn" onclick="openWhiteboard()" title="Apri foglio bianco per appunti e schemi (tasto W o B)">
       📄 FOGLIO BIANCO
+    </button>
+    <button type="button" id="font-scale-btn" class="lim-hdr-btn" onclick="toggleFontScale()" title="Ingrandisci testo per LIM (A / A+ / A++, tasto Z)">
+      <span>🔠</span>
+      <span id="font-scale-text">A+</span>
     </button>
     <button type="button" id="fs-toggle-btn" class="lim-hdr-btn" onclick="toggleFullscreen()" title="Schermo Intero per LIM (tasto F)">
       ⛶ LIM
@@ -1575,20 +1631,35 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      S01 — IERI VS OGGI (numeri)
      ================================================================ -->
 <section class="slide" id="s1">
-  <div class="tag">// 00 — IL CONTESTO</div>
+  <div class="tag">// 00 — IL CONTESTO STORICO</div>
   <div class="title">Quanto è Cambiata<br><span class="a">la Potenza di Calcolo</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
-      <div class="slbl">ANNI '90 — UN PC NORMALE</div>
-      <div class="big">~100</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">password testate al secondo</div>
-      <div class="mt8" style="font-size:.95rem;color:var(--gdim)">Una password di 6 caratteri<br>richiedeva ore o giorni</div>
+  <div class="g2">
+    <div class="card" style="justify-content:space-between;text-align:center">
+      <div>
+        <div class="slbl" style="font-size:.85rem;margin-bottom:8px">// ANNI '90 — SINGOLO PROCESSORE (CPU)</div>
+        <div class="big" style="font-size:3.8rem;margin:10px 0">~100</div>
+        <p style="font-size:1.35rem;font-weight:600;color:var(--a)">password testate al secondo</p>
+      </div>
+      <div style="text-align:left;display:flex;flex-direction:column;gap:10px">
+        <p>Una password standard di 6 caratteri richiedeva <strong>molte ore o intere giornate</strong> di calcolo continuo.</p>
+        <div class="box" style="font-size:1.1rem">
+          🛡️ <strong>Sicurezza dell'epoca:</strong> Le password brevi offrivano una protezione ragionevole perché i computer erano lenti.
+        </div>
+      </div>
     </div>
-    <div class="card" style="justify-content:center;align-items:center;text-align:center;gap:10px">
-      <div class="slbl">OGGI — UNA GPU MODERNA</div>
-      <div class="huge">1.000.000.000+</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">password testate al secondo</div>
-      <div class="mt8 box d" style="font-size:.95rem">Una password di 6 caratteri:<br><strong class="rd">crackata in millisecondi</strong></div>
+
+    <div class="card" style="justify-content:space-between;text-align:center">
+      <div>
+        <div class="slbl" style="font-size:.85rem;margin-bottom:8px">// OGGI — GPU MODERNA &amp; CLOUD DISTRIBUITO</div>
+        <div class="huge" style="font-size:3.8rem;margin:10px 0">1.000.000.000+</div>
+        <p style="font-size:1.35rem;font-weight:600;color:var(--r)">combinazioni testate al secondo</p>
+      </div>
+      <div style="text-align:left;display:flex;flex-direction:column;gap:10px">
+        <p>La stessa identica password di 6 caratteri viene polverizzata in <strong>meno di 1 millisecondo</strong>.</p>
+        <div class="box d" style="font-size:1.1rem">
+          🚨 <strong>La realtà di oggi:</strong> Qualsiasi password corta o prevedibile è totalmente indifesa contro gli attacchi automatici.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1599,28 +1670,29 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s2">
   <div class="tag">// 00 — IL PROBLEMA CENTRALE</div>
   <div class="title">Il Compromesso <span class="a">Fatale</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:12px">
-      <div class="ctitle">Cosa chiede la sicurezza</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🛡️ Cosa Chiede la Sicurezza Informatica</div>
       <ul class="pts">
-        <li>Password lunga (16+ caratteri)</li>
-        <li>Password casuale (nessun senso compiuto)</li>
-        <li>Password unica per ogni sito</li>
-        <li>Cambiata regolarmente</li>
+        <li class="k"><strong>Lunghezza elevata:</strong> Almeno 16+ caratteri per resistere al calcolo delle GPU.</li>
+        <li class="k"><strong>Casualità totale:</strong> Nessuna parola di senso compiuto, nomi o date di nascita.</li>
+        <li class="k"><strong>Unicità assoluta:</strong> Una password completamente diversa per ciascun account.</li>
+        <li class="k"><strong>Aggiornamento:</strong> Sostituzione tempestiva in caso di violazione del servizio.</li>
       </ul>
     </div>
-    <div class="card" style="justify-content:center;gap:12px">
-      <div class="ctitle" style="color:var(--r)">Cosa può fare il cervello umano</div>
+
+    <div class="card">
+      <div class="ctitle" style="color:var(--r)">🧠 Cosa Può Sostenere la Mente Umana</div>
       <ul class="pts">
-        <li class="d">Memorizzare ~5 password complesse al massimo</li>
-        <li class="d">Ogni persona ha in media 80-100 account online</li>
-        <li class="d">Risultato: si riusa sempre la stessa password</li>
-        <li class="d">Oppure: si usano password semplici e prevedibili</li>
+        <li class="d"><strong>Memoria limitata:</strong> Il cervello memorizza al massimo 4–5 stringhe complesse.</li>
+        <li class="d"><strong>Sovraccarico di account:</strong> Ogni studente o adulto possiede oggi oltre 80–100 servizi online.</li>
+        <li class="d"><strong>La trappola del riutilizzo:</strong> Si finisce per usare <em>la stessa password identica</em> ovunque.</li>
+        <li class="d"><strong>Scorciatoie prevedibili:</strong> Si scelgono parole comuni o varianti banali (es. <code>Mario2024!</code>).</li>
       </ul>
     </div>
   </div>
-  <div class="box a mt10" style="flex-shrink:0">
-    <strong>Questo è l'anello debole della catena.</strong> Oggi esploreremo 4 strumenti per risolverlo.
+  <div class="box a mt10">
+    💡 <strong>Il punto debole non sono le macchine, ma l'essere umano:</strong> Per superare questo limite sono nati i <strong>Password Manager</strong> e l'<strong>Autenticazione a Due Fattori (2FA)</strong>.
   </div>
 </section>
 
@@ -1628,28 +1700,35 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      S03 — ROADMAP
      ================================================================ -->
 <section class="slide" id="s3">
-  <div class="tag">// 00 — PERCORSO DI OGGI</div>
-  <div class="title">Argomenti del <span class="a">Modulo</span></div>
-  <div class="g4" style="flex:1;min-height:0">
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--r)">
-      <div style="font-size:3rem">⚡</div>
+  <div class="tag">// 00 — PERCORSO DEL MODULO</div>
+  <div class="title">I 4 Pilastri della <span class="a">Sicurezza Moderna</span></div>
+  <div class="g4">
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:var(--r)">
+      <div style="font-size:3.2rem">⚡</div>
       <div class="ctitle" style="color:var(--r);border:none;margin:0;padding:0">01</div>
-      <div style="font-size:1.05rem;color:#c8ffc8">Dictionary Attack<br>&amp; Brute Force</div>
+      <div style="font-size:1.25rem;font-weight:700;color:#ffffff">Brute Force &amp;<br>Dizionario</div>
+      <p style="font-size:1.05rem;line-height:1.45;color:var(--gdim)">Come i software provano miliardi di combinazioni e scansionano i leak.</p>
     </div>
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--a)">
-      <div style="font-size:3rem">💥</div>
-      <div class="ctitle" style="border:none;margin:0;padding:0">02</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">Data Breach<br>Effetto Domino</div>
+
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:var(--a)">
+      <div style="font-size:3.2rem">💥</div>
+      <div class="ctitle" style="color:var(--a);border:none;margin:0;padding:0">02</div>
+      <div style="font-size:1.25rem;font-weight:700;color:#ffffff">Data Breach &amp;<br>Effetto Domino</div>
+      <p style="font-size:1.05rem;line-height:1.45;color:var(--gdim)">Perché riutilizzare la stessa chiave distrugge tutti i tuoi account insieme.</p>
     </div>
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:var(--g)">
-      <div style="font-size:3rem">🔒</div>
+
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:var(--g)">
+      <div style="font-size:3.2rem">🔒</div>
       <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">03</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">Password<br>Manager</div>
+      <div style="font-size:1.25rem;font-weight:700;color:#ffffff">Password<br>Manager</div>
+      <p style="font-size:1.05rem;line-height:1.45;color:var(--gdim)">La cassaforte digitale cifrata con AES-256 e Master Passphrase immune.</p>
     </div>
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:10px;border-color:#88aaff">
-      <div style="font-size:3rem">📱</div>
+
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:#88aaff">
+      <div style="font-size:3.2rem">📱</div>
       <div class="ctitle" style="color:#88aaff;border:none;margin:0;padding:0">04</div>
-      <div style="font-size:1.1rem;color:#c8ffc8">Autenticazione<br>a Due Fattori</div>
+      <div style="font-size:1.25rem;font-weight:700;color:#ffffff">Autenticazione<br>a Due Fattori</div>
+      <p style="font-size:1.05rem;line-height:1.45;color:var(--gdim)">La protezione fisica (TOTP) che blocca l'accesso anche se la password è rubata.</p>
     </div>
   </div>
 </section>
@@ -1660,20 +1739,27 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s4">
   <div class="tag">// 01 — BRUTE FORCE</div>
   <div class="title">Attacco Brute Force:<br><span class="a">Di Cosa Si Tratta</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:14px">
-      <div class="ctitle">Definizione</div>
-      <p>Un software prova <strong>sistematicamente tutte le combinazioni possibili</strong> di caratteri finché non trova quella giusta.</p>
-      <p>Non richiede intelligenza: è pura <span class="hl">potenza di calcolo bruta</span>.</p>
-      <p>È come provare ogni chiave di un mazzo enorme — ma a velocità sovrumana, senza mai stancarsi.</p>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🎯 Il Principio Fondamentale</div>
+      <p>Un software malevolo prova <strong>sistematicamente tutte le combinazioni matematicamente possibili</strong> di caratteri finché non individua la chiave corretta.</p>
+      
+      <div class="box" style="margin: 6px 0;">
+        💡 <strong>Zero intuizione:</strong> L'attacco non sfrutta trucchi o intelligenza. È pura, inarrestabile <span class="hl">potenza di calcolo computazionale</span>.
+      </div>
+      
+      <p>
+        🔑 <strong>La metafora del mazzo di chiavi:</strong> Immagina di provare ogni singola chiave di un mazzo enorme, ma a una frequenza supersonica di miliardi di tentativi al secondo, senza mai stancarsi né fare errori.
+      </p>
     </div>
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Perché è così efficace</div>
+
+    <div class="card">
+      <div class="ctitle">⚡ Perché è così Devastante Oggi</div>
       <ul class="pts">
-        <li>Le GPU (schede video) sono ottimizzate per calcoli paralleli</li>
-        <li>Il software non si stanca e non fa errori</li>
-        <li>Servizi cloud affittabili da ~3€/ora</li>
-        <li>Completamente automatico: nessuna supervisione umana</li>
+        <li><strong>Potenza di calcolo GPU:</strong> Le moderne schede video contengono migliaia di micro-core in grado di calcolare miliardi di combinazioni in parallelo ogni secondo.</li>
+        <li><strong>Infallibilità della macchina:</strong> Il computer non commette distrazioni, non si stanca e continua a testare combinazioni 24 ore su 24, 7 giorni su 7.</li>
+        <li><strong>Server Cloud a basso costo:</strong> Un malintenzionato può noleggiare decine di server ad altissima velocità su piattaforme cloud per pochi euro all'ora.</li>
+        <li><strong>Automazione totale:</strong> Nessuna supervisione umana richiesta: il programma viene avviato e notifica l'attaccante appena la password viene forzata.</li>
       </ul>
     </div>
   </div>
@@ -1684,17 +1770,39 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s5">
   <div class="tag">// 01 — BRUTE FORCE</div>
-  <div class="title">Come Funziona<br><span class="a">Passo per Passo</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
+  <div class="title">Come Funziona:<br><span class="a">Il Processo Passo per Passo</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔄 La Sequenza di Tentativi</div>
       <ol class="steps">
-        <li>L'attaccante punta a <strong>scoprire la password bersaglio</strong> provando tutte le combinazioni possibili</li>
-        <li>Parte dalla prima combinazione: prova <code>"a"</code> → non coincide → prova <code>"b"</code>, <code>"c"</code> … <code>"z"</code></li>
-        <li>Avanza sistematicamente: finite le lettere singole, prova quelle a due caratteri: <code>"aa"</code>, <code>"ab"</code> … e così via</li>
-        <li>Velocità del computer: <span class="hl">oltre 1 miliardo di combinazioni provate al secondo</span></li>
-        <li>Password corta a 4 cifre: 10.000 combinazioni → trovata in <span class="rd">meno di 1 millisecondo</span></li>
-        <li>Password corta a 6 lettere: ~309 milioni di combinazioni → trovata in <span class="rd">meno di 1 secondo</span></li>
+        <li><strong>Fissazione del bersaglio:</strong> L'attaccante punta all'account o al file con gli hash delle password.</li>
+        <li><strong>Partenza dai caratteri singoli:</strong> Inizia provando: <code>"a"</code>, <code>"b"</code>, <code>"c"</code> … fino a esaurire l'alfabeto.</li>
+        <li><strong>Incremento della lunghezza:</strong> Passa alle coppie (<code>"aa"</code>, <code>"ab"</code> …), poi alle terne (<code>"aaa"</code> …) e così via in modo rigoroso.</li>
+        <li><strong>Velocità sovrumana:</strong> I calcolatori moderni testano <em>oltre 1 miliardo di tentativi al secondo</em>.</li>
       </ol>
+    </div>
+
+    <div class="card" style="justify-content:space-between">
+      <div class="ctitle">⏱️ Tempi di Violazione nel Mondo Reale</div>
+      <div style="display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center">
+        <div class="box d">
+          <div style="font-size:1.15rem;font-weight:700;margin-bottom:3px">🔴 PIN numerico a 4 cifre (es. 1234)</div>
+          <div>Spazio: 10.000 combinazioni totali.</div>
+          <div style="font-weight:bold;margin-top:2px">Tempo per forzarla: <span class="rd">&lt; 1 millisecondo</span> (istantaneo!)</div>
+        </div>
+
+        <div class="box d">
+          <div style="font-size:1.15rem;font-weight:700;margin-bottom:3px">🟠 Parola di 6 lettere minuscole (es. "soleil")</div>
+          <div>Spazio: ~308 milioni di combinazioni.</div>
+          <div style="font-weight:bold;margin-top:2px">Tempo per forzarla: <span class="rd">&lt; 0.3 secondi</span></div>
+        </div>
+
+        <div class="box k">
+          <div style="font-size:1.15rem;font-weight:700;margin-bottom:3px">🟢 Passphrase di 25+ caratteri (es. 4 parole)</div>
+          <div>Spazio: oltre 10⁴⁰ combinazioni possibili.</div>
+          <div style="font-weight:bold;margin-top:2px">Tempo per forzarla: <span class="gn">Miliardi di anni</span> (inviolabile!)</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1831,34 +1939,35 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s6">
   <div class="tag">// 01b — VARIANTE PIÙ VELOCE</div>
   <div class="title">Dictionary Attack:<br><span class="a">L'Attacco con il Dizionario</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Come funziona</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📖 La Logica dell'Attacco</div>
       <ol class="steps">
-        <li>Si parte da un file con milioni di password <strong>già rubate</strong> in violazioni precedenti</li>
-        <li>Si provano prima le più usate, in ordine di frequenza</li>
-        <li>Si aggiungono varianti prevedibili: <code>password</code> → <code>P@ssw0rd!</code></li>
-        <li>Si aggiungono anni e nomi propri: <code>mario1998</code>, <code>juve2024</code></li>
+        <li><strong>Archivio di password reali:</strong> Invece di provare sequenze casuali, usa file contenenti miliardi di password autentiche già rubate in violazioni passate.</li>
+        <li><strong>Ordinamento per popolarità:</strong> Verifica subito le parole più comuni al mondo (<code>123456</code>, <code>password</code>, <code>qwerty</code>).</li>
+        <li><strong>Mutazioni automatiche (Leetspeak):</strong> Applica sostituzioni tipiche (<code>password</code> → <code>P@ssw0rd!</code>, <code>e</code>→<code>3</code>, <code>a</code>→<code>@</code>).</li>
+        <li><strong>Nomi, anni e passioni:</strong> Prova combinazioni diffusissime come <code>mario1998</code> o <code>juve2024!</code>.</li>
       </ol>
-      <div class="box d mt6" style="font-size:.92rem">
-        <strong>RockYou2021:</strong> un file da 100 GB con <span class="hl">8,4 miliardi</span> di password reali, liberamente scaricabile
+      <div class="box d mt8">
+        📂 <strong>RockYou2021:</strong> Un archivio reale da 100 GB con oltre <span class="hl">8,4 miliardi di password reali</span>, liberamente accessibile nel dark web!
       </div>
     </div>
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Top password 2024 — tutte crackate in &lt;1ms</div>
+
+    <div class="card">
+      <div class="ctitle">⏱️ Le Password Più Diffuse (e Più Fragili)</div>
       <table class="tbl">
-        <thead><tr><th>Password</th><th>Utenti stimati</th><th>Tempo</th></tr></thead>
+        <thead><tr><th>Password</th><th>Utenti Stimati</th><th>Tempo Violazione</th></tr></thead>
         <tbody>
-          <tr><td><code>123456</code></td><td>~4 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>password</code></td><td>~3.6 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>qwerty123</code></td><td>~2.2 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>iloveyou</code></td><td>~1.5 milioni</td><td class="tr">&lt;1 ms</td></tr>
-          <tr><td><code>P@ssw0rd!</code></td><td>molto diffusa</td><td class="ta">~2 min</td></tr>
-          <tr><td><code>Juve2024!</code></td><td>diffusa in IT</td><td class="ta">~8 min</td></tr>
+          <tr><td><code>123456</code></td><td>~4 milioni</td><td class="tr">&lt; 1 millisecondo</td></tr>
+          <tr><td><code>password</code></td><td>~3.6 milioni</td><td class="tr">&lt; 1 millisecondo</td></tr>
+          <tr><td><code>qwerty123</code></td><td>~2.2 milioni</td><td class="tr">&lt; 1 millisecondo</td></tr>
+          <tr><td><code>iloveyou</code></td><td>~1.5 milioni</td><td class="tr">&lt; 1 millisecondo</td></tr>
+          <tr><td><code>P@ssw0rd!</code></td><td>molto diffusa</td><td class="ta">~2 minuti</td></tr>
+          <tr><td><code>Juve2024!</code></td><td>diffusa in Italia</td><td class="ta">~8 minuti</td></tr>
         </tbody>
       </table>
-      <div class="box mt6" style="font-size:.88rem">
-        👉 Nella <em>slide successiva</em> vediamo il <strong>Simulatore Dictionary Attack</strong> in azione dentro il file di dizionario <code>rockyou.txt</code>!
+      <div class="box a mt8">
+        👉 <strong>Slide successiva:</strong> Laboratorio interattivo che scansiona in tempo reale il dizionario <code>rockyou.txt</code>!
       </div>
     </div>
   </div>
@@ -1952,20 +2061,24 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s8">
   <div class="tag">// 02 — DATA BREACH</div>
   <div class="title">Data Breach:<br><span class="a">Cos'è una Violazione dei Dati</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:12px">
-      <div class="ctitle">Definizione</div>
-      <p>Un attaccante penetra nei <strong>server di un'azienda</strong> e sottrae il database degli utenti: email, password, dati personali.</p>
-      <p>Le password rubate vengono vendute nel <span class="hl">Dark Web</span> per pochi euro e usate immediatamente in attacchi automatizzati.</p>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🌐 Definizione &amp; Dinamica</div>
+      <p>Un gruppo di attaccanti penetra nei <strong>server centrali di un'azienda</strong> (social network, e-commerce, catene alberghiere, scuole) e sottrae l'intero database utenti.</p>
+      <p>Il bottino include <strong>email, numeri di telefono e password</strong> (in chiaro o come hash craccabili).</p>
+      <div class="box d mt6">
+        🏴‍☠️ <strong>Il mercato nero:</strong> Questi archivi non rimangono segreti: vengono venduti o scambiati nei forum del <span class="hl">Dark Web</span> per pochi dollari e distribuiti a migliaia di bot.
+      </div>
     </div>
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Violazioni Storiche — Numeri Reali</div>
+
+    <div class="card">
+      <div class="ctitle">💥 Violazioni Storiche — Numeri Reali</div>
       <ul class="pts">
-        <li class="d"><strong>Yahoo (2013–14):</strong> <span class="hl">3 miliardi</span> di account rubati</li>
-        <li class="d"><strong>LinkedIn (2021):</strong> <span class="hl">700 milioni</span> di utenti esposti</li>
-        <li class="d"><strong>Facebook (2021):</strong> <span class="hl">533 milioni</span> di numeri di telefono</li>
-        <li class="w"><strong>RockYou2021:</strong> <span class="hl">8,4 miliardi</span> di password in un unico file</li>
-        <li class="i">Verifica la tua email: <code>haveibeenpwned.com</code></li>
+        <li class="d"><strong>Yahoo (2013–14):</strong> <span class="hl">3 miliardi</span> di account completamente compromessi.</li>
+        <li class="d"><strong>LinkedIn (2021):</strong> <span class="hl">700 milioni</span> di profili e credenziali esposti.</li>
+        <li class="d"><strong>Facebook (2021):</strong> <span class="hl">533 milioni</span> di utenti con numeri di telefono e dati.</li>
+        <li class="w"><strong>RockYou2021:</strong> <span class="hl">8,4 miliardi</span> di password aggregate in un solo file.</li>
+        <li class="i"><strong>Strumento di verifica:</strong> Il servizio pubblico <code>haveibeenpwned.com</code> permette di verificare se la propria email compare in queste fughe.</li>
       </ul>
     </div>
   </div>
@@ -1976,18 +2089,26 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s9">
   <div class="tag">// 02 — DATA BREACH</div>
-  <div class="title">Credential Stuffing:<br><span class="r">L'Attacco Automatico</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
+  <div class="title">Credential Stuffing:<br><span class="r">L'Attacco Automatico a Catena</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🤖 Il Processo Automatizzato</div>
       <ol class="steps">
-        <li>L'hacker acquista il database rubato: milioni di coppie <code>email : password</code></li>
-        <li>Avvia un tool automatico che testa quelle credenziali su <strong>centinaia di siti diversi</strong></li>
-        <li>Il tool prova: Gmail, PayPal, Amazon, home banking… tutto in automatico</li>
-        <li>Se hai usato la <span class="rd">stessa password</span> su più siti, tutti vengono compromessi</li>
-        <li>L'intero processo è completamente automatizzato: <span class="hl">milioni di account testati ogni ora</span></li>
+        <li><strong>Download del leak:</strong> L'attaccante ottiene un file con milioni di coppie <code>email : password</code> trapelate da un servizio violato.</li>
+        <li><strong>Lancio dei bot:</strong> Un software testa in automatico quelle credenziali su <strong>centinaia di altri siti web popolari</strong> contemporaneamente.</li>
+        <li><strong>Bersagli critici:</strong> Il bot prova: Gmail, PayPal, Amazon, Netflix, Instagram, Home Banking...</li>
+        <li><strong>Accesso garantito:</strong> Se la vittima ha usato la <em>stessa password</em> su più piattaforme, tutti quegli account cadono istantaneamente.</li>
       </ol>
-      <div class="box d mt10">
-        <strong class="rd">Questo si chiama "Credential Stuffing".</strong> Non richiede alcuna abilità tecnica: basta acquistare il file e avviare il software.
+    </div>
+
+    <div class="card" style="justify-content:space-between">
+      <div>
+        <div class="ctitle" style="color:var(--r)">⚠️ La Verità Scomoda</div>
+        <p><strong>Nessuna abilità tecnica necessaria:</strong> L'hacker non deve programmare nulla. I software di Credential Stuffing sono già pronti all'uso e operano su botnet globali.</p>
+        <p>I bot provano <strong>milioni di login ogni ora</strong>, ruotando gli indirizzi IP per non farsi bloccare dai firewall.</p>
+      </div>
+      <div class="box d">
+        🚨 <strong>Regola fondamentale:</strong> Non importa quanto sia complessa una password: se la riutilizzi su due siti e uno viene violato, anche l'altro è spacciato al 100%!
       </div>
     </div>
   </div>
@@ -1999,34 +2120,42 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s10">
   <div class="tag">// 02 — DATA BREACH</div>
   <div class="title">L'Effetto <span class="r">Domino</span></div>
-  <div class="g3" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:10px;border-color:var(--r)">
-      <div style="text-align:center;font-size:2.5rem">🎮</div>
-      <div class="ctitle" style="text-align:center">Forum Gaming</div>
-      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--r)">calcio99</code></div>
-      <div class="box d mt6" style="font-size:.85rem;text-align:center">
-        ⚠ SERVER VIOLATO<br>Database scaricato
+  <div class="g3">
+    <div class="card" style="justify-content:space-between;border-color:var(--r)">
+      <div style="text-align:center">
+        <div style="font-size:3rem">🎮</div>
+        <div class="ctitle" style="justify-content:center">1. Forum Gaming</div>
+        <div style="font-size:1.1rem;color:var(--gdim);margin-top:6px">password: <code style="color:var(--r)">calcio99</code></div>
+      </div>
+      <div class="box d" style="font-size:1.05rem;text-align:center">
+        ⚠️ <strong>SERVER VIOLATO</strong><br>Sito secondario poco protetto: il database viene rubato.
       </div>
     </div>
-    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
-      <div style="text-align:center;font-size:2.5rem">📧</div>
-      <div class="ctitle" style="text-align:center">Webmail</div>
-      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--a)">calcio99</code></div>
-      <div class="box a mt6" style="font-size:.85rem;text-align:center">
-        ✖ COMPROMESSO<br>stessa password!
+
+    <div class="card" style="justify-content:space-between;border-color:var(--a)">
+      <div style="text-align:center">
+        <div style="font-size:3rem">📧</div>
+        <div class="ctitle" style="justify-content:center">2. Webmail Principale</div>
+        <div style="font-size:1.1rem;color:var(--gdim);margin-top:6px">password: <code style="color:var(--a)">calcio99</code></div>
+      </div>
+      <div class="box a" style="font-size:1.05rem;text-align:center">
+        ✖ <strong>COMPROMESSO</strong><br>Stessa password riutilizzata: il bot accede all'email!
       </div>
     </div>
-    <div class="card" style="justify-content:center;gap:10px;border-color:var(--a)">
-      <div style="text-align:center;font-size:2.5rem">🏦</div>
-      <div class="ctitle" style="text-align:center">Home Banking</div>
-      <div style="text-align:center;font-size:.9rem;color:var(--gdim)">password: <code style="color:var(--a)">calcio99</code></div>
-      <div class="box a mt6" style="font-size:.85rem;text-align:center">
-        ✖ COMPROMESSO<br>stessa password!
+
+    <div class="card" style="justify-content:space-between;border-color:var(--r)">
+      <div style="text-align:center">
+        <div style="font-size:3rem">🏦</div>
+        <div class="ctitle" style="justify-content:center">3. Home Banking</div>
+        <div style="font-size:1.1rem;color:var(--gdim);margin-top:6px">password: <code style="color:var(--r)">calcio99</code></div>
+      </div>
+      <div class="box d" style="font-size:1.05rem;text-align:center">
+        💥 <strong>DISASTRO TOTALE</strong><br>Reset delle password bancarie tramite l'email violata!
       </div>
     </div>
   </div>
-  <div class="box d mt10" style="flex-shrink:0">
-    <strong>Un solo sito violato → tutti gli account con la stessa password sono immediatamente a rischio.</strong>
+  <div class="box d mt10">
+    <strong>Un solo sito secondario violato → Tutti gli account con la stessa chiave cadono a catena come tessere del domino.</strong>
   </div>
 </section>
 
@@ -2084,24 +2213,25 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s12">
   <div class="tag">// 03 — PASSWORD MANAGER</div>
-  <div class="title">Password Manager:<br><span class="a">La Soluzione al Problema</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle" style="color:var(--r)">Senza Password Manager</div>
+  <div class="title">Password Manager:<br><span class="a">La Soluzione Definitiva</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle" style="color:var(--r)">❌ Senza Password Manager (Rischio Alto)</div>
       <ul class="pts">
-        <li class="d">Stessa password su tutti i siti → un breach compromette tutto</li>
-        <li class="d">Password "facili" da ricordare = facili da craccare</li>
-        <li class="d">Password scritte su carta o file di testo non protetto</li>
-        <li class="d">Il cervello non scala: impossibile gestire 80 password complesse</li>
+        <li class="d"><strong>Riutilizzo continuo:</strong> La stessa password replicata su decine di servizi online.</li>
+        <li class="d"><strong>Password prevedibili:</strong> Scelte "facili" da ricordare, ma vulnerabili ai dizionari.</li>
+        <li class="d"><strong>Note e foglietti:</strong> Credenziali appuntate in chiaro sul telefono o su carta.</li>
+        <li class="d"><strong>Impossibilità umana:</strong> Il cervello non può gestire a memoria 80 chiavi complesse.</li>
       </ul>
     </div>
-    <div class="card" style="justify-content:center;gap:10px">
-      <div class="ctitle">Con Password Manager</div>
+
+    <div class="card">
+      <div class="ctitle">🛡️ Con Password Manager (Protezione Massima)</div>
       <ul class="pts">
-        <li class="k">Password unica e casuale per ogni sito, generata in automatico</li>
-        <li class="k">Es: <code>K#9mP!qRz2Lw@v7N</code> — 16 caratteri, impossibile da indovinare</li>
-        <li class="k">Non la devi ricordare: il software la inserisce in automatico</li>
-        <li class="k">Il vault è cifrato con <strong>AES-256</strong>: illeggibile senza la master key</li>
+        <li class="k"><strong>Password uniche &amp; casuali:</strong> Generate all'istante per ogni singolo account (es. <code>K#9mP!qRz2Lw@v7N</code>).</li>
+        <li class="k"><strong>Zero sforzo mnemonico:</strong> Il software compila automaticamente i campi di login (autofill).</li>
+        <li class="k"><strong>Crittografia militare AES-256:</strong> Il vault digitale è indecifrabile senza la tua chiave locale.</li>
+        <li class="k"><strong>Stop all'effetto domino:</strong> Se un sito subisce un leak, tutti gli altri rimangono intatti e al sicuro.</li>
       </ul>
     </div>
   </div>
@@ -2112,26 +2242,32 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s13">
   <div class="tag">// 03 — PASSWORD MANAGER</div>
-  <div class="title">Come Funziona<br><span class="a">Passo per Passo</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
+  <div class="title">Come Funziona:<br><span class="a">Passo per Passo</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔐 Il Flusso Operativo</div>
       <ol class="steps">
-        <li>Scegli <strong>una sola Master Passphrase</strong> — deve essere <strong>totalmente immune sia al Dictionary Attack che al Brute Force</strong> (es. <code>galassia-matita-vulcano-salto-92!</code>, 4 parole slegate + separatori + numero)</li>
-        <li>Il PM usa quella chiave per <strong>cifrare un vault</strong> (cassaforte digitale) sul tuo dispositivo con AES-256</li>
-        <li>Per ogni nuovo sito, il PM <strong>genera automaticamente</strong> una password casuale di 16+ caratteri</li>
-        <li>Il browser la inserisce in automatico (autofill) — non devi digitarla mai</li>
-        <li>Se un sito viene violato, <strong>solo quella password è esposta</strong> — le altre rimangono al sicuro nel vault</li>
+        <li><strong>Una sola Master Passphrase:</strong> L'unica frase segreta che devi ricordare, immune a dizionario e brute force (es. <code>galassia-matita-vulcano-salto-92!</code>).</li>
+        <li><strong>Cifratura della cassaforte (Vault):</strong> Il software usa quella frase per cifrare l'archivio locale con <strong>AES-256</strong>.</li>
+        <li><strong>Generatore integrato:</strong> A ogni registrazione, genera una chiave casuale di 16+ caratteri alfanumerici.</li>
+        <li><strong>Compilazione automatica:</strong> Nel browser o sullo smartphone, riempie i dati con un tocco.</li>
+        <li><strong>Isolamento delle violazioni:</strong> Se un sito viene bucato, solo quella specifica password è compromessa.</li>
       </ol>
-      <div class="box mt10" style="font-size:.9rem">
-        <strong>🛡️ Perché la Master Passphrase è immune a entrambi?</strong><br>
-        1. <strong>Immune al Dizionario:</strong> 4 parole casuali slegate non esistono in nessun file di leak né nel vocabolario.<br>
-        2. <strong>Immune al Brute Force:</strong> con oltre 30 caratteri, una GPU impiegherebbe trilioni di volte l'età dell'universo per calcolarla!
+    </div>
+
+    <div class="card" style="justify-content:space-between">
+      <div>
+        <div class="ctitle">🛡️ Perché la Master Passphrase è Inviolabile?</div>
+        <div class="box k" style="margin-bottom:10px">
+          <strong>1. Immune al Dizionario:</strong> 4 parole casuali e slegate non esistono in nessun file dizionario né vocabolario al mondo.
+        </div>
+        <div class="box k" style="margin-bottom:10px">
+          <strong>2. Immune al Brute Force:</strong> Superando i 30 caratteri, una GPU impiegherebbe trilioni di volte l'età dell'universo per provarle tutte!
+        </div>
       </div>
-      <div class="box a mt6" style="font-size:.85rem">
-        <strong>PM consigliati (gratuiti):</strong> &nbsp;
-        <code>Bitwarden</code> (open source, cloud) &nbsp;·&nbsp;
-        <code>KeePassXC</code> (open source, solo locale) &nbsp;·&nbsp;
-        <code>Proton Pass</code> (privacy-focused)
+      <div class="box a" style="font-size:1.05rem">
+        <strong>Software consigliati (Gratuiti &amp; Open Source):</strong><br>
+        <code>Bitwarden</code> (cloud sicuro, multipiattaforma) · <code>KeePassXC</code> (offline locale) · <code>Proton Pass</code>
       </div>
     </div>
   </div>
@@ -2208,31 +2344,31 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s14b">
   <div class="tag">// 03 — PASSWORD MANAGER: IL GRANDE DUBBIO</div>
-  <div class="title">Il Grande Paradosso:<br><span class="a">"Se il riutilizzo è pericoloso, perché per il PM ne basta una?"</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="gap:8px">
-      <div class="ctitle">1. La Master Password non viaggia mai su Internet</div>
-      <div class="box d" style="padding:6px 10px; font-size:.84rem;">
-        <strong>Siti comuni (E-commerce, Social, Forum):</strong> Inserisci la password, il sito la riceve e la salva nei suoi server. Se quel singolo sito viene bucato, la password trapela nel dark web.
+  <div class="title">Il Grande Paradosso:<br><span class="a">"Se riusare password è sbagliato, perché nel PM ne basta una?"</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">1. La Master Password non viaggia MAI su Internet</div>
+      <div class="box d">
+        <strong>Nei siti normali (Social, E-commerce, Forum):</strong> Quando fai il login, la password viene inviata al server del sito. Se quel sito viene bucato, la password finisce in mano agli hacker.
       </div>
-      <div class="box k" style="padding:6px 10px; font-size:.84rem;">
-        <strong>Password Manager (Zero-Knowledge):</strong> La Master Password serve <em>unicamente a decifrare la cassaforte in locale</em> sul tuo dispositivo. I server del PM non conoscono né vedono mai la tua master password.
+      <div class="box k">
+        <strong>Nel Password Manager (Zero-Knowledge):</strong> La Master Password serve <em>solo a decifrare la cassaforte in locale</em> sul tuo dispositivo. I server del PM non conoscono né vedono mai la tua master password.
       </div>
-      <p style="font-size:.86rem; color:#c8ffc8; margin-top:2px;">
-        ▶ La chiave non esce mai dalla memoria del tuo computer: nessun hacker su Internet può intercettarla durante il login.
+      <p style="margin-top:4px">
+        ▶ La chiave non esce mai dalla memoria del tuo dispositivo: nessun attaccante su Internet può intercettarla.
       </p>
     </div>
 
-    <div class="card" style="gap:8px">
-      <div class="ctitle">2. Isolamento dell'Effetto Domino (Stop Stuffing)</div>
-      <div class="box d" style="padding:6px 10px; font-size:.84rem;">
-        <strong>Stessa password su 10 siti:</strong> Se uno subisce un data breach, gli hacker useranno bot automatici per provare quella combinazione su banche, email e social, violandoli tutti in catena.
+    <div class="card">
+      <div class="ctitle">2. Isolamento Totale dell'Effetto Domino</div>
+      <div class="box d">
+        <strong>Stessa password su 10 siti:</strong> Se uno solo subisce una violazione, i bot automatici proveranno quella credenziale su tutti gli altri, violandoli tutti in sequenza.
       </div>
-      <div class="box k" style="padding:6px 10px; font-size:.84rem;">
-        <strong>Con Password Manager:</strong> Ciascuno dei 10 siti ha una password <em>diversa, casuale e lunghissima</em>.
+      <div class="box k">
+        <strong>Con Password Manager:</strong> Ciascuno dei 10 siti possiede una password <em>diversa, casuale e di 16+ caratteri</em>.
       </div>
-      <p style="font-size:.86rem; color:#c8ffc8; margin-top:2px;">
-        ▶ Se il sito X viene bucato, gli hacker possiedono <strong>solo la chiave di quel singolo sito</strong>; gli altri 9 rimangono blindati e intatti.
+      <p style="margin-top:4px">
+        ▶ Se il sito X viene bucato, gli hacker ottengono <strong>solo la chiave di quel singolo sito</strong>; gli altri 9 rimangono inviolati e blindati.
       </p>
     </div>
   </div>
@@ -2244,27 +2380,27 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s14c">
   <div class="tag">// 03 — PASSWORD MANAGER: LA FORTEZZA</div>
   <div class="title">La Doppia Protezione:<br><span class="a">Crittografia AES-256 &amp; Fattore di Protezione 2FA</span></div>
-  <div class="g2" style="flex:1;min-height:0">
-    <div class="card" style="gap:10px; justify-content:center">
+  <div class="g2">
+    <div class="card" style="justify-content:center">
       <div class="ctitle">3. Crittografia Militare (AES-256)</div>
       <ul class="pts">
-        <li class="k">La cassaforte digitale è protetta da <strong>AES-256</strong>, lo standard crittografico usato da governi e banche.</li>
-        <li class="k">Il file salvato sul dispositivo (o sincronizzato in cloud) è un blocco di byte <em>completamente indecifrabili</em>.</li>
-        <li class="k">Senza la Master Password, anche con tutti i supercomputer del mondo ci vorrebbero <strong>miliardi di anni</strong> per forzarla.</li>
+        <li class="k">La cassaforte digitale è cifrata con <strong>AES-256</strong>, lo standard matematico adottato da banche e governi.</li>
+        <li class="k">Il file salvato sul dispositivo o sincronizzato in cloud è un blocco di byte <em>completamente indecifrabili</em>.</li>
+        <li class="k">Senza la Master Password, anche sommando tutti i supercomputer del pianeta servirebbero <strong>miliardi di anni</strong> per forzarla.</li>
       </ul>
     </div>
 
-    <div class="card" style="gap:10px; justify-content:center">
+    <div class="card" style="justify-content:center">
       <div class="ctitle">4. Il Fattore di Protezione 2FA</div>
       <ul class="pts">
-        <li class="k">Alla Master Password si affianca l'<strong>autenticazione a due fattori</strong> (impronta digitale, FaceID o codice TOTP su smartphone).</li>
-        <li class="k"><strong>Scenario peggiore:</strong> se anche qualcuno scoprisse o spiassse la tua master password mentre la digiti...</li>
-        <li class="w"><strong>Senza il tuo secondo fattore fisico</strong> (lo smartphone), l'hacker non potrà <em>mai</em> aprire la cassaforte!</li>
+        <li class="k">Alla Master Password si affianca l'<strong>autenticazione a due fattori</strong> (impronta digitale, FaceID o codice TOTP).</li>
+        <li class="k"><strong>Scenario peggiore:</strong> Se anche qualcuno riuscisse a spiare la tua master password mentre la digiti...</li>
+        <li class="w"><strong>Senza il tuo secondo fattore fisico</strong> (il tuo smartphone), l'attaccante non potrà <em>mai</em> aprire la cassaforte!</li>
       </ul>
     </div>
   </div>
-  <div class="box a mt8" style="font-size:.9rem; line-height:1.4">
-    <strong>💡 Sintesi per lo Studente:</strong> Riutilizzare la stessa password moltiplica il rischio per ogni account. Nel Password Manager la Master Password è una chiave locale cifrata e blindata dal 2FA: protegge tutte le altre senza mai rischiare di trapelare.
+  <div class="box a mt10">
+    <strong>💡 Sintesi:</strong> Riutilizzare la stessa chiave moltiplica il rischio a ogni nuovo account. Nel Password Manager la Master Password è una chiave locale cifrata e protetta dal 2FA: difende tutte le altre senza mai rischiare di trapelare.
   </div>
 </section>
 
@@ -2274,40 +2410,48 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 <section class="slide" id="s15">
   <div class="tag">// 04 — AUTENTICAZIONE A DUE FATTORI</div>
   <div class="title">Autenticazione:<br><span class="a">I Tre Fattori Fondamentali</span></div>
-  <div class="g3" style="flex:1;min-height:0">
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--a)">
-      <div style="font-size:3rem">🧠</div>
+  <div class="g3">
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:var(--a)">
+      <div style="font-size:3.2rem">🧠</div>
       <div class="ctitle" style="color:var(--a);border:none;margin:0;padding:0">Fattore 1 — SAPERE</div>
-      <p>Qualcosa che <strong>conosci</strong></p>
+      <p style="font-size:1.25rem;font-weight:700">Qualcosa che conosci</p>
       <ul class="pts" style="text-align:left">
-        <li>Password o PIN</li>
-        <li>Risposta segreta</li>
+        <li>Password o PIN numerico</li>
+        <li>Risposta alla domanda segreta</li>
       </ul>
-      <div style="font-size:.85rem;color:var(--a);margin-top:4px">⚠ Può essere rubato</div>
+      <div class="box d" style="font-size:1.05rem;width:100%;margin-top:auto">
+        ⚠️ <strong>Punto debole:</strong> Può essere intercettato, rubato o trapelare in un data breach.
+      </div>
     </div>
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:var(--g)">
-      <div style="font-size:3rem">📱</div>
+
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:var(--g)">
+      <div style="font-size:3.2rem">📱</div>
       <div class="ctitle" style="color:var(--g);border:none;margin:0;padding:0">Fattore 2 — AVERE</div>
-      <p>Qualcosa che <strong>possiedi</strong></p>
+      <p style="font-size:1.25rem;font-weight:700">Qualcosa che possiedi</p>
       <ul class="pts" style="text-align:left">
         <li>Smartphone con app TOTP</li>
-        <li>Chiavetta hardware (YubiKey)</li>
+        <li>Chiavetta hardware USB (YubiKey)</li>
       </ul>
-      <div style="font-size:.85rem;color:var(--g);margin-top:4px">✔ Richiede accesso fisico</div>
+      <div class="box k" style="font-size:1.05rem;width:100%;margin-top:auto">
+        ✔ <strong>Punto di forza:</strong> Richiede il possesso fisico dell'oggetto materiale.
+      </div>
     </div>
-    <div class="card" style="align-items:center;justify-content:center;text-align:center;gap:12px;border-color:#88aaff">
-      <div style="font-size:3rem">👁️</div>
+
+    <div class="card" style="align-items:center;text-align:center;gap:12px;border-color:#88aaff">
+      <div style="font-size:3.2rem">👁️</div>
       <div class="ctitle" style="color:#88aaff;border:none;margin:0;padding:0">Fattore 3 — ESSERE</div>
-      <p>Qualcosa che <strong>sei</strong></p>
+      <p style="font-size:1.25rem;font-weight:700">Qualcosa che sei</p>
       <ul class="pts" style="text-align:left">
-        <li>Impronta digitale</li>
-        <li>Riconoscimento facciale</li>
+        <li>Impronta digitale biometrica</li>
+        <li>Riconoscimento facciale (FaceID)</li>
       </ul>
-      <div style="font-size:.85rem;color:#88aaff;margin-top:4px">✔ Difficile da replicare</div>
+      <div class="box" style="font-size:1.05rem;width:100%;margin-top:auto;border-color:#88aaff">
+        ✔ <strong>Punto di forza:</strong> Caratteristica biologica quasi impossibile da replicare.
+      </div>
     </div>
   </div>
-  <div class="box a mt10" style="flex-shrink:0">
-    <strong>2FA = Fattore 1 + Fattore 2.</strong> Anche se l'hacker ruba la password (SAPERE), senza il tuo telefono fisico (AVERE) non può accedere.
+  <div class="box a mt10">
+    <strong>2FA = SAPERE + AVERE:</strong> Anche se l'attaccante ruba la tua password in un breach online (SAPERE), senza il tuo dispositivo fisico in mano (AVERE) non potrà mai completare il login!
   </div>
 </section>
 
@@ -2316,25 +2460,34 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s16">
   <div class="tag">// 04 — 2FA: IL CODICE TOTP</div>
-  <div class="title">Come Funziona<br><span class="a">il Codice a 6 Cifre</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
-      <p class="mb8">TOTP = <span class="hl">Time-based One-Time Password</span> — il codice cambia ogni 30 secondi e non può essere riusato.</p>
+  <div class="title">Come Funziona<br><span class="a">il Codice a 6 Cifre (TOTP)</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔄 La Meccanica del TOTP</div>
+      <p>TOTP = <span class="hl">Time-based One-Time Password</span> (Password usa-e-getta basata sul tempo).</p>
       <ol class="steps">
-        <li>Il sito genera una <strong>chiave segreta condivisa</strong>, trasmessa al tuo telefono via QR code una volta sola</li>
-        <li>L'app salva questa chiave nel dispositivo (non la invia mai in rete)</li>
-        <li>Ogni 30 secondi: l'app calcola un nuovo codice a 6 cifre combinando la chiave con l'orario attuale</li>
-        <li>Il server calcola lo stesso valore e confronta: se coincide → accesso garantito</li>
-        <li>Il codice <strong>scade dopo 30 secondi</strong>: anche se intercettato, è inutilizzabile</li>
-        <li>Senza la chiave nel telefono è <strong>impossibile generare il codice corretto</strong></li>
+        <li><strong>Scambio iniziale del segreto:</strong> Il sito genera una chiave segreta, inquadrata una sola volta via QR code dall'app sul telefono.</li>
+        <li><strong>Custodia locale:</strong> L'app memorizza il segreto nella memoria protetta del telefono (senza mai trasmetterlo in rete).</li>
+        <li><strong>Calcolo matematico:</strong> Ogni 30 secondi l'app unisce la chiave segreta all'orario esatto attuale generando un codice a 6 cifre.</li>
+        <li><strong>Verifica del server:</strong> Il server ripete lo stesso calcolo: se i numeri coincidono, l'accesso è autorizzato.</li>
+        <li><strong>Scadenza immediata:</strong> Dopo 30 secondi il codice muore: anche se spiato, non serve più a nulla.</li>
       </ol>
-      <div class="g2 mt10">
-        <div class="box">
-          <strong>App consigliate:</strong> Aegis (Android, open source) · Google Authenticator · Authy · Microsoft Authenticator
+    </div>
+
+    <div class="card" style="justify-content:space-between">
+      <div>
+        <div class="ctitle">📱 Best Practice &amp; App Consigliate</div>
+        <div class="box k" style="margin-bottom:12px">
+          <strong>App TOTP Consigliate:</strong><br>
+          <code>Aegis Authenticator</code> (Android, Open Source) · <code>2FAS</code> · <code>Bitwarden Authenticator</code> · <code>Google Authenticator</code>
         </div>
         <div class="box d">
-          <strong>⚠ 2FA via SMS è meno sicuro</strong> (attacchi SIM Swap). Usare sempre le <strong>app TOTP</strong>.
+          ⚠️ <strong>Perché evitare il 2FA via SMS:</strong><br>
+          I codici inviati via SMS possono essere intercettati con attacchi di <em>SIM Swapping</em> (clonazione del numero telefonico presso l'operatore). <strong>Usa sempre app TOTP dedicate.</strong>
         </div>
+      </div>
+      <div class="box mt8">
+        👉 <strong>Slide successiva:</strong> Simulatore interattivo di login con generazione del codice TOTP!
       </div>
     </div>
   </div>
@@ -2391,19 +2544,17 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      S18 — RIEPILOGO: NON FARE
      ================================================================ -->
 <section class="slide" id="s18">
-  <div class="tag">// RIEPILOGO</div>
-  <div class="title">❌ Comportamenti<br><span class="r">da Evitare Sempre</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
-      <ul class="pts" style="gap:12px">
-        <li class="d" style="font-size:1.12rem">Riusare la stessa password su più siti</li>
-        <li class="d" style="font-size:1.12rem">Usare password brevi o di senso compiuto (nome, data, squadra del cuore)</li>
-        <li class="d" style="font-size:1.12rem">Usare varianti prevedibili: <code>Password1!</code> o <code>Mario1998!</code> non sono sicure</li>
-        <li class="d" style="font-size:1.12rem">Condividere password via chat, SMS o email</li>
-        <li class="d" style="font-size:1.12rem">Salvare password in file di testo o note non protette</li>
-        <li class="d" style="font-size:1.12rem">Ignorare gli avvisi di violazione dei dati ricevuti via email</li>
-      </ul>
-    </div>
+  <div class="tag">// RIEPILOGO FINALE</div>
+  <div class="title">❌ I 6 Comportamenti<br><span class="r">da Evitare Assolutamente</span></div>
+  <div class="card" style="flex:1;justify-content:center">
+    <ul class="pts" style="gap:16px">
+      <li class="d" style="font-size:1.25rem"><strong>Riusare la stessa password:</strong> Bastano pochi secondi di Credential Stuffing per perdere tutti i tuoi account.</li>
+      <li class="d" style="font-size:1.25rem"><strong>Usare parole di senso compiuto:</strong> Nomi di persone, date di nascita o squadre del cuore vengono polverizzati dai dizionari.</li>
+      <li class="d" style="font-size:1.25rem"><strong>Illudersi con trucchi banali:</strong> Sostituire <code>Password</code> con <code>P@ssw0rd1!</code> è previsto da tutti i tool di cracking automatico.</li>
+      <li class="d" style="font-size:1.25rem"><strong>Inviare credenziali in chiaro:</strong> Mai scambiarsi password su chat WhatsApp, Telegram, SMS o messaggi di posta elettronica.</li>
+      <li class="d" style="font-size:1.25rem"><strong>Salvare credenziali su file non cifrati:</strong> Documenti Word, file di testo o note sullo smartphone sono esposti a malware.</li>
+      <li class="d" style="font-size:1.25rem"><strong>Ignorare gli avvisi di breach:</strong> Se ricevi una notifica di violazione, cambia immediatamente la password di quel servizio.</li>
+    </ul>
   </div>
 </section>
 
@@ -2411,18 +2562,16 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      S19 — RIEPILOGO: FARE
      ================================================================ -->
 <section class="slide" id="s19">
-  <div class="tag">// RIEPILOGO</div>
-  <div class="title">✅ Comportamenti<br><span class="a">da Adottare Sempre</span></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center">
-    <div style="width:100%">
-      <ul class="pts" style="gap:12px">
-        <li class="k" style="font-size:1.12rem">Usa un <strong>Password Manager</strong> (Bitwarden o KeePassXC) per generare e memorizzare password</li>
-        <li class="k" style="font-size:1.12rem">Ogni sito deve avere una <strong>password unica e casuale</strong> di almeno 16 caratteri</li>
-        <li class="k" style="font-size:1.12rem">Attiva il <strong>2FA</strong> su email, banca, social network e ogni account importante</li>
-        <li class="k" style="font-size:1.12rem">Usa una <strong>passphrase</strong> come Master Password (4+ parole slegate, es. <code>"galassia-matita-vulcano-salto-92!"</code>): immune sia al Dictionary Attack che al Brute Force</li>
-        <li class="k" style="font-size:1.12rem">Controlla periodicamente la tua email su <code>haveibeenpwned.com</code></li>
-      </ul>
-    </div>
+  <div class="tag">// RIEPILOGO FINALE</div>
+  <div class="title">✅ Le 5 Regole d'Oro<br><span class="a">da Adottare Subito</span></div>
+  <div class="card" style="flex:1;justify-content:center">
+    <ul class="pts" style="gap:16px">
+      <li class="k" style="font-size:1.25rem"><strong>Installa un Password Manager:</strong> Usa <em>Bitwarden</em> o <em>KeePassXC</em> per creare e custodire password forti in automatico.</li>
+      <li class="k" style="font-size:1.25rem"><strong>Una password casuale per ogni sito:</strong> Almeno 16 caratteri alfanumerici senza alcun significato per ogni account.</li>
+      <li class="k" style="font-size:1.25rem"><strong>Attiva sempre l'Autenticazione a Due Fattori (2FA):</strong> Obbligatoria su email principale, banche, social e account scuola.</li>
+      <li class="k" style="font-size:1.25rem"><strong>Scegli una Master Passphrase inviolabile:</strong> Combina 4 parole casuali e slegate (es. <code>galassia-matita-vulcano-salto-92!</code>): immune sia al dizionario sia al brute force.</li>
+      <li class="k" style="font-size:1.25rem"><strong>Verifica periodicamente le tue credenziali:</strong> Controlla la tua email su <code>haveibeenpwned.com</code> per verificare la presenza in data breach.</li>
+    </ul>
   </div>
 </section>
 
@@ -2433,16 +2582,16 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <section class="slide" id="s21">
   <div class="center">
-    <div style="font-size:4.5rem;animation:gp 2.5s infinite">🛡️</div>
-    <div style="font-family:var(--fv);font-size:clamp(2.2rem,4.5vw,3.5rem);color:var(--g);text-shadow:0 0 20px var(--g);line-height:1.1">
-      La sicurezza digitale<br>non è un'opzione.
+    <div style="font-size:5rem;animation:gp 2.5s infinite">🛡️</div>
+    <div style="font-family:var(--font-body);font-weight:800;font-size:clamp(2.4rem,4.5vw,3.8rem);color:var(--g);text-shadow:0 0 24px var(--g);line-height:1.15">
+      La sicurezza digitale non è un'opzione.
     </div>
-    <div style="font-family:var(--fv);font-size:clamp(1.4rem,2.8vw,2.2rem);color:var(--a);text-shadow:0 0 14px var(--adim)">
-      È una competenza che si impara.
+    <div style="font-family:var(--font-body);font-weight:700;font-size:clamp(1.5rem,2.8vw,2.3rem);color:var(--a);text-shadow:0 0 16px var(--adim)">
+      È una competenza che si impara e si allena ogni giorno.
     </div>
-    <div class="cover-div"></div>
-    <div style="font-size:.88rem;color:var(--gdim);letter-spacing:2px">
-      SICUREZZA INFORMATICA — MODULO 1 // FINE &nbsp;<span class="blink">█</span>
+    <div class="cover-div" style="width:60%"></div>
+    <div style="font-size:1.1rem;color:var(--gdim);letter-spacing:3px;font-family:var(--fm)">
+      SICUREZZA INFORMATICA — MODULO 1 // CONCLUSIONE &nbsp;<span class="blink">█</span>
     </div>
   </div>
 </section>
@@ -2535,7 +2684,32 @@ document.addEventListener('keydown', e => {
   if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === 'PageDown') goTo(cur + 1);
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'    || e.key === 'PageUp')   goTo(cur - 1);
+  if (e.key === 'p' || e.key === 'P') toggleSlidePen();
+  if (e.key === 'w' || e.key === 'W' || e.key === 'b' || e.key === 'B') openWhiteboard();
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  if (e.key === 'z' || e.key === 'Z') toggleFontScale();
 });
+
+let fontScaleLevel = parseInt(localStorage.getItem('sec_slides_font_scale') || '0', 10);
+function applyFontScale(level) {
+  document.body.classList.remove('font-scale-1', 'font-scale-2');
+  const btnText = document.getElementById('font-scale-text');
+  if (level === 1) {
+    document.body.classList.add('font-scale-1');
+    if (btnText) btnText.textContent = 'A++';
+  } else if (level === 2) {
+    document.body.classList.add('font-scale-2');
+    if (btnText) btnText.textContent = 'A';
+  } else {
+    if (btnText) btnText.textContent = 'A+';
+  }
+  localStorage.setItem('sec_slides_font_scale', level);
+}
+window.toggleFontScale = function() {
+  fontScaleLevel = (fontScaleLevel + 1) % 3;
+  applyFontScale(fontScaleLevel);
+};
+if (fontScaleLevel > 0) applyFontScale(fontScaleLevel);
 syncUI();
 
 /* ====================================================================
