@@ -16,9 +16,10 @@
 /* ═══════════════════════════════════════════════════════════
    DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
    - Barre sopra e sotto nascoste in modalità Schermo Intero
+   - Modalità Penna Colorata & Gomma per stilo LIM touch
    - Zoom dinamico e manuale (Zoom In/Out, Pan, Auto-Fit)
    - Testi e formule extra-large ad altissima visibilità
-   - ZERO concetti di forze (vettori geometrici / spostamenti in metri)
+   - ZERO concetti di forze (vettori geometrici in metri)
    - ZERO menzioni di sottrazione vettoriale
    ═══════════════════════════════════════════════════════════ */
 
@@ -208,6 +209,14 @@ html, body {
   background: #0369a1;
 }
 
+/* Bottone Penna Header */
+.btn-lim-tool.pen-toggle-btn.active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.45) !important;
+}
+
 /* ═══════════════════════════════════════════════════════════
    STAGE CENTRALE (CANVAS A SINISTRA + TESTO A DESTRA)
    ═══════════════════════════════════════════════════════════ */
@@ -219,6 +228,22 @@ html, body {
   position: relative;
   background: var(--bg-page);
   overflow: hidden;
+}
+
+/* Canvas Trasparente Sovrapposto per la Penna LIM */
+.lim-pen-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 45;
+  pointer-events: none;
+  touch-action: none;
+}
+.lim-pen-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
 }
 
 /* Colonna Sinistra (Canvas) */
@@ -491,6 +516,168 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   TAVOLOZZA PENNA FLUTTUANTE PER LA LIM
+   ═══════════════════════════════════════════════════════════ */
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  padding: 8px 14px;
+  flex-direction: column;
+  gap: 8px;
+  user-select: none;
+  animation: popIn 0.18s ease-out;
+}
+.lim-pen-palette.show {
+  display: flex;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.pen-palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: 0.76rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+}
+.pen-palette-header:active {
+  cursor: grabbing;
+}
+.pen-btn-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.pen-btn-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.pen-palette-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pen-tool-group, .pen-color-group, .pen-size-group, .pen-action-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pen-tool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pen-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.pen-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.pen-palette-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 2px;
+}
+
+.color-swatch {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+.color-swatch.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.size-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.size-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.pen-action-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.pen-action-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.pen-action-btn.danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+/* ═══════════════════════════════════════════════════════════
    BARRA INFERIORE DI NAVIGAZIONE STANDARD
    ═══════════════════════════════════════════════════════════ */
 .lim-nav-bar {
@@ -689,6 +876,12 @@ body.is-fullscreen .lim-fullscreen-hud,
 .hud-btn.primary:hover {
   background: #0369a1;
 }
+.hud-btn.pen-toggle-hud.active {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.5) !important;
+}
 .hud-btn.exit {
   background: #ef4444;
   border-color: #ef4444;
@@ -758,6 +951,9 @@ body.is-fullscreen .lim-fullscreen-hud,
     </div>
 
     <div class="lim-header-tools">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Disegna con la Penna LIM (annotazioni e gomma)">
+        ✏️ Penna LIM
+      </button>
       <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci il testo delle spiegazioni">
         <span id="textScaleIcon">A+</span> Ingrandisci Testo
       </button>
@@ -771,7 +967,62 @@ body.is-fullscreen .lim-fullscreen-hud,
   </header>
 
   <!-- STAGE PRINCIPALE -->
-  <main class="lim-stage">
+  <main class="lim-stage" id="limStage">
+
+    <!-- CANVAS TRASPARENTE PER DISEGNARE CON LA PENNA DELLA LIM -->
+    <canvas id="limPenCanvas" class="lim-pen-canvas"></canvas>
+
+    <!-- TAVOLOZZA PENNA FLUTTUANTE LIM (trascinabile) -->
+    <div class="lim-pen-palette" id="limPenPalette">
+      <div class="pen-palette-header" id="penPaletteHeader" title="Trascina per spostare la tavolozza">
+        <span>✏️ STRUMENTI PENNA LIM</span>
+        <button class="pen-btn-close" onclick="togglePenMode()" title="Chiudi modalità penna">✖</button>
+      </div>
+
+      <div class="pen-palette-tools">
+        <!-- Strumenti: Penna, Evidenziatore, Gomma -->
+        <div class="pen-tool-group">
+          <button class="pen-tool-btn active" id="toolBtnPen" onclick="setPenTool('pen')" title="Penna normale">✏️</button>
+          <button class="pen-tool-btn" id="toolBtnHighlighter" onclick="setPenTool('highlighter')" title="Evidenziatore trasparente">🖍️</button>
+          <button class="pen-tool-btn" id="toolBtnEraser" onclick="setPenTool('eraser')" title="Gomma per cancellare tratti">🧽</button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <!-- Colori Penna -->
+        <div class="pen-color-group">
+          <button class="color-swatch active" style="background:#ef4444" data-color="#ef4444" onclick="setPenColor('#ef4444')" title="Rosso"></button>
+          <button class="color-swatch" style="background:#eab308" data-color="#eab308" onclick="setPenColor('#eab308')" title="Giallo"></button>
+          <button class="color-swatch" style="background:#22c55e" data-color="#22c55e" onclick="setPenColor('#22c55e')" title="Verde"></button>
+          <button class="color-swatch" style="background:#0284c7" data-color="#0284c7" onclick="setPenColor('#0284c7')" title="Blu"></button>
+          <button class="color-swatch" style="background:#ec4899" data-color="#ec4899" onclick="setPenColor('#ec4899')" title="Magenta"></button>
+          <button class="color-swatch" style="background:#0f172a" id="swatchContrast" data-color="#0f172a" onclick="setPenColorContrast()" title="Nero / Bianco"></button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <!-- Spessori tratto -->
+        <div class="pen-size-group">
+          <button class="size-btn" onclick="setPenSize(3)" id="sizeBtn3" title="Tratto fine">
+            <span class="size-dot" style="width:4px; height:4px;"></span>
+          </button>
+          <button class="size-btn active" onclick="setPenSize(6)" id="sizeBtn6" title="Tratto medio">
+            <span class="size-dot" style="width:8px; height:8px;"></span>
+          </button>
+          <button class="size-btn" onclick="setPenSize(14)" id="sizeBtn14" title="Tratto spesso">
+            <span class="size-dot" style="width:13px; height:13px;"></span>
+          </button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <!-- Azioni: Undo e Clear -->
+        <div class="pen-action-group">
+          <button class="pen-action-btn" onclick="undoPenStroke()" title="Annulla ultimo tratto">↩️</button>
+          <button class="pen-action-btn danger" onclick="clearPenStrokes()" title="Cancella tutti i tratti di questo passaggio">🗑️</button>
+        </div>
+      </div>
+    </div>
 
     <!-- COLONNA SINISTRA: CANVAS INTERATTIVO VETTORI -->
     <div class="lim-canvas-card">
@@ -857,6 +1108,7 @@ body.is-fullscreen .lim-fullscreen-hud,
 
     <div class="hud-divider"></div>
 
+    <button class="hud-btn pen-toggle-hud" id="btnHudPen" onclick="togglePenMode()" title="Disegna con la Penna LIM">✏️ Penna</button>
     <button class="hud-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas">🔍+</button>
     <button class="hud-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas">🔍−</button>
     <button class="hud-btn" onclick="resetCanvasZoom()" title="Adatta visuale al passo">🎯 Adatta</button>
@@ -873,7 +1125,7 @@ body.is-fullscreen .lim-fullscreen-hud,
 <script>
 // ═══════════════════════════════════════════════════════════
 // DATI RIGOROSI DELL'ESERCIZIO 2 — PARALLELOGRAMMA
-// Due vettori geometrici / spostamenti con la stessa coda O(0, 0)
+// Due vettori geometrici con la stessa coda O(0, 0)
 // a = (5, 0) m e b = (3, 6) m -> Vettore Somma s = (8, 6) m, |s| = 10 m
 // ZERO concetti di forze, ZERO menzioni di sottrazione vettoriale!
 // ═══════════════════════════════════════════════════════════
@@ -916,20 +1168,20 @@ const STEPS_DATA = [
     render: () => `
       <div class="pedagogy-box problem">
         <div class="box-title">📖 Testo dell'Esercizio:</div>
-        Su un piano cartesiano ortogonale (in cui <strong>1 quadretto = 1 metro</strong>), sono assegnati due vettori che partono entrambi dalla <strong>stessa origine comune \(O(0, 0)\)</strong>:<br>
-        • Il primo vettore è orizzontale: <strong>\(\vec{a} = (5, 0)\text{ m}\)</strong> diretto verso destra.<br>
-        • Il secondo vettore è obliquo: <strong>\(\vec{b} = (3, 6)\text{ m}\)</strong> diretto verso l'alto a destra.<br>
+        Su un piano cartesiano ortogonale (in cui <strong>1 quadretto = 1 metro</strong>), sono assegnati due vettori che partono entrambi dalla <strong>stessa origine comune \\(O(0, 0)\\)</strong>:<br>
+        • Il primo vettore è orizzontale: <strong>\\(\\vec{a} = (5, 0)\\text{ m}\\)</strong> diretto verso destra.<br>
+        • Il secondo vettore è obliquo: <strong>\\(\\vec{b} = (3, 6)\\text{ m}\\)</strong> diretto verso l'alto a destra.<br>
         <strong>Richieste della traccia:</strong><br>
-        1. Rappresenta graficamente i due vettori \(\vec{a}\) e \(\vec{b}\) con la stessa coda in \(O(0, 0)\).<br>
-        2. Costruisci il <strong>vettore somma \(\vec{s} = \vec{a} + \vec{b}\)</strong> applicando il <strong>metodo del parallelogramma</strong>.<br>
+        1. Rappresenta graficamente i due vettori \\(\\vec{a}\\) e \\(\\vec{b}\\) con la stessa coda in \\(O(0, 0)\\).<br>
+        2. Costruisci il <strong>vettore somma \\(\\vec{s} = \\vec{a} + \\vec{b}\\)</strong> applicando il <strong>metodo del parallelogramma</strong>.<br>
         3. Spiega perché la diagonale principale corrisponde all'addizione tra i vettori.<br>
-        4. Determina le componenti cartesiane e calcola il modulo del vettore somma \(|\vec{s}|\).
+        4. Determina le componenti cartesiane e calcola il modulo del vettore somma \\(|\\vec{s}|\\).
       </div>
 
       <div class="pedagogy-box blue">
         <div class="box-title">❓ Perché non usiamo subito il Punta-Coda semplice?</div>
         Nel metodo punta-coda visto nel primo esercizio, i vettori erano consecutivi (il secondo partiva dove finiva il primo).<br>
-        In questo caso, invece, entrambi i vettori partono <strong>dallo stesso identico punto \(O(0, 0)\)</strong>: hanno la coda in comune!<br>
+        In questo caso, invece, entrambi i vettori partono <strong>dallo stesso identico punto \\(O(0, 0)\\)</strong>: hanno la coda in comune!<br>
         Quando due vettori condividono la stessa origine, il metodo geometrico fondamentale è la <strong>regola del parallelogramma</strong>.
       </div>
 
@@ -943,29 +1195,29 @@ const STEPS_DATA = [
   // ── PASSO 2 ──
   {
     num: 2,
-    title: "2. Disegno dei Vettori \(\vec{a}\) e \(\vec{b}\) con Coda in O(0,0)",
+    title: "2. Disegno dei Vettori \\(\\vec{a}\\) e \\(\\vec{b}\\) con Coda in O(0,0)",
     badge: "PASSO 2 DI 6 — TRACCIAMENTO",
     canvasBadge: "Passo 2: Disegno di a e b dall'Origine O(0,0)",
     render: () => `
       <div class="pedagogy-box blue">
-        <div class="box-title">🔵 Disegno del 1° Vettore \(\vec{a} = (5, 0)\text{ m}\):</div>
-        • <strong>Punto iniziale (coda):</strong> origine \(O(0, 0)\).<br>
-        • <strong>Componente orizzontale:</strong> \(a_x = +5\text{ m}\) (5 quadretti a destra lungo l'asse \(X\)).<br>
-        • <strong>Componente verticale:</strong> \(a_y = 0\text{ m}\) (giace esattamente sull'asse \(X\)).<br>
-        • La punta della freccia blu si trova nel punto <strong>\(A(5, 0)\)</strong>.
+        <div class="box-title">🔵 Disegno del 1° Vettore \\(\\vec{a} = (5, 0)\\text{ m}\\):</div>
+        • <strong>Punto iniziale (coda):</strong> origine \\(O(0, 0)\\).<br>
+        • <strong>Componente orizzontale:</strong> \\(a_x = +5\\text{ m}\\) (5 quadretti a destra lungo l'asse \\(X\\)).<br>
+        • <strong>Componente verticale:</strong> \\(a_y = 0\\text{ m}\\) (giace esattamente sull'asse \\(X\\)).<br>
+        • La punta della freccia blu si trova nel punto <strong>\\(A(5, 0)\\)</strong>.
       </div>
 
       <div class="pedagogy-box orange">
-        <div class="box-title">🟠 Disegno del 2° Vettore \(\vec{b} = (3, 6)\text{ m}\):</div>
-        • <strong>Punto iniziale (coda):</strong> la stessa identica origine \(O(0, 0)\)!<br>
-        • <strong>Componente orizzontale:</strong> \(b_x = +3\text{ m}\) (3 quadretti a destra).<br>
-        • <strong>Componente verticale:</strong> \(b_y = +6\text{ m}\) (6 quadretti in alto lungo l'asse \(Y\)).<br>
-        • La punta della freccia arancione si trova nel punto <strong>\(C(3, 6)\)</strong>.
+        <div class="box-title">🟠 Disegno del 2° Vettore \\(\\vec{b} = (3, 6)\\text{ m}\\):</div>
+        • <strong>Punto iniziale (coda):</strong> la stessa identica origine \\(O(0, 0)\\)!<br>
+        • <strong>Componente orizzontale:</strong> \\(b_x = +3\\text{ m}\\) (3 quadretti a destra).<br>
+        • <strong>Componente verticale:</strong> \\(b_y = +6\\text{ m}\\) (6 quadretti verso l'alto lungo l'asse \\(Y\\)).<br>
+        • La punta della freccia arancione si trova nel punto <strong>\\(C(3, 6)\\)</strong>.
       </div>
 
       <div class="pedagogy-box gold">
         <div class="box-title">👀 Osserva la Lavagna:</div>
-        I due vettori partono entrambi da \(O(0, 0)\) e si aprono a ventaglio. Formano i primi due lati adiacenti del parallelogramma che completeremo nel prossimo passaggio!
+        I due vettori partono entrambi da \\(O(0, 0)\\) e si aprono a ventaglio. Formano i primi due lati adiacenti del parallelogramma che completeremo nel prossimo passaggio!
       </div>
     `
   },
@@ -981,17 +1233,17 @@ const STEPS_DATA = [
         <div class="box-title">📐 Come si completa il Parallelogramma:</div>
         Dalla punta di ciascun vettore tracciamo una retta (o segmento tratteggiato) parallela all'altro vettore:
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li><strong>1ª Parallela (in alto):</strong> dalla punta di \(\vec{b}\) (punto \(C(3, 6)\)), tracciamo un segmento parallelo ad \(\vec{a}\) lungo esattamente <strong>5 quadretti a destra</strong>.</li>
-          <li><strong>2ª Parallela (a destra):</strong> dalla punta di \(\vec{a}\) (punto \(A(5, 0)\)), tracciamo un segmento parallelo a \(\vec{b}\) inclinato di <strong>3 a destra e 6 in alto</strong>.</li>
+          <li><strong>1ª Parallela (in alto):</strong> dalla punta di \\(\\vec{b}\\) (punto \\(C(3, 6)\\)), tracciamo un segmento parallelo ad \\(\\vec{a}\\) lungo esattamente <strong>5 quadretti a destra</strong>.</li>
+          <li><strong>2ª Parallela (a destra):</strong> dalla punta di \\(\\vec{a}\\) (punto \\(A(5, 0)\\)), tracciamo un segmento parallelo a \\(\\vec{b}\\) inclinato di <strong>3 a destra e 6 in alto</strong>.</li>
         </ul>
       </div>
 
       <div class="pedagogy-box green">
-        <div class="box-title">🎯 Il Punto d'Incontro \(D(8, 6)\):</div>
-        Le due rette parallele tratteggiate si incontrano perfettamente nel punto <strong>\(D(8, 6)\)</strong>!<br>
-        • Da \(C(3, 6)\) aggiungendo le componenti di \(\vec{a}\): \((3 + 5, 6 + 0) = \mathbf{(8, 6)}\).<br>
-        • Da \(A(5, 0)\) aggiungendo le componenti di \(\vec{b}\): \((5 + 3, 0 + 6) = \mathbf{(8, 6)}\).<br>
-        I quattro vertici individuano il parallelogramma perfetto <strong>\(O - A - D - C\)</strong>.
+        <div class="box-title">🎯 Il Punto d'Incontro \\(D(8, 6)\\):</div>
+        Le due rette parallele tratteggiate si incontrano perfettamente nel punto <strong>\\(D(8, 6)\\)</strong>!<br>
+        • Da \\(C(3, 6)\\) aggiungendo le componenti di \\(\\vec{a}\\): \\((3 + 5, 6 + 0) = \\mathbf{(8, 6)}\\).<br>
+        • Da \\(A(5, 0)\\) aggiungendo le componenti di \\(\\vec{b}\\): \\((5 + 3, 0 + 6) = \\mathbf{(8, 6)}\\).<br>
+        I quattro vertici individuano il parallelogramma perfetto <strong>\\(O - A - D - C\\)</strong>.
       </div>
     `
   },
@@ -999,16 +1251,16 @@ const STEPS_DATA = [
   // ── PASSO 4 ──
   {
     num: 4,
-    title: "4. La Diagonale = Vettore Somma \(\vec{s} = \vec{a} + \vec{b}\)",
+    title: "4. La Diagonale = Vettore Somma \\(\\vec{s} = \\vec{a} + \\vec{b}\\)",
     badge: "PASSO 4 DI 6 — LA DIAGONALE",
     canvasBadge: "Passo 4: Tracciamento della Diagonale Somma",
     render: () => `
       <div class="pedagogy-box green">
         <div class="box-title">🚀 Definizione del Vettore Somma:</div>
-        Il <strong>vettore somma \(\vec{s} = \vec{a} + \vec{b}\)</strong> è rappresentato dalla <strong>DIAGONALE PRINCIPALE</strong> del parallelogramma, che parte dalla coda comune \(O(0, 0)\) e arriva al vertice opposto <strong>\(D(8, 6)\)</strong>!
+        Il <strong>vettore somma \\(\\vec{s} = \\vec{a} + \\vec{b}\\)</strong> è rappresentato dalla <strong>DIAGONALE PRINCIPALE</strong> del parallelogramma, che parte dalla coda comune \\(O(0, 0)\\) e arriva al vertice opposto <strong>\\(D(8, 6)\\)</strong>!
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li>È la grande freccia <strong>verde smeraldo</strong> \(\vec{s}\).</li>
-          <li>Collega l'origine comune \(O\) con il vertice opposto \(D\).</li>
+          <li>È la grande freccia <strong>verde smeraldo</strong> \\(\\vec{s}\\).</li>
+          <li>Collega l'origine comune \\(O\\) con il vertice opposto \\(D\\).</li>
         </ul>
       </div>
 
@@ -1016,9 +1268,9 @@ const STEPS_DATA = [
         <div class="box-title">📊 Componenti Cartesiane del Vettore Somma:</div>
         Per determinare le componenti del vettore somma basta sommare le coordinate dei singoli vettori:
         <ul class="lim-bullet-list" style="margin-top:6px;">
-          <li><strong>Componente orizzontale:</strong> \(s_x = a_x + b_x = 5 + 3 = \mathbf{8\text{ m}}\).</li>
-          <li><strong>Componente verticale:</strong> \(s_y = a_y + b_y = 0 + 6 = \mathbf{6\text{ m}}\).</li>
-          <li>Quindi il vettore somma ha coordinate cartesiane: <strong>\(\vec{s} = (8, 6)\text{ m}\)</strong>.</li>
+          <li><strong>Componente orizzontale:</strong> \\(s_x = a_x + b_x = 5 + 3 = \\mathbf{8\\text{ m}}\\).</li>
+          <li><strong>Componente verticale:</strong> \\(s_y = a_y + b_y = 0 + 6 = \\mathbf{6\\text{ m}}\\).</li>
+          <li>Quindi il vettore somma ha coordinate cartesiane: <strong>\\(\\vec{s} = (8, 6)\\text{ m}\\)</strong>.</li>
         </ul>
       </div>
     `
@@ -1037,18 +1289,18 @@ const STEPS_DATA = [
       </div>
 
       <div class="pedagogy-box blue">
-        <strong>1. Percorso Inferiore \(\vec{a} + \vec{b}\):</strong><br>
-        Parti da \(O\), percorri \(\vec{a}\) fino al punto \(A(5, 0)\), poi dalla punta di \(\vec{a}\) percorri \(\vec{b}\) (il lato destro \(AD\)). Arrivi in <strong>\(D(8, 6)\)</strong>!
+        <strong>1. Percorso Inferiore \\(\\vec{a} + \\vec{b}\\):</strong><br>
+        Parti da \\(O\\), percorri \\(\\vec{a}\\) fino al punto \\(A(5, 0)\\), poi dalla punta di \\(\\vec{a}\\) percorri \\(\\vec{b}\\) (il lato destro \\(AD\\)). Arrivi in <strong>\\(D(8, 6)\\)</strong>!
       </div>
 
       <div class="pedagogy-box orange">
-        <strong>2. Percorso Superiore \(\vec{b} + \vec{a}\):</strong><br>
-        Parti da \(O\), percorri prima \(\vec{b}\) fino al punto \(C(3, 6)\), poi dalla punta di \(\vec{b}\) percorri \(\vec{a}\) (il lato superiore \(CD\)). Arrivi di nuovo esattamente in <strong>\(D(8, 6)\)</strong>!
+        <strong>2. Percorso Superiore \\(\\vec{b} + \\vec{a}\\):</strong><br>
+        Parti da \\(O\\), percorri prima \\(\\vec{b}\\) fino al punto \\(C(3, 6)\\), poi dalla punta di \\(\\vec{b}\\) percorri \\(\\vec{a}\\) (il lato superiore \\(CD\\)). Arrivi di nuovo esattamente in <strong>\\(D(8, 6)\\)</strong>!
       </div>
 
       <div class="lim-math-card">
         <div class="math-comment">PROPRIETÀ COMMUTATIVA DELLA SOMMA VETTORIALE:</div>
-        <div class="math-line" style="color:var(--vec-sum);">\(\vec{a} + \vec{b} = \vec{b} + \vec{a}\)</div>
+        <div class="math-line" style="color:var(--vec-sum);">\\(\\vec{a} + \\vec{b} = \\vec{b} + \\vec{a}\\)</div>
         <div class="math-comment">L'ordine con cui sommiamo i due vettori non cambia il risultato finale!</div>
       </div>
     `
@@ -1062,8 +1314,8 @@ const STEPS_DATA = [
     canvasBadge: "Passo 6: Modulo del Vettore Somma |s| = 10 m",
     render: () => `
       <div class="pedagogy-box green">
-        <div class="box-title">📐 Teorema di Pitagora sulla Diagonale \(\vec{s}\):</div>
-        La diagonale verde \(\vec{s}\) è l'ipotenusa del grande triangolo rettangolo formato dai due cateti \(s_x = 8\text{ m}\) e \(s_y = 6\text{ m}\):
+        <div class="box-title">📐 Teorema di Pitagora sulla Diagonale \\(\\vec{s}\\):</div>
+        La diagonale verde \\(\\vec{s}\\) è l'ipotenusa del grande triangolo rettangolo formato dai due cateti \\(s_x = 8\\text{ m}\\) e \\(s_y = 6\\text{ m}\\):
       </div>
 
       <div class="lim-math-card">
@@ -1075,7 +1327,7 @@ const STEPS_DATA = [
 
       <div class="pedagogy-box problem">
         <div class="box-title">🎯 Risposta Conclusiva dell'Esercizio:</div>
-        • Il vettore somma ottenuto con la regola del parallelogramma ha coordinate <strong>\(\vec{s} = (8, 6)\text{ m}\)</strong>.<br>
+        • Il vettore somma ottenuto con la regola del parallelogramma ha coordinate <strong>\\(\\vec{s} = (8, 6)\\text{ m}\\)</strong>.<br>
         • La sua lunghezza (modulo) in linea retta è esattamente pari a <strong>10 metri</strong>.<br>
         • La regola del parallelogramma ci permette di determinare la somma tra vettori con origine comune in modo visivo, geometrico ed esatto!
       </div>
@@ -1122,13 +1374,13 @@ class VectorExerciseCanvas {
 
     // Pan con mouse
     wrap.addEventListener('mousedown', (e) => {
-      if (e.button !== 0) return;
+      if (e.button !== 0 || (penLayer && penLayer.active)) return;
       this.isDragging = true;
       this.dragStart = { x: e.clientX - this.panX, y: e.clientY - this.panY };
     });
 
     window.addEventListener('mousemove', (e) => {
-      if (!this.isDragging) return;
+      if (!this.isDragging || (penLayer && penLayer.active)) return;
       this.panX = e.clientX - this.dragStart.x;
       this.panY = e.clientY - this.dragStart.y;
       this.draw(currentStep, animProgress);
@@ -1140,14 +1392,16 @@ class VectorExerciseCanvas {
 
     // Zoom con rotella mouse
     wrap.addEventListener('wheel', (e) => {
+      if (penLayer && penLayer.active) return;
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
       this.userZoom = Math.max(0.4, Math.min(4.0, this.userZoom * zoomFactor));
       this.draw(currentStep, animProgress);
     }, { passive: false });
 
-    // Touch per LIM (Pan con tocco)
+    // Touch per LIM (Pan con tocco quando la penna NON è attiva)
     wrap.addEventListener('touchstart', (e) => {
+      if (penLayer && penLayer.active) return;
       if (e.touches.length === 1) {
         this.isDragging = true;
         this.dragStart = { x: e.touches[0].clientX - this.panX, y: e.touches[0].clientY - this.panY };
@@ -1155,6 +1409,7 @@ class VectorExerciseCanvas {
     }, { passive: true });
 
     wrap.addEventListener('touchmove', (e) => {
+      if (penLayer && penLayer.active) return;
       if (!this.isDragging || e.touches.length !== 1) return;
       this.panX = e.touches[0].clientX - this.dragStart.x;
       this.panY = e.touches[0].clientY - this.dragStart.y;
@@ -1652,7 +1907,284 @@ class VectorExerciseCanvas {
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// MOTORE PENNA E GOMMA INTERATTIVA PER LA LIM
+// Supporta stilo touch, mouse, colori, spessori e gomma
+// ═══════════════════════════════════════════════════════════
+
+class LimPenLayer {
+  constructor(canvasId, stageId) {
+    this.canvas = document.getElementById(canvasId);
+    this.stage = document.getElementById(stageId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+    this.currentColor = '#ef4444'; // Rosso di default
+    this.currentSize = 6; // Medio di default
+
+    // Tratti salvati per ogni passaggio didattico (passi 1..6)
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+    this.resize();
+  }
+
+  resize() {
+    const rect = this.stage.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redrawCurrentStep();
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+
+    // Disegno con Pointer Events (stilo LIM, tocco e mouse)
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      // Filtro micro-distanza per fluidità dello stilo LIM
+      if (Math.hypot(x - lastPt.x, y - lastPt.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(lastPt, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = (e) => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesByStep[currentStep]) {
+          this.strokesByStep[currentStep] = [];
+        }
+        this.strokesByStep[currentStep].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 4.4; // Gomma ampia
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redrawCurrentStep() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const stepStrokes = this.strokesByStep[currentStep] || [];
+    for (const stroke of stepStrokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+  }
+
+  undo() {
+    const list = this.strokesByStep[currentStep];
+    if (list && list.length > 0) {
+      list.pop();
+      this.redrawCurrentStep();
+    }
+  }
+
+  clear() {
+    this.strokesByStep[currentStep] = [];
+    this.redrawCurrentStep();
+  }
+
+  setActive(active) {
+    this.active = active;
+    this.canvas.classList.toggle('active', active);
+    const palette = document.getElementById('limPenPalette');
+    if (palette) palette.classList.toggle('show', active);
+
+    const btnHeader = document.getElementById('btnHeaderPen');
+    if (btnHeader) btnHeader.classList.toggle('active', active);
+    const btnHud = document.getElementById('btnHudPen');
+    if (btnHud) btnHud.classList.toggle('active', active);
+  }
+
+  // Tavolozza fluttuante trascinabile
+  initPaletteDrag() {
+    const palette = document.getElementById('limPenPalette');
+    const header = document.getElementById('penPaletteHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      if (e.target.tagName.toLowerCase() === 'button') return;
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      const rect = palette.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none'; // Rimuove centering transform
+      palette.style.left = `${initialLeft}px`;
+      palette.style.top = `${initialTop}px`;
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newLeft = Math.max(10, Math.min(window.innerWidth - palette.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - palette.offsetHeight - 10, initialTop + dy));
+      palette.style.left = `${newLeft}px`;
+      palette.style.top = `${newTop}px`;
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
 let vCanvas = null;
+let penLayer = null;
+
+// ═══════════════════════════════════════════════════════════
+// COMANDI PENNA LIM
+// ═══════════════════════════════════════════════════════════
+
+function togglePenMode() {
+  if (!penLayer) return;
+  penLayer.setActive(!penLayer.active);
+}
+
+function setPenTool(tool) {
+  if (!penLayer) return;
+  penLayer.currentTool = tool;
+
+  document.querySelectorAll('.pen-tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('toolBtnPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('toolBtnHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('toolBtnEraser').classList.add('active');
+}
+
+function setPenColor(color) {
+  if (!penLayer) return;
+  penLayer.currentColor = color;
+  if (penLayer.currentTool === 'eraser') setPenTool('pen');
+
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('active', s.dataset.color === color);
+  });
+}
+
+function setPenColorContrast() {
+  const isDark = document.body.classList.contains('dark-mode');
+  const color = isDark ? '#ffffff' : '#0f172a';
+  setPenColor(color);
+  const swatch = document.getElementById('swatchContrast');
+  if (swatch) {
+    swatch.style.background = color;
+    swatch.dataset.color = color;
+  }
+}
+
+function setPenSize(size) {
+  if (!penLayer) return;
+  penLayer.currentSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`sizeBtn${size}`);
+  if (btn) btn.classList.add('active');
+}
+
+function undoPenStroke() {
+  if (penLayer) penLayer.undo();
+}
+
+function clearPenStrokes() {
+  if (penLayer) penLayer.clear();
+}
 
 // ═══════════════════════════════════════════════════════════
 // GESTIONE ANIMAZIONE FLUIDA
@@ -1722,9 +2254,9 @@ function renderStep(stepIndex) {
   // KaTeX rendering formule del modulo (Passo 6)
   if (window.katex) {
     if (stepIndex === 6) {
-      katex.render("|\vec{s}| = \sqrt{s_x^2 + s_y^2}", document.getElementById('mathR1'), { displayMode: true });
-      katex.render("|\vec{s}| = \sqrt{8^2 + 6^2} = \sqrt{64 + 36} = \sqrt{100}", document.getElementById('mathR2'), { displayMode: true });
-      katex.render("|\vec{s}| = 10\text{ m}", document.getElementById('mathR3'), { displayMode: true });
+      katex.render("|\\vec{s}| = \\sqrt{s_x^2 + s_y^2}", document.getElementById('mathR1'), { displayMode: true });
+      katex.render("|\\vec{s}| = \\sqrt{8^2 + 6^2} = \\sqrt{64 + 36} = \\sqrt{100}", document.getElementById('mathR2'), { displayMode: true });
+      katex.render("|\\vec{s}| = 10\\text{ m}", document.getElementById('mathR3'), { displayMode: true });
     }
   } else {
     const mr1 = document.getElementById('mathR1');
@@ -1740,8 +2272,8 @@ function renderStep(stepIndex) {
     try {
       renderMathInElement(document.getElementById('stepCardBody'), {
         delimiters: [
-          { left: '\(', right: '\)', display: false },
-          { left: '\[', right: '\]', display: true }
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true }
         ],
         throwOnError: false
       });
@@ -1780,6 +2312,11 @@ function renderStep(stepIndex) {
     vCanvas.userZoom = 1.0;
     vCanvas.panX = 0;
     vCanvas.panY = 0;
+  }
+
+  // Ridisegna i tratti penna di questo passaggio
+  if (penLayer) {
+    penLayer.redrawCurrentStep();
   }
 
   startStepAnimation();
@@ -1865,6 +2402,9 @@ function toggleFullscreen() {
       vCanvas.resize();
       vCanvas.draw(currentStep, 1);
     }
+    if (penLayer) {
+      penLayer.resize();
+    }
   }, 150);
 }
 
@@ -1876,6 +2416,9 @@ document.addEventListener('fullscreenchange', () => {
     if (vCanvas) {
       vCanvas.resize();
       vCanvas.draw(currentStep, 1);
+    }
+    if (penLayer) {
+      penLayer.resize();
     }
   }, 100);
 });
@@ -1901,9 +2444,30 @@ function toggleTheme() {
   document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
   document.getElementById('themeLabel').textContent = isDark ? 'Modalità Chiara' : 'Modalità Scura';
   if (vCanvas) vCanvas.draw(currentStep, 1);
+  if (penLayer) penLayer.redrawCurrentStep();
+  const contrastSwatch = document.getElementById('swatchContrast');
+  if (contrastSwatch) {
+    const col = isDark ? '#ffffff' : '#0f172a';
+    contrastSwatch.style.background = col;
+    contrastSwatch.dataset.color = col;
+  }
 }
 
 window.addEventListener('keydown', (e) => {
+  // Scorciatoie Lim Penna
+  if (e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    togglePenMode();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+    if (penLayer && penLayer.active) {
+      e.preventDefault();
+      undoPenStroke();
+      return;
+    }
+  }
+
   if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
     e.preventDefault();
     nextStep();
@@ -1934,6 +2498,7 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener('DOMContentLoaded', () => {
   vCanvas = new VectorExerciseCanvas('vecCanvas');
+  penLayer = new LimPenLayer('limPenCanvas', 'limStage');
   renderStep(1);
 });
 </script>

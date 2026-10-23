@@ -779,6 +779,198 @@ body.is-fullscreen .lim-fullscreen-hud,
   .step-circle-pill span.pill-label { display: none; }
   .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
 }
+
+/* Canvas Trasparente Sovrapposto per la Penna LIM */
+.lim-pen-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 45;
+  pointer-events: none;
+  touch-action: none;
+}
+.lim-pen-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Bottone Penna Header */
+.btn-lim-tool.pen-toggle-btn.active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.45) !important;
+}
+
+/* TAVOLOZZA PENNA FLUTTUANTE LIM */
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  padding: 8px 14px;
+  flex-direction: column;
+  gap: 8px;
+  user-select: none;
+  animation: popIn 0.18s ease-out;
+}
+.lim-pen-palette.show {
+  display: flex;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.pen-palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: 0.76rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+}
+.pen-palette-header:active {
+  cursor: grabbing;
+}
+.pen-btn-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.pen-btn-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.pen-palette-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pen-tool-group, .pen-color-group, .pen-size-group, .pen-action-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pen-tool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pen-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.pen-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.pen-palette-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 2px;
+}
+
+.color-swatch {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+.color-swatch.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.size-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.size-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.pen-action-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.pen-action-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.pen-action-btn.danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.hud-btn.pen-toggle-hud.active {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.5) !important;
+}
+
 </style>
 </head>
 <body>
@@ -802,6 +994,9 @@ body.is-fullscreen .lim-fullscreen-hud,
     </div>
 
     <div class="lim-header-tools">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Disegna con la Penna LIM (annotazioni e gomma)">
+        ✏️ Penna LIM
+      </button>
       <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci il testo delle spiegazioni">
         <span id="textScaleIcon">A+</span> Ingrandisci Testo
       </button>
@@ -815,7 +1010,58 @@ body.is-fullscreen .lim-fullscreen-hud,
   </header>
 
   <!-- STAGE PRINCIPALE -->
-  <main class="lim-stage">
+  <main class="lim-stage" id="limStage">
+
+    <!-- CANVAS TRASPARENTE PER DISEGNARE CON LA PENNA DELLA LIM -->
+    <canvas id="limPenCanvas" class="lim-pen-canvas"></canvas>
+
+    <!-- TAVOLOZZA PENNA FLUTTUANTE LIM (trascinabile) -->
+    <div class="lim-pen-palette" id="limPenPalette">
+      <div class="pen-palette-header" id="penPaletteHeader" title="Trascina per spostare la tavolozza">
+        <span>✏️ STRUMENTI PENNA LIM</span>
+        <button class="pen-btn-close" onclick="togglePenMode()" title="Chiudi modalità penna">✖</button>
+      </div>
+
+      <div class="pen-palette-tools">
+        <div class="pen-tool-group">
+          <button class="pen-tool-btn active" id="toolBtnPen" onclick="setPenTool('pen')" title="Penna normale">✏️</button>
+          <button class="pen-tool-btn" id="toolBtnHighlighter" onclick="setPenTool('highlighter')" title="Evidenziatore trasparente">🖍️</button>
+          <button class="pen-tool-btn" id="toolBtnEraser" onclick="setPenTool('eraser')" title="Gomma per cancellare tratti">🧽</button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-color-group">
+          <button class="color-swatch active" style="background:#ef4444" data-color="#ef4444" onclick="setPenColor('#ef4444')" title="Rosso"></button>
+          <button class="color-swatch" style="background:#eab308" data-color="#eab308" onclick="setPenColor('#eab308')" title="Giallo"></button>
+          <button class="color-swatch" style="background:#22c55e" data-color="#22c55e" onclick="setPenColor('#22c55e')" title="Verde"></button>
+          <button class="color-swatch" style="background:#0284c7" data-color="#0284c7" onclick="setPenColor('#0284c7')" title="Blu"></button>
+          <button class="color-swatch" style="background:#ec4899" data-color="#ec4899" onclick="setPenColor('#ec4899')" title="Magenta"></button>
+          <button class="color-swatch" style="background:#0f172a" id="swatchContrast" data-color="#0f172a" onclick="setPenColorContrast()" title="Nero / Bianco"></button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-size-group">
+          <button class="size-btn" onclick="setPenSize(3)" id="sizeBtn3" title="Tratto fine">
+            <span class="size-dot" style="width:4px; height:4px;"></span>
+          </button>
+          <button class="size-btn active" onclick="setPenSize(6)" id="sizeBtn6" title="Tratto medio">
+            <span class="size-dot" style="width:8px; height:8px;"></span>
+          </button>
+          <button class="size-btn" onclick="setPenSize(14)" id="sizeBtn14" title="Tratto spesso">
+            <span class="size-dot" style="width:13px; height:13px;"></span>
+          </button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-action-group">
+          <button class="pen-action-btn" onclick="undoPenStroke()" title="Annulla ultimo tratto">↩️</button>
+          <button class="pen-action-btn danger" onclick="clearPenStrokes()" title="Cancella tutti i tratti di questo passaggio">🗑️</button>
+        </div>
+      </div>
+    </div>
 
     <!-- COLONNA SINISTRA: CANVAS INTERATTIVO VETTORI -->
     <div class="lim-canvas-card">
@@ -900,6 +1146,7 @@ body.is-fullscreen .lim-fullscreen-hud,
     <button class="hud-btn primary" onclick="nextStep()" id="hudBtnNext">Succ ►</button>
 
     <div class="hud-divider"></div>
+    <button class="hud-btn pen-toggle-hud" id="btnHudPen" onclick="togglePenMode()" title="Disegna con la Penna LIM">✏️ Penna</button>
 
     <button class="hud-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas">🔍+</button>
     <button class="hud-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas">🔍−</button>
@@ -1665,6 +1912,275 @@ class VectorExerciseCanvas {
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════
+// MOTORE PENNA E GOMMA INTERATTIVA PER LA LIM
+// ═══════════════════════════════════════════════════════════
+
+class LimPenLayer {
+  constructor(canvasId, stageId) {
+    this.canvas = document.getElementById(canvasId);
+    this.stage = document.getElementById(stageId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#ef4444';
+    this.currentSize = 6;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+    this.resize();
+  }
+
+  resize() {
+    if (!this.stage) return;
+    const rect = this.stage.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redrawCurrentStep();
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      if (Math.hypot(x - lastPt.x, y - lastPt.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(lastPt, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesByStep[currentStep]) {
+          this.strokesByStep[currentStep] = [];
+        }
+        this.strokesByStep[currentStep].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 4.4;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redrawCurrentStep() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const stepStrokes = this.strokesByStep[currentStep] || [];
+    for (const stroke of stepStrokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+  }
+
+  undo() {
+    const list = this.strokesByStep[currentStep];
+    if (list && list.length > 0) {
+      list.pop();
+      this.redrawCurrentStep();
+    }
+  }
+
+  clear() {
+    this.strokesByStep[currentStep] = [];
+    this.redrawCurrentStep();
+  }
+
+  setActive(active) {
+    this.active = active;
+    this.canvas.classList.toggle('active', active);
+    const palette = document.getElementById('limPenPalette');
+    if (palette) palette.classList.toggle('show', active);
+
+    const btnHeader = document.getElementById('btnHeaderPen');
+    if (btnHeader) btnHeader.classList.toggle('active', active);
+    const btnHud = document.getElementById('btnHudPen');
+    if (btnHud) btnHud.classList.toggle('active', active);
+  }
+
+  initPaletteDrag() {
+    const palette = document.getElementById('limPenPalette');
+    const header = document.getElementById('penPaletteHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      if (e.target.tagName.toLowerCase() === 'button') return;
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      const rect = palette.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none';
+      palette.style.left = `${initialLeft}px`;
+      palette.style.top = `${initialTop}px`;
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newLeft = Math.max(10, Math.min(window.innerWidth - palette.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - palette.offsetHeight - 10, initialTop + dy));
+      palette.style.left = `${newLeft}px`;
+      palette.style.top = `${newTop}px`;
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
+let penLayer = null;
+
+function togglePenMode() {
+  if (!penLayer) return;
+  penLayer.setActive(!penLayer.active);
+}
+
+function setPenTool(tool) {
+  if (!penLayer) return;
+  penLayer.currentTool = tool;
+  document.querySelectorAll('.pen-tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('toolBtnPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('toolBtnHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('toolBtnEraser').classList.add('active');
+}
+
+function setPenColor(color) {
+  if (!penLayer) return;
+  penLayer.currentColor = color;
+  if (penLayer.currentTool === 'eraser') setPenTool('pen');
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('active', s.dataset.color === color);
+  });
+}
+
+function setPenColorContrast() {
+  const isDark = document.body.classList.contains('dark-mode');
+  const color = isDark ? '#ffffff' : '#0f172a';
+  setPenColor(color);
+  const swatch = document.getElementById('swatchContrast');
+  if (swatch) {
+    swatch.style.background = color;
+    swatch.dataset.color = color;
+  }
+}
+
+function setPenSize(size) {
+  if (!penLayer) return;
+  penLayer.currentSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`sizeBtn${size}`);
+  if (btn) btn.classList.add('active');
+}
+
+function undoPenStroke() {
+  if (penLayer) penLayer.undo();
+}
+
+function clearPenStrokes() {
+  if (penLayer) penLayer.clear();
+}
+
 let vCanvas = null;
 
 // ═══════════════════════════════════════════════════════════
@@ -1696,6 +2212,7 @@ function startStepAnimation() {
 }
 
 function replayCurrentStepAnimation() {
+  if (penLayer) penLayer.redrawCurrentStep();
   startStepAnimation();
 }
 
@@ -1919,6 +2436,18 @@ function toggleTheme() {
 
 // Scorciatoie da tastiera utili per il docente alla LIM o col telecomando
 window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    togglePenMode();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+    if (penLayer && penLayer.active) {
+      e.preventDefault();
+      undoPenStroke();
+      return;
+    }
+  }
   if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
     e.preventDefault();
     nextStep();
@@ -1949,6 +2478,7 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener('DOMContentLoaded', () => {
   vCanvas = new VectorExerciseCanvas('vecCanvas');
+  penLayer = new LimPenLayer('limPenCanvas', 'limStage');
   renderStep(1);
 });
 </script>
