@@ -990,6 +990,482 @@ body.light-theme .threat-card.fail {
   #lab-btn, .back-link-terminal { font-size: 0.85rem; padding: 2px 6px; }
 }
 
+
+/* ============================================================
+   MODALITÀ LIM: PENNA SULLE SLIDE & FOGLIO BIANCO INTERATTIVO
+   ============================================================ */
+
+/* Pulsanti Header LIM */
+.lim-hdr-btn {
+  font-family: var(--fm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: rgba(0, 255, 65, 0.08);
+  border: 1px solid var(--bdr);
+  color: var(--g);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+.lim-hdr-btn:hover {
+  background: rgba(0, 255, 65, 0.18);
+  border-color: var(--g);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+}
+.lim-hdr-btn.active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.5) !important;
+}
+.lim-hdr-btn.white-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+}
+.lim-hdr-btn.white-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+body.light-theme .lim-hdr-btn {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+body.light-theme .lim-hdr-btn:hover {
+  background: #e2e8f0;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+body.light-theme .lim-hdr-btn.active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+}
+body.light-theme .lim-hdr-btn.white-btn {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+body.light-theme .lim-hdr-btn.white-btn:hover {
+  background: #0369a1;
+}
+
+/* Canvas Trasparente per la Penna sopra le Slide */
+.slide-pen-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 150;
+  pointer-events: none;
+  touch-action: none;
+}
+.slide-pen-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Tavolozza Penna Fluttuante Slide */
+.slide-pen-palette {
+  display: none;
+  position: fixed;
+  top: calc(var(--hh) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 20, 15, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid var(--bdr);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 15px rgba(0, 255, 65, 0.2);
+  border-radius: 14px;
+  z-index: 250;
+  padding: 8px 14px;
+  flex-direction: column;
+  gap: 8px;
+  user-select: none;
+  animation: popIn 0.18s ease-out;
+}
+.slide-pen-palette.show {
+  display: flex;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.sp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--fm);
+  font-size: 0.74rem;
+  letter-spacing: 1px;
+  color: var(--gdim);
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+  cursor: grab;
+}
+.sp-header:active {
+  cursor: grabbing;
+}
+.sp-btn-close {
+  background: transparent;
+  border: none;
+  color: var(--gdim);
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.sp-btn-close:hover {
+  background: rgba(255, 51, 51, 0.25);
+  color: #ff3333;
+}
+
+.sp-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sp-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sp-tool-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(0, 255, 65, 0.25);
+  color: #ffffff;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sp-tool-btn:hover {
+  background: rgba(0, 255, 65, 0.2);
+}
+.sp-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.sp-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(0, 255, 65, 0.25);
+  margin: 0 2px;
+}
+
+.sp-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.sp-color:hover {
+  transform: scale(1.15);
+}
+.sp-color.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.sp-size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 65, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sp-size-btn:hover {
+  background: rgba(0, 255, 65, 0.2);
+}
+.sp-size-btn.active {
+  background: rgba(0, 255, 65, 0.3);
+  border-color: var(--g);
+}
+.sp-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.sp-action-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 65, 0.25);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.sp-action-btn:hover {
+  background: rgba(0, 255, 65, 0.25);
+}
+.sp-action-btn.danger:hover {
+  background: #ff3333;
+  border-color: #ff3333;
+}
+
+/* ============================================================
+   OVERLAY FOGLIO BIANCO (WHITEBOARD LIM)
+   ============================================================ */
+.whiteboard-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  flex-direction: column;
+  background: #ffffff;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+
+/* Modalità sfondo del foglio */
+.whiteboard-overlay.bg-white {
+  background: #ffffff;
+}
+.whiteboard-overlay.bg-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.whiteboard-overlay.bg-dark {
+  background-color: #0b1118;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.wb-header {
+  height: 58px;
+  background: #0f172a;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 10;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+.wb-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.wb-title {
+  font-family: var(--fv);
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+.wb-slide-tag {
+  font-family: var(--fm);
+  font-size: 0.78rem;
+  color: #94a3b8;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #334155;
+}
+
+.wb-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.wb-sep {
+  width: 1px;
+  height: 24px;
+  background: #334155;
+  margin: 0 3px;
+}
+
+.wb-tool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.wb-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.wb-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.wb-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.wb-color:hover {
+  transform: scale(1.15);
+}
+.wb-color.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.wb-size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.wb-size-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.wb-size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.wb-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.wb-btn-text {
+  font-family: var(--fm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.wb-btn-text:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+.wb-btn-text.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+.wb-btn-action {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.wb-btn-action:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.wb-btn-action.danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.btn-close-wb {
+  font-family: var(--fm);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: #ef4444;
+  color: #ffffff;
+  border: 1.5px solid #f87171;
+  border-radius: 8px;
+  padding: 7px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+.btn-close-wb:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.whiteboard-body {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 58px);
+  cursor: crosshair;
+  overflow: hidden;
+}
+#whiteboardCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
 </style>
 </head>
 <body>
@@ -1007,6 +1483,15 @@ body.light-theme .threat-card.fail {
     <div class="logo">SEC_101<span class="blink">_</span></div>
   </div>
   <div class="hd-right">
+    <button type="button" id="pen-toggle-btn" class="lim-hdr-btn" onclick="toggleSlidePen()" title="Disegna o annota con la penna sopra la slide (tasto P)">
+      ✏️ PENNA LIM
+    </button>
+    <button type="button" id="wb-open-btn" class="lim-hdr-btn white-btn" onclick="openWhiteboard()" title="Apri foglio bianco per appunti e schemi (tasto W o B)">
+      📄 FOGLIO BIANCO
+    </button>
+    <button type="button" id="fs-toggle-btn" class="lim-hdr-btn" onclick="toggleFullscreen()" title="Schermo Intero per LIM (tasto F)">
+      ⛶ LIM
+    </button>
     <div id="slide-section">INTRODUZIONE</div>
     <div id="nav">
       <button class="nb" id="bp" title="Slide precedente (←)">◀</button>
@@ -1022,6 +1507,52 @@ body.light-theme .threat-card.fail {
 
 <!-- STAGE -->
 <div id="stage">
+
+  <!-- CANVAS PENNA LIM SOVRAPPOSTO ALLE SLIDE -->
+  <canvas id="slidePenCanvas" class="slide-pen-canvas"></canvas>
+
+  <!-- TAVOLOZZA FLUTTUANTE PENNA SLIDE -->
+  <div class="slide-pen-palette" id="slidePenPalette">
+    <div class="sp-header" id="spHeader" title="Trascina per spostare la tavolozza">
+      <span>✏️ PENNA SLIDE LIM</span>
+      <button class="sp-btn-close" onclick="toggleSlidePen()" title="Chiudi modalità penna">✖</button>
+    </div>
+
+    <div class="sp-tools">
+      <div class="sp-group">
+        <button class="sp-tool-btn active" id="spToolPen" onclick="setSlidePenTool('pen')" title="Penna normale">✏️</button>
+        <button class="sp-tool-btn" id="spToolHighlighter" onclick="setSlidePenTool('highlighter')" title="Evidenziatore trasparente">🖍️</button>
+        <button class="sp-tool-btn" id="spToolEraser" onclick="setSlidePenTool('eraser')" title="Gomma per cancellare tratti">🧽</button>
+      </div>
+
+      <div class="sp-sep"></div>
+
+      <div class="sp-group">
+        <button class="sp-color active" style="background:#ff3333" data-color="#ff3333" onclick="setSlidePenColor('#ff3333')" title="Rosso"></button>
+        <button class="sp-color" style="background:#ffb000" data-color="#ffb000" onclick="setSlidePenColor('#ffb000')" title="Giallo/Ambra"></button>
+        <button class="sp-color" style="background:#00ff41" data-color="#00ff41" onclick="setSlidePenColor('#00ff41')" title="Verde Hacker"></button>
+        <button class="sp-color" style="background:#00e5ff" data-color="#00e5ff" onclick="setSlidePenColor('#00e5ff')" title="Ciano Elettrico"></button>
+        <button class="sp-color" style="background:#ff007f" data-color="#ff007f" onclick="setSlidePenColor('#ff007f')" title="Magenta"></button>
+        <button class="sp-color" style="background:#ffffff" id="spSwatchContrast" data-color="#ffffff" onclick="setSlidePenContrast()" title="Bianco / Nero"></button>
+      </div>
+
+      <div class="sp-sep"></div>
+
+      <div class="sp-group">
+        <button class="sp-size-btn" onclick="setSlidePenSize(3)" id="spSize3" title="Fine"><span class="sp-dot" style="width:4px;height:4px"></span></button>
+        <button class="sp-size-btn active" onclick="setSlidePenSize(6)" id="spSize6" title="Medio"><span class="sp-dot" style="width:8px;height:8px"></span></button>
+        <button class="sp-size-btn" onclick="setSlidePenSize(14)" id="spSize14" title="Spesso"><span class="sp-dot" style="width:13px;height:13px"></span></button>
+      </div>
+
+      <div class="sp-sep"></div>
+
+      <div class="sp-group">
+        <button class="sp-action-btn" onclick="undoSlidePen()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+        <button class="sp-action-btn danger" onclick="clearSlidePen()" title="Cancella note di questa slide">🗑️</button>
+        <button class="sp-action-btn" onclick="openWhiteboard()" title="Apri Foglio Bianco">📄</button>
+      </div>
+    </div>
+  </div>
 
 <!-- ================================================================
      S00 — COPERTINA
@@ -1984,7 +2515,552 @@ function goTo(i) {
   setTimeout(() => prev.classList.remove('exit-left'), 360);
   cur = i;
   syncUI();
+
+
+/* ============================================================
+   MOTORE LIM: PENNA SULLE SLIDE (TRATTI LEGATI A OGNI SLIDE)
+   ============================================================ */
+
+class SlidePenLayer {
+  constructor(canvasId, stageId) {
+    this.canvas = document.getElementById(canvasId);
+    this.stage = document.getElementById(stageId);
+    if (!this.canvas || !this.stage) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#ff3333';
+    this.currentSize = 6;
+
+    // Tratti conservati per ciascuna slide (chiave = indice slide cur)
+    this.strokesBySlide = {};
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+    this.resize();
+  }
+
+  resize() {
+    if (!this.stage || !this.canvas) return;
+    const rect = this.stage.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redrawCurrentSlide();
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      if (Math.hypot(x - lastPt.x, y - lastPt.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(lastPt, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesBySlide[cur]) {
+          this.strokesBySlide[cur] = [];
+        }
+        this.strokesBySlide[cur].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5.0;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.6 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redrawCurrentSlide() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const slideStrokes = this.strokesBySlide[cur] || [];
+    for (const stroke of slideStrokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+  }
+
+  undo() {
+    const list = this.strokesBySlide[cur];
+    if (list && list.length > 0) {
+      list.pop();
+      this.redrawCurrentSlide();
+    }
+  }
+
+  clear() {
+    this.strokesBySlide[cur] = [];
+    this.redrawCurrentSlide();
+  }
+
+  setActive(active) {
+    this.active = active;
+    this.canvas.classList.toggle('active', active);
+    const palette = document.getElementById('slidePenPalette');
+    if (palette) palette.classList.toggle('show', active);
+    const btn = document.getElementById('pen-toggle-btn');
+    if (btn) btn.classList.toggle('active', active);
+  }
+
+  initPaletteDrag() {
+    const palette = document.getElementById('slidePenPalette');
+    const header = document.getElementById('spHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      if (e.target.tagName.toLowerCase() === 'button') return;
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      const rect = palette.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none';
+      palette.style.left = initialLeft + 'px';
+      palette.style.top = initialTop + 'px';
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newLeft = Math.max(10, Math.min(window.innerWidth - palette.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - palette.offsetHeight - 10, initialTop + dy));
+      palette.style.left = newLeft + 'px';
+      palette.style.top = newTop + 'px';
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
+/* ============================================================
+   MOTORE FOGLIO BIANCO / LAVAGNA BIANCA (WHITEBOARD)
+   ============================================================ */
+
+class WhiteboardLayer {
+  constructor(canvasId, overlayId) {
+    this.canvas = document.getElementById(canvasId);
+    this.overlay = document.getElementById(overlayId);
+    if (!this.canvas || !this.overlay) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.isOpen = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#0f172a';
+    this.currentSize = 6;
+    this.bgMode = 'white';
+
+    // Memoria dei tratti del foglio bianco (persistenti durante la sessione)
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const body = document.getElementById('whiteboardBody');
+    if (!body || !this.canvas) return;
+    const rect = body.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => {
+      if (this.isOpen) this.resize();
+    });
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.isOpen || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      if (Math.hypot(x - lastPt.x, y - lastPt.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(lastPt, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        this.strokes.push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5.0;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.6 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+  }
+
+  undo() {
+    if (this.strokes.length > 0) {
+      this.strokes.pop();
+      this.redraw();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.redraw();
+  }
+
+  open() {
+    this.isOpen = true;
+    this.overlay.classList.add('show');
+    const tag = document.getElementById('wbCurrentSlideTag');
+    if (tag) {
+      const slideNum = String(cur + 1).padStart(2, '0');
+      const label = labels[cur] || '';
+      tag.textContent = 'Slide ' + slideNum + ': ' + label;
+    }
+    setTimeout(() => this.resize(), 50);
+  }
+
+  close() {
+    this.isOpen = false;
+    this.overlay.classList.remove('show');
+  }
+
+  setBg(mode) {
+    this.bgMode = mode;
+    this.overlay.classList.remove('bg-white', 'bg-grid', 'bg-dark');
+    this.overlay.classList.add('bg-' + mode);
+
+    document.querySelectorAll('.wb-btn-text').forEach(b => b.classList.remove('active'));
+    if (mode === 'white') document.getElementById('wbBgBtnWhite').classList.add('active');
+    if (mode === 'grid') document.getElementById('wbBgBtnGrid').classList.add('active');
+    if (mode === 'dark') document.getElementById('wbBgBtnDark').classList.add('active');
+
+    // Adatta colore predefinito se si passa a lavagna scura o chiara
+    if (mode === 'dark' && this.currentColor === '#0f172a') {
+      setWbColor('#ffffff');
+    } else if (mode !== 'dark' && this.currentColor === '#ffffff') {
+      setWbColor('#0f172a');
+    }
+  }
+}
+
+let slidePenLayer = null;
+let whiteboardLayer = null;
+
+// Funzioni Slide Pen
+function toggleSlidePen() {
+  if (!slidePenLayer) return;
+  slidePenLayer.setActive(!slidePenLayer.active);
+}
+
+function setSlidePenTool(tool) {
+  if (!slidePenLayer) return;
+  slidePenLayer.currentTool = tool;
+  document.querySelectorAll('.sp-tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('spToolPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('spToolHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('spToolEraser').classList.add('active');
+}
+
+function setSlidePenColor(color) {
+  if (!slidePenLayer) return;
+  slidePenLayer.currentColor = color;
+  if (slidePenLayer.currentTool === 'eraser') setSlidePenTool('pen');
+  document.querySelectorAll('.sp-color').forEach(s => {
+    s.classList.toggle('active', s.dataset.color === color);
+  });
+}
+
+function setSlidePenContrast() {
+  const isDark = !document.body.classList.contains('light-theme');
+  const color = isDark ? '#ffffff' : '#0f172a';
+  setSlidePenColor(color);
+  const swatch = document.getElementById('spSwatchContrast');
+  if (swatch) {
+    swatch.style.background = color;
+    swatch.dataset.color = color;
+  }
+}
+
+function setSlidePenSize(size) {
+  if (!slidePenLayer) return;
+  slidePenLayer.currentSize = size;
+  document.querySelectorAll('.sp-size-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('spSize' + size);
+  if (btn) btn.classList.add('active');
+}
+
+function undoSlidePen() {
+  if (slidePenLayer) slidePenLayer.undo();
+}
+
+function clearSlidePen() {
+  if (slidePenLayer) slidePenLayer.clear();
+}
+
+// Funzioni Whiteboard
+function openWhiteboard() {
+  if (!whiteboardLayer) return;
+  whiteboardLayer.open();
+}
+
+function closeWhiteboard() {
+  if (!whiteboardLayer) return;
+  whiteboardLayer.close();
+}
+
+function setWbTool(tool) {
+  if (!whiteboardLayer) return;
+  whiteboardLayer.currentTool = tool;
+  document.querySelectorAll('.wb-tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('wbToolPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('wbToolHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('wbToolEraser').classList.add('active');
+}
+
+function setWbColor(color) {
+  if (!whiteboardLayer) return;
+  whiteboardLayer.currentColor = color;
+  if (whiteboardLayer.currentTool === 'eraser') setWbTool('pen');
+  document.querySelectorAll('.wb-color').forEach(s => {
+    s.classList.toggle('active', s.dataset.color === color);
+  });
+}
+
+function setWbSize(size) {
+  if (!whiteboardLayer) return;
+  whiteboardLayer.currentSize = size;
+  document.querySelectorAll('.wb-size-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('wbSize' + size);
+  if (btn) btn.classList.add('active');
+}
+
+function setWbBg(mode) {
+  if (whiteboardLayer) whiteboardLayer.setBg(mode);
+}
+
+function undoWbStroke() {
+  if (whiteboardLayer) whiteboardLayer.undo();
+}
+
+function clearWbStrokes() {
+  if (whiteboardLayer) whiteboardLayer.clear();
+}
+
+function toggleFullscreen() {
+  const isFs = !!document.fullscreenElement || !!document.webkitFullscreenElement || document.body.classList.contains('is-fullscreen');
+  if (!isFs) {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {
+        document.body.classList.add('is-fullscreen');
+      });
+    } else {
+      document.body.classList.add('is-fullscreen');
+    }
+  } else {
+    if (document.exitFullscreen && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      document.exitFullscreen().catch(() => {});
+    }
+    document.body.classList.remove('is-fullscreen');
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('is-fullscreen', isFs);
+  if (slidePenLayer) slidePenLayer.resize();
+  if (whiteboardLayer && whiteboardLayer.isOpen) whiteboardLayer.resize();
+});
+
   haltAll();
+  if (slidePenLayer) slidePenLayer.redrawCurrentSlide();
 }
 
 function syncUI() {
@@ -2000,6 +3076,46 @@ function syncUI() {
 document.getElementById('bp').addEventListener('click', () => goTo(cur - 1));
 document.getElementById('bn').addEventListener('click', () => goTo(cur + 1));
 document.addEventListener('keydown', e => {
+  if (whiteboardLayer && whiteboardLayer.isOpen) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeWhiteboard();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      undoWbStroke();
+    }
+    return;
+  }
+
+  // Tasti veloci LIM
+  if (e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    toggleSlidePen();
+    return;
+  }
+  if (e.key.toLowerCase() === 'w' || e.key.toLowerCase() === 'b') {
+    e.preventDefault();
+    openWhiteboard();
+    return;
+  }
+  if (e.key.toLowerCase() === 'f') {
+    e.preventDefault();
+    toggleFullscreen();
+    return;
+  }
+  if (e.key === 'Escape' && slidePenLayer && slidePenLayer.active) {
+    e.preventDefault();
+    toggleSlidePen();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+    if (slidePenLayer && slidePenLayer.active) {
+      e.preventDefault();
+      undoSlidePen();
+      return;
+    }
+  }
   if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === 'PageDown') goTo(cur + 1);
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'    || e.key === 'PageUp')   goTo(cur - 1);
@@ -3202,6 +4318,78 @@ initTheme();
     back.title = 'Torna a Informatica';
   }
 })();
+</script>
+
+
+<!-- ============================================================
+     OVERLAY FOGLIO BIANCO / LAVAGNA BIANCA PER LA LIM
+     ============================================================ -->
+<div id="whiteboardOverlay" class="whiteboard-overlay bg-white">
+  <div class="wb-header">
+    <div class="wb-header-left">
+      <span class="wb-title">📄 FOGLIO BIANCO APPUNTI</span>
+      <span class="wb-slide-tag" id="wbCurrentSlideTag">Slide 01: COPERTINA</span>
+    </div>
+
+    <div class="wb-tools">
+      <div class="wb-group">
+        <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="Penna normale">✏️</button>
+        <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="Evidenziatore">🖍️</button>
+        <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="Gomma per cancellare">🧽</button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group" id="wbColorGroup">
+        <button class="wb-color active" style="background:#0f172a" data-color="#0f172a" onclick="setWbColor('#0f172a')" title="Nero"></button>
+        <button class="wb-color" style="background:#0284c7" data-color="#0284c7" onclick="setWbColor('#0284c7')" title="Blu"></button>
+        <button class="wb-color" style="background:#dc2626" data-color="#dc2626" onclick="setWbColor('#dc2626')" title="Rosso"></button>
+        <button class="wb-color" style="background:#16a34a" data-color="#16a34a" onclick="setWbColor('#16a34a')" title="Verde"></button>
+        <button class="wb-color" style="background:#d97706" data-color="#d97706" onclick="setWbColor('#d97706')" title="Ambra / Arancione"></button>
+        <button class="wb-color" style="background:#9333ea" data-color="#9333ea" onclick="setWbColor('#9333ea')" title="Viola"></button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-size-btn" onclick="setWbSize(3)" id="wbSize3" title="Fine"><span class="wb-dot" style="width:4px;height:4px"></span></button>
+        <button class="wb-size-btn active" onclick="setWbSize(6)" id="wbSize6" title="Medio"><span class="wb-dot" style="width:8px;height:8px"></span></button>
+        <button class="wb-size-btn" onclick="setWbSize(14)" id="wbSize14" title="Spesso"><span class="wb-dot" style="width:13px;height:13px"></span></button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-btn-text active" id="wbBgBtnWhite" onclick="setWbBg('white')" title="Foglio Bianco">📄 Bianco</button>
+        <button class="wb-btn-text" id="wbBgBtnGrid" onclick="setWbBg('grid')" title="Foglio a Quadretti">📐 Quadretti</button>
+        <button class="wb-btn-text" id="wbBgBtnDark" onclick="setWbBg('dark')" title="Lavagna Scura">⬛ Scura</button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-btn-action" onclick="undoWbStroke()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+        <button class="wb-btn-action danger" onclick="clearWbStrokes()" title="Cancella tutto il foglio">🗑️ Pulisci</button>
+      </div>
+    </div>
+
+    <div class="wb-header-right">
+      <button class="btn-close-wb" onclick="closeWhiteboard()" title="Torna alla presentazione (Esc)">
+        ◀ TORNA ALLA SLIDE [Esc]
+      </button>
+    </div>
+  </div>
+
+  <div class="whiteboard-body" id="whiteboardBody">
+    <canvas id="whiteboardCanvas"></canvas>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  slidePenLayer = new SlidePenLayer('slidePenCanvas', 'stage');
+  whiteboardLayer = new WhiteboardLayer('whiteboardCanvas', 'whiteboardOverlay');
+});
 </script>
 
 </body>
