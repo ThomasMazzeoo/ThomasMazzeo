@@ -390,6 +390,16 @@ const MATERIE = [
 
                     url: "/fisica/giordano-bruno/esercizio-vettori-1.html"
 
+                  },
+
+                  {
+
+                    title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
+
+                    desc: "Risoluzione animata passo-passo per LIM: forze concorrenti applicate allo stesso punto, costruzione del parallelogramma, proprietà commutativa e diagonale risultante.",
+
+                    url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
+
                   }
 
                 ]

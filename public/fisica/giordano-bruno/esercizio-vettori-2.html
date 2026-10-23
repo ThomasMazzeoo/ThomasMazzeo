@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Il Metodo del Parallelogramma — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Barre sopra e sotto nascoste in modalità Schermo Intero
+   - Zoom dinamico e manuale (Zoom In/Out, Pan, Auto-Fit)
+   - Testi e formule extra-large ad altissima visibilità
+   - ZERO menzioni di sottrazione vettoriale
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  /* Colori Vettori ad altissima visibilità */
+  --vec-a: #0284c7;        /* Blu brillante (Forza F1) */
+  --vec-a-bg: rgba(2, 132, 199, 0.08);
+  --vec-b: #ea580c;        /* Arancione vivo (Forza F2) */
+  --vec-b-bg: rgba(234, 88, 12, 0.08);
+  --vec-sum: #16a34a;      /* Verde smeraldo (Diagonale Risultante R) */
+  --vec-sum-bg: rgba(22, 163, 74, 0.09);
+  --vec-comp: #6366f1;     /* Viola indaco (Costruzione parallele) */
+  --accent-gold: #d97706;  /* Oro / Ambra per evidenziazioni */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+/* Modalità Scura (3Blue1Brown) */
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --vec-a: #38bdf8;
+  --vec-b: #fb923c;
+  --vec-sum: #4ade80;
+  --vec-comp: #818cf8;
+}
+
+/* Modalità Testo Ingrandito per LIM */
+body.font-large {
+  --base-font-size: 18px;
+}
+body.font-extra-large {
+  --base-font-size: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: var(--base-font-size);
+}
+
+.lim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER SUPERIORE (VISIBILE SOLO IN NORMALE)
+   ═══════════════════════════════════════════ */
+.lim-header {
+  height: 52px;
+  min-height: 52px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.lim-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-back-course:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.lim-school-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lim-school-badge span {
+  color: var(--vec-a);
+  font-weight: 800;
+}
+
+.lim-header-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lim-pill-tag {
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lim-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lim-tool {
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-lim-tool:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
+
+/* ═══════════════════════════════════════════
+   STAGE PRINCIPALE
+   ═══════════════════════════════════════════ */
+.lim-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-height: 0;
+  transition: all 0.2s ease;
+}
+
+/* COLONNA SINISTRA: CANVAS INTERATTIVO */
+.lim-canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  height: 42px;
+  min-height: 42px;
+  background: var(--bg-panel);
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-tech);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.canvas-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.canvas-view-wrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active {
+  cursor: grabbing;
+}
+
+#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
+.canvas-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.btn-zoom {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 2px solid var(--border-ui);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s;
+  user-select: none;
+}
+.btn-zoom:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: scale(1.08);
+}
+.btn-zoom.fit-btn {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  width: auto;
+  padding: 0 10px;
+  height: 34px;
+}
+
+/* Badge dinamico in alto a sinistra del canvas */
+.canvas-lim-overlay {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 5;
+}
+.canvas-live-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* COLONNA DESTRA: GUIDA PASSO-PASSO */
+.lim-explain-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.step-card-header {
+  padding: 12px 18px;
+  border-bottom: 2px solid var(--border-light);
+  background: var(--bg-panel);
+}
+
+.step-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.step-num-badge {
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--vec-a);
+  background: var(--vec-a-bg);
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+  letter-spacing: 1px;
+}
+
+.step-lim-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 2px 9px;
+  border-radius: 4px;
+}
+
+.step-main-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.step-card-body {
+  flex: 1;
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Box pedagogici con alta leggibilità */
+.pedagogy-box {
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-size: 0.98rem;
+  line-height: 1.52;
+  border-left: 5px solid transparent;
+}
+
+.pedagogy-box.problem {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-ui);
+  border-left: 5px solid var(--text-secondary);
+}
+.pedagogy-box.blue {
+  background: #f0f9ff;
+  border: 1.5px solid #bae6fd;
+  border-left: 5px solid var(--vec-a);
+}
+.pedagogy-box.orange {
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  border-left: 5px solid var(--vec-b);
+}
+.pedagogy-box.green {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-left: 5px solid var(--vec-sum);
+}
+.pedagogy-box.gold {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-left: 5px solid var(--accent-gold);
+}
+
+.box-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pedagogy-box.problem .box-title { color: var(--text-secondary); }
+.pedagogy-box.blue .box-title { color: #0284c7; }
+.pedagogy-box.orange .box-title { color: #ea580c; }
+.pedagogy-box.green .box-title { color: #16a34a; }
+.pedagogy-box.gold .box-title { color: #d97706; }
+
+/* Riquadri formule matematiche per LIM */
+.lim-math-card {
+  background: #ffffff;
+  border: 2px solid var(--border-ui);
+  border-radius: 9px;
+  padding: 12px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+body.dark-mode .lim-math-card {
+  background: #0f172a;
+}
+.lim-math-card .math-line {
+  font-size: 1.45rem;
+  margin: 6px 0;
+  font-weight: 700;
+}
+.lim-math-card .math-comment {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+/* Elenchi puntati chiari */
+.lim-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.95rem;
+}
+.lim-bullet-list li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.45;
+}
+.lim-bullet-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  color: var(--vec-a);
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+
+/* ═══════════════════════════════════════════
+   BARRA DI NAVIGAZIONE INFERIORE (MODALITÀ NORMALE)
+   ═══════════════════════════════════════════ */
+.lim-nav-bar {
+  height: 64px;
+  min-height: 64px;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+  gap: 12px;
+}
+
+.nav-btn-big {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.nav-btn-big:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-prev {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  border-color: var(--border-ui);
+}
+.btn-prev:not(:disabled):hover {
+  background: #e2e8f0;
+}
+
+.btn-next {
+  background: var(--vec-a);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+}
+.btn-next:not(:disabled):hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.btn-replay {
+  background: #f8fafc;
+  color: var(--text-secondary);
+  border: 2px solid var(--border-ui);
+  padding: 11px 16px;
+}
+.btn-replay:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+
+/* Indicatore di step centrale */
+.steps-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.step-circle-pill {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-page);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.step-circle-pill:hover {
+  border-color: var(--vec-a);
+  color: var(--text-primary);
+}
+.step-circle-pill.active {
+  background: var(--vec-a);
+  border-color: var(--vec-a);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.step-circle-pill.completed {
+  border-color: #86efac;
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+/* ═══════════════════════════════════════════
+   MODALITÀ SCHERMO INTERO LIM (SENZA BARRE)
+   ═══════════════════════════════════════════ */
+
+:fullscreen .lim-header,
+body.is-fullscreen .lim-header,
+:-webkit-full-screen .lim-header {
+  display: none !important;
+}
+
+:fullscreen .lim-nav-bar,
+body.is-fullscreen .lim-nav-bar,
+:-webkit-full-screen .lim-nav-bar {
+  display: none !important;
+}
+
+:fullscreen .lim-stage,
+body.is-fullscreen .lim-stage,
+:-webkit-full-screen .lim-stage {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  padding: 10px 14px 74px 14px !important;
+}
+
+:fullscreen .step-main-title,
+body.is-fullscreen .step-main-title,
+:-webkit-full-screen .step-main-title {
+  font-size: 1.45rem !important;
+}
+
+:fullscreen .pedagogy-box,
+body.is-fullscreen .pedagogy-box,
+:-webkit-full-screen .pedagogy-box {
+  font-size: 1.08rem !important;
+  line-height: 1.58 !important;
+  padding: 14px 18px !important;
+}
+
+:fullscreen .lim-math-card .math-line,
+body.is-fullscreen .lim-math-card .math-line,
+:-webkit-full-screen .lim-math-card .math-line {
+  font-size: 1.75rem !important;
+}
+
+/* BARRA FLUTTUANTE SOTTO IN SCHERMO INTERO */
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  gap: 8px;
+}
+
+:fullscreen .lim-fullscreen-hud,
+body.is-fullscreen .lim-fullscreen-hud,
+:-webkit-full-screen .lim-fullscreen-hud {
+  display: flex !important;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.hud-btn.primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+.hud-btn.primary:hover {
+  background: #0369a1;
+}
+.hud-btn.exit {
+  background: #dc2626;
+  border-color: #f87171;
+}
+.hud-btn.exit:hover {
+  background: #b91c1c;
+}
+
+.hud-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hud-pill {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hud-pill:hover {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.25);
+}
+.hud-pill.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+.hud-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+@media (max-width: 992px) {
+  html, body { overflow-y: auto; height: auto; }
+  .lim-app { height: auto; min-height: 100vh; }
+  .lim-stage { grid-template-columns: 1fr; height: auto; }
+  .lim-canvas-card { height: 440px; }
+  .step-card-body { height: auto; max-height: none; }
+  .step-circle-pill span.pill-label { display: none; }
+  .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="lim-app" id="limApp">
+
+  <!-- HEADER SUPERIORE (visibile solo a schermo normale) -->
+  <header class="lim-header" id="limHeader">
+    <div class="lim-header-left">
+      <a href="/#giordano-bruno-prime" class="btn-back-course" title="Torna alla pagina del corso">
+        ◀ 1° CLASSI
+      </a>
+      <div class="lim-school-badge">
+        ISS GIORDANO BRUNO — <span>FISICA BIENNIO</span>
+      </div>
+    </div>
+
+    <div class="lim-header-title">
+      📐 VETTORI 2: IL METODO DEL PARALLELOGRAMMA
+      <span class="lim-pill-tag">Vettori Concorrenti</span>
+    </div>
+
+    <div class="lim-header-tools">
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci il testo delle spiegazioni">
+        <span id="textScaleIcon">A+</span> Ingrandisci Testo
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTheme()" title="Alterna modalità Chiara/Scura">
+        <span id="themeIcon">🌙</span> <span id="themeLabel">Modalità Scura</span>
+      </button>
+      <button class="btn-lim-tool primary" onclick="toggleFullscreen()" title="Proietta a Schermo Intero sulla LIM (senza barre)">
+        ⛶ Schermo Intero LIM
+      </button>
+    </div>
+  </header>
+
+  <!-- STAGE PRINCIPALE -->
+  <main class="lim-stage">
+
+    <!-- COLONNA SINISTRA: CANVAS INTERATTIVO VETTORI -->
+    <div class="lim-canvas-card">
+      <div class="canvas-toolbar">
+        <div>
+          <span>GRIGLIA CARTESIANA</span>
+          <span style="color:var(--text-muted); font-size:0.75rem; margin-left:6px;">(1 quadretto = 1 Newton)</span>
+        </div>
+        <div class="canvas-legend">
+          <div class="legend-item" style="color:var(--vec-a)">
+            <span class="legend-dot" style="background:var(--vec-a)"></span> Forza F₁ (5, 0) N
+          </div>
+          <div class="legend-item" style="color:var(--vec-b)" id="legVecB">
+            <span class="legend-dot" style="background:var(--vec-b)"></span> Forza F₂ (3, 6) N
+          </div>
+          <div class="legend-item" style="color:var(--vec-sum)" id="legVecSum" style="opacity:0.3">
+            <span class="legend-dot" style="background:var(--vec-sum)"></span> Diagonale R (8, 6) N
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-view-wrap" id="canvasWrap">
+        <canvas id="vecCanvas"></canvas>
+
+        <!-- CONTROLLI ZOOM FLUTTUANTI SUL CANVAS -->
+        <div class="canvas-zoom-controls">
+          <button class="btn-zoom" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom (rotella su)">+</button>
+          <button class="btn-zoom" onclick="zoomCanvas(0.8)" title="Riduci Zoom (rotella giù)">−</button>
+          <button class="btn-zoom fit-btn" onclick="resetCanvasZoom()" title="Adatta zoom automaticamente al passaggio attuale">🎯 Adatta</button>
+        </div>
+
+        <div class="canvas-lim-overlay">
+          <div class="canvas-live-badge" id="canvasBadge">
+            <span>📍</span> <span id="canvasBadgeText">Passo 1: Vettori con Coda in Comune</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: GUIDA E RISOLUZIONE PEDAGOGICA -->
+    <div class="lim-explain-card">
+      <div class="step-card-header">
+        <div class="step-meta-row">
+          <span class="step-num-badge" id="stepMetaNum">PASSO 1 DI 6</span>
+          <span class="step-lim-badge">METODO PARALLELOGRAMMA</span>
+        </div>
+        <h2 class="step-main-title" id="stepMetaTitle">Il Problema delle Forze Concorrenti</h2>
+      </div>
+
+      <div class="step-card-body" id="stepCardBody">
+        <!-- Contenuto dinamico inserito da renderStep() -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BARRA DI NAVIGAZIONE INFERIORE (visibile solo a schermo normale) -->
+  <footer class="lim-nav-bar" id="limNavBar">
+    <button class="nav-btn-big btn-prev" id="btnPrev" onclick="prevStep()" disabled>
+      ◄ Precedente
+    </button>
+
+    <div class="steps-selector-bar" id="stepsBar">
+      <!-- Pulsanti step 1..6 generati dinamicamente -->
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button class="nav-btn-big btn-replay" onclick="replayCurrentStepAnimation()" title="Riavvia l'animazione di questo passaggio">
+        🔁 Riavvia Animazione
+      </button>
+      <button class="nav-btn-big btn-next" id="btnNext" onclick="nextStep()">
+        Successivo ►
+      </button>
+    </div>
+  </footer>
+
+  <!-- BARRA FLUTTUANTE HUD PER SCHERMO INTERO LIM (sostituisce le barre sopra e sotto) -->
+  <div class="lim-fullscreen-hud" id="limHud">
+    <button class="hud-btn" onclick="prevStep()" id="hudBtnPrev">◄ Prec</button>
+    <div class="hud-pills" id="hudPills"></div>
+    <button class="hud-btn" onclick="replayCurrentStepAnimation()" title="Riavvia l'animazione">🔁</button>
+    <button class="hud-btn primary" onclick="nextStep()" id="hudBtnNext">Succ ►</button>
+
+    <div class="hud-divider"></div>
+
+    <button class="hud-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas">🔍+</button>
+    <button class="hud-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas">🔍−</button>
+    <button class="hud-btn" onclick="resetCanvasZoom()" title="Adatta visuale al passo">🎯 Adatta</button>
+
+    <div class="hud-divider"></div>
+
+    <button class="hud-btn" onclick="toggleTextSize()" title="Ingrandisci testo delle spiegazioni">A+</button>
+    <button class="hud-btn" onclick="toggleTheme()" title="Cambia tema chiaro/scuro">🌓</button>
+    <button class="hud-btn exit" onclick="toggleFullscreen()" title="Esci dalla modalità Schermo Intero">✖ Esci LIM</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATI RIGOROSI DELL'ESERCIZIO 2 — PARALLELOGRAMMA
+// Due forze concorrenti applicate allo stesso corpo O(0, 0)
+// F1 = (5, 0) N e F2 = (3, 6) N -> Risultante R = (8, 6) N, |R| = 10 N
+// ZERO menzioni di sottrazione vettoriale!
+// ═══════════════════════════════════════════════════════════
+
+const PROBLEM2 = {
+  f1: { name: 'F1', dx: 5, dy: 0, color: '#0284c7', label: 'F₁' },
+  f2: { name: 'F2', dx: 3, dy: 6, color: '#ea580c', label: 'F₂' },
+  r: { name: 'R', dx: 8, dy: 6, len: 10, color: '#16a34a', label: 'R' }
+};
+
+let currentStep = 1;
+const TOTAL_STEPS = 6;
+let animProgress = 0;
+let animStartTime = null;
+let animDuration = 900;
+let animRunning = false;
+let animId = null;
+
+// Inquadratura ottimizzata per ogni passo
+const STEP_FRAMES = {
+  1: { minX: -1.0, maxX: 7.0, minY: -1.0, maxY: 6.0 },  // Introduzione
+  2: { minX: -0.8, maxX: 6.2, minY: -0.8, maxY: 6.8 },  // Zoom sui due vettori applicati in O
+  3: { minX: -1.0, maxX: 9.0, minY: -1.0, maxY: 7.2 },  // Costruzione delle due rette parallele
+  4: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 },  // Tracciamento diagonale risultante
+  5: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 },  // Dimostrazione commutativa (due triangoli)
+  6: { minX: -1.0, maxX: 9.2, minY: -1.0, maxY: 7.2 }   // Pitagora su componenti 8 e 6 -> 10 N
+};
+
+// ═══════════════════════════════════════════════════════════
+// DEFINIZIONE DETTAGLIATA DEI 6 PASSAGGI
+// ═══════════════════════════════════════════════════════════
+
+const STEPS_DATA = [
+  // ── PASSO 1 ──
+  {
+    num: 1,
+    title: "1. Il Problema: Forze Concorrenti Applicate in O(0,0)",
+    badge: "PASSO 1 DI 6 — CODA IN COMUNE",
+    canvasBadge: "Passo 1: Il Corpo nel Punto O(0, 0)",
+    render: () => `
+      <div class="pedagogy-box problem">
+        <div class="box-title">📖 Testo dell'Esercizio:</div>
+        Una cassa di massa considerevole si trova ferma nell'origine <strong>\\(O(0, 0)\\)</strong>.<br>
+        Due ragazzi la tirano contemporaneamente mediante due funi applicate nello <strong>stesso punto</strong> \\(O\\):<br>
+        • Il primo ragazzo esercita una forza orizzontale <strong>\\(\\vec{F}_1 = (5, 0)\\text{ N}\\)</strong> diretta a Est.<br>
+        • Il secondo ragazzo esercita una forza obliqua <strong>\\(\\vec{F}_2 = (3, 6)\\text{ N}\\)</strong> diretta a Nord-Est.<br>
+        <strong>Richieste:</strong><br>
+        1. Rappresenta le due forze e costruisci la forza risultante con la <strong>regola del parallelogramma</strong>.<br>
+        2. Spiega perché la diagonale corrisponde alla somma vettoriale.<br>
+        3. Calcola le componenti complessive e il modulo della forza risultante <strong>\\(\\vec{R} = \\vec{F}_1 + \\vec{F}_2\\)</strong>.
+      </div>
+
+      <div class="pedagogy-box blue">
+        <div class="box-title">❓ Perché non usiamo subito il Punta-Coda classico?</div>
+        Nel metodo punta-coda visto nel moto del drone, i vettori erano consecutivi (uno dopo l'altro nel tempo).<br>
+        Qui invece le due forze <strong>agiscono nello stesso istante sullo stesso punto</strong>: entrambe hanno la <strong>CODA nell'origine \\(O(0, 0)\\)</strong>! Si dicono <strong>vettori concorrenti</strong>.
+      </div>
+
+      <div class="pedagogy-box gold">
+        <div class="box-title">💡 La Regola del Parallelogramma (Pagina 90 del libro):</div>
+        Quando due vettori partono dalla stessa coda comune, la loro somma è data dalla <strong>diagonale</strong> del parallelogramma costruito prendendo i due vettori come lati consecutivi!
+      </div>
+    `
+  },
+
+  // ── PASSO 2 ──
+  {
+    num: 2,
+    title: "2. Disegno delle Due Forze Concorrenti F₁ e F₂",
+    badge: "PASSO 2 DI 6 — TRACCIAMENTO",
+    canvasBadge: "Passo 2: Disegno di F₁ e F₂ dall'Origine",
+    render: () => `
+      <div class="pedagogy-box blue">
+        <div class="box-title">🔵 Disegno del 1° Vettore \\(\\vec{F}_1 = (5, 0)\\text{ N}\\):</div>
+        • <strong>Punto di applicazione:</strong> origine \\(O(0, 0)\\).<br>
+        • <strong>Componente orizzontale:</strong> \\(\\Delta x_1 = +5\\text{ N}\\) (5 quadretti a destra lungo l'asse \\(X\\)).<br>
+        • <strong>Componente verticale:</strong> \\(\\Delta y_1 = 0\\text{ N}\\) (giace esattamente sull'asse \\(X\\)).<br>
+        • La punta della freccia blu si trova nel punto <strong>\\(A(5, 0)\\)</strong>.
+      </div>
+
+      <div class="pedagogy-box orange">
+        <div class="box-title">🟠 Disegno del 2° Vettore \\(\\vec{F}_2 = (3, 6)\\text{ N}\\):</div>
+        • <strong>Punto di applicazione:</strong> la stessa origine \\(O(0, 0)\\)!<br>
+        • <strong>Componente orizzontale:</strong> \\(\\Delta x_2 = +3\\text{ N}\\) (3 quadretti a destra).<br>
+        • <strong>Componente verticale:</strong> \\(\\Delta y_2 = +6\\text{ N}\\) (6 quadretti in alto).<br>
+        • La punta della freccia arancione si trova nel punto <strong>\\(C(3, 6)\\)</strong>.
+      </div>
+
+      <div class="pedagogy-box gold">
+        <div class="box-title">👀 Guarda la lavagna:</div>
+        Abbiamo due frecce che si aprono a ventaglio partendo dallo stesso punto \\(O\\). Formano i primi due lati del nostro futuro parallelogramma!
+      </div>
+    `
+  },
+
+  // ── PASSO 3 ──
+  {
+    num: 3,
+    title: "3. Costruzione Geometrica del Parallelogramma",
+    badge: "PASSO 3 DI 6 — COSTRUZIONE",
+    canvasBadge: "Passo 3: Tracciamento dei Lati Paralleli",
+    render: () => `
+      <div class="pedagogy-box blue">
+        <div class="box-title">📐 Come si completa il Parallelogramma:</div>
+        Per completare la figura geometrica dobbiamo tracciare due rette parallele ai vettori:
+        <ul class="lim-bullet-list" style="margin-top:6px;">
+          <li><strong>1ª Parallela (in alto):</strong> dalla punta di \\(\\vec{F}_2\\) (punto \\(C(3, 6)\\)), tracciamo un segmento parallelo a \\(\\vec{F}_1\\) lungo esattamente <strong>5 quadretti a destra</strong>.</li>
+          <li><strong>2ª Parallela (a destra):</strong> dalla punta di \\(\\vec{F}_1\\) (punto \\(A(5, 0)\\)), tracciamo un segmento parallelo a \\(\\vec{F}_2\\) inclinato di <strong>3 a destra e 6 in alto</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-box green">
+        <div class="box-title">🎯 Il Punto d'Incontro \\(D(8, 6)\\):</div>
+        Le due rette parallele tratteggiate si incontrano perfettamente nel punto <strong>\\(D(8, 6)\\)</strong>!<br>
+        • Da \\(C(3, 6)\\): \\((3 + 5, 6 + 0) = \\mathbf{(8, 6)}\\).<br>
+        • Da \\(A(5, 0)\\): \\((5 + 3, 0 + 6) = \\mathbf{(8, 6)}\\).<br>
+        I quattro vertici formano il parallelogramma perfetto <strong>\\(O - A - D - C\\)</strong>.
+      </div>
+    `
+  },
+
+  // ── PASSO 4 ──
+  {
+    num: 4,
+    title: "4. La Diagonale = Vettore Risultante R = F₁ + F₂",
+    badge: "PASSO 4 DI 6 — LA DIAGONALE",
+    canvasBadge: "Passo 4: Tracciamento della Diagonale Risultante",
+    render: () => `
+      <div class="pedagogy-box green">
+        <div class="box-title">🚀 Definizione della Risultante:</div>
+        La <strong>forza risultante \\(\\vec{R}\\)</strong> è il vettore rappresentato dalla <strong>DIAGONALE</strong> che parte dalla coda comune \\(O(0, 0)\\) e arriva al vertice opposto <strong>\\(D(8, 6)\\)</strong>!
+        <ul class="lim-bullet-list" style="margin-top:6px;">
+          <li>È la grande freccia <strong>verde smeraldo</strong> \\(\\vec{R}\\).</li>
+          <li>Fisicamente, la cassa si muoverà <strong>esattamente lungo questa diagonale</strong>, come se al posto dei due ragazzi ci fosse un solo gigante che tira con la forza \\(\\vec{R}\\)!</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-box blue">
+        <div class="box-title">📊 Componenti Cartesiane della Diagonale:</div>
+        Per trovare le componenti della risultante si sommano le componenti dei singoli vettori:
+        <ul class="lim-bullet-list" style="margin-top:6px;">
+          <li><strong>Componente orizzontale:</strong> \\(X_{\\text{tot}} = F_{1x} + F_{2x} = 5 + 3 = \\mathbf{8\\text{ N}}\\).</li>
+          <li><strong>Componente verticale:</strong> \\(Y_{\\text{tot}} = F_{1y} + F_{2y} = 0 + 6 = \\mathbf{6\\text{ N}}\\).</li>
+          <li>Quindi il vettore risultante ha coordinate: <strong>\\(\\vec{R} = (8, 6)\\text{ N}\\)</strong>.</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // ── PASSO 5 ──
+  {
+    num: 5,
+    title: "5. Perché Funziona? Parallelogramma = 2 Punta-Coda",
+    badge: "PASSO 5 DI 6 — PROPRIETÀ COMMUTATIVA",
+    canvasBadge: "Passo 5: La Proprietà Commutativa F₁ + F₂ = F₂ + F₁",
+    render: () => `
+      <div class="pedagogy-box gold">
+        <div class="box-title">💡 La Diagonale divide il Parallelogramma in 2 Triangoli:</div>
+        Osserva attentamente la lavagna! La diagonale verde divide la figura in due triangoli identici, ciascuno corrispondente a una somma con il <strong>metodo punta-coda</strong>:
+      </div>
+
+      <div class="pedagogy-box blue">
+        <strong>1. Percorso Inferiore \\(\\vec{F}_1 + \\vec{F}_2\\):</strong><br>
+        Parti da \\(O\\), percorri \\(\\vec{F}_1\\) fino ad \\(A\\), poi dalla punta di \\(\\vec{F}_1\\) percorri \\(\\vec{F}_2\\) (il lato destro \\(AD\\)). Arrivi in <strong>\\(D(8, 6)\\)</strong>!
+      </div>
+
+      <div class="pedagogy-box orange">
+        <strong>2. Percorso Superiore \\(\\vec{F}_2 + \\vec{F}_1\\):</strong><br>
+        Parti da \\(O\\), percorri prima \\(\\vec{F}_2\\) fino a \\(C\\), poi dalla punta di \\(\\vec{F}_2\\) percorri \\(\\vec{F}_1\\) (il lato superiore \\(CD\\)). Arrivi di nuovo in <strong>\\(D(8, 6)\\)</strong>!
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-comment">PROPRIETÀ COMMUTATIVA DELL'ADDIZIONE VETTORIALE:</div>
+        <div class="math-line" style="color:var(--vec-sum);">\\(\\vec{F}_1 + \\vec{F}_2 = \\vec{F}_2 + \\vec{F}_1\\)</div>
+        <div class="math-comment">L'ordine con cui sommi i vettori non cambia il risultato finale!</div>
+      </div>
+    `
+  },
+
+  // ── PASSO 6 ──
+  {
+    num: 6,
+    title: "6. Calcolo del Modulo Risultante con Pitagora",
+    badge: "PASSO 6 DI 6 — MODULO FINALE",
+    canvasBadge: "Passo 6: Calcolo del Modulo di R = 10 N",
+    render: () => `
+      <div class="pedagogy-box green">
+        <div class="box-title">📐 Teorema di Pitagora sulla Diagonale \\(\\vec{R}\\):</div>
+        La diagonale verde \\(\\vec{R}\\) è l'ipotenusa del grande triangolo rettangolo con base \\(X_{\\text{tot}} = 8\\text{ N}\\) e altezza \\(Y_{\\text{tot}} = 6\\text{ N}\\):
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-comment">CALCOLO DEL MODULO DELLA FORZA RISULTANTE:</div>
+        <div class="math-line" id="mathR1"></div>
+        <div class="math-line" id="mathR2"></div>
+        <div class="math-line" id="mathR3" style="font-weight:800; color:var(--vec-sum);"></div>
+      </div>
+
+      <div class="pedagogy-box problem">
+        <div class="box-title">🎯 Risposta Finale del Problema:</div>
+        • La forza complessiva applicata alla cassa è pari a <strong>10 Newton</strong>.<br>
+        • La cassa accelererà e si muoverà lungo la diagonale inclinata passante per \\(O(0, 0)\\) e \\(D(8, 6)\\).<br>
+        • La regola del parallelogramma ci ha permesso di sommare due forze aventi direzioni differenti senza errori!
+      </div>
+    `
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// MOTORE GRAFICO HTML5 CANVAS PER LIM CON ZOOM & PAN
+// ═══════════════════════════════════════════════════════════
+
+class VectorExerciseCanvas {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.wrap = document.getElementById('canvasWrap');
+    this.dpr = window.devicePixelRatio || 1;
+
+    // Zoom e Pan interattivi
+    this.userZoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.isDragging = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initResize();
+    this.initInteractions();
+  }
+
+  initResize() {
+    this.resize();
+    window.addEventListener('resize', () => {
+      this.resize();
+      this.draw(currentStep, animProgress);
+    });
+  }
+
+  initInteractions() {
+    this.wrap.addEventListener('pointerdown', (e) => {
+      this.isDragging = true;
+      this.dragStartX = e.clientX - this.panX;
+      this.dragStartY = e.clientY - this.panY;
+      this.wrap.setPointerCapture(e.pointerId);
+    });
+
+    this.wrap.addEventListener('pointermove', (e) => {
+      if (!this.isDragging) return;
+      this.panX = e.clientX - this.dragStartX;
+      this.panY = e.clientY - this.dragStartY;
+      this.draw(currentStep, animProgress);
+    });
+
+    const stopDrag = (e) => {
+      if (this.isDragging) {
+        this.isDragging = false;
+        try { this.wrap.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+    };
+    this.wrap.addEventListener('pointerup', stopDrag);
+    this.wrap.addEventListener('pointercancel', stopDrag);
+
+    this.wrap.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+      this.zoom(zoomFactor);
+    }, { passive: false });
+  }
+
+  zoom(factor) {
+    this.userZoom = Math.max(0.5, Math.min(4.0, this.userZoom * factor));
+    this.draw(currentStep, animProgress);
+  }
+
+  resetZoom() {
+    this.userZoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.draw(currentStep, animProgress);
+  }
+
+  resize() {
+    const rect = this.wrap.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.canvas.width = w * this.dpr;
+    this.canvas.height = h * this.dpr;
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
+
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.w = w;
+    this.h = h;
+  }
+
+  updateTransform(step) {
+    const frame = STEP_FRAMES[step] || STEP_FRAMES[1];
+    const margin = 36;
+    const availW = this.w - margin * 2;
+    const availH = this.h - margin * 2;
+
+    const rangeX = frame.maxX - frame.minX;
+    const rangeY = frame.maxY - frame.minY;
+
+    const baseUnit = Math.min(availW / rangeX, availH / rangeY);
+    this.unit = baseUnit * this.userZoom;
+
+    const baseGridW = rangeX * this.unit;
+    const baseGridH = rangeY * this.unit;
+
+    this.originX = (this.w - baseGridW) / 2 + Math.abs(frame.minX) * this.unit + this.panX;
+    this.originY = (this.h - baseGridH) / 2 + frame.maxY * this.unit + this.panY;
+    this.currentFrame = frame;
+  }
+
+  toScreen(x, y) {
+    return {
+      x: this.originX + x * this.unit,
+      y: this.originY - y * this.unit
+    };
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.w, this.h);
+  }
+
+  drawGrid() {
+    const ctx = this.ctx;
+    const isDark = document.body.classList.contains('dark-mode');
+
+    const lineColor = isDark ? 'rgba(148, 163, 184, 0.14)' : '#e2e8f0';
+    const axisColor = isDark ? 'rgba(226, 232, 240, 0.95)' : '#1e293b';
+    const labelColor = isDark ? '#94a3b8' : '#64748b';
+
+    const startX = -2;
+    const endX = 12;
+    const startY = -2;
+    const endY = 11;
+
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1.2;
+
+    for (let x = startX; x <= endX; x++) {
+      const p1 = this.toScreen(x, startY);
+      const p2 = this.toScreen(x, endY);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+
+    for (let y = startY; y <= endY; y++) {
+      const p1 = this.toScreen(startX, y);
+      const p2 = this.toScreen(endX, y);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    ctx.strokeStyle = axisColor;
+    ctx.lineWidth = isFs ? 3.5 : 2.8;
+
+    // Asse X
+    const xStart = this.toScreen(startX, 0);
+    const xEnd = this.toScreen(endX, 0);
+    ctx.beginPath();
+    ctx.moveTo(xStart.x, xStart.y);
+    ctx.lineTo(xEnd.x, xEnd.y);
+    ctx.stroke();
+    this.drawArrowHead(xEnd.x - 14, xEnd.y, xEnd.x, xEnd.y, axisColor, 12);
+
+    // Asse Y
+    const yStart = this.toScreen(0, startY);
+    const yEnd = this.toScreen(0, endY);
+    ctx.beginPath();
+    ctx.moveTo(yStart.x, yStart.y);
+    ctx.lineTo(yEnd.x, yEnd.y);
+    ctx.stroke();
+    this.drawArrowHead(yEnd.x, yEnd.y + 14, yEnd.x, yEnd.y, axisColor, 12);
+
+    const axisFontSize = isFs ? 16 : 13;
+    ctx.font = `bold ${axisFontSize}px "Share Tech Mono", monospace`;
+    ctx.fillStyle = axisColor;
+    ctx.fillText('X (Newton)', xEnd.x - 65, xEnd.y + (isFs ? 26 : 22));
+    ctx.fillText('Y (Newton)', yEnd.x + (isFs ? 14 : 10), yEnd.y + 14);
+
+    const tickFontSize = isFs ? 14 : 11;
+    ctx.font = `bold ${tickFontSize}px "Share Tech Mono", monospace`;
+    ctx.fillStyle = labelColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    for (let x = 1; x <= endX - 1; x++) {
+      const p = this.toScreen(x, 0);
+      ctx.fillText(x, p.x, p.y + (isFs ? 6 : 5));
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y - 4);
+      ctx.lineTo(p.x, p.y + 4);
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let y = 1; y <= endY - 1; y++) {
+      const p = this.toScreen(0, y);
+      ctx.fillText(y, p.x - (isFs ? 8 : 6), p.y);
+      ctx.beginPath();
+      ctx.moveTo(p.x - 4, p.y);
+      ctx.lineTo(p.x + 4, p.y);
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Origine O(0,0)
+    const o = this.toScreen(0, 0);
+    ctx.font = `bold ${isFs ? 15 : 12}px "Share Tech Mono", monospace`;
+    ctx.fillStyle = isDark ? '#ffffff' : '#0f172a';
+    ctx.fillText('O(0,0)', o.x - 8, o.y + (isFs ? 18 : 14));
+
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, isFs ? 6 : 5, 0, Math.PI * 2);
+    ctx.fillStyle = axisColor;
+    ctx.fill();
+  }
+
+  drawArrow(fromX, fromY, toX, toY, color, width = 4, headSize = 15) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const finalWidth = isFs ? width * 1.3 : width;
+    const finalHead = isFs ? headSize * 1.3 : headSize;
+
+    const ctx = this.ctx;
+    const p1 = this.toScreen(fromX, fromY);
+    const p2 = this.toScreen(toX, toY);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = finalWidth;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    this.drawArrowHead(p1.x, p1.y, p2.x, p2.y, color, finalHead);
+  }
+
+  drawArrowHead(fromPxX, fromPxY, toPxX, toPxY, color, size = 15) {
+    const ctx = this.ctx;
+    const angle = Math.atan2(toPxY - fromPxY, toPxX - fromPxX);
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(toPxX, toPxY);
+    ctx.lineTo(
+      toPxX - size * Math.cos(angle - Math.PI / 6),
+      toPxY - size * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+      toPxX - size * Math.cos(angle + Math.PI / 6),
+      toPxY - size * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  drawBadge(x, y, text, bgColor, textColor = '#ffffff', fontSize = 12) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const finalFont = isFs ? fontSize + 3 : fontSize;
+
+    const ctx = this.ctx;
+    const p = this.toScreen(x, y);
+
+    ctx.font = `bold ${finalFont}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text).width;
+    const padX = isFs ? 10 : 8;
+    const padY = isFs ? 6 : 5;
+    const bw = tw + padX * 2;
+    const bh = finalFont + padY * 2;
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.22)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.roundRect(p.x - bw / 2, p.y - bh / 2, bw, bh, 7);
+    ctx.fill();
+
+    ctx.restore();
+
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, p.x, p.y);
+  }
+
+  drawDashedLine(fromX, fromY, toX, toY, color = '#64748b', lineWidth = 2) {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const ctx = this.ctx;
+    const p1 = this.toScreen(fromX, fromY);
+    const p2 = this.toScreen(toX, toY);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = isFs ? lineWidth * 1.3 : lineWidth;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawPointMarker(x, y, label, color = '#0f172a') {
+    const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+    const ctx = this.ctx;
+    const p = this.toScreen(x, y);
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, isFs ? 7 : 5.5, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.lineWidth = isFs ? 2.5 : 2;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+
+    ctx.font = `bold ${isFs ? 16 : 13}px "IBM Plex Mono", monospace`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(` ${label}(${x}, ${y})`, p.x + 5, p.y - 5);
+  }
+
+  // ── DISEGNO DELLO SCENARIO ──
+  draw(step, progress) {
+    this.updateTransform(step);
+    this.clear();
+    this.drawGrid();
+
+    // STEP 1: Solo punto O(0, 0)
+    if (step === 1) {
+      const o = this.toScreen(0, 0);
+      const isFs = document.body.classList.contains('is-fullscreen') || !!document.fullscreenElement;
+      const pulse = (isFs ? 7 : 5) + Math.sin(Date.now() / 200) * 2;
+      this.ctx.beginPath();
+      this.ctx.arc(o.x, o.y, pulse, 0, Math.PI * 2);
+      this.ctx.fillStyle = '#ea580c';
+      this.ctx.fill();
+      this.drawBadge(0, -0.65, "Cassa nel Punto O(0,0)", "#0f172a", "#ffffff", 12);
+      return;
+    }
+
+    // STEP 2: Disegno delle due forze concorrenti F1 e F2 da O(0,0)
+    if (step === 2) {
+      const curX1 = 5 * progress;
+      const curX2 = 3 * progress;
+      const curY2 = 6 * progress;
+
+      // Forza F1 (blu)
+      this.drawArrow(0, 0, curX1, 0, PROBLEM2.f1.color, 4.8, 16);
+      if (progress >= 0.98) {
+        this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
+        this.drawBadge(2.5, -0.45, "F₁ = (5, 0) N", PROBLEM2.f1.color, "#ffffff", 12);
+      }
+
+      // Forza F2 (arancione)
+      this.drawArrow(0, 0, curX2, curY2, PROBLEM2.f2.color, 4.8, 16);
+      if (progress >= 0.98) {
+        this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+        this.drawBadge(1.2, 3.2, "F₂ = (3, 6) N", PROBLEM2.f2.color, "#ffffff", 12);
+      }
+      return;
+    }
+
+    // STEP 3: Tracciamento dei lati paralleli (completamento parallelogramma)
+    if (step === 3) {
+      // Vettori F1 e F2 fissi
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 4, 14);
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 4, 14);
+      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+      this.drawBadge(2.5, -0.45, "F₁ = 5 N", PROBLEM2.f1.color, "#ffffff", 11);
+      this.drawBadge(1.2, 3.2, "F₂ = (3, 6) N", PROBLEM2.f2.color, "#ffffff", 11);
+
+      // Parallela a F1 che parte da C(3, 6) verso D(8, 6)
+      const curTopX = 3 + 5 * progress;
+      this.drawDashedLine(3, 6, curTopX, 6, '#0284c7', 3);
+      if (progress > 0.4) {
+        this.drawBadge(3 + 2.5 * progress, 6.4, "parallela a F₁ (lunghezza 5)", "#0284c7", "#ffffff", 10);
+      }
+
+      // Parallela a F2 che parte da A(5, 0) verso D(8, 6)
+      const curRightX = 5 + 3 * progress;
+      const curRightY = 0 + 6 * progress;
+      this.drawDashedLine(5, 0, curRightX, curRightY, '#ea580c', 3);
+      if (progress > 0.4) {
+        this.drawBadge(5 + 1.5 * progress, 3 * progress, "parallela a F₂", "#ea580c", "#ffffff", 10);
+      }
+
+      if (progress >= 0.98) {
+        this.drawPointMarker(8, 6, "D (intersezione)", '#16a34a');
+      }
+      return;
+    }
+
+    // STEP 4: Diagonale Risultante R da O(0,0) a D(8,6)
+    if (step === 4) {
+      // Sfondo parallelogramma ombreggiato
+      const o = this.toScreen(0, 0);
+      const a = this.toScreen(5, 0);
+      const d = this.toScreen(8, 6);
+      const c = this.toScreen(3, 6);
+
+      this.ctx.fillStyle = 'rgba(22, 163, 74, 0.08)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(o.x, o.y);
+      this.ctx.lineTo(a.x, a.y);
+      this.ctx.lineTo(d.x, d.y);
+      this.ctx.lineTo(c.x, c.y);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      // Vettori base e lati tratteggiati
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 3.8, 13);
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 3.8, 13);
+      this.drawDashedLine(3, 6, 8, 6, '#0284c7', 2);
+      this.drawDashedLine(5, 0, 8, 6, '#ea580c', 2);
+
+      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+      this.drawPointMarker(8, 6, "D", '#16a34a');
+
+      // Animazione della Diagonale Risultante R
+      const curX = 8 * progress;
+      const curY = 6 * progress;
+      this.drawArrow(0, 0, curX, curY, PROBLEM2.r.color, 5.2, 18);
+
+      if (progress >= 0.98) {
+        this.drawBadge(3.8, 3.6, "RISULTANTE R = F₁ + F₂", PROBLEM2.r.color, "#ffffff", 13);
+      }
+      return;
+    }
+
+    // STEP 5: Dimostrazione Proprietà Commutativa (2 triangoli punta-coda)
+    if (step === 5) {
+      const o = this.toScreen(0, 0);
+      const a = this.toScreen(5, 0);
+      const d = this.toScreen(8, 6);
+      const c = this.toScreen(3, 6);
+
+      // Triangolo inferiore 1 (F1 + F2)
+      this.ctx.fillStyle = 'rgba(2, 132, 199, 0.1)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(o.x, o.y);
+      this.ctx.lineTo(a.x, a.y);
+      this.ctx.lineTo(d.x, d.y);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      // Triangolo superiore 2 (F2 + F1)
+      this.ctx.fillStyle = 'rgba(234, 88, 12, 0.1)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(o.x, o.y);
+      this.ctx.lineTo(c.x, c.y);
+      this.ctx.lineTo(d.x, d.y);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      // Frecce sui 4 lati del parallelogramma (due percorsi punta-coda)
+      this.drawArrow(0, 0, 5, 0, PROBLEM2.f1.color, 3.8, 13);
+      this.drawArrow(5, 0, 8, 6, PROBLEM2.f2.color, 3.8, 13); // F2 traslato a destra
+
+      this.drawArrow(0, 0, 3, 6, PROBLEM2.f2.color, 3.8, 13);
+      this.drawArrow(3, 6, 8, 6, PROBLEM2.f1.color, 3.8, 13); // F1 traslato in alto
+
+      this.drawPointMarker(5, 0, "A", PROBLEM2.f1.color);
+      this.drawPointMarker(3, 6, "C", PROBLEM2.f2.color);
+      this.drawPointMarker(8, 6, "D", '#16a34a');
+
+      // Diagonale centrale
+      this.drawArrow(0, 0, 8, 6, PROBLEM2.r.color, 5, 17);
+
+      this.drawBadge(3.2, 1.4, "Percorso 1: F₁ + F₂", "#0284c7", "#ffffff", 11);
+      this.drawBadge(4.8, 5.2, "Percorso 2: F₂ + F₁", "#ea580c", "#ffffff", 11);
+      this.drawBadge(4.0, 3.3, "R = F₁ + F₂ = F₂ + F₁", PROBLEM2.r.color, "#ffffff", 13);
+      return;
+    }
+
+    // STEP 6: Teorema di Pitagora sulla Diagonale R = (8, 6) -> 10 N
+    if (step === 6) {
+      const o = this.toScreen(0, 0);
+      const pCorner = this.toScreen(8, 0);
+      const pTip = this.toScreen(8, 6);
+
+      // Triangolo rettangolo complessivo evidenziato
+      this.ctx.fillStyle = 'rgba(22, 163, 74, 0.14)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(o.x, o.y);
+      this.ctx.lineTo(pCorner.x, pCorner.y);
+      this.ctx.lineTo(pTip.x, pTip.y);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      // Angolo retto
+      const rSize = 18;
+      this.ctx.strokeStyle = '#16a34a';
+      this.ctx.lineWidth = 2.5;
+      this.ctx.strokeRect(pCorner.x - rSize, pCorner.y - rSize, rSize, rSize);
+
+      // Parallelogramma in trasparenza dietro
+      this.drawDashedLine(0, 0, 5, 0, 'rgba(2, 132, 199, 0.4)', 2);
+      this.drawDashedLine(0, 0, 3, 6, 'rgba(234, 88, 12, 0.4)', 2);
+      this.drawDashedLine(3, 6, 8, 6, 'rgba(2, 132, 199, 0.4)', 2);
+      this.drawDashedLine(5, 0, 8, 6, 'rgba(234, 88, 12, 0.4)', 2);
+
+      // Componenti totali marcate lungo gli assi
+      this.drawDashedLine(0, 0, 8, 0, '#16a34a', 3.2);
+      this.drawDashedLine(8, 0, 8, 6, '#16a34a', 3.2);
+
+      this.drawBadge(4, -0.48, "Cateto X_tot = 5 + 3 = 8 N", "#16a34a", "#ffffff", 12);
+      this.drawBadge(8.9, 3, "Cateto Y_tot = 0 + 6 = 6 N", "#16a34a", "#ffffff", 12);
+
+      // Diagonale risultante definitiva
+      this.drawArrow(0, 0, 8, 6, PROBLEM2.r.color, 5.5, 19);
+      this.drawPointMarker(8, 6, "D(8, 6)", PROBLEM2.r.color);
+
+      // Badge modulo finale 10 N
+      this.drawBadge(3.6, 3.8, "|R| = 10 N (Forza Risultante)", "#15803d", "#ffffff", 14);
+    }
+  }
+}
+
+let vCanvas = null;
+
+// ═══════════════════════════════════════════════════════════
+// GESTIONE ANIMAZIONE FLUIDA
+// ═══════════════════════════════════════════════════════════
+
+function startStepAnimation() {
+  if (animId) cancelAnimationFrame(animId);
+  animStartTime = performance.now();
+  animProgress = 0;
+  animRunning = true;
+
+  function loop(now) {
+    const elapsed = now - animStartTime;
+    animProgress = Math.min(1, elapsed / animDuration);
+    const eased = 1 - (1 - animProgress) * (1 - animProgress);
+
+    vCanvas.draw(currentStep, eased);
+
+    if (animProgress < 1) {
+      animId = requestAnimationFrame(loop);
+    } else {
+      animRunning = false;
+      vCanvas.draw(currentStep, 1);
+    }
+  }
+
+  animId = requestAnimationFrame(loop);
+}
+
+function replayCurrentStepAnimation() {
+  startStepAnimation();
+}
+
+function zoomCanvas(factor) {
+  if (vCanvas) vCanvas.zoom(factor);
+}
+
+function resetCanvasZoom() {
+  if (vCanvas) vCanvas.resetZoom();
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDERING STEP & MATH (KATEX)
+// ═══════════════════════════════════════════════════════════
+
+function renderStep(stepIndex) {
+  const data = STEPS_DATA[stepIndex - 1];
+
+  document.getElementById('stepMetaNum').textContent = data.badge;
+  document.getElementById('stepMetaTitle').textContent = data.title;
+  document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
+  document.getElementById('stepCardBody').innerHTML = data.render();
+
+  // KaTeX rendering condizionale
+  if (window.katex) {
+    if (stepIndex === 6) {
+      katex.render("|\\vec{R}| = \\sqrt{X_{\\text{tot}}^2 + Y_{\\text{tot}}^2}", document.getElementById('mathR1'), { displayMode: true });
+      katex.render("|\\vec{R}| = \\sqrt{8^2 + 6^2} = \\sqrt{64 + 36} = \\sqrt{100}", document.getElementById('mathR2'), { displayMode: true });
+      katex.render("|\\vec{R}| = 10\\text{ N}", document.getElementById('mathR3'), { displayMode: true });
+    }
+  } else {
+    const mr1 = document.getElementById('mathR1');
+    if (mr1) {
+      mr1.innerHTML = '<strong>|R| = √(X_tot² + Y_tot²)</strong>';
+      document.getElementById('mathR2').innerHTML = '|R| = √(8² + 6²) = √(64 + 36) = √100';
+      document.getElementById('mathR3').innerHTML = '<strong>|R| = 10 N</strong>';
+    }
+  }
+
+  // Render automatico di tutte le formule inline nel testo
+  if (window.renderMathInElement) {
+    try {
+      renderMathInElement(document.getElementById('stepCardBody'), {
+        delimiters: [
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false
+      });
+    } catch (e) {
+      console.warn("KaTeX auto-render:", e);
+    }
+  }
+
+  // Aggiorna bottoni navigazione standard
+  document.getElementById('btnPrev').disabled = (stepIndex === 1);
+  const btnNext = document.getElementById('btnNext');
+  if (stepIndex === TOTAL_STEPS) {
+    btnNext.innerHTML = '✓ Esercizio Concluso';
+    btnNext.style.background = '#16a34a';
+  } else {
+    btnNext.innerHTML = 'Successivo ►';
+    btnNext.style.background = 'var(--vec-a)';
+  }
+
+  // Aggiorna bottoni HUD fullscreen
+  const hudBtnPrev = document.getElementById('hudBtnPrev');
+  if (hudBtnPrev) hudBtnPrev.disabled = (stepIndex === 1);
+  const hudBtnNext = document.getElementById('hudBtnNext');
+  if (hudBtnNext) {
+    hudBtnNext.innerHTML = stepIndex === TOTAL_STEPS ? '✓ Fine' : 'Succ ►';
+  }
+
+  // Aggiorna pills
+  renderStepsPills();
+
+  // Aggiorna legenda canvas
+  document.getElementById('legVecSum').style.opacity = stepIndex >= 4 ? '1' : '0.3';
+
+  // Reimposta zoom e pan per inquadrare automaticamente la nuova geometria
+  if (vCanvas) {
+    vCanvas.userZoom = 1.0;
+    vCanvas.panX = 0;
+    vCanvas.panY = 0;
+  }
+
+  // Avvia animazione
+  startStepAnimation();
+}
+
+function renderStepsPills() {
+  const bar = document.getElementById('stepsBar');
+  const hudPills = document.getElementById('hudPills');
+
+  bar.innerHTML = '';
+  hudPills.innerHTML = '';
+
+  const pillLabels = [
+    '1. Dati',
+    '2. F₁ & F₂',
+    '3. Parallelogramma',
+    '4. Diagonale R',
+    '5. Commutativa',
+    '6. Modulo 10 N'
+  ];
+
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const btn = document.createElement('button');
+    btn.className = `step-circle-pill ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'completed' : ''}`;
+    btn.innerHTML = `<span>${pillLabels[i-1]}</span>`;
+    btn.onclick = () => goToStep(i);
+    bar.appendChild(btn);
+
+    const hudP = document.createElement('button');
+    hudP.className = `hud-pill ${i === currentStep ? 'active' : ''}`;
+    hudP.textContent = i;
+    hudP.title = pillLabels[i-1];
+    hudP.onclick = () => goToStep(i);
+    hudPills.appendChild(hudP);
+  }
+}
+
+function goToStep(step) {
+  if (step < 1 || step > TOTAL_STEPS) return;
+  currentStep = step;
+  renderStep(currentStep);
+}
+
+function nextStep() {
+  if (currentStep < TOTAL_STEPS) {
+    goToStep(currentStep + 1);
+  } else {
+    goToStep(1);
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    goToStep(currentStep - 1);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// STRUMENTI LIM: FULLSCREEN SENZA BARRE, ZOOM TESTO, TEMA SCURO
+// ═══════════════════════════════════════════════════════════
+
+function toggleFullscreen() {
+  const isFs = !!document.fullscreenElement || !!document.webkitFullscreenElement || document.body.classList.contains('is-fullscreen');
+
+  if (!isFs) {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {
+        document.body.classList.add('is-fullscreen');
+      });
+    } else {
+      document.body.classList.add('is-fullscreen');
+    }
+  } else {
+    if (document.exitFullscreen && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      document.exitFullscreen().catch(() => {});
+    }
+    document.body.classList.remove('is-fullscreen');
+  }
+
+  setTimeout(() => {
+    if (vCanvas) {
+      vCanvas.resize();
+      vCanvas.draw(currentStep, 1);
+    }
+  }, 120);
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('is-fullscreen', isFs);
+  setTimeout(() => {
+    if (vCanvas) {
+      vCanvas.resize();
+      vCanvas.draw(currentStep, 1);
+    }
+  }, 120);
+});
+
+let textScaleLevel = 0;
+function toggleTextSize() {
+  textScaleLevel = (textScaleLevel + 1) % 3;
+  document.body.classList.remove('font-large', 'font-extra-large');
+  if (textScaleLevel === 1) {
+    document.body.classList.add('font-large');
+    document.getElementById('textScaleIcon').textContent = 'A++';
+  } else if (textScaleLevel === 2) {
+    document.body.classList.add('font-extra-large');
+    document.getElementById('textScaleIcon').textContent = 'A-';
+  } else {
+    document.getElementById('textScaleIcon').textContent = 'A+';
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDark ? 'Modalità Chiara' : 'Modalità Scura';
+  if (vCanvas) vCanvas.draw(currentStep, 1);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault();
+    nextStep();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    prevStep();
+  } else if (e.key.toLowerCase() === 'r') {
+    e.preventDefault();
+    replayCurrentStepAnimation();
+  } else if (e.key.toLowerCase() === 'f') {
+    e.preventDefault();
+    toggleFullscreen();
+  } else if (e.key === '+' || e.key === '=') {
+    e.preventDefault();
+    zoomCanvas(1.25);
+  } else if (e.key === '-' || e.key === '_') {
+    e.preventDefault();
+    zoomCanvas(0.8);
+  } else if (e.key.toLowerCase() === '0') {
+    e.preventDefault();
+    resetCanvasZoom();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIZIALIZZAZIONE ALL'AVVIO
+// ═══════════════════════════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded', () => {
+  vCanvas = new VectorExerciseCanvas('vecCanvas');
+  renderStep(1);
+});
+</script>
+</body>
+</html>
