@@ -861,8 +861,8 @@
       <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
         <span>👁️</span> Anteprima
       </button>
-      <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera il Report in PDF">
-        <span>🖨️</span> CONSEGNA PDF
+      <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()" title="Scarica direttamente il Report in formato PDF">
+        <span>📥</span> Scarica PDF Diretto
       </button>
     </div>
   </header>
@@ -1460,14 +1460,14 @@
       <!-- IN-PAGE CONSEGNA BOX (A FINE PAGINA) -->
       <div class="inpage-submit-box">
         <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
-          <span>🏁</span> Hai completato il lavoro? Consegna il tuo report:
+          <span>🏁</span> Hai completato il lavoro? Scarica il tuo report:
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima">
             <span>👁️</span> Anteprima Report
           </button>
-          <button type="button" class="btn btn--success" onclick="generateAndPrintPDF()" title="Genera PDF">
-            <span>🖨️</span> CONSEGNA &amp; SALVA PDF
+          <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()" title="Scarica direttamente il Report in PDF">
+            <span>📥</span> Scarica PDF Diretto
           </button>
         </div>
       </div>
@@ -1488,7 +1488,6 @@
         <div style="display:flex; gap:8px;">
           <button type="button" class="btn btn--secondary" onclick="closeReportPreview()">Chiudi</button>
           <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()">📥 Scarica PDF Diretto</button>
-          <button type="button" class="btn btn--success" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
         </div>
       </div>
 
@@ -1981,32 +1980,47 @@
     }
 
     function generateAndPrintPDF() {
+      downloadDirectPDF();
+    }
+
+    function downloadDirectPDF() {
       const nome = document.getElementById('studenteNome').value.trim();
       if (!nome) {
-        alert('⚠️ Inserisci Nome e Cognome nella Fase 1 prima di procedere alla consegna!');
+        alert('⚠️ Attenzione: Inserisci almeno Nome e Cognome nella Fase 1 prima di scaricare il Report PDF!');
         document.getElementById('studenteNome').focus();
         return;
       }
       populatePrintReport();
-      window.print();
-    }
 
-    function downloadDirectPDF() {
-      const nome = document.getElementById('studenteNome').value.trim() || 'Studente';
+      const modal = document.getElementById('report-modal');
+      const wasOpen = modal && modal.classList.contains('active');
+      if (!wasOpen && modal) {
+        modal.classList.add('active');
+      }
+
+      showToast('Generazione PDF in corso...');
+
       const cleanNome = nome.replace(/[^a-zA-Z0-9]/g, '_');
       const filename = `Report_Audit_${cleanNome}.pdf`;
 
       const element = document.getElementById('print-area');
       const opt = {
-        margin: [8, 10, 8, 10],
+        margin: [6, 8, 6, 8],
         filename: filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       if (window.html2pdf) {
-        window.html2pdf().set(opt).from(element).save();
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast('✓ PDF scaricato con successo!');
+          }).catch(err => {
+            console.error('Errore html2pdf:', err);
+            window.print();
+          });
+        }, 150);
       } else {
         window.print();
       }
