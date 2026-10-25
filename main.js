@@ -416,6 +416,26 @@ const MATERIE = [
                     title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
                     desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
                     url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
+                  },
+                  {
+                    title: "🏎️ Esercizio Guidato LIM: Gran Premio di Monaco — Circuito Chiuso (Es. 1)",
+                    desc: "Animazione passo-passo di pag. 86: circuito di Monte Carlo di 3,3 km per 78 giri, calcolo della distanza scalare totale (257,4 km) e dimostrazione dello spostamento nullo (0 km).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-7.html"
+                  },
+                  {
+                    title: "🐕 Esercizio Guidato LIM: Il Cane al Guinzaglio — Traiettoria Circolare (Es. 3)",
+                    desc: "Problema guidato di pag. 86: guinzaglio di 6,0 m e mezza circonferenza, calcolo della distanza curva (18,8 m) vs spostamento diametrale (12 m) e caso di due giri completi (0 m).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-8.html"
+                  },
+                  {
+                    title: "🏫 Esercizio Guidato LIM: Il Percorso di Giorgia verso Scuola (Es. 4)",
+                    desc: "Ora prova tu di pag. 86: piano cartesiano con fattore di scala u = 20 m, cammino a piedi (160 m) e modulo del vettore spostamento con Teorema di Pitagora (117 m).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-9.html"
+                  },
+                  {
+                    title: "♟️ Esercizio Guidato LIM: Gli Scacchi di Marostica — Mossa del Cavallo (Es. 5)",
+                    desc: "Animazione passo-passo di pag. 86: scacchiera gigante di 16 m con casella da 2,0 m, mossa a 'L' del cavallo da B8 a C6 e modulo dello spostamento con Pitagora (4,5 m).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-10.html"
                   }
 
                 ]
