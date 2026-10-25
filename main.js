@@ -464,6 +464,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-vettori-18.html"
                   }
                 ]
+              },
+              {
+                title: "⚖️ 5. Le Forze & l'Equilibrio (Forza Risultante & Scomposizione)",
+                topics: [
+                  {
+                    title: "🪢 Esercizio Guidato LIM: Gara di Tiro alla Fune — Forze Parallele (Es. 44)",
+                    desc: "Esercizio 44 di pag. 111: Paola, Carlo e Marco (1640 N a sinistra) contro Franco, Alessandra e Matteo (1560 N a destra). Calcolo della risultante netta (80 N verso sinistra) e vittoria della fune.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-19.html"
+                  },
+                  {
+                    title: "🚛 Esercizio Guidato LIM: La Bambina e il Camion — Scomposizione di una Forza (Es. 46)",
+                    desc: "Esercizio 46 di pag. 112: trazione con cordicella F = 3,0 N inclinata di 30° rispetto al prato. Calcolo della componente motrice utile F_x = 2,6 N e della componente di alleggerimento F_y = 1,5 N.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-20.html"
+                  },
+                  {
+                    title: "🚗 Esercizio Guidato LIM: L'Auto in Panne — Forze Parallele vs a 90° (Es. 50)",
+                    desc: "Esercizio 50 di pag. 112: due spinte da 500 N e 400 N. Confronto tra spinta massima concorde (900 N) e spinta ortogonale con Teorema di Pitagora (640 N con deviazione di 39°).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-21.html"
+                  },
+                  {
+                    title: "⚖️ Esercizio Guidato LIM: Equilibrio di Tre Forze Concorrenti — Problema a Passi (Es. 51)",
+                    desc: "Problema a passi di pag. 112: forze a=5,0 N a 53° e b=4,0 N su -y. Scomposizione cartesiana terna 3-4-5, bilanciamento asse y e calcolo della forza incognita F = 3 N per l'equilibrio statico.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-22.html"
+                  }
+                ]
               }
             ]
           },

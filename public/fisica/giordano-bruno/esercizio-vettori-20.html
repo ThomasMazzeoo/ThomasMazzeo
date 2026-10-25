@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esercizio Guidato LIM — La Bambina e il Camioncino (Es. 46) — ISS Giordano Bruno</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body);"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+      --accent-amber: #fbbf24;
+      --accent-red: #f87171;
+      --accent-purple: #c084fc;
+      --accent-pink: #f472b6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    header {
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.75rem; }
+    .brand-icon {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: #0f172a;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+    .brand-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .brand-text p { font-size: 0.8rem; color: var(--text-muted); }
+
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .btn:hover { background: #273549; border-color: var(--accent-blue); }
+    .btn-primary { background: #0284c7; border-color: #38bdf8; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-amber { background: #b45309; border-color: #fbbf24; }
+    .btn-amber:hover { background: #92400e; }
+
+    main {
+      flex: 1;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .simulation-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 580px;
+    }
+
+    .svg-container {
+      width: 100%;
+      flex: 1;
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-height: 480px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      user-select: none;
+    }
+
+    .controls-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .step-pills { display: flex; gap: 0.35rem; }
+    .step-pill {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-pill.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+      transform: scale(1.1);
+    }
+    .step-pill.completed {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .details-card {
+      overflow-y: auto;
+      max-height: 80vh;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .step-desc {
+      font-size: 0.98rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .formula-box {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 1.15rem;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-item {
+      background: #0f172a;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .data-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .data-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .tip-box {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.9rem;
+      color: #86efac;
+      margin-top: auto;
+    }
+
+    /* LIM Canvas Overlay */
+    #limCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    #limCanvas.active { pointer-events: auto; cursor: crosshair; }
+
+    /* LIM Floating Toolbar */
+    .lim-toolbar {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 0.4rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .tool-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: #334155; }
+    .tool-btn.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+    }
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .color-dot.active { border-color: white; transform: scale(1.15); }
+
+    /* Whiteboard Modal */
+    .whiteboard-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.98);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+    }
+    .whiteboard-overlay.active { display: flex; }
+    .wb-header {
+      padding: 0.6rem 1.25rem;
+      background: #1e293b;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .wb-body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .wb-body.bg-grid {
+      background-color: #ffffff;
+      background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    .wb-body.bg-dark {
+      background-color: #0f172a;
+      background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    #wbCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🚛</div>
+      <div class="brand-text">
+        <h1>Esercizio 46 — Pag. 112</h1>
+        <p>La Bambina e il Camion: Scomposizione della Forza Parallela e Perpendicolare</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-amber" id="btnWhiteboard">
+        <span>📄</span> Foglio Bianco LIM
+      </button>
+      <button class="btn" id="btnFullscreen">
+        <span>⛶</span> Schermo Intero
+      </button>
+      <a href="/fisica/giordano-bruno/" class="btn">
+        <span>↩</span> Indice Esercizi
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Card Grafica / Simulazione -->
+    <div class="card simulation-card">
+      <div class="svg-container" id="svgContainer">
+        <canvas id="limCanvas"></canvas>
+        <svg id="simSvg" viewBox="-1.5 -1 9 7.5">
+          <defs>
+            <marker id="arrowF" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#f87171" />
+            </marker>
+            <marker id="arrowFx" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#38bdf8" />
+            </marker>
+            <marker id="arrowFy" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#4ade80" />
+            </marker>
+            <pattern id="gridGrass" width="1" height="1" patternUnits="userSpaceOnUse">
+              <path d="M 1 0 L 0 0 0 1" fill="none" stroke="#1e293b" stroke-width="0.04" />
+            </pattern>
+          </defs>
+
+          <!-- Sfondo quadrettato -->
+          <rect x="-1" y="-0.5" width="8.5" height="7" fill="url(#gridGrass)" />
+
+          <!-- Il prato (striscia verde alla base) -->
+          <rect x="-1" y="5.5" width="8.5" height="1" fill="rgba(34, 197, 94, 0.15)" stroke="#16a34a" stroke-width="0.05" />
+          <text x="6.8" y="6.1" fill="#16a34a" font-size="0.38" font-weight="700">Prato erboso</text>
+
+          <!-- Assi cartesiani centrati nel punto di attacco O(1.0, 5.5) -->
+          <line x1="0.2" y1="5.5" x2="7.2" y2="5.5" stroke="#64748b" stroke-width="0.08" />
+          <line x1="1.0" y1="6.2" x2="1.0" y2="0.5" stroke="#64748b" stroke-width="0.08" />
+          <text x="7.3" y="5.65" fill="#38bdf8" font-size="0.45" font-weight="700">x (parallela)</text>
+          <text x="1.0" y="0.35" fill="#4ade80" font-size="0.45" font-weight="700" text-anchor="middle">y (perpendicolare)</text>
+          <text x="0.6" y="5.9" fill="#94a3b8" font-size="0.45">O</text>
+
+          <!-- Camioncino giocattolo stilizzato a sinistra dell'origine -->
+          <g transform="translate(-0.8, 4.3) scale(0.9)">
+            <!-- Cabina e cassone -->
+            <rect x="0" y="0.2" width="1.8" height="1.0" rx="0.1" fill="#0284c7" />
+            <rect x="1.2" y="-0.3" width="0.7" height="1.5" rx="0.1" fill="#0369a1" />
+            <rect x="1.5" y="-0.1" width="0.35" height="0.5" fill="#bae6fd" />
+            <!-- Ruote -->
+            <circle cx="0.4" cy="1.3" r="0.22" fill="#334155" stroke="#94a3b8" stroke-width="0.05" />
+            <circle cx="1.5" cy="1.3" r="0.22" fill="#334155" stroke="#94a3b8" stroke-width="0.05" />
+          </g>
+
+          <!-- Invertiamo le ordinate cartesiane con origine a (1.0, 5.5) -->
+          <g transform="translate(1.0, 5.5) scale(1, -1)">
+            <!-- Triangolo rettangolo delle componenti (Step 2+) -->
+            <polygon id="triForce" points="0,0 5.2,0 5.2,3.0" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(148, 163, 184, 0.3)" stroke-width="0.04" opacity="0" />
+
+            <!-- Linee di proiezione tratteggiate -->
+            <line id="projFx" x1="5.2" y1="0" x2="5.2" y2="3.0" stroke="#fbbf24" stroke-width="0.06" stroke-dasharray="0.15,0.15" opacity="0" />
+            <line id="projFy" x1="0" y1="3.0" x2="5.2" y2="3.0" stroke="#fbbf24" stroke-width="0.06" stroke-dasharray="0.15,0.15" opacity="0" />
+
+            <!-- Arco angolo alfa = 30° -->
+            <!-- Raggio r = 1.8. 30°: x = 1.8*cos(30)=1.56, y = 1.8*sin(30)=0.9 -->
+            <path id="arc30" d="M 1.8 0 A 1.8 1.8 0 0 1 1.56 0.9" fill="rgba(251, 191, 36, 0.25)" stroke="#fbbf24" stroke-width="0.06" />
+
+            <!-- Componente orizzontale F_x (in ciano, Step 3+) -->
+            <!-- Scala: 1 N = 2 unità grafiche. F=3 N -> 6 unità. F_x = 2.6 N -> 5.2 unità -->
+            <line id="vecFx" x1="0" y1="0" x2="5.05" y2="0" stroke="#38bdf8" stroke-width="0.2" marker-end="url(#arrowFx)" opacity="0" />
+
+            <!-- Componente verticale F_y (in verde smeraldo, Step 4+) -->
+            <!-- F_y = 1.5 N -> 3.0 unità -->
+            <line id="vecFy" x1="0" y1="0" x2="0" y2="2.88" stroke="#4ade80" stroke-width="0.2" marker-end="url(#arrowFy)" opacity="0" />
+
+            <!-- Vettore F lungo la fune (rosso, F=3 N -> x=5.2, y=3.0) -->
+            <line id="vecF" x1="0" y1="0" x2="5.1" y2="2.94" stroke="#f87171" stroke-width="0.24" marker-end="url(#arrowF)" />
+          </g>
+
+          <!-- Testi e quotature -->
+          <text id="lblAngle" x="2.9" y="5.15" fill="#fbbf24" font-size="0.45" font-weight="700">30°</text>
+          <text id="lblF" x="3.4" y="3.3" fill="#f87171" font-size="0.55" font-weight="800">F = 3,0 N</text>
+          
+          <text id="lblFx" x="3.6" y="6.1" fill="#38bdf8" font-size="0.48" font-weight="700" text-anchor="middle" opacity="0">F_x = 2,6 N (spinge in avanti)</text>
+          <text id="lblFy" x="0.2" y="3.9" fill="#4ade80" font-size="0.48" font-weight="700" opacity="0">F_y = 1,5 N (solleva)</text>
+          
+          <text id="lblHelp" x="4.5" y="1.8" fill="#fbbf24" font-size="0.4" font-weight="700" opacity="0">F_y alleggerisce l'attrito delle ruote!</text>
+        </svg>
+      </div>
+
+      <!-- Barra di controllo -->
+      <div class="controls-bar">
+        <div class="step-pills">
+          <div class="step-pill active" onclick="goToStep(0)">1</div>
+          <div class="step-pill" onclick="goToStep(1)">2</div>
+          <div class="step-pill" onclick="goToStep(2)">3</div>
+          <div class="step-pill" onclick="goToStep(3)">4</div>
+          <div class="step-pill" onclick="goToStep(4)">5</div>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn" id="btnPrev" onclick="prevStep()">⏮ Prec</button>
+          <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Succ ⏭</button>
+          <button class="btn" onclick="resetSteps()">🔄 Riavvia</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Dettagli Didattici -->
+    <div class="card details-card">
+      <div id="stepInfo">
+        <!-- Generato dinamicamente da JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- LIM Floating Toolbar -->
+  <div class="lim-toolbar">
+    <button class="tool-btn active" id="btnPen" title="Penna">✏️</button>
+    <button class="tool-btn" id="btnEraser" title="Gomma">🧹</button>
+    <div class="color-dot active" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"></div>
+    <div class="color-dot" style="background: #4ade80;" onclick="setColor('#4ade80', this)"></div>
+    <div class="color-dot" style="background: #fbbf24;" onclick="setColor('#fbbf24', this)"></div>
+    <div class="color-dot" style="background: #f87171;" onclick="setColor('#f87171', this)"></div>
+    <button class="tool-btn" id="btnClearCanvas" title="Cancella Scritte">🗑️</button>
+  </div>
+
+  <!-- Whiteboard Overlay Modal -->
+  <div class="whiteboard-overlay" id="whiteboardOverlay">
+    <div class="wb-header">
+      <div style="font-weight: 700; color: #f8fafc; display:flex; align-items:center; gap:0.5rem;">
+        <span>📄</span> Foglio Bianco LIM — Spazio Libero
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button class="btn" id="wbPenBtn">✏️ Penna</button>
+        <button class="btn" id="wbEraserBtn">🧹 Gomma</button>
+        <button class="btn" id="wbHandBtn" title="Trascina foglio">🖐️</button>
+        <button class="btn" id="wbZoomIn">🔍+</button>
+        <button class="btn" id="wbZoomOut">🔍-</button>
+        <button class="btn" id="wbZoomReset">100%</button>
+        <button class="btn" id="wbGridToggle">Griglia / Sfondo</button>
+        <button class="btn" id="wbClear">🗑️ Svuota</button>
+        <button class="btn btn-amber" id="wbClose">✕ Chiudi</button>
+      </div>
+    </div>
+    <div class="wb-body bg-grid" id="whiteboardBody">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const stepsData = [
+      {
+        badge: "Passo 1 di 5 — La Forza Inclinata",
+        title: "Trazione della Cordicella a 30° rispetto al Prato",
+        desc: "La bambina tira il camioncino giocattolo verso destra mediante una cordicella:<br>• Modulo della forza applicata: <strong>$F = 3{,}0\\text{ N}$</strong> (lunghezza dell'ipotenusa).<br>• Inclinazione della fune: forma un angolo di <strong>$\\alpha = 30^\\circ$</strong> con il piano orizzontale del prato.<br><br>Poiché la forza è obliqua, essa produce contemporaneamente due effetti fisici distinti!",
+        formula: "F = 3{,}0\\text{ N} \\quad \\text{con} \\quad \\alpha = 30^\\circ",
+        data: [
+          { label: "Intensità Forza F", val: "3,0 N" },
+          { label: "Inclinazione α", val: "30° rispetto al suolo" },
+          { label: "Direzione parallela", val: "Asse orizzontale x" },
+          { label: "Direzione perpendicolare", val: "Asse verticale y" }
+        ],
+        tip: "💡 Tirando con una cordicella inclinata, non tutta la forza serve a far avanzare il camioncino: una parte viene 'sprecata' verso l'alto!"
+      },
+      {
+        badge: "Passo 2 di 5 — Il Triangolo delle Forze",
+        title: "Scomposizione Ortogonale lungo il Piano",
+        desc: "Tracciamo le proiezioni perpendicolari dal vertice della forza $\\vec{F}$:<br>• La componente <strong>parallela al prato $F_x$</strong> è il <em>cateto adiacente</em> all'angolo di $30^\\circ$ lungo l'asse $x$.<br>• La componente <strong>perpendicolare al prato $F_y$</strong> è il <em>cateto opposto</em> all'angolo di $30^\\circ$ lungo l'asse $y$.<br><br>Si forma un triangolo rettangolo con ipotenusa $F = 3{,}0\\text{ N}$.",
+        formula: "F_x = F \\cdot \\cos(30^\\circ) \\quad \\text{e} \\quad F_y = F \\cdot \\sin(30^\\circ)",
+        data: [
+          { label: "Ipotenusa", val: "F = 3,0 N" },
+          { label: "Cateto adiacente", val: "F_x (orizzontale)" },
+          { label: "Cateto opposto", val: "F_y (verticale)" },
+          { label: "Angolo retto", val: "90° tra le due componenti" }
+        ],
+        tip: "💡 Il Teorema fondamentale dei triangoli rettangoli afferma: un cateto è uguale all'ipotenusa per il coseno dell'angolo adiacente, oppure per il seno dell'angolo opposto."
+      },
+      {
+        badge: "Passo 3 di 5 — Componente Parallela (Orizzontale)",
+        title: "Calcolo di F_x: La Forza Motrice Utile",
+        desc: "La componente parallela al suolo $F_x$ è quella che effettivamente sposta in avanti il camioncino:<br>$$F_x = F \\cdot \\cos(30^\\circ)$$<br>Sapendo che $\\cos(30^\\circ) = \\frac{\\sqrt{3}}{2} \\approx 0{,}866$:<br>$$F_x = 3{,}0\\text{ N} \\cdot 0{,}866 = 2{,}598... \\approx 2{,}6\\text{ N}$$<br>L'<strong>86,6%</strong> della forza della bambina ($2{,}6\\text{ N}$) è convertito in trazione orizzontale utile.",
+        formula: "F_x = 3{,}0 \\cdot \\cos(30^\\circ) = 3{,}0 \\cdot 0{,}866 \\approx 2{,}6\\text{ N}",
+        data: [
+          { label: "Valore cos(30°)", val: "√3 / 2 ≈ 0,866" },
+          { label: "Calcolo numerico", val: "3,0 × 0,866" },
+          { label: "Componente F_x", val: "2,6 N" },
+          { label: "Effetto dinamico", val: "Fa avanzare il veicolo" }
+        ],
+        tip: "💡 Se la bambina tirasse la corda perfettamente parallela al suolo ($\alpha = 0^\circ$), tutta la forza ($3{,}0\text{ N}$) farebbe avanzare il camion!"
+      },
+      {
+        badge: "Passo 4 di 5 — Componente Perpendicolare (Verticale)",
+        title: "Calcolo di F_y: La Forza di Sollevamento",
+        desc: "La componente perpendicolare al prato $F_y$ agisce verso l'alto:<br>$$F_y = F \\cdot \\sin(30^\\circ)$$<br>Poiché $\\sin(30^\\circ) = 0{,}50$ esatto:<br>$$F_y = 3{,}0\\text{ N} \\cdot 0{,}50 = 1{,}5\\text{ N}$$<br>Questa forza di <strong>$1{,}5\\text{ N}$</strong> solleva parzialmente il muso del camioncino, riducendo la pressione esercitata dalle ruote sul prato e quindi <em>diminuendo la forza di attrito volvente</em>!",
+        formula: "F_y = 3{,}0 \\cdot \\sin(30^\\circ) = 3{,}0 \\cdot 0{,}50 = 1{,}5\\text{ N}",
+        data: [
+          { label: "Valore sin(30°)", val: "1/2 = 0,50" },
+          { label: "Calcolo numerico", val: "3,0 × 0,50" },
+          { label: "Componente F_y", val: "1,5 N" },
+          { label: "Effetto fisico", val: "Alleggerisce il peso al suolo" }
+        ],
+        tip: "💡 Ecco perché tirare un carrello con un'inclinazione verso l'alto spesso risulta più comodo: alleggerisce l'attrito con il suolo!"
+      },
+      {
+        badge: "Passo 5 di 5 — Verifica & Risultato Finale",
+        title: "Verifica con Pitagora & Risposte Ufficiali",
+        desc: "Verifichiamo la coerenza geometrica con il Teorema di Pitagora:<br>$$F = \\sqrt{F_x^2 + F_y^2} = \\sqrt{(2{,}598)^2 + (1{,}5)^2} = \\sqrt{6{,}75 + 2{,}25} = \\sqrt{9{,}00} = 3{,}0\\text{ N} \\quad \\checkmark$$<br><strong>Risposte ufficiali del problema (pag. 112):</strong><br>• Componente parallela al prato: <strong>$F_x = 2{,}6\\text{ N}$</strong><br>• Componente perpendicolare al prato: <strong>$F_y = 1{,}5\\text{ N}$</strong>",
+        formula: "\\sqrt{(2{,}6)^2 + (1{,}5)^2} \\approx \\sqrt{6{,}76 + 2{,}25} = \\sqrt{9{,}01} \\approx 3{,}0\\text{ N}",
+        data: [
+          { label: "F_parallela (x)", val: "2,6 N" },
+          { label: "F_perpendicolare (y)", val: "1,5 N" },
+          { label: "Modulo totale ricavato", val: "3,0 N esatto" },
+          { label: "Stato dell'esercizio", val: "Completato e Verificato!" }
+        ],
+        tip: "🎯 Risolto brillantemente! Abbiamo separato l'effetto orizzontale da quello verticale dimostrando il ruolo delle funzioni goniometriche seno e coseno."
+      }
+    ];
+
+    let currentStep = 0;
+
+    function updateSimulation(step) {
+      const triForce = document.getElementById('triForce');
+      const projFx = document.getElementById('projFx');
+      const projFy = document.getElementById('projFy');
+      const vecFx = document.getElementById('vecFx');
+      const vecFy = document.getElementById('vecFy');
+      const lblFx = document.getElementById('lblFx');
+      const lblFy = document.getElementById('lblFy');
+      const lblHelp = document.getElementById('lblHelp');
+
+      // Reset
+      triForce.setAttribute('opacity', '0');
+      projFx.setAttribute('opacity', '0');
+      projFy.setAttribute('opacity', '0');
+      vecFx.setAttribute('opacity', '0');
+      vecFy.setAttribute('opacity', '0');
+      lblFx.setAttribute('opacity', '0');
+      lblFy.setAttribute('opacity', '0');
+      lblHelp.setAttribute('opacity', '0');
+
+      if (step >= 1) {
+        triForce.setAttribute('opacity', '1');
+        projFx.setAttribute('opacity', '1');
+        projFy.setAttribute('opacity', '1');
+      }
+      if (step >= 2) {
+        vecFx.setAttribute('opacity', '1');
+        lblFx.setAttribute('opacity', '1');
+      }
+      if (step >= 3) {
+        vecFy.setAttribute('opacity', '1');
+        lblFy.setAttribute('opacity', '1');
+      }
+      if (step >= 4) {
+        lblHelp.setAttribute('opacity', '1');
+      }
+    }
+
+    function renderStep() {
+      const data = stepsData[currentStep];
+      const container = document.getElementById('stepInfo');
+
+      let dataHtml = '';
+      data.data.forEach(d => {
+        dataHtml += `
+          <div class="data-item">
+            <div class="data-label">${d.label}</div>
+            <div class="data-val">${d.val}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = `
+        <div class="step-badge">${data.badge}</div>
+        <h2 class="step-title">${data.title}</h2>
+        <div class="step-desc">${data.desc}</div>
+        <div class="formula-box">$$${data.formula}$$</div>
+        <div class="data-grid">${dataHtml}</div>
+        <div class="tip-box">${data.tip}</div>
+      `;
+
+      if (window.renderMathInElement) {
+        renderMathInElement(container, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+
+      // Aggiorna pills
+      const pills = document.querySelectorAll('.step-pill');
+      pills.forEach((p, idx) => {
+        p.classList.remove('active', 'completed');
+        if (idx === currentStep) p.classList.add('active');
+        else if (idx < currentStep) p.classList.add('completed');
+      });
+
+      // Aggiorna pulsanti
+      document.getElementById('btnPrev').disabled = (currentStep === 0);
+      document.getElementById('btnNext').disabled = (currentStep === stepsData.length - 1);
+
+      updateSimulation(currentStep);
+    }
+
+    function goToStep(s) {
+      currentStep = s;
+      renderStep();
+    }
+
+    function nextStep() {
+      if (currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
+      }
+    }
+
+    function resetSteps() {
+      currentStep = 0;
+      renderStep();
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextStep();
+      else if (e.key === 'ArrowLeft') prevStep();
+    });
+
+    // LIM Drawing logic
+    const canvas = document.getElementById('limCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentColor = '#38bdf8';
+    let currentMode = 'pen';
+
+    function resizeCanvas() {
+      const container = document.getElementById('svgContainer');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    const btnPen = document.getElementById('btnPen');
+    const btnEraser = document.getElementById('btnEraser');
+    const btnClearCanvas = document.getElementById('btnClearCanvas');
+
+    btnPen.addEventListener('click', () => {
+      currentMode = 'pen';
+      canvas.classList.add('active');
+      btnPen.classList.add('active');
+      btnEraser.classList.remove('active');
+    });
+
+    btnEraser.addEventListener('click', () => {
+      currentMode = 'eraser';
+      canvas.classList.add('active');
+      btnEraser.classList.add('active');
+      btnPen.classList.remove('active');
+    });
+
+    btnClearCanvas.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    function setColor(col, el) {
+      currentColor = col;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      if (currentMode === 'eraser') {
+        currentMode = 'pen';
+        btnPen.classList.add('active');
+        btnEraser.classList.remove('active');
+      }
+    }
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+      if (!canvas.classList.contains('active')) return;
+      isDrawing = true;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const p = getPos(e);
+      if (currentMode === 'pen') {
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      } else {
+        ctx.clearRect(p.x - 15, p.y - 15, 30, 30);
+      }
+    }
+
+    function endDraw() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: true });
+    canvas.addEventListener('touchmove', draw, { passive: true });
+    canvas.addEventListener('touchend', endDraw);
+
+    // Fullscreen
+    document.getElementById('btnFullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Whiteboard logic
+    const wbOverlay = document.getElementById('whiteboardOverlay');
+    const wbCanvas = document.getElementById('wbCanvas');
+    const wbCtx = wbCanvas.getContext('2d');
+    const wbBody = document.getElementById('whiteboardBody');
+    let wbDrawing = false;
+    let wbMode = 'pen';
+    let wbZoom = 1;
+    let panX = 0, panY = 0;
+    let isPanning = false, startX = 0, startY = 0;
+
+    function resizeWbCanvas() {
+      wbCanvas.width = wbBody.clientWidth;
+      wbCanvas.height = wbBody.clientHeight;
+    }
+
+    document.getElementById('btnWhiteboard').addEventListener('click', () => {
+      wbOverlay.classList.add('active');
+      resizeWbCanvas();
+    });
+    document.getElementById('wbClose').addEventListener('click', () => {
+      wbOverlay.classList.remove('active');
+    });
+
+    document.getElementById('wbPenBtn').addEventListener('click', () => {
+      wbMode = 'pen';
+      wbBody.style.cursor = 'crosshair';
+    });
+    document.getElementById('wbEraserBtn').addEventListener('click', () => {
+      wbMode = 'eraser';
+      wbBody.style.cursor = 'cell';
+    });
+    const wbHandBtn = document.getElementById('wbHandBtn');
+    wbHandBtn.addEventListener('click', () => {
+      wbMode = 'pan';
+      wbBody.style.cursor = 'grab';
+    });
+
+    document.getElementById('wbZoomIn').addEventListener('click', () => {
+      wbZoom = Math.min(wbZoom + 0.2, 3);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomOut').addEventListener('click', () => {
+      wbZoom = Math.max(wbZoom - 0.2, 0.5);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomReset').addEventListener('click', () => {
+      wbZoom = 1;
+      panX = 0;
+      panY = 0;
+      applyWbTransform();
+    });
+
+    function applyWbTransform() {
+      wbCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${wbZoom})`;
+      wbBody.style.backgroundPosition = `${panX}px ${panY}px`;
+    }
+
+    document.getElementById('wbGridToggle').addEventListener('click', () => {
+      if (wbBody.classList.contains('bg-grid')) {
+        wbBody.classList.remove('bg-grid');
+        wbBody.classList.add('bg-dark');
+      } else {
+        wbBody.classList.remove('bg-dark');
+        wbBody.classList.add('bg-grid');
+      }
+    });
+
+    document.getElementById('wbClear').addEventListener('click', () => {
+      wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+    });
+
+    wbCanvas.addEventListener('mousedown', (e) => {
+      if (wbMode === 'pan') {
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        wbBody.style.cursor = 'grabbing';
+      } else {
+        wbDrawing = true;
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        wbCtx.beginPath();
+        wbCtx.moveTo(x, y);
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isPanning) {
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyWbTransform();
+      } else if (wbDrawing) {
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        if (wbMode === 'pen') {
+          wbCtx.strokeStyle = '#0284c7';
+          wbCtx.lineWidth = 3;
+          wbCtx.lineCap = 'round';
+          wbCtx.lineTo(x, y);
+          wbCtx.stroke();
+        } else if (wbMode === 'eraser') {
+          wbCtx.clearRect(x - 20, y - 20, 40, 40);
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wbDrawing = false;
+      if (wbMode === 'pan') wbBody.style.cursor = 'grab';
+    });
+
+    // Avvio iniziale
+    renderStep();
+  </script>
+</body>
+</html>
