@@ -393,13 +393,29 @@ const MATERIE = [
                   },
 
                   {
-
                     title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
-
                     desc: "Risoluzione animata passo-passo per LIM: vettori con origine comune sul piano cartesiano, costruzione geometrica del parallelogramma, diagonale risultante e proprietà commutativa.",
-
                     url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
-
+                  },
+                  {
+                    title: "🧭 Esercizio Guidato LIM: Distanza Scalare vs Spostamento (Quesito 2)",
+                    desc: "Animazione passo-passo del Test pag. 106: percorso 300 m Nord e 400 m Est, differenza tra cammino effettivo (700 m) e spostamento in linea d'aria con Pitagora (500 m).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-3.html"
+                  },
+                  {
+                    title: "⚖️ Esercizio Guidato LIM: Disposizione Vettori & Risultante Minima (Quesito 6)",
+                    desc: "Animazione passo-passo del Test pag. 106: forze da 30 N e 50 N con risultante 20 N, confronto geometrico delle 4 configurazioni angolari e condizione di versi opposti.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-4.html"
+                  },
+                  {
+                    title: "📐 Esercizio Guidato LIM: Scomposizione Cartesiana & Componente Incognita (Quesito 7)",
+                    desc: "Animazione passo-passo del Test pag. 106: modulo 75 N e componente orizzontale 45 N, ricavo del cateto verticale (60 N) con la formula inversa del Teorema di Pitagora.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-5.html"
+                  },
+                  {
+                    title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
+                    desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
                   }
 
                 ]
