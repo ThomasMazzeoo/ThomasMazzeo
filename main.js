@@ -489,6 +489,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-vettori-22.html"
                   }
                 ]
+              },
+              {
+                title: "🌍 6. La Forza-Peso & Gravità (Massa vs Peso)",
+                topics: [
+                  {
+                    title: "🚀 Esercizio Guidato LIM: Curiosity su Marte — Massa Invariante vs Peso Variabile (Es. 64)",
+                    desc: "Esercizio 64 di pag. 113: peso sulla Terra di 8820 N e su Marte di 3357 N. Calcolo della massa invariante m = 900 kg, ricavo della gravità marziana g_M = 3,73 N/kg e rapporto del 38%.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-23.html"
+                  },
+                  {
+                    title: "🧱 Esercizio Guidato LIM: Il Mobile Pensile — Ripartizione del Peso sui Tasselli (Es. 61)",
+                    desc: "Esercizio 61 di pag. 113: pensile di 27 kg e carico di 50 kg (m_tot = 77 kg). Forza-peso complessiva 755 N e ripartizione simmetrica sui due tasselli a gancio T = 3,8·10² N ciascuno.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-24.html"
+                  },
+                  {
+                    title: "⚽ Esercizio Guidato LIM: Il Calcio di Rigore — Spinta del Tiro vs Forza-Peso (Es. 62)",
+                    desc: "Esercizio 62 di pag. 113: tiro da 100 N a 35° e pallone da 0,41 kg. Scomposizione cartesiana, contrasto con la forza-peso discendente di 4,0 N e modulo risultante F_ris = 98 N.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-25.html"
+                  },
+                  {
+                    title: "🌐 Esercizio Guidato LIM: La Climatologa al Polo Nord — Variazione di g (Es. 65)",
+                    desc: "Esercizio 65 di pag. 113: climatologa di 60,0 kg dall'equatore (g=9,78 N/kg) al Polo Nord (g=9,83 N/kg). Dimostrazione dell'aumento di peso di 3 N con spiegazione geofisica del geoide.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-26.html"
+                  }
+                ]
               }
             ]
           },

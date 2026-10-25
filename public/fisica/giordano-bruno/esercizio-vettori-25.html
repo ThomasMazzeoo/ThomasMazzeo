@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esercizio Guidato LIM — Il Calcio di Rigore (Es. 62) — ISS Giordano Bruno</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body);"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+      --accent-amber: #fbbf24;
+      --accent-red: #f87171;
+      --accent-purple: #c084fc;
+      --accent-pink: #f472b6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    header {
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.75rem; }
+    .brand-icon {
+      background: linear-gradient(135deg, #10b981, #38bdf8);
+      color: #0f172a;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+    .brand-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .brand-text p { font-size: 0.8rem; color: var(--text-muted); }
+
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .btn:hover { background: #273549; border-color: var(--accent-blue); }
+    .btn-primary { background: #0284c7; border-color: #38bdf8; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-amber { background: #b45309; border-color: #fbbf24; }
+    .btn-amber:hover { background: #92400e; }
+
+    main {
+      flex: 1;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .simulation-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 580px;
+    }
+
+    .svg-container {
+      width: 100%;
+      flex: 1;
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-height: 480px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      user-select: none;
+    }
+
+    .controls-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .step-pills { display: flex; gap: 0.35rem; }
+    .step-pill {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-pill.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+      transform: scale(1.1);
+    }
+    .step-pill.completed {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .details-card {
+      overflow-y: auto;
+      max-height: 80vh;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .step-desc {
+      font-size: 0.98rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .formula-box {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 1.15rem;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-item {
+      background: #0f172a;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .data-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .data-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .tip-box {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.9rem;
+      color: #86efac;
+      margin-top: auto;
+    }
+
+    /* LIM Canvas Overlay */
+    #limCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    #limCanvas.active { pointer-events: auto; cursor: crosshair; }
+
+    /* LIM Floating Toolbar */
+    .lim-toolbar {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 0.4rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .tool-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: #334155; }
+    .tool-btn.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+    }
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .color-dot.active { border-color: white; transform: scale(1.15); }
+
+    /* Whiteboard Modal */
+    .whiteboard-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.98);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+    }
+    .whiteboard-overlay.active { display: flex; }
+    .wb-header {
+      padding: 0.6rem 1.25rem;
+      background: #1e293b;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .wb-body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .wb-body.bg-grid {
+      background-color: #ffffff;
+      background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    .wb-body.bg-dark {
+      background-color: #0f172a;
+      background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    #wbCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚽</div>
+      <div class="brand-text">
+        <h1>Esercizio 62 — Pag. 113</h1>
+        <p>Il Calcio di Rigore: Spinta del Tiro e Contrasto con la Forza-Peso</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-amber" id="btnWhiteboard">
+        <span>📄</span> Foglio Bianco LIM
+      </button>
+      <button class="btn" id="btnFullscreen">
+        <span>⛶</span> Schermo Intero
+      </button>
+      <a href="/fisica/giordano-bruno/" class="btn">
+        <span>↩</span> Indice Esercizi
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Card Grafica / Simulazione -->
+    <div class="card simulation-card">
+      <div class="svg-container" id="svgContainer">
+        <canvas id="limCanvas"></canvas>
+        <svg id="simSvg" viewBox="-2 -1 13 8">
+          <defs>
+            <marker id="arrKick" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#38bdf8" />
+            </marker>
+            <marker id="arrWeight" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#fbbf24" />
+            </marker>
+            <marker id="arrResult" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#f87171" />
+            </marker>
+            <pattern id="gridSoccer" width="1" height="1" patternUnits="userSpaceOnUse">
+              <path d="M 1 0 L 0 0 0 1" fill="none" stroke="#1e293b" stroke-width="0.04" />
+            </pattern>
+          </defs>
+
+          <!-- Sfondo campo da gioco -->
+          <rect x="-1.5" y="-0.5" width="12.5" height="7.2" fill="url(#gridSoccer)" />
+
+          <!-- Il prato (striscia verde in basso) -->
+          <rect x="-1.5" y="6" width="12.5" height="1" fill="rgba(34, 197, 94, 0.15)" stroke="#16a34a" stroke-width="0.05" />
+
+          <!-- Assi cartesiani: Origine O(1.0, 6.0) -->
+          <line x1="0.2" y1="6" x2="10.5" y2="6" stroke="#64748b" stroke-width="0.08" />
+          <line x1="1.0" y1="6.5" x2="1.0" y2="0.3" stroke="#64748b" stroke-width="0.08" />
+          <text x="10.5" y="6.35" fill="#94a3b8" font-size="0.45" font-weight="700">x</text>
+          <text x="0.6" y="0.5" fill="#94a3b8" font-size="0.45" font-weight="700">y</text>
+          <text x="0.6" y="6.4" fill="#94a3b8" font-size="0.45">O</text>
+
+          <!-- Pallone da calcio all'origine -->
+          <circle cx="1.0" cy="5.8" r="0.3" fill="#ffffff" stroke="#0f172a" stroke-width="0.06" />
+
+          <!-- Invertiamo le coordinate con scala(1, -1) centrata a (1.0, 6.0) -->
+          <g transform="translate(1.0, 6.0) scale(1, -1)">
+            <!-- Triangolo rettangolo risultante finale (Step 4 & 5) -->
+            <!-- Scala: 10 N = 1 unità SVG. Fx = 81.9 N -> 8.19. Ry = 53.3 N -> 5.33 -->
+            <polygon id="triResBall" points="0,0 8.19,0 8.19,5.33" fill="rgba(248, 113, 113, 0.15)" stroke="rgba(248, 113, 113, 0.4)" stroke-width="0.04" opacity="0" />
+
+            <!-- Proiezione orizzontale tratteggiata -->
+            <line id="projFx" x1="8.19" y1="0" x2="8.19" y2="5.74" stroke="#94a3b8" stroke-width="0.05" stroke-dasharray="0.15,0.15" opacity="0" />
+
+            <!-- Arco angolo 35° del calcio -->
+            <path id="arc35" d="M 1.8 0 A 1.8 1.8 0 0 1 1.47 1.03" fill="rgba(251, 191, 36, 0.25)" stroke="#fbbf24" stroke-width="0.06" />
+
+            <!-- Vettore F_tiro (blu, 100 N a 35° -> x = 8.19, y = 5.74) -->
+            <line id="vecKick" x1="0" y1="0" x2="8.05" y2="5.64" stroke="#38bdf8" stroke-width="0.22" marker-end="url(#arrKick)" />
+
+            <!-- Vettore Forza-Peso F_p verso il basso (applicato alla punta del tiro! Step 3+) -->
+            <!-- F_p = 4.0 N -> 0.41 unità SVG -->
+            <line id="vecWeight" x1="8.19" y1="5.74" x2="8.19" y2="5.38" stroke="#fbbf24" stroke-width="0.25" marker-end="url(#arrWeight)" opacity="0" />
+
+            <!-- Vettore Risultante Finale F_ris (rosso, da (0,0) a (8.19, 5.33)) - Step 4 & 5 -->
+            <line id="vecResult" x1="0" y1="0" x2="8.05" y2="5.24" stroke="#f87171" stroke-width="0.26" marker-end="url(#arrResult)" opacity="0" />
+          </g>
+
+          <!-- Testi e quotature -->
+          <text id="lblAngle" x="2.9" y="5.6" fill="#fbbf24" font-size="0.45" font-weight="700">35°</text>
+          <text id="lblKick" x="4.5" y="3.0" fill="#38bdf8" font-size="0.55" font-weight="800">F_tiro = 100 N</text>
+          
+          <text id="lblWeight" x="9.5" y="0.5" fill="#fbbf24" font-size="0.45" font-weight="800" opacity="0">F_p = 4,0 N (↓)</text>
+          <text id="lblResult" x="5.5" y="4.0" fill="#f87171" font-size="0.65" font-weight="900" opacity="0">F_ris = 98 N</text>
+          <text id="lblEffAngle" x="3.4" y="4.8" fill="#f87171" font-size="0.4" font-weight="700" opacity="0">θ_eff ≈ 33°</text>
+        </svg>
+      </div>
+
+      <!-- Barra di controllo -->
+      <div class="controls-bar">
+        <div class="step-pills">
+          <div class="step-pill active" onclick="goToStep(0)">1</div>
+          <div class="step-pill" onclick="goToStep(1)">2</div>
+          <div class="step-pill" onclick="goToStep(2)">3</div>
+          <div class="step-pill" onclick="goToStep(3)">4</div>
+          <div class="step-pill" onclick="goToStep(4)">5</div>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn" id="btnPrev" onclick="prevStep()">⏮ Prec</button>
+          <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Succ ⏭</button>
+          <button class="btn" onclick="resetSteps()">🔄 Riavvia</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Dettagli Didattici -->
+    <div class="card details-card">
+      <div id="stepInfo">
+        <!-- Generato dinamicamente da JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- LIM Floating Toolbar -->
+  <div class="lim-toolbar">
+    <button class="tool-btn active" id="btnPen" title="Penna">✏️</button>
+    <button class="tool-btn" id="btnEraser" title="Gomma">🧹</button>
+    <div class="color-dot active" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"></div>
+    <div class="color-dot" style="background: #4ade80;" onclick="setColor('#4ade80', this)"></div>
+    <div class="color-dot" style="background: #fbbf24;" onclick="setColor('#fbbf24', this)"></div>
+    <div class="color-dot" style="background: #f87171;" onclick="setColor('#f87171', this)"></div>
+    <button class="tool-btn" id="btnClearCanvas" title="Cancella Scritte">🗑️</button>
+  </div>
+
+  <!-- Whiteboard Overlay Modal -->
+  <div class="whiteboard-overlay" id="whiteboardOverlay">
+    <div class="wb-header">
+      <div style="font-weight: 700; color: #f8fafc; display:flex; align-items:center; gap:0.5rem;">
+        <span>📄</span> Foglio Bianco LIM — Spazio Libero
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button class="btn" id="wbPenBtn">✏️ Penna</button>
+        <button class="btn" id="wbEraserBtn">🧹 Gomma</button>
+        <button class="btn" id="wbHandBtn" title="Trascina foglio">🖐️</button>
+        <button class="btn" id="wbZoomIn">🔍+</button>
+        <button class="btn" id="wbZoomOut">🔍-</button>
+        <button class="btn" id="wbZoomReset">100%</button>
+        <button class="btn" id="wbGridToggle">Griglia / Sfondo</button>
+        <button class="btn" id="wbClear">🗑️ Svuota</button>
+        <button class="btn btn-amber" id="wbClose">✕ Chiudi</button>
+      </div>
+    </div>
+    <div class="wb-body bg-grid" id="whiteboardBody">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const stepsData = [
+      {
+        badge: "Passo 1 di 5 — Il Problema del Rigore",
+        title: "Spinta del Piede & Attrazione Gravitazionale",
+        desc: "Al momento del calcio di rigore, sul pallone agiscono contemporaneamente <strong>due forze</strong>:<br>1. La spinta del piede del calciatore: <strong>$F_{\\text{tiro}} = 100\\text{ N}$</strong> inclinata di <strong>$35^\\circ$</strong> verso l'alto rispetto al terreno.<br>2. La forza-peso esercitata dalla gravità terrestre sul pallone di massa $m = 0{,}41\\text{ kg}$, diretta costantemente verso il basso.<br><br>Il nostro obiettivo è determinare la <strong>forza risultante effettiva</strong> $\\vec{F}_{\\text{ris}}$ che determina il moto iniziale della palla verso la rete.",
+        formula: "\\vec{F}_{\\text{ris}} = \\vec{F}_{\\text{tiro}} + \\vec{F}_p",
+        data: [
+          { label: "Forza del tiro", val: "100 N a 35°" },
+          { label: "Massa pallone m", val: "0,41 kg" },
+          { label: "Costante g", val: "9,81 N/kg" },
+          { label: "Obiettivo", val: "Calcolare |F_ris|" }
+        ],
+        tip: "💡 Guarda bene la figura del libro a pag. 113: il vettore risultante rosso è leggermente più basso del vettore blu del tiro proprio a causa del peso!"
+      },
+      {
+        badge: "Passo 2 di 5 — Scomposizione del Tiro",
+        title: "Componenti Orizzontale e Verticale della Spinta",
+        desc: "Scomponiamo la forza di trazione del tiro lungo gli assi $x$ e $y$:<br>• <strong>Lungo l'asse orizzontale $x$:</strong><br>$$F_x = F_{\\text{tiro}} \\cdot \\cos(35^\\circ) = 100\\text{ N} \\cdot 0{,}8192 = 81{,}92\\text{ N}$$<br>• <strong>Lungo l'asse verticale $y$:</strong><br>$$F_y = F_{\\text{tiro}} \\cdot \\sin(35^\\circ) = 100\\text{ N} \\cdot 0{,}5736 = 57{,}36\\text{ N}$$",
+        formula: "F_x = 100 \\cdot \\cos(35^\\circ) = 81{,}92\\text{ N}, \\quad F_y = 100 \\cdot \\sin(35^\\circ) = 57{,}36\\text{ N}",
+        data: [
+          { label: "Spinta orizzontale F_x", val: "81,92 N" },
+          { label: "Spinta verticale F_y", val: "57,36 N" },
+          { label: "cos(35°)", val: "0,8192" },
+          { label: "sin(35°)", val: "0,5736" }
+        ],
+        tip: "💡 Più dell'80% della potenza impressa serve per far avanzare la palla verso la porta; il 57% serve per alzarla sopra la barriera."
+      },
+      {
+        badge: "Passo 3 di 5 — Calcolo della Forza-Peso",
+        title: "Il Peso del Pallone: F_p = 4,0 N verso il Basso",
+        desc: "Calcoliamo l'intensità della forza-peso agente sul pallone:<br>$$F_p = m \\cdot g = 0{,}41\\text{ kg} \\cdot 9{,}81\\text{ N/kg} = 4{,}02\\text{ N} \\approx 4{,}0\\text{ N}$$<br>Questa forza ha una sola componente, puramente verticale e con verso discendente ($-y$):<br>$$F_{px} = 0, \\quad F_{py} = -4{,}02\\text{ N}$$<br>La gravità 'ruba' $4{,}0\\text{ N}$ di spinta verso l'alto al tiro del calciatore!",
+        formula: "F_p = 0{,}41\\text{ kg} \\cdot 9{,}81\\text{ N/kg} = 4{,}02\\text{ N} \\quad (\\text{verso il basso})",
+        data: [
+          { label: "Massa pallone", val: "0,41 kg (410 g)" },
+          { label: "Forza-peso F_p", val: "4,02 N" },
+          { label: "Direzione", val: "Verticale discendente (-y)" },
+          { label: "Effetto", val: "Riduce la spinta verso l'alto" }
+        ],
+        tip: "💡 Anche se $4{,}0\\text{ N}$ può sembrare piccolo rispetto a $100\\text{ N}$, fa una differenza sensibile sulla traiettoria balistica!"
+      },
+      {
+        badge: "Passo 4 di 5 — Componente Verticale Netta",
+        title: "Calcolo di R_y: 57,4 N - 4,0 N = 53,3 N",
+        desc: "Sommiamo le forze lungo i due assi coordinati:<br>• <strong>Asse $x$ (nessun contrasto):</strong><br>$$R_x = F_x = 81{,}92\\text{ N}$$<br>• <strong>Asse $y$ (contrasto con il peso):</strong><br>$$R_y = F_y - F_p = 57{,}36\\text{ N} - 4{,}02\\text{ N} = 53{,}34\\text{ N}$$<br>La componente verticale netta scende da $57{,}4\\text{ N}$ a <strong>$53{,}3\\text{ N}$</strong>.",
+        formula: "R_x = 81{,}92\\text{ N} \\quad \\text{e} \\quad R_y = 57{,}36 - 4{,}02 = 53{,}34\\text{ N}",
+        data: [
+          { label: "R_x netta", val: "81,92 N" },
+          { label: "F_y iniziale", val: "57,36 N" },
+          { label: "F_p sottratto", val: "-4,02 N" },
+          { label: "R_y netta", val: "53,34 N" }
+        ],
+        tip: "💡 Ecco la combinazione perfetta di scomposizione cartesiana e algebra vettoriale: le componenti ortogonali si trattano separatamente!"
+      },
+      {
+        badge: "Passo 5 di 5 — Teorema di Pitagora & Risultato",
+        title: "Modulo Risultante Finale: F_ris = 98 N",
+        desc: "Determiniamo il modulo della forza risultante $\\vec{F}_{\\text{ris}}$ con il Teorema di Pitagora:<br>$$F_{\\text{ris}} = \\sqrt{R_x^2 + R_y^2} = \\sqrt{(81{,}92)^2 + (53{,}34)^2}$$<br>$$F_{\\text{ris}} = \\sqrt{6710{,}9 + 2845{,}2} = \\sqrt{9556{,}1} \\approx 97{,}75\\text{ N} \\approx 98\\text{ N}$$<br><strong>Nuovo angolo di traiettoria effettivo:</strong><br>$$\\tan\\theta_{\\text{eff}} = \\frac{53{,}34}{81{,}92} \\approx 0{,}651 \\implies \\theta_{\\text{eff}} \\approx 33^\\circ$$<br>La palla parte con una forza di <strong>$98\\text{ N}$</strong> ad un angolo effettivo di circa <strong>$33^\\circ$</strong> (inferiore ai $35^\\circ$ impressi dal piede).<br><br><strong>Risposta ufficiale del libro (pag. 113):</strong><br>$$[98\\text{ N}]$$",
+        formula: "F_{\\text{ris}} = \\sqrt{(81{,}9)^2 + (53{,}3)^2} = \\sqrt{9556} \\approx 98\\text{ N} \\quad (\\theta_{\\text{eff}} \\approx 33^\\circ)",
+        data: [
+          { label: "Cateto orizzontale", val: "81,9 N" },
+          { label: "Cateto verticale netto", val: "53,3 N" },
+          { label: "Modulo risultante", val: "98 N esatto" },
+          { label: "Angolo reale", val: "33° (abbassato dal peso)" }
+        ],
+        tip: "🎯 Risultato verificato al 100%! Combina in un unico problema realistico scomposizione goniometrica, forza-peso e Teorema di Pitagora."
+      }
+    ];
+
+    let currentStep = 0;
+
+    function updateSimulation(step) {
+      const triResBall = document.getElementById('triResBall');
+      const projFx = document.getElementById('projFx');
+      const vecWeight = document.getElementById('vecWeight');
+      const lblWeight = document.getElementById('lblWeight');
+      const vecResult = document.getElementById('vecResult');
+      const lblResult = document.getElementById('lblResult');
+      const lblEffAngle = document.getElementById('lblEffAngle');
+
+      // Reset
+      triResBall.setAttribute('opacity', '0');
+      projFx.setAttribute('opacity', '0');
+      vecWeight.setAttribute('opacity', '0');
+      lblWeight.setAttribute('opacity', '0');
+      vecResult.setAttribute('opacity', '0');
+      lblResult.setAttribute('opacity', '0');
+      lblEffAngle.setAttribute('opacity', '0');
+
+      if (step >= 1) {
+        projFx.setAttribute('opacity', '1');
+      }
+      if (step >= 2) {
+        vecWeight.setAttribute('opacity', '1');
+        lblWeight.setAttribute('opacity', '1');
+      }
+      if (step >= 3) {
+        triResBall.setAttribute('opacity', '1');
+        vecResult.setAttribute('opacity', '1');
+        lblResult.setAttribute('opacity', '1');
+      }
+      if (step >= 4) {
+        lblEffAngle.setAttribute('opacity', '1');
+      }
+    }
+
+    function renderStep() {
+      const data = stepsData[currentStep];
+      const container = document.getElementById('stepInfo');
+
+      let dataHtml = '';
+      data.data.forEach(d => {
+        dataHtml += `
+          <div class="data-item">
+            <div class="data-label">${d.label}</div>
+            <div class="data-val">${d.val}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = `
+        <div class="step-badge">${data.badge}</div>
+        <h2 class="step-title">${data.title}</h2>
+        <div class="step-desc">${data.desc}</div>
+        <div class="formula-box">$$${data.formula}$$</div>
+        <div class="data-grid">${dataHtml}</div>
+        <div class="tip-box">${data.tip}</div>
+      `;
+
+      if (window.renderMathInElement) {
+        renderMathInElement(container, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+
+      // Aggiorna pills
+      const pills = document.querySelectorAll('.step-pill');
+      pills.forEach((p, idx) => {
+        p.classList.remove('active', 'completed');
+        if (idx === currentStep) p.classList.add('active');
+        else if (idx < currentStep) p.classList.add('completed');
+      });
+
+      // Aggiorna pulsanti
+      document.getElementById('btnPrev').disabled = (currentStep === 0);
+      document.getElementById('btnNext').disabled = (currentStep === stepsData.length - 1);
+
+      updateSimulation(currentStep);
+    }
+
+    function goToStep(s) {
+      currentStep = s;
+      renderStep();
+    }
+
+    function nextStep() {
+      if (currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
+      }
+    }
+
+    function resetSteps() {
+      currentStep = 0;
+      renderStep();
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextStep();
+      else if (e.key === 'ArrowLeft') prevStep();
+    });
+
+    // LIM Drawing logic
+    const canvas = document.getElementById('limCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentColor = '#38bdf8';
+    let currentMode = 'pen';
+
+    function resizeCanvas() {
+      const container = document.getElementById('svgContainer');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    const btnPen = document.getElementById('btnPen');
+    const btnEraser = document.getElementById('btnEraser');
+    const btnClearCanvas = document.getElementById('btnClearCanvas');
+
+    btnPen.addEventListener('click', () => {
+      currentMode = 'pen';
+      canvas.classList.add('active');
+      btnPen.classList.add('active');
+      btnEraser.classList.remove('active');
+    });
+
+    btnEraser.addEventListener('click', () => {
+      currentMode = 'eraser';
+      canvas.classList.add('active');
+      btnEraser.classList.add('active');
+      btnPen.classList.remove('active');
+    });
+
+    btnClearCanvas.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    function setColor(col, el) {
+      currentColor = col;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      if (currentMode === 'eraser') {
+        currentMode = 'pen';
+        btnPen.classList.add('active');
+        btnEraser.classList.remove('active');
+      }
+    }
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+      if (!canvas.classList.contains('active')) return;
+      isDrawing = true;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const p = getPos(e);
+      if (currentMode === 'pen') {
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      } else {
+        ctx.clearRect(p.x - 15, p.y - 15, 30, 30);
+      }
+    }
+
+    function endDraw() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: true });
+    canvas.addEventListener('touchmove', draw, { passive: true });
+    canvas.addEventListener('touchend', endDraw);
+
+    // Fullscreen
+    document.getElementById('btnFullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Whiteboard logic
+    const wbOverlay = document.getElementById('whiteboardOverlay');
+    const wbCanvas = document.getElementById('wbCanvas');
+    const wbCtx = wbCanvas.getContext('2d');
+    const wbBody = document.getElementById('whiteboardBody');
+    let wbDrawing = false;
+    let wbMode = 'pen';
+    let wbZoom = 1;
+    let panX = 0, panY = 0;
+    let isPanning = false, startX = 0, startY = 0;
+
+    function resizeWbCanvas() {
+      wbCanvas.width = wbBody.clientWidth;
+      wbCanvas.height = wbBody.clientHeight;
+    }
+
+    document.getElementById('btnWhiteboard').addEventListener('click', () => {
+      wbOverlay.classList.add('active');
+      resizeWbCanvas();
+    });
+    document.getElementById('wbClose').addEventListener('click', () => {
+      wbOverlay.classList.remove('active');
+    });
+
+    document.getElementById('wbPenBtn').addEventListener('click', () => {
+      wbMode = 'pen';
+      wbBody.style.cursor = 'crosshair';
+    });
+    document.getElementById('wbEraserBtn').addEventListener('click', () => {
+      wbMode = 'eraser';
+      wbBody.style.cursor = 'cell';
+    });
+    const wbHandBtn = document.getElementById('wbHandBtn');
+    wbHandBtn.addEventListener('click', () => {
+      wbMode = 'pan';
+      wbBody.style.cursor = 'grab';
+    });
+
+    document.getElementById('wbZoomIn').addEventListener('click', () => {
+      wbZoom = Math.min(wbZoom + 0.2, 3);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomOut').addEventListener('click', () => {
+      wbZoom = Math.max(wbZoom - 0.2, 0.5);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomReset').addEventListener('click', () => {
+      wbZoom = 1;
+      panX = 0;
+      panY = 0;
+      applyWbTransform();
+    });
+
+    function applyWbTransform() {
+      wbCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${wbZoom})`;
+      wbBody.style.backgroundPosition = `${panX}px ${panY}px`;
+    }
+
+    document.getElementById('wbGridToggle').addEventListener('click', () => {
+      if (wbBody.classList.contains('bg-grid')) {
+        wbBody.classList.remove('bg-grid');
+        wbBody.classList.add('bg-dark');
+      } else {
+        wbBody.classList.remove('bg-dark');
+        wbBody.classList.add('bg-grid');
+      }
+    });
+
+    document.getElementById('wbClear').addEventListener('click', () => {
+      wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+    });
+
+    wbCanvas.addEventListener('mousedown', (e) => {
+      if (wbMode === 'pan') {
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        wbBody.style.cursor = 'grabbing';
+      } else {
+        wbDrawing = true;
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        wbCtx.beginPath();
+        wbCtx.moveTo(x, y);
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isPanning) {
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyWbTransform();
+      } else if (wbDrawing) {
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        if (wbMode === 'pen') {
+          wbCtx.strokeStyle = '#0284c7';
+          wbCtx.lineWidth = 3;
+          wbCtx.lineCap = 'round';
+          wbCtx.lineTo(x, y);
+          wbCtx.stroke();
+        } else if (wbMode === 'eraser') {
+          wbCtx.clearRect(x - 20, y - 20, 40, 40);
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wbDrawing = false;
+      if (wbMode === 'pan') wbBody.style.cursor = 'grab';
+    });
+
+    // Avvio iniziale
+    renderStep();
+  </script>
+</body>
+</html>
