@@ -1,0 +1,3152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Prodotto di un Vettore per uno Scalare — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Barre sopra e sotto nascoste in modalità Schermo Intero
+   - Zoom dinamico e manuale (Zoom In/Out, Pan, Auto-Fit)
+   - Testi e formule extra-large ad altissima visibilità
+   - ZERO menzioni di sottrazione vettoriale
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  /* Colori Vettori ad altissima visibilità */
+  --vec-a: #0284c7;        /* Blu brillante (Vettore s1) */
+  --vec-a-bg: rgba(2, 132, 199, 0.08);
+  --vec-b: #ea580c;        /* Arancione vivo (Vettore s2) */
+  --vec-b-bg: rgba(234, 88, 12, 0.08);
+  --vec-sum: #16a34a;      /* Verde smeraldo (Vettore Somma Risultante) */
+  --vec-sum-bg: rgba(22, 163, 74, 0.09);
+  --vec-comp: #6366f1;     /* Viola indaco (Componenti proiettate) */
+  --accent-gold: #d97706;  /* Oro / Ambra per evidenziazioni */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+/* Modalità Scura (3Blue1Brown) */
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --vec-a: #38bdf8;
+  --vec-b: #fb923c;
+  --vec-sum: #4ade80;
+  --vec-comp: #818cf8;
+}
+
+/* Modalità Testo Ingrandito per LIM */
+body.font-large {
+  --base-font-size: 18px;
+}
+body.font-extra-large {
+  --base-font-size: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: var(--base-font-size);
+}
+
+.lim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER SUPERIORE (VISIBILE SOLO IN NORMALE)
+   ═══════════════════════════════════════════ */
+.lim-header {
+  height: 52px;
+  min-height: 52px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.lim-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-back-course:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.lim-school-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lim-school-badge span {
+  color: var(--vec-a);
+  font-weight: 800;
+}
+
+.lim-header-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lim-pill-tag {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lim-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lim-tool {
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-lim-tool:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
+
+/* ═══════════════════════════════════════════
+   STAGE PRINCIPALE
+   ═══════════════════════════════════════════ */
+.lim-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-height: 0;
+  transition: all 0.2s ease;
+}
+
+/* COLONNA SINISTRA: CANVAS INTERATTIVO */
+.lim-canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  height: 42px;
+  min-height: 42px;
+  background: var(--bg-panel);
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-tech);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.canvas-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.canvas-view-wrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active {
+  cursor: grabbing;
+}
+
+#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
+.canvas-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.btn-zoom {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 2px solid var(--border-ui);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s;
+  user-select: none;
+}
+.btn-zoom:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: scale(1.08);
+}
+.btn-zoom.fit-btn {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  width: auto;
+  padding: 0 10px;
+  height: 34px;
+}
+
+/* Badge dinamico in alto a sinistra del canvas */
+.canvas-lim-overlay {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 5;
+}
+.canvas-live-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* COLONNA DESTRA: GUIDA PASSO-PASSO */
+.lim-explain-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.step-card-header {
+  padding: 12px 18px;
+  border-bottom: 2px solid var(--border-light);
+  background: var(--bg-panel);
+}
+
+.step-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.step-num-badge {
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--vec-a);
+  background: var(--vec-a-bg);
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+  letter-spacing: 1px;
+}
+
+.step-lim-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 2px 9px;
+  border-radius: 4px;
+}
+
+.step-main-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.step-card-body {
+  flex: 1;
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Box pedagogici con alta leggibilità */
+.pedagogy-box {
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-size: 0.98rem;
+  line-height: 1.52;
+  border-left: 5px solid transparent;
+}
+
+.pedagogy-box.problem {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-ui);
+  border-left: 5px solid var(--text-secondary);
+}
+.pedagogy-box.blue {
+  background: #f0f9ff;
+  border: 1.5px solid #bae6fd;
+  border-left: 5px solid var(--vec-a);
+}
+.pedagogy-box.orange {
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  border-left: 5px solid var(--vec-b);
+}
+.pedagogy-box.green {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-left: 5px solid var(--vec-sum);
+}
+.pedagogy-box.gold {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-left: 5px solid var(--accent-gold);
+}
+
+.box-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pedagogy-box.problem .box-title { color: var(--text-secondary); }
+.pedagogy-box.blue .box-title { color: #0284c7; }
+.pedagogy-box.orange .box-title { color: #ea580c; }
+.pedagogy-box.green .box-title { color: #16a34a; }
+.pedagogy-box.gold .box-title { color: #d97706; }
+
+/* Riquadri formule matematiche per LIM */
+.lim-math-card {
+  background: #ffffff;
+  border: 2px solid var(--border-ui);
+  border-radius: 9px;
+  padding: 12px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+body.dark-mode .lim-math-card {
+  background: #0f172a;
+}
+.lim-math-card .math-line {
+  font-size: 1.45rem;
+  margin: 6px 0;
+  font-weight: 700;
+}
+.lim-math-card .math-comment {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+/* Elenchi puntati chiari */
+.lim-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.95rem;
+}
+.lim-bullet-list li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.45;
+}
+.lim-bullet-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  color: var(--vec-a);
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+
+/* ═══════════════════════════════════════════
+   BARRA DI NAVIGAZIONE INFERIORE (MODALITÀ NORMALE)
+   ═══════════════════════════════════════════ */
+.lim-nav-bar {
+  height: 64px;
+  min-height: 64px;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+  gap: 12px;
+}
+
+.nav-btn-big {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.nav-btn-big:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-prev {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  border-color: var(--border-ui);
+}
+.btn-prev:not(:disabled):hover {
+  background: #e2e8f0;
+}
+
+.btn-next {
+  background: var(--vec-a);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+}
+.btn-next:not(:disabled):hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.btn-replay {
+  background: #f8fafc;
+  color: var(--text-secondary);
+  border: 2px solid var(--border-ui);
+  padding: 11px 16px;
+}
+.btn-replay:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+
+/* Indicatore di step centrale */
+.steps-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.step-circle-pill {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-page);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.step-circle-pill:hover {
+  border-color: var(--vec-a);
+  color: var(--text-primary);
+}
+.step-circle-pill.active {
+  background: var(--vec-a);
+  border-color: var(--vec-a);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.step-circle-pill.completed {
+  border-color: #86efac;
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+/* ═══════════════════════════════════════════
+   MODALITÀ SCHERMO INTERO LIM (SENZA BARRE)
+   ═══════════════════════════════════════════ */
+
+/* Quando lo schermo intero è attivo, nascondi la barra sopra e quella sotto! */
+:fullscreen .lim-header,
+body.is-fullscreen .lim-header,
+:-webkit-full-screen .lim-header {
+  display: none !important;
+}
+
+:fullscreen .lim-nav-bar,
+body.is-fullscreen .lim-nav-bar,
+:-webkit-full-screen .lim-nav-bar {
+  display: none !important;
+}
+
+:fullscreen .lim-stage,
+body.is-fullscreen .lim-stage,
+:-webkit-full-screen .lim-stage {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  padding: 10px 14px 74px 14px !important; /* Spazio per la barra comandi fluttuante */
+}
+
+/* Aumento automatico dimensioni in Schermo Intero */
+:fullscreen .step-main-title,
+body.is-fullscreen .step-main-title,
+:-webkit-full-screen .step-main-title {
+  font-size: 1.45rem !important;
+}
+
+:fullscreen .pedagogy-box,
+body.is-fullscreen .pedagogy-box,
+:-webkit-full-screen .pedagogy-box {
+  font-size: 1.08rem !important;
+  line-height: 1.58 !important;
+  padding: 14px 18px !important;
+}
+
+:fullscreen .lim-math-card .math-line,
+body.is-fullscreen .lim-math-card .math-line,
+:-webkit-full-screen .lim-math-card .math-line {
+  font-size: 1.75rem !important;
+}
+
+/* BARRA FLUTTUANTE SOTTO IN SCHERMO INTERO */
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  gap: 8px;
+}
+
+:fullscreen .lim-fullscreen-hud,
+body.is-fullscreen .lim-fullscreen-hud,
+:-webkit-full-screen .lim-fullscreen-hud {
+  display: flex !important;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.hud-btn.primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+.hud-btn.primary:hover {
+  background: #0369a1;
+}
+.hud-btn.exit {
+  background: #dc2626;
+  border-color: #f87171;
+}
+.hud-btn.exit:hover {
+  background: #b91c1c;
+}
+
+.hud-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hud-pill {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hud-pill:hover {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.25);
+}
+.hud-pill.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+.hud-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVITÀ PER SCHERMI PIÙ PICCOLI O TABLET
+   ═══════════════════════════════════════════ */
+@media (max-width: 992px) {
+  html, body { overflow-y: auto; height: auto; }
+  .lim-app { height: auto; min-height: 100vh; }
+  .lim-stage { grid-template-columns: 1fr; height: auto; }
+  .lim-canvas-card { height: 440px; }
+  .step-card-body { height: auto; max-height: none; }
+  .step-circle-pill span.pill-label { display: none; }
+  .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
+}
+
+/* Canvas Trasparente Sovrapposto per la Penna LIM (Fixed su tutto lo schermo per evitare sfasamenti) */
+.lim-pen-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 80;
+  pointer-events: none;
+  touch-action: none;
+}
+.lim-pen-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+.lim-pen-canvas.active.tool-select {
+  cursor: default;
+}
+.lim-pen-canvas.active.tool-select.has-hover {
+  cursor: grab;
+}
+.lim-pen-canvas.active.tool-select.dragging {
+  cursor: grabbing;
+}
+
+/* ============================================================
+   OVERLAY FOGLIO BIANCO INTERATTIVO (WHITEBOARD LIM)
+   ============================================================ */
+.whiteboard-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  flex-direction: column;
+  background: #0f172a;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+
+.wb-header {
+  min-height: 58px;
+  height: 58px;
+  background: #0f172a;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 8px;
+  z-index: 10;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.wb-header::-webkit-scrollbar {
+  display: none;
+}
+
+.wb-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-title {
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  color: #38bdf8;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.wb-slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #334155;
+  white-space: nowrap;
+}
+.wb-pan-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.wb-pan-badge.panned {
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.25);
+  border-color: #0284c7;
+}
+
+.wb-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-sep {
+  width: 1px;
+  height: 24px;
+  background: #334155;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.wb-tool-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+.wb-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.wb-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.wb-color {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.wb-color:hover {
+  transform: scale(1.15);
+}
+.wb-color.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.wb-size-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.wb-size-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.wb-size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.wb-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.wb-btn-text {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-btn-text:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+.wb-btn-text.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.wb-btn-action {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-btn-action:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.wb-btn-action.danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.wb-header-right {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-close-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #dc2626;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wb-close-btn:hover {
+  background: #b91c1c;
+}
+
+.wb-body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Modalità sfondo del foglio applicate direttamente su .wb-body */
+.wb-body.bg-white {
+  background-color: #ffffff;
+  background-image: none;
+}
+.wb-body.bg-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wb-body.bg-dark {
+  background-color: #0b1118;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.wb-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+.wb-canvas.tool-hand {
+  cursor: grab;
+}
+.wb-canvas.tool-hand.grabbing {
+  cursor: grabbing;
+}
+.wb-canvas.tool-select {
+  cursor: default;
+}
+.wb-canvas.tool-select.dragging {
+  cursor: grabbing;
+}
+
+/* Bottone Penna Header */
+.btn-lim-tool.pen-toggle-btn.active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.45) !important;
+}
+
+/* TAVOLOZZA PENNA FLUTTUANTE LIM */
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  z-index: 120;
+  padding: 8px 14px;
+  flex-direction: column;
+  gap: 8px;
+  user-select: none;
+  animation: popIn 0.18s ease-out;
+}
+.lim-pen-palette.show {
+  display: flex;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.pen-palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: 0.76rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+}
+.pen-palette-header:active {
+  cursor: grabbing;
+}
+.pen-btn-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.pen-btn-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.pen-palette-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pen-tool-group, .pen-color-group, .pen-size-group, .pen-action-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pen-tool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pen-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.pen-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.pen-palette-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 2px;
+}
+
+.color-swatch {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+.color-swatch.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.size-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.size-dot {
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.pen-action-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.pen-action-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.pen-action-btn.danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.hud-btn.pen-toggle-hud.active {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.5) !important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="lim-app" id="limApp">
+
+  <!-- HEADER SUPERIORE -->
+  <header class="lim-header" id="limHeader">
+    <div class="lim-header-left">
+      <a href="/#iss-giordano-bruno" class="btn-back-course" title="Torna al menu di Fisica">
+        ◄ Corso Fisica
+      </a>
+      <div class="lim-school-badge">
+        <span>ISS G. BRUNO</span> • FISICA PRIME
+      </div>
+    </div>
+
+    <div class="lim-header-title">
+      ✖️ PRODOTTO DI UN VETTORE PER UNO SCALARE
+      <span class="lim-pill-tag">Pag. 108 • Esercizio 16</span>
+    </div>
+
+    <div class="lim-header-tools">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Disegna con la Penna LIM (annotazioni e gomma)">
+        ✏️ Penna LIM
+      </button>
+      <button class="btn-lim-tool" id="btnHeaderWb" onclick="openWhiteboard()" title="Apri Foglio Bianco LIM per spiegazioni libere">
+        📄 Foglio Bianco
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci il testo delle spiegazioni">
+        <span id="textScaleIcon">A+</span> Ingrandisci Testo
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTheme()" title="Alterna modalità Chiara/Scura">
+        <span id="themeIcon">🌙</span> <span id="themeLabel">Modalità Scura</span>
+      </button>
+      <button class="btn-lim-tool primary" onclick="toggleFullscreen()" title="Proietta a Schermo Intero sulla LIM (senza barre)">
+        ⛶ Schermo Intero LIM
+      </button>
+    </div>
+  </header>
+
+  <!-- STAGE PRINCIPALE -->
+  <main class="lim-stage" id="limStage">
+
+    <!-- CANVAS TRASPARENTE PER DISEGNARE CON LA PENNA DELLA LIM -->
+    <canvas id="limPenCanvas" class="lim-pen-canvas"></canvas>
+
+    <!-- TAVOLOZZA PENNA FLUTTUANTE LIM (trascinabile) -->
+    <div class="lim-pen-palette" id="limPenPalette">
+      <div class="pen-palette-header" id="penPaletteHeader" title="Trascina per spostare la tavolozza">
+        <span>✏️ STRUMENTI PENNA LIM</span>
+        <button class="pen-btn-close" onclick="togglePenMode()" title="Chiudi modalità penna">✖</button>
+      </div>
+
+      <div class="pen-palette-tools">
+        <div class="pen-tool-group">
+          <button class="pen-tool-btn active" id="toolBtnPen" onclick="setPenTool('pen')" title="✏️ Penna normale">✏️</button>
+          <button class="pen-tool-btn" id="toolBtnHighlighter" onclick="setPenTool('highlighter')" title="🖍️ Evidenziatore trasparente">🖍️</button>
+          <button class="pen-tool-btn" id="toolBtnEraser" onclick="setPenTool('eraser')" title="🧽 Gomma per cancellare tratti">🧽</button>
+          <button class="pen-tool-btn" id="toolBtnSelect" onclick="setPenTool('select')" title="🖐️ Sposta / Seleziona oggetti disegnati">🖐️</button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-color-group">
+          <button class="color-swatch active" style="background:#ef4444" data-color="#ef4444" onclick="setPenColor('#ef4444')" title="Rosso"></button>
+          <button class="color-swatch" style="background:#eab308" data-color="#eab308" onclick="setPenColor('#eab308')" title="Giallo"></button>
+          <button class="color-swatch" style="background:#22c55e" data-color="#22c55e" onclick="setPenColor('#22c55e')" title="Verde"></button>
+          <button class="color-swatch" style="background:#0284c7" data-color="#0284c7" onclick="setPenColor('#0284c7')" title="Blu"></button>
+          <button class="color-swatch" style="background:#ec4899" data-color="#ec4899" onclick="setPenColor('#ec4899')" title="Magenta"></button>
+          <button class="color-swatch" style="background:#0f172a" id="swatchContrast" data-color="#0f172a" onclick="setPenColorContrast()" title="Nero / Bianco"></button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-size-group">
+          <button class="size-btn" onclick="setPenSize(3)" id="sizeBtn3" title="Tratto fine">
+            <span class="size-dot" style="width:4px; height:4px;"></span>
+          </button>
+          <button class="size-btn active" onclick="setPenSize(6)" id="sizeBtn6" title="Tratto medio">
+            <span class="size-dot" style="width:8px; height:8px;"></span>
+          </button>
+          <button class="size-btn" onclick="setPenSize(14)" id="sizeBtn14" title="Tratto spesso">
+            <span class="size-dot" style="width:13px; height:13px;"></span>
+          </button>
+        </div>
+
+        <div class="pen-palette-sep"></div>
+
+        <div class="pen-action-group">
+          <button class="pen-action-btn" onclick="undoPenStroke()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+          <button class="pen-action-btn danger" id="btnDeleteSelectedStroke" onclick="deleteSelectedPenStroke()" title="Elimina il tratto selezionato" style="display:none;">🗑️ Elimina</button>
+          <button class="pen-action-btn danger" onclick="clearPenStrokes()" title="Cancella tutti i tratti di questo passaggio">🗑️ Pulisci</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA SINISTRA: CANVAS INTERATTIVO SCALARI -->
+    <div class="lim-canvas-card">
+      <div class="canvas-toolbar">
+        <div>
+          <span>PRODOTTO PER UNO SCALARE k · v</span>
+          <span style="color:#38bdf8; font-weight:800; font-size:0.8rem; margin-left:8px;">(|v| = 4 quadretti)</span>
+        </div>
+        <div class="canvas-legend">
+          <div class="legend-item" style="color:#0284c7">
+            <span class="legend-dot" style="background:#0284c7"></span> v (4 qu.)
+          </div>
+          <div class="legend-item" style="color:#16a34a">
+            <span class="legend-dot" style="background:#16a34a"></span> 2v (8 qu.)
+          </div>
+          <div class="legend-item" style="color:#ea580c">
+            <span class="legend-dot" style="background:#ea580c"></span> -v/2 (2 qu., verso opposto)
+          </div>
+          <div class="legend-item" style="color:#ef4444">
+            <span class="legend-dot" style="background:#ef4444"></span> -3v (12 qu., verso opposto)
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-view-wrap" id="canvasWrap">
+        <canvas id="vecCanvas"></canvas>
+
+        <div class="canvas-lim-overlay">
+          <div class="canvas-live-badge">
+            <span class="badge-dot"></span>
+            <span id="canvasBadgeText">Passo 1: Definizione di Prodotto Scalare-Vettore</span>
+          </div>
+        </div>
+
+        <div class="canvas-zoom-controls">
+          <button class="zoom-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas (o premi +)">🔍+</button>
+          <button class="zoom-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas (o premi -)">🔍−</button>
+          <button class="zoom-btn" onclick="resetCanvasZoom()" title="Ripristina Zoom (o premi 0)">🎯 Adatta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: CARD PEDAGOGICA INTERATTIVA -->
+    <div class="lim-step-card" id="stepCardContainer">
+      <div class="step-card-header">
+        <div>
+          <span class="step-meta-badge" id="stepMetaNum">PASSO 1 DI 6</span>
+          <div class="step-title-main" id="stepMetaTitle">1. La Definizione del Prodotto k · v</div>
+        </div>
+      </div>
+
+      <div class="step-card-body" id="stepCardBody">
+        <!-- Contenuto del passo iniettato dinamicamente -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BARRA DI NAVIGAZIONE INFERIORE -->
+  <footer class="lim-nav-bar" id="limNavBar">
+    <button class="nav-btn-big btn-prev" id="btnPrev" onclick="prevStep()" disabled>
+      ◄ Precedente
+    </button>
+
+    <div class="steps-selector-bar" id="stepsBar">
+      <!-- Pulsanti step 1..6 generati dinamicamente -->
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button class="nav-btn-big btn-replay" onclick="replayCurrentStepAnimation()" title="Riavvia l'animazione di questo passaggio">
+        🔁 Riavvia Animazione
+      </button>
+      <button class="nav-btn-big btn-next" id="btnNext" onclick="nextStep()">
+        Successivo ►
+      </button>
+    </div>
+  </footer>
+
+  <!-- BARRA FLUTTUANTE HUD PER SCHERMO INTERO LIM -->
+  <div class="lim-fullscreen-hud" id="limHud">
+    <button class="hud-btn" onclick="prevStep()" id="hudBtnPrev">◄ Prec</button>
+    <div class="hud-pills" id="hudPills"></div>
+    <button class="hud-btn" onclick="replayCurrentStepAnimation()" title="Riavvia l'animazione">🔁</button>
+    <button class="hud-btn primary" onclick="nextStep()" id="hudBtnNext">Succ ►</button>
+
+    <div class="hud-divider"></div>
+    <button class="hud-btn pen-toggle-hud" id="btnHudPen" onclick="togglePenMode()" title="Disegna con la Penna LIM">✏️ Penna</button>
+    <button class="hud-btn" id="btnHudWb" onclick="openWhiteboard()" title="Apri Foglio Bianco LIM">📄 Foglio</button>
+
+    <button class="hud-btn" onclick="zoomCanvas(1.25)" title="Ingrandisci Zoom Canvas">🔍+</button>
+    <button class="hud-btn" onclick="zoomCanvas(0.8)" title="Riduci Zoom Canvas">🔍−</button>
+    <button class="hud-btn" onclick="resetCanvasZoom()" title="Adatta visuale al passo">🎯 Adatta</button>
+
+    <div class="hud-divider"></div>
+
+    <button class="hud-btn" onclick="toggleTextSize()" title="Ingrandisci testo delle spiegazioni">A+</button>
+    <button class="hud-btn" onclick="toggleTheme()" title="Cambia tema chiaro/scuro">🌓</button>
+    <button class="hud-btn exit" onclick="toggleFullscreen()" title="Esci dalla modalità Schermo Intero">✖ Esci LIM</button>
+  </div>
+
+<!-- ============================================================
+       OVERLAY FOGLIO BIANCO INTERATTIVO (WHITEBOARD LIM)
+       ============================================================ -->
+  <div id="whiteboardOverlay" class="whiteboard-overlay">
+    <div class="wb-header">
+      <div class="wb-header-left">
+        <span class="wb-title">📄 Foglio LIM</span>
+        <span class="wb-slide-tag" id="wbCurrentStepTag">Passo 1 di 6</span>
+        <span class="wb-pan-badge" id="wbPanBadge" onclick="resetWbPan()" title="Visuale corrente. Clicca per ricentrare (0, 0)">
+          🧭 (0, 0)
+        </span>
+      </div>
+
+      <div class="wb-tools">
+        <!-- Strumenti Disegno e Navigazione -->
+        <div class="wb-group">
+          <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="✏️ Penna normale">✏️</button>
+          <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="🖍️ Evidenziatore">🖍️</button>
+          <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="🧽 Gomma per cancellare">🧽</button>
+          <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')" title="🖐️ Sposta / Seleziona oggetti disegnati">🖐️</button>
+          <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')" title="✋ Manina Pan (trascina per spostarti nel foglio)">✋</button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <!-- Ricentra se spostato -->
+        <div class="wb-group">
+          <button class="wb-btn-text" id="wbBtnRecenter" onclick="resetWbPan()" title="Ricentra la visuale del foglio a coordinate (0, 0)">
+            🎯 Centra
+          </button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <!-- Colori -->
+        <div class="wb-group" id="wbColorGroup">
+          <button class="wb-color active" style="background:#0f172a" data-color="#0f172a" onclick="setWbColor('#0f172a')" title="Nero"></button>
+          <button class="wb-color" style="background:#0284c7" data-color="#0284c7" onclick="setWbColor('#0284c7')" title="Blu"></button>
+          <button class="wb-color" style="background:#dc2626" data-color="#dc2626" onclick="setWbColor('#dc2626')" title="Rosso"></button>
+          <button class="wb-color" style="background:#16a34a" data-color="#16a34a" onclick="setWbColor('#16a34a')" title="Verde"></button>
+          <button class="wb-color" style="background:#d97706" data-color="#d97706" onclick="setWbColor('#d97706')" title="Ambra / Arancione"></button>
+          <button class="wb-color" style="background:#9333ea" data-color="#9333ea" onclick="setWbColor('#9333ea')" title="Viola"></button>
+          <button class="wb-color" style="background:#ffffff; border:1.5px solid #94a3b8;" data-color="#ffffff" onclick="setWbColor('#ffffff')" title="Bianco"></button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <!-- Spessori -->
+        <div class="wb-group">
+          <button class="wb-size-btn" onclick="setWbSize(3)" id="wbSize3" title="Fine"><span class="wb-dot" style="width:4px;height:4px"></span></button>
+          <button class="wb-size-btn active" onclick="setWbSize(6)" id="wbSize6" title="Medio"><span class="wb-dot" style="width:8px;height:8px"></span></button>
+          <button class="wb-size-btn" onclick="setWbSize(14)" id="wbSize14" title="Spesso"><span class="wb-dot" style="width:13px;height:13px"></span></button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <!-- Sfondo -->
+        <div class="wb-group">
+          <button class="wb-btn-text active" id="wbBgBtnWhite" onclick="setWbBg('white')" title="Foglio Bianco">📄 Bianco</button>
+          <button class="wb-btn-text" id="wbBgBtnGrid" onclick="setWbBg('grid')" title="Foglio a Quadretti">📐 Quadretti</button>
+          <button class="wb-btn-text" id="wbBgBtnDark" onclick="setWbBg('dark')" title="Lavagna Scura">⬛ Scura</button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <!-- Azioni -->
+        <div class="wb-group">
+          <button class="wb-btn-action" onclick="undoWbStroke()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+          <button class="wb-btn-action danger" id="wbBtnDeleteSelected" onclick="deleteSelectedWbStroke()" title="Elimina oggetto selezionato" style="display:none;">🗑️ Elimina</button>
+          <button class="wb-btn-action danger" onclick="clearWbStrokes()" title="Cancella tutto il foglio">🗑️ Pulisci</button>
+        </div>
+      </div>
+
+      <div class="wb-header-right">
+        <button class="wb-close-btn" onclick="closeWhiteboard()" title="Torna all'esercizio (Esc o W)">
+          ✖ Torna all'Esercizio
+        </button>
+      </div>
+    </div>
+
+    <!-- Area Foglio / Canvas -->
+    <div class="wb-body bg-white" id="whiteboardBody">
+      <canvas id="whiteboardCanvas" class="wb-canvas"></canvas>
+    </div>
+  </div>
+
+
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATI RIGOROSI DEL PROBLEMA 16 (PAG. 108)
+// v orizzontale = 4 quadretti. Trova 2v, -v/2, -3v
+// ═══════════════════════════════════════════════════════════
+
+let currentStep = 1;
+const TOTAL_STEPS = 6;
+
+let animProgress = 0;
+let animStartTime = 0;
+const animDuration = 950;
+let animRunning = false;
+let animId = null;
+
+const STEPS_DATA = [
+  // ── PASSO 1 ──
+  {
+    num: 1,
+    title: "1. La Definizione del Prodotto di un Vettore per uno Scalare",
+    badge: "PASSO 1 DI 6 — DEFINIZIONE TEORICA",
+    canvasBadge: "Passo 1: Le Tre Regole di w = k · v",
+    render: () => `
+      <div class="pedagogy-box problem">
+        <div class="box-title">📖 Esercizio 16 (Pag. 108):</div>
+        Su un foglio a quadretti disegna il vettore <strong>\\(\\vec{v}\\)</strong>, orizzontale, di <strong>lunghezza 4 quadretti</strong>.<br><br>
+        ▶ <em>Trova i vettori: <strong>\\(2\\vec{v}\\)</strong>, <strong>\\(-\\vec{v}/2\\)</strong>, <strong>\\(-3\\vec{v}\\)</strong>.</em>
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">📐 Le 3 Regole del Vettore \\(\\vec{w} = k \\cdot \\vec{v}\\):</div>
+        Dati un vettore \\(\\vec{v}\\) e un numero scalare \\(k \\in \\mathbb{R}\\):<br>
+        1. <strong>Direzione</strong>: è sempre la stessa di \\(\\vec{v}\\) (rimane parallelo alla stessa retta).<br>
+        2. <strong>Verso</strong>:<br>
+        &nbsp;&nbsp;• <strong>Stesso verso</strong> di \\(\\vec{v}\\) se lo scalare è positivo (\\(k > 0\\)).<br>
+        &nbsp;&nbsp;• <strong>Verso opposto</strong> a \\(\\vec{v}\\) se lo scalare è negativo (\\(k < 0\\)).<br>
+        3. <strong>Modulo</strong>: è il prodotto del valore assoluto di \\(k\\) per il modulo di \\(\\vec{v}\\):
+        \\[ |\\vec{w}| = |k| \\cdot |\\vec{v}| \\]
+      </div>
+    `
+  },
+
+  // ── PASSO 2 ──
+  {
+    num: 2,
+    title: "2. Il Vettore Base v (Orizzontale, 4 Quadretti a Destra)",
+    badge: "PASSO 2 DI 6 — IL VETTORE BASE",
+    canvasBadge: "Passo 2: Vettore base v: modulo 4, orizzontale verso destra",
+    render: () => `
+      <div class="pedagogy-box formula">
+        <div class="box-title">➡️ Caratteristiche del Vettore Base \\(\\vec{v}\\):</div>
+        • Direzione: <strong>orizzontale</strong> (lungo l'asse \\(x\\)).<br>
+        • Verso: <strong>verso destra</strong> (convenzione positiva \\(+x\\)).<br>
+        • Modulo: <strong>\\(|\\vec{v}| = 4\\text{ quadretti}\\)</strong>.<br>
+        \\[ \\vec{v} = (4,\\; 0) \\]
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">🔍 Unità di Riferimento:</div>
+        Questo vettore è la nostra "unità di misura vettoriale". I prossimi tre vettori saranno derivati modificandone la scala e il verso.
+      </div>
+    `
+  },
+
+  // ── PASSO 3 ──
+  {
+    num: 3,
+    title: "3. Primo Caso: Vettore 2v (Scalare Positivo k = +2)",
+    badge: "PASSO 3 DI 6 — CASO 2v",
+    canvasBadge: "Passo 3: k = 2 -> stesso verso, lunghezza raddoppiata (8 quadretti)",
+    render: () => `
+      <div class="pedagogy-box formula">
+        <div class="box-title">⏩ Proprietà del Vettore \\(2\\vec{v}\\):</div>
+        Qui il fattore scalare è <strong>\\(k = +2\\)</strong>:<br>
+        • Poiché \\(k > 0\\), il verso è <strong>concorde</strong> (punta ancora a destra).<br>
+        • Il modulo raddoppia:
+        \\[ |2\\vec{v}| = 2 \\times |\\vec{v}| = 2 \\times 4 = 8\\text{ quadretti} \\]
+        \\[ 2\\vec{v} = (8,\\; 0) \\]
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">💡 Graficamente:</div>
+        Corrisponde ad attaccare due vettori \\(\\vec{v}\\) in sequenza uno dopo l'altro sulla stessa retta.
+      </div>
+    `
+  },
+
+  // ── PASSO 4 ──
+  {
+    num: 4,
+    title: "4. Secondo Caso: Vettore -v/2 (Scalare Negativo Frazionario k = -1/2)",
+    badge: "PASSO 4 DI 6 — CASO -v/2",
+    canvasBadge: "Passo 4: k = -1/2 -> verso OPPOSTO (sinistra), modulo dimezzato (2 quadretti)",
+    render: () => `
+      <div class="pedagogy-box formula">
+        <div class="box-title">⏪ Proprietà del Vettore \\(-\\frac{\\vec{v}}{2} = -0{,}5\\vec{v}\\):</div>
+        Qui lo scalare è <strong>\\(k = -\\frac{1}{2} = -0{,}5\\)</strong>:<br>
+        • Il segno <strong>meno (\\(-\\))</strong> inverte il verso: punta ora <strong>verso sinistra</strong>!<br>
+        • Il modulo viene dimezzato:
+        \\[ \\left|-\\frac{\\vec{v}}{2}\\right| = |-0{,}5| \\times |\\vec{v}| = 0{,}5 \\times 4 = 2\\text{ quadretti} \\]
+        \\[ -\\frac{\\vec{v}}{2} = (-2,\\; 0) \\]
+      </div>
+
+      <div class="pedagogy-box warn">
+        <div class="box-title">⚠️ Attenzione:</div>
+        Il modulo di un vettore è una lunghezza geometrica ed è <strong>sempre positivo</strong>! Non diciamo mai che il modulo è \\(-2\\), diciamo che il modulo è \\(2\\) e il verso è opposto!
+      </div>
+    `
+  },
+
+  // ── PASSO 5 ──
+  {
+    num: 5,
+    title: "5. Terzo Caso: Vettore -3v (Scalare Negativo k = -3)",
+    badge: "PASSO 5 DI 6 — CASO -3v",
+    canvasBadge: "Passo 5: k = -3 -> verso OPPOSTO (sinistra), modulo triplicato (12 quadretti)",
+    render: () => `
+      <div class="pedagogy-box formula">
+        <div class="box-title">⏮️ Proprietà del Vettore \\(-3\\vec{v}\\):</div>
+        Qui il fattore scalare è <strong>\\(k = -3\\)</strong>:<br>
+        • Poiché \\(k < 0\\), il verso è <strong>opposto</strong> a quello di \\(\\vec{v}\\) (punta a sinistra).<br>
+        • Il modulo viene triplicato:
+        \\[ |-3\\vec{v}| = |-3| \\times |\\vec{v}| = 3 \\times 4 = 12\\text{ quadretti} \\]
+        \\[ -3\\vec{v} = (-12,\\; 0) \\]
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">💡 Graficamente:</div>
+        È un lungo vettore orizzontale orientato verso sinistra, tre volte più lungo del vettore originale \\(\\vec{v}\\).
+      </div>
+    `
+  },
+
+  // ── PASSO 6 ──
+  {
+    num: 6,
+    title: "6. Tavola Sinottica dei Quattro Vettori per la LIM",
+    badge: "PASSO 6 DI 6 — SINTESI E CONFRONTO",
+    canvasBadge: "Passo 6: Confronto Allineato dei 4 Vettori",
+    render: () => `
+      <div class="pedagogy-box tip">
+        <div class="box-title">🏆 Risposte dell'Esercizio 16 (Pag. 108):</div>
+        <table style="width:100%; border-collapse:collapse; margin-top:6px; font-size:0.86rem;">
+          <tr style="border-bottom:1.5px solid #334155;">
+            <th style="padding:6px; text-align:left;">Vettore</th>
+            <th style="padding:6px; text-align:left;">Scalare k</th>
+            <th style="padding:6px; text-align:left;">Direzione</th>
+            <th style="padding:6px; text-align:left;">Verso</th>
+            <th style="padding:6px; text-align:left; color:#eab308;">Modulo</th>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+            <td style="padding:6px; font-weight:700; color:#0284c7;">v (Base)</td>
+            <td style="padding:6px;">1</td>
+            <td style="padding:6px;">Orizzontale</td>
+            <td style="padding:6px;">Destra</td>
+            <td style="padding:6px;"><strong>4 quadretti</strong></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+            <td style="padding:6px; font-weight:700; color:#16a34a;">2v</td>
+            <td style="padding:6px;">+2</td>
+            <td style="padding:6px;">Orizzontale</td>
+            <td style="padding:6px;">Destra</td>
+            <td style="padding:6px;"><strong>8 quadretti</strong></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+            <td style="padding:6px; font-weight:700; color:#ea580c;">-v/2</td>
+            <td style="padding:6px;">-0,5</td>
+            <td style="padding:6px;">Orizzontale</td>
+            <td style="padding:6px; color:#ef4444;">Sinistra</td>
+            <td style="padding:6px;"><strong>2 quadretti</strong></td>
+          </tr>
+          <tr>
+            <td style="padding:6px; font-weight:700; color:#ef4444;">-3v</td>
+            <td style="padding:6px;">-3</td>
+            <td style="padding:6px;">Orizzontale</td>
+            <td style="padding:6px; color:#ef4444;">Sinistra</td>
+            <td style="padding:6px; font-weight:800; color:#ef4444;">12 quadretti</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="pedagogy-box formula">
+        <div class="box-title">🧠 Regola Mnemonic per la Classe:</div>
+        • Il <strong>modulo dello scalare \\(|k|\\)</strong> fa da <em>zoom</em> (allunga se \\(>1\\), accorcia se \\(<1\\)).<br>
+        • Il <strong>segno dello scalare</strong> fa da <em>interruttore del verso</em> (positivo = avanti, negativo = inverti di 180°)!
+      </div>
+    `
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// CLASSE VECTOR CANVAS PER PRODOTTO VETTORE PER SCALARE
+// ═══════════════════════════════════════════════════════════
+
+class VectorCanvas {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.zoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    this.width = wrap.clientWidth;
+    this.height = wrap.clientHeight;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.draw(currentStep, animProgress);
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  drawArrow(fromX, fromY, toX, toY, color, width, label, labelOffset = { x: 0, y: -12 }) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    const len = Math.hypot(dx, dy);
+
+    if (len > 8) {
+      const angle = Math.atan2(dy, dx);
+      const arrowLen = Math.min(13, len * 0.35);
+
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - arrowLen * Math.cos(angle - 0.35), toY - arrowLen * Math.sin(angle - 0.35));
+      ctx.lineTo(toX - arrowLen * Math.cos(angle + 0.35), toY - arrowLen * Math.sin(angle + 0.35));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    if (label) {
+      ctx.font = 'bold 13px IBM Plex Mono, monospace';
+      ctx.fillText(label, (fromX + toX) / 2 + labelOffset.x, (fromY + toY) / 2 + labelOffset.y);
+    }
+    ctx.restore();
+  }
+
+  draw(stepIndex, progress) {
+    const ctx = this.ctx;
+    const isDark = document.body.classList.contains('dark-mode');
+
+    ctx.clearRect(0, 0, this.width, this.height);
+
+    ctx.fillStyle = isDark ? '#0b1329' : '#f8fafc';
+    ctx.fillRect(0, 0, this.width, this.height);
+
+    // Griglia a quadretti di sfondo
+    const sq = (this.width / 22) * this.zoom;
+    const centerX = this.width * 0.52 + this.panX;
+    const topY = this.height * 0.12 + this.panY;
+    const laneH = this.height * 0.19 * this.zoom;
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+    for (let x = centerX - 14 * sq; x <= centerX + 10 * sq; x += sq) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= this.height; y += sq) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.width, y);
+      ctx.stroke();
+    }
+
+    // Linea verticale tratteggiata di allineamento dell'origine x = 0
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(centerX, topY - 20);
+    ctx.lineTo(centerX, topY + 4 * laneH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.font = 'bold 12px IBM Plex Mono, monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText("Asse Origine (x = 0)", centerX - 70, topY - 26);
+
+    // ── 1. VETTORE BASE v (4 quadretti a destra) ──
+    const y1 = topY + 0.5 * laneH;
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath(); ctx.arc(centerX, y1, 5, 0, Math.PI * 2); ctx.fill();
+
+    const prog1 = (stepIndex === 2) ? progress : 1.0;
+    const len1 = 4 * sq * prog1;
+    this.drawArrow(centerX, y1, centerX + len1, y1, '#0284c7', 4, "v (4 quadretti)", { x: -50, y: -12 });
+
+    // ── 2. VETTORE 2v (8 quadretti a destra) ──
+    if (stepIndex >= 3) {
+      const y2 = topY + 1.5 * laneH;
+      ctx.fillStyle = '#16a34a';
+      ctx.beginPath(); ctx.arc(centerX, y2, 5, 0, Math.PI * 2); ctx.fill();
+
+      const prog2 = (stepIndex === 3) ? progress : 1.0;
+      // Cresce da 4 a 8 quadretti
+      const curQuads2 = 4 + 4 * prog2;
+      const len2 = curQuads2 * sq;
+      this.drawArrow(centerX, y2, centerX + len2, y2, '#16a34a', 4.5, "2v (8 quadretti, stesso verso)", { x: -90, y: -12 });
+    }
+
+    // ── 3. VETTORE -v/2 (2 quadretti a sinistra) ──
+    if (stepIndex >= 4) {
+      const y3 = topY + 2.5 * laneH;
+      ctx.fillStyle = '#ea580c';
+      ctx.beginPath(); ctx.arc(centerX, y3, 5, 0, Math.PI * 2); ctx.fill();
+
+      const prog3 = (stepIndex === 4) ? progress : 1.0;
+      const curQuads3 = 2 * prog3;
+      const len3 = curQuads3 * sq;
+      this.drawArrow(centerX, y3, centerX - len3, y3, '#ea580c', 4, "-v/2 (2 qu., verso opposto)", { x: -80, y: -12 });
+    }
+
+    // ── 4. VETTORE -3v (12 quadretti a sinistra) ──
+    if (stepIndex >= 5) {
+      const y4 = topY + 3.5 * laneH;
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.arc(centerX, y4, 5, 0, Math.PI * 2); ctx.fill();
+
+      const prog4 = (stepIndex === 5) ? progress : 1.0;
+      const curQuads4 = 12 * prog4;
+      const len4 = curQuads4 * sq;
+      this.drawArrow(centerX, y4, centerX - len4, y4, '#ef4444', 5, "-3v (12 qu., verso opposto)", { x: -85, y: -12 });
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// GESTIONE PASSI, ANIMAZIONI E CONTROLLI LIM
+// ═══════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════
+// MOTORE PENNA, GOMMA E SPOSTA OGGETTI PER LA LIM
+// ═══════════════════════════════════════════════════════════
+
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen'; // 'pen', 'highlighter', 'eraser', 'select'
+    this.currentColor = '#ef4444';
+    this.currentSize = 6;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    // Gestione Sposta / Seleziona Tratti
+    this.selectedStroke = null;
+    this.isDraggingObject = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.initialPoints = [];
+
+    this.initEvents();
+    this.initPaletteDrag();
+    this.resize();
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redrawCurrentStep();
+  }
+
+  getPoint(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = rect.width > 0 ? (this.canvas.width / this.dpr) / rect.width : 1;
+    const scaleY = rect.height > 0 ? (this.canvas.height / this.dpr) / rect.height : 1;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  }
+
+  computeBBox(stroke) {
+    if (!stroke.points || stroke.points.length === 0) {
+      return { minX: 0, minY: 0, maxX: 0, maxY: 0, width: 0, height: 0 };
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const pad = Math.max((stroke.size || 6) / 2, 6);
+    for (const p of stroke.points) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    return {
+      minX: minX - pad,
+      minY: minY - pad,
+      maxX: maxX + pad,
+      maxY: maxY + pad,
+      width: (maxX - minX) + pad * 2,
+      height: (maxY - minY) + pad * 2
+    };
+  }
+
+  findStrokeAt(x, y) {
+    const strokes = this.strokesByStep[currentStep] || [];
+    for (let i = strokes.length - 1; i >= 0; i--) {
+      const s = strokes[i];
+      if (s.tool === 'eraser') continue;
+      if (!s.bbox) s.bbox = this.computeBBox(s);
+      const b = s.bbox;
+      const pad = 16;
+      if (x >= b.minX - pad && x <= b.maxX + pad && y >= b.minY - pad && y <= b.maxY + pad) {
+        const thresh = Math.max(16, (s.size || 6) * 1.5);
+        for (let j = 0; j < s.points.length; j++) {
+          if (Math.hypot(s.points[j].x - x, s.points[j].y - y) <= thresh) {
+            return s;
+          }
+        }
+        if (b.width <= 50 && b.height <= 50) {
+          return s;
+        }
+      }
+    }
+    return null;
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+    document.addEventListener('fullscreenchange', () => setTimeout(() => this.resize(), 120));
+    document.addEventListener('webkitfullscreenchange', () => setTimeout(() => this.resize(), 120));
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.canvas.setPointerCapture(e.pointerId);
+      const pt = this.getPoint(e);
+
+      // Modalità SELEZIONA / SPOSTA OGGETTI
+      if (this.currentTool === 'select') {
+        const hit = this.findStrokeAt(pt.x, pt.y);
+        if (hit) {
+          this.selectedStroke = hit;
+          this.isDraggingObject = true;
+          this.dragStartX = pt.x;
+          this.dragStartY = pt.y;
+          this.initialPoints = hit.points.map(p => ({ x: p.x, y: p.y }));
+          this.canvas.classList.add('dragging');
+          this.updateDeleteButtonVisibility();
+          this.redrawCurrentStep();
+        } else {
+          this.selectedStroke = null;
+          this.updateDeleteButtonVisibility();
+          this.redrawCurrentStep();
+        }
+        return;
+      }
+
+      // Modalità DISEGNO (Penna, Evidenziatore, Gomma)
+      this.isDrawing = true;
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+
+      this.currentStroke = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x: pt.x, y: pt.y }]
+      };
+
+      this.drawPoint(pt.x, pt.y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.active) return;
+      const pt = this.getPoint(e);
+
+      // Trascinamento oggetto selezionato
+      if (this.currentTool === 'select') {
+        if (this.isDraggingObject && this.selectedStroke) {
+          e.preventDefault();
+          const dx = pt.x - this.dragStartX;
+          const dy = pt.y - this.dragStartY;
+          for (let i = 0; i < this.selectedStroke.points.length; i++) {
+            this.selectedStroke.points[i].x = this.initialPoints[i].x + dx;
+            this.selectedStroke.points[i].y = this.initialPoints[i].y + dy;
+          }
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+          this.redrawCurrentStep();
+        } else {
+          const hit = this.findStrokeAt(pt.x, pt.y);
+          this.canvas.classList.toggle('has-hover', !!hit);
+        }
+        return;
+      }
+
+      // Disegno normale
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      if (Math.hypot(pt.x - lastPt.x, pt.y - lastPt.y) >= 2) {
+        pts.push({ x: pt.x, y: pt.y });
+        this.drawSegment(lastPt, { x: pt.x, y: pt.y }, this.currentStroke);
+      }
+    });
+
+    const endAction = () => {
+      if (this.isDraggingObject) {
+        this.isDraggingObject = false;
+        this.canvas.classList.remove('dragging');
+        if (this.selectedStroke) {
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+        }
+        this.redrawCurrentStep();
+      }
+
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          this.currentStroke.bbox = this.computeBBox(this.currentStroke);
+          if (!this.strokesByStep[currentStep]) {
+            this.strokesByStep[currentStep] = [];
+          }
+          this.strokesByStep[currentStep].push(this.currentStroke);
+        }
+        this.currentStroke = null;
+      }
+    };
+
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawSelectionBox(stroke) {
+    if (!stroke || !stroke.bbox) return;
+    const b = stroke.bbox;
+    const ctx = this.ctx;
+    ctx.save();
+
+    // Box tratteggiato elegante
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(b.minX, b.minY, b.width, b.height);
+
+    // Sfondo semi-trasparente
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.08)';
+    ctx.fillRect(b.minX, b.minY, b.width, b.height);
+
+    // Maniglie angolari
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    const h = 8;
+    const corners = [
+      { x: b.minX, y: b.minY },
+      { x: b.maxX, y: b.minY },
+      { x: b.minX, y: b.maxY },
+      { x: b.maxX, y: b.maxY }
+    ];
+    for (const c of corners) {
+      ctx.fillRect(c.x - h / 2, c.y - h / 2, h, h);
+      ctx.strokeRect(c.x - h / 2, c.y - h / 2, h, h);
+    }
+
+    // Badge esplicativo
+    const text = "🖐️ Trascina per spostare";
+    ctx.font = 'bold 11px sans-serif';
+    const textW = ctx.measureText(text).width;
+    const pillW = textW + 16;
+    const pillH = 20;
+    const pillX = Math.max(6, b.minX);
+    const pillY = Math.max(22, b.minY - 6);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(pillX, pillY - pillH, pillW, pillH, 5);
+    else ctx.rect(pillX, pillY - pillH, pillW, pillH);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(text, pillX + 8, pillY - 5);
+
+    ctx.restore();
+  }
+
+  redrawCurrentStep() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const stepStrokes = this.strokesByStep[currentStep] || [];
+    for (const stroke of stepStrokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+    if (this.selectedStroke) {
+      this.drawSelectionBox(this.selectedStroke);
+    }
+  }
+
+  deleteSelected() {
+    if (!this.selectedStroke) return;
+    const list = this.strokesByStep[currentStep] || [];
+    const idx = list.indexOf(this.selectedStroke);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+    }
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redrawCurrentStep();
+  }
+
+  updateDeleteButtonVisibility() {
+    const btn = document.getElementById('btnDeleteSelectedStroke');
+    if (btn) {
+      btn.style.display = this.selectedStroke ? 'inline-flex' : 'none';
+    }
+  }
+
+  undo() {
+    const list = this.strokesByStep[currentStep];
+    if (list && list.length > 0) {
+      list.pop();
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+      this.redrawCurrentStep();
+    }
+  }
+
+  clear() {
+    this.strokesByStep[currentStep] = [];
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redrawCurrentStep();
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.canvas.classList.remove('tool-select', 'has-hover', 'dragging');
+    if (tool === 'select') {
+      this.canvas.classList.add('tool-select');
+    }
+    ['pen', 'highlighter', 'eraser', 'select'].forEach(t => {
+      const btn = document.getElementById('toolBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.classList.toggle('active', t === tool);
+    });
+    this.redrawCurrentStep();
+  }
+
+  setColor(color) {
+    this.currentColor = color;
+    if (this.currentTool === 'eraser' || this.currentTool === 'select') {
+      this.setTool('pen');
+    }
+    document.querySelectorAll('.color-swatch').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-color') === color);
+    });
+  }
+
+  setSize(size) {
+    this.currentSize = size;
+    [3, 6, 14].forEach(s => {
+      const btn = document.getElementById('sizeBtn' + s);
+      if (btn) btn.classList.toggle('active', s === size);
+    });
+  }
+
+  setActive(active) {
+    this.active = active;
+    this.canvas.classList.toggle('active', active);
+    const palette = document.getElementById('limPenPalette');
+    if (palette) palette.classList.toggle('show', active);
+
+    const btnHeader = document.getElementById('btnHeaderPen');
+    if (btnHeader) btnHeader.classList.toggle('active', active);
+    const btnHud = document.getElementById('btnHudPen');
+    if (btnHud) btnHud.classList.toggle('active', active);
+
+    if (active) {
+      this.resize();
+    } else {
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+      this.redrawCurrentStep();
+    }
+  }
+
+  initPaletteDrag() {
+    const palette = document.getElementById('limPenPalette');
+    const header = document.getElementById('penPaletteHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      if (e.target.tagName.toLowerCase() === 'button') return;
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      const rect = palette.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none';
+      palette.style.left = `${initialLeft}px`;
+      palette.style.top = `${initialTop}px`;
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newLeft = Math.max(10, Math.min(window.innerWidth - palette.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - palette.offsetHeight - 10, initialTop + dy));
+      palette.style.left = `${newLeft}px`;
+      palette.style.top = `${newTop}px`;
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOTORE FOGLIO BIANCO INTERATTIVO CON PAN (MANINA) E SPOSTA
+// ═══════════════════════════════════════════════════════════
+
+class WhiteboardLayer {
+  constructor(canvasId, overlayId) {
+    this.canvas = document.getElementById(canvasId);
+    this.overlay = document.getElementById(overlayId);
+    if (!this.canvas || !this.overlay) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.isOpen = false;
+    this.currentTool = 'pen'; // 'pen', 'highlighter', 'eraser', 'select', 'hand'
+    this.currentColor = '#0f172a';
+    this.currentSize = 6;
+    this.bgMode = 'white';
+
+    // Coordinate di Pan (Manina)
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+    this.initialPanX = 0;
+    this.initialPanY = 0;
+
+    // Tratti conservati in coordinate mondo
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    // Gestione Sposta / Seleziona in coordinate mondo
+    this.selectedStroke = null;
+    this.isDraggingObject = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.initialPoints = [];
+
+    this.initEvents();
+  }
+
+  resize() {
+    const body = document.getElementById('whiteboardBody');
+    if (!body || !this.canvas) return;
+    this.dpr = window.devicePixelRatio || 1;
+    const rect = body.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  getPoint(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      screenX: e.clientX - rect.left,
+      screenY: e.clientY - rect.top,
+      worldX: (e.clientX - rect.left) - this.panX,
+      worldY: (e.clientY - rect.top) - this.panY
+    };
+  }
+
+  computeBBox(stroke) {
+    if (!stroke.points || stroke.points.length === 0) {
+      return { minX: 0, minY: 0, maxX: 0, maxY: 0, width: 0, height: 0 };
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const pad = Math.max((stroke.size || 6) / 2, 6);
+    for (const p of stroke.points) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    return {
+      minX: minX - pad,
+      minY: minY - pad,
+      maxX: maxX + pad,
+      maxY: maxY + pad,
+      width: (maxX - minX) + pad * 2,
+      height: (maxY - minY) + pad * 2
+    };
+  }
+
+  findStrokeAt(worldX, worldY) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const s = this.strokes[i];
+      if (s.tool === 'eraser') continue;
+      if (!s.bbox) s.bbox = this.computeBBox(s);
+      const b = s.bbox;
+      const pad = 16;
+      if (worldX >= b.minX - pad && worldX <= b.maxX + pad && worldY >= b.minY - pad && worldY <= b.maxY + pad) {
+        const thresh = Math.max(16, (s.size || 6) * 1.5);
+        for (let j = 0; j < s.points.length; j++) {
+          if (Math.hypot(s.points[j].x - worldX, s.points[j].y - worldY) <= thresh) {
+            return s;
+          }
+        }
+        if (b.width <= 50 && b.height <= 50) {
+          return s;
+        }
+      }
+    }
+    return null;
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => {
+      if (this.isOpen) this.resize();
+    });
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.isOpen || e.button !== 0) return;
+      e.preventDefault();
+      this.canvas.setPointerCapture(e.pointerId);
+      const pt = this.getPoint(e);
+
+      // 1. MANINA (PAN)
+      if (this.currentTool === 'hand') {
+        this.isPanning = true;
+        this.panStartX = e.clientX;
+        this.panStartY = e.clientY;
+        this.initialPanX = this.panX;
+        this.initialPanY = this.panY;
+        this.canvas.classList.add('grabbing');
+        return;
+      }
+
+      // 2. SPOSTA / SELEZIONA
+      if (this.currentTool === 'select') {
+        const hit = this.findStrokeAt(pt.worldX, pt.worldY);
+        if (hit) {
+          this.selectedStroke = hit;
+          this.isDraggingObject = true;
+          this.dragStartX = pt.worldX;
+          this.dragStartY = pt.worldY;
+          this.initialPoints = hit.points.map(p => ({ x: p.x, y: p.y }));
+          this.canvas.classList.add('dragging');
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        } else {
+          this.selectedStroke = null;
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        }
+        return;
+      }
+
+      // 3. DISEGNO (Penna, Evidenziatore, Gomma)
+      this.isDrawing = true;
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+
+      this.currentStroke = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x: pt.worldX, y: pt.worldY }]
+      };
+
+      this.redraw();
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isOpen) return;
+      const pt = this.getPoint(e);
+
+      // Pan con la manina
+      if (this.currentTool === 'hand') {
+        if (this.isPanning) {
+          e.preventDefault();
+          this.panX = this.initialPanX + (e.clientX - this.panStartX);
+          this.panY = this.initialPanY + (e.clientY - this.panStartY);
+          this.updatePanDisplay();
+          this.redraw();
+        }
+        return;
+      }
+
+      // Sposta oggetto
+      if (this.currentTool === 'select') {
+        if (this.isDraggingObject && this.selectedStroke) {
+          e.preventDefault();
+          const dx = pt.worldX - this.dragStartX;
+          const dy = pt.worldY - this.dragStartY;
+          for (let i = 0; i < this.selectedStroke.points.length; i++) {
+            this.selectedStroke.points[i].x = this.initialPoints[i].x + dx;
+            this.selectedStroke.points[i].y = this.initialPoints[i].y + dy;
+          }
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+          this.redraw();
+        }
+        return;
+      }
+
+      // Disegno
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const pts = this.currentStroke.points;
+      const lastPt = pts[pts.length - 1];
+
+      if (Math.hypot(pt.worldX - lastPt.x, pt.worldY - lastPt.y) >= 2) {
+        pts.push({ x: pt.worldX, y: pt.worldY });
+        this.redraw();
+      }
+    });
+
+    const endAction = () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.classList.remove('grabbing');
+      }
+
+      if (this.isDraggingObject) {
+        this.isDraggingObject = false;
+        this.canvas.classList.remove('dragging');
+        if (this.selectedStroke) {
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+        }
+        this.redraw();
+      }
+
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          this.currentStroke.bbox = this.computeBBox(this.currentStroke);
+          this.strokes.push(this.currentStroke);
+        }
+        this.currentStroke = null;
+        this.redraw();
+      }
+    };
+
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  updatePanDisplay() {
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.style.backgroundPosition = `${this.panX}px ${this.panY}px`;
+    }
+    const badge = document.getElementById('wbPanBadge');
+    if (badge) {
+      const signX = this.panX >= 0 ? '+' : '';
+      const signY = this.panY >= 0 ? '+' : '';
+      badge.textContent = `🧭 (${signX}${Math.round(this.panX)}, ${signY}${Math.round(this.panY)})`;
+      badge.classList.toggle('panned', this.panX !== 0 || this.panY !== 0);
+    }
+    const btnRecenter = document.getElementById('wbBtnRecenter');
+    if (btnRecenter) {
+      btnRecenter.classList.toggle('active', this.panX !== 0 || this.panY !== 0);
+    }
+  }
+
+  resetPan() {
+    this.panX = 0;
+    this.panY = 0;
+    this.updatePanDisplay();
+    this.redraw();
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.8, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.3 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5.5;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawSelectionBox(stroke) {
+    if (!stroke || !stroke.bbox) return;
+    const b = stroke.bbox;
+    const ctx = this.ctx;
+    ctx.save();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.08)';
+    ctx.fillRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    const h = 8;
+    const corners = [
+      { x: b.minX, y: b.minY },
+      { x: b.maxX, y: b.minY },
+      { x: b.minX, y: b.maxY },
+      { x: b.maxX, y: b.maxY }
+    ];
+    for (const c of corners) {
+      ctx.fillRect(c.x - h / 2, c.y - h / 2, h, h);
+      ctx.strokeRect(c.x - h / 2, c.y - h / 2, h, h);
+    }
+
+    const text = "🖐️ Trascina per spostare";
+    ctx.font = 'bold 11px sans-serif';
+    const textW = ctx.measureText(text).width;
+    const pillW = textW + 16;
+    const pillH = 20;
+    const pillX = Math.max(6, b.minX);
+    const pillY = Math.max(22, b.minY - 6);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(pillX, pillY - pillH, pillW, pillH, 5);
+    else ctx.rect(pillX, pillY - pillH, pillW, pillH);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(text, pillX + 8, pillY - 5);
+
+    ctx.restore();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+
+    if (this.currentStroke) {
+      if (this.currentStroke.points.length === 1) {
+        this.drawPoint(this.currentStroke.points[0].x, this.currentStroke.points[0].y, this.currentStroke);
+      } else {
+        for (let i = 1; i < this.currentStroke.points.length; i++) {
+          this.drawSegment(this.currentStroke.points[i - 1], this.currentStroke.points[i], this.currentStroke);
+        }
+      }
+    }
+
+    if (this.selectedStroke) {
+      this.drawSelectionBox(this.selectedStroke);
+    }
+
+    this.ctx.restore();
+  }
+
+  deleteSelected() {
+    if (!this.selectedStroke) return;
+    const idx = this.strokes.indexOf(this.selectedStroke);
+    if (idx !== -1) {
+      this.strokes.splice(idx, 1);
+    }
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redraw();
+  }
+
+  updateDeleteButtonVisibility() {
+    const btn = document.getElementById('wbBtnDeleteSelected');
+    if (btn) {
+      btn.style.display = this.selectedStroke ? 'inline-flex' : 'none';
+    }
+  }
+
+  undo() {
+    if (this.strokes.length > 0) {
+      this.strokes.pop();
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+      this.redraw();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redraw();
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.canvas.classList.remove('tool-hand', 'grabbing', 'tool-select', 'dragging');
+    if (tool === 'hand') {
+      this.canvas.classList.add('tool-hand');
+    } else if (tool === 'select') {
+      this.canvas.classList.add('tool-select');
+    }
+    ['pen', 'highlighter', 'eraser', 'select', 'hand'].forEach(t => {
+      const btn = document.getElementById('wbTool' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.classList.toggle('active', t === tool);
+    });
+    this.redraw();
+  }
+
+  setColor(color) {
+    this.currentColor = color;
+    if (this.currentTool === 'eraser' || this.currentTool === 'select' || this.currentTool === 'hand') {
+      this.setTool('pen');
+    }
+    document.querySelectorAll('#wbColorGroup .wb-color').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-color') === color);
+    });
+  }
+
+  setSize(size) {
+    this.currentSize = size;
+    [3, 6, 14].forEach(s => {
+      const btn = document.getElementById('wbSize' + s);
+      if (btn) btn.classList.toggle('active', s === size);
+    });
+  }
+
+  setBg(mode) {
+    this.bgMode = mode;
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.className = `wb-body bg-${mode}`;
+    }
+    ['white', 'grid', 'dark'].forEach(m => {
+      const btn = document.getElementById('wbBgBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) btn.classList.toggle('active', m === mode);
+    });
+
+    if (mode === 'dark') {
+      if (this.currentColor === '#0f172a') {
+        this.setColor('#38bdf8');
+      }
+    } else {
+      if (this.currentColor === '#ffffff') {
+        this.setColor('#0f172a');
+      }
+    }
+    this.updatePanDisplay();
+  }
+
+  open() {
+    this.isOpen = true;
+    this.overlay.classList.add('show');
+    const tag = document.getElementById('wbCurrentStepTag');
+    if (tag && typeof currentStep !== 'undefined') {
+      tag.textContent = `Passo ${currentStep} di ${typeof TOTAL_STEPS !== 'undefined' ? TOTAL_STEPS : 6}`;
+    }
+    this.updatePanDisplay();
+    this.resize();
+    requestAnimationFrame(() => this.resize());
+  }
+
+  close() {
+    this.isOpen = false;
+    this.overlay.classList.remove('show');
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+  }
+}
+
+let penLayer = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  if (!penLayer) return;
+  penLayer.setActive(!penLayer.active);
+}
+
+function setPenTool(tool) {
+  if (penLayer) penLayer.setTool(tool);
+}
+
+function setPenColor(color) {
+  if (penLayer) penLayer.setColor(color);
+}
+
+function setPenColorContrast() {
+  const isDark = document.body.classList.contains('dark-mode');
+  const color = isDark ? '#ffffff' : '#0f172a';
+  setPenColor(color);
+  const swatch = document.getElementById('swatchContrast');
+  if (swatch) {
+    swatch.style.background = color;
+    swatch.dataset.color = color;
+  }
+}
+
+function setPenSize(size) {
+  if (penLayer) penLayer.setSize(size);
+}
+
+function undoPenStroke() {
+  if (penLayer) penLayer.undo();
+}
+
+function clearPenStrokes() {
+  if (penLayer) penLayer.clear();
+}
+
+function deleteSelectedPenStroke() {
+  if (penLayer) penLayer.deleteSelected();
+}
+
+// Interfaccia Whiteboard
+function openWhiteboard() {
+  if (!whiteboard) {
+    whiteboard = new WhiteboardLayer('whiteboardCanvas', 'whiteboardOverlay');
+  }
+  whiteboard.open();
+}
+
+function closeWhiteboard() {
+  if (whiteboard) whiteboard.close();
+}
+
+function setWbTool(tool) {
+  if (whiteboard) whiteboard.setTool(tool);
+}
+
+function setWbColor(color) {
+  if (whiteboard) whiteboard.setColor(color);
+}
+
+function setWbSize(size) {
+  if (whiteboard) whiteboard.setSize(size);
+}
+
+function setWbBg(mode) {
+  if (whiteboard) whiteboard.setBg(mode);
+}
+
+function undoWbStroke() {
+  if (whiteboard) whiteboard.undo();
+}
+
+function clearWbStrokes() {
+  if (whiteboard) whiteboard.clear();
+}
+
+function deleteSelectedWbStroke() {
+  if (whiteboard) whiteboard.deleteSelected();
+}
+
+function resetWbPan() {
+  if (whiteboard) whiteboard.resetPan();
+}
+
+
+
+function setStep(newStep) {
+  if (newStep < 1 || newStep > TOTAL_STEPS) return;
+  currentStep = newStep;
+
+  const data = STEPS_DATA[currentStep - 1];
+  document.getElementById('stepMetaNum').textContent = data.badge;
+  document.getElementById('stepMetaTitle').textContent = data.title;
+  document.getElementById('stepCardBody').innerHTML = data.render();
+  document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('stepCardBody'), {
+      delimiters: [
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\(', right: '\\)', display: false }
+      ],
+      throwOnError: false
+    });
+  }
+
+  document.getElementById('btnPrev').disabled = (currentStep === 1);
+  document.getElementById('hudBtnPrev').disabled = (currentStep === 1);
+
+  if (currentStep === TOTAL_STEPS) {
+    document.getElementById('btnNext').textContent = 'Completato ✔';
+    document.getElementById('hudBtnNext').textContent = 'Fine ✔';
+  } else {
+    document.getElementById('btnNext').textContent = 'Successivo ►';
+    document.getElementById('hudBtnNext').textContent = 'Succ ►';
+  }
+
+  updateStepsBar();
+  replayCurrentStepAnimation();
+}
+
+function prevStep() { if (currentStep > 1) setStep(currentStep - 1); }
+function nextStep() { if (currentStep < TOTAL_STEPS) setStep(currentStep + 1); }
+
+function updateStepsBar() {
+  const bar = document.getElementById('stepsBar');
+  const hudPills = document.getElementById('hudPills');
+  bar.innerHTML = '';
+  hudPills.innerHTML = '';
+
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'step-btn' + (i === currentStep ? ' active' : '');
+    btn.textContent = 'Passo ' + i;
+    btn.onclick = () => setStep(i);
+    bar.appendChild(btn);
+
+    const pill = document.createElement('button');
+    pill.className = 'hud-pill' + (i === currentStep ? ' active' : '');
+    pill.textContent = i;
+    pill.onclick = () => setStep(i);
+    hudPills.appendChild(pill);
+  }
+}
+
+function replayCurrentStepAnimation() {
+  if (animRunning) cancelAnimationFrame(animId);
+  animRunning = true;
+  animStartTime = performance.now();
+  animProgress = 0;
+
+  function loop(now) {
+    const elapsed = now - animStartTime;
+    animProgress = Math.min(elapsed / animDuration, 1.0);
+    const ease = 1 - Math.pow(1 - animProgress, 3);
+    if (vCanvas) vCanvas.draw(currentStep, ease);
+
+    if (animProgress < 1.0) {
+      animId = requestAnimationFrame(loop);
+    } else {
+      animRunning = false;
+      if (vCanvas) vCanvas.draw(currentStep, 1.0);
+    }
+  }
+
+  animId = requestAnimationFrame(loop);
+}
+
+function zoomCanvas(factor) {
+  if (!vCanvas) return;
+  vCanvas.zoom = Math.max(0.5, Math.min(3.0, vCanvas.zoom * factor));
+  vCanvas.draw(currentStep, 1.0);
+}
+
+function resetCanvasZoom() {
+  if (!vCanvas) return;
+  vCanvas.zoom = 1.0;
+  vCanvas.panX = 0;
+  vCanvas.panY = 0;
+  vCanvas.draw(currentStep, 1.0);
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDark ? 'Modalità Chiara' : 'Modalità Scura';
+  if (vCanvas) vCanvas.draw(currentStep, 1);
+}
+
+function toggleTextSize() {
+  const card = document.getElementById('stepCardContainer');
+  if (card.classList.contains('text-scale-2')) {
+    card.classList.remove('text-scale-2');
+    document.getElementById('textScaleIcon').textContent = 'A+';
+  } else if (card.classList.contains('text-scale-1')) {
+    card.classList.remove('text-scale-1');
+    card.classList.add('text-scale-2');
+    document.getElementById('textScaleIcon').textContent = 'A−';
+  } else {
+    card.classList.add('text-scale-1');
+    document.getElementById('textScaleIcon').textContent = 'A++';
+  }
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('is-fullscreen', isFs);
+  setTimeout(() => {
+    if (vCanvas) vCanvas.resize();
+    if (penLayer && penLayer.active) penLayer.resize();
+    if (whiteboard && whiteboard.isOpen) whiteboard.resize();
+  }, 100);
+});
+
+// Tastiera
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault();
+    nextStep();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    prevStep();
+  } else if (e.key.toLowerCase() === 'r') {
+    e.preventDefault();
+    replayCurrentStepAnimation();
+  } else if (e.key.toLowerCase() === 'f') {
+    e.preventDefault();
+    toggleFullscreen();
+  } else if (e.key.toLowerCase() === 'w') {
+    e.preventDefault();
+    if (whiteboard && whiteboard.isOpen) closeWhiteboard();
+    else openWhiteboard();
+  } else if (e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    togglePenMode();
+  }
+});
+
+// Inizializzazione
+window.addEventListener('DOMContentLoaded', () => {
+  vCanvas = new VectorCanvas('vecCanvas');
+  penLayer = new PenLayer('limPenCanvas', 'limStage');
+  whiteboard = new WhiteboardLayer('whiteboardCanvas', 'whiteboardOverlay');
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('themeIcon').textContent = '☀️';
+    document.getElementById('themeLabel').textContent = 'Modalità Chiara';
+  }
+
+  setStep(1);
+  vCanvas.resize();
+});
+</script>
+
+</body>
+</html>

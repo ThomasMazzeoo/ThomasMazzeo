@@ -335,87 +335,28 @@ const MATERIE = [
         subsections: [
 
           {
-
             id: "giordano-bruno-prime",
-
             title: "1° classi",
-
             icon: "🧪",
-
             desc: "Attività sperimentali, misure, vettori e protocolli di laboratorio per le classi prime.",
-
             chapters: [
-
               {
-
-                title: "La Relazione di Laboratorio",
-
+                title: "🧪 Laboratorio & Metodo Scientifico",
                 topics: [
-
                   {
-
                     title: "Lezione Interattiva & Laboratorio Pratico (1h)",
-
                     desc: "Workshop pratico per studenti: caccia agli errori, i 6 pilastri scientifici, simulatore live con calcolo incertezze e generatore di relazione in PDF.",
-
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
-
                   }
-
                 ]
-
               },
-
               {
-
-                title: "I Vettori",
-
+                title: "🧭 1. Grandezze Scalari e Vettoriali (Distanza vs Spostamento)",
                 topics: [
-
-                  {
-
-                    title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
-
-                    desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
-
-                    url: "/fisica/giordano-bruno/vettori-parte-2.html"
-
-                  },
-
-                  {
-
-                    title: "📐 Esercizio Guidato LIM: La Prima Parte dei Vettori",
-
-                    desc: "Risoluzione animata passo-passo ottimizzata per LIM: coordinate cartesiane, modulo con Pitagora, metodo punta-coda e vettore risultante.",
-
-                    url: "/fisica/giordano-bruno/esercizio-vettori-1.html"
-
-                  },
-
-                  {
-                    title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
-                    desc: "Risoluzione animata passo-passo per LIM: vettori con origine comune sul piano cartesiano, costruzione geometrica del parallelogramma, diagonale risultante e proprietà commutativa.",
-                    url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
-                  },
                   {
                     title: "🧭 Esercizio Guidato LIM: Distanza Scalare vs Spostamento (Quesito 2)",
                     desc: "Animazione passo-passo del Test pag. 106: percorso 300 m Nord e 400 m Est, differenza tra cammino effettivo (700 m) e spostamento in linea d'aria con Pitagora (500 m).",
                     url: "/fisica/giordano-bruno/esercizio-vettori-3.html"
-                  },
-                  {
-                    title: "⚖️ Esercizio Guidato LIM: Disposizione Vettori & Risultante Minima (Quesito 6)",
-                    desc: "Animazione passo-passo del Test pag. 106: forze da 30 N e 50 N con risultante 20 N, confronto geometrico delle 4 configurazioni angolari e condizione di versi opposti.",
-                    url: "/fisica/giordano-bruno/esercizio-vettori-4.html"
-                  },
-                  {
-                    title: "📐 Esercizio Guidato LIM: Scomposizione Cartesiana & Componente Incognita (Quesito 7)",
-                    desc: "Animazione passo-passo del Test pag. 106: modulo 75 N e componente orizzontale 45 N, ricavo del cateto verticale (60 N) con la formula inversa del Teorema di Pitagora.",
-                    url: "/fisica/giordano-bruno/esercizio-vettori-5.html"
-                  },
-                  {
-                    title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
-                    desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
-                    url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
                   },
                   {
                     title: "🏎️ Esercizio Guidato LIM: Gran Premio di Monaco — Circuito Chiuso (Es. 1)",
@@ -437,15 +378,70 @@ const MATERIE = [
                     desc: "Animazione passo-passo di pag. 86: scacchiera gigante di 16 m con casella da 2,0 m, mossa a 'L' del cavallo da B8 a C6 e modulo dello spostamento con Pitagora (4,5 m).",
                     url: "/fisica/giordano-bruno/esercizio-vettori-10.html"
                   }
-
                 ]
-
+              },
+              {
+                title: "📏 2. Le Operazioni con i Vettori (Punta-Coda & Scalari)",
+                topics: [
+                  {
+                    title: "📐 Esercizio Guidato LIM: Metodo Punta-Coda nei 4 Casi (Es. 11)",
+                    desc: "Problema guidato di pag. 108: addizione grafica vettoriale su carta quadrettata. Vettori paralleli concordi, paralleli discordi, inclinati generici e ortogonali con Pitagora.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-11.html"
+                  },
+                  {
+                    title: "🚶‍♂️ Esercizio Guidato LIM: Somma di Tre Spostamenti Successivi (Es. 12)",
+                    desc: "Ora prova tu di pag. 108: spezzata poligonale aperta formata da s_1 (6 m E), s_2 (3 m S) e s_3 (2 m O). Costruzione della risultante e calcolo del modulo (5 m).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-12.html"
+                  },
+                  {
+                    title: "🎯 Esercizio Guidato LIM: Prodotto di un Vettore per uno Scalare (Es. 13)",
+                    desc: "Esercizio 16 di pag. 108: vettore v di modulo 2,0 cm moltiplicato per scalari positivi e negativi. Studio di 2v, -(1/2)v e -3v con variazione di modulo, direzione e verso.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-13.html"
+                  },
+                  {
+                    title: "⭕ Esercizio Guidato LIM: Quattro Vettori sull'Anello Centrale (Es. 14)",
+                    desc: "Esercizio 17 di pag. 108: quattro vettori applicati all'origine (1 m N, 5 m S, 6 m O, 3 m E). Riduzione a due componenti perpendicolari e modulo risultante di 5 m.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-14.html"
+                  }
+                ]
+              },
+              {
+                title: "📐 3. Metodo del Parallelogramma & Scomposizione Cartesiana",
+                topics: [
+                  {
+                    title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
+                    desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
+                    url: "/fisica/giordano-bruno/vettori-parte-2.html"
+                  },
+                  {
+                    title: "📐 Esercizio Guidato LIM: La Prima Parte dei Vettori",
+                    desc: "Risoluzione animata passo-passo ottimizzata per LIM: coordinate cartesiane, modulo con Pitagora, metodo punta-coda e vettore risultante.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-1.html"
+                  },
+                  {
+                    title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
+                    desc: "Risoluzione animata passo-passo per LIM: vettori con origine comune sul piano cartesiano, costruzione geometrica del parallelogramma, diagonale risultante e proprietà commutativa.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
+                  },
+                  {
+                    title: "⚖️ Esercizio Guidato LIM: Disposizione Vettori & Risultante Minima (Quesito 6)",
+                    desc: "Animazione passo-passo del Test pag. 106: forze da 30 N e 50 N con risultante 20 N, confronto geometrico delle 4 configurazioni angolari e condizione di versi opposti.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-4.html"
+                  },
+                  {
+                    title: "📐 Esercizio Guidato LIM: Scomposizione Cartesiana & Componente Incognita (Quesito 7)",
+                    desc: "Animazione passo-passo del Test pag. 106: modulo 75 N e componente orizzontale 45 N, ricavo del cateto verticale (60 N) con la formula inversa del Teorema di Pitagora.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-5.html"
+                  },
+                  {
+                    title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
+                    desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
+                  }
+                ]
               }
-
             ]
-
           },
-
           {
 
             id: "giordano-bruno-seconde",
