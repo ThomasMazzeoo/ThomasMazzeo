@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esercizio Guidato LIM — Il Motoscafo & Componenti (Es. 35) — ISS Giordano Bruno</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body);"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+      --accent-amber: #fbbf24;
+      --accent-red: #f87171;
+      --accent-purple: #c084fc;
+      --accent-pink: #f472b6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    header {
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.75rem; }
+    .brand-icon {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      color: #0f172a;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+    .brand-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .brand-text p { font-size: 0.8rem; color: var(--text-muted); }
+
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .btn:hover { background: #273549; border-color: var(--accent-blue); }
+    .btn-primary { background: #0284c7; border-color: #38bdf8; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-amber { background: #b45309; border-color: #fbbf24; }
+    .btn-amber:hover { background: #92400e; }
+
+    main {
+      flex: 1;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .simulation-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 580px;
+    }
+
+    .svg-container {
+      width: 100%;
+      flex: 1;
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-height: 480px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      user-select: none;
+    }
+
+    .controls-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .step-pills { display: flex; gap: 0.35rem; }
+    .step-pill {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-pill.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+      transform: scale(1.1);
+    }
+    .step-pill.completed {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .details-card {
+      overflow-y: auto;
+      max-height: 80vh;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .step-desc {
+      font-size: 0.98rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .formula-box {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 1.15rem;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-item {
+      background: #0f172a;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .data-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .data-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .tip-box {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.9rem;
+      color: #86efac;
+      margin-top: auto;
+    }
+
+    /* LIM Canvas Overlay */
+    #limCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    #limCanvas.active { pointer-events: auto; cursor: crosshair; }
+
+    /* LIM Floating Toolbar */
+    .lim-toolbar {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 0.4rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .tool-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: #334155; }
+    .tool-btn.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: #bae6fd;
+    }
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .color-dot.active { border-color: white; transform: scale(1.15); }
+
+    /* Whiteboard Modal */
+    .whiteboard-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.98);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+    }
+    .whiteboard-overlay.active { display: flex; }
+    .wb-header {
+      padding: 0.6rem 1.25rem;
+      background: #1e293b;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .wb-body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .wb-body.bg-grid {
+      background-color: #ffffff;
+      background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    .wb-body.bg-dark {
+      background-color: #0f172a;
+      background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+    #wbCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🚤</div>
+      <div class="brand-text">
+        <h1>Problema Modello 35 — Pag. 110</h1>
+        <p>Composizione e Addizione di Vettori: Il Motoscafo</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-amber" id="btnWhiteboard">
+        <span>📄</span> Foglio Bianco LIM
+      </button>
+      <button class="btn" id="btnFullscreen">
+        <span>⛶</span> Schermo Intero
+      </button>
+      <a href="/fisica/giordano-bruno/" class="btn">
+        <span>↩</span> Indice Esercizi
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Card Grafica / Simulazione -->
+    <div class="card simulation-card">
+      <div class="svg-container" id="svgContainer">
+        <canvas id="limCanvas"></canvas>
+        <svg id="simSvg" viewBox="-2 -1 13 8">
+          <defs>
+            <marker id="arrowS1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#38bdf8" />
+            </marker>
+            <marker id="arrowS2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#fbbf24" />
+            </marker>
+            <marker id="arrowStot" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#f87171" />
+            </marker>
+            <marker id="arrowComp" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#4ade80" />
+            </marker>
+            <pattern id="gridMarine" width="1" height="1" patternUnits="userSpaceOnUse">
+              <path d="M 1 0 L 0 0 0 1" fill="none" stroke="#1e293b" stroke-width="0.04" />
+            </pattern>
+          </defs>
+
+          <!-- Sfondo acqua marina stilizzata -->
+          <rect x="-1.5" y="-0.5" width="12.5" height="7.2" fill="url(#gridMarine)" />
+
+          <!-- Rosa dei Venti in alto a sinistra -->
+          <g transform="translate(0.5, 1.2) scale(0.65)">
+            <circle cx="0" cy="0" r="1.3" fill="none" stroke="#475569" stroke-width="0.08" stroke-dasharray="0.2,0.2" />
+            <line x1="0" y1="-1.6" x2="0" y2="1.6" stroke="#94a3b8" stroke-width="0.12" />
+            <line x1="-1.6" y1="0" x2="1.6" y2="0" stroke="#94a3b8" stroke-width="0.12" />
+            <text x="0" y="-1.8" fill="#f87171" font-size="0.75" font-weight="800" text-anchor="middle">N</text>
+            <text x="0" y="2.4" fill="#94a3b8" font-size="0.75" font-weight="800" text-anchor="middle">S</text>
+            <text x="2" y="0.25" fill="#38bdf8" font-size="0.75" font-weight="800">E</text>
+            <text x="-2.4" y="0.25" fill="#94a3b8" font-size="0.75" font-weight="800">O</text>
+          </g>
+
+          <!-- Assi cartesiani: Origine O posizionata a (1.5, 6) -->
+          <line x1="0.5" y1="6" x2="10.8" y2="6" stroke="#64748b" stroke-width="0.08" />
+          <line x1="1.5" y1="6.5" x2="1.5" y2="0.3" stroke="#64748b" stroke-width="0.08" />
+          <text x="10.9" y="6.15" fill="#38bdf8" font-size="0.45" font-weight="700">x (Est)</text>
+          <text x="1.5" y="0.15" fill="#f87171" font-size="0.45" font-weight="700" text-anchor="middle">y (Nord)</text>
+          <text x="1.1" y="6.4" fill="#94a3b8" font-size="0.45">O</text>
+
+          <!-- Tacche km asse x (Est) -->
+          <text x="3.5" y="6.4" fill="#64748b" font-size="0.35" text-anchor="middle">2 km</text>
+          <text x="5.5" y="6.4" fill="#64748b" font-size="0.35" text-anchor="middle">4 km</text>
+          <text x="7.5" y="6.4" fill="#64748b" font-size="0.35" text-anchor="middle">6 km</text>
+          <text x="10.2" y="6.4" fill="#38bdf8" font-size="0.4" font-weight="700" text-anchor="middle">8,7 km</text>
+
+          <!-- Tacche km asse y (Nord) -->
+          <text x="1.1" y="3.1" fill="#4ade80" font-size="0.4" font-weight="700" text-anchor="end" id="tick3km" opacity="0">3,0 km</text>
+          <text x="1.1" y="1.1" fill="#94a3b8" font-size="0.35" text-anchor="end">5,0 km</text>
+
+          <!-- Invertiamo la coordinata y cartesiana -->
+          <g transform="translate(1.5, 6) scale(1, -1)">
+            <!-- Triangolo rettangolo risultante (Step 4 & 5) -->
+            <polygon id="triResult" points="0,0 8.7,0 8.7,3.0" fill="rgba(248, 113, 113, 0.12)" stroke="rgba(248, 113, 113, 0.4)" stroke-width="0.04" opacity="0" />
+
+            <!-- Linee di proiezione tratteggiate -->
+            <line id="projS1x" x1="0" y1="0" x2="8.7" y2="0" stroke="#38bdf8" stroke-width="0.08" stroke-dasharray="0.2,0.2" opacity="0" />
+            <line id="projS1y" x1="8.7" y1="0" x2="8.7" y2="5.0" stroke="#94a3b8" stroke-width="0.06" stroke-dasharray="0.15,0.15" opacity="0" />
+            <line id="projNetY" x1="0" y1="3.0" x2="8.7" y2="3.0" stroke="#4ade80" stroke-width="0.07" stroke-dasharray="0.15,0.15" opacity="0" />
+
+            <!-- Arco angolo di rotta theta = 19° (Step 5) -->
+            <path id="arcTheta" d="M 1.8 0 A 1.8 1.8 0 0 1 1.7 0.58" fill="rgba(251, 191, 36, 0.25)" stroke="#fbbf24" stroke-width="0.06" opacity="0" />
+
+            <!-- Vettore s1 (da (0,0) a (8.7, 5.0)) - Step 2+ -->
+            <line id="vecS1" x1="0" y1="0" x2="8.5" y2="4.88" stroke="#38bdf8" stroke-width="0.16" marker-end="url(#arrowS1)" opacity="0" />
+
+            <!-- Vettore s2 verso Sud da (8.7, 5.0) a (8.7, 3.0) - Step 3+ -->
+            <line id="vecS2" x1="8.7" y1="5.0" x2="8.7" y2="3.15" stroke="#fbbf24" stroke-width="0.2" marker-end="url(#arrowS2)" opacity="0" />
+
+            <!-- Vettore risultante s_tot da (0,0) a (8.7, 3.0) - Step 4+ -->
+            <line id="vecStot" x1="0" y1="0" x2="8.5" y2="2.93" stroke="#f87171" stroke-width="0.22" marker-end="url(#arrowStot)" opacity="0" />
+
+            <!-- Barca (icona/pallino animato) -->
+            <circle id="boatDot" cx="0" cy="0" r="0.2" fill="#38bdf8" stroke="#ffffff" stroke-width="0.05" />
+          </g>
+
+          <!-- Etichette testuali -->
+          <text id="lblS1" x="5.5" y="3.2" fill="#38bdf8" font-size="0.5" font-weight="700" opacity="0">s_1 (8,7 km E; 5,0 km N)</text>
+          <text id="lblS2" x="10.4" y="2.0" fill="#fbbf24" font-size="0.48" font-weight="700" opacity="0">s_2 = 2,0 km Sud</text>
+          <text id="lblStot" x="5.5" y="4.8" fill="#f87171" font-size="0.58" font-weight="800" opacity="0">s_tot = 9,2 km</text>
+          <text id="lblTheta" x="3.6" y="5.7" fill="#fbbf24" font-size="0.42" font-weight="700" opacity="0">θ ≈ 19°</text>
+
+          <text id="lblNetY" x="10.4" y="4.6" fill="#4ade80" font-size="0.45" font-weight="700" opacity="0">s_y = 3,0 km</text>
+        </svg>
+      </div>
+
+      <!-- Barra di controllo -->
+      <div class="controls-bar">
+        <div class="step-pills">
+          <div class="step-pill active" onclick="goToStep(0)">1</div>
+          <div class="step-pill" onclick="goToStep(1)">2</div>
+          <div class="step-pill" onclick="goToStep(2)">3</div>
+          <div class="step-pill" onclick="goToStep(3)">4</div>
+          <div class="step-pill" onclick="goToStep(4)">5</div>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn" id="btnPrev" onclick="prevStep()">⏮ Prec</button>
+          <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Succ ⏭</button>
+          <button class="btn" onclick="resetSteps()">🔄 Riavvia</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Dettagli Didattici -->
+    <div class="card details-card">
+      <div id="stepInfo">
+        <!-- Generato dinamicamente da JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- LIM Floating Toolbar -->
+  <div class="lim-toolbar">
+    <button class="tool-btn active" id="btnPen" title="Penna">✏️</button>
+    <button class="tool-btn" id="btnEraser" title="Gomma">🧹</button>
+    <div class="color-dot active" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"></div>
+    <div class="color-dot" style="background: #4ade80;" onclick="setColor('#4ade80', this)"></div>
+    <div class="color-dot" style="background: #fbbf24;" onclick="setColor('#fbbf24', this)"></div>
+    <div class="color-dot" style="background: #f87171;" onclick="setColor('#f87171', this)"></div>
+    <button class="tool-btn" id="btnClearCanvas" title="Cancella Scritte">🗑️</button>
+  </div>
+
+  <!-- Whiteboard Overlay Modal -->
+  <div class="whiteboard-overlay" id="whiteboardOverlay">
+    <div class="wb-header">
+      <div style="font-weight: 700; color: #f8fafc; display:flex; align-items:center; gap:0.5rem;">
+        <span>📄</span> Foglio Bianco LIM — Spazio Libero
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button class="btn" id="wbPenBtn">✏️ Penna</button>
+        <button class="btn" id="wbEraserBtn">🧹 Gomma</button>
+        <button class="btn" id="wbHandBtn" title="Trascina foglio">🖐️</button>
+        <button class="btn" id="wbZoomIn">🔍+</button>
+        <button class="btn" id="wbZoomOut">🔍-</button>
+        <button class="btn" id="wbZoomReset">100%</button>
+        <button class="btn" id="wbGridToggle">Griglia / Sfondo</button>
+        <button class="btn" id="wbClear">🗑️ Svuota</button>
+        <button class="btn btn-amber" id="wbClose">✕ Chiudi</button>
+      </div>
+    </div>
+    <div class="wb-body bg-grid" id="whiteboardBody">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const stepsData = [
+      {
+        badge: "Passo 1 di 5 — Il Sistema di Riferimento",
+        title: "Orientamento & Punti Cardinali",
+        desc: "Fissiamo un sistema di riferimento cartesiano in mare con origine $O$ nel porto di partenza:<br>• Asse orizzontale $x$: orientato verso <strong>Est</strong> (positivo verso destra).<br>• Asse verticale $y$: orientato verso <strong>Nord</strong> (positivo verso l'alto).<br><br>Qualsiasi spostamento a Ovest avrà segno negativo su $x$; qualsiasi spostamento a Sud avrà segno negativo su $y$.",
+        formula: "\\text{Est} \\implies (+x), \\quad \\text{Ovest} \\implies (-x), \\quad \\text{Nord} \\implies (+y), \\quad \\text{Sud} \\implies (-y)",
+        data: [
+          { label: "Asse orizzontale x", val: "Est (+)" },
+          { label: "Asse verticale y", val: "Nord (+)" },
+          { label: "Origine O", val: "Porto di partenza (0; 0)" },
+          { label: "Obiettivo 1 & 2", val: "Spostamento netto e Modulo s_tot" }
+        ],
+        tip: "💡 Associare i punti cardinali agli assi cartesiani standard ($x=\\text{Est}$, $y=\\text{Nord}$) rende la scomposizione immediata."
+      },
+      {
+        badge: "Passo 2 di 5 — Primo Spostamento",
+        title: "Il Vettore s_1 (8,7 km Est e 5,0 km Nord)",
+        desc: "Il motoscafo effettua la prima tratta $\\vec{s}_1$ con rotta verso Nord-Est:<br>• Componente orizzontale: $s_{1x} = +8{,}7\\text{ km}$ (verso Est)<br>• Componente verticale: $s_{1y} = +5{,}0\\text{ km}$ (verso Nord)<br><br>La barca raggiunge la prima boa nel punto intermedio $(8{,}7\\text{ km};\\, 5{,}0\\text{ km})$.",
+        formula: "\\vec{s}_1 = (s_{1x};\\, s_{1y}) = (+8{,}7\\text{ km};\\, +5{,}0\\text{ km})",
+        data: [
+          { label: "s_1x (Est)", val: "+8,7 km" },
+          { label: "s_1y (Nord)", val: "+5,0 km" },
+          { label: "Posizione boa 1", val: "(8,7; 5,0) km" },
+          { label: "Tragitto 1", val: "Navigazione verso NE" }
+        ],
+        tip: "💡 Il testo ci fornisce già direttamente le due componenti rettangolari del primo spostamento!"
+      },
+      {
+        badge: "Passo 3 di 5 — Secondo Spostamento",
+        title: "La Virata a Sud: Il Vettore s_2 (2,0 km Sud)",
+        desc: "Dalla prima boa il motoscafo compie un secondo spostamento rettilineo $\\vec{s}_2$ puntando dritto verso <strong>Sud</strong> per $2{,}0\\text{ km}$:<br>• Componente orizzontale: $s_{2x} = 0\\text{ km}$ (nessun moto verso Est o Ovest)<br>• Componente verticale: $s_{2y} = -2{,}0\\text{ km}$ (segno meno perché scende verso Sud!)",
+        formula: "\\vec{s}_2 = (0\\text{ km};\\, -2{,}0\\text{ km})",
+        data: [
+          { label: "s_2x", val: "0 km" },
+          { label: "s_2y", val: "-2,0 km (Sud)" },
+          { label: "Variazione Est", val: "Invariata" },
+          { label: "Variazione Nord", val: "Diminuisce di 2,0 km" }
+        ],
+        tip: "💡 Nota la comodità: il moto a Sud influenza unicamente la componente $y$, lasciando completamente intatta la componente $x$!"
+      },
+      {
+        badge: "Passo 4 di 5 — Quesito 1: Componenti Complessive",
+        title: "Spostamento Complessivo a Est e a Nord",
+        desc: "Sommiamo algebricamente le componenti lungo i due assi:<br>• <strong>Verso Est ($x$):</strong><br>$$s_x = s_{1x} + s_{2x} = 8{,}7\\text{ km} + 0\\text{ km} = 8{,}7\\text{ km}$$<br>• <strong>Verso Nord ($y$):</strong><br>$$s_y = s_{1y} + s_{2y} = 5{,}0\\text{ km} - 2{,}0\\text{ km} = 3{,}0\\text{ km}$$<br><strong>Risposta al Quesito 1:</strong> Complessivamente il motoscafo si è spostato di <strong>$8{,}7\\text{ km}$ verso Est</strong> e di <strong>$3{,}0\\text{ km}$ verso Nord</strong>.",
+        formula: "s_x = 8{,}7\\text{ km} \\quad \\text{e} \\quad s_y = 5{,}0 - 2{,}0 = 3{,}0\\text{ km}",
+        data: [
+          { label: "Spostamento netto Est", val: "8,7 km" },
+          { label: "Spostamento netto Nord", val: "3,0 km" },
+          { label: "Posizione finale", val: "(8,7; 3,0) km" },
+          { label: "Quesito 1", val: "Risolto con successo!" }
+        ],
+        tip: "💡 Con le componenti cartesiane non serve fare costruzioni geometriche complicate: basta una banale addizione algebrica!"
+      },
+      {
+        badge: "Passo 5 di 5 — Quesito 2: Modulo Risultante & Rotta",
+        title: "Modulo dello Spostamento Totale: s_tot = 9,2 km",
+        desc: "Calcoliamo il modulo dello spostamento totale con il Teorema di Pitagora:<br>$$s_{\\text{tot}} = \\sqrt{s_x^2 + s_y^2} = \\sqrt{(8{,}7)^2 + (3{,}0)^2}$$<br>$$s_{\\text{tot}} = \\sqrt{75{,}69 + 9{,}00} = \\sqrt{84{,}69} \\approx 9{,}2\\text{ km}$$<br><strong>Calcolo della rotta di navigazione (Angolo $\\theta$):</strong><br>$$\\tan\\theta = \\frac{s_y}{s_x} = \\frac{3{,}0}{8{,}7} \\approx 0{,}345 \\implies \\theta = \\arctan(0{,}345) \\approx 19^\\circ$$<br>Il motoscafo si trova a <strong>$9{,}2\\text{ km}$</strong> in linea d'aria dal punto di partenza, con una rotta di <strong>$19^\\circ$ a Nord dell'Est</strong>.",
+        formula: "s_{\\text{tot}} = \\sqrt{8{,}7^2 + 3{,}0^2} = \\sqrt{84{,}69} \\approx 9{,}2\\text{ km} \\quad (\\theta \\approx 19^\\circ)",
+        data: [
+          { label: "Cateto Est", val: "8,7 km" },
+          { label: "Cateto Nord", val: "3,0 km" },
+          { label: "Modulo s_tot", val: "9,2 km" },
+          { label: "Angolo di rotta", val: "19° a Nord dell'Est" }
+        ],
+        tip: "🎯 Risultato verificato al 100%! Combina perfettamente la scomposizione cartesiana, la somma algebrica e il Teorema di Pitagora finale."
+      }
+    ];
+
+    let currentStep = 0;
+
+    function updateSimulation(step) {
+      const vecS1 = document.getElementById('vecS1');
+      const lblS1 = document.getElementById('lblS1');
+      const projS1x = document.getElementById('projS1x');
+      const projS1y = document.getElementById('projS1y');
+      const vecS2 = document.getElementById('vecS2');
+      const lblS2 = document.getElementById('lblS2');
+      const projNetY = document.getElementById('projNetY');
+      const lblNetY = document.getElementById('lblNetY');
+      const tick3km = document.getElementById('tick3km');
+      const triResult = document.getElementById('triResult');
+      const vecStot = document.getElementById('vecStot');
+      const lblStot = document.getElementById('lblStot');
+      const arcTheta = document.getElementById('arcTheta');
+      const lblTheta = document.getElementById('lblTheta');
+      const boatDot = document.getElementById('boatDot');
+
+      // Reset
+      vecS1.setAttribute('opacity', '0');
+      lblS1.setAttribute('opacity', '0');
+      projS1x.setAttribute('opacity', '0');
+      projS1y.setAttribute('opacity', '0');
+      vecS2.setAttribute('opacity', '0');
+      lblS2.setAttribute('opacity', '0');
+      projNetY.setAttribute('opacity', '0');
+      lblNetY.setAttribute('opacity', '0');
+      tick3km.setAttribute('opacity', '0');
+      triResult.setAttribute('opacity', '0');
+      vecStot.setAttribute('opacity', '0');
+      lblStot.setAttribute('opacity', '0');
+      arcTheta.setAttribute('opacity', '0');
+      lblTheta.setAttribute('opacity', '0');
+
+      if (step === 0) {
+        boatDot.setAttribute('cx', '0');
+        boatDot.setAttribute('cy', '0');
+      }
+      if (step >= 1) {
+        vecS1.setAttribute('opacity', '1');
+        lblS1.setAttribute('opacity', '1');
+        projS1x.setAttribute('opacity', '1');
+        projS1y.setAttribute('opacity', '1');
+        boatDot.setAttribute('cx', '8.7');
+        boatDot.setAttribute('cy', '5.0');
+      }
+      if (step >= 2) {
+        vecS2.setAttribute('opacity', '1');
+        lblS2.setAttribute('opacity', '1');
+        boatDot.setAttribute('cx', '8.7');
+        boatDot.setAttribute('cy', '3.0');
+      }
+      if (step >= 3) {
+        projNetY.setAttribute('opacity', '1');
+        lblNetY.setAttribute('opacity', '1');
+        tick3km.setAttribute('opacity', '1');
+        triResult.setAttribute('opacity', '1');
+      }
+      if (step >= 4) {
+        vecStot.setAttribute('opacity', '1');
+        lblStot.setAttribute('opacity', '1');
+        arcTheta.setAttribute('opacity', '1');
+        lblTheta.setAttribute('opacity', '1');
+      }
+    }
+
+    function renderStep() {
+      const data = stepsData[currentStep];
+      const container = document.getElementById('stepInfo');
+
+      let dataHtml = '';
+      data.data.forEach(d => {
+        dataHtml += `
+          <div class="data-item">
+            <div class="data-label">${d.label}</div>
+            <div class="data-val">${d.val}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = `
+        <div class="step-badge">${data.badge}</div>
+        <h2 class="step-title">${data.title}</h2>
+        <div class="step-desc">${data.desc}</div>
+        <div class="formula-box">$$${data.formula}$$</div>
+        <div class="data-grid">${dataHtml}</div>
+        <div class="tip-box">${data.tip}</div>
+      `;
+
+      if (window.renderMathInElement) {
+        renderMathInElement(container, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+
+      // Aggiorna pills
+      const pills = document.querySelectorAll('.step-pill');
+      pills.forEach((p, idx) => {
+        p.classList.remove('active', 'completed');
+        if (idx === currentStep) p.classList.add('active');
+        else if (idx < currentStep) p.classList.add('completed');
+      });
+
+      // Aggiorna pulsanti
+      document.getElementById('btnPrev').disabled = (currentStep === 0);
+      document.getElementById('btnNext').disabled = (currentStep === stepsData.length - 1);
+
+      updateSimulation(currentStep);
+    }
+
+    function goToStep(s) {
+      currentStep = s;
+      renderStep();
+    }
+
+    function nextStep() {
+      if (currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
+      }
+    }
+
+    function resetSteps() {
+      currentStep = 0;
+      renderStep();
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextStep();
+      else if (e.key === 'ArrowLeft') prevStep();
+    });
+
+    // LIM Drawing logic
+    const canvas = document.getElementById('limCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentColor = '#38bdf8';
+    let currentMode = 'pen';
+
+    function resizeCanvas() {
+      const container = document.getElementById('svgContainer');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    const btnPen = document.getElementById('btnPen');
+    const btnEraser = document.getElementById('btnEraser');
+    const btnClearCanvas = document.getElementById('btnClearCanvas');
+
+    btnPen.addEventListener('click', () => {
+      currentMode = 'pen';
+      canvas.classList.add('active');
+      btnPen.classList.add('active');
+      btnEraser.classList.remove('active');
+    });
+
+    btnEraser.addEventListener('click', () => {
+      currentMode = 'eraser';
+      canvas.classList.add('active');
+      btnEraser.classList.add('active');
+      btnPen.classList.remove('active');
+    });
+
+    btnClearCanvas.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    function setColor(col, el) {
+      currentColor = col;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      if (currentMode === 'eraser') {
+        currentMode = 'pen';
+        btnPen.classList.add('active');
+        btnEraser.classList.remove('active');
+      }
+    }
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+      if (!canvas.classList.contains('active')) return;
+      isDrawing = true;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const p = getPos(e);
+      if (currentMode === 'pen') {
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      } else {
+        ctx.clearRect(p.x - 15, p.y - 15, 30, 30);
+      }
+    }
+
+    function endDraw() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: true });
+    canvas.addEventListener('touchmove', draw, { passive: true });
+    canvas.addEventListener('touchend', endDraw);
+
+    // Fullscreen
+    document.getElementById('btnFullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Whiteboard logic
+    const wbOverlay = document.getElementById('whiteboardOverlay');
+    const wbCanvas = document.getElementById('wbCanvas');
+    const wbCtx = wbCanvas.getContext('2d');
+    const wbBody = document.getElementById('whiteboardBody');
+    let wbDrawing = false;
+    let wbMode = 'pen';
+    let wbZoom = 1;
+    let panX = 0, panY = 0;
+    let isPanning = false, startX = 0, startY = 0;
+
+    function resizeWbCanvas() {
+      wbCanvas.width = wbBody.clientWidth;
+      wbCanvas.height = wbBody.clientHeight;
+    }
+
+    document.getElementById('btnWhiteboard').addEventListener('click', () => {
+      wbOverlay.classList.add('active');
+      resizeWbCanvas();
+    });
+    document.getElementById('wbClose').addEventListener('click', () => {
+      wbOverlay.classList.remove('active');
+    });
+
+    document.getElementById('wbPenBtn').addEventListener('click', () => {
+      wbMode = 'pen';
+      wbBody.style.cursor = 'crosshair';
+    });
+    document.getElementById('wbEraserBtn').addEventListener('click', () => {
+      wbMode = 'eraser';
+      wbBody.style.cursor = 'cell';
+    });
+    const wbHandBtn = document.getElementById('wbHandBtn');
+    wbHandBtn.addEventListener('click', () => {
+      wbMode = 'pan';
+      wbBody.style.cursor = 'grab';
+    });
+
+    document.getElementById('wbZoomIn').addEventListener('click', () => {
+      wbZoom = Math.min(wbZoom + 0.2, 3);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomOut').addEventListener('click', () => {
+      wbZoom = Math.max(wbZoom - 0.2, 0.5);
+      applyWbTransform();
+    });
+    document.getElementById('wbZoomReset').addEventListener('click', () => {
+      wbZoom = 1;
+      panX = 0;
+      panY = 0;
+      applyWbTransform();
+    });
+
+    function applyWbTransform() {
+      wbCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${wbZoom})`;
+      wbBody.style.backgroundPosition = `${panX}px ${panY}px`;
+    }
+
+    document.getElementById('wbGridToggle').addEventListener('click', () => {
+      if (wbBody.classList.contains('bg-grid')) {
+        wbBody.classList.remove('bg-grid');
+        wbBody.classList.add('bg-dark');
+      } else {
+        wbBody.classList.remove('bg-dark');
+        wbBody.classList.add('bg-grid');
+      }
+    });
+
+    document.getElementById('wbClear').addEventListener('click', () => {
+      wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+    });
+
+    wbCanvas.addEventListener('mousedown', (e) => {
+      if (wbMode === 'pan') {
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        wbBody.style.cursor = 'grabbing';
+      } else {
+        wbDrawing = true;
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        wbCtx.beginPath();
+        wbCtx.moveTo(x, y);
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isPanning) {
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyWbTransform();
+      } else if (wbDrawing) {
+        const rect = wbCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / wbZoom;
+        const y = (e.clientY - rect.top) / wbZoom;
+        if (wbMode === 'pen') {
+          wbCtx.strokeStyle = '#0284c7';
+          wbCtx.lineWidth = 3;
+          wbCtx.lineCap = 'round';
+          wbCtx.lineTo(x, y);
+          wbCtx.stroke();
+        } else if (wbMode === 'eraser') {
+          wbCtx.clearRect(x - 20, y - 20, 40, 40);
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wbDrawing = false;
+      if (wbMode === 'pan') wbBody.style.cursor = 'grab';
+    });
+
+    // Avvio iniziale
+    renderStep();
+  </script>
+</body>
+</html>

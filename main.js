@@ -406,20 +406,15 @@ const MATERIE = [
                 ]
               },
               {
-                title: "📐 3. Metodo del Parallelogramma & Scomposizione Cartesiana",
+                title: "📐 3. Il Metodo del Parallelogramma & Composizione Grafica",
                 topics: [
                   {
-                    title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
-                    desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
-                    url: "/fisica/giordano-bruno/vettori-parte-2.html"
-                  },
-                  {
-                    title: "📐 Esercizio Guidato LIM: La Prima Parte dei Vettori",
-                    desc: "Risoluzione animata passo-passo ottimizzata per LIM: coordinate cartesiane, modulo con Pitagora, metodo punta-coda e vettore risultante.",
+                    title: "📐 Esercizio Guidato LIM: La Prima Parte dei Vettori (Es. 1)",
+                    desc: "Risoluzione animata passo-passo per LIM: coordinate cartesiane, modulo con Pitagora, metodo punta-coda e vettore risultante.",
                     url: "/fisica/giordano-bruno/esercizio-vettori-1.html"
                   },
                   {
-                    title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma",
+                    title: "📐 Esercizio Guidato LIM: Il Metodo del Parallelogramma (Es. 2)",
                     desc: "Risoluzione animata passo-passo per LIM: vettori con origine comune sul piano cartesiano, costruzione geometrica del parallelogramma, diagonale risultante e proprietà commutativa.",
                     url: "/fisica/giordano-bruno/esercizio-vettori-2.html"
                   },
@@ -429,14 +424,44 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-vettori-4.html"
                   },
                   {
+                    title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
+                    desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
+                  },
+                  {
+                    title: "📐 Esercizio Guidato LIM: Parallelogramma su Assi Cartesiani (Problema Svolto 20)",
+                    desc: "Problema svolto di pag. 109: vettori a=(8,0) e b=(4,9), costruzione del parallelogramma, triangolo rettangolo rettificato OAB (12, 9) e modulo c=15 con Pitagora.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-15.html"
+                  }
+                ]
+              },
+              {
+                title: "📈 4. Le Componenti Cartesiane di un Vettore & Trigonometria",
+                topics: [
+                  {
+                    title: "Lezione Interattiva — Componenti Cartesiane & Trigonometria (1h)",
+                    desc: "Trigonometria del triangolo rettangolo (seno, coseno, angoli notevoli), scomposizione a_x = a·cos(α) e a_y = a·sin(α), segni nei 4 quadranti, angoli orari negativi, esempio svolto e algebra vettoriale.",
+                    url: "/fisica/giordano-bruno/vettori-parte-2.html"
+                  },
+                  {
                     title: "📐 Esercizio Guidato LIM: Scomposizione Cartesiana & Componente Incognita (Quesito 7)",
                     desc: "Animazione passo-passo del Test pag. 106: modulo 75 N e componente orizzontale 45 N, ricavo del cateto verticale (60 N) con la formula inversa del Teorema di Pitagora.",
                     url: "/fisica/giordano-bruno/esercizio-vettori-5.html"
                   },
                   {
-                    title: "⚡ Esercizio Guidato LIM: Forze Perpendicolari — Giochi di Anacleto (Quesito 8)",
-                    desc: "Animazione passo-passo del Test pag. 106: due forze ortogonali da 24 N e 15 N, diagonale del rettangolo con Pitagora (28,3 N) e strategie per test a risposta multipla.",
-                    url: "/fisica/giordano-bruno/esercizio-vettori-6.html"
+                    title: "📈 Esercizio Guidato LIM: Scomposizione Trigonometrica con Angolo 60° (Problema Guidato 28)",
+                    desc: "Problema guidato di pag. 110: vettore u di modulo 6,2 a 60°. Calcolo con coseno (u_x = 3,1) e seno (u_y = 5,4), legame col triangolo equilatero e verifica con Pitagora.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-16.html"
+                  },
+                  {
+                    title: "⚡ Esercizio Guidato LIM: Algebra delle Componenti & Differenza Vettoriale (Problema a Passi 33)",
+                    desc: "Problema a passi di pag. 110: vettori p=(12,-5) e q=(-8,10). Calcolo analitico di r=-2q, differenza s=q-p con modulo terna 15-20-25 (|s|=25) e combinazione t=r+p=(28,-25).",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-17.html"
+                  },
+                  {
+                    title: "🚤 Esercizio Guidato LIM: Composizione di Spostamenti — Il Motoscafo (Problema Modello 35)",
+                    desc: "Problema modello di pag. 110: moto su assi Est/Nord con virata a Sud. Componenti nette s_x = 8,7 km Est e s_y = 3,0 km Nord, modulo risultante s_tot = 9,2 km e angolo di rotta 19°.",
+                    url: "/fisica/giordano-bruno/esercizio-vettori-18.html"
                   }
                 ]
               }
