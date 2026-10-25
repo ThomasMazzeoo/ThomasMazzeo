@@ -2948,6 +2948,7 @@ class WhiteboardLayer {
   }
 }
 
+window.PenLayer = LimPenLayer;
 let penLayer = null;
 let whiteboard = null;
 
@@ -3069,6 +3070,13 @@ function setStep(newStep) {
   }
 
   updateStepsBar();
+  if (penLayer) {
+    penLayer.redrawCurrentStep();
+  }
+  const wbTag = document.getElementById('wbCurrentStepTag');
+  if (wbTag) {
+    wbTag.textContent = `Passo ${currentStep} di ${TOTAL_STEPS}`;
+  }
   replayCurrentStepAnimation();
 }
 
@@ -3201,7 +3209,7 @@ window.addEventListener('keydown', (e) => {
 // Inizializzazione
 window.addEventListener('DOMContentLoaded', () => {
   vCanvas = new VectorCanvas('vecCanvas');
-  penLayer = new PenLayer('limPenCanvas', 'limStage');
+  penLayer = new LimPenLayer('limPenCanvas');
   whiteboard = new WhiteboardLayer('whiteboardCanvas', 'whiteboardOverlay');
 
   const savedTheme = localStorage.getItem('theme');
