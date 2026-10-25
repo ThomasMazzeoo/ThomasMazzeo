@@ -814,112 +814,117 @@ body.is-fullscreen .lim-fullscreen-hud,
   inset: 0;
   z-index: 900;
   flex-direction: column;
-  background: #ffffff;
+  background: #0f172a;
 }
 .whiteboard-overlay.show {
   display: flex;
 }
 
-/* Modalità sfondo del foglio */
-.whiteboard-overlay.bg-white {
-  background: #ffffff;
-}
-.whiteboard-overlay.bg-grid {
-  background-color: #ffffff;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-.whiteboard-overlay.bg-dark {
-  background-color: #0b1118;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
 .wb-header {
-  height: 56px;
+  min-height: 58px;
+  height: 58px;
   background: #0f172a;
   border-bottom: 2px solid #334155;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 12px;
+  gap: 8px;
   z-index: 10;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.wb-header::-webkit-scrollbar {
+  display: none;
 }
 
 .wb-header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-title {
   font-family: var(--font-tech);
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   letter-spacing: 0.5px;
   color: #38bdf8;
   font-weight: 800;
+  white-space: nowrap;
 }
 .wb-slide-tag {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #94a3b8;
-  padding: 3px 8px;
+  padding: 3px 7px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid #334155;
+  white-space: nowrap;
 }
 .wb-pan-badge {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: #94a3b8;
-  padding: 3px 8px;
+  padding: 3px 7px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
 }
 .wb-pan-badge.panned {
   color: #38bdf8;
-  background: rgba(2, 132, 199, 0.2);
+  background: rgba(2, 132, 199, 0.25);
   border-color: #0284c7;
 }
 
 .wb-tools {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-group {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-sep {
   width: 1px;
   height: 24px;
   background: #334155;
-  margin: 0 3px;
+  margin: 0 4px;
+  flex-shrink: 0;
 }
 
 .wb-tool-btn {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   border: 1.5px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  font-size: 1.05rem;
-  display: flex;
+  font-size: 1.15rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+  white-space: nowrap;
 }
 .wb-tool-btn:hover {
   background: rgba(255, 255, 255, 0.22);
@@ -931,12 +936,15 @@ body.is-fullscreen .lim-fullscreen-hud,
 }
 
 .wb-color {
-  width: 23px;
-  height: 23px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
 }
 .wb-color:hover {
   transform: scale(1.15);
@@ -950,14 +958,17 @@ body.is-fullscreen .lim-fullscreen-hud,
 .wb-size-btn {
   width: 28px;
   height: 28px;
+  min-width: 28px;
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
 }
 .wb-size-btn:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -973,15 +984,17 @@ body.is-fullscreen .lim-fullscreen-hud,
 
 .wb-btn-text {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 6px 10px;
+  padding: 6px 9px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #cbd5e1;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-btn-text:hover {
   background: rgba(255, 255, 255, 0.18);
@@ -995,18 +1008,20 @@ body.is-fullscreen .lim-fullscreen-hud,
 }
 
 .wb-btn-action {
-  padding: 6px 10px;
+  padding: 6px 9px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-btn-action:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -1016,17 +1031,23 @@ body.is-fullscreen .lim-fullscreen-hud,
   border-color: #dc2626;
 }
 
+.wb-header-right {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .wb-close-btn {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 800;
-  padding: 7px 14px;
+  padding: 7px 12px;
   border-radius: 8px;
   background: #dc2626;
   border: 1px solid #ef4444;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .wb-close-btn:hover {
   background: #b91c1c;
@@ -1039,6 +1060,26 @@ body.is-fullscreen .lim-fullscreen-hud,
   width: 100%;
   height: 100%;
   touch-action: none;
+}
+
+/* Modalità sfondo del foglio applicate direttamente su .wb-body */
+.wb-body.bg-white {
+  background-color: #ffffff;
+  background-image: none;
+}
+.wb-body.bg-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wb-body.bg-dark {
+  background-color: #0b1118;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .wb-canvas {
@@ -1434,13 +1475,13 @@ body.is-fullscreen .lim-fullscreen-hud,
 <!-- ============================================================
        OVERLAY FOGLIO BIANCO INTERATTIVO (WHITEBOARD LIM)
        ============================================================ -->
-  <div id="whiteboardOverlay" class="whiteboard-overlay bg-white">
+  <div id="whiteboardOverlay" class="whiteboard-overlay">
     <div class="wb-header">
       <div class="wb-header-left">
-        <span class="wb-title">📄 FOGLIO BIANCO LIM</span>
+        <span class="wb-title">📄 Foglio LIM</span>
         <span class="wb-slide-tag" id="wbCurrentStepTag">Passo 1 di 6</span>
         <span class="wb-pan-badge" id="wbPanBadge" onclick="resetWbPan()" title="Visuale corrente. Clicca per ricentrare (0, 0)">
-          🧭 Vista: (0, 0)
+          🧭 (0, 0)
         </span>
       </div>
 
@@ -1450,8 +1491,8 @@ body.is-fullscreen .lim-fullscreen-hud,
           <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="✏️ Penna normale">✏️</button>
           <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="🖍️ Evidenziatore">🖍️</button>
           <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="🧽 Gomma per cancellare">🧽</button>
-          <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')" title="🖐️ Sposta / Seleziona oggetti disegnati">🖐️ Sposta</button>
-          <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')" title="✋ Manina (spostati nel foglio bianco)">✋ Pan</button>
+          <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')" title="🖐️ Sposta / Seleziona oggetti disegnati">🖐️</button>
+          <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')" title="✋ Manina Pan (trascina per spostarti nel foglio)">✋</button>
         </div>
 
         <div class="wb-sep"></div>
@@ -1512,7 +1553,7 @@ body.is-fullscreen .lim-fullscreen-hud,
     </div>
 
     <!-- Area Foglio / Canvas -->
-    <div class="wb-body" id="whiteboardBody">
+    <div class="wb-body bg-white" id="whiteboardBody">
       <canvas id="whiteboardCanvas" class="wb-canvas"></canvas>
     </div>
   </div>
@@ -2559,6 +2600,7 @@ class WhiteboardLayer {
     if (!body || !this.canvas) return;
     this.dpr = window.devicePixelRatio || 1;
     const rect = body.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
     this.width = rect.width;
     this.height = rect.height;
     this.canvas.width = Math.round(this.width * this.dpr);
@@ -2569,13 +2611,11 @@ class WhiteboardLayer {
 
   getPoint(e) {
     const rect = this.canvas.getBoundingClientRect();
-    const scaleX = rect.width > 0 ? (this.canvas.width / this.dpr) / rect.width : 1;
-    const scaleY = rect.height > 0 ? (this.canvas.height / this.dpr) / rect.height : 1;
     return {
-      screenX: (e.clientX - rect.left) * scaleX,
-      screenY: (e.clientY - rect.top) * scaleY,
-      worldX: (e.clientX - rect.left) * scaleX - this.panX,
-      worldY: (e.clientY - rect.top) * scaleY - this.panY
+      screenX: e.clientX - rect.left,
+      screenY: e.clientY - rect.top,
+      worldX: (e.clientX - rect.left) - this.panX,
+      worldY: (e.clientY - rect.top) - this.panY
     };
   }
 
@@ -2765,7 +2805,7 @@ class WhiteboardLayer {
     if (badge) {
       const signX = this.panX >= 0 ? '+' : '';
       const signY = this.panY >= 0 ? '+' : '';
-      badge.textContent = `🧭 Vista: (${signX}${Math.round(this.panX)}, ${signY}${Math.round(this.panY)})`;
+      badge.textContent = `🧭 (${signX}${Math.round(this.panX)}, ${signY}${Math.round(this.panY)})`;
       badge.classList.toggle('panned', this.panX !== 0 || this.panY !== 0);
     }
     const btnRecenter = document.getElementById('wbBtnRecenter');
@@ -2980,7 +3020,10 @@ class WhiteboardLayer {
 
   setBg(mode) {
     this.bgMode = mode;
-    this.overlay.className = `whiteboard-overlay show bg-${mode}`;
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.className = `wb-body bg-${mode}`;
+    }
     ['white', 'grid', 'dark'].forEach(m => {
       const btn = document.getElementById('wbBgBtn' + m.charAt(0).toUpperCase() + m.slice(1));
       if (btn) btn.classList.toggle('active', m === mode);
@@ -3006,7 +3049,8 @@ class WhiteboardLayer {
       tag.textContent = `Passo ${currentStep} di ${typeof TOTAL_STEPS !== 'undefined' ? TOTAL_STEPS : 6}`;
     }
     this.updatePanDisplay();
-    setTimeout(() => this.resize(), 50);
+    this.resize();
+    requestAnimationFrame(() => this.resize());
   }
 
   close() {
