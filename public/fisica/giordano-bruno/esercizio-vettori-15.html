@@ -263,12 +263,12 @@
 
     /* LIM Canvas Overlay */
     #limCanvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
+      width: 100vw;
+      height: 100vh;
+      z-index: 90;
       pointer-events: none;
     }
     #limCanvas.active { pointer-events: auto; cursor: crosshair; }
@@ -504,7 +504,7 @@
 
   <!-- LIM Floating Toolbar -->
   <div class="lim-toolbar">
-    <button class="tool-btn active" id="btnPen" title="Penna">✏️</button>
+    <button class="tool-btn" id="btnPen" title="Attiva/Disattiva Penna LIM">✏️</button>
     <button class="tool-btn" id="btnEraser" title="Gomma">🧹</button>
     <div class="color-dot active" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"></div>
     <div class="color-dot" style="background: #4ade80;" onclick="setColor('#4ade80', this)"></div>
@@ -746,9 +746,8 @@
     let currentMode = 'pen'; // 'pen' or 'eraser'
 
     function resizeCanvas() {
-      const container = document.getElementById('svgContainer');
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeCanvas);
     setTimeout(resizeCanvas, 100);
@@ -758,17 +757,27 @@
     const btnClearCanvas = document.getElementById('btnClearCanvas');
 
     btnPen.addEventListener('click', () => {
-      currentMode = 'pen';
-      canvas.classList.add('active');
-      btnPen.classList.add('active');
-      btnEraser.classList.remove('active');
+      if (canvas.classList.contains('active') && currentMode === 'pen') {
+        canvas.classList.remove('active');
+        btnPen.classList.remove('active');
+      } else {
+        currentMode = 'pen';
+        canvas.classList.add('active');
+        btnPen.classList.add('active');
+        btnEraser.classList.remove('active');
+      }
     });
 
     btnEraser.addEventListener('click', () => {
-      currentMode = 'eraser';
-      canvas.classList.add('active');
-      btnEraser.classList.add('active');
-      btnPen.classList.remove('active');
+      if (canvas.classList.contains('active') && currentMode === 'eraser') {
+        canvas.classList.remove('active');
+        btnEraser.classList.remove('active');
+      } else {
+        currentMode = 'eraser';
+        canvas.classList.add('active');
+        btnEraser.classList.add('active');
+        btnPen.classList.remove('active');
+      }
     });
 
     btnClearCanvas.addEventListener('click', () => {
@@ -779,18 +788,16 @@
       currentColor = col;
       document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
-      if (currentMode === 'eraser') {
-        currentMode = 'pen';
-        btnPen.classList.add('active');
-        btnEraser.classList.remove('active');
-      }
+      currentMode = 'pen';
+      canvas.classList.add('active');
+      btnPen.classList.add('active');
+      btnEraser.classList.remove('active');
     }
 
     function getPos(e) {
-      const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
+      return { x: clientX, y: clientY };
     }
 
     function startDraw(e) {
