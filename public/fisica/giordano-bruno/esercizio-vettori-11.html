@@ -589,7 +589,8 @@ body.dark-mode .lim-math-card {
   overflow-x: auto;
 }
 
-.step-circle-pill {
+.step-circle-pill,
+.step-btn {
   height: 38px;
   padding: 0 14px;
   border-radius: 19px;
@@ -606,21 +607,30 @@ body.dark-mode .lim-math-card {
   transition: all 0.15s;
   white-space: nowrap;
 }
-.step-circle-pill:hover {
+.step-circle-pill:hover,
+.step-btn:hover {
   border-color: var(--vec-a);
   color: var(--text-primary);
 }
-.step-circle-pill.active {
+.step-circle-pill.active,
+.step-btn.active {
   background: var(--vec-a);
   border-color: var(--vec-a);
   color: #ffffff;
   font-weight: 800;
   box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
 }
-.step-circle-pill.completed {
+.step-circle-pill.completed,
+.step-btn.completed {
   border-color: #86efac;
   color: #15803d;
   background: #f0fdf4;
+}
+body.dark-mode .step-circle-pill.completed,
+body.dark-mode .step-btn.completed {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
 }
 
 /* ═══════════════════════════════════════════
@@ -776,8 +786,10 @@ body.is-fullscreen .lim-fullscreen-hud,
   .lim-stage { grid-template-columns: 1fr; height: auto; }
   .lim-canvas-card { height: 440px; }
   .step-card-body { height: auto; max-height: none; }
-  .step-circle-pill span.pill-label { display: none; }
-  .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
+  .step-circle-pill span.pill-label,
+  .step-btn span.pill-label { display: none; }
+  .step-circle-pill,
+  .step-btn { width: 34px; padding: 0; justify-content: center; }
 }
 
 /* Canvas Trasparente Sovrapposto per la Penna LIM (Fixed su tutto lo schermo per evitare sfasamenti) */
@@ -1859,18 +1871,18 @@ class VectorCanvas {
       ctx.fillText(`Caso ${row + 1}`, marginX + 8, ry + 16);
 
       // Coordinata base d'origine per i vettori nella riga
-      const ox = marginX + 1.5 * sq;
-      const baseLineY = ry + (rowH - 8) * 0.65;
+      const ox = marginX + 1.2 * sq;
 
       // ── RIGA 1: a = 4 destra, b = 3 destra ──
       if (row === 0) {
+        const baseLineY = ry + (rowH - 8) * 0.65;
         // Vettore a (rosso, 4 quadretti)
         const aEndX = ox + 4 * sq;
         this.drawArrow(ox, baseLineY, aEndX, baseLineY, '#ef4444', 3.5, "a (4)", { x: -16, y: -10 });
 
-        // Vettore b: in configurazione iniziale (separato in alto) oppure traslato su a
-        const bInitY = ry + 22;
-        const bInitX = ox + 4.5 * sq;
+        // Vettore b: in configurazione iniziale (separato in alto a destra) oppure traslato su a
+        const bInitY = ry + (rowH - 8) * 0.28;
+        const bInitX = ox + 5.2 * sq;
 
         if (stepIndex <= 1) {
           // Posizione iniziale separata del testo
@@ -1887,7 +1899,7 @@ class VectorCanvas {
             const sumAlpha = (stepIndex === 2) ? (progress - 0.6) / 0.4 : 1.0;
             ctx.save();
             ctx.globalAlpha = sumAlpha;
-            this.drawArrow(ox, baseLineY + 12, ox + 7 * sq, baseLineY + 12, '#16a34a', 4, "s = 7 quadretti", { x: -45, y: 18 });
+            this.drawArrow(ox, baseLineY + 14, ox + 7 * sq, baseLineY + 14, '#16a34a', 4, "s = 7 quadretti", { x: -45, y: 16 });
             ctx.restore();
           }
         }
@@ -1895,46 +1907,49 @@ class VectorCanvas {
 
       // ── RIGA 2: a = 4 destra, b = 3 sinistra (versi opposti) ──
       else if (row === 1) {
+        const baseLineY = ry + (rowH - 8) * 0.65;
         const aEndX = ox + 4 * sq;
         this.drawArrow(ox, baseLineY, aEndX, baseLineY, '#ef4444', 3.5, "a (4)", { x: -16, y: -10 });
 
-        const bInitY = ry + 22;
-        const bInitX = ox + 4.5 * sq; // nel libro b punta a sinistra
+        const bInitY = ry + (rowH - 8) * 0.28;
+        const bInitX = ox + 8.2 * sq; // nel libro b punta a sinistra, separato sulla destra
 
         if (stepIndex <= 2) {
-          // Disegnato sopra con verso a sinistra (lungo 3 quadretti)
-          this.drawArrow(bInitX, bInitY, bInitX - 3 * sq, bInitY, '#0284c7', 3, "b (3)", { x: -14, y: -8 });
+          // Disegnato sopra a destra con verso a sinistra (lungo 3 quadretti)
+          this.drawArrow(bInitX, bInitY, bInitX - 3 * sq, bInitY, '#0284c7', 3, "b (3)", { x: 14, y: -8 });
         } else {
           const curProg = (stepIndex === 3) ? progress : 1.0;
           const curBX = bInitX + (aEndX - bInitX) * curProg;
           const curBY = bInitY + (baseLineY - 10 - bInitY) * curProg; // sovrapposto sopra a
-          this.drawArrow(curBX, curBY, curBX - 3 * sq, curBY, '#0284c7', 3, "b (3)", { x: -14, y: -8 });
+          this.drawArrow(curBX, curBY, curBX - 3 * sq, curBY, '#0284c7', 3, "b (3)", { x: 14, y: -8 });
 
           // Vettore risultante s = 1 quadretto verso destra
           if (stepIndex >= 3 && curProg > 0.6) {
-            this.drawArrow(ox, baseLineY + 12, ox + 1 * sq, baseLineY + 12, '#16a34a', 4, "s = 1", { x: -12, y: 16 });
+            this.drawArrow(ox, baseLineY + 14, ox + 1 * sq, baseLineY + 14, '#16a34a', 4, "s = 1", { x: -12, y: 16 });
           }
         }
       }
 
       // ── RIGA 3: a = 4 orizzontale, b inclinato in basso a destra (dx = 3, dy = 1) ──
       else if (row === 2) {
+        const baseLineY = ry + (rowH - 8) * 0.55;
         const aEndX = ox + 4 * sq;
         this.drawArrow(ox, baseLineY, aEndX, baseLineY, '#ef4444', 3.5, "a (4)", { x: -16, y: -10 });
 
-        const bInitX = ox + 0.5 * sq;
-        const bInitY = ry + 22;
-        const bEndX = bInitX + 3 * sq;
-        const bEndY = bInitY + 12;
+        const bInitX = ox + 5.2 * sq;
+        const bInitY = ry + (rowH - 8) * 0.25;
+        const bDx = 3 * sq;
+        const bDy = Math.min(16, (rowH - 8) * 0.20);
 
         if (stepIndex <= 3) {
-          this.drawArrow(bInitX, bInitY, bEndX, bEndY, '#0284c7', 3, "b", { x: -10, y: -8 });
+          // Posizione iniziale separata a destra
+          this.drawArrow(bInitX, bInitY, bInitX + bDx, bInitY + bDy, '#0284c7', 3, "b", { x: -10, y: -8 });
         } else {
           const curProg = (stepIndex === 4) ? progress : 1.0;
           const curBX = bInitX + (aEndX - bInitX) * curProg;
           const curBY = bInitY + (baseLineY - bInitY) * curProg;
-          const endBX = curBX + 3 * sq;
-          const endBY = curBY + 12;
+          const endBX = curBX + bDx;
+          const endBY = curBY + bDy;
 
           this.drawArrow(curBX, curBY, endBX, endBY, '#0284c7', 3, "b", { x: -10, y: -8 });
 
@@ -1947,34 +1962,39 @@ class VectorCanvas {
 
       // ── RIGA 4: a = 4 orizzontale, b = 3 verticale (perpendicolari a 90°) ──
       else if (row === 3) {
-        const aEndX = ox + 4 * sq;
-        const bLen = 2.4 * sq;
+        const baseLineY = ry + (rowH - 8) * 0.82;
+        const unit = Math.min(sq * 0.85, (rowH - 8) * 0.55 / 3);
+        const aLen = 4 * unit;
+        const bLen = 3 * unit;
+        const aEndX = ox + aLen;
+
         this.drawArrow(ox, baseLineY, aEndX, baseLineY, '#ef4444', 3.5, "a (4)", { x: -16, y: 16 });
 
-        const bInitX = ox;
+        const bInitX = ox + aLen + 2.2 * sq;
         const bInitY = baseLineY;
 
         if (stepIndex <= 4) {
-          // b parte dalla stessa origine (ortogonale verticale verso l'alto)
-          this.drawArrow(bInitX, bInitY, bInitX, bInitY - bLen, '#0284c7', 3, "b (3)", { x: -26, y: 0 });
+          // b parte separato a destra (ortogonale verticale verso l'alto, mai oltre il bordo superiore)
+          this.drawArrow(bInitX, bInitY, bInitX, bInitY - bLen, '#0284c7', 3, "b (3)", { x: 14, y: 0 });
         } else {
           const curProg = (stepIndex === 5) ? progress : 1.0;
           // Traslazione di b sulla punta di a
           const curBX = bInitX + (aEndX - bInitX) * curProg;
           const curBY = bInitY;
-          this.drawArrow(curBX, curBY, curBX, curBY - bLen, '#0284c7', 3, "b (3)", { x: 12, y: 0 });
+          this.drawArrow(curBX, curBY, curBX, curBY - bLen, '#0284c7', 3, "b (3)", { x: 14, y: 0 });
 
           // Vettore risultante s ipotenusa (terna 3-4-5)
           if (curProg > 0.6) {
-            this.drawArrow(ox, baseLineY, aEndX, baseLineY - bLen, '#16a34a', 4.5, "s = 5 (Pitagora!)", { x: -75, y: -10 });
+            this.drawArrow(ox, baseLineY, aEndX, baseLineY - bLen, '#16a34a', 4.5, "s = 5 (Pitagora!)", { x: -65, y: -8 });
 
             // Angolo retto
+            const sqMarker = Math.min(10, unit * 0.5);
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#ef4444';
             ctx.beginPath();
-            ctx.moveTo(aEndX - 10, baseLineY);
-            ctx.lineTo(aEndX - 10, baseLineY - 10);
-            ctx.lineTo(aEndX, baseLineY - 10);
+            ctx.moveTo(aEndX - sqMarker, baseLineY);
+            ctx.lineTo(aEndX - sqMarker, baseLineY - sqMarker);
+            ctx.lineTo(aEndX, baseLineY - sqMarker);
             ctx.stroke();
           }
         }
@@ -3091,8 +3111,8 @@ function updateStepsBar() {
 
   for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.createElement('button');
-    btn.className = 'step-btn' + (i === currentStep ? ' active' : '');
-    btn.textContent = 'Passo ' + i;
+    btn.className = `step-circle-pill ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'completed' : ''}`;
+    btn.innerHTML = `<span>Passo ${i}</span>`;
     btn.onclick = () => setStep(i);
     bar.appendChild(btn);
 

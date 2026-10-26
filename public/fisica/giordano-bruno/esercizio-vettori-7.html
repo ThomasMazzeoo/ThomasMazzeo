@@ -589,7 +589,8 @@ body.dark-mode .lim-math-card {
   overflow-x: auto;
 }
 
-.step-circle-pill {
+.step-circle-pill,
+.step-btn {
   height: 38px;
   padding: 0 14px;
   border-radius: 19px;
@@ -606,21 +607,30 @@ body.dark-mode .lim-math-card {
   transition: all 0.15s;
   white-space: nowrap;
 }
-.step-circle-pill:hover {
+.step-circle-pill:hover,
+.step-btn:hover {
   border-color: var(--vec-a);
   color: var(--text-primary);
 }
-.step-circle-pill.active {
+.step-circle-pill.active,
+.step-btn.active {
   background: var(--vec-a);
   border-color: var(--vec-a);
   color: #ffffff;
   font-weight: 800;
   box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
 }
-.step-circle-pill.completed {
+.step-circle-pill.completed,
+.step-btn.completed {
   border-color: #86efac;
   color: #15803d;
   background: #f0fdf4;
+}
+body.dark-mode .step-circle-pill.completed,
+body.dark-mode .step-btn.completed {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
 }
 
 /* ═══════════════════════════════════════════
@@ -776,8 +786,10 @@ body.is-fullscreen .lim-fullscreen-hud,
   .lim-stage { grid-template-columns: 1fr; height: auto; }
   .lim-canvas-card { height: 440px; }
   .step-card-body { height: auto; max-height: none; }
-  .step-circle-pill span.pill-label { display: none; }
-  .step-circle-pill { width: 34px; padding: 0; justify-content: center; }
+  .step-circle-pill span.pill-label,
+  .step-btn span.pill-label { display: none; }
+  .step-circle-pill,
+  .step-btn { width: 34px; padding: 0; justify-content: center; }
 }
 
 /* Canvas Trasparente Sovrapposto per la Penna LIM (Fixed su tutto lo schermo per evitare sfasamenti) */
@@ -3116,8 +3128,8 @@ function updateStepsBar() {
 
   for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.createElement('button');
-    btn.className = 'step-btn' + (i === currentStep ? ' active' : '');
-    btn.textContent = 'Passo ' + i;
+    btn.className = `step-circle-pill ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'completed' : ''}`;
+    btn.innerHTML = `<span>Passo ${i}</span>`;
     btn.onclick = () => setStep(i);
     bar.appendChild(btn);
 
