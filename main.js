@@ -2287,13 +2287,17 @@ function renderSubsectionsView() {
 
   header.innerHTML = `
 
-    <span class="chapters-header__icon">${selectedSectionObj.icon}</span>
+    <div class="chapters-header__left">
 
-    <div>
+      <span class="chapters-header__icon">${selectedSectionObj.icon}</span>
 
-      <h2 class="chapters-header__title pixel-text" style="color:${selectedMateria.color}">${selectedSectionObj.title}</h2>
+      <div>
 
-      <p class="chapters-header__desc">${selectedSectionObj.desc}</p>
+        <h2 class="chapters-header__title pixel-text" style="color:${selectedMateria.color}">${selectedSectionObj.title}</h2>
+
+        <p class="chapters-header__desc">${selectedSectionObj.desc}</p>
+
+      </div>
 
     </div>
 
