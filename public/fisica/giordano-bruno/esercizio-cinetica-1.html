@@ -2349,14 +2349,19 @@ function setStep(stepNum) {
 
   // Render Formule KaTeX
   if (window.renderMathInElement && body) {
-    renderMathInElement(body, {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '\\[', right: '\\]', display: true },
-        { left: '\\(', right: '\\)', display: false }
-      ],
-      throwOnError: false
-    });
+    try {
+      renderMathInElement(body, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\[', right: '\\]', display: true },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '$', right: '$', display: false }
+        ],
+        throwOnError: false
+      });
+    } catch (err) {
+      console.warn("KaTeX render error:", err);
+    }
   }
 
   // Ridisegna Canvas
@@ -2476,6 +2481,11 @@ window.addEventListener('DOMContentLoaded', () => {
   whiteboard.resize();
 
   setStep(1);
+});
+
+// Assicura il re-render KaTeX appena le librerie CDN esterne sono pronte
+window.addEventListener('load', () => {
+  setStep(currentStep);
 });
 </script>
 </body>
