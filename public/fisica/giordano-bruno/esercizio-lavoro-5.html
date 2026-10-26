@@ -1650,47 +1650,176 @@ class VectorCanvas {
   // ═══════════════════════════════════════════════════════════
   // PASSO 5: CONFRONTO CON TIRO DRITTO (0°) & QUIZ LIM
   // ═══════════════════════════════════════════════════════════
+  drawCardRect(x, y, w, h, bg, border, radius = 8) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = 'rgba(0,0,0,0.06)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, radius);
+    else ctx.rect(x - w / 2, y - h / 2, w, h);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 5: CONFRONTO CON TIRO DRITTO (0°) & QUIZ LIM
+  // ═══════════════════════════════════════════════════════════
   drawStep5(ctx, isDark, progress) {
-    const muleX = -80;
-    const muleY = 0;
+    // 1. Titolo Principale in alto a centro/sinistra
+    this.drawBadgeDirect(0, -172, "CONFRONTO FISICO DEI CALCOLI: L_reale (8,1 kJ) vs L_max (10,6 kJ)", '#0f172a', '#38bdf8', 12);
+
+    // ─────────────────────────────────────────────────────────
+    // COLONNA SINISTRA: VETTORI DEL PROBLEMA E TIRO A 0°
+    // ─────────────────────────────────────────────────────────
+    const muleX = -140;
+    const muleY = 15;
     this.drawMule(ctx, isDark, muleX, muleY);
 
     // Asse Spostamento s = 12 m
-    this.drawArrowDirect(muleX, muleY, muleX + 170, muleY, '#16a34a', 3, 11);
+    this.drawArrowDirect(muleX, muleY, muleX + 130, muleY, '#16a34a', 3, 11);
+    this.drawTextDirect("s = 12 m (asse moto)", muleX + 25, muleY + 16, '#16a34a', 'bold 11px IBM Plex Mono');
 
-    // Forze reali inclinate
+    // Vettore Gianni: F1 = 400 N a 45°
     const ang1 = 45 * Math.PI / 180;
-    const gX = muleX + 130 * Math.cos(ang1);
-    const gY = muleY - 130 * Math.sin(ang1);
-    this.drawArrowDirect(muleX, muleY, gX, gY, '#ef4444', 3, 10);
+    const len1 = 100;
+    const gX = muleX + len1 * Math.cos(ang1);
+    const gY = muleY - len1 * Math.sin(ang1);
+    this.drawArrowDirect(muleX, muleY, gX, gY, '#ef4444', 3.5, 11);
+    this.drawTextDirect("F₁ = 400 N (45°)", gX - 15, gY - 6, '#ef4444', 'bold 11px Inter');
 
+    // Arco Gianni
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(muleX, muleY, 28, -ang1, 0, false); ctx.stroke();
+    this.drawTextDirect("45°", muleX + 32, muleY - 8, '#ef4444', 'bold 10px IBM Plex Mono');
+
+    // Proiezione F1x su asse moto
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(gX, muleY); ctx.stroke();
+    ctx.setLineDash([]);
+    this.drawTextDirect("F₁ₓ = 283 N", gX - 25, muleY - 4, '#ef4444', 'bold 10px IBM Plex Mono');
+
+    // Vettore Anna: F2 = 480 N a 36°
     const ang2 = 36 * Math.PI / 180;
-    const aX = muleX + 145 * Math.cos(ang2);
-    const aY = muleY + 145 * Math.sin(ang2);
-    this.drawArrowDirect(muleX, muleY, aX, aY, '#0284c7', 3, 10);
+    const len2 = 115;
+    const aX = muleX + len2 * Math.cos(ang2);
+    const aY = muleY + len2 * Math.sin(ang2);
+    this.drawArrowDirect(muleX, muleY, aX, aY, '#0284c7', 3.5, 11);
+    this.drawTextDirect("F₂ = 480 N (36°)", aX - 15, aY + 18, '#0284c7', 'bold 11px Inter');
 
-    // Componenti laterali opposte che si disperdono (Fy)
+    // Arco Anna
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(muleX, muleY, 32, 0, ang2, false); ctx.stroke();
+    this.drawTextDirect("36°", muleX + 36, muleY + 14, '#0284c7', 'bold 10px IBM Plex Mono');
+
+    // Proiezione F2x su asse moto
+    ctx.strokeStyle = 'rgba(2, 132, 199, 0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(aX, aY); ctx.lineTo(aX, muleY); ctx.stroke();
+    ctx.setLineDash([]);
+    this.drawTextDirect("F₂ₓ = 388 N", aX - 25, muleY + 30, '#0284c7', 'bold 10px IBM Plex Mono');
+
+    // Vettore Ipotesi a 0° (tratteggiato oro)
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    this.drawArrowDirect(muleX, muleY - 26, muleX + 135, muleY - 26, '#d97706', 2.5, 9);
+    ctx.restore();
+    this.drawTextDirect("Ipotesi 0°: F₁ + F₂ = 880 N (dritto)", muleX + 2, muleY - 33, '#d97706', 'bold 10px IBM Plex Mono');
+
+    // Componenti laterali opposte Fy che si disperdono
     ctx.setLineDash([3, 3]);
     this.drawArrowDirect(gX, muleY, gX, gY, '#f87171', 2, 6);
     this.drawArrowDirect(aX, muleY, aX, aY, '#38bdf8', 2, 6);
     ctx.setLineDash([]);
-    this.drawTextDirect("F_y laterali opposte (si annullano!)", muleX + 70, muleY + 70, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+    this.drawTextDirect("Fy opposte si annullano (Ly = 0 J)", muleX + 10, muleY + 76, isDark ? '#94a3b8' : '#64748b', '10px Inter');
 
-    // Confronto in alto tra Lavoro Reale e Lavoro Ideale
-    this.drawBadgeDirect(0, -165, "COSA SUCCEDEREBBE SE TIRASSERO DRITTI (θ = 0°)?", '#0f172a', '#38bdf8', 12);
+    // ─────────────────────────────────────────────────────────
+    // COLONNA DESTRA: SCHEDA DEI CALCOLI 3BLUE1BROWN
+    // ─────────────────────────────────────────────────────────
+    const cardX = 124;
+    const cardY = -3;
+    const cardW = 236;
+    const cardH = 306;
 
-    this.drawBadgeDirect(-85, -130, "L_reale (inclinato): 8,1 kJ", '#1e293b', '#f59e0b', 11);
-    this.drawBadgeDirect(85, -130, "L_max (a 0° dritto): 10,6 kJ", '#1e293b', '#4ade80', 11);
+    // Sfondo Principale Card
+    this.drawCardRect(
+      cardX, cardY, cardW, cardH,
+      isDark ? '#0f172a' : '#ffffff',
+      isDark ? '#334155' : '#cbd5e1',
+      10
+    );
 
-    // Feedback Interattivo del Quiz sul Canvas
+    // Header Card
+    this.drawBadgeDirect(cardX, cardY - cardH / 2 + 16, "📐 BILANCIO DEI CALCOLI (PAG. 364)", isDark ? '#1e293b' : '#f1f5f9', isDark ? '#38bdf8' : '#0284c7', 11);
+
+    // Box 1: LAVORO REALE EFFETTIVO (L_reale)
+    const b1Y = -82;
+    const b1H = 68;
+    this.drawCardRect(cardX, b1Y, cardW - 14, b1H, isDark ? 'rgba(30,41,59,0.7)' : '#f8fafc', isDark ? '#334155' : '#e2e8f0', 6);
+    this.drawTextDirect("1. LAVORO REALE (con angoli):", cardX - cardW / 2 + 14, b1Y - 20, '#0284c7', 'bold 10px Inter');
+    this.drawTextDirect("L₁ = 400 · 12 · cos(45°) = 3394 J", cardX - cardW / 2 + 14, b1Y - 6, '#ef4444', 'bold 10.5px IBM Plex Mono');
+    this.drawTextDirect("L₂ = 480 · 12 · cos(36°) = 4660 J", cardX - cardW / 2 + 14, b1Y + 8, '#0284c7', 'bold 10.5px IBM Plex Mono');
+    this.drawTextDirect("⟹ L_tot = 3394 + 4660 = 8054 J ≈ 8,1 kJ ★", cardX - cardW / 2 + 14, b1Y + 23, '#16a34a', 'bold 10.5px Inter');
+
+    // Box 2: LAVORO MASSIMO A 0° (L_max)
+    const b2Y = -10;
+    const b2H = 58;
+    this.drawCardRect(cardX, b2Y, cardW - 14, b2H, isDark ? 'rgba(30,41,59,0.7)' : '#f8fafc', isDark ? '#334155' : '#e2e8f0', 6);
+    this.drawTextDirect("2. TIRO MASSIMO (a 0° dritto):", cardX - cardW / 2 + 14, b2Y - 16, '#16a34a', 'bold 10px Inter');
+    this.drawTextDirect("F_tot = 400 + 480 = 880 N (cos 0° = 1)", cardX - cardW / 2 + 14, b2Y - 3, isDark ? '#94a3b8' : '#475569', 'bold 10px IBM Plex Mono');
+    this.drawTextDirect("L_max = 880 · 12 · 1 = 10560 J", cardX - cardW / 2 + 14, b2Y + 10, '#d97706', 'bold 10.5px IBM Plex Mono');
+    this.drawTextDirect("⟹ L_max = 10,6 kJ  (Opzione B)", cardX - cardW / 2 + 14, b2Y + 23, '#d97706', 'bold 10.5px Inter');
+
+    // Box 3: ENERGIA DISPERSA LATERALMENTE + BARRE COMPARATIVE
+    const b3Y = 62;
+    const b3H = 68;
+    this.drawCardRect(cardX, b3Y, cardW - 14, b3H, isDark ? 'rgba(30,41,59,0.7)' : '#f8fafc', isDark ? '#334155' : '#e2e8f0', 6);
+    this.drawTextDirect("3. DISPERSIONE LATERALMENTE:", cardX - cardW / 2 + 14, b3Y - 21, '#e11d48', 'bold 10px Inter');
+    this.drawTextDirect("ΔL = 10,6 − 8,1 = 2,5 kJ  (-24%)", cardX - cardW / 2 + 14, b3Y - 8, '#e11d48', 'bold 10.5px IBM Plex Mono');
+
+    // Barre di confronto visivo
+    const barBaseX = cardX - cardW / 2 + 54;
+    const maxBarW = 120;
+    const realBarW = Math.round(maxBarW * (8054 / 10560)); // ~91px
+
+    // Barra 1: L_reale
+    this.drawTextDirect("Reale:", cardX - cardW / 2 + 14, b3Y + 8, isDark ? '#94a3b8' : '#475569', 'bold 9px IBM Plex Mono');
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(barBaseX, b3Y + 1, realBarW, 8);
+    this.drawTextDirect("8,1 kJ", barBaseX + realBarW + 6, b3Y + 8, '#0284c7', 'bold 9px IBM Plex Mono');
+
+    // Barra 2: L_max
+    this.drawTextDirect("Max 0°:", cardX - cardW / 2 + 14, b3Y + 21, isDark ? '#94a3b8' : '#475569', 'bold 9px IBM Plex Mono');
+    ctx.fillStyle = '#16a34a';
+    ctx.fillRect(barBaseX, b3Y + 14, realBarW, 8);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(barBaseX + realBarW, b3Y + 14, maxBarW - realBarW, 8);
+    this.drawTextDirect("10,6 kJ (-2,5 kJ)", barBaseX + maxBarW + 6, b3Y + 21, '#e11d48', 'bold 9px IBM Plex Mono');
+
+    // Feedback Interattivo del Quiz nel Box in basso
+    const fbY = cardY + cardH / 2 - 20;
     if (this.quizSelected) {
       if (this.quizSelected === 'A') {
-        this.drawBadgeDirect(0, -95, "✓ RISPOSTA ESATTA: Opzione A (8,1 kJ)", '#16a34a', '#ffffff', 13);
+        this.drawBadgeDirect(cardX, fbY, "✓ ESATTO! L_tot = 8,1 kJ (Opzione A)", '#16a34a', '#ffffff', 11);
+      } else if (this.quizSelected === 'B') {
+        this.drawBadgeDirect(cardX, fbY, "✗ Opz. B ERRATA: 10,6 kJ è a 0°!", '#dc2626', '#ffffff', 11);
+      } else if (this.quizSelected === 'C') {
+        this.drawBadgeDirect(cardX, fbY, "✗ Opz. C ERRATA: 4,7 kJ è solo Anna!", '#dc2626', '#ffffff', 11);
       } else {
-        this.drawBadgeDirect(0, -95, `✗ Opzione ${this.quizSelected} Errata — Riprova con l\'Opzione A!`, '#dc2626', '#ffffff', 12);
+        this.drawBadgeDirect(cardX, fbY, "✗ Opz. D ERRATA: i lavori si sommano!", '#dc2626', '#ffffff', 11);
       }
     } else {
-      this.drawBadgeDirect(0, -95, "Seleziona la risposta esatta nel Quiz a destra!", '#0f172a', '#38bdf8', 11);
+      this.drawBadgeDirect(cardX, fbY, "👉 Clicca su un'opzione nel Quiz a destra!", '#0f172a', '#38bdf8', 10);
     }
   }
 
