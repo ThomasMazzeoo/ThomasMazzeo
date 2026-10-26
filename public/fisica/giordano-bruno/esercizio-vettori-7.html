@@ -291,7 +291,7 @@ html, body {
 /* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
 .canvas-zoom-controls {
   position: absolute;
-  top: 10px;
+  bottom: 12px;
   right: 12px;
   display: flex;
   flex-direction: column;
@@ -1804,6 +1804,48 @@ class VectorCanvas {
     window.addEventListener('resize', () => this.resize());
   }
 
+  drawBadge(x, y, text, bgColor, textColor, borderColor = null, fontSize = 12) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `bold ${fontSize}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text).width;
+    const padX = 8;
+    const padY = 4;
+    const bw = tw + padX * 2;
+    const bh = fontSize + padY * 2;
+    const rx = Math.round(x - bw / 2);
+    const ry = Math.round(y - bh / 2);
+
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(rx, ry, bw, bh, 5);
+    } else {
+      ctx.rect(rx, ry, bw, bh);
+    }
+    ctx.fill();
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    if (borderColor) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
   toScreen(px, py) {
     const s = Math.min(this.width / 115, this.height / 115) * this.zoom;
     const ox = (this.width - 100 * s) / 2 + this.panX;
@@ -1886,9 +1928,15 @@ class VectorCanvas {
     ctx.stroke();
 
     // Bandierina a scacchi / etichetta Start
-    ctx.font = 'bold 12px IBM Plex Mono, monospace';
-    ctx.fillStyle = '#eab308';
-    ctx.fillText("🏁 START / FINISH", startPt.x - 65, startPt.y + 26);
+    this.drawBadge(
+      startPt.x - 55,
+      startPt.y + 26,
+      "🏁 START / FINISH",
+      isDark ? "#1e293b" : "#ffffff",
+      "#eab308",
+      "#eab308",
+      11
+    );
 
     // 4. Se siamo al passo 2 o 3, coloriamo il cammino percorso (distanza)
     let carT = 0;
@@ -1943,8 +1991,15 @@ class VectorCanvas {
           ctx.closePath();
           ctx.fill();
 
-          ctx.font = 'bold 13px IBM Plex Mono, monospace';
-          ctx.fillText("Δs (linea d'aria)", (startPt.x + carScr.x) / 2 + 10, (startPt.y + carScr.y) / 2 - 10);
+          this.drawBadge(
+            (startPt.x + carScr.x) / 2 + 10,
+            (startPt.y + carScr.y) / 2 - 14,
+            "Δs (linea d'aria)",
+            isDark ? "#1e293b" : "#ffffff",
+            isDark ? "#38bdf8" : "#0284c7",
+            "#38bdf8",
+            12
+          );
         }
       } else {
         // Passo 5 finale e Passo 6: la macchina è di nuovo sulla riga di partenza!
@@ -1956,9 +2011,15 @@ class VectorCanvas {
         ctx.fill();
         ctx.stroke();
 
-        ctx.font = 'bold 14px IBM Plex Mono, monospace';
-        ctx.fillStyle = '#22c55e';
-        ctx.fillText("Δs = 0 (Vettore Nullo!)", startPt.x - 70, startPt.y - 24);
+        this.drawBadge(
+          startPt.x - 60,
+          startPt.y - 24,
+          "Δs = 0 (Vettore Nullo!)",
+          isDark ? "#064e3b" : "#ecfdf5",
+          isDark ? "#4ade80" : "#15803d",
+          "#22c55e",
+          12
+        );
       }
     }
 
@@ -1979,11 +2040,11 @@ class VectorCanvas {
     ctx.fill();
     ctx.restore();
 
-    // 7. Box Contachilometri Digitale in alto a sinistra del canvas
+    // 7. Box Contachilometri Digitale in alto a sinistra del canvas (sotto il badge per evitare sovrapposizioni)
     const boxW = 270;
     const boxH = 96;
-    const boxX = 20;
-    const boxY = 20;
+    const boxX = 14;
+    const boxY = 52;
 
     ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.92)';
     ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
