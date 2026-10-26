@@ -1,940 +1,2576 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Esercizio Guidato LIM — La Bambina e il Camioncino (Es. 46) — ISS Giordano Bruno</title>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
-          onload="renderMathInElement(document.body);"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — La Bambina e il Camioncino (Es. 46) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <style>
-    :root {
-      --bg-dark: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-blue: #38bdf8;
-      --accent-green: #4ade80;
-      --accent-amber: #fbbf24;
-      --accent-red: #f87171;
-      --accent-purple: #c084fc;
-      --accent-pink: #f472b6;
-    }
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra invasiva in basso: penna attivabile solo su richiesta
+   - Tavolozza penna fluttuante e trascinabile
+   - Foglio Bianco integrato con Pan (Manina) e Sposta/Seleziona
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI con scomposizione e triangolo 3-4-5
+   ═══════════════════════════════════════════════════════════ */
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      touch-action: manipulation;
-    }
+:root {
+  --bg-page: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
 
-    header {
-      background: rgba(30, 41, 59, 0.9);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
+  /* Colori Vettori ad altissima visibilità */
+  --vec-a: #0284c7;        /* Azzurro (Vettore a, 5 N, 53°) */
+  --vec-a-bg: rgba(2, 132, 199, 0.08);
+  --vec-b: #16a34a;        /* Verde (Vettore b, 4 N verso il basso) */
+  --vec-b-bg: rgba(22, 163, 74, 0.09);
+  --vec-f: #ea580c;        /* Arancione vivo (Forza equilibrante F, 3 N) */
+  --vec-f-bg: rgba(234, 88, 12, 0.08);
+  --vec-comp: #8b5cf6;     /* Viola per componenti di a */
+  --accent-gold: #d97706;  /* Oro / Ambra */
 
-    .brand { display: flex; align-items: center; gap: 0.75rem; }
-    .brand-icon {
-      background: linear-gradient(135deg, #10b981, #34d399);
-      color: #0f172a;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 1.25rem;
-    }
-    .brand-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
-    .brand-text p { font-size: 0.8rem; color: var(--text-muted); }
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
 
-    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
-    .btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.5rem 0.85rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s;
-      user-select: none;
-    }
-    .btn:hover { background: #273549; border-color: var(--accent-blue); }
-    .btn-primary { background: #0284c7; border-color: #38bdf8; }
-    .btn-primary:hover { background: #0369a1; }
-    .btn-amber { background: #b45309; border-color: #fbbf24; }
-    .btn-amber:hover { background: #92400e; }
+  --base-font-size: 16px;
+}
 
-    main {
-      flex: 1;
-      max-width: 1500px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.25rem;
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 1.25rem;
-    }
+/* Modalità Scura (3Blue1Brown) */
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --vec-a: #38bdf8;
+  --vec-b: #4ade80;
+  --vec-f: #fb923c;
+  --vec-comp: #a78bfa;
+}
 
-    @media (max-width: 1024px) {
-      main { grid-template-columns: 1fr; }
-    }
+/* Modalità Testo Ingrandito per LIM */
+body.font-large { --base-font-size: 18px; }
+body.font-extra-large { --base-font-size: 20px; }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 1.25rem;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    .simulation-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 580px;
-    }
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: var(--base-font-size);
+}
 
-    .svg-container {
-      width: 100%;
-      flex: 1;
-      min-height: 440px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
+.lim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
 
-    svg {
-      width: 100%;
-      height: 100%;
-      max-height: 480px;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-      user-select: none;
-    }
+/* ═══════════════════════════════════════════
+   HEADER SUPERIORE
+   ═══════════════════════════════════════════ */
+.lim-header {
+  height: 52px;
+  min-height: 52px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
 
-    .controls-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 1rem;
-      border-top: 1px solid var(--card-border);
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+.lim-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
 
-    .step-pills { display: flex; gap: 0.35rem; }
-    .step-pill {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .step-pill.active {
-      background: var(--accent-blue);
-      color: #0f172a;
-      border-color: #bae6fd;
-      transform: scale(1.1);
-    }
-    .step-pill.completed {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-back-course:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
 
-    .details-card {
-      overflow-y: auto;
-      max-height: 80vh;
-      scrollbar-width: thin;
-      scrollbar-color: var(--card-border) transparent;
-    }
+.lim-school-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-    .step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid var(--accent-blue);
-      color: var(--accent-blue);
-      padding: 0.3rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.75rem;
-    }
+.lim-header-title {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #0284c7;
+}
+body.dark-mode .lim-header-title {
+  color: #38bdf8;
+}
 
-    .step-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      line-height: 1.3;
-      margin-bottom: 0.75rem;
-      color: #ffffff;
-    }
+.lim-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .step-desc {
-      font-size: 0.98rem;
-      color: #cbd5e1;
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-    }
+.btn-lim-tool {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.btn-lim-tool:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
 
-    .formula-box {
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--accent-amber);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.25rem;
-      font-size: 1.15rem;
-    }
+/* ═══════════════════════════════════════════
+   STAGE PRINCIPALE
+   ═══════════════════════════════════════════ */
+.lim-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-height: 0;
+  transition: all 0.2s ease;
+}
 
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
+/* COLONNA SINISTRA: CANVAS INTERATTIVO */
+.lim-canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
 
-    .data-item {
-      background: #0f172a;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-    }
-    .data-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-    .data-val {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
+.canvas-toolbar {
+  height: 42px;
+  min-height: 42px;
+  background: var(--bg-panel);
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-tech);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
 
-    .tip-box {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-left: 4px solid var(--accent-green);
-      border-radius: 8px;
-      padding: 0.85rem;
-      font-size: 0.9rem;
-      color: #86efac;
-      margin-top: auto;
-    }
+.canvas-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
 
-    /* LIM Canvas Overlay */
-    #limCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 90;
-      pointer-events: none;
-    }
-    #limCanvas.active { pointer-events: auto; cursor: crosshair; }
+.canvas-view-wrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active {
+  cursor: grabbing;
+}
 
-    /* LIM Floating Toolbar */
-    .lim-toolbar {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid var(--card-border);
-      border-radius: 30px;
-      padding: 0.4rem 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-    .tool-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-main);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.2s;
-    }
-    .tool-btn:hover { background: #334155; }
-    .tool-btn.active {
-      background: var(--accent-blue);
-      color: #0f172a;
-      border-color: #bae6fd;
-    }
-    .color-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
-    .color-dot.active { border-color: white; transform: scale(1.15); }
+#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-    /* Whiteboard Modal */
-    .whiteboard-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.98);
-      z-index: 200;
-      display: none;
-      flex-direction: column;
-    }
-    .whiteboard-overlay.active { display: flex; }
-    .wb-header {
-      padding: 0.6rem 1.25rem;
-      background: #1e293b;
-      border-bottom: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      white-space: nowrap;
-      flex-shrink: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .wb-body {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      cursor: crosshair;
-    }
-    .wb-body.bg-grid {
-      background-color: #ffffff;
-      background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
-      background-size: 25px 25px;
-    }
-    .wb-body.bg-dark {
-      background-color: #0f172a;
-      background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
-      background-size: 25px 25px;
-    }
-    #wbCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
+/* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
+.canvas-zoom-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.zoom-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-panel);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: all 0.15s ease;
+}
+.zoom-btn:hover {
+  background: var(--border-light);
+  color: #0284c7;
+  transform: scale(1.05);
+}
+
+.canvas-live-badge {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+/* COLONNA DESTRA: CARD PEDAGOGICA LIM */
+.lim-step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.step-card-header {
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.step-meta-badge {
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  color: #0284c7;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+body.dark-mode .step-meta-badge { color: #38bdf8; }
+
+.step-title-main {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.step-card-body {
+  flex: 1;
+  padding: 14px 18px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* SCATOLA PEDAGOGICA AD ALTO IMPATTO */
+.pedagogy-box {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  border-left: 5px solid #0284c7;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+.pedagogy-box.problem {
+  border-left-color: #64748b;
+  background: var(--bg-page);
+}
+.pedagogy-box.success {
+  border-left-color: #16a34a;
+  background: rgba(22, 163, 74, 0.05);
+}
+.pedagogy-box.highlight {
+  border-left-color: #ea580c;
+  background: rgba(234, 88, 12, 0.05);
+}
+.pedagogy-box.tip {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.05);
+}
+.box-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* CARD FORMULA MATEMATICA GIGANTE PER LIM */
+.lim-math-card {
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border: 1.5px solid #334155;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  text-align: center;
+}
+.lim-math-card .math-line {
+  font-size: 1.25rem;
+  margin: 6px 0;
+}
+.lim-math-card .math-desc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* GRIGLIA DATI SINTETICA */
+.data-grid-lim {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.data-badge-item {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.data-badge-item .d-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.data-badge-item .d-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   BARRA PASSI IN BASSO (PULITA, SENZA SOVRAPPOSIZIONI)
+   ═══════════════════════════════════════════ */
+.lim-footer-steps {
+  height: 58px;
+  min-height: 58px;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.step-nav-btn {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.step-nav-btn:hover:not(:disabled) {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+.step-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.steps-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-bar-wrapper::-webkit-scrollbar { display: none; }
+
+.step-circle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.step-circle-pill:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.step-circle-pill.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+}
+.step-circle-pill.completed {
+  border-color: #22c55e;
+  color: #16a34a;
+}
+body.dark-mode .step-circle-pill.completed {
+  color: #4ade80;
+  border-color: #16a34a;
+}
+
+/* ═══════════════════════════════════════════
+   SCHERMO INTERO & HUD FLUTTUANTE
+   ═══════════════════════════════════════════ */
+body.is-fullscreen .lim-header,
+body.is-fullscreen .lim-footer-steps {
+  display: none !important;
+}
+body.is-fullscreen .lim-stage {
+  padding: 8px;
+  gap: 8px;
+  height: 100vh;
+}
+body.is-fullscreen .lim-fullscreen-hud {
+  display: flex;
+}
+
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #334155;
+  border-radius: 30px;
+  padding: 6px 14px;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.hud-btn {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.hud-btn:hover { background: #334155; color: #38bdf8; }
+.hud-pills { display: flex; align-items: center; gap: 4px; }
+.hud-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.hud-pill.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* ═══════════════════════════════════════════
+   TAVOLOZZA PENNA FLUTTUANTE LIM (ATTIVABILE SU RICHIESTA)
+   ═══════════════════════════════════════════ */
+#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 6px 12px;
+  z-index: 80;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  flex-direction: column;
+  gap: 6px;
+  user-select: none;
+}
+.lim-pen-palette.show {
+  display: flex;
+}
+.lp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #334155;
+  color: #94a3b8;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.lp-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lp-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.15s ease;
+}
+.lp-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.lp-btn.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  box-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
+}
+.lp-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.lp-color-dot:hover { transform: scale(1.15); }
+.lp-color-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.25);
+  box-shadow: 0 0 6px #ffffff;
+}
+
+/* ═══════════════════════════════════════════
+   OVERLAY FOGLIO BIANCO INTERATTIVO (WHITEBOARD LIM)
+   ═══════════════════════════════════════════ */
+.whiteboard-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  flex-direction: column;
+  background: #0f172a;
+}
+.whiteboard-overlay.show { display: flex; }
+
+.wb-header {
+  min-height: 58px;
+  height: 58px;
+  background: #0f172a;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 8px;
+  z-index: 10;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.wb-header::-webkit-scrollbar { display: none; }
+
+.wb-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-title {
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  color: #38bdf8;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.wb-slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #334155;
+  white-space: nowrap;
+}
+.wb-pan-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.wb-pan-badge.panned {
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.25);
+  border-color: #0284c7;
+}
+
+.wb-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-sep {
+  width: 1px;
+  height: 24px;
+  background: #334155;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.wb-tool-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+.wb-tool-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.wb-tool-btn.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.wb-color {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.wb-color:hover { transform: scale(1.15); }
+.wb-color.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 2px 2px rgba(255, 255, 255, 0.8);
+  transform: scale(1.22);
+}
+
+.wb-size-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.wb-size-btn:hover { background: rgba(255, 255, 255, 0.2); }
+.wb-size-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #38bdf8;
+}
+.wb-dot { background: #ffffff; border-radius: 50%; }
+
+.wb-btn-text {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-btn-text:hover { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
+.wb-btn-text.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.wb-btn-action {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.wb-btn-action:hover { background: rgba(255, 255, 255, 0.2); }
+.wb-btn-action.danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.wb-header-right { flex-shrink: 0; white-space: nowrap; }
+.wb-close-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #dc2626;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wb-close-btn:hover { background: #b91c1c; }
+
+.wb-body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.wb-body.bg-white {
+  background-color: #ffffff;
+  background-image: none;
+}
+.wb-body.bg-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wb-body.bg-dark {
+  background-color: #0b1118;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.wb-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+.wb-canvas.tool-hand { cursor: grab; }
+.wb-canvas.tool-hand.grabbing { cursor: grabbing; }
+.wb-canvas.tool-select { cursor: default; }
+.wb-canvas.tool-select.dragging { cursor: grabbing; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .lim-stage { grid-template-columns: 1fr; overflow-y: auto; }
+  .lim-canvas-card { height: 420px; }
+  .step-circle-pill span { display: none; }
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">
-      <div class="brand-icon">🚛</div>
-      <div class="brand-text">
-        <h1>Esercizio 46 — Pag. 112</h1>
-        <p>La Bambina e il Camion: Scomposizione della Forza Parallela e Perpendicolare</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-amber" id="btnWhiteboard">
-        <span>📄</span> Foglio Bianco LIM
-      </button>
-      <button class="btn" id="btnFullscreen">
-        <span>⛶</span> Schermo Intero
-      </button>
-      <a href="/fisica/giordano-bruno/" class="btn">
-        <span>↩</span> Indice Esercizi
+<div class="lim-app">
+
+  <!-- HEADER -->
+  <header class="lim-header">
+    <div class="lim-header-left">
+      <a href="/fisica/giordano-bruno/" class="btn-back-course" title="Torna all'indice delle lezioni">
+        <span>🔙</span> Indice Esercizi
       </a>
+      <span class="lim-school-badge">🏫 ISS GIORDANO BRUNO</span>
+      <span class="lim-header-title">⚖️ PROBLEMA A PASSI 51 — PAG. 112: EQUILIBRIO DI TRE FORZE</span>
+    </div>
+
+    <div class="lim-header-right">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Attiva/Disattiva Penna per scrivere sullo schermo (Tasto P)">
+        <span>✏️</span> Penna LIM
+      </button>
+      <button class="btn-lim-tool primary" id="btnHeaderWb" onclick="openWhiteboard()" title="Apri Foglio Bianco LIM per spiegazioni libere (Tasto W)">
+        <span>📄</span> Foglio Bianco
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci testo per LIM">
+        <span id="textScaleIcon">A+</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTheme()" title="Passa a tema Scuro/Chiaro">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleFullscreen()" title="Schermo Intero per LIM (Tasto F)">
+        <span>⛶</span>
+      </button>
     </div>
   </header>
 
-  <main>
-    <!-- Card Grafica / Simulazione -->
-    <div class="card simulation-card">
-      <div class="svg-container" id="svgContainer">
-        <canvas id="limCanvas"></canvas>
-        <svg id="simSvg" viewBox="-1.5 -1 9 7.5">
-          <defs>
-            <marker id="arrowF" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L6,3 z" fill="#f87171" />
-            </marker>
-            <marker id="arrowFx" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L6,3 z" fill="#38bdf8" />
-            </marker>
-            <marker id="arrowFy" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L6,3 z" fill="#4ade80" />
-            </marker>
-            <pattern id="gridGrass" width="1" height="1" patternUnits="userSpaceOnUse">
-              <path d="M 1 0 L 0 0 0 1" fill="none" stroke="#1e293b" stroke-width="0.04" />
-            </pattern>
-          </defs>
+  <!-- STAGE PRINCIPALE -->
+  <main class="lim-stage" id="stage">
 
-          <!-- Sfondo quadrettato -->
-          <rect x="-1" y="-0.5" width="8.5" height="7" fill="url(#gridGrass)" />
-
-          <!-- Il prato (striscia verde alla base) -->
-          <rect x="-1" y="5.5" width="8.5" height="1" fill="rgba(34, 197, 94, 0.15)" stroke="#16a34a" stroke-width="0.05" />
-          <text x="6.8" y="6.1" fill="#16a34a" font-size="0.38" font-weight="700">Prato erboso</text>
-
-          <!-- Assi cartesiani centrati nel punto di attacco O(1.0, 5.5) -->
-          <line x1="0.2" y1="5.5" x2="7.2" y2="5.5" stroke="#64748b" stroke-width="0.08" />
-          <line x1="1.0" y1="6.2" x2="1.0" y2="0.5" stroke="#64748b" stroke-width="0.08" />
-          <text x="7.3" y="5.65" fill="#38bdf8" font-size="0.45" font-weight="700">x (parallela)</text>
-          <text x="1.0" y="0.35" fill="#4ade80" font-size="0.45" font-weight="700" text-anchor="middle">y (perpendicolare)</text>
-          <text x="0.6" y="5.9" fill="#94a3b8" font-size="0.45">O</text>
-
-          <!-- Camioncino giocattolo stilizzato a sinistra dell'origine -->
-          <g transform="translate(-0.8, 4.3) scale(0.9)">
-            <!-- Cabina e cassone -->
-            <rect x="0" y="0.2" width="1.8" height="1.0" rx="0.1" fill="#0284c7" />
-            <rect x="1.2" y="-0.3" width="0.7" height="1.5" rx="0.1" fill="#0369a1" />
-            <rect x="1.5" y="-0.1" width="0.35" height="0.5" fill="#bae6fd" />
-            <!-- Ruote -->
-            <circle cx="0.4" cy="1.3" r="0.22" fill="#334155" stroke="#94a3b8" stroke-width="0.05" />
-            <circle cx="1.5" cy="1.3" r="0.22" fill="#334155" stroke="#94a3b8" stroke-width="0.05" />
-          </g>
-
-          <!-- Invertiamo le ordinate cartesiane con origine a (1.0, 5.5) -->
-          <g transform="translate(1.0, 5.5) scale(1, -1)">
-            <!-- Triangolo rettangolo delle componenti (Step 2+) -->
-            <polygon id="triForce" points="0,0 5.2,0 5.2,3.0" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(148, 163, 184, 0.3)" stroke-width="0.04" opacity="0" />
-
-            <!-- Linee di proiezione tratteggiate -->
-            <line id="projFx" x1="5.2" y1="0" x2="5.2" y2="3.0" stroke="#fbbf24" stroke-width="0.06" stroke-dasharray="0.15,0.15" opacity="0" />
-            <line id="projFy" x1="0" y1="3.0" x2="5.2" y2="3.0" stroke="#fbbf24" stroke-width="0.06" stroke-dasharray="0.15,0.15" opacity="0" />
-
-            <!-- Arco angolo alfa = 30° -->
-            <!-- Raggio r = 1.8. 30°: x = 1.8*cos(30)=1.56, y = 1.8*sin(30)=0.9 -->
-            <path id="arc30" d="M 1.8 0 A 1.8 1.8 0 0 1 1.56 0.9" fill="rgba(251, 191, 36, 0.25)" stroke="#fbbf24" stroke-width="0.06" />
-
-            <!-- Componente orizzontale F_x (in ciano, Step 3+) -->
-            <!-- Scala: 1 N = 2 unità grafiche. F=3 N -> 6 unità. F_x = 2.6 N -> 5.2 unità -->
-            <line id="vecFx" x1="0" y1="0" x2="5.05" y2="0" stroke="#38bdf8" stroke-width="0.2" marker-end="url(#arrowFx)" opacity="0" />
-
-            <!-- Componente verticale F_y (in verde smeraldo, Step 4+) -->
-            <!-- F_y = 1.5 N -> 3.0 unità -->
-            <line id="vecFy" x1="0" y1="0" x2="0" y2="2.88" stroke="#4ade80" stroke-width="0.2" marker-end="url(#arrowFy)" opacity="0" />
-
-            <!-- Vettore F lungo la fune (rosso, F=3 N -> x=5.2, y=3.0) -->
-            <line id="vecF" x1="0" y1="0" x2="5.1" y2="2.94" stroke="#f87171" stroke-width="0.24" marker-end="url(#arrowF)" />
-          </g>
-
-          <!-- Testi e quotature -->
-          <text id="lblAngle" x="2.9" y="5.15" fill="#fbbf24" font-size="0.45" font-weight="700">30°</text>
-          <text id="lblF" x="3.4" y="3.3" fill="#f87171" font-size="0.55" font-weight="800">F = 3,0 N</text>
-          
-          <text id="lblFx" x="3.6" y="6.1" fill="#38bdf8" font-size="0.48" font-weight="700" text-anchor="middle" opacity="0">F_x = 2,6 N (spinge in avanti)</text>
-          <text id="lblFy" x="0.2" y="3.9" fill="#4ade80" font-size="0.48" font-weight="700" opacity="0">F_y = 1,5 N (solleva)</text>
-          
-          <text id="lblHelp" x="4.5" y="1.8" fill="#fbbf24" font-size="0.4" font-weight="700" opacity="0">F_y alleggerisce l'attrito delle ruote!</text>
-        </svg>
+    <!-- COLONNA SINISTRA: CANVAS INTERATTIVO VETTORI -->
+    <div class="lim-canvas-card">
+      <div class="canvas-toolbar">
+        <div>
+          <span>PIANO CARTESIANO FORZE CONCORRENTI</span>
+          <span style="color:var(--text-muted); font-size:0.75rem; margin-left:6px;">(1 quadretto = 1 Newton)</span>
+        </div>
+        <div class="canvas-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#0284c7"></span> Forza Trazione F (3,0 N)</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#16a34a"></span> Componente F_x (2,6 N)</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span> Componente F_y (1,5 N)</div>
+        </div>
+          <div class="legend-item" style="color:#16a34a">
+            <span class="legend-dot" style="background:#16a34a"></span> b = 4,0 N (-y)
+          </div>
+          <div class="legend-item" style="color:#ea580c">
+            <span class="legend-dot" style="background:#ea580c"></span> F = 3 N (+x)
+          </div>
+        </div>
       </div>
 
-      <!-- Barra di controllo -->
-      <div class="controls-bar">
-        <div class="step-pills">
-          <div class="step-pill active" onclick="goToStep(0)">1</div>
-          <div class="step-pill" onclick="goToStep(1)">2</div>
-          <div class="step-pill" onclick="goToStep(2)">3</div>
-          <div class="step-pill" onclick="goToStep(3)">4</div>
-          <div class="step-pill" onclick="goToStep(4)">5</div>
+      <div class="canvas-view-wrap" id="canvasWrap">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+
+        <div class="canvas-live-badge">
+          <span class="badge-dot"></span>
+          <span id="canvasBadgeText">Passo 1: Il Sistema delle Tre Forze</span>
         </div>
-        <div style="display:flex; gap:0.5rem;">
-          <button class="btn" id="btnPrev" onclick="prevStep()">⏮ Prec</button>
-          <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Succ ⏭</button>
-          <button class="btn" onclick="resetSteps()">🔄 Riavvia</button>
+
+        <div class="canvas-zoom-controls">
+          <button class="zoom-btn" onclick="zoomCanvas(1.2)" title="Ingrandisci Zoom Canvas (o premi +)">🔍+</button>
+          <button class="zoom-btn" onclick="zoomCanvas(0.83)" title="Riduci Zoom Canvas (o premi -)">🔍−</button>
+          <button class="zoom-btn" onclick="resetCanvasZoom()" title="Ripristina Vista (o premi 0)">🎯</button>
         </div>
       </div>
     </div>
 
-    <!-- Card Dettagli Didattici -->
-    <div class="card details-card">
-      <div id="stepInfo">
-        <!-- Generato dinamicamente da JS -->
+    <!-- COLONNA DESTRA: CARD PEDAGOGICA LIM -->
+    <div class="lim-step-card" id="stepCardContainer">
+      <div class="step-card-header">
+        <div>
+          <div class="step-meta-badge" id="stepMetaBadge">PASSO 1 DI 5 — DATI & EQUILIBRIO</div>
+          <div class="step-title-main" id="stepMetaTitle">Condizione di Equilibrio del Punto Materiale</div>
+        </div>
+      </div>
+
+      <div class="step-card-body" id="stepCardBody">
+        <!-- Contenuto dinamico con formule KaTeX -->
       </div>
     </div>
+
   </main>
 
-  <!-- LIM Floating Toolbar -->
-  <div class="lim-toolbar">
-    <button class="tool-btn" id="btnPen" title="Attiva/Disattiva Penna LIM">✏️</button>
-    <button class="tool-btn" id="btnEraser" title="Gomma">🧹</button>
-    <div class="color-dot active" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"></div>
-    <div class="color-dot" style="background: #4ade80;" onclick="setColor('#4ade80', this)"></div>
-    <div class="color-dot" style="background: #fbbf24;" onclick="setColor('#fbbf24', this)"></div>
-    <div class="color-dot" style="background: #f87171;" onclick="setColor('#f87171', this)"></div>
-    <button class="tool-btn" id="btnClearCanvas" title="Cancella Scritte">🗑️</button>
+  <!-- BARRA PASSI IN BASSO (PULITA, ZERO SOVRAPPOSIZIONI) -->
+  <footer class="lim-footer-steps">
+    <button class="step-nav-btn" id="btnPrevStep" onclick="prevStep()" title="Passo precedente (Freccia Sinistra)">
+      ◀ Indietro
+    </button>
+
+    <div class="steps-bar-wrapper" id="stepsBar">
+      <!-- Generati dinamicamente come .step-circle-pill -->
+    </div>
+
+    <button class="step-nav-btn" id="btnNextStep" onclick="nextStep()" title="Passo successivo (Freccia Destra o Spazio)">
+      Avanti ▶
+    </button>
+  </footer>
+
+  <!-- BARRA FLUTTUANTE IN SCHERMO INTERO -->
+  <div class="lim-fullscreen-hud">
+    <button class="hud-btn" onclick="prevStep()">◀</button>
+    <div class="hud-pills" id="hudPills"></div>
+    <button class="hud-btn" onclick="nextStep()">▶</button>
+    <button class="hud-btn" onclick="togglePenMode()">✏️ Penna</button>
+    <button class="hud-btn" onclick="openWhiteboard()">📄 Foglio</button>
+    <button class="hud-btn" onclick="toggleFullscreen()">✖ Esci</button>
   </div>
 
-  <!-- Whiteboard Overlay Modal -->
-  <div class="whiteboard-overlay" id="whiteboardOverlay">
+  <!-- TAVOLOZZA PENNA FLUTTUANTE LIM (ATTIVABILE A COMANDO) -->
+  <div class="lim-pen-palette" id="slidePenPalette">
+    <div class="lp-header" id="spHeader">
+      <span>✏️ STRUMENTI PENNA LIM</span>
+      <span style="font-size:0.7rem; color:#64748b;">(Trascina per spostare)</span>
+    </div>
+    <div class="lp-body">
+      <div class="lp-group">
+        <button class="lp-btn active" id="spToolPen" onclick="setSlidePenTool('pen')" title="Penna normale">✏️</button>
+        <button class="lp-btn" id="spToolHighlighter" onclick="setSlidePenTool('highlighter')" title="Evidenziatore">🖍️</button>
+        <button class="lp-btn" id="spToolEraser" onclick="setSlidePenTool('eraser')" title="Gomma">🧽</button>
+      </div>
+      <div class="lp-group">
+        <button class="lp-color-dot active" style="background:#ff3333;" data-color="#ff3333" onclick="setSlidePenColor('#ff3333')"></button>
+        <button class="lp-color-dot" style="background:#38bdf8;" data-color="#38bdf8" onclick="setSlidePenColor('#38bdf8')"></button>
+        <button class="lp-color-dot" style="background:#4ade80;" data-color="#4ade80" onclick="setSlidePenColor('#4ade80')"></button>
+        <button class="lp-color-dot" style="background:#fbbf24;" data-color="#fbbf24" onclick="setSlidePenColor('#fbbf24')"></button>
+      </div>
+      <div class="lp-group">
+        <button class="lp-btn" onclick="undoSlidePen()" title="Annulla tratto (Ctrl+Z)">↩️</button>
+        <button class="lp-btn" onclick="clearSlidePen()" title="Cancella note" style="color:#ef4444;">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERLAY FOGLIO BIANCO INTERATTIVO (WHITEBOARD LIM) -->
+  <div id="whiteboardOverlay" class="whiteboard-overlay">
     <div class="wb-header">
-      <div style="font-weight: 700; color: #f8fafc; display:flex; align-items:center; gap:0.5rem;">
-        <span>📄</span> Foglio Bianco LIM — Spazio Libero
+      <div class="wb-header-left">
+        <span class="wb-title">📄 FOGLIO BIANCO APPUNTI</span>
+        <span class="wb-slide-tag" id="wbCurrentStepTag">Passo 1 di 5</span>
+        <span class="wb-pan-badge" id="wbPanBadge" onclick="resetWbPan()" title="Visuale corrente. Clicca per ricentrare (0, 0)">
+          🧭 (0, 0)
+        </span>
       </div>
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <button class="btn" id="wbPenBtn">✏️ Penna</button>
-        <button class="btn" id="wbEraserBtn">🧹 Gomma</button>
-        <button class="btn" id="wbHandBtn" title="Trascina foglio">🖐️</button>
-        <button class="btn" id="wbZoomIn">🔍+</button>
-        <button class="btn" id="wbZoomOut">🔍-</button>
-        <button class="btn" id="wbZoomReset">100%</button>
-        <button class="btn" id="wbGridToggle">Griglia / Sfondo</button>
-        <button class="btn" id="wbClear">🗑️ Svuota</button>
-        <button class="btn btn-amber" id="wbClose">✕ Chiudi</button>
+
+      <div class="wb-tools">
+        <div class="wb-group">
+          <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="✏️ Penna normale">✏️</button>
+          <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="🖍️ Evidenziatore">🖍️</button>
+          <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="🧽 Gomma per cancellare">🧽</button>
+          <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')" title="🖐️ Sposta / Seleziona elementi disegnati">🖐️</button>
+          <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')" title="✋ Manina Pan (trascina per spostarti nel foglio)">✋</button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <div class="wb-group">
+          <button class="wb-btn-text" id="wbBtnRecenter" onclick="resetWbPan()" title="Ricentra la visuale del foglio a coordinate (0, 0)">
+            🎯 Centra
+          </button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <div class="wb-group" id="wbColorGroup">
+          <button class="wb-color active" style="background:#0f172a" data-color="#0f172a" onclick="setWbColor('#0f172a')" title="Nero"></button>
+          <button class="wb-color" style="background:#0284c7" data-color="#0284c7" onclick="setWbColor('#0284c7')" title="Blu"></button>
+          <button class="wb-color" style="background:#dc2626" data-color="#dc2626" onclick="setWbColor('#dc2626')" title="Rosso"></button>
+          <button class="wb-color" style="background:#16a34a" data-color="#16a34a" onclick="setWbColor('#16a34a')" title="Verde"></button>
+          <button class="wb-color" style="background:#d97706" data-color="#d97706" onclick="setWbColor('#d97706')" title="Ambra / Arancione"></button>
+          <button class="wb-color" style="background:#9333ea" data-color="#9333ea" onclick="setWbColor('#9333ea')" title="Viola"></button>
+          <button class="wb-color" style="background:#ffffff; border:1.5px solid #94a3b8;" data-color="#ffffff" onclick="setWbColor('#ffffff')" title="Bianco"></button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <div class="wb-group">
+          <button class="wb-size-btn" onclick="setWbSize(3)" id="wbSize3" title="Fine"><span class="wb-dot" style="width:4px;height:4px"></span></button>
+          <button class="wb-size-btn active" onclick="setWbSize(6)" id="wbSize6" title="Medio"><span class="wb-dot" style="width:8px;height:8px"></span></button>
+          <button class="wb-size-btn" onclick="setWbSize(14)" id="wbSize14" title="Spesso"><span class="wb-dot" style="width:13px;height:13px"></span></button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <div class="wb-group">
+          <button class="wb-btn-text active" id="wbBgBtnWhite" onclick="setWbBg('white')" title="Foglio Bianco">📄 Bianco</button>
+          <button class="wb-btn-text" id="wbBgBtnGrid" onclick="setWbBg('grid')" title="Foglio a Quadretti">📐 Quadretti</button>
+          <button class="wb-btn-text" id="wbBgBtnDark" onclick="setWbBg('dark')" title="Lavagna Scura">⬛ Scura</button>
+        </div>
+
+        <div class="wb-sep"></div>
+
+        <div class="wb-group">
+          <button class="wb-btn-action" onclick="undoWbStroke()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+          <button class="wb-btn-action danger" id="wbBtnDeleteSelected" onclick="deleteSelectedWbStroke()" title="Elimina elemento selezionato" style="display:none;">🗑️ Elimina</button>
+          <button class="wb-btn-action danger" onclick="clearWbStrokes()" title="Cancella tutto il foglio">🗑️ Pulisci</button>
+        </div>
+      </div>
+
+      <div class="wb-header-right">
+        <button class="wb-close-btn" onclick="closeWhiteboard()" title="Torna all'esercizio (Esc o W)">
+          ✖ Torna all'Esercizio
+        </button>
       </div>
     </div>
-    <div class="wb-body bg-grid" id="whiteboardBody">
-      <canvas id="wbCanvas"></canvas>
+
+    <div class="wb-body bg-white" id="whiteboardBody">
+      <canvas id="whiteboardCanvas" class="wb-canvas"></canvas>
     </div>
   </div>
 
-  <script>
-    const stepsData = [
-      {
-        badge: "Passo 1 di 5 — La Forza Inclinata",
-        title: "Trazione della Cordicella a 30° rispetto al Prato",
-        desc: "La bambina tira il camioncino giocattolo verso destra mediante una cordicella:<br>• Modulo della forza applicata: <strong>$F = 3{,}0\\text{ N}$</strong> (lunghezza dell'ipotenusa).<br>• Inclinazione della fune: forma un angolo di <strong>$\\alpha = 30^\\circ$</strong> con il piano orizzontale del prato.<br><br>Poiché la forza è obliqua, essa produce contemporaneamente due effetti fisici distinti!",
-        formula: "F = 3{,}0\\text{ N} \\quad \\text{con} \\quad \\alpha = 30^\\circ",
-        data: [
-          { label: "Intensità Forza F", val: "3,0 N" },
-          { label: "Inclinazione α", val: "30° rispetto al suolo" },
-          { label: "Direzione parallela", val: "Asse orizzontale x" },
-          { label: "Direzione perpendicolare", val: "Asse verticale y" }
-        ],
-        tip: "💡 Tirando con una cordicella inclinata, non tutta la forza serve a far avanzare il camioncino: una parte viene 'sprecata' verso l'alto!"
-      },
-      {
-        badge: "Passo 2 di 5 — Il Triangolo delle Forze",
-        title: "Scomposizione Ortogonale lungo il Piano",
-        desc: "Tracciamo le proiezioni perpendicolari dal vertice della forza $\\vec{F}$:<br>• La componente <strong>parallela al prato $F_x$</strong> è il <em>cateto adiacente</em> all'angolo di $30^\\circ$ lungo l'asse $x$.<br>• La componente <strong>perpendicolare al prato $F_y$</strong> è il <em>cateto opposto</em> all'angolo di $30^\\circ$ lungo l'asse $y$.<br><br>Si forma un triangolo rettangolo con ipotenusa $F = 3{,}0\\text{ N}$.",
-        formula: "F_x = F \\cdot \\cos(30^\\circ) \\quad \\text{e} \\quad F_y = F \\cdot \\sin(30^\\circ)",
-        data: [
-          { label: "Ipotenusa", val: "F = 3,0 N" },
-          { label: "Cateto adiacente", val: "F_x (orizzontale)" },
-          { label: "Cateto opposto", val: "F_y (verticale)" },
-          { label: "Angolo retto", val: "90° tra le due componenti" }
-        ],
-        tip: "💡 Il Teorema fondamentale dei triangoli rettangoli afferma: un cateto è uguale all'ipotenusa per il coseno dell'angolo adiacente, oppure per il seno dell'angolo opposto."
-      },
-      {
-        badge: "Passo 3 di 5 — Componente Parallela (Orizzontale)",
-        title: "Calcolo di F_x: La Forza Motrice Utile",
-        desc: "La componente parallela al suolo $F_x$ è quella che effettivamente sposta in avanti il camioncino:<br>$$F_x = F \\cdot \\cos(30^\\circ)$$<br>Sapendo che $\\cos(30^\\circ) = \\frac{\\sqrt{3}}{2} \\approx 0{,}866$:<br>$$F_x = 3{,}0\\text{ N} \\cdot 0{,}866 = 2{,}598... \\approx 2{,}6\\text{ N}$$<br>L'<strong>86,6%</strong> della forza della bambina ($2{,}6\\text{ N}$) è convertito in trazione orizzontale utile.",
-        formula: "F_x = 3{,}0 \\cdot \\cos(30^\\circ) = 3{,}0 \\cdot 0{,}866 \\approx 2{,}6\\text{ N}",
-        data: [
-          { label: "Valore cos(30°)", val: "√3 / 2 ≈ 0,866" },
-          { label: "Calcolo numerico", val: "3,0 × 0,866" },
-          { label: "Componente F_x", val: "2,6 N" },
-          { label: "Effetto dinamico", val: "Fa avanzare il veicolo" }
-        ],
-        tip: "💡 Se la bambina tirasse la corda perfettamente parallela al suolo ($\alpha = 0^\circ$), tutta la forza ($3{,}0\text{ N}$) farebbe avanzare il camion!"
-      },
-      {
-        badge: "Passo 4 di 5 — Componente Perpendicolare (Verticale)",
-        title: "Calcolo di F_y: La Forza di Sollevamento",
-        desc: "La componente perpendicolare al prato $F_y$ agisce verso l'alto:<br>$$F_y = F \\cdot \\sin(30^\\circ)$$<br>Poiché $\\sin(30^\\circ) = 0{,}50$ esatto:<br>$$F_y = 3{,}0\\text{ N} \\cdot 0{,}50 = 1{,}5\\text{ N}$$<br>Questa forza di <strong>$1{,}5\\text{ N}$</strong> solleva parzialmente il muso del camioncino, riducendo la pressione esercitata dalle ruote sul prato e quindi <em>diminuendo la forza di attrito volvente</em>!",
-        formula: "F_y = 3{,}0 \\cdot \\sin(30^\\circ) = 3{,}0 \\cdot 0{,}50 = 1{,}5\\text{ N}",
-        data: [
-          { label: "Valore sin(30°)", val: "1/2 = 0,50" },
-          { label: "Calcolo numerico", val: "3,0 × 0,50" },
-          { label: "Componente F_y", val: "1,5 N" },
-          { label: "Effetto fisico", val: "Alleggerisce il peso al suolo" }
-        ],
-        tip: "💡 Ecco perché tirare un carrello con un'inclinazione verso l'alto spesso risulta più comodo: alleggerisce l'attrito con il suolo!"
-      },
-      {
-        badge: "Passo 5 di 5 — Verifica & Risultato Finale",
-        title: "Verifica con Pitagora & Risposte Ufficiali",
-        desc: "Verifichiamo la coerenza geometrica con il Teorema di Pitagora:<br>$$F = \\sqrt{F_x^2 + F_y^2} = \\sqrt{(2{,}598)^2 + (1{,}5)^2} = \\sqrt{6{,}75 + 2{,}25} = \\sqrt{9{,}00} = 3{,}0\\text{ N} \\quad \\checkmark$$<br><strong>Risposte ufficiali del problema (pag. 112):</strong><br>• Componente parallela al prato: <strong>$F_x = 2{,}6\\text{ N}$</strong><br>• Componente perpendicolare al prato: <strong>$F_y = 1{,}5\\text{ N}$</strong>",
-        formula: "\\sqrt{(2{,}6)^2 + (1{,}5)^2} \\approx \\sqrt{6{,}76 + 2{,}25} = \\sqrt{9{,}01} \\approx 3{,}0\\text{ N}",
-        data: [
-          { label: "F_parallela (x)", val: "2,6 N" },
-          { label: "F_perpendicolare (y)", val: "1,5 N" },
-          { label: "Modulo totale ricavato", val: "3,0 N esatto" },
-          { label: "Stato dell'esercizio", val: "Completato e Verificato!" }
-        ],
-        tip: "🎯 Risolto brillantemente! Abbiamo separato l'effetto orizzontale da quello verticale dimostrando il ruolo delle funzioni goniometriche seno e coseno."
-      }
-    ];
+</div>
 
-    let currentStep = 0;
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATI RIGOROSI DELL'ESERCIZIO (TERNA 3 - 4 - 5)
+// Problema 51 (Pag. 112) - Equilibrio delle Tre Forze Concorrenti
+// ═══════════════════════════════════════════════════════════
 
-    function updateSimulation(step) {
-      const triForce = document.getElementById('triForce');
-      const projFx = document.getElementById('projFx');
-      const projFy = document.getElementById('projFy');
-      const vecFx = document.getElementById('vecFx');
-      const vecFy = document.getElementById('vecFy');
-      const lblFx = document.getElementById('lblFx');
-      const lblFy = document.getElementById('lblFy');
-      const lblHelp = document.getElementById('lblHelp');
+const PROBLEM = {
+  a: { mag: 5.0, angleDeg: 53, ax: -3.0, ay: 4.0, color: '#0284c7', label: 'a = 5,0 N' },
+  b: { mag: 4.0, angleDeg: 270, bx: 0.0, by: -4.0, color: '#16a34a', label: 'b = 4,0 N' },
+  F: { mag: 3.0, angleDeg: 0, Fx: 3.0, Fy: 0.0, color: '#ea580c', label: 'F = 3,0 N' }
+};
 
-      // Reset
-      triForce.setAttribute('opacity', '0');
-      projFx.setAttribute('opacity', '0');
-      projFy.setAttribute('opacity', '0');
-      vecFx.setAttribute('opacity', '0');
-      vecFy.setAttribute('opacity', '0');
-      lblFx.setAttribute('opacity', '0');
-      lblFy.setAttribute('opacity', '0');
-      lblHelp.setAttribute('opacity', '0');
+const TOTAL_STEPS = 5;
+let currentStep = 1;
 
-      if (step >= 1) {
-        triForce.setAttribute('opacity', '1');
-        projFx.setAttribute('opacity', '1');
-        projFy.setAttribute('opacity', '1');
-      }
-      if (step >= 2) {
-        vecFx.setAttribute('opacity', '1');
-        lblFx.setAttribute('opacity', '1');
-      }
-      if (step >= 3) {
-        vecFy.setAttribute('opacity', '1');
-        lblFy.setAttribute('opacity', '1');
-      }
-      if (step >= 4) {
-        lblHelp.setAttribute('opacity', '1');
-      }
-    }
+const STEPS_DATA = [
+  // ── PASSO 1 ──
+  {
+    num: 1,
+    title: "1. La Forza Inclinata e i Dati del Problema",
+    badge: "PASSO 1 DI 5 — FORZA INCLINATA A 30°",
+    canvasBadge: "Passo 1: Camioncino sul prato — Trazione a 30° con F = 3,0 N",
+    render: () => `
+      <div class="pedagogy-box problem">
+        <div class="box-title">📖 Testo del Problema (Es. 46, Pag. 111):</div>
+        Una bambina tira un camioncino giocattolo mediante una cordicella applicando una forza di modulo <strong>\\(F = 3{,}0\\text{ N}\\)</strong>.<br>
+        La corda forma un angolo di <strong>\\(30^\\circ\\)</strong> con il piano orizzontale del prato.<br><br>
+        ▶ <em>Determina:</em><br>
+        <strong>a)</strong> L'intensità della forza che fa avanzare il camioncino in avanti (componente orizzontale \\(F_x\\)).<br>
+        <strong>b)</strong> L'intensità della forza con cui la corda tende a sollevare il camioncino (componente verticale \\(F_y\\)).
+      </div>
 
-    function renderStep() {
-      const data = stepsData[currentStep];
-      const container = document.getElementById('stepInfo');
+      <div class="pedagogy-box blue">
+        <div class="box-title">🧭 Analisi Vettoriale:</div>
+        • La forza \\(\\vec{F}\\) non agisce né solo in orizzontale né solo in verticale, ma è <strong>inclinata</strong>.<br>
+        • Parte della forza serve ad <strong>accelerare in avanti</strong> il giocattolo sul prato.<br>
+        • Parte della forza agisce verso l'alto, tendendo ad <strong>alleggerire il carico</strong> sulle ruote anteriori.
+      </div>
 
-      let dataHtml = '';
-      data.data.forEach(d => {
-        dataHtml += `
-          <div class="data-item">
-            <div class="data-label">${d.label}</div>
-            <div class="data-val">${d.val}</div>
-          </div>
-        `;
-      });
+      <div class="pedagogy-box gold">
+        <div class="box-title">💡 Concetto Chiave:</div>
+        Per separare i due effetti fisici dobbiamo eseguire la <strong>scomposizione ortogonale</strong> del vettore \\(\\vec{F}\\) lungo gli assi cartesiani.
+      </div>
+    `
+  },
 
-      container.innerHTML = `
-        <div class="step-badge">${data.badge}</div>
-        <h2 class="step-title">${data.title}</h2>
-        <div class="step-desc">${data.desc}</div>
-        <div class="formula-box">$$${data.formula}$$</div>
-        <div class="data-grid">${dataHtml}</div>
-        <div class="tip-box">${data.tip}</div>
-      `;
+  // ── PASSO 2 ──
+  {
+    num: 2,
+    title: "2. Il Triangolo Rettangolo delle Forze",
+    badge: "PASSO 2 DI 5 — SCOMPOSIZIONE TRIGONOMETRICA",
+    canvasBadge: "Passo 2: Proiezioni Ortogonali e Triangolo Rettangolo di 30°-60°-90°",
+    render: () => `
+      <div class="pedagogy-box blue">
+        <div class="box-title">📐 Costruzione del Triangolo Rettangolo:</div>
+        Proiettando l'estremo del vettore \\(\\vec{F}\\) perpendicolarmente sui due assi otteniamo un triangolo rettangolo speciale con angoli di <strong>\\(30^\\circ\\), \\(60^\\circ\\) e \\(90^\\circ\\)</strong>:<br>
+        • <strong>Ipotenusa:</strong> Modulo della forza totale \\(F = 3{,}0\\text{ N}\\)<br>
+        • <strong>Cateto adiacente all'angolo (asse x):</strong> Componente orizzontale \\(F_x = F \\cdot \\cos(30^\\circ)\\)<br>
+        • <strong>Cateto opposto all'angolo (asse y):</strong> Componente verticale \\(F_y = F \\cdot \\sin(30^\\circ)\\)
+      </div>
 
-      if (window.renderMathInElement) {
-        renderMathInElement(container, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '$', right: '$', display: false}
-          ]
-        });
-      }
+      <div class="pedagogy-box gold">
+        <div class="box-title">⭐ Valori Notevoli dell'Angolo di 30°:</div>
+        • \\(\\cos(30^\\circ) = \\frac{\\sqrt{3}}{2} \\approx 0{,}866\\)<br>
+        • \\(\\sin(30^\\circ) = \\frac{1}{2} = 0{,}50\\)
+      </div>
+    `
+  },
 
-      // Aggiorna pills
-      const pills = document.querySelectorAll('.step-pill');
-      pills.forEach((p, idx) => {
-        p.classList.remove('active', 'completed');
-        if (idx === currentStep) p.classList.add('active');
-        else if (idx < currentStep) p.classList.add('completed');
-      });
+  // ── PASSO 3 ──
+  {
+    num: 3,
+    title: "3. Componente Parallela (Forza Motrice F_x)",
+    badge: "PASSO 3 DI 5 — FORZA ORIZZONTALE: F_x = 2,6 N",
+    canvasBadge: "Passo 3: F_x = 3,0 · cos(30°) = 3,0 · 0,866 = 2,6 N",
+    render: () => `
+      <div class="pedagogy-box green">
+        <div class="box-title">➡️ Calcolo della Componente Orizzontale:</div>
+        La componente orizzontale \\(F_x\\) è la forza effettiva che trascina il camioncino sul prato in direzione di avanzamento:
+      </div>
 
-      // Aggiorna pulsanti
-      document.getElementById('btnPrev').disabled = (currentStep === 0);
-      document.getElementById('btnNext').disabled = (currentStep === stepsData.length - 1);
+      <div class="lim-math-card">
+        <div class="math-comment">Formula del coseno:</div>
+        <div class="math-line">\\[ F_x = F \\cdot \\cos(30^\\circ) = 3{,}0\\text{ N} \\cdot 0{,}8660 \\approx 2{,}6\\text{ N} \\]</div>
+        <div class="math-comment">Risultato: F_x = 2,6 N (diretta in avanti)</div>
+      </div>
 
-      updateSimulation(currentStep);
-    }
+      <div class="pedagogy-box blue">
+        <div class="box-title">📊 Efficienza Motrice:</div>
+        Poiché l'angolo è piccolo (\\(30^\\circ\\)), circa l'<strong>87%</strong> della forza della bambina è convertita in spinta utile per far avanzare il camioncino!
+      </div>
+    `
+  },
 
-    function goToStep(s) {
-      currentStep = s;
-      renderStep();
-    }
+  // ── PASSO 4 ──
+  {
+    num: 4,
+    title: "4. Componente Perpendicolare (Forza di Sollevamento F_y)",
+    badge: "PASSO 4 DI 5 — FORZA VERTICALE: F_y = 1,5 N",
+    canvasBadge: "Passo 4: F_y = 3,0 · sin(30°) = 3,0 · 0,50 = 1,5 N",
+    render: () => `
+      <div class="pedagogy-box orange">
+        <div class="box-title">⬆️ Calcolo della Componente Verticale:</div>
+        La componente verticale \\(F_y\\) agisce verso l'alto perpendicolarmente al terreno:
+      </div>
 
-    function nextStep() {
-      if (currentStep < stepsData.length - 1) {
-        currentStep++;
-        renderStep();
-      }
-    }
+      <div class="lim-math-card">
+        <div class="math-comment">Formula del seno:</div>
+        <div class="math-line">\\[ F_y = F \\cdot \\sin(30^\\circ) = 3{,}0\\text{ N} \\cdot 0{,}50 = 1{,}5\\text{ N} \\]</div>
+        <div class="math-comment">Risultato: F_y = 1,5 N (diretta verso l'alto)</div>
+      </div>
 
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        renderStep();
-      }
-    }
+      <div class="pedagogy-box gold">
+        <div class="box-title">⚖️ Effetto Fisico sul Terreno:</div>
+        La forza \\(F_y\\) riduce la forza premente esercitata dalle ruote sul suolo, diminuendo l'attrito radente con l'erba.
+      </div>
+    `
+  },
 
-    function resetSteps() {
-      currentStep = 0;
-      renderStep();
-    }
+  // ── PASSO 5 ──
+  {
+    num: 5,
+    title: "5. Verifica con Pitagora & Risposte Ufficiali",
+    badge: "PASSO 5 DI 5 — VERIFICA & RIEPILOGO",
+    canvasBadge: "Passo 5: √(2,6² + 1,5²) = √(6,76 + 2,25) = 3,0 N — Verifica completata!",
+    render: () => `
+      <div class="pedagogy-box green">
+        <div class="box-title">✅ Verifica con il Teorema di Pitagora:</div>
+        Ricostruiamo il modulo totale ricomponendo i due cateti ortogonali:
+        \\[ F = \\sqrt{F_x^2 + F_y^2} = \\sqrt{(2{,}598)^2 + (1{,}50)^2} = \\sqrt{6{,}75 + 2{,}25} = \\sqrt{9{,}00} = 3{,}0\\text{ N} \\]
+      </div>
 
-    // Keyboard navigation
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') nextStep();
-      else if (e.key === 'ArrowLeft') prevStep();
+      <div class="lim-math-card">
+        <div class="math-comment">Riepilogo Risposte Ufficiali del Libro:</div>
+        <div class="math-line">\\[ \\text{a) } F_x = 2{,}6\\text{ N} \\quad | \\quad \\text{b) } F_y = 1{,}5\\text{ N} \\]</div>
+      </div>
+
+      <div class="pedagogy-box blue">
+        <div class="box-title">🏆 Conclusione Didattica:</div>
+        Qualsiasi forza obliqua può essere sempre trattata come la somma di due forze indipendenti agenti lungo direzioni ortogonali tra loro.
+      </div>
+    `
+  }
+];
+
+
+class VectorCanvas {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.wrap = this.canvas.parentElement;
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.zoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.unitScale = 60; // pixels per unit
+
+    this.width = 800;
+    this.height = 450;
+    this.isDragging = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+    this.resize();
+  }
+
+  resize() {
+    this.width = this.wrap.clientWidth;
+    this.height = this.wrap.clientHeight;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.fitView();
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => this.resize());
+    this.canvas.addEventListener('mousedown', (e) => {
+      this.isDragging = true;
+      this.dragStartX = e.clientX - this.panX;
+      this.dragStartY = e.clientY - this.panY;
+      this.wrap.style.cursor = 'grabbing';
     });
-
-    // LIM Drawing logic
-    const canvas = document.getElementById('limCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let currentColor = '#38bdf8';
-    let currentMode = 'pen';
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    setTimeout(resizeCanvas, 100);
-
-    const btnPen = document.getElementById('btnPen');
-    const btnEraser = document.getElementById('btnEraser');
-    const btnClearCanvas = document.getElementById('btnClearCanvas');
-
-    btnPen.addEventListener('click', () => {
-      if (canvas.classList.contains('active') && currentMode === 'pen') {
-        canvas.classList.remove('active');
-        btnPen.classList.remove('active');
-      } else {
-        currentMode = 'pen';
-        canvas.classList.add('active');
-        btnPen.classList.add('active');
-        btnEraser.classList.remove('active');
-      }
-    });
-
-    btnEraser.addEventListener('click', () => {
-      if (canvas.classList.contains('active') && currentMode === 'eraser') {
-        canvas.classList.remove('active');
-        btnEraser.classList.remove('active');
-      } else {
-        currentMode = 'eraser';
-        canvas.classList.add('active');
-        btnEraser.classList.add('active');
-        btnPen.classList.remove('active');
-      }
-    });
-
-    btnClearCanvas.addEventListener('click', () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    function setColor(col, el) {
-      currentColor = col;
-      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-      el.classList.add('active');
-      currentMode = 'pen';
-      canvas.classList.add('active');
-      btnPen.classList.add('active');
-      btnEraser.classList.remove('active');
-    }
-
-    function getPos(e) {
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX, y: clientY };
-    }
-
-    function startDraw(e) {
-      if (!canvas.classList.contains('active')) return;
-      isDrawing = true;
-      const p = getPos(e);
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-    }
-
-    function draw(e) {
-      if (!isDrawing) return;
-      const p = getPos(e);
-      if (currentMode === 'pen') {
-        ctx.strokeStyle = currentColor;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      } else {
-        ctx.clearRect(p.x - 15, p.y - 15, 30, 30);
-      }
-    }
-
-    function endDraw() { isDrawing = false; }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDraw);
-    canvas.addEventListener('touchstart', startDraw, { passive: true });
-    canvas.addEventListener('touchmove', draw, { passive: true });
-    canvas.addEventListener('touchend', endDraw);
-
-    // Fullscreen
-    document.getElementById('btnFullscreen').addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => alert(err.message));
-      } else {
-        document.exitFullscreen();
-      }
-    });
-
-    // Whiteboard logic
-    const wbOverlay = document.getElementById('whiteboardOverlay');
-    const wbCanvas = document.getElementById('wbCanvas');
-    const wbCtx = wbCanvas.getContext('2d');
-    const wbBody = document.getElementById('whiteboardBody');
-    let wbDrawing = false;
-    let wbMode = 'pen';
-    let wbZoom = 1;
-    let panX = 0, panY = 0;
-    let isPanning = false, startX = 0, startY = 0;
-
-    function resizeWbCanvas() {
-      wbCanvas.width = wbBody.clientWidth;
-      wbCanvas.height = wbBody.clientHeight;
-    }
-
-    document.getElementById('btnWhiteboard').addEventListener('click', () => {
-      wbOverlay.classList.add('active');
-      resizeWbCanvas();
-    });
-    document.getElementById('wbClose').addEventListener('click', () => {
-      wbOverlay.classList.remove('active');
-    });
-
-    document.getElementById('wbPenBtn').addEventListener('click', () => {
-      wbMode = 'pen';
-      wbBody.style.cursor = 'crosshair';
-    });
-    document.getElementById('wbEraserBtn').addEventListener('click', () => {
-      wbMode = 'eraser';
-      wbBody.style.cursor = 'cell';
-    });
-    const wbHandBtn = document.getElementById('wbHandBtn');
-    wbHandBtn.addEventListener('click', () => {
-      wbMode = 'pan';
-      wbBody.style.cursor = 'grab';
-    });
-
-    document.getElementById('wbZoomIn').addEventListener('click', () => {
-      wbZoom = Math.min(wbZoom + 0.2, 3);
-      applyWbTransform();
-    });
-    document.getElementById('wbZoomOut').addEventListener('click', () => {
-      wbZoom = Math.max(wbZoom - 0.2, 0.5);
-      applyWbTransform();
-    });
-    document.getElementById('wbZoomReset').addEventListener('click', () => {
-      wbZoom = 1;
-      panX = 0;
-      panY = 0;
-      applyWbTransform();
-    });
-
-    function applyWbTransform() {
-      wbCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${wbZoom})`;
-      wbBody.style.backgroundPosition = `${panX}px ${panY}px`;
-    }
-
-    document.getElementById('wbGridToggle').addEventListener('click', () => {
-      if (wbBody.classList.contains('bg-grid')) {
-        wbBody.classList.remove('bg-grid');
-        wbBody.classList.add('bg-dark');
-      } else {
-        wbBody.classList.remove('bg-dark');
-        wbBody.classList.add('bg-grid');
-      }
-    });
-
-    document.getElementById('wbClear').addEventListener('click', () => {
-      wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
-    });
-
-    wbCanvas.addEventListener('mousedown', (e) => {
-      if (wbMode === 'pan') {
-        isPanning = true;
-        startX = e.clientX - panX;
-        startY = e.clientY - panY;
-        wbBody.style.cursor = 'grabbing';
-      } else {
-        wbDrawing = true;
-        const rect = wbCanvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / wbZoom;
-        const y = (e.clientY - rect.top) / wbZoom;
-        wbCtx.beginPath();
-        wbCtx.moveTo(x, y);
-      }
-    });
-
     window.addEventListener('mousemove', (e) => {
-      if (isPanning) {
-        panX = e.clientX - startX;
-        panY = e.clientY - startY;
-        applyWbTransform();
-      } else if (wbDrawing) {
-        const rect = wbCanvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / wbZoom;
-        const y = (e.clientY - rect.top) / wbZoom;
-        if (wbMode === 'pen') {
-          wbCtx.strokeStyle = '#0284c7';
-          wbCtx.lineWidth = 3;
-          wbCtx.lineCap = 'round';
-          wbCtx.lineTo(x, y);
-          wbCtx.stroke();
-        } else if (wbMode === 'eraser') {
-          wbCtx.clearRect(x - 20, y - 20, 40, 40);
+      if (!this.isDragging) return;
+      this.panX = e.clientX - this.dragStartX;
+      this.panY = e.clientY - this.dragStartY;
+      this.draw(currentStep, animProgress);
+    });
+    window.addEventListener('mouseup', () => {
+      this.isDragging = false;
+      this.wrap.style.cursor = 'grab';
+    });
+    this.canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.12 : 0.89;
+      this.setZoom(this.zoom * factor, e.clientX, e.clientY);
+    }, { passive: false });
+  }
+
+  setZoom(newZoom, cx, cy) {
+    this.zoom = Math.max(0.5, Math.min(3.0, newZoom));
+    this.draw(currentStep, animProgress);
+  }
+  zoomIn() { this.setZoom(this.zoom * 1.25); }
+  zoomOut() { this.setZoom(this.zoom * 0.8); }
+
+  fitView() {
+    this.zoom = 1.0;
+    this.unitScale = Math.min(this.width / 8.5, this.height / 5.5);
+    this.panX = this.width * 0.32;
+    this.panY = this.height * 0.72;
+    this.draw(currentStep, animProgress);
+  }
+
+  toScreen(wx, wy) {
+    return {
+      x: this.panX + wx * this.unitScale * this.zoom,
+      y: this.panY - wy * this.unitScale * this.zoom
+    };
+  }
+
+  drawBadge(x, y, text, bgColor, textColor, borderColor = null, fontSize = 12) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `bold ${fontSize}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text).width;
+    const bw = tw + 16, bh = fontSize + 8;
+    const rx = Math.round(x - bw / 2), ry = Math.round(y - bh / 2);
+
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(rx, ry, bw, bh, 6);
+    else ctx.rect(rx, ry, bw, bh);
+    ctx.fill();
+
+    if (borderColor) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  drawVector(x1, y1, x2, y2, color, width, label = '', isDashed = false) {
+    const ctx = this.ctx;
+    const p1 = this.toScreen(x1, y1);
+    const p2 = this.toScreen(x2, y2);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    if (isDashed) ctx.setLineDash([6, 4]);
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    if (!isDashed) {
+      const dx = p2.x - p1.x, dy = p2.y - p1.y;
+      const len = Math.hypot(dx, dy);
+      if (len > 8) {
+        const ang = Math.atan2(dy, dx);
+        const aLen = Math.min(16, len * 0.35);
+        ctx.beginPath();
+        ctx.moveTo(p2.x, p2.y);
+        ctx.lineTo(p2.x - aLen * Math.cos(ang - 0.35), p2.y - aLen * Math.sin(ang - 0.35));
+        ctx.lineTo(p2.x - aLen * Math.cos(ang + 0.35), p2.y - aLen * Math.sin(ang + 0.35));
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+
+    if (label) {
+      const mx = (p1.x + p2.x) / 2;
+      const my = (p1.y + p2.y) / 2 - 14;
+      this.drawBadge(mx, my, label, color, '#ffffff', null, 12);
+    }
+  }
+
+  draw(step, progress) {
+    const ctx = this.ctx;
+    const isDark = document.body.classList.contains('dark-mode');
+
+    ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+    ctx.fillRect(0, 0, this.width, this.height);
+
+    // Ground line at y = 0
+    const gLeft = this.toScreen(-4, 0);
+    const gRight = this.toScreen(8, 0);
+
+    ctx.fillStyle = isDark ? '#1e293b' : '#f8fafc';
+    ctx.fillRect(0, gLeft.y, this.width, this.height - gLeft.y);
+
+    ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(0, gLeft.y);
+    ctx.lineTo(this.width, gLeft.y);
+    ctx.stroke();
+
+    // In step 5, truck rolls forward
+    const truckShift = (step === 5) ? 1.5 * Math.min(progress, 1.0) : 0;
+
+    // Origin O(0,0) at front bumper hook
+    const hookX = 0 + truckShift;
+    const hookY = 0.5;
+
+    // Draw Toy Truck Body
+    const tW = 2.8, tH = 1.3;
+    const bodyP = this.toScreen(hookX - tW, hookY + tH);
+    const bW = tW * this.unitScale * this.zoom;
+    const bH = tH * this.unitScale * this.zoom;
+
+    ctx.save();
+    // Wheels
+    const wR = 0.32 * this.unitScale * this.zoom;
+    const w1 = this.toScreen(hookX - 0.7, 0.32);
+    const w2 = this.toScreen(hookX - 2.2, 0.32);
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(w1.x, w1.y, wR, 0, Math.PI * 2);
+    ctx.arc(w2.x, w2.y, wR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Truck cab & cargo
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#b91c1c';
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) ctx.roundRect(bodyP.x, bodyP.y, bW, bH, 6);
+    else ctx.fillRect(bodyP.x, bodyP.y, bW, bH);
+    ctx.fill();
+    ctx.stroke();
+
+    // Label on truck
+    this.drawBadge(bodyP.x + bW / 2, bodyP.y + bH / 2, 'Camioncino', '#dc2626', '#ffffff', null, 11);
+    ctx.restore();
+
+    // Coordinate axes starting from hook O
+    const axP1 = this.toScreen(hookX, hookY);
+    const axP2 = this.toScreen(hookX + 4.2, hookY);
+    const axP3 = this.toScreen(hookX, hookY + 2.8);
+
+    ctx.save();
+    ctx.strokeStyle = isDark ? '#64748b' : '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(axP1.x, axP1.y);
+    ctx.lineTo(axP2.x, axP2.y);
+    ctx.moveTo(axP1.x, axP1.y);
+    ctx.lineTo(axP3.x, axP3.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Angle of pull: 30 deg
+    const rad30 = (30 * Math.PI) / 180;
+    const F_mag = 3.0; // 3.0 N
+    const F_x = F_mag * Math.cos(rad30); // 2.6 N
+    const F_y = F_mag * Math.sin(rad30); // 1.5 N
+
+    // Angle Arc 30°
+    ctx.save();
+    const arcCenter = this.toScreen(hookX, hookY);
+    const arcR = 40 * this.zoom;
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(arcCenter.x, arcCenter.y, arcR, 0, -rad30, true);
+    ctx.stroke();
+    const arcLabel = this.toScreen(hookX + 0.9, hookY + 0.28);
+    this.drawBadge(arcLabel.x, arcLabel.y, '30°', '#fffbeb', '#b45309', '#d97706', 11);
+    ctx.restore();
+
+    // String / Force Vector F (3.0 N at 30°)
+    const progF = Math.min(progress * 1.2, 1.0);
+    const curFx = F_x * progF;
+    const curFy = F_y * progF;
+
+    // STEP 1+: Draw main pull vector F = 3.0 N
+    this.drawVector(hookX, hookY, hookX + curFx, hookY + curFy, '#0284c7', 4, 'F = 3,0 N (30°)');
+
+    // Child Hand icon / anchor at string end
+    const handPos = this.toScreen(hookX + F_x, hookY + F_y);
+    this.drawBadge(handPos.x + 10, handPos.y - 12, 'Trazione Cordicella', '#0284c7', '#ffffff', null, 10);
+
+    // STEP 2+: Projections and right triangle
+    if (step >= 2) {
+      // Dashed projection lines
+      this.drawVector(hookX + F_x, hookY, hookX + F_x, hookY + F_y, '#94a3b8', 1.5, '', true);
+      this.drawVector(hookX, hookY + F_y, hookX + F_x, hookY + F_y, '#94a3b8', 1.5, '', true);
+
+      // Right angle symbol
+      const corner = this.toScreen(hookX + F_x, hookY);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(corner.x - 10, corner.y - 10, 10, 10);
+    }
+
+    // STEP 3+: Component F_x (2.6 N)
+    if (step >= 3) {
+      const pX = (step === 3) ? Math.min(progress * 1.3, 1.0) : 1.0;
+      this.drawVector(hookX, hookY, hookX + F_x * pX, hookY, '#16a34a', 4.5, 'F_x = 2,6 N (Avanzamento)');
+    }
+
+    // STEP 4+: Component F_y (1.5 N)
+    if (step >= 4) {
+      const pY = (step === 4) ? Math.min(progress * 1.3, 1.0) : 1.0;
+      this.drawVector(hookX, hookY, hookX, hookY + F_y * pY, '#8b5cf6', 4.5, 'F_y = 1,5 N (Sollevamento)');
+    }
+
+    // STEP 5: Verification & Motion
+    if (step === 5) {
+      const vBadge = this.toScreen(hookX + 1.3, hookY + 2.2);
+      this.drawBadge(vBadge.x, vBadge.y, '√(2,6² + 1,5²) = 3,0 N ✓', '#16a34a', '#ffffff', '#ffd700', 13);
+    }
+  }
+}
+
+
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#ff3333';
+    this.currentSize = 6;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(x - last.x, y - last.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(last, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesByStep[currentStep]) this.strokesByStep[currentStep] = [];
+        this.strokesByStep[currentStep].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5.0;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.6 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const list = this.strokesByStep[currentStep] || [];
+    for (const stroke of list) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+  }
+
+  undo() {
+    const list = this.strokesByStep[currentStep];
+    if (list && list.length > 0) {
+      list.pop();
+      this.redraw();
+    }
+  }
+
+  clear() {
+    this.strokesByStep[currentStep] = [];
+    this.redraw();
+  }
+
+  setActive(active) {
+    this.active = active;
+    this.canvas.classList.toggle('active', active);
+    const palette = document.getElementById('slidePenPalette');
+    if (palette) palette.classList.toggle('show', active);
+    const btn = document.getElementById('btnHeaderPen');
+    if (btn) btn.classList.toggle('primary', active);
+    if (active) this.resize();
+  }
+
+  initPaletteDrag() {
+    const palette = document.getElementById('slidePenPalette');
+    const header = document.getElementById('spHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      const rect = palette.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none';
+      palette.style.left = initialLeft + 'px';
+      palette.style.top = initialTop + 'px';
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newLeft = Math.max(10, Math.min(window.innerWidth - palette.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - palette.offsetHeight - 10, initialTop + dy));
+      palette.style.left = newLeft + 'px';
+      palette.style.top = newTop + 'px';
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOTORE FOGLIO BIANCO INTERATTIVO CON PAN E SPOSTA
+// ═══════════════════════════════════════════════════════════
+
+class WhiteboardLayer {
+  constructor(canvasId, overlayId) {
+    this.canvas = document.getElementById(canvasId);
+    this.overlay = document.getElementById(overlayId);
+    if (!this.canvas || !this.overlay) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.isOpen = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#0f172a';
+    this.currentSize = 6;
+    this.bgMode = 'white';
+
+    // Pan (Manina)
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+    this.initialPanX = 0;
+    this.initialPanY = 0;
+    this.spacePressed = false;
+
+    // Tratti conservati in coordinate mondo
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    // Sposta / Seleziona
+    this.selectedStroke = null;
+    this.isDraggingObject = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.initialPoints = [];
+
+    this.initEvents();
+  }
+
+  resize() {
+    const body = document.getElementById('whiteboardBody');
+    if (!body || !this.canvas) return;
+    this.dpr = window.devicePixelRatio || 1;
+    const rect = body.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  getPoint(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      screenX: e.clientX - rect.left,
+      screenY: e.clientY - rect.top,
+      worldX: (e.clientX - rect.left) - this.panX,
+      worldY: (e.clientY - rect.top) - this.panY
+    };
+  }
+
+  computeBBox(stroke) {
+    if (!stroke.points || stroke.points.length === 0) {
+      return { minX: 0, minY: 0, maxX: 0, maxY: 0, width: 0, height: 0 };
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const pad = Math.max((stroke.size || 6) / 2, 6);
+    for (const p of stroke.points) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    return {
+      minX: minX - pad,
+      minY: minY - pad,
+      maxX: maxX + pad,
+      maxY: maxY + pad,
+      width: (maxX - minX) + pad * 2,
+      height: (maxY - minY) + pad * 2
+    };
+  }
+
+  findStrokeAt(worldX, worldY) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const s = this.strokes[i];
+      if (s.tool === 'eraser') continue;
+      if (!s.bbox) s.bbox = this.computeBBox(s);
+      const b = s.bbox;
+      const pad = 16;
+      if (worldX >= b.minX - pad && worldX <= b.maxX + pad && worldY >= b.minY - pad && worldY <= b.maxY + pad) {
+        const thresh = Math.max(16, (s.size || 6) * 1.5);
+        for (let j = 0; j < s.points.length; j++) {
+          if (Math.hypot(s.points[j].x - worldX, s.points[j].y - worldY) <= thresh) {
+            return s;
+          }
+        }
+        if (b.width <= 50 && b.height <= 50) return s;
+      }
+    }
+    return null;
+  }
+
+  initEvents() {
+    window.addEventListener('resize', () => {
+      if (this.isOpen) this.resize();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!this.isOpen) return;
+      if (e.code === 'Space' && !this.spacePressed && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        this.spacePressed = true;
+        this.canvas.classList.add('tool-hand');
+      }
+      if (e.key === 'Escape') this.close();
+      if ((e.key === 'Delete' || e.key === 'Backspace') && this.selectedStroke) this.deleteSelected();
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+        e.preventDefault();
+        this.undo();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (!this.isOpen) return;
+      if (e.code === 'Space' && this.spacePressed) {
+        this.spacePressed = false;
+        if (!this.isPanning && this.currentTool !== 'hand') {
+          this.canvas.classList.remove('tool-hand');
         }
       }
     });
 
-    window.addEventListener('mouseup', () => {
-      isPanning = false;
-      wbDrawing = false;
-      if (wbMode === 'pan') wbBody.style.cursor = 'grab';
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.isOpen) return;
+      const isMiddleClick = e.button === 1;
+      const isLeftClick = e.button === 0;
+      if (!isLeftClick && !isMiddleClick) return;
+
+      e.preventDefault();
+      this.canvas.setPointerCapture(e.pointerId);
+      const pt = this.getPoint(e);
+
+      // Pan con la manina
+      if (this.currentTool === 'hand' || isMiddleClick || this.spacePressed) {
+        this.isPanning = true;
+        this.panStartX = e.clientX;
+        this.panStartY = e.clientY;
+        this.initialPanX = this.panX;
+        this.initialPanY = this.panY;
+        this.canvas.classList.add('grabbing');
+        return;
+      }
+
+      // Sposta / Seleziona
+      if (this.currentTool === 'select') {
+        if (this.selectedStroke && this.selectedStroke.bbox) {
+          const b = this.selectedStroke.bbox;
+          const pad = 14;
+          if (pt.worldX >= b.minX - pad && pt.worldX <= b.maxX + pad && pt.worldY >= b.minY - pad && pt.worldY <= b.maxY + pad) {
+            this.isDraggingObject = true;
+            this.dragStartX = pt.worldX;
+            this.dragStartY = pt.worldY;
+            this.initialPoints = this.selectedStroke.points.map(p => ({ x: p.x, y: p.y }));
+            this.canvas.classList.add('dragging');
+            return;
+          }
+        }
+
+        const hit = this.findStrokeAt(pt.worldX, pt.worldY);
+        if (hit) {
+          this.selectedStroke = hit;
+          this.isDraggingObject = true;
+          this.dragStartX = pt.worldX;
+          this.dragStartY = pt.worldY;
+          this.initialPoints = hit.points.map(p => ({ x: p.x, y: p.y }));
+          this.canvas.classList.add('dragging');
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        } else {
+          this.selectedStroke = null;
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        }
+        return;
+      }
+
+      // Disegno
+      this.isDrawing = true;
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+
+      this.currentStroke = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x: pt.worldX, y: pt.worldY }]
+      };
+      this.redraw();
     });
 
-    // Avvio iniziale
-    renderStep();
-  </script>
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isOpen) return;
+      const pt = this.getPoint(e);
+
+      if (this.isPanning) {
+        e.preventDefault();
+        this.panX = this.initialPanX + (e.clientX - this.panStartX);
+        this.panY = this.initialPanY + (e.clientY - this.panStartY);
+        this.updatePanDisplay();
+        this.redraw();
+        return;
+      }
+
+      if (this.currentTool === 'select') {
+        if (this.isDraggingObject && this.selectedStroke) {
+          e.preventDefault();
+          const dx = pt.worldX - this.dragStartX;
+          const dy = pt.worldY - this.dragStartY;
+          for (let i = 0; i < this.selectedStroke.points.length; i++) {
+            this.selectedStroke.points[i].x = this.initialPoints[i].x + dx;
+            this.selectedStroke.points[i].y = this.initialPoints[i].y + dy;
+          }
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+          this.redraw();
+        }
+        return;
+      }
+
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(pt.worldX - last.x, pt.worldY - last.y) >= 2) {
+        pts.push({ x: pt.worldX, y: pt.worldY });
+        this.redraw();
+      }
+    });
+
+    const endAction = () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.classList.remove('grabbing');
+        if (this.spacePressed && this.currentTool !== 'hand') {
+          this.canvas.classList.remove('tool-hand');
+        }
+      }
+      if (this.isDraggingObject) {
+        this.isDraggingObject = false;
+        this.canvas.classList.remove('dragging');
+        if (this.selectedStroke) this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+        this.redraw();
+      }
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          this.currentStroke.bbox = this.computeBBox(this.currentStroke);
+          this.strokes.push(this.currentStroke);
+        }
+        this.currentStroke = null;
+        this.redraw();
+      }
+    };
+
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  updatePanDisplay() {
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.style.backgroundPosition = `${this.panX}px ${this.panY}px`;
+    }
+    const badge = document.getElementById('wbPanBadge');
+    if (badge) {
+      const signX = this.panX >= 0 ? '+' : '';
+      const signY = this.panY >= 0 ? '+' : '';
+      badge.textContent = `🧭 (${signX}${Math.round(this.panX)}, ${signY}${Math.round(this.panY)})`;
+      badge.classList.toggle('panned', this.panX !== 0 || this.panY !== 0);
+    }
+    const btnRecenter = document.getElementById('wbBtnRecenter');
+    if (btnRecenter) {
+      btnRecenter.classList.toggle('active', this.panX !== 0 || this.panY !== 0);
+    }
+  }
+
+  resetPan() {
+    this.panX = 0;
+    this.panY = 0;
+    this.updatePanDisplay();
+    this.redraw();
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.8, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.3 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5.5;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawSelectionBox(stroke) {
+    if (!stroke || !stroke.bbox) return;
+    const b = stroke.bbox;
+    const ctx = this.ctx;
+    ctx.save();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.08)';
+    ctx.fillRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    const h = 8;
+    const corners = [
+      { x: b.minX, y: b.minY },
+      { x: b.maxX, y: b.minY },
+      { x: b.minX, y: b.maxY },
+      { x: b.maxX, y: b.maxY }
+    ];
+    for (const c of corners) {
+      ctx.fillRect(c.x - h / 2, c.y - h / 2, h, h);
+      ctx.strokeRect(c.x - h / 2, c.y - h / 2, h, h);
+    }
+
+    const text = "🖐️ Trascina per spostare";
+    ctx.font = 'bold 11px sans-serif';
+    const textW = ctx.measureText(text).width;
+    const pillW = textW + 16;
+    const pillH = 20;
+    const pillX = Math.max(6, b.minX);
+    const pillY = Math.max(22, b.minY - 6);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(pillX, pillY - pillH, pillW, pillH, 5);
+    else ctx.rect(pillX, pillY - pillH, pillW, pillH);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(text, pillX + 8, pillY - 5);
+    ctx.restore();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length === 1) {
+        this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+        }
+      }
+    }
+
+    if (this.currentStroke) {
+      if (this.currentStroke.points.length === 1) {
+        this.drawPoint(this.currentStroke.points[0].x, this.currentStroke.points[0].y, this.currentStroke);
+      } else {
+        for (let i = 1; i < this.currentStroke.points.length; i++) {
+          this.drawSegment(this.currentStroke.points[i - 1], this.currentStroke.points[i], this.currentStroke);
+        }
+      }
+    }
+
+    if (this.selectedStroke) {
+      this.drawSelectionBox(this.selectedStroke);
+    }
+
+    this.ctx.restore();
+  }
+
+  deleteSelected() {
+    if (!this.selectedStroke) return;
+    const idx = this.strokes.indexOf(this.selectedStroke);
+    if (idx !== -1) this.strokes.splice(idx, 1);
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redraw();
+  }
+
+  updateDeleteButtonVisibility() {
+    const btn = document.getElementById('wbBtnDeleteSelected');
+    if (btn) btn.style.display = this.selectedStroke ? 'inline-flex' : 'none';
+  }
+
+  undo() {
+    if (this.strokes.length > 0) {
+      this.strokes.pop();
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
+      this.redraw();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redraw();
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.canvas.classList.remove('tool-hand', 'grabbing', 'tool-select', 'dragging');
+    if (tool === 'hand') this.canvas.classList.add('tool-hand');
+    else if (tool === 'select') this.canvas.classList.add('tool-select');
+
+    ['pen', 'highlighter', 'eraser', 'select', 'hand'].forEach(t => {
+      const btn = document.getElementById('wbTool' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.classList.toggle('active', t === tool);
+    });
+    this.redraw();
+  }
+
+  setColor(color) {
+    this.currentColor = color;
+    if (this.currentTool === 'eraser' || this.currentTool === 'select' || this.currentTool === 'hand') {
+      this.setTool('pen');
+    }
+    document.querySelectorAll('#wbColorGroup .wb-color').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-color') === color);
+    });
+  }
+
+  setSize(size) {
+    this.currentSize = size;
+    [3, 6, 14].forEach(s => {
+      const btn = document.getElementById('wbSize' + s);
+      if (btn) btn.classList.toggle('active', s === size);
+    });
+  }
+
+  setBg(mode) {
+    this.bgMode = mode;
+    const body = document.getElementById('whiteboardBody');
+    if (body) body.className = `wb-body bg-${mode}`;
+
+    ['white', 'grid', 'dark'].forEach(m => {
+      const btn = document.getElementById('wbBgBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) btn.classList.toggle('active', m === mode);
+    });
+
+    if (mode === 'dark' && this.currentColor === '#0f172a') this.setColor('#38bdf8');
+    else if (mode !== 'dark' && this.currentColor === '#ffffff') this.setColor('#0f172a');
+    this.updatePanDisplay();
+  }
+
+  open() {
+    this.isOpen = true;
+    this.overlay.classList.add('show');
+    const tag = document.getElementById('wbCurrentStepTag');
+    if (tag) tag.textContent = `Passo ${currentStep} di ${TOTAL_STEPS}`;
+    this.updatePanDisplay();
+    this.resize();
+    requestAnimationFrame(() => this.resize());
+  }
+
+  close() {
+    this.isOpen = false;
+    this.overlay.classList.remove('show');
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLLER APPLICATIVO & GESTIONE PASSI
+// ═══════════════════════════════════════════════════════════
+
+let vCanvas = null;
+let penLayer = null;
+let whiteboard = null;
+
+let animId = null;
+let animStartTime = 0;
+let animProgress = 1.0;
+const animDuration = 650;
+
+function setStep(stepNum) {
+  if (stepNum < 1 || stepNum > TOTAL_STEPS) return;
+  currentStep = stepNum;
+
+  const data = STEPS_DATA[currentStep - 1];
+  document.getElementById('stepMetaBadge').textContent = data.badge;
+  document.getElementById('stepMetaTitle').textContent = data.title;
+  document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
+
+  const bodyEl = document.getElementById('stepCardBody');
+  bodyEl.innerHTML = data.render();
+
+  // Rendering dinamico formule matematiche KaTeX
+  if (window.renderMathInElement) {
+    renderMathInElement(bodyEl, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '\(', right: '\)', display: false },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    });
+  }
+
+  document.getElementById('btnPrevStep').disabled = (currentStep === 1);
+  document.getElementById('btnNextStep').disabled = (currentStep === TOTAL_STEPS);
+
+  updateStepsBar();
+  if (penLayer) penLayer.redraw();
+
+  const wbTag = document.getElementById('wbCurrentStepTag');
+  if (wbTag) wbTag.textContent = `Passo ${currentStep} di ${TOTAL_STEPS}`;
+
+  replayCurrentStepAnimation();
+}
+
+function prevStep() { if (currentStep > 1) setStep(currentStep - 1); }
+function nextStep() { if (currentStep < TOTAL_STEPS) setStep(currentStep + 1); }
+
+function updateStepsBar() {
+  const bar = document.getElementById('stepsBar');
+  const hudPills = document.getElementById('hudPills');
+  bar.innerHTML = '';
+  hudPills.innerHTML = '';
+
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const btn = document.createElement('button');
+    btn.className = `step-circle-pill ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'completed' : ''}`;
+    btn.innerHTML = `<span>Passo ${i}</span>`;
+    btn.onclick = () => setStep(i);
+    bar.appendChild(btn);
+
+    const pill = document.createElement('button');
+    pill.className = 'hud-pill' + (i === currentStep ? ' active' : '');
+    pill.textContent = i;
+    pill.onclick = () => setStep(i);
+    hudPills.appendChild(pill);
+  }
+}
+
+function replayCurrentStepAnimation() {
+  if (animId) cancelAnimationFrame(animId);
+  animStartTime = performance.now();
+  animProgress = 0;
+
+  function loop(now) {
+    const elapsed = now - animStartTime;
+    animProgress = Math.min(elapsed / animDuration, 1.0);
+    const ease = 1 - Math.pow(1 - animProgress, 3);
+    if (vCanvas) vCanvas.draw(currentStep, ease);
+
+    if (animProgress < 1.0) {
+      animId = requestAnimationFrame(loop);
+    } else {
+      if (vCanvas) vCanvas.draw(currentStep, 1.0);
+    }
+  }
+
+  animId = requestAnimationFrame(loop);
+}
+
+function zoomCanvas(factor) {
+  if (!vCanvas) return;
+  vCanvas.zoom = Math.max(0.5, Math.min(3.0, vCanvas.zoom * factor));
+  vCanvas.draw(currentStep, 1.0);
+}
+
+function resetCanvasZoom() {
+  if (!vCanvas) return;
+  vCanvas.zoom = 1.0;
+  vCanvas.panX = 0;
+  vCanvas.panY = 0;
+  vCanvas.draw(currentStep, 1.0);
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  if (vCanvas) vCanvas.draw(currentStep, 1);
+}
+
+function toggleTextSize() {
+  const card = document.getElementById('stepCardContainer');
+  if (card.classList.contains('text-scale-2')) {
+    card.classList.remove('text-scale-2');
+    document.getElementById('textScaleIcon').textContent = 'A+';
+  } else if (card.classList.contains('text-scale-1')) {
+    card.classList.remove('text-scale-1');
+    card.classList.add('text-scale-2');
+    document.getElementById('textScaleIcon').textContent = 'A−';
+  } else {
+    card.classList.add('text-scale-1');
+    document.getElementById('textScaleIcon').textContent = 'A++';
+  }
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('is-fullscreen', isFs);
+  setTimeout(() => {
+    if (vCanvas) vCanvas.resize();
+    if (penLayer && penLayer.active) penLayer.resize();
+    if (whiteboard && whiteboard.isOpen) whiteboard.resize();
+  }, 100);
+});
+
+// Penna LIM toggle e controlli
+function togglePenMode() {
+  if (penLayer) penLayer.setActive(!penLayer.active);
+}
+function setSlidePenTool(tool) {
+  if (!penLayer) return;
+  penLayer.currentTool = tool;
+  document.querySelectorAll('.lp-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(tool === 'pen' ? 'spToolPen' : (tool === 'highlighter' ? 'spToolHighlighter' : 'spToolEraser'));
+  if (btn) btn.classList.add('active');
+}
+function setSlidePenColor(color) {
+  if (!penLayer) return;
+  penLayer.currentColor = color;
+  if (penLayer.currentTool === 'eraser') setSlidePenTool('pen');
+  document.querySelectorAll('.lp-color-dot').forEach(d => d.classList.toggle('active', d.dataset.color === color));
+}
+function undoSlidePen() { if (penLayer) penLayer.undo(); }
+function clearSlidePen() { if (penLayer) penLayer.clear(); }
+
+// Foglio Bianco LIM
+function openWhiteboard() { if (whiteboard) whiteboard.open(); }
+function closeWhiteboard() { if (whiteboard) whiteboard.close(); }
+function setWbTool(t) { if (whiteboard) whiteboard.setTool(t); }
+function setWbColor(c) { if (whiteboard) whiteboard.setColor(c); }
+function setWbSize(s) { if (whiteboard) whiteboard.setSize(s); }
+function setWbBg(m) { if (whiteboard) whiteboard.setBg(m); }
+function undoWbStroke() { if (whiteboard) whiteboard.undo(); }
+function clearWbStrokes() { if (whiteboard) whiteboard.clear(); }
+function deleteSelectedWbStroke() { if (whiteboard) whiteboard.deleteSelected(); }
+function resetWbPan() { if (whiteboard) whiteboard.resetPan(); }
+
+// Scorciatoie tastiera
+window.addEventListener('keydown', (e) => {
+  if (whiteboard && whiteboard.isOpen) return; // gestito da Whiteboard
+  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault(); nextStep();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault(); prevStep();
+  } else if (e.key.toLowerCase() === 'p') {
+    e.preventDefault(); togglePenMode();
+  } else if (e.key.toLowerCase() === 'w') {
+    e.preventDefault(); openWhiteboard();
+  } else if (e.key.toLowerCase() === 'f') {
+    e.preventDefault(); toggleFullscreen();
+  } else if (e.key.toLowerCase() === 'r') {
+    e.preventDefault(); replayCurrentStepAnimation();
+  }
+});
+
+// Avvio
+window.addEventListener('DOMContentLoaded', () => {
+  vCanvas = new VectorCanvas('vecCanvas');
+  penLayer = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardLayer('whiteboardCanvas', 'whiteboardOverlay');
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+
+  setStep(1);
+  vCanvas.resize();
+});
+</script>
 </body>
 </html>
