@@ -552,6 +552,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-lavoro-4.html"
                   }
                 ]
+              },
+              {
+                title: "🏋️ Il Lavoro di una Forza — Problemi Guidati (Pag. 364 - 365)",
+                topics: [
+                  {
+                    title: "🐴 Problema a Passi 17: Il Mulo di Gianni e Anna (Pag. 364)",
+                    desc: "Due persone tirano le briglie di un mulo con forze inclinate F₁ = 400 N a 45° e F₂ = 480 N a 36° per s = 12 m. Calcolo dei lavori parziali e lavoro totale L_tot ≈ 8,1 kJ.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-5.html"
+                  },
+                  {
+                    title: "🏋️ Problema 4: Il Bilanciere di Francesco (Pag. 364)",
+                    desc: "Distensione su panca a v costante per h = 60 cm con bilanciere da 510 N. Lavoro motore in salita (+3,1 · 10² J), resistente in discesa (-3,1 · 10² J) e ciclo totale nullo (0 J).",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-6.html"
+                  },
+                  {
+                    title: "🪁 Problema 6: L'Aquilone in Riva al Mare (Pag. 364)",
+                    desc: "Trascina un aquilone con filo inclinato a α = 60° compiendo L = 630 J su s = 50 m. Formula inversa passo-passo F = L / [s · cos(60°)] = 25 N e analisi delle componenti.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-7.html"
+                  },
+                  {
+                    title: "🚆 Problema 8: La Frenata del Treno (Pag. 364)",
+                    desc: "Frenata di emergenza con forza frenante F = 3,4 · 10⁵ N per s = 62 m. Analisi dell'angolo piatto α = 180°, lavoro resistente L = -2,1 · 10⁷ J (-21 MJ) e dissipazione termica.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-8.html"
+                  }
+                ]
               }
             ]
 
