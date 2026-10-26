@@ -50,6 +50,8 @@ const MATERIE = [
 
         desc: "Materiali didattici, lezioni ed esercitazioni per la classe 3°L RIM.",
 
+        bonusUrl: "/informatica/bonus/punti-bonus.html?classe=3l",
+
         chapters: [
 
           {

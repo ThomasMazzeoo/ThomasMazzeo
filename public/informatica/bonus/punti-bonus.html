@@ -917,6 +917,11 @@
         <span>CLASSE 2G (AFM)</span>
         <span class="class-tab__badge" id="badge-count-2g">17 studenti</span>
       </button>
+      <button class="class-tab" data-class="3l" role="tab" id="tab-3l">
+        <span>🌐</span>
+        <span>CLASSE 3L (RIM)</span>
+        <span class="class-tab__badge" id="badge-count-3l">19 studenti</span>
+      </button>
     </div>
 
     <!-- Stats Row -->
@@ -953,7 +958,7 @@
         <div class="stat-card__content">
           <span class="stat-card__value" style="font-size: 0.82rem; letter-spacing: 0.5px;">DATA DA DEFINIRE</span>
           <span class="stat-card__label">1ª Verifica: Sicurezza</span>
-          <span class="stat-card__sub">1ª Lezione: 21/10/2026</span>
+          <span class="stat-card__sub" id="stat-lesson-date">1ª Lezione: 21/10/2026</span>
         </div>
       </div>
     </div>
@@ -996,7 +1001,7 @@
       <div>
         <h4 class="info-footer-card__title">REGISTRO UFFICIALE DEI PUNTI BONUS</h4>
         <p class="info-footer-card__desc">
-          I punti <strong>+</strong> registrati in questa tabella sono stati assegnati durante la <strong>1ª Lezione (21/10/2026)</strong> sul modulo di Sicurezza Informatica (Autenticazione e Password Vault). La data ufficiale della <strong>1ª Verifica</strong> non è ancora stabilita: nelle prossime settimane verranno registrati i nuovi <strong>+</strong> guadagnati durante le lezioni, e il punteggio totale accumulato varrà come credito bonus sul voto della prova.
+          I punti <strong>+</strong> registrati in questa tabella sono stati assegnati durante la <strong id="info-footer-lesson">1ª Lezione (21/10/2026)</strong> sul modulo di Sicurezza Informatica (Autenticazione e Password Vault). La data ufficiale della <strong>1ª Verifica</strong> non è ancora stabilita: nelle prossime settimane verranno registrati i nuovi <strong>+</strong> guadagnati durante le lezioni, e il punteggio totale accumulato varrà come credito bonus sul voto della prova.
         </p>
       </div>
     </div>
@@ -1024,6 +1029,15 @@
           id: 'l1_sicurezza',
           title: '1ª Lezione (21/10/2026)',
           date: '21/10/2026',
+          topic: 'Modulo 1 — Autenticazione & Password Vault',
+          badgeText: '+1'
+        }
+      ],
+      '3l': [
+        {
+          id: 'l1_sicurezza',
+          title: '1ª Lezione (25/10/2026)',
+          date: '25/10/2026',
           topic: 'Modulo 1 — Autenticazione & Password Vault',
           badgeText: '+1'
         }
@@ -1075,6 +1089,27 @@
         { id: 15, surname: "MONTI", name: "AXEL", bonuses: { l1_sicurezza: 1 } },
         { id: 16, surname: "RUSCAGNO", name: "SEBASTIAN", bonuses: { l1_sicurezza: 1 } },
         { id: 17, surname: "LAKHDAR", name: "DOUAA", bonuses: { l1_sicurezza: 1 } }
+      ],
+      '3l': [
+        { id: 1, surname: "CALAMAI", name: "MIA", bonuses: { l1_sicurezza: 1 } },
+        { id: 2, surname: "FERRACCIOLI", name: "ALYSSA", bonuses: { l1_sicurezza: 1 } },
+        { id: 3, surname: "GORRASI", name: "MARIA", bonuses: { l1_sicurezza: 1 } },
+        { id: 4, surname: "BALLOTTA", name: "ALICE", bonuses: { l1_sicurezza: 1 } },
+        { id: 5, surname: "QIU", name: "YI", bonuses: { l1_sicurezza: 1 } },
+        { id: 6, surname: "FORNI", name: "CAMILLA", bonuses: { l1_sicurezza: 1 } },
+        { id: 7, surname: "NEAGU", name: "MIRUNA", bonuses: { l1_sicurezza: 1 } },
+        { id: 8, surname: "FREGNI", name: "ALICE", bonuses: { l1_sicurezza: 1 } },
+        { id: 9, surname: "NICOTRA", name: "ALICE", bonuses: { l1_sicurezza: 1 } },
+        { id: 10, surname: "MALAVASI", name: "GIADA", bonuses: { l1_sicurezza: 1 } },
+        { id: 11, surname: "BARBIERI", name: "ALESSANDRO", bonuses: { l1_sicurezza: 1 } },
+        { id: 12, surname: "ROSA", name: "MATTIA", bonuses: { l1_sicurezza: 1 } },
+        { id: 13, surname: "LOLLI", name: "FEDERICO", bonuses: { l1_sicurezza: 1 } },
+        { id: 14, surname: "SGARBI", name: "FRANCESCA", bonuses: { l1_sicurezza: 1 } },
+        { id: 15, surname: "IMPROTA", name: "GABRIELE", bonuses: { l1_sicurezza: 1 } },
+        { id: 16, surname: "EL ADRAOUI", name: "BASMA", bonuses: { l1_sicurezza: 1 } },
+        { id: 17, surname: "MABROUK", name: "ZINEB", bonuses: { l1_sicurezza: 1 } },
+        { id: 18, surname: "FORNI", name: "GIULIO", bonuses: { l1_sicurezza: 1 } },
+        { id: 19, surname: "MALAGUTI SERRA", name: "ARTÙ", bonuses: { l1_sicurezza: 1 } }
       ]
     };
 
@@ -1090,7 +1125,7 @@
     // Parse URL parameter ?classe=2h or ?classe=2g
     const urlParams = new URLSearchParams(window.location.search);
     const paramClass = urlParams.get('classe');
-    if (paramClass && (paramClass === '2h' || paramClass === '2g')) {
+    if (paramClass && (paramClass === '2h' || paramClass === '2g' || paramClass === '3l')) {
       activeClass = paramClass;
     }
 
@@ -1099,6 +1134,9 @@
     // ============================================================
     const tab2H = document.getElementById('tab-2h');
     const tab2G = document.getElementById('tab-2g');
+    const tab3L = document.getElementById('tab-3l');
+    const statLessonDate = document.getElementById('stat-lesson-date');
+    const infoFooterLesson = document.getElementById('info-footer-lesson');
     const classTitleHeading = document.getElementById('class-title-heading');
     const classDescSubtitle = document.getElementById('class-desc-subtitle');
     const btnBackClass = document.getElementById('btn-back-class');
@@ -1155,23 +1193,38 @@
       // Update Tab Buttons
       tab2H.classList.toggle('active', classe === '2h');
       tab2G.classList.toggle('active', classe === '2g');
+      tab3L.classList.toggle('active', classe === '3l');
 
       // Update URL query string without reloading page
       const newUrl = new URL(window.location);
       newUrl.searchParams.set('classe', classe);
       window.history.replaceState({}, '', newUrl);
 
-      // Update Back Button Link
+      // Update Back Button Link and Class Information
       if (classe === '2h') {
         btnBackClass.href = '/#2h-finanza-marketing';
         labelBackClass.textContent = 'Torna a 2H AFM';
         statClassName.textContent = 'Classe 2H AFM';
         classTitleHeading.textContent = 'REGISTRO PUNTI BONUS (+) — CLASSE 2H';
-      } else {
+        classDescSubtitle.innerHTML = 'Elenco degli studenti e dei punti <strong>+</strong> acquisiti durante la <strong>1ª Lezione (21/10/2026)</strong> e le successive attività settimanali, validi come credito bonus per la <strong>1ª Verifica di Sicurezza Informatica</strong> (data ancora da stabilire).';
+        if (statLessonDate) statLessonDate.textContent = '1ª Lezione: 21/10/2026';
+        if (infoFooterLesson) infoFooterLesson.textContent = '1ª Lezione (21/10/2026)';
+      } else if (classe === '2g') {
         btnBackClass.href = '/#2g-finanza-marketing';
         labelBackClass.textContent = 'Torna a 2G AFM';
         statClassName.textContent = 'Classe 2G AFM';
         classTitleHeading.textContent = 'REGISTRO PUNTI BONUS (+) — CLASSE 2G';
+        classDescSubtitle.innerHTML = 'Elenco degli studenti e dei punti <strong>+</strong> acquisiti durante la <strong>1ª Lezione (21/10/2026)</strong> e le successive attività settimanali, validi come credito bonus per la <strong>1ª Verifica di Sicurezza Informatica</strong> (data ancora da stabilire).';
+        if (statLessonDate) statLessonDate.textContent = '1ª Lezione: 21/10/2026';
+        if (infoFooterLesson) infoFooterLesson.textContent = '1ª Lezione (21/10/2026)';
+      } else if (classe === '3l') {
+        btnBackClass.href = '/#3l-relazioni-internazionali';
+        labelBackClass.textContent = 'Torna a 3L RIM';
+        statClassName.textContent = 'Classe 3L RIM';
+        classTitleHeading.textContent = 'REGISTRO PUNTI BONUS (+) — CLASSE 3L';
+        classDescSubtitle.innerHTML = 'Elenco degli studenti e dei punti <strong>+</strong> acquisiti durante la <strong>1ª Lezione (25/10/2026)</strong> e le successive attività settimanali, validi come credito bonus per la <strong>1ª Verifica di Sicurezza Informatica</strong> (data ancora da stabilire).';
+        if (statLessonDate) statLessonDate.textContent = '1ª Lezione: 25/10/2026';
+        if (infoFooterLesson) infoFooterLesson.textContent = '1ª Lezione (25/10/2026)';
       }
 
       // Re-render table & stats
@@ -1180,6 +1233,7 @@
 
     tab2H.addEventListener('click', () => switchClass('2h'));
     tab2G.addEventListener('click', () => switchClass('2g'));
+    tab3L.addEventListener('click', () => switchClass('3l'));
 
     // ============================================================
     // RENDER FUNCTIONS (READ-ONLY)
@@ -1196,6 +1250,7 @@
       // Update counts for badge pills
       document.getElementById('badge-count-2h').textContent = `${(STUDENTS['2h'] || []).length} studenti`;
       document.getElementById('badge-count-2g').textContent = `${(STUDENTS['2g'] || []).length} studenti`;
+      document.getElementById('badge-count-3l').textContent = `${(STUDENTS['3l'] || []).length} studenti`;
 
       // Filter and search
       const totalStudentsCount = students.length;
