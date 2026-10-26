@@ -963,7 +963,7 @@ const STEPS_DATA = {
       </div>
 
       <div class="math-display-card" style="margin-top:10px;">
-        $$\\text{Percentuale dissipata: } \\eta = \\frac{439\\,875}{441\\,000} \\cdot 100 = \\mathbf{99{,}74\%}$$
+        $$\\text{Percentuale dissipata: } \\eta = \\frac{439\\,875}{441\\,000} \\cdot 100 = \\mathbf{99{,}74}\%$$
       </div>
 
       <div class="callout-box">
@@ -1977,6 +1977,18 @@ window.addEventListener('DOMContentLoaded', () => {
       if (limPen.active) togglePenMode();
     }
   });
+
+  // Renderizza KaTeX statico (header, canvasStats, ecc.)
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\\[', right: '\\]', display: true},
+        {left: '\\(', right: '\\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
 
   setStep(1);
 });
