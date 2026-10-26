@@ -1,0 +1,2179 @@
+﻿<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM â€” La Macchinina e la Molla sulla Rampa (Problema 80, Pag. 371) â€” ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN OTTIMIZZATO PER LIM â€” VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra fissa invasiva in basso: penna fluttuante attivabile a piacere
+   - Foglio Bianco con Pan (âœ‹) e Sposta/Seleziona (ðŸ–ï¸)
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown su fondo bianco puro
+   - Rampa curva, molla comprimibile e istogramma a 3 energie (K, Ug, Uel)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-k: #2563eb;      /* Blu per Energia Cinetica K */
+  --color-ug: #16a34a;     /* Verde per Energia Potenziale Gravitazionale U_g */
+  --color-uel: #ea580c;    /* Arancio per Energia Potenziale Elastica U_el */
+  --color-tot: #7c3aed;    /* Viola per Energia Meccanica Totale E_mecc */
+  --color-car: #e11d48;    /* Rosso acceso per la macchinina */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-k: #60a5fa;
+  --color-ug: #4ade80;
+  --color-uel: #fb923c;
+  --color-tot: #a78bfa;
+  --color-car: #f43f5e;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #2563eb;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37,99,235,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.title-container h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-container p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-tool {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-tool:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-tool:hover {
+  background: #1e293b;
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ LAYOUT PRINCIPALE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 1750px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ AREA CANVAS VETTORIALE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-toolbar {
+  padding: 8px 14px;
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+body.dark-mode .canvas-toolbar {
+  background: rgba(19, 27, 46, 0.95);
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: var(--bg-canvas);
+  overflow: hidden;
+}
+
+canvas#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+canvas#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+canvas#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* PANNELLO DI CONTROLLO SIMULAZIONE SOTTO AL CANVAS */
+.sim-controls-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sim {
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-sim:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-sim:hover {
+  background: #1e293b;
+}
+
+.btn-sim-primary {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+}
+
+.sim-state-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.state-tag-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+.state-tag-btn:hover {
+  transform: translateY(-1px);
+}
+.state-tag-btn.tag-0 { border-color: var(--color-k); color: var(--color-k); }
+.state-tag-btn.tag-0:hover, .state-tag-btn.tag-0.active { background: var(--color-k); color: white; }
+
+.state-tag-btn.tag-1 { border-color: var(--color-ug); color: var(--color-ug); }
+.state-tag-btn.tag-1:hover, .state-tag-btn.tag-1.active { background: var(--color-ug); color: white; }
+
+.state-tag-btn.tag-2 { border-color: var(--color-uel); color: var(--color-uel); }
+.state-tag-btn.tag-2:hover, .state-tag-btn.tag-2.active { background: var(--color-uel); color: white; }
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PANNELLO PASSI DIDATTICI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 12px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.step-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+body.dark-mode .callout-box {
+  background: #064e3b33;
+  color: #86efac;
+}
+
+.callout-warning {
+  background: #fffbeb;
+  border-left: 4px solid #d97706;
+  color: #92400e;
+}
+body.dark-mode .callout-warning {
+  background: #78350f33;
+  color: #fde68a;
+}
+
+.callout-info {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-info {
+  background: #1e3a8a33;
+  color: #bfdbfe;
+}
+
+.math-display-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ SLIDERS DINAMICI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.params-section {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.param-val {
+  font-family: var(--font-mono);
+  color: #2563eb;
+  font-weight: 700;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  cursor: pointer;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ FOOTER PASSI DIDATTICI (SENZA SOVRAPPOSIZIONI) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 35;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-pill {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.35);
+}
+
+.btn-nav-step {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-nav-step:hover:not(:disabled) {
+  background: #1e293b;
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ BARRA PENNA LIM FLUTTUANTE TRASCINABILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.lim-floating-bar {
+  position: fixed;
+  top: 80px;
+  right: 25px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.75rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+.lim-drag-handle:active {
+  cursor: grabbing;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+.lim-color-dot:hover {
+  transform: scale(1.15);
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-lim-action:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-lim-action:hover {
+  background: #1e293b;
+}
+.btn-lim-action.active {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ MODALE FOGLIO BIANCO INTERATTIVO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.whiteboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+.whiteboard-modal {
+  width: 95vw;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 3px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+body.dark-mode .whiteboard-modal {
+  background: #0f172a;
+}
+.whiteboard-header {
+  padding: 10px 18px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.dark-mode .whiteboard-header {
+  background: #1e293b;
+}
+.whiteboard-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.whiteboard-canvas-wrap {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}
+body.dark-mode .whiteboard-canvas-wrap {
+  background: #0b0f19;
+}
+canvas#wbCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* MODALITÃ€ SCHERMO INTERO */
+body.is-fullscreen .app-header {
+  padding: 6px 14px;
+}
+body.is-fullscreen .main-container {
+  padding: 10px 14px;
+}
+body.is-fullscreen .canvas-wrapper {
+  height: 540px;
+}
+</style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEADER CON CONTROLLI â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">â† Indice Giordano Bruno</a>
+    <span class="school-tag">ISS Giordano Bruno â€¢ Seconde</span>
+    <div class="title-container">
+      <h1>ðŸŽï¸ Problema 80: La Macchinina e la Molla sulla Rampa <span style="font-size: 0.8em; color: var(--text-muted); font-weight: normal;">(Pag. 371)</span></h1>
+      <p>Energia meccanica totale con quota e molla: \(E_{	ext{mecc}} = K + U_g + U_{	ext{el}} = 	ext{cost.}\)</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Ingrandisci testo LIM">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">ðŸŒ™ Tema</button>
+    <button class="btn-tool" id="btnOpenWhiteboard" title="Apri Foglio Bianco (W)">ðŸ“„ Foglio Bianco</button>
+    <button class="btn-tool" id="btnTogglePen" title="Attiva/Disattiva Penna LIM (P)">âœï¸ Penna LIM</button>
+    <button class="btn-tool btn-tool-primary" id="btnFullscreen" title="Schermo Intero (F)">â›¶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• LAYOUT PRINCIPALE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<main class="main-container">
+  
+  <!-- COLONNA SINISTRA: CANVAS FISICO + CONTROLLI SIMULAZIONE -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span>VETTORE FISICO DINAMICO â€¢ 3BLUE1BROWN VECTORS</span>
+        <span id="canvasStats">\(m = 0{,}65	ext{ kg} \quad v_0 = 5{,}7	ext{ m/s} \quad k = 1300	ext{ N/m}\)</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- CONTROLLI SIMULAZIONE INTERATTIVA -->
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">â–¶ Avvia Moto</button>
+        <button class="btn-sim" id="btnResetSim">â†º Riposiziona</button>
+        <button class="btn-sim" id="btnSlowMo">ðŸ¢ Rallentatore</button>
+      </div>
+      <div class="sim-state-tags">
+        <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">Punti notevoli:</span>
+        <button class="state-tag-btn tag-0" id="btnGoState0" title="Al suolo: h=0, v0=5.7 m/s">Stato 0 (Suolo)</button>
+        <button class="state-tag-btn tag-1" id="btnGoState1" title="In cima prima dell'urto: h=1.5 m, v1=1.8 m/s">Stato 1 (Cima)</button>
+        <button class="state-tag-btn tag-2" id="btnGoState2" title="Molla compressa: v2=0, Î”x=4.0 cm">Stato 2 (Molla)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNA DESTRA: PASSI DIDATTICI ED ESPLORAZIONE -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepContentCard">
+      <!-- Il contenuto didattico viene iniettato dinamicamente via JS in base al passo attivo -->
+    </div>
+  </section>
+
+</main>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER PASSI DIDATTICI â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">â† Passo Precedente</button>
+
+  <div class="step-pills-list">
+    <button class="step-pill active" data-step="1">1</button>
+    <button class="step-pill" data-step="2">2</button>
+    <button class="step-pill" data-step="3">3</button>
+    <button class="step-pill" data-step="4">4</button>
+    <button class="step-pill" data-step="5">5</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Passo Successivo â†’</button>
+</footer>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TAVOLOZZA PENNA LIM FLUTTUANTE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>âœï¸ PENNA LIM</span>
+    <span>â ¿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimEraser">ðŸ§¹ Gomma</button>
+    <button class="btn-lim-action" id="btnLimClear">ðŸ—‘ï¸ Pulisci</button>
+    <button class="btn-lim-action" id="btnLimClose">âœ– Chiudi</button>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MODALE FOGLIO BIANCO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="whiteboard-modal">
+    <div class="whiteboard-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong style="font-family:var(--font-tech); letter-spacing:1px; color:#2563eb;">ðŸ“„ FOGLIO BIANCO LIM DIGITALE</strong>
+        <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">Scrivi o disegna liberamente note per la classe</span>
+      </div>
+      <div class="whiteboard-tools">
+        <button class="btn-tool active" id="btnWbToolPen">âœï¸ Penna</button>
+        <button class="btn-tool" id="btnWbToolEraser">ðŸ§¹ Gomma</button>
+        <button class="btn-tool" id="btnWbToolPan" title="Trascina foglio (Pan)">âœ‹ Pan</button>
+        <button class="btn-tool" id="btnWbToolSelect" title="Seleziona e sposta tratti">ðŸ–ï¸ Sposta</button>
+        <button class="btn-tool" id="btnWbClear">ðŸ—‘ï¸ Svuota</button>
+        <button class="btn-tool" id="btnWbClose" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">âœ– Chiudi</button>
+      </div>
+    </div>
+    <div class="whiteboard-canvas-wrap">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SCRIPT JAVASCRIPT DINAMICO ED ANIMAZIONE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<script>
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STATO GLOBALE E PARAMETRI FISICI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+const STATE = {
+  // Dati del Problema 80
+  m: 0.65,          // kg (650 g)
+  v0: 5.7,          // m/s al suolo
+  v1: 1.8,          // m/s in cima alla rampa
+  k: 1300,          // N/m (1.3 * 10^3 N/m)
+  g: 9.8,           // m/s^2
+
+  // Valori calcolati teorici
+  get h() {
+    return (this.v0 * this.v0 - this.v1 * this.v1) / (2 * this.g); // ~1.492 m -> 1.5 m
+  },
+  get dx() {
+    return this.v1 * Math.sqrt(this.m / this.k); // ~0.0402 m -> 4.0 cm
+  },
+  get E0() {
+    return 0.5 * this.m * this.v0 * this.v0; // ~10.56 J
+  },
+  get K1() {
+    return 0.5 * this.m * this.v1 * this.v1; // ~1.05 J
+  },
+  get Ug1() {
+    return this.m * this.g * this.h;         // ~9.51 J
+  },
+
+  // Stato animazione cinematica macchinina
+  // Posizione s lungo il percorso in coordinate normalizzate [0, 1]
+  // 0.0 -> suolo pre-rampa
+  // 0.25 -> inizio salita rampa
+  // 0.65 -> arrivo in cima (Stato 1)
+  // 0.85 -> contatto con molla a riposo
+  // 1.00 -> massima compressione molla (Stato 2)
+  carS: 0.0,
+  carDirection: 1, // 1 = avanti, -1 = rimbalzo indietro
+  isPlaying: false,
+  isSlowMo: false,
+  activeStep: 1,
+  fontSizeLevel: 0
+};
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ DEFINIZIONE DEI 5 PASSI DIDATTICI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+const STEPS_DATA = {
+  1: {
+    badge: "PASSO 1 DI 5 â€¢ ANALISI FISICA",
+    title: "Comprensione del Fenomeno e i Tre Stati",
+    render: () => `
+      <p class="step-description">
+        Gabriele lancia una macchinina giocattolo di massa <strong>\(m = 650\text{ g} = 0{,}65\text{ kg}\)</strong> con velocitÃ  iniziale <strong>\(v_0 = 5{,}7\text{ m/s}\)</strong> sul pavimento.
+        La macchinina sale lungo una rampa fino a un piano orizzontale posto a un'altezza <strong>\(h\)</strong>, dove giunge con velocitÃ  <strong>\(v_1 = 1{,}8\text{ m/s}\)</strong>, per poi urtare una molla con costante elastica <strong>\(k = 1{,}3 \times 10^3\text{ N/m} = 1300\text{ N/m}\)</strong>.
+      </p>
+
+      <div class="callout-box callout-info">
+        <strong>âš¡ I Tre Stati Fondamentali:</strong>
+        <ul style="margin-left: 20px; margin-top: 6px; line-height: 1.6;">
+          <li><strong>Stato 0 (Pavimento):</strong> Quota \(h_0 = 0\), velocitÃ  \(v_0 = 5{,}7\text{ m/s}\). Solo energia cinetica.</li>
+          <li><strong>Stato 1 (Cima rampa):</strong> Quota \(h_1 = h\), velocitÃ  \(v_1 = 1{,}8\text{ m/s}\), molla a riposo. Energia cinetica + potenziale gravitazionale.</li>
+          <li><strong>Stato 2 (Molla compressa):</strong> Quota \(h_2 = h\), fermo momentaneo \(v_2 = 0\). Energia potenziale gravitazionale + potenziale elastica.</li>
+        </ul>
+      </div>
+
+      <div class="math-display-card">
+        $$\text{In assenza di attriti: } E_{\text{mecc}} = K + U_g + U_{\text{el}} = \text{costante}$$
+        $$E_0 = E_1 = E_2$$
+      </div>
+
+      <div class="callout-box">
+        ðŸ’¡ <strong>Osservazione LIM:</strong> Clicca sui tasti <em>"Stato 0"</em>, <em>"Stato 1"</em> e <em>"Stato 2"</em> sotto al canvas per osservare come si posiziona il sistema e come si trasformano le energie!
+      </div>
+    `
+  },
+
+  2: {
+    badge: "PASSO 2 DI 5 â€¢ ENERGIA INIZIALE",
+    title: "Calcolo dell'Energia Meccanica Totale al Suolo",
+    render: () => `
+      <p class="step-description">
+        Fissiamo il livello zero dell'energia potenziale gravitazionale al pavimento (<strong>\(h_0 = 0\text{ m}\)</strong>).
+        PoichÃ© al pavimento la molla Ã¨ lontana e non interagisce (<strong>\(U_{\text{el}} = 0\)</strong>), tutta l'energia meccanica iniziale coincide con l'energia cinetica della macchinina.
+      </p>
+
+      <div class="math-display-card">
+        $$K_0 = \frac{1}{2} m v_0^2 = \frac{1}{2} \cdot 0{,}65\text{ kg} \cdot (5{,}7\text{ m/s})^2$$
+        $$K_0 = 0{,}325 \cdot 32{,}49 \approx \mathbf{10{,}56\text{ J}}$$
+        $$E_{\text{mecc}} = K_0 + U_{g,0} + U_{\text{el},0} = 10{,}56\text{ J} + 0 + 0 = \mathbf{10{,}56\text{ J}}$$
+      </div>
+
+      <div class="callout-box">
+        âš–ï¸ <strong>Legge Inviolabile:</strong> PoichÃ© non vi sono attriti, in qualsiasi punto successivo del percorso la somma di tutte le forme di energia dovrÃ  risultare sempre esattamente pari a <strong>\(10{,}56\text{ J}\)</strong>.
+      </div>
+    `
+  },
+
+  3: {
+    badge: "PASSO 3 DI 5 â€¢ QUESITO 1",
+    title: "Calcolo dell'Altezza h della Rampa",
+    render: () => `
+      <p class="step-description">
+        Confrontiamo lo <strong>Stato 0</strong> (sul pavimento) con lo <strong>Stato 1</strong> (in cima alla rampa prima dell'impatto con la molla).
+        In cima la macchinina ha quota \(h\) e velocitÃ  residua \(v_1 = 1{,}8\text{ m/s}\).
+      </p>
+
+      <div class="math-display-card">
+        $$E_0 = E_1 \implies \frac{1}{2} m v_0^2 = m g h + \frac{1}{2} m v_1^2$$
+      </div>
+
+      <p class="step-description">
+        Sottraiamo l'energia cinetica residua \(\frac{1}{2}mv_1^2\) da entrambi i membri e semplifichiamo la massa \(m\):
+      </p>
+
+      <div class="math-display-card">
+        $$m g h = \frac{1}{2} m (v_0^2 - v_1^2) \implies g h = \frac{v_0^2 - v_1^2}{2}$$
+        $$h = \frac{v_0^2 - v_1^2}{2g} = \frac{(5{,}7)^2 - (1{,}8)^2}{2 \cdot 9{,}8}$$
+        $$h = \frac{32{,}49 - 3{,}24}{19{,}6} = \frac{29{,}25}{19{,}6} \approx \mathbf{1{,}5\text{ m}}$$
+      </div>
+
+      <div class="callout-box callout-info">
+        ðŸŽ¯ <strong>Risultato Libro:</strong> L'altezza della rampa Ã¨ <strong>\(1{,}5\text{ m}\)</strong>! Nota che l'altezza raggiunta non dipende affatto dalla massa del veicolo, ma unicamente dalla variazione del quadrato della velocitÃ .
+      </div>
+    `
+  },
+
+  4: {
+    badge: "PASSO 4 DI 5 â€¢ QUESITO 2",
+    title: "Compressione Elastica Î”x della Molla",
+    render: () => `
+      <p class="step-description">
+        Confrontiamo lo <strong>Stato 1</strong> (arrivo in quota con molla a riposo) con lo <strong>Stato 2</strong> (arresto momentaneo della macchinina \(v_2 = 0\) e massima compressione \(\Delta x\)).
+        PoichÃ© il piano Ã¨ orizzontale alla quota \(h\), l'energia potenziale gravitazionale si elide (\(mgh = mgh\)):
+      </p>
+
+      <div class="math-display-card">
+        $$E_1 = E_2 \implies mgh + \frac{1}{2} m v_1^2 = mgh + \frac{1}{2} k (\Delta x)^2$$
+        $$\frac{1}{2} k (\Delta x)^2 = \frac{1}{2} m v_1^2$$
+      </div>
+
+      <p class="step-description">
+        Tutta l'energia cinetica residua \(K_1 = 1{,}05\text{ J}\) si trasforma in energia potenziale elastica della molla! Ricaviamo la formula inversa per la compressione:
+      </p>
+
+      <div class="math-display-card">
+        $$(\Delta x)^2 = \frac{m v_1^2}{k} \implies \Delta x = v_1 \sqrt{\frac{m}{k}}$$
+        $$\Delta x = 1{,}8 \cdot \sqrt{\frac{0{,}65}{1300}} = 1{,}8 \cdot \sqrt{0{,}0005} = 1{,}8 \cdot 0{,}02236$$
+        $$\Delta x = 0{,}04025\text{ m} \approx \mathbf{4{,}0\text{ cm}}$$
+      </div>
+
+      <div class="callout-box">
+        ðŸŽ¯ <strong>Risultato Libro:</strong> La molla si comprime esattamente di <strong>\(4{,}0\text{ cm}\)</strong> prima di arrestare il moto e respingere la macchinina!
+      </div>
+    `
+  },
+
+  5: {
+    badge: "PASSO 5 DI 5 â€¢ LABORATORIO INTERATTIVO",
+    title: "Esplora i Parametri e Simula il Trasferimento",
+    render: () => `
+      <p class="step-description">
+        Modifica i parametri fisici in tempo reale con gli slider sottostanti.
+        Osserva come variano istantaneamente l'altezza <strong>\(h\)</strong> e la compressione <strong>\(\Delta x\)</strong>, mantenendo rigorosamente la conservazione di <strong>\(E_{\text{mecc}}\)</strong>!
+      </p>
+
+      <div class="params-section">
+        <div class="param-row">
+          <div class="param-header">
+            <span>VelocitÃ  iniziale suolo \(v_0\):</span>
+            <span class="param-val" id="valV0">${STATE.v0.toFixed(1)} m/s</span>
+          </div>
+          <input type="range" id="sliderV0" min="3.0" max="8.0" step="0.1" value="${STATE.v0}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>VelocitÃ  alla cima rampa \(v_1\):</span>
+            <span class="param-val" id="valV1">${STATE.v1.toFixed(1)} m/s</span>
+          </div>
+          <input type="range" id="sliderV1" min="0.5" max="3.0" step="0.1" value="${STATE.v1}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Costante elastica molla \(k\):</span>
+            <span class="param-val" id="valK">${STATE.k} N/m</span>
+          </div>
+          <input type="range" id="sliderK" min="400" max="3000" step="50" value="${STATE.k}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Massa macchinina \(m\):</span>
+            <span class="param-val" id="valM">${STATE.m.toFixed(2)} kg</span>
+          </div>
+          <input type="range" id="sliderM" min="0.20" max="1.50" step="0.05" value="${STATE.m}">
+        </div>
+      </div>
+
+      <div class="callout-box" id="liveResultsBox" style="margin-top:10px;">
+        <strong>Valori Ricalcolati in Tempo Reale:</strong><br>
+        Altezza rampa: <strong>\(h = ${STATE.h.toFixed(2)}\text{ m}\)</strong><br>
+        Compressione molla: <strong>\(\Delta x = ${(STATE.dx * 100).toFixed(1)}\text{ cm}\)</strong><br>
+        Energia Meccanica Totale: <strong>\(E_{\text{mecc}} = ${STATE.E0.toFixed(2)}\text{ J}\)</strong>
+      </div>
+    `
+  }
+};
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ GESTORE PASSI DIDATTICI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+function setStep(stepNum) {
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 5) stepNum = 5;
+  STATE.activeStep = stepNum;
+
+  // Aggiorna pills nel footer
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    const s = parseInt(pill.getAttribute('data-step'), 10);
+    pill.classList.toggle('active', s === stepNum);
+  });
+
+  // Aggiorna pulsanti prev/next
+  document.getElementById('btnPrevStep').disabled = (stepNum === 1);
+  document.getElementById('btnNextStep').disabled = (stepNum === 5);
+
+  // Inietta contenuto HTML del passo
+  const card = document.getElementById('stepContentCard');
+  const data = STEPS_DATA[stepNum];
+  card.innerHTML = `
+    <div class="step-header">
+      <span class="step-badge">${data.badge}</span>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">Passo ${stepNum} di 5</span>
+    </div>
+    <h2 class="step-title">${data.title}</h2>
+    ${data.render()}
+  `;
+
+  // Renderizza KaTeX
+  if (window.renderMathInElement) {
+    renderMathInElement(card, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\(', right: '\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+
+  // Attacca listener se siamo al passo 5
+  if (stepNum === 5) {
+    attachStep5Listeners();
+  }
+
+  // Posiziona la macchinina opportunamente in base al passo didattico
+  if (stepNum === 1 || stepNum === 2) {
+    STATE.carS = 0.05;
+    STATE.carDirection = 1;
+  } else if (stepNum === 3) {
+    STATE.carS = 0.65; // Cima rampa
+  } else if (stepNum === 4) {
+    STATE.carS = 1.0;  // Massima compressione molla
+  }
+}
+
+function prevStep() { setStep(STATE.activeStep - 1); }
+function nextStep() { setStep(STATE.activeStep + 1); }
+
+function attachStep5Listeners() {
+  const sV0 = document.getElementById('sliderV0');
+  const sV1 = document.getElementById('sliderV1');
+  const sK  = document.getElementById('sliderK');
+  const sM  = document.getElementById('sliderM');
+
+  function update() {
+    STATE.v0 = parseFloat(sV0.value);
+    STATE.v1 = parseFloat(sV1.value);
+    if (STATE.v1 >= STATE.v0) {
+      STATE.v1 = STATE.v0 - 0.5;
+      sV1.value = STATE.v1;
+    }
+    STATE.k  = parseFloat(sK.value);
+    STATE.m  = parseFloat(sM.value);
+
+    document.getElementById('valV0').textContent = STATE.v0.toFixed(1) + ' m/s';
+    document.getElementById('valV1').textContent = STATE.v1.toFixed(1) + ' m/s';
+    document.getElementById('valK').textContent = STATE.k + ' N/m';
+    document.getElementById('valM').textContent = STATE.m.toFixed(2) + ' kg';
+
+    const box = document.getElementById('liveResultsBox');
+    if (box) {
+      box.innerHTML = `
+        <strong>Valori Ricalcolati in Tempo Reale:</strong><br>
+        Altezza rampa: <strong>\(h = ${STATE.h.toFixed(2)}\text{ m}\)</strong><br>
+        Compressione molla: <strong>\(\Delta x = ${(STATE.dx * 100).toFixed(1)}\text{ cm}\)</strong><br>
+        Energia Meccanica Totale: <strong>\(E_{\text{mecc}} = ${STATE.E0.toFixed(2)}\text{ J}\)</strong>
+      `;
+      if (window.renderMathInElement) {
+        renderMathInElement(box, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\(', right: '\)', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const stats = document.getElementById('canvasStats');
+    if (stats) {
+      stats.innerHTML = `\(m = ${STATE.m.toFixed(2)}\text{ kg} \quad v_0 = ${STATE.v0.toFixed(1)}\text{ m/s} \quad k = ${STATE.k}\text{ N/m}\)`;
+      if (window.renderMathInElement) {
+        renderMathInElement(stats, {
+          delimiters: [{left: '\(', right: '\)', display: false}],
+          throwOnError: false
+        });
+      }
+    }
+  }
+
+  if (sV0) sV0.addEventListener('input', update);
+  if (sV1) sV1.addEventListener('input', update);
+  if (sK)  sK.addEventListener('input', update);
+  if (sM)  sM.addEventListener('input', update);
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ VETTORE RENDERER (CANVAS 3BLUE1BROWN) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 0;
+    this.height = 0;
+
+    this.lastTime = performance.now();
+    this.initLoop();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+
+  initLoop() {
+    const loop = (currentTime) => {
+      const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+      this.lastTime = currentTime;
+
+      this.updatePhysics(dt);
+      this.render();
+
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  updatePhysics(dt) {
+    if (!STATE.isPlaying) return;
+
+    const speedMultiplier = STATE.isSlowMo ? 0.35 : 1.0;
+    const ds = dt * 0.28 * speedMultiplier;
+
+    STATE.carS += ds * STATE.carDirection;
+
+    // Rimbalzo elastico ideale alla massima compressione o al limite sinistro
+    if (STATE.carS >= 1.0) {
+      STATE.carS = 1.0;
+      STATE.carDirection = -1; // Rimbalza e torna indietro
+    } else if (STATE.carS <= 0.0) {
+      STATE.carS = 0.0;
+      STATE.carDirection = 1;  // Ripartenza dal suolo
+    }
+  }
+
+  // Calcola coordinate (x, y, quotaReale, velocitaReale, compressioneMolla) in base a s
+  getCarGeometry(s) {
+    const W = this.width;
+    const H = this.height;
+
+    // Layout geometrico proporzionato
+    const floorY = H * 0.76;
+    const plateauY = H * 0.38;
+    const startRampX = W * 0.24;
+    const endRampX = W * 0.54;
+    const wallX = W * 0.88;
+    const springRestLen = W * 0.18;
+    const springRestX = wallX - springRestLen;
+
+    let x = 0;
+    let y = 0;
+    let angle = 0;
+    let currentV = 0;
+    let currentH = 0;
+    let currentDx = 0;
+
+    // Tratto 1: Pavimento orizzontale (s: 0.0 -> 0.20)
+    if (s <= 0.20) {
+      const u = s / 0.20;
+      x = (W * 0.06) + u * (startRampX - (W * 0.06));
+      y = floorY;
+      angle = 0;
+      currentV = STATE.v0;
+      currentH = 0;
+      currentDx = 0;
+    }
+    // Tratto 2: Rampa curva morbida (s: 0.20 -> 0.65)
+    else if (s <= 0.65) {
+      const u = (s - 0.20) / (0.65 - 0.20);
+      x = startRampX + u * (endRampX - startRampX);
+      // Profilo sigmoidale morbido: 3u^2 - 2u^3
+      const smooth = u * u * (3 - 2 * u);
+      y = floorY - smooth * (floorY - plateauY);
+      currentH = smooth * STATE.h;
+      // VelocitÃ  da conservazione dell'energia: v = sqrt(v0^2 - 2gh)
+      const vSq = Math.max(0, STATE.v0 * STATE.v0 - 2 * STATE.g * currentH);
+      currentV = Math.sqrt(vSq);
+
+      // Angolo tangente per orientare la macchinina
+      const slope = -6 * u * (1 - u) * (floorY - plateauY) / (endRampX - startRampX);
+      angle = Math.atan(slope);
+    }
+    // Tratto 3: Pianoro prima della molla (s: 0.65 -> 0.85)
+    else if (s <= 0.85) {
+      const u = (s - 0.65) / (0.85 - 0.65);
+      x = endRampX + u * (springRestX - endRampX);
+      y = plateauY;
+      angle = 0;
+      currentH = STATE.h;
+      currentV = STATE.v1;
+      currentDx = 0;
+    }
+    // Tratto 4: Compressione della molla (s: 0.85 -> 1.0)
+    else {
+      const u = (s - 0.85) / (1.0 - 0.85);
+      const maxCompressPx = W * 0.07;
+      const compPx = u * maxCompressPx;
+      x = springRestX + compPx;
+      y = plateauY;
+      angle = 0;
+      currentH = STATE.h;
+      currentDx = u * STATE.dx;
+      // VelocitÃ  durante decelerazione elastica: v = v1 * sqrt(1 - u^2)
+      currentV = STATE.v1 * Math.sqrt(Math.max(0, 1 - u * u));
+    }
+
+    return {
+      x, y, angle, currentV, currentH, currentDx,
+      floorY, plateauY, startRampX, endRampX, wallX, springRestLen, springRestX
+    };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const W = this.width;
+    const H = this.height;
+    if (W === 0 || H === 0) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const geo = this.getCarGeometry(STATE.carS);
+
+    // 1. Griglia di fondo vettoriale discreta (stile 3Blue1Brown)
+    this.drawGrid(ctx, W, H);
+
+    // 2. Terreno, Rampa e Muro di arresto
+    this.drawTrack(ctx, geo, W, H);
+
+    // 3. Molla elastica con spire metalliche dinamiche
+    this.drawSpring(ctx, geo);
+
+    // 4. Quote dimensionali e frecce (h = 1.5 m, Î”x = 4.0 cm)
+    this.drawDimensions(ctx, geo);
+
+    // 5. Macchinina giocattolo con ruote, fari e vettore velocitÃ 
+    this.drawCar(ctx, geo);
+
+    // 6. Grafico Dinamico delle Energie Meccaniche (K, Ug, Uel, Etot)
+    this.drawEnergyBars(ctx, geo, W, H);
+  }
+
+  drawGrid(ctx, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.04)';
+    ctx.lineWidth = 1;
+    const step = 30;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+      this.ctx.restore();
+  }
+
+  drawTrack(ctx, geo, W, H) {
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.save();
+
+    // Superficie della pista
+    ctx.beginPath();
+    ctx.moveTo(0, geo.floorY);
+    ctx.lineTo(geo.startRampX, geo.floorY);
+
+    // Rampa spline
+    const samples = 30;
+    for (let i = 0; i <= samples; i++) {
+      const u = i / samples;
+      const x = geo.startRampX + u * (geo.endRampX - geo.startRampX);
+      const smooth = u * u * (3 - 2 * u);
+      const y = geo.floorY - smooth * (geo.floorY - geo.plateauY);
+      ctx.lineTo(x, y);
+    }
+
+    ctx.lineTo(geo.wallX, geo.plateauY);
+    ctx.lineTo(geo.wallX, geo.floorY);
+    ctx.lineTo(W, geo.floorY);
+
+    // Tratteggio inferiore pista (massa solida di supporto)
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fill();
+
+    // Bordo pista evidenziato
+    ctx.beginPath();
+    ctx.moveTo(0, geo.floorY);
+    ctx.lineTo(geo.startRampX, geo.floorY);
+    for (let i = 0; i <= samples; i++) {
+      const u = i / samples;
+      const x = geo.startRampX + u * (geo.endRampX - geo.startRampX);
+      const smooth = u * u * (3 - 2 * u);
+      const y = geo.floorY - smooth * (geo.floorY - geo.plateauY);
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(geo.wallX, geo.plateauY);
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Muro rigido posteriore a destra su cui Ã¨ fissata la molla
+    ctx.fillStyle = isDark ? '#334155' : '#64748b';
+    ctx.fillRect(geo.wallX, geo.plateauY - 50, 18, (geo.floorY - geo.plateauY) + 50);
+
+    // Tratteggio obliquo di ancoraggio muro
+    ctx.strokeStyle = isDark ? '#64748b' : '#cbd5e1';
+    ctx.lineWidth = 2;
+    for (let y = geo.plateauY - 45; y < geo.floorY + 20; y += 12) {
+      ctx.beginPath();
+      ctx.moveTo(geo.wallX + 18, y);
+      ctx.lineTo(geo.wallX + 30, y + 10);
+      ctx.stroke();
+    }
+
+      this.ctx.restore();
+  }
+
+  drawSpring(ctx, geo) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Posizione attuale della testina della molla
+    // Se la macchinina la comprime, la testina coincide con geo.x + mezzo carrello
+    const carFrontX = geo.x + 22; // muso della macchinina
+    const springHeadX = Math.max(carFrontX, geo.springRestX);
+    const springTailX = geo.wallX;
+    const currentSpringLen = springTailX - springHeadX;
+    const centerY = geo.plateauY - 14;
+
+    // Bobina a zig-zag elicoidale
+    const coils = 12;
+    const coilW = currentSpringLen / coils;
+    const coilAmplitude = 12;
+
+    ctx.beginPath();
+    ctx.moveTo(springTailX, centerY);
+    ctx.lineTo(springTailX - 6, centerY);
+
+    for (let i = 0; i < coils; i++) {
+      const startX = springTailX - 6 - i * coilW;
+      const midX = startX - coilW * 0.5;
+      const endX = startX - coilW;
+      const ySign = (i % 2 === 0) ? 1 : -1;
+
+      ctx.lineTo(midX, centerY + ySign * coilAmplitude);
+      ctx.lineTo(endX, centerY);
+    }
+
+    ctx.lineTo(springHeadX, centerY);
+
+    ctx.strokeStyle = '#ea580c'; // Arancio molla elastica
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Piattello di battuta metallico all'estremitÃ  della molla
+    ctx.fillStyle = isDark ? '#cbd5e1' : '#334155';
+    ctx.fillRect(springHeadX - 4, centerY - 16, 6, 32);
+
+    // Etichetta costante k
+    ctx.font = '600 12px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#ea580c';
+    ctx.fillText('k = 1300 N/m', (springHeadX + springTailX) / 2 - 38, centerY - 22);
+
+      this.ctx.restore();
+  }
+
+  drawDimensions(ctx, geo) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // 1. Quota h = 1.5 m (linea verticale tratteggiata con freccia doppia)
+    const dimX = geo.startRampX - 30;
+    ctx.strokeStyle = '#16a34a'; // Verde quota
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+
+    // Linee guida orizzontali
+    ctx.beginPath();
+    ctx.moveTo(dimX - 8, geo.floorY);
+    ctx.lineTo(geo.startRampX + 10, geo.floorY);
+    ctx.moveTo(dimX - 8, geo.plateauY);
+    ctx.lineTo(geo.endRampX, geo.plateauY);
+    ctx.stroke();
+
+    // Freccia verticale doppia
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(dimX, geo.floorY);
+    ctx.lineTo(dimX, geo.plateauY);
+    ctx.stroke();
+
+    // Punte freccia
+    this.drawArrowHead(ctx, dimX, geo.floorY, Math.PI / 2, 7, '#16a34a');
+    this.drawArrowHead(ctx, dimX, geo.plateauY, -Math.PI / 2, 7, '#16a34a');
+
+    // Testo altezza
+    ctx.font = '700 13px "Inter", sans-serif';
+    ctx.fillStyle = '#16a34a';
+    ctx.fillText(`h = ${STATE.h.toFixed(1)} m`, dimX - 70, (geo.floorY + geo.plateauY) / 2 + 5);
+
+    // 2. Compressione molla Î”x (se presente nello Stato 2 o durante il moto)
+    if (geo.currentDx > 0.002) {
+      const headRestX = geo.springRestX;
+      const currentHeadX = geo.x + 22;
+      const compY = geo.plateauY + 22;
+
+      ctx.strokeStyle = '#ea580c';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(headRestX, compY);
+      ctx.lineTo(currentHeadX, compY);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, headRestX, compY, Math.PI, 6, '#ea580c');
+      this.drawArrowHead(ctx, currentHeadX, compY, 0, 6, '#ea580c');
+
+      ctx.font = '700 12px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#ea580c';
+      ctx.fillText(`Î”x = ${(geo.currentDx * 100).toFixed(1)} cm`, headRestX - 25, compY + 18);
+    }
+
+      this.ctx.restore();
+  }
+
+  drawCar(ctx, geo) {
+    ctx.save();
+    ctx.translate(geo.x, geo.y);
+    ctx.rotate(geo.angle);
+
+    const carLen = 44;
+    const carH = 18;
+
+    // Ombra veicolo
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(0, -2, carLen * 0.5, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Carrozzeria sportiva macchinina
+    ctx.fillStyle = '#e11d48'; // Rosso fiammante
+    ctx.beginPath();
+    ctx.roundRect(-carLen * 0.5, -carH - 6, carLen, carH, [6, 10, 4, 4]);
+    ctx.fill();
+
+    // Tettuccio e parabrezza
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(-carLen * 0.25, -carH - 12, carLen * 0.55, 8, [4, 4, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#93c5fd';
+    ctx.fillRect(-carLen * 0.15, -carH - 10, carLen * 0.35, 5);
+
+    // Faro anteriore
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(carLen * 0.45, -carH - 1, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ruote nere con mozzi argentati
+    const drawWheel = (wx) => {
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(wx, -5, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.arc(wx, -5, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    drawWheel(-carLen * 0.32);
+    drawWheel(carLen * 0.32);
+
+    // Vettore VelocitÃ  v (freccia verde brillante uscente)
+    if (geo.currentV > 0.05) {
+      const vScale = geo.currentV * 12;
+      const vDir = STATE.carDirection;
+
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, -carH * 0.5 - 6);
+      ctx.lineTo(vScale * vDir, -carH * 0.5 - 6);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, vScale * vDir, -carH * 0.5 - 6, vDir > 0 ? 0 : Math.PI, 8, '#2563eb');
+
+      // Testo velocitÃ 
+      ctx.font = '700 12px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#2563eb';
+      ctx.fillText(`v = ${geo.currentV.toFixed(1)} m/s`, vDir > 0 ? vScale + 8 : -vScale - 75, -carH * 0.5 - 12);
+    } else {
+      // Macchinina ferma alla massima compressione
+      ctx.font = '700 12px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#dc2626';
+      ctx.fillText('v = 0 m/s', -25, -carH - 18);
+    }
+
+      this.ctx.restore();
+  }
+
+  drawEnergyBars(ctx, geo, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Calcolo valori istantanei di energia
+    const K = 0.5 * STATE.m * geo.currentV * geo.currentV;
+    const Ug = STATE.m * STATE.g * geo.currentH;
+    const Uel = 0.5 * STATE.k * geo.currentDx * geo.currentDx;
+    const Etot = K + Ug + Uel;
+
+    // Pannellino grafico in alto a sinistra
+    const panelX = 20;
+    const panelY = 16;
+    const panelW = 270;
+    const panelH = 118;
+
+    ctx.fillStyle = isDark ? 'rgba(19, 27, 46, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    // Titolo
+    ctx.font = '700 11px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('BILANCIO ENERGETICO MECCANICO', panelX + 12, panelY + 18);
+
+    const maxE = 12.0; // Joule scala fissa
+    const barMaxW = 140;
+    const startBarsX = panelX + 50;
+
+    const drawSingleBar = (yOffset, label, val, color) => {
+      const bY = panelY + yOffset;
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.fillText(label, panelX + 12, bY + 11);
+
+      // Sfondo barra
+      ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, barMaxW, 12, 3);
+      ctx.fill();
+
+      // Barra riempita proporzionale
+      const w = Math.max(0, Math.min(barMaxW, (val / maxE) * barMaxW));
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, w, 12, 3);
+      ctx.fill();
+
+      // Valore numerico
+      ctx.font = '600 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      ctx.fillText(`${val.toFixed(2)} J`, startBarsX + barMaxW + 8, bY + 10);
+    };
+
+    drawSingleBar(28, 'K', K, '#2563eb');
+    drawSingleBar(48, 'Ug', Ug, '#16a34a');
+    drawSingleBar(68, 'Uel', Uel, '#ea580c');
+    drawSingleBar(90, 'Etot', Etot, '#7c3aed');
+
+      this.ctx.restore();
+  }
+
+  drawArrowHead(ctx, x, y, angle, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-size, -size * 0.5);
+    ctx.lineTo(-size, size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+      this.ctx.restore();
+  }
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PENNA LIM FLUTTUANTE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.active = false;
+    this.color = '#dc2626';
+    this.lineWidth = 5;
+    this.isDrawing = false;
+    this.strokes = [];
+    this.currentStroke = null;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    };
+
+    const startDraw = (e) => {
+      if (!this.active) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      const pos = getPos(e);
+      this.currentStroke = {
+        color: this.color,
+        width: this.lineWidth,
+        points: [pos]
+      };
+      this.strokes.push(this.currentStroke);
+      this.drawSegment(pos, pos);
+    };
+
+    const moveDraw = (e) => {
+      if (!this.active || !this.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      const pts = this.currentStroke.points;
+      const lastPos = pts[pts.length - 1];
+      pts.push(pos);
+      this.drawSegment(lastPos, pos);
+    };
+
+    const endDraw = () => {
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+
+    this.canvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', moveDraw, { passive: false });
+    window.addEventListener('touchend', endDraw);
+  }
+
+  drawSegment(p1, p2) {
+    this.ctx.strokeStyle = this.currentStroke.color;
+    this.ctx.lineWidth = this.currentStroke.width;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.beginPath();
+    this.ctx.moveTo(p1.x, p1.y);
+    this.ctx.lineTo(p2.x, p2.y);
+    this.ctx.stroke();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.strokeStyle = stroke.color;
+      this.ctx.lineWidth = stroke.width;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ FOGLIO BIANCO DIGITALE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 5;
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        screenX: cx - rect.left,
+        screenY: cy - rect.top,
+        worldX: cx - rect.left - this.panX,
+        worldY: cy - rect.top - this.panY
+      };
+    };
+
+    const onPointerDown = (e) => {
+      const pos = getPos(e);
+
+      if (this.tool === 'pan') {
+        this.isPanning = true;
+        this.panStartX = pos.screenX - this.panX;
+        this.panStartY = pos.screenY - this.panY;
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.hitTestStroke(pos.worldX, pos.worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = pos.worldX;
+          this.dragStartY = pos.worldY;
+        }
+        this.redraw();
+        return;
+      }
+
+      // Penna o gomma
+      this.isDrawing = true;
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        points: [{ x: pos.worldX, y: pos.worldY }]
+      };
+      this.strokes.push(this.currentStroke);
+      this.redraw();
+    };
+
+    const onPointerMove = (e) => {
+      const pos = getPos(e);
+
+      if (this.isPanning) {
+        this.panX = pos.screenX - this.panStartX;
+        this.panY = pos.screenY - this.panStartY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = pos.worldX - this.dragStartX;
+        const dy = pos.worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = pos.worldX;
+        this.dragStartY = pos.worldY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDrawing && this.currentStroke) {
+        this.currentStroke.points.push({ x: pos.worldX, y: pos.worldY });
+        this.redraw();
+      }
+    };
+
+    const onPointerUp = () => {
+      this.isPanning = false;
+      this.isDraggingStroke = false;
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    this.canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  hitTestStroke(wx, wy) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const stroke = this.strokes[i];
+      for (const p of stroke.points) {
+        const dist = Math.hypot(p.x - wx, p.y - wy);
+        if (dist < 15) return stroke;
+      }
+    }
+    return null;
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.save();
+      this.ctx.strokeStyle = (stroke.tool === 'eraser') ? '#ffffff' : stroke.color;
+      this.ctx.lineWidth = stroke.size;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+
+      if (stroke === this.selectedStroke) {
+        this.ctx.strokeStyle = '#2563eb';
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.stroke();
+      }
+      this.ctx.restore();
+    }
+
+    this.ctx.restore();
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ GESTIONE GLOBALE EVENTI & TOOLBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  limPen.active = !limPen.active;
+  document.getElementById('limPenCanvas').classList.toggle('active', limPen.active);
+  document.getElementById('btnTogglePen').classList.toggle('active', limPen.active);
+  document.getElementById('limFloatingBar').classList.toggle('show', limPen.active);
+}
+
+function openWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.add('show');
+  setTimeout(() => whiteboard.resize(), 50);
+}
+
+function closeWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.remove('show');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function cycleFontSize() {
+  STATE.fontSizeLevel = (STATE.fontSizeLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const btn = document.getElementById('btnScaleFont');
+  if (STATE.fontSizeLevel === 1) {
+    document.body.classList.add('text-scale-1');
+    btn.textContent = 'A++ Testo';
+  } else if (STATE.fontSizeLevel === 2) {
+    document.body.classList.add('text-scale-2');
+    btn.textContent = 'A Standard';
+  } else {
+    btn.textContent = 'A+ Testo';
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('btnToggleDark').textContent = isDark ? 'â˜€ï¸ Chiaro' : 'ðŸŒ™ Tema';
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ BINDING EVENTI DOM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  // Header buttons
+  document.getElementById('btnTogglePen').addEventListener('click', togglePenMode);
+  document.getElementById('btnOpenWhiteboard').addEventListener('click', openWhiteboard);
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+  document.getElementById('btnScaleFont').addEventListener('click', cycleFontSize);
+  document.getElementById('btnToggleDark').addEventListener('click', toggleDarkMode);
+
+  // Footer step navigation
+  document.getElementById('btnPrevStep').addEventListener('click', prevStep);
+  document.getElementById('btnNextStep').addEventListener('click', nextStep);
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const step = parseInt(e.target.getAttribute('data-step'), 10);
+      setStep(step);
+    });
+  });
+
+  // Controlli simulazione
+  const btnPlay = document.getElementById('btnPlayPause');
+  btnPlay.addEventListener('click', () => {
+    STATE.isPlaying = !STATE.isPlaying;
+    btnPlay.textContent = STATE.isPlaying ? 'â¸ Sospendi' : 'â–¶ Avvia Moto';
+  });
+
+  document.getElementById('btnResetSim').addEventListener('click', () => {
+    STATE.carS = 0.05;
+    STATE.carDirection = 1;
+    STATE.isPlaying = false;
+    btnPlay.textContent = 'â–¶ Avvia Moto';
+  });
+
+  const btnSlow = document.getElementById('btnSlowMo');
+  btnSlow.addEventListener('click', () => {
+    STATE.isSlowMo = !STATE.isSlowMo;
+    btnSlow.classList.toggle('active', STATE.isSlowMo);
+    btnSlow.textContent = STATE.isSlowMo ? 'ðŸ‡ Normale' : 'ðŸ¢ Rallentatore';
+  });
+
+  // Tasti salto rapido stati fisici
+  document.getElementById('btnGoState0').addEventListener('click', () => {
+    STATE.carS = 0.05;
+    STATE.carDirection = 1;
+    STATE.isPlaying = false;
+    btnPlay.textContent = 'â–¶ Avvia Moto';
+  });
+  document.getElementById('btnGoState1').addEventListener('click', () => {
+    STATE.carS = 0.65;
+    STATE.carDirection = 1;
+    STATE.isPlaying = false;
+    btnPlay.textContent = 'â–¶ Avvia Moto';
+  });
+  document.getElementById('btnGoState2').addEventListener('click', () => {
+    STATE.carS = 1.0;
+    STATE.carDirection = -1;
+    STATE.isPlaying = false;
+    btnPlay.textContent = 'â–¶ Avvia Moto';
+  });
+
+  // Floating LIM bar tools
+  document.querySelectorAll('.lim-color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+      e.target.classList.add('active');
+      limPen.color = e.target.getAttribute('data-color');
+      limPen.lineWidth = 5;
+    });
+  });
+
+  document.getElementById('btnLimEraser').addEventListener('click', () => {
+    limPen.color = document.body.classList.contains('dark-mode') ? '#0f172a' : '#ffffff';
+    limPen.lineWidth = 20;
+  });
+
+  document.getElementById('btnLimClear').addEventListener('click', () => limPen.clear());
+  document.getElementById('btnLimClose').addEventListener('click', togglePenMode);
+
+  // Dragging del floating toolbar LIM
+  const bar = document.getElementById('limFloatingBar');
+  const handle = document.getElementById('limDragHandle');
+  let isDraggingBar = false;
+  let barStartX = 0, barStartY = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    isDraggingBar = true;
+    barStartX = e.clientX - bar.offsetLeft;
+    barStartY = e.clientY - bar.offsetTop;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingBar) return;
+    bar.style.left = (e.clientX - barStartX) + 'px';
+    bar.style.top = (e.clientY - barStartY) + 'px';
+    bar.style.right = 'auto';
+  });
+  window.addEventListener('mouseup', () => { isDraggingBar = false; });
+
+  // Whiteboard tools
+  document.getElementById('btnWbClose').addEventListener('click', closeWhiteboard);
+  document.getElementById('btnWbClear').addEventListener('click', () => whiteboard.clear());
+  document.getElementById('btnWbToolPen').addEventListener('click', (e) => {
+    whiteboard.tool = 'pen';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolEraser').addEventListener('click', (e) => {
+    whiteboard.tool = 'eraser';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolPan').addEventListener('click', (e) => {
+    whiteboard.tool = 'pan';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolSelect').addEventListener('click', (e) => {
+    whiteboard.tool = 'select';
+    setWbActiveTool(e.target);
+  });
+
+  function setWbActiveTool(btn) {
+    ['btnWbToolPen', 'btnWbToolEraser', 'btnWbToolPan', 'btnWbToolSelect'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    btn.classList.add('active');
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toUpperCase();
+    if (key === 'ARROWLEFT') prevStep();
+    if (key === 'ARROWRIGHT') nextStep();
+    if (key === 'P') togglePenMode();
+    if (key === 'W') {
+      const ov = document.getElementById('whiteboardOverlay');
+      if (ov.classList.contains('show')) closeWhiteboard();
+      else openWhiteboard();
+    }
+    if (key === 'F') toggleFullscreen();
+    if (key === 'ESCAPE') {
+      closeWhiteboard();
+      if (limPen.active) togglePenMode();
+    }
+  });
+
+  // Inizia dal passo 1
+  setStep(1);
+});
+</script>
+</body>
+</html>

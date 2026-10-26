@@ -627,6 +627,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-cinetica-4.html"
                   }
                 ]
+              },
+              {
+                title: "⚡ Conservazione dell'Energia Meccanica — Problemi Guidati (Pag. 370 - 371)",
+                topics: [
+                  {
+                    title: "🎢 Problema Modello 77: Le Montagne Russe da 94 m (Pag. 370)",
+                    desc: "Discesa da fermo da h₀ = 94 m. Calcolo velocità a metà quota (v₁ = 30 m/s) e a fine discesa (v₂ = 43 m/s). Dimostrazione dell'indipendenza dalla massa.",
+                    url: "/fisica/giordano-bruno/esercizio-meccanica-1.html"
+                  },
+                  {
+                    title: "⚽ Problema 76: Il Calcio al Pallone in Verticale (Pag. 370)",
+                    desc: "Tiro a v₀ = 50 km/h (13,9 m/s) da quota h₀ = 1,0 m. Conservazione dell'energia cinetica e potenziale per determinare la quota massima raggiunta h_max = 10,8 m.",
+                    url: "/fisica/giordano-bruno/esercizio-meccanica-2.html"
+                  },
+                  {
+                    title: "🎢 Problema 78: Il Vagone delle Montagne Russe sui Punti A, B e C (Pag. 371)",
+                    desc: "Vagone da fermo da A (30 m). Calcolo della velocità nel punto più basso B a 5,0 m (v_B = 22 m/s) e dell'altezza del colle C dove v_C = 16 m/s (h_C = 17 m).",
+                    url: "/fisica/giordano-bruno/esercizio-meccanica-3.html"
+                  },
+                  {
+                    title: "🏎️ Problema 80: La Macchinina e la Molla sulla Rampa (Pag. 371)",
+                    desc: "Lancio a v₀ = 5,7 m/s, salita sulla rampa con velocità residua v₁ = 1,8 m/s e compressione della molla (k = 1300 N/m). Calcolo quota h = 1,5 m e compressione Δx = 4,0 cm.",
+                    url: "/fisica/giordano-bruno/esercizio-meccanica-4.html"
+                  }
+                ]
               }
             ]
 
