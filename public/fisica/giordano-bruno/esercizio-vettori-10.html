@@ -291,7 +291,7 @@ html, body {
 /* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
 .canvas-zoom-controls {
   position: absolute;
-  top: 10px;
+  bottom: 12px;
   right: 12px;
   display: flex;
   flex-direction: column;
@@ -342,7 +342,7 @@ html, body {
   z-index: 5;
 }
 .canvas-live-badge {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.90);
   color: #ffffff;
   padding: 5px 12px;
   border-radius: 6px;
@@ -354,6 +354,10 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  max-width: 380px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* COLONNA DESTRA: GUIDA PASSO-PASSO */
@@ -1777,6 +1781,48 @@ class VectorCanvas {
     window.addEventListener('resize', () => this.resize());
   }
 
+  drawBadge(x, y, text, bgColor, textColor, borderColor = null, fontSize = 12) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `bold ${fontSize}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text).width;
+    const padX = 8;
+    const padY = 4;
+    const bw = tw + padX * 2;
+    const bh = fontSize + padY * 2;
+    const rx = Math.round(x - bw / 2);
+    const ry = Math.round(y - bh / 2);
+
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(rx, ry, bw, bh, 5);
+    } else {
+      ctx.rect(rx, ry, bw, bh);
+    }
+    ctx.fill();
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    if (borderColor) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
   getSquareCenter(colIdx, rowIdx) {
     // colIdx: 0..7 (A..H), rowIdx: 0..7 (1..8 con 0=1 in basso, 7=8 in alto)
     const boardSize = Math.min(this.width, this.height) * 0.76 * this.zoom;
@@ -1849,28 +1895,40 @@ class VectorCanvas {
     const pC6 = this.getSquareCenter(2, 5);
     const pCorner = this.getSquareCenter(2, 7); // svolta a L in C8
 
-    // Alone verde su B8
-    ctx.fillStyle = 'rgba(34, 197, 94, 0.35)';
+    // Evidenziazione casella di Partenza B8
+    ctx.fillStyle = isDark ? 'rgba(34, 197, 94, 0.30)' : 'rgba(34, 197, 94, 0.22)';
     ctx.fillRect(bOx + 1 * sq, bOy + 0 * sq, sq, sq);
-    ctx.strokeStyle = '#22c55e';
+    ctx.strokeStyle = isDark ? '#22c55e' : '#16a34a';
     ctx.lineWidth = 3;
     ctx.strokeRect(bOx + 1 * sq, bOy + 0 * sq, sq, sq);
 
-    ctx.font = 'bold 12px IBM Plex Mono, monospace';
-    ctx.fillStyle = '#22c55e';
-    ctx.fillText("B8 (Start)", bOx + 1 * sq + 4, bOy + 0 * sq + 16);
+    this.drawBadge(
+      bOx + 1 * sq + sq * 0.5,
+      bOy + 0 * sq + 13,
+      "B8 (Partenza)",
+      isDark ? "#064e3b" : "#ecfdf5",
+      isDark ? "#4ade80" : "#047857",
+      isDark ? "#10b981" : "#059669",
+      11
+    );
 
     if (stepIndex >= 2) {
-      // Alone rosso su C6 (col 2, riga 5 -> sullo schermo riga 2 dall'alto: 7-5=2)
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+      // Evidenziazione casella di Arrivo C6
+      ctx.fillStyle = isDark ? 'rgba(239, 68, 68, 0.30)' : 'rgba(239, 68, 68, 0.22)';
       ctx.fillRect(bOx + 2 * sq, bOy + 2 * sq, sq, sq);
-      ctx.strokeStyle = '#ef4444';
+      ctx.strokeStyle = isDark ? '#ef4444' : '#dc2626';
       ctx.lineWidth = 3;
       ctx.strokeRect(bOx + 2 * sq, bOy + 2 * sq, sq, sq);
 
-      ctx.font = 'bold 12px IBM Plex Mono, monospace';
-      ctx.fillStyle = '#ef4444';
-      ctx.fillText("C6 (Arrivo)", bOx + 2 * sq + 4, bOy + 2 * sq + 16);
+      this.drawBadge(
+        bOx + 2 * sq + sq * 0.5,
+        bOy + 2 * sq + sq - 13,
+        "C6 (Arrivo)",
+        isDark ? "#450a0a" : "#fef2f2",
+        isDark ? "#f87171" : "#b91c1c",
+        isDark ? "#ef4444" : "#dc2626",
+        11
+      );
     }
 
     // Tracciamento componenti ortogonali della mossa a "L" (Passi 3, 4, 5, 6)
@@ -1908,20 +1966,37 @@ class VectorCanvas {
       ctx.closePath();
       ctx.fill();
 
-      // Quote numeriche sui cateti
-      ctx.font = 'bold 13px IBM Plex Mono, monospace';
-      ctx.fillText("Δx = 2,0 m", (pB8.x + pCorner.x) / 2 - 25, pB8.y - 12);
-      ctx.fillText("Δy = 4,0 m", pCorner.x + 12, (pCorner.y + pC6.y) / 2 + 4);
-
       // Angolo retto a C8
       const sqK = 12;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ef4444';
       ctx.beginPath();
       ctx.moveTo(pCorner.x - sqK, pCorner.y);
       ctx.lineTo(pCorner.x - sqK, pCorner.y + sqK);
       ctx.lineTo(pCorner.x, pCorner.y + sqK);
       ctx.stroke();
       ctx.restore();
+
+      // Quote numeriche con pill badge ad altissima leggibilità
+      this.drawBadge(
+        (pB8.x + pCorner.x) / 2,
+        pB8.y - 18,
+        "Δx = 2,0 m (Est)",
+        isDark ? "#1e293b" : "#ffffff",
+        isDark ? "#fca5a5" : "#b91c1c",
+        "#ef4444",
+        12
+      );
+
+      this.drawBadge(
+        pCorner.x + 62,
+        (pCorner.y + pC6.y) / 2,
+        "Δy = 4,0 m (Sud)",
+        isDark ? "#1e293b" : "#ffffff",
+        isDark ? "#fca5a5" : "#b91c1c",
+        "#ef4444",
+        12
+      );
     }
 
     // Triangolo rettangolo e Vettore Spostamento Diretto da B8 a C6 (Passi 4, 5, 6)
@@ -1959,13 +2034,20 @@ class VectorCanvas {
         ctx.closePath();
         ctx.fill();
       }
+      ctx.restore();
 
       if (sProg > 0.6) {
         const midH = { x: (pB8.x + pC6.x) / 2, y: (pB8.y + pC6.y) / 2 };
-        ctx.font = 'bold 14px IBM Plex Mono, monospace';
-        ctx.fillText("|s| = 4,5 m (Ipotenusa)", midH.x - 90, midH.y + 22);
+        this.drawBadge(
+          midH.x - 24,
+          midH.y + 18,
+          "|s| = 4,5 m (Ipotenusa)",
+          isDark ? "#1e293b" : "#ffffff",
+          isDark ? "#fde047" : "#854d0e",
+          "#eab308",
+          13
+        );
       }
-      ctx.restore();
     }
 
     // Pedina Cavallo Nero animata
@@ -1998,31 +2080,42 @@ class VectorCanvas {
     ctx.fillText("♞", knightPos.x - 11, knightPos.y + 8);
     ctx.restore();
 
-    // Box Statistiche e Risultato Ufficiale in alto a destra
-    const bW = 310;
-    const bH = 88;
-    const bX = this.width - bW - 20;
-    const bY = 20;
+    // Box Statistiche e Risultato in alto a destra (opaco, elevato, non sovrapposto a zoom)
+    const bW = 270;
+    const bH = 78;
+    const bX = this.width - bW - 14;
+    const bY = 12;
 
-    ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.94)' : 'rgba(255, 255, 255, 0.95)';
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.20)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.97)';
     ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.roundRect ? ctx.roundRect(bX, bY, bW, bH, 10) : ctx.rect(bX, bY, bW, bH);
+    ctx.roundRect ? ctx.roundRect(bX, bY, bW, bH, 8) : ctx.rect(bX, bY, bW, bH);
     ctx.fill();
     ctx.stroke();
 
-    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+
+    ctx.font = 'bold 11px Inter, sans-serif';
     ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
     ctx.fillText("DATI FISICI DELLA PARTITA (PAG. 86)", bX + 12, bY + 20);
 
-    ctx.font = 'bold 13px IBM Plex Mono, monospace';
+    ctx.font = 'bold 12px "IBM Plex Mono", monospace';
     ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
-    ctx.fillText("🏁 Lato casella: 16 m / 8 = 2,0 m", bX + 12, bY + 44);
+    ctx.fillText("🏁 Lato casella: 16 m / 8 = 2,0 m", bX + 12, bY + 41);
 
-    const sLabel = (stepIndex < 4) ? "in fase di calcolo..." : (stepIndex === 4 ? (animProgress * 4.47).toFixed(1) + " m" : "4,5 m (√(2,0² + 4,0²))");
-    ctx.fillStyle = '#eab308';
-    ctx.fillText(`🧭 Modulo spostamento: ${sLabel}`, bX + 12, bY + 68);
+    const sVal = (stepIndex < 4) ? "in calcolo..." : (stepIndex === 4 ? (animProgress * 4.47).toFixed(1) + " m" : "4,5 m (√(2² + 4²))");
+    ctx.fillStyle = isDark ? '#facc15' : '#b45309';
+    ctx.fillText(`🧭 Spostamento |s|: ${sVal}`, bX + 12, bY + 63);
+    ctx.restore();
   }
 }
 
