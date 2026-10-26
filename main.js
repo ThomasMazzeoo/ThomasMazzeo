@@ -577,6 +577,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-lavoro-8.html"
                   }
                 ]
+              },
+              {
+                title: "⚡ La Potenza — Problemi Guidati (Pag. 365 - 366)",
+                topics: [
+                  {
+                    title: "⚙️ Problema 22: Il Montacarichi da Cantiere (Pag. 365)",
+                    desc: "Sollevamento al 4° piano (h = 15 m) di un carico da 100 kg in Δt = 40 s. Forza peso F = 980 N, lavoro W = 14,7 kJ e calcolo della potenza media sviluppata P ≈ 3,7 · 10² W.",
+                    url: "/fisica/giordano-bruno/esercizio-potenza-1.html"
+                  },
+                  {
+                    title: "⚡ Problema 21: Aumentare il Lavoro o Diminuire il Tempo? (Pag. 365)",
+                    desc: "Dilemma ingegneristico: +50% lavoro (P_A = 1,5 P₀) vs -50% tempo (P_B = 2,0 P₀). Analisi della frazione P = W / Δt, proporzionalità diretta e inversa e quiz per la LIM.",
+                    url: "/fisica/giordano-bruno/esercizio-potenza-2.html"
+                  },
+                  {
+                    title: "🏗️ Problema 29: La Gru di Cantiere — Formula Inversa (Pag. 366)",
+                    desc: "Gru da 9,8 kW che solleva a v costante un blocco di cemento a h = 20 m in 10 s. Calcolo lavoro W = 98 kJ, formula inversa m = W/(gh) e determinazione della massa m = 5,0 · 10² kg.",
+                    url: "/fisica/giordano-bruno/esercizio-potenza-3.html"
+                  },
+                  {
+                    title: "🚗 Problema 31: L'Auto in Autostrada — P = F · v (Pag. 366)",
+                    desc: "Auto a velocità costante di 72 km/h (20 m/s) per 5,0 min (300 s) con motore da 60 kW. Calcolo lavoro W = 1,8 · 10⁷ J (18 MJ) e forza motrice F = P/v = 3,0 kN.",
+                    url: "/fisica/giordano-bruno/esercizio-potenza-4.html"
+                  }
+                ]
               }
             ]
 

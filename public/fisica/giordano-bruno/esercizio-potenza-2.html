@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Aumentare Lavoro vs Ridurre Tempo (Problema 21, Pag. 365) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra invasiva in basso: penna attivabile solo su richiesta
+   - Tavolozza penna fluttuante e trascinabile
+   - Foglio Bianco integrato con Pan (Manina) e Sposta/Seleziona
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-base: #64748b;    /* Grigio/Slate per situazione base P0 = W / Δt */
+  --color-optA: #2563eb;    /* Blu per Strategia A: +50% Lavoro (P = 1,5 P0) */
+  --color-optB: #16a34a;    /* Verde smeraldo per Strategia B: -50% Tempo (P = 2 P0) */
+  --color-accent: #ea580c;  /* Arancione brillante per il confronto */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-base: #94a3b8;
+  --color-optA: #60a5fa;
+  --color-optB: #4ade80;
+  --color-accent: #fb923c;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: var(--base-font-size);
+}
+
+.lim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* HEADER SUPERIORE */
+.lim-header {
+  height: 52px;
+  min-height: 52px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.lim-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-back-course:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.lim-school-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lim-header-title {
+  font-family: var(--font-title);
+  font-size: 0.90rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #16a34a;
+}
+body.dark-mode .lim-header-title { color: #4ade80; }
+
+.lim-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lim-tool {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.btn-lim-tool:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
+
+/* STAGE PRINCIPALE */
+.lim-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* COLONNA SINISTRA: CANVAS */
+.lim-canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  height: 42px;
+  min-height: 42px;
+  background: var(--bg-panel);
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-tech);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.canvas-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.canvas-view-wrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active { cursor: grabbing; }
+
+#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CONTROLLI ZOOM */
+.canvas-zoom-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.zoom-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-panel);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: all 0.15s ease;
+}
+.zoom-btn:hover {
+  background: var(--border-light);
+  color: #0284c7;
+  transform: scale(1.05);
+}
+
+.canvas-live-badge {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+/* COLONNA DESTRA: CARD PEDAGOGICA LIM */
+.lim-step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.step-card-header {
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.step-meta-badge {
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  color: #16a34a;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+body.dark-mode .step-meta-badge { color: #4ade80; }
+
+.step-title-main {
+  font-family: var(--font-title);
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.step-card-body {
+  flex: 1;
+  padding: 14px 18px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* SCATOLE PEDAGOGICHE */
+.pedagogy-box {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  border-left: 5px solid #16a34a;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+.pedagogy-box.problem {
+  border-left-color: #64748b;
+  background: var(--bg-page);
+}
+.pedagogy-box.success {
+  border-left-color: #16a34a;
+  background: rgba(22, 163, 74, 0.05);
+}
+.pedagogy-box.highlight {
+  border-left-color: #2563eb;
+  background: rgba(37, 99, 235, 0.05);
+}
+.pedagogy-box.tip {
+  border-left-color: #ea580c;
+  background: rgba(234, 88, 12, 0.05);
+}
+.box-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* CARD FORMULA MATEMATICA GIGANTE PER LIM */
+.lim-math-card {
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border: 1.5px solid #334155;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  text-align: center;
+}
+.lim-math-card .math-line {
+  font-size: 1.25rem;
+  margin: 6px 0;
+}
+.lim-math-card .math-desc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* GRIGLIA DATI SINTETICA */
+.data-grid-lim {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.data-badge-item {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.data-badge-item .d-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.data-badge-item .d-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* GRIGLIA OPZIONI QUIZ */
+.quiz-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+.quiz-opt-btn {
+  background: var(--bg-page);
+  border: 2px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+.quiz-opt-btn:hover {
+  background: var(--border-light);
+  border-color: #0284c7;
+}
+.quiz-opt-btn.correct {
+  border-color: #16a34a !important;
+  background: rgba(22, 163, 74, 0.08) !important;
+}
+.quiz-opt-btn.wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+.opt-tag {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+body.dark-mode .opt-tag { background: #334155; color: #f8fafc; }
+.quiz-opt-btn.correct .opt-tag { background: #16a34a; color: #ffffff; }
+.quiz-opt-btn.wrong .opt-tag { background: #ef4444; color: #ffffff; }
+
+/* BARRA PASSI IN BASSO */
+.lim-footer-steps {
+  height: 58px;
+  min-height: 58px;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.step-nav-btn {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.step-nav-btn:hover:not(:disabled) {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+.step-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.steps-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-bar-wrapper::-webkit-scrollbar { display: none; }
+
+.step-circle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.step-circle-pill:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.step-circle-pill.active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.4);
+}
+.step-circle-pill.completed {
+  border-color: #22c55e;
+  color: #16a34a;
+}
+body.dark-mode .step-circle-pill.completed {
+  color: #4ade80;
+  border-color: #16a34a;
+}
+
+/* SCHERMO INTERO */
+body.is-fullscreen .lim-header,
+body.is-fullscreen .lim-footer-steps {
+  display: none !important;
+}
+body.is-fullscreen .lim-stage {
+  padding: 8px;
+  gap: 8px;
+  height: 100vh;
+}
+body.is-fullscreen .lim-fullscreen-hud {
+  display: flex;
+}
+
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #334155;
+  border-radius: 30px;
+  padding: 6px 14px;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.hud-btn {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.hud-btn:hover { background: #334155; color: #38bdf8; }
+.hud-pills { display: flex; align-items: center; gap: 4px; }
+.hud-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.hud-pill.active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #4ade80;
+}
+
+/* TAVOLOZZA PENNA LIM */
+#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 6px 12px;
+  z-index: 80;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  flex-direction: column;
+  gap: 6px;
+  user-select: none;
+}
+.lim-pen-palette.show { display: flex; }
+.lp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #334155;
+  color: #94a3b8;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.lp-body { display: flex; align-items: center; gap: 8px; }
+.lp-group { display: flex; align-items: center; gap: 4px; }
+.lp-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.lp-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.lp-btn.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  box-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
+}
+.lp-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+.lp-color-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.25);
+  box-shadow: 0 0 6px #ffffff;
+}
+
+/* OVERLAY FOGLIO BIANCO */
+.whiteboard-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  flex-direction: column;
+  background: #0f172a;
+}
+.whiteboard-overlay.show { display: flex; }
+
+.wb-header {
+  min-height: 58px;
+  height: 58px;
+  background: #0f172a;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 8px;
+  z-index: 10;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.wb-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.wb-title { font-family: var(--font-tech); font-size: 0.95rem; color: #38bdf8; font-weight: 800; }
+.wb-slide-tag {
+  font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;
+  padding: 3px 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: 1px solid #334155;
+}
+.wb-pan-badge {
+  font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;
+  padding: 3px 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+.wb-pan-badge.panned { color: #38bdf8; background: rgba(2, 132, 199, 0.25); border-color: #0284c7; }
+
+.wb-tools { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.wb-group { display: flex; align-items: center; gap: 4px; }
+.wb-sep { width: 1px; height: 24px; background: #334155; margin: 0 4px; }
+
+.wb-tool-btn {
+  width: 36px; height: 36px; min-width: 36px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff; font-size: 1.1rem; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.wb-tool-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.wb-tool-btn.active { background: #0284c7; border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+
+.wb-color {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+.wb-color.active { border-color: #ffffff; box-shadow: 0 0 8px #ffffff; transform: scale(1.22); }
+
+.wb-size-btn {
+  width: 28px; height: 28px; border-radius: 7px; background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2); display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.wb-size-btn.active { background: rgba(255, 255, 255, 0.3); border-color: #38bdf8; }
+.wb-dot { background: #ffffff; border-radius: 50%; }
+
+.wb-btn-text {
+  font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700;
+  padding: 6px 9px; border-radius: 6px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2); color: #cbd5e1; cursor: pointer;
+}
+.wb-btn-text.active { background: #0284c7; border-color: #38bdf8; color: #ffffff; }
+
+.wb-btn-action {
+  padding: 6px 9px; border-radius: 6px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+}
+.wb-btn-action:hover { background: rgba(255, 255, 255, 0.2); }
+.wb-btn-action.danger:hover { background: #dc2626; border-color: #dc2626; }
+
+.wb-close-btn {
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800;
+  padding: 7px 12px; border-radius: 8px; background: #dc2626; border: 1px solid #ef4444; color: #ffffff;
+  cursor: pointer;
+}
+
+.wb-body { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; touch-action: none; }
+.wb-body.bg-white { background-color: #ffffff; }
+.wb-body.bg-grid {
+  background-color: #ffffff;
+  background-image: linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wb-body.bg-dark {
+  background-color: #0b1118;
+  background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.wb-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+.wb-canvas.tool-hand { cursor: grab; }
+.wb-canvas.tool-hand.grabbing { cursor: grabbing; }
+.wb-canvas.tool-select { cursor: default; }
+.wb-canvas.tool-select.dragging { cursor: grabbing; }
+
+@media (max-width: 900px) {
+  .lim-stage { grid-template-columns: 1fr; overflow-y: auto; }
+  .lim-canvas-card { height: 420px; }
+  .step-circle-pill span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="lim-app">
+
+  <!-- HEADER -->
+  <header class="lim-header">
+    <div class="lim-header-left">
+      <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course" title="Torna alle Lezioni">
+        <span>🔙</span> Torna al Portale
+      </a>
+      <span class="lim-school-badge">🏫 ISS GIORDANO BRUNO</span>
+      <span class="lim-header-title">⚡ PROBLEMA 21 — PAG. 365: AUMENTARE IL LAVORO O RIDURRE IL TEMPO?</span>
+    </div>
+
+    <div class="lim-header-right">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Attiva/Disattiva Penna per scrivere sullo schermo (Tasto P)">
+        <span>✏️</span> Penna LIM
+      </button>
+      <button class="btn-lim-tool primary" id="btnHeaderWb" onclick="openWhiteboard()" title="Apri Foglio Bianco LIM per spiegazioni libere (Tasto W)">
+        <span>📄</span> Foglio Bianco
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci testo per LIM">
+        <span id="textScaleIcon">A+</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTheme()" title="Passa a tema Scuro/Chiaro">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleFullscreen()" title="Schermo Intero per LIM (Tasto F)">
+        <span>⛶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STAGE PRINCIPALE -->
+  <main class="lim-stage" id="stage">
+
+    <!-- COLONNA SINISTRA: CANVAS INTERATTIVO -->
+    <div class="lim-canvas-card">
+      <div class="canvas-toolbar">
+        <div>
+          <span>ANALISI MATEMATICA — FRAZIONE P = W / Δt</span>
+          <span style="color:var(--text-muted); font-size:0.75rem; margin-left:6px;">Numeratore (+50%) vs Denominatore (-50%)</span>
+        </div>
+        <div class="canvas-legend">
+          <div class="legend-item" style="color:var(--color-base)">
+            <span class="legend-dot" style="background:var(--color-base)"></span> P₀ = W / Δt (100%)
+          </div>
+          <div class="legend-item" style="color:var(--color-optA)">
+            <span class="legend-dot" style="background:var(--color-optA)"></span> P_A = 1,5 P₀ (+50%)
+          </div>
+          <div class="legend-item" style="color:var(--color-optB)">
+            <span class="legend-dot" style="background:var(--color-optB)"></span> P_B = 2,0 P₀ (+100%)
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-view-wrap" id="canvasWrap">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+
+        <div class="canvas-live-badge">
+          <span class="badge-dot"></span>
+          <span id="canvasBadgeText">Passo 1: Il quesito sulla massimizzazione della potenza</span>
+        </div>
+
+        <div class="canvas-zoom-controls">
+          <button class="zoom-btn" onclick="zoomCanvas(1.2)" title="Ingrandisci Zoom Canvas (o premi +)">🔍+</button>
+          <button class="zoom-btn" onclick="zoomCanvas(0.83)" title="Riduci Zoom Canvas (o premi -)">🔍−</button>
+          <button class="zoom-btn" onclick="resetCanvasZoom()" title="Ripristina Vista (o premi 0)">🎯</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: CARD PEDAGOGICA LIM -->
+    <div class="lim-step-card" id="stepCardContainer">
+      <div class="step-card-header">
+        <div>
+          <div class="step-meta-badge" id="stepMetaBadge">PASSO 1 DI 5 — IL QUESITO & IL MODELLO A FRAZIONE</div>
+          <div class="step-title-main" id="stepMetaTitle">Aumentare il Lavoro o Diminuire il Tempo?</div>
+        </div>
+      </div>
+
+      <div class="step-card-body" id="stepCardBody">
+        <!-- Contenuto dinamico KaTeX -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BARRA PASSI IN BASSO -->
+  <footer class="lim-footer-steps">
+    <button class="step-nav-btn" id="btnPrevStep" onclick="prevStep()" title="Passo precedente (Freccia Sinistra)">
+      ◀ Indietro
+    </button>
+
+    <div class="steps-bar-wrapper" id="stepsBar">
+      <!-- Generati dinamicamente come .step-circle-pill -->
+    </div>
+
+    <button class="step-nav-btn" id="btnNextStep" onclick="nextStep()" title="Passo successivo (Freccia Destra o Spazio)">
+      Avanti ▶
+    </button>
+  </footer>
+
+  <!-- HUD IN SCHERMO INTERO -->
+  <div class="lim-fullscreen-hud">
+    <button class="hud-btn" onclick="prevStep()">◀</button>
+    <div class="hud-pills" id="hudPills"></div>
+    <button class="hud-btn" onclick="nextStep()">▶</button>
+    <button class="hud-btn" onclick="togglePenMode()">✏️ Penna</button>
+    <button class="hud-btn" onclick="openWhiteboard()">📄 Foglio</button>
+    <button class="hud-btn" onclick="toggleFullscreen()">✖ Esci</button>
+  </div>
+
+  <!-- TAVOLOZZA PENNA FLUTTUANTE LIM -->
+  <div class="lim-pen-palette" id="slidePenPalette">
+    <div class="lp-header" id="spHeader">
+      <span>✏️ STRUMENTI PENNA LIM</span>
+      <span style="font-size:0.7rem; color:#64748b;">(Trascina per spostare)</span>
+    </div>
+    <div class="lp-body">
+      <div class="lp-group">
+        <button class="lp-btn active" id="spToolPen" onclick="setSlidePenTool('pen')">✏️</button>
+        <button class="lp-btn" id="spToolHighlighter" onclick="setSlidePenTool('highlighter')">🖍️</button>
+        <button class="lp-btn" id="spToolEraser" onclick="setSlidePenTool('eraser')">🧽</button>
+      </div>
+      <div class="lp-group">
+        <button class="lp-color-dot active" style="background:#ff3333;" data-color="#ff3333" onclick="setSlidePenColor('#ff3333')"></button>
+        <button class="lp-color-dot" style="background:#38bdf8;" data-color="#38bdf8" onclick="setSlidePenColor('#38bdf8')"></button>
+        <button class="lp-color-dot" style="background:#4ade80;" data-color="#4ade80" onclick="setSlidePenColor('#4ade80')"></button>
+        <button class="lp-color-dot" style="background:#fbbf24;" data-color="#fbbf24" onclick="setSlidePenColor('#fbbf24')"></button>
+      </div>
+      <div class="lp-group">
+        <button class="lp-btn" onclick="undoSlidePen()">↩️</button>
+        <button class="lp-btn" onclick="clearSlidePen()" style="color:#ef4444;">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERLAY FOGLIO BIANCO INTERATTIVO -->
+  <div id="whiteboardOverlay" class="whiteboard-overlay">
+    <div class="wb-header">
+      <div class="wb-header-left">
+        <span class="wb-title">📄 FOGLIO BIANCO APPUNTI</span>
+        <span class="wb-slide-tag" id="wbCurrentStepTag">Passo 1 di 5</span>
+        <span class="wb-pan-badge" id="wbPanBadge" onclick="resetWbPan()">🧭 (0, 0)</span>
+      </div>
+
+      <div class="wb-tools">
+        <div class="wb-group">
+          <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')">✏️</button>
+          <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')">🖍️</button>
+          <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')">🧽</button>
+          <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')">🖐️</button>
+          <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')">✋</button>
+          <button class="wb-btn-action" id="wbBtnRecenter" onclick="resetWbPan()">🎯</button>
+          <button class="wb-btn-action danger" id="wbBtnDeleteSelected" onclick="deleteSelectedWbStroke()" style="display:none;">🗑️ Elimina</button>
+        </div>
+        <div class="wb-sep"></div>
+        <div class="wb-group" id="wbColorGroup">
+          <button class="wb-color active" style="background:#0f172a;" data-color="#0f172a" onclick="setWbColor('#0f172a')"></button>
+          <button class="wb-color" style="background:#dc2626;" data-color="#dc2626" onclick="setWbColor('#dc2626')"></button>
+          <button class="wb-color" style="background:#0284c7;" data-color="#0284c7" onclick="setWbColor('#0284c7')"></button>
+          <button class="wb-color" style="background:#16a34a;" data-color="#16a34a" onclick="setWbColor('#16a34a')"></button>
+          <button class="wb-color" style="background:#ea580c;" data-color="#ea580c" onclick="setWbColor('#ea580c')"></button>
+          <button class="wb-color" style="background:#ffffff;" data-color="#ffffff" onclick="setWbColor('#ffffff')"></button>
+        </div>
+        <div class="wb-sep"></div>
+        <div class="wb-group">
+          <button class="wb-size-btn" id="wbSize3" onclick="setWbSize(3)"><span class="wb-dot" style="width:3px;height:3px;"></span></button>
+          <button class="wb-size-btn active" id="wbSize6" onclick="setWbSize(6)"><span class="wb-dot" style="width:6px;height:6px;"></span></button>
+          <button class="wb-size-btn" id="wbSize14" onclick="setWbSize(14)"><span class="wb-dot" style="width:12px;height:12px;"></span></button>
+        </div>
+        <div class="wb-sep"></div>
+        <div class="wb-group">
+          <button class="wb-btn-text active" id="wbBgBtnWhite" onclick="setWbBg('white')">Bianco</button>
+          <button class="wb-btn-text" id="wbBgBtnGrid" onclick="setWbBg('grid')">Quadretti</button>
+          <button class="wb-btn-text" id="wbBgBtnDark" onclick="setWbBg('dark')">Lavagna</button>
+        </div>
+        <div class="wb-sep"></div>
+        <div class="wb-group">
+          <button class="wb-btn-action" onclick="undoWbStroke()">↩️</button>
+          <button class="wb-btn-action danger" onclick="clearWbStrokes()">🗑️ Pulisci</button>
+        </div>
+      </div>
+
+      <div class="wb-header-right">
+        <button class="wb-close-btn" onclick="closeWhiteboard()">✕ Chiudi</button>
+      </div>
+    </div>
+
+    <div class="wb-body bg-white" id="whiteboardBody">
+      <canvas id="whiteboardCanvas" class="wb-canvas"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATI PEDAGOGICI DEI 5 PASSI (PROBLEMA 21, PAG. 365)
+// ═══════════════════════════════════════════════════════════
+
+const TOTAL_STEPS = 5;
+let currentStep = 1;
+
+const STEPS_DATA = [
+  // ── PASSO 1 ──
+  {
+    num: 1,
+    badge: "PASSO 1 DI 5 — IL TESTO DEL PROBLEMA & LA FORMULA",
+    title: "1. Il Dilemma dell'Ingegnere: Come Ottimizzare la Potenza?",
+    canvasBadge: "Passo 1: Definizione P₀ = W / Δt — Due leve: Lavoro W o Tempo Δt",
+    render: () => `
+      <div class="pedagogy-box problem">
+        <div class="box-title">📖 Problema 21 (Pag. 365):</div>
+        <strong>Un motore compie un lavoro \(W\) in un intervallo di tempo \(\Delta t\).</strong><br>
+        <em>«Per aumentarne la potenza, è meglio aumentare del 50% il lavoro che compie oppure diminuire del 50% l'intervallo di tempo in cui lo compie?»</em>
+        <ul style="margin:8px 0 8px 20px; line-height:1.7;">
+          <li>La <strong>potenza iniziale</strong> del motore è definita dal rapporto:
+          $$P_0 = \frac{W}{\Delta t}$$</li>
+          <li>A prima vista, molti studenti pensano istintivamente che un cambiamento del \(50\%\) sul numeratore o sul denominatore produca lo stesso identico effetto. <strong>Ma è davvero così?</strong></li>
+        </ul>
+      </div>
+
+      <div class="data-grid-lim">
+        <div class="data-badge-item">
+          <div class="d-label">Potenza Iniziale</div>
+          <div class="d-val" style="color:var(--color-base);">P₀ = W / Δt</div>
+        </div>
+        <div class="data-badge-item">
+          <div class="d-label">Strategia A</div>
+          <div class="d-val" style="color:var(--color-optA);">W → W + 50%</div>
+        </div>
+        <div class="data-badge-item">
+          <div class="d-label">Strategia B</div>
+          <div class="d-val" style="color:var(--color-optB);">Δt → Δt − 50%</div>
+        </div>
+        <div class="data-badge-item">
+          <div class="d-label">Obiettivo</div>
+          <div class="d-val" style="color:var(--color-accent);">Quale P è maggiore?</div>
+        </div>
+      </div>
+    `
+  },
+
+  // ── PASSO 2 ──
+  {
+    num: 2,
+    badge: "PASSO 2 DI 5 — STRATEGIA A: AUMENTARE IL LAVORO DEL 50%",
+    title: "2. Strategia A: Agire sul Numeratore (W_A = 1,5 · W)",
+    canvasBadge: "Passo 2: Strategia A: W_A = 1,5 W ⟹ P_A = 1,5 P₀ (+50%)",
+    render: () => `
+      <div class="pedagogy-box highlight">
+        <div class="box-title">📈 Analisi della Strategia A (+50% di Lavoro):</div>
+        Se aumentiamo il lavoro compiuto del \(50\%\), mantenendo lo stesso intervallo di tempo \(\Delta t\):
+        $$W_A = W + 0{,}50 \cdot W = \mathbf{1{,}5 \cdot W}$$
+        Calcoliamo la nuova potenza \(P_A\):
+        $$P_A = \frac{W_A}{\Delta t} = \frac{1{,}5 \cdot W}{\Delta t} = 1{,}5 \cdot \left(\frac{W}{\Delta t}\right)$$
+        Poiché \(P_0 = \frac{W}{\Delta t}\), otteniamo:
+        $$\mathbf{P_A = 1{,}5 \cdot P_0}$$
+      </div>
+
+      <div class="lim-math-card" style="border-color:#2563eb;">
+        <div class="math-line" style="color:#60a5fa;">$$P_A = 1{,}5 \cdot P_0 \quad (+50\%\text{ di potenza})$$</div>
+        <div class="math-desc">La potenza è direttamente proporzionale al lavoro compiuto (\(P \propto W\))</div>
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">💡 Risultato Parziale A:</div>
+        Aumentando il lavoro del \(50\%\), la potenza cresce esattamente del <strong>\(50\%\)</strong> (ad esempio, da \(100\text{ W}\) a \(150\text{ W}\)).
+      </div>
+    `
+  },
+
+  // ── PASSO 3 ──
+  {
+    num: 3,
+    badge: "PASSO 3 DI 5 — STRATEGIA B: DIMINUIRE IL TEMPO DEL 50%",
+    title: "3. Strategia B: Agire sul Denominatore (Δt_B = 0,5 · Δt)",
+    canvasBadge: "Passo 3: Strategia B: Δt_B = 0,5 Δt ⟹ P_B = 2,0 P₀ (+100% Raddoppio!)",
+    render: () => `
+      <div class="pedagogy-box success">
+        <div class="box-title">⏱️ Analisi della Strategia B (-50% di Tempo):</div>
+        Se diminuiamo l'intervallo di tempo del \(50\%\) (cioè lo <strong>dimezziamo</strong>), mantenendo costante il lavoro \(W\):
+        $$\Delta t_B = \Delta t - 0{,}50 \cdot \Delta t = \mathbf{0{,}5 \cdot \Delta t} = \frac{\Delta t}{2}$$
+        Calcoliamo la nuova potenza \(P_B\):
+        $$P_B = \frac{W}{\Delta t_B} = \frac{W}{0{,}5 \cdot \Delta t} = \frac{1}{0{,}5} \cdot \left(\frac{W}{\Delta t}\right)$$
+        Poiché dividere per \(0{,}5\) (ovvero per \(\frac{1}{2}\)) equivale a <strong>moltiplicare per \(2\)</strong>:
+        $$\frac{1}{0{,}5} = \frac{1}{\frac{1}{2}} = 2$$
+        Otteniamo il risultato sorprendente:
+        $$\mathbf{P_B = 2 \cdot P_0}$$
+      </div>
+
+      <div class="lim-math-card" style="border-color:#16a34a;">
+        <div class="math-line" style="color:#4ade80;">$$P_B = 2 \cdot P_0 \quad (+100\%\text{ di potenza — RADDOPPIO!})$$</div>
+        <div class="math-desc">La potenza è inversamente proporzionale al tempo (\(P \propto \frac{1}{\Delta t}\))</div>
+      </div>
+    `
+  },
+
+  // ── PASSO 4 ──
+  {
+    num: 4,
+    badge: "PASSO 4 DI 5 — CONFRONTO DIRETTO & RISPOSTA FINALE",
+    title: "4. Confronto Matematico: P_B (2 P₀) > P_A (1,5 P₀)",
+    canvasBadge: "Passo 4: P_B (200%) batte nettamente P_A (150%): Meglio ridurre il tempo!",
+    render: () => `
+      <div class="pedagogy-box success">
+        <div class="box-title">🏆 Risposta al Quesito del Libro:</div>
+        Confrontiamo le due potenze ottenute:
+        $$P_B = 2 \cdot P_0 \quad > \quad P_A = 1{,}5 \cdot P_0$$
+        <strong>Conclusione ufficiale:</strong>
+        <p style="font-size:1.02rem; margin-top:6px;">
+          È decisamente <strong>meglio diminuire del 50% l'intervallo di tempo</strong> in cui il motore compie il lavoro, poiché in questo modo la potenza <strong>raddoppia (+100%)</strong>, mentre aumentando il lavoro del 50% la potenza aumenterebbe solo del <strong>+50%</strong>.
+        </p>
+      </div>
+
+      <div class="lim-math-card" style="border-color:#ea580c;">
+        <div class="math-line" style="color:#fb923c;">$$\mathbf{P_B = 2\,P_0 \quad \text{vs} \quad P_A = 1{,}5\,P_0}$$</div>
+        <div class="math-desc">Dimezzare il denominatore raddoppia l'intera frazione!</div>
+      </div>
+
+      <div class="pedagogy-box problem">
+        <div class="box-title">🧠 Perché l'intuizione sbaglia?</div>
+        Il numeratore varia in modo <em>lineare</em> (\(y = k \cdot x\)). Il denominatore varia invece secondo un'<em>iperbole equilatera</em> (\(y = \frac{k}{x}\)). Quando il denominatore si avvicina a zero, la frazione cresce molto più rapidamente di una semplice crescita lineare!
+      </div>
+    `
+  },
+
+  // ── PASSO 5 ──
+  {
+    num: 5,
+    badge: "PASSO 5 DI 5 — GENERALIZZAZIONE & QUIZ LIM",
+    title: "5. Quiz Interattivo LIM: Triplicare la Potenza",
+    canvasBadge: "Passo 5: Di quanto ridurre il tempo per triplicare la potenza?",
+    render: () => `
+      <div class="pedagogy-box tip">
+        <div class="box-title">❓ Domanda Ragionata per la Classe:</div>
+        <strong>Se un progettista volesse TRIPLICARE la potenza di un motore (\(P' = 3 \cdot P_0\)) mantenendo lo stesso lavoro \(W\), a quale frazione del tempo iniziale dovrebbe ridurre l'intervallo \(\Delta t\)?</strong>
+      </div>
+
+      <div class="quiz-options-grid" id="quizContainer">
+        <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+          <span class="opt-tag">A</span>
+          <span>Dovrebbe ridurre il tempo del 33%, cioè impiegare 0,67 Δt.</span>
+        </button>
+        <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+          <span class="opt-tag">B</span>
+          <span>Dovrebbe ridurre il tempo a 1/3 del tempo iniziale (riduzione del 66,7%), infatti 1 / (1/3) = 3!</span>
+        </button>
+        <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+          <span class="opt-tag">C</span>
+          <span>Dovrebbe diminuire il tempo del 300%.</span>
+        </button>
+      </div>
+
+      <div id="quizFeedback" style="display:none; margin-top:10px;"></div>
+
+      <div class="pedagogy-box success" style="margin-top:14px;">
+        <div class="box-title">🎯 Regola Generale per la LIM:</div>
+        Per moltiplicare la potenza per un fattore \(k\):
+        <ul style="margin-left:20px; line-height:1.7;">
+          <li>Se agisci sul <strong>lavoro</strong>: devi moltiplicare \(W\) per \(k\) (\(W' = k \cdot W\)).</li>
+          <li>Se agisci sul <strong>tempo</strong>: devi dividere \(\Delta t\) per \(k\) (\(\Delta t' = \frac{\Delta t}{k}\)).</li>
+        </ul>
+      </div>
+    `
+  }
+];
+
+function checkQuiz(btn, isCorrect) {
+  const container = document.getElementById('quizContainer');
+  const allBtns = container.querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    b.style.pointerEvents = 'none';
+  });
+
+  const fb = document.getElementById('quizFeedback');
+  fb.style.display = 'block';
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.innerHTML = `
+      <div class="pedagogy-box success" style="margin-bottom:0;">
+        <strong>Perfetto! Ragionamento impeccabile. 👏</strong><br>
+        Infatti:
+        $$P' = \\frac{W}{\\frac{1}{3} \\Delta t} = 3 \\cdot \\left(\\frac{W}{\\Delta t}\\right) = 3 \\cdot P_0$$
+        Per triplicare la potenza serve compiere lo stesso lavoro in <strong>un terzo del tempo</strong>!
+      </div>
+    `;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (b.innerText.includes('1/3 del tempo iniziale')) b.classList.add('correct');
+    });
+    fb.innerHTML = `
+      <div class="pedagogy-box highlight" style="margin-bottom:0;">
+        <strong>Non è corretto.</strong> Ricorda che la potenza è inversamente proporzionale a \(\\Delta t\). Per avere un fattore \(3\) al numeratore, il denominatore deve diventare \(\\frac{1}{3} \\Delta t\)!
+      </div>
+    `;
+  }
+  if (window.renderMathInElement) {
+    renderMathInElement(fb, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }] });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// GESTIONE CANVAS GRAFICO VETTORIALE (HIGH-DPI 3BLUE1BROWN)
+// ═══════════════════════════════════════════════════════════
+
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.zoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.startX = 0;
+    this.startY = 0;
+
+    this.animProgress = 0;
+    this.animating = false;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.draw(currentStep);
+  }
+
+  initEvents() {
+    const wrap = this.canvas.parentElement;
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.target.id === 'limPenCanvas' || limPen.active) return;
+      this.isPanning = true;
+      this.startX = e.clientX - this.panX;
+      this.startY = e.clientY - this.panY;
+      wrap.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!this.isPanning) return;
+      this.panX = e.clientX - this.startX;
+      this.panY = e.clientY - this.startY;
+      this.draw(currentStep);
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        wrap.style.cursor = 'grab';
+      }
+    });
+
+    wrap.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      this.zoom = Math.max(0.5, Math.min(3.0, this.zoom * delta));
+      this.draw(currentStep);
+    }, { passive: false });
+  }
+
+  startStepAnimation() {
+    this.animProgress = 0;
+    this.animating = true;
+    const startTime = performance.now();
+    const duration = 700; // ms
+
+    const stepFrame = (time) => {
+      const elapsed = time - startTime;
+      this.animProgress = Math.min(1.0, elapsed / duration);
+      this.draw(currentStep, this.animProgress);
+      if (this.animProgress < 1.0) {
+        requestAnimationFrame(stepFrame);
+      } else {
+        this.animating = false;
+      }
+    };
+    requestAnimationFrame(stepFrame);
+  }
+
+  draw(step, progress = 1.0) {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!w || !h) return;
+
+    ctx.save();
+    ctx.clearRect(0, 0, w, h);
+
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Sfondo e Griglia Matematica High-DPI
+    ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    // Coordinate con Pan e Zoom centrati
+    ctx.translate(w / 2 + this.panX, h / 2 + this.panY + 20);
+    ctx.scale(this.zoom, this.zoom);
+
+    // Griglia 3Blue1Brown
+    ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)';
+    ctx.lineWidth = 1;
+    const gridSize = 40;
+    const gridExtent = 400;
+    for (let x = -gridExtent; x <= gridExtent; x += gridSize) {
+      ctx.beginPath(); ctx.moveTo(x, -gridExtent); ctx.lineTo(x, gridExtent); ctx.stroke();
+    }
+    for (let y = -gridExtent; y <= gridExtent; y += gridSize) {
+      ctx.beginPath(); ctx.moveTo(-gridExtent, y); ctx.lineTo(gridExtent, y); ctx.stroke();
+    }
+
+    // DISEGNO DEL CONFRONTO DINAMICO TRA LE 3 CONFIGURAZIONI:
+    // Config 0: Motore Base (P0 = 100%)
+    // Config A: +50% Lavoro (P_A = 150%)
+    // Config B: -50% Tempo (P_B = 200%)
+
+    const barW = 60;
+    const baselineY = 80;
+    const maxBarH = 160;
+
+    // Linea di base delle ascisse
+    ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-220, baselineY);
+    ctx.lineTo(220, baselineY);
+    ctx.stroke();
+
+    // Linea tratteggiata di riferimento 100% (P0)
+    ctx.strokeStyle = isDark ? 'rgba(148, 163, 184, 0.4)' : 'rgba(100, 116, 139, 0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(-220, baselineY - 80);
+    ctx.lineTo(220, baselineY - 80);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    this.drawTextDirect("Livello P₀ (100%)", 130, baselineY - 84, isDark ? '#94a3b8' : '#64748b', 'bold 10px IBM Plex Mono');
+
+    // 1. COLONNA BASE (P0 = 1,00 -> altezza 80 px)
+    const col0X = -140;
+    const h0 = 80;
+    ctx.fillStyle = isDark ? '#334155' : '#94a3b8';
+    ctx.fillRect(col0X - barW / 2, baselineY - h0, barW, h0);
+    ctx.strokeStyle = isDark ? '#64748b' : '#475569';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(col0X - barW / 2, baselineY - h0, barW, h0);
+
+    this.drawTextDirect("BASE", col0X - 16, baselineY + 18, isDark ? '#f8fafc' : '#0f172a', 'bold 11px IBM Plex Mono');
+    this.drawTextDirect("P₀ = 1,0", col0X - 24, baselineY - h0 - 10, '#64748b', 'bold 12px Inter');
+    this.drawTextDirect("W / Δt", col0X - 18, baselineY - h0 / 2 + 4, '#ffffff', 'bold 11px IBM Plex Mono');
+
+    // 2. COLONNA STRATEGIA A (+50% Lavoro -> P_A = 1,50 -> altezza 120 px)
+    const colAX = 0;
+    const targetHA = 120;
+    let curHA = step >= 2 ? h0 + (targetHA - h0) * Math.max(0.1, progress) : 0;
+    if (step >= 2) {
+      ctx.fillStyle = isDark ? '#1e3a8a' : '#2563eb';
+      ctx.fillRect(colAX - barW / 2, baselineY - curHA, barW, curHA);
+      ctx.strokeStyle = isDark ? '#60a5fa' : '#1d4ed8';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(colAX - barW / 2, baselineY - curHA, barW, curHA);
+
+      this.drawTextDirect("OPZ. A", colAX - 18, baselineY + 18, isDark ? '#60a5fa' : '#2563eb', 'bold 11px IBM Plex Mono');
+      this.drawTextDirect("P_A = 1,5 P₀", colAX - 34, baselineY - curHA - 10, '#2563eb', 'bold 12px Inter');
+      this.drawTextDirect("+50%", colAX - 16, baselineY - curHA / 2 + 4, '#ffffff', 'bold 12px IBM Plex Mono');
+    }
+
+    // 3. COLONNA STRATEGIA B (-50% Tempo -> P_B = 2,00 -> altezza 160 px)
+    const colBX = 140;
+    const targetHB = 160;
+    let curHB = step >= 3 ? h0 + (targetHB - h0) * Math.max(0.1, progress) : 0;
+    if (step >= 3) {
+      ctx.fillStyle = isDark ? '#14532d' : '#16a34a';
+      ctx.fillRect(colBX - barW / 2, baselineY - curHB, barW, curHB);
+      ctx.strokeStyle = isDark ? '#4ade80' : '#15803d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(colBX - barW / 2, baselineY - curHB, barW, curHB);
+
+      this.drawTextDirect("OPZ. B", colBX - 18, baselineY + 18, isDark ? '#4ade80' : '#16a34a', 'bold 11px IBM Plex Mono');
+      this.drawTextDirect("P_B = 2,0 P₀", colBX - 34, baselineY - curHB - 10, '#16a34a', 'bold 12px Inter');
+      this.drawTextDirect("+100%", colBX - 18, baselineY - curHB / 2 + 4, '#ffffff', 'bold 12px IBM Plex Mono');
+    }
+
+    // BADGE ESPLICATIVI IN ALTO
+    if (step === 2) {
+      this.drawBadgeDirect(colAX, -115, "W' = 1,5 W ⟹ P_A = 1,5 P₀ (+50%)", '#0f172a', '#60a5fa', 12);
+    } else if (step === 3) {
+      this.drawBadgeDirect(colBX, -125, "Δt' = 0,5 Δt ⟹ P_B = W / (0,5 Δt) = 2 P₀ (+100%)", '#0f172a', '#4ade80', 12);
+    } else if (step >= 4) {
+      this.drawBadgeDirect(0, -135, "Vince Opzione B: Raddoppio della Potenza (200% vs 150%)", '#0f172a', '#fbbf24', 13);
+    }
+
+    ctx.restore();
+  }
+
+  drawTextDirect(text, x, y, color, font = 'bold 12px Inter') {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.font = font;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  drawBadgeDirect(x, y, text, bg, fg, fontSize = 12) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+    const w = ctx.measureText(text).width + 18;
+    const h = fontSize + 12;
+
+    ctx.fillStyle = bg;
+    ctx.shadowColor = 'rgba(0,0,0,0.25)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, 6);
+    else ctx.rect(x - w / 2, y - h / 2, w, h);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = fg;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// GESTIONE DELLA PENNA LIM FLUTTUANTE
+// ═══════════════════════════════════════════════════════════
+
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#ff3333';
+    this.currentSize = 6;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(x - last.x, y - last.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(last, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesByStep[currentStep]) this.strokesByStep[currentStep] = [];
+        this.strokesByStep[currentStep].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.4 : stroke.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const list = this.strokesByStep[currentStep] || [];
+    for (const stroke of list) {
+      if (!stroke.points || stroke.points.length === 0) continue;
+      this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+      }
+    }
+  }
+
+  initPaletteDrag() {
+    const palette = document.getElementById('slidePenPalette');
+    const header = document.getElementById('spHeader');
+    if (!palette || !header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      header.setPointerCapture(e.pointerId);
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = palette.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      palette.style.transform = 'none';
+      palette.style.left = initialLeft + 'px';
+      palette.style.top = initialTop + 'px';
+    });
+
+    header.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      palette.style.left = Math.max(10, Math.min(window.innerWidth - 300, initialLeft + dx)) + 'px';
+      palette.style.top = Math.max(10, Math.min(window.innerHeight - 100, initialTop + dy)) + 'px';
+    });
+
+    const stopDrag = () => { isDragging = false; };
+    header.addEventListener('pointerup', stopDrag);
+    header.addEventListener('pointercancel', stopDrag);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FOGLIO BIANCO LIM INFINITO (PAN + SELEZIONA/SPOSTA)
+// ═══════════════════════════════════════════════════════════
+
+class WhiteboardEngine {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.isOpen = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#0f172a';
+    this.currentSize = 6;
+    this.currentBg = 'white';
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const body = document.getElementById('whiteboardBody');
+    if (!body) return;
+    const rect = body.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      const rect = this.canvas.getBoundingClientRect();
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const worldX = screenX - this.panX;
+      const worldY = screenY - this.panY;
+
+      if (this.currentTool === 'hand') {
+        this.isPanning = true;
+        this.panStartX = e.clientX - this.panX;
+        this.panStartY = e.clientY - this.panY;
+        this.canvas.classList.add('grabbing');
+        this.canvas.setPointerCapture(e.pointerId);
+        return;
+      }
+
+      if (this.currentTool === 'select') {
+        const found = this.findStrokeAt(worldX, worldY);
+        this.selectedStroke = found;
+        const btnDel = document.getElementById('wbBtnDeleteSelected');
+        if (btnDel) btnDel.style.display = found ? 'inline-flex' : 'none';
+
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = worldX;
+          this.dragStartY = worldY;
+          this.canvas.classList.add('dragging');
+          this.canvas.setPointerCapture(e.pointerId);
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x: worldX, y: worldY }]
+      };
+      this.drawPoint(worldX, worldY, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const worldX = screenX - this.panX;
+      const worldY = screenY - this.panY;
+
+      if (this.isPanning) {
+        this.panX = e.clientX - this.panStartX;
+        this.panY = e.clientY - this.panStartY;
+        this.updatePanBadge();
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = worldX - this.dragStartX;
+        const dy = worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = worldX;
+        this.dragStartY = worldY;
+        this.redraw();
+        return;
+      }
+
+      if (!this.isDrawing || !this.currentStroke) return;
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(worldX - last.x, worldY - last.y) >= 2) {
+        pts.push({ x: worldX, y: worldY });
+        this.drawSegment(last, { x: worldX, y: worldY }, this.currentStroke);
+      }
+    });
+
+    const endAction = () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.classList.remove('grabbing');
+      }
+      if (this.isDraggingStroke) {
+        this.isDraggingStroke = false;
+        this.canvas.classList.remove('dragging');
+      }
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          if (!this.strokesByStep[currentStep]) this.strokesByStep[currentStep] = [];
+          this.strokesByStep[currentStep].push(this.currentStroke);
+        }
+        this.currentStroke = null;
+      }
+    };
+
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  findStrokeAt(wx, wy) {
+    const list = this.strokesByStep[currentStep] || [];
+    for (let i = list.length - 1; i >= 0; i--) {
+      const stroke = list[i];
+      for (const pt of stroke.points) {
+        if (Math.hypot(pt.x - wx, pt.y - wy) <= (stroke.size + 10)) {
+          return stroke;
+        }
+      }
+    }
+    return null;
+  }
+
+  drawPoint(wx, wy, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.translate(this.panX, this.panY);
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(wx, wy, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(wx, wy, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.translate(this.panX, this.panY);
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.4 : stroke.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const list = this.strokesByStep[currentStep] || [];
+
+    for (const stroke of list) {
+      if (!stroke.points || stroke.points.length === 0) continue;
+      this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+      }
+    }
+
+    if (this.selectedStroke && this.selectedStroke.points.length > 0) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const pt of this.selectedStroke.points) {
+        if (pt.x < minX) minX = pt.x;
+        if (pt.y < minY) minY = pt.y;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y > maxY) maxY = pt.y;
+      }
+      const pad = 8;
+      const ctx = this.ctx;
+      ctx.save();
+      ctx.translate(this.panX, this.panY);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(minX - pad, minY - pad, (maxX - minX) + pad * 2, (maxY - minY) + pad * 2);
+      ctx.restore();
+    }
+  }
+
+  updatePanBadge() {
+    const badge = document.getElementById('wbPanBadge');
+    if (!badge) return;
+    const px = Math.round(this.panX);
+    const py = Math.round(this.panY);
+    badge.innerText = `🧭 (${px}, ${py})`;
+    if (px !== 0 || py !== 0) badge.classList.add('panned');
+    else badge.classList.remove('panned');
+  }
+
+  resetPan() {
+    this.panX = 0;
+    this.panY = 0;
+    this.updatePanBadge();
+    this.redraw();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLLER APPLICATIVO
+// ═══════════════════════════════════════════════════════════
+
+let vecRenderer, limPen, wbEngine;
+
+window.addEventListener('DOMContentLoaded', () => {
+  vecRenderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  wbEngine = new WhiteboardEngine('whiteboardCanvas');
+
+  buildStepPills();
+  goToStep(1);
+
+  window.addEventListener('resize', handleResize);
+  setTimeout(handleResize, 100);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault(); nextStep();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); prevStep();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFullscreen();
+    } else if (e.key === 'p' || e.key === 'P') {
+      togglePenMode();
+    } else if (e.key === 'w' || e.key === 'W') {
+      openWhiteboard();
+    } else if (e.key === 'Escape') {
+      if (wbEngine.isOpen) closeWhiteboard();
+    }
+  });
+});
+
+function handleResize() {
+  if (vecRenderer) vecRenderer.resize();
+  if (limPen) limPen.resize();
+  if (wbEngine && wbEngine.isOpen) wbEngine.resize();
+}
+
+function buildStepPills() {
+  const container = document.getElementById('stepsBar');
+  const hudContainer = document.getElementById('hudPills');
+  if (!container) return;
+
+  container.innerHTML = '';
+  if (hudContainer) hudContainer.innerHTML = '';
+
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const pill = document.createElement('button');
+    pill.className = `step-circle-pill ${i === currentStep ? 'active' : ''}`;
+    pill.innerHTML = `<strong>${i}</strong> <span>${getStepShortTitle(i)}</span>`;
+    pill.onclick = () => goToStep(i);
+    container.appendChild(pill);
+
+    if (hudContainer) {
+      const hudPill = document.createElement('div');
+      hudPill.className = `hud-pill ${i === currentStep ? 'active' : ''}`;
+      hudPill.innerText = i;
+      hudPill.onclick = () => goToStep(i);
+      hudContainer.appendChild(hudPill);
+    }
+  }
+}
+
+function getStepShortTitle(step) {
+  switch (step) {
+    case 1: return "Dilemma & Modello";
+    case 2: return "Strategia A (+50%)";
+    case 3: return "Strategia B (+100%)";
+    case 4: return "Confronto Diretto";
+    case 5: return "Quiz LIM";
+    default: return `Passo ${step}`;
+  }
+}
+
+function goToStep(step) {
+  if (step < 1 || step > TOTAL_STEPS) return;
+  currentStep = step;
+
+  const data = STEPS_DATA[step - 1];
+  document.getElementById('stepMetaBadge').innerText = data.badge;
+  document.getElementById('stepMetaTitle').innerText = data.title;
+  document.getElementById('canvasBadgeText').innerText = data.canvasBadge;
+  document.getElementById('stepCardBody').innerHTML = data.render();
+
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('stepCardBody'), {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '\\(', right: '\\)', display: false }
+      ]
+    });
+  }
+
+  document.getElementById('btnPrevStep').disabled = (step === 1);
+  document.getElementById('btnNextStep').disabled = (step === TOTAL_STEPS);
+
+  const pills = document.querySelectorAll('.step-circle-pill');
+  pills.forEach((p, idx) => {
+    p.classList.toggle('active', idx + 1 === step);
+    p.classList.toggle('completed', idx + 1 < step);
+  });
+
+  const hudPills = document.querySelectorAll('.hud-pill');
+  hudPills.forEach((p, idx) => {
+    p.classList.toggle('active', idx + 1 === step);
+  });
+
+  const wbTag = document.getElementById('wbCurrentStepTag');
+  if (wbTag) wbTag.innerText = `Passo ${step} di ${TOTAL_STEPS}`;
+
+  if (vecRenderer) vecRenderer.startStepAnimation();
+  if (limPen) limPen.redraw();
+  if (wbEngine) wbEngine.redraw();
+}
+
+function nextStep() { goToStep(currentStep + 1); }
+function prevStep() { goToStep(currentStep - 1); }
+
+function zoomCanvas(factor) {
+  if (!vecRenderer) return;
+  vecRenderer.zoom = Math.max(0.5, Math.min(3.0, vecRenderer.zoom * factor));
+  vecRenderer.draw(currentStep);
+}
+function resetCanvasZoom() {
+  if (!vecRenderer) return;
+  vecRenderer.zoom = 1.0;
+  vecRenderer.panX = 0;
+  vecRenderer.panY = 0;
+  vecRenderer.draw(currentStep);
+}
+
+function togglePenMode() {
+  const btn = document.getElementById('btnHeaderPen');
+  const palette = document.getElementById('slidePenPalette');
+  const penCanvas = document.getElementById('limPenCanvas');
+
+  limPen.active = !limPen.active;
+  if (limPen.active) {
+    btn.classList.add('primary');
+    palette.classList.add('show');
+    penCanvas.classList.add('active');
+  } else {
+    btn.classList.remove('primary');
+    palette.classList.remove('show');
+    penCanvas.classList.remove('active');
+  }
+}
+
+function setSlidePenTool(tool) {
+  limPen.currentTool = tool;
+  document.querySelectorAll('.lp-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('spToolPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('spToolHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('spToolEraser').classList.add('active');
+}
+
+function setSlidePenColor(color) {
+  limPen.currentColor = color;
+  document.querySelectorAll('.lp-color-dot').forEach(d => {
+    d.classList.toggle('active', d.getAttribute('data-color') === color);
+  });
+}
+
+function undoSlidePen() {
+  const list = limPen.strokesByStep[currentStep];
+  if (list && list.length > 0) {
+    list.pop();
+    limPen.redraw();
+  }
+}
+
+function clearSlidePen() {
+  limPen.strokesByStep[currentStep] = [];
+  limPen.redraw();
+}
+
+function openWhiteboard() {
+  const overlay = document.getElementById('whiteboardOverlay');
+  overlay.classList.add('show');
+  wbEngine.isOpen = true;
+  wbEngine.resize();
+}
+
+function closeWhiteboard() {
+  const overlay = document.getElementById('whiteboardOverlay');
+  overlay.classList.remove('show');
+  wbEngine.isOpen = false;
+}
+
+function setWbTool(tool) {
+  wbEngine.currentTool = tool;
+  const c = wbEngine.canvas;
+  c.classList.remove('tool-hand', 'tool-select', 'grabbing', 'dragging');
+  if (tool === 'hand') c.classList.add('tool-hand');
+  if (tool === 'select') c.classList.add('tool-select');
+
+  document.querySelectorAll('.wb-tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'pen') document.getElementById('wbToolPen').classList.add('active');
+  if (tool === 'highlighter') document.getElementById('wbToolHighlighter').classList.add('active');
+  if (tool === 'eraser') document.getElementById('wbToolEraser').classList.add('active');
+  if (tool === 'select') document.getElementById('wbToolSelect').classList.add('active');
+  if (tool === 'hand') document.getElementById('wbToolHand').classList.add('active');
+}
+
+function setWbColor(color) {
+  wbEngine.currentColor = color;
+  document.querySelectorAll('.wb-color').forEach(d => {
+    d.classList.toggle('active', d.getAttribute('data-color') === color);
+  });
+}
+
+function setWbSize(sz) {
+  wbEngine.currentSize = sz;
+  document.querySelectorAll('.wb-size-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`wbSize${sz}`).classList.add('active');
+}
+
+function setWbBg(bg) {
+  wbEngine.currentBg = bg;
+  const b = document.getElementById('whiteboardBody');
+  b.className = `wb-body bg-${bg}`;
+  document.querySelectorAll('.wb-btn-text').forEach(btn => btn.classList.remove('active'));
+  if (bg === 'white') document.getElementById('wbBgBtnWhite').classList.add('active');
+  if (bg === 'grid') document.getElementById('wbBgBtnGrid').classList.add('active');
+  if (bg === 'dark') document.getElementById('wbBgBtnDark').classList.add('active');
+}
+
+function resetWbPan() { wbEngine.resetPan(); }
+
+function deleteSelectedWbStroke() {
+  if (!wbEngine.selectedStroke) return;
+  const list = wbEngine.strokesByStep[currentStep] || [];
+  const idx = list.indexOf(wbEngine.selectedStroke);
+  if (idx !== -1) list.splice(idx, 1);
+  wbEngine.selectedStroke = null;
+  document.getElementById('wbBtnDeleteSelected').style.display = 'none';
+  wbEngine.redraw();
+}
+
+function undoWbStroke() {
+  const list = wbEngine.strokesByStep[currentStep];
+  if (list && list.length > 0) {
+    list.pop();
+    wbEngine.redraw();
+  }
+}
+
+function clearWbStrokes() {
+  wbEngine.strokesByStep[currentStep] = [];
+  wbEngine.selectedStroke = null;
+  document.getElementById('wbBtnDeleteSelected').style.display = 'none';
+  wbEngine.redraw();
+}
+
+let textScaleState = 0;
+function toggleTextSize() {
+  textScaleState = (textScaleState + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const icon = document.getElementById('textScaleIcon');
+  if (textScaleState === 1) {
+    document.body.classList.add('text-scale-1');
+    icon.innerText = 'A++';
+  } else if (textScaleState === 2) {
+    document.body.classList.add('text-scale-2');
+    icon.innerText = 'A';
+  } else {
+    icon.innerText = 'A+';
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+  if (vecRenderer) vecRenderer.draw(currentStep);
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => {
+      document.body.classList.add('is-fullscreen');
+      setTimeout(handleResize, 150);
+    }).catch(err => alert("Schermo intero non supportato o bloccato dal browser."));
+  } else {
+    document.exitFullscreen().then(() => {
+      document.body.classList.remove('is-fullscreen');
+      setTimeout(handleResize, 150);
+    });
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    document.body.classList.remove('is-fullscreen');
+  } else {
+    document.body.classList.add('is-fullscreen');
+  }
+  setTimeout(handleResize, 150);
+});
+</script>
+
+</body>
+</html>
