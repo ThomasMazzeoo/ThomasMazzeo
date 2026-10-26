@@ -1218,6 +1218,12 @@ function checkQuiz(btn, isCorrect) {
     b.style.pointerEvents = 'none';
   });
 
+  const optTag = btn.querySelector('.opt-tag') ? btn.querySelector('.opt-tag').innerText.trim() : '';
+  if (vecRenderer) {
+    vecRenderer.quizSelected = optTag;
+    vecRenderer.draw(5, 1.0);
+  }
+
   const fb = document.getElementById('quizFeedback');
   fb.style.display = 'block';
 
@@ -1334,6 +1340,93 @@ class VectorRenderer {
     requestAnimationFrame(stepFrame);
   }
 
+  drawCardRect(x, y, w, h, bg, border, radius = 8) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = 'rgba(0,0,0,0.06)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, radius);
+    else ctx.rect(x - w / 2, y - h / 2, w, h);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawRails(ctx, isDark, railY, xStart = -290, xEnd = 290) {
+    ctx.save();
+    // Traversine in legno / cemento
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 4;
+    for (let tx = xStart + 10; tx <= xEnd - 10; tx += 28) {
+      ctx.beginPath(); ctx.moveTo(tx, railY + 6); ctx.lineTo(tx, railY + 22); ctx.stroke();
+    }
+    // Rotaia d'acciaio lucida
+    ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(xStart, railY + 6); ctx.lineTo(xEnd, railY + 6); ctx.stroke();
+    ctx.restore();
+  }
+
+  drawTrain(ctx, isDark, trainX, trainY, scale = 1.0, showSparks = false) {
+    ctx.save();
+    ctx.translate(trainX, trainY);
+    ctx.scale(scale, scale);
+
+    // Ruote del treno
+    ctx.fillStyle = isDark ? '#64748b' : '#334155';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    const wheels = [-130, -100, -20, 10, 70, 100];
+    for (const wx of wheels) {
+      ctx.beginPath(); ctx.arc(wx, 6, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.arc(wx, 6, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = isDark ? '#64748b' : '#334155';
+    }
+
+    // Scintille di attrito frenante sulle ruote
+    if (showSparks) {
+      ctx.fillStyle = '#f59e0b';
+      for (const wx of wheels) {
+        ctx.beginPath(); ctx.arc(wx - 8, 12, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(wx - 14, 9, 1.8, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(wx - 4, 14, 1.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // Carrozzeria aerodinamica ad alta velocità
+    ctx.fillStyle = isDark ? '#1e3a8a' : '#0284c7';
+    ctx.beginPath();
+    ctx.moveTo(-160, -50);
+    ctx.lineTo(80, -50);
+    ctx.quadraticCurveTo(140, -50, 160, -10); // Muso affusolato
+    ctx.lineTo(160, 0);
+    ctx.lineTo(-160, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // Striscia rossa Frecciarossa
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(-160, -22, 310, 7);
+
+    // Parabrezza e finestrini
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(90, -45); ctx.lineTo(135, -45); ctx.lineTo(145, -25); ctx.lineTo(90, -25);
+    ctx.closePath();
+    ctx.fill();
+    for (let fx = -140; fx < 80; fx += 32) {
+      ctx.fillRect(fx, -42, 20, 14);
+    }
+
+    ctx.restore();
+  }
+
   draw(step, progress = 1.0) {
     const ctx = this.ctx;
     const w = this.width;
@@ -1350,7 +1443,7 @@ class VectorRenderer {
     ctx.fillRect(0, 0, w, h);
 
     // Coordinate con Pan e Zoom centrati
-    ctx.translate(w / 2 + this.panX, h / 2 + this.panY + 30);
+    ctx.translate(w / 2 + this.panX, h / 2 + this.panY + 25);
     ctx.scale(this.zoom, this.zoom);
 
     // Griglia 3Blue1Brown
@@ -1365,112 +1458,292 @@ class VectorRenderer {
       ctx.beginPath(); ctx.moveTo(-gridExtent, y); ctx.lineTo(gridExtent, y); ctx.stroke();
     }
 
-    // Binario ferroviario (traversine e rotaia)
-    const railY = 45;
-    // Traversine
-    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
-    ctx.lineWidth = 4;
-    for (let tx = -280; tx <= 280; tx += 28) {
-      ctx.beginPath(); ctx.moveTo(tx, railY + 6); ctx.lineTo(tx, railY + 22); ctx.stroke();
-    }
-    // Rotaia d'acciaio
-    ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
-    ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.moveTo(-320, railY + 6); ctx.lineTo(320, railY + 6); ctx.stroke();
-
-    // Posizione del treno
-    // Lo spostamento durante l'animazione simula l'avanzamento rallentato
-    const trainX = -40 + 30 * progress;
-    const trainY = railY - 10;
-
-    // Disegno Locomotiva Freccia Rossa / Italo moderna
-    ctx.save();
-    ctx.translate(trainX, trainY);
-
-    // Ruote del treno
-    ctx.fillStyle = isDark ? '#64748b' : '#334155';
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 2;
-    const wheels = [-130, -100, -20, 10, 70, 100];
-    for (const wx of wheels) {
-      ctx.beginPath(); ctx.arc(wx, 6, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      // Mozzo centrale
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath(); ctx.arc(wx, 6, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = isDark ? '#64748b' : '#334155';
-    }
-
-    // Scintille di frenata sulle ruote (animazione scintillante)
-    if (step >= 2) {
-      ctx.fillStyle = '#f59e0b';
-      for (const wx of wheels) {
-        ctx.beginPath(); ctx.arc(wx - 8, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(wx - 14, 9, 1.8, 0, Math.PI * 2); ctx.fill();
-      }
-    }
-
-    // Carrozzeria aerodinamica
-    ctx.fillStyle = isDark ? '#1e3a8a' : '#0284c7';
-    ctx.beginPath();
-    ctx.moveTo(-160, -50);
-    ctx.lineTo(80, -50);
-    ctx.quadraticCurveTo(140, -50, 160, -10); // muso affusolato
-    ctx.lineTo(160, 0);
-    ctx.lineTo(-160, 0);
-    ctx.closePath();
-    ctx.fill();
-
-    // Striscia rossa ad alta velocità
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(-160, -22, 310, 7);
-
-    // Finestrini e parabrezza cabina di guida
-    ctx.fillStyle = '#0f172a';
-    // Parabrezza
-    ctx.beginPath();
-    ctx.moveTo(90, -45); ctx.lineTo(135, -45); ctx.lineTo(145, -25); ctx.lineTo(90, -25);
-    ctx.closePath();
-    ctx.fill();
-    // Finestrini passeggeri
-    for (let fx = -140; fx < 80; fx += 32) {
-      ctx.fillRect(fx, -42, 20, 14);
+    // Diramazione animazioni dedicate per ciascun passo (1..5)
+    switch (step) {
+      case 1:
+        this.drawStep1(ctx, isDark, progress);
+        break;
+      case 2:
+        this.drawStep2(ctx, isDark, progress);
+        break;
+      case 3:
+        this.drawStep3(ctx, isDark, progress);
+        break;
+      case 4:
+        this.drawStep4(ctx, isDark, progress);
+        break;
+      case 5:
+        this.drawStep5(ctx, isDark, progress);
+        break;
+      default:
+        this.drawStep1(ctx, isDark, progress);
     }
 
     ctx.restore();
+  }
 
-    // VETTORI FONDAMENTALI DEL PROBLEMA
-    // Centro applicativo baricentro treno
-    const cogX = trainX + 20;
-    const cogY = trainY - 25;
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 1: SITUAZIONE FISICA & DATI SPERIMENTALI
+  // ═══════════════════════════════════════════════════════════
+  drawStep1(ctx, isDark, progress) {
+    const railY = 60;
+    this.drawRails(ctx, isDark, railY, -290, 290);
 
-    // 1. VETTORE SPOSTAMENTO s = 62 m (A DESTRA)
-    const sLen = 150 * Math.max(0.1, progress);
-    this.drawArrowDirect(cogX, cogY - 50, cogX + sLen, cogY - 50, '#16a34a', 4, 12);
-    this.drawTextDirect("s = 62 m (moto ➔)", cogX + sLen / 2 - 40, cogY - 62, '#16a34a', 'bold 12px IBM Plex Mono');
+    // Treno che avanza ed entra nello spazio di frenata
+    const trainX = -130 + 80 * progress;
+    const trainY = railY - 10;
+    this.drawTrain(ctx, isDark, trainX, trainY, 0.9, false);
 
-    // 2. VETTORE FORZA FRENANTE F = 3,4 · 10^5 N (A SINISTRA)
-    const fLen = 150 * Math.max(0.1, progress);
-    this.drawArrowDirect(cogX, cogY, cogX - fLen, cogY, '#ef4444', 4, 12);
-    this.drawTextDirect("F_freni = 3,4 · 10⁵ N (⬅)", cogX - fLen - 30, cogY - 12, '#ef4444', 'bold 12px Inter');
+    // Scala graduata dei 62 metri lungo i binari
+    const startX = -150;
+    const endX = 130;
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(startX, railY + 32);
+    ctx.lineTo(endX, railY + 32);
+    ctx.stroke();
 
-    // 3. ARCO ANGOLARE α = 180° (ANGOLO PIATTO)
-    ctx.strokeStyle = '#ef4444';
+    // Tacche graduazione: 0 m, 20 m, 40 m, 62 m
+    const ticks = [
+      { x: startX, label: "0 m (inizio frenata)" },
+      { x: startX + (endX - startX) * (20 / 62), label: "20 m" },
+      { x: startX + (endX - startX) * (40 / 62), label: "40 m" },
+      { x: endX, label: "62 m (arresto)" }
+    ];
+    ticks.forEach(t => {
+      ctx.beginPath(); ctx.moveTo(t.x, railY + 26); ctx.lineTo(t.x, railY + 38); ctx.stroke();
+      this.drawTextDirect(t.label, t.x - 22, railY + 52, isDark ? '#94a3b8' : '#475569', 'bold 10px IBM Plex Mono');
+    });
+
+    // Vettore Spostamento s = 62 m (verde sul tetto, si estende con progress)
+    const sLen = (endX - startX) * Math.max(0.15, progress);
+    this.drawArrowDirect(startX, trainY - 60, startX + sLen, trainY - 60, '#16a34a', 3.5, 11);
+    this.drawTextDirect("s = 62 m (spostamento in avanti ➔)", startX + 15, trainY - 72, '#16a34a', 'bold 11px IBM Plex Mono');
+
+    // Vettore Forza dei freni F = 3,4 · 10⁵ N (rosso, all'indietro)
+    const fLen = 135 * Math.max(0.2, progress);
+    this.drawArrowDirect(trainX, trainY - 25, trainX - fLen, trainY - 25, '#ef4444', 3.5, 11);
+    this.drawTextDirect("F_freni = 3,4 · 10⁵ N (opposta al moto ⬅)", trainX - fLen - 30, trainY - 34, '#ef4444', 'bold 11px Inter');
+
+    // Badges esplicativi in alto
+    this.drawBadgeDirect(0, -165, "PASSO 1: DATI DEL PROBLEMA — s = 62 m  |  F = 3,4 · 10⁵ N", '#0f172a', '#38bdf8', 12);
+    this.drawBadgeDirect(0, -130, "Il convoglio avanza verso destra (➔), mentre i freni applicano una forza contraria verso sinistra (⬅)", isDark ? '#1e293b' : '#f1f5f9', isDark ? '#94a3b8' : '#475569', 11);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 2: GEOMETRIA VETTORIALE (θ = 180°, cos 180° = -1) & ATTRITO
+  // ═══════════════════════════════════════════════════════════
+  drawStep2(ctx, isDark, progress) {
+    const railY = 70;
+    this.drawRails(ctx, isDark, railY, -290, 290);
+
+    // Treno con dischi incandescenti e scintille
+    const trainX = -70;
+    const trainY = railY - 10;
+    this.drawTrain(ctx, isDark, trainX, trainY, 0.85, true);
+
+    // Onde di calore che salgono dalle ruote dei freni
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth = 1.5;
+    for (let hx = trainX - 120; hx <= trainX + 90; hx += 35) {
+      ctx.beginPath();
+      ctx.moveTo(hx, trainY + 4);
+      ctx.bezierCurveTo(hx - 6, trainY - 8, hx + 6, trainY - 16, hx, trainY - 24);
+      ctx.stroke();
+    }
+    this.drawTextDirect("♨ Calore generato sui dischi freno (attrito)", trainX - 85, trainY - 30, '#f97316', 'bold 10px IBM Plex Mono');
+
+    // Diagramma goniometrico centrale in alto (Angolo piatto 180°)
+    const circX = 0;
+    const circY = -55;
+    const radius = 48;
+
+    // Asse orizzontale
+    ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(circX - 110, circY); ctx.lineTo(circX + 110, circY); ctx.stroke();
+
+    // Vettore s a destra (0°)
+    const sLen = 95 * Math.max(0.15, progress);
+    this.drawArrowDirect(circX, circY, circX + sLen, circY, '#16a34a', 3.5, 11);
+    this.drawTextDirect("s (0° ➔)", circX + sLen + 8, circY + 4, '#16a34a', 'bold 11px IBM Plex Mono');
+
+    // Vettore F a sinistra (180°)
+    const fLen = 95 * Math.max(0.15, progress);
+    this.drawArrowDirect(circX, circY, circX - fLen, circY, '#ef4444', 3.5, 11);
+    this.drawTextDirect("F_freni (180° ⬅)", circX - fLen - 110, circY + 4, '#ef4444', 'bold 11px Inter');
+
+    // Arco animato da 0 a 180°
+    const curAngle = Math.PI * Math.min(1.0, progress);
+    ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.arc(cogX, cogY, 32, 0, Math.PI, true);
+    ctx.arc(circX, circY, radius, 0, -curAngle, true);
     ctx.stroke();
-    this.drawTextDirect("α = 180°", cogX - 25, cogY - 38, '#ef4444', 'bold 11px IBM Plex Mono');
 
-    // BADGE ESPLICATIVI
-    if (step >= 2) {
-      this.drawBadgeDirect(cogX - 10, -110, "cos(180°) = -1 ⟹ Lavoro Resistente (L < 0)", '#0f172a', '#fb923c', 12);
+    this.drawTextDirect("θ = 180°", circX - 24, circY - radius - 8, '#f59e0b', 'bold 12px IBM Plex Mono');
+
+    // Badges esplicativi in alto e in basso
+    this.drawBadgeDirect(0, -168, "PASSO 2: VETTORI ANTIPARALLELI (θ = 180°) ⟹ LAVORO RESISTENTE", '#0f172a', '#fb923c', 12);
+    this.drawBadgeDirect(0, -132, "cos(180°) = -1  ⟹  L = F · s · (-1) = -F · s < 0", '#0f172a', '#f87171', 12);
+    this.drawBadgeDirect(0, 142, "L'energia meccanica del convoglio viene sottratta e dissipata in energia termica!", '#0f172a', '#38bdf8', 11);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 3: PIPELINE DI CALCOLO IN NOTAZIONE SCIENTIFICA
+  // ═══════════════════════════════════════════════════════════
+  drawStep3(ctx, isDark, progress) {
+    this.drawBadgeDirect(0, -168, "PASSO 3: MOLTIPLICAZIONE E GESTIONE DEGLI ESPONENTI", '#0f172a', '#38bdf8', 12);
+    this.drawBadgeDirect(0, -132, "L = (3,4 · 10⁵ N) · (62 m) · (-1) = - (3,4 · 62) · 10⁵ J", isDark ? '#1e293b' : '#f1f5f9', isDark ? '#38bdf8' : '#0369a1', 11);
+
+    // Blocco 1: Coefficienti Numerici (Sinistra)
+    const b1X = -122;
+    const b1Y = -62;
+    const bW = 226;
+    const bH = 68;
+    this.drawCardRect(b1X, b1Y, bW, bH, isDark ? '#1e293b' : '#ffffff', isDark ? '#334155' : '#cbd5e1', 8);
+    this.drawTextDirect("FASE 1: PRODOTTO COEFFICIENTI", b1X - bW / 2 + 14, b1Y - 18, '#0284c7', 'bold 10px Inter');
+    this.drawTextDirect("3,4 × 62 = 210,8", b1X - bW / 2 + 14, b1Y + 4, '#0284c7', 'bold 13px IBM Plex Mono');
+    this.drawTextDirect("Moltiplicazione diretta dei fattori", b1X - bW / 2 + 14, b1Y + 22, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+
+    // Blocco 2: Ordine di Grandezza & Segno (Destra)
+    const b2X = 122;
+    const b2Y = -62;
+    this.drawCardRect(b2X, b2Y, bW, bH, isDark ? '#1e293b' : '#ffffff', isDark ? '#334155' : '#cbd5e1', 8);
+    this.drawTextDirect("FASE 2: POTENZA DI 10 & SEGNO", b2X - bW / 2 + 14, b2Y - 18, '#ef4444', 'bold 10px Inter');
+    this.drawTextDirect("L = -210,8 × 10⁵ J", b2X - bW / 2 + 14, b2Y + 4, '#ef4444', 'bold 13px IBM Plex Mono');
+    this.drawTextDirect("Segno meno dovuto a cos(180°) = -1", b2X - bW / 2 + 14, b2Y + 22, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+
+    // Freccia di confluenza verso il centro
+    this.drawArrowDirect(0, -22, 0, -2, '#f59e0b', 3, 9);
+
+    // Blocco 3: Normalizzazione Scientifica (Centro)
+    const b3Y = 40;
+    const b3W = 470;
+    const b3H = 66;
+    this.drawCardRect(0, b3Y, b3W, b3H, isDark ? 'rgba(30,41,59,0.9)' : '#f8fafc', isDark ? '#334155' : '#e2e8f0', 8);
+    this.drawTextDirect("FASE 3: CONVERSIONE IN NOTAZIONE SCIENTIFICA STANDARD", -b3W / 2 + 16, b3Y - 16, '#16a34a', 'bold 10px Inter');
+    this.drawTextDirect("210,8 × 10⁵ J  ➔  spostamento virgola a sinistra di 2 posizioni (+2 all'esponente)", -b3W / 2 + 16, b3Y - 1, isDark ? '#cbd5e1' : '#334155', '10.5px Inter');
+    this.drawTextDirect("210,8 × 10⁵ = 2,108 × 10⁵⁺² = 2,108 × 10⁷ J", -b3W / 2 + 16, b3Y + 18, '#16a34a', 'bold 12px IBM Plex Mono');
+
+    // Blocco 4: Risultato Esatto del Calcolo (In basso)
+    const b4Y = 115;
+    const b4H = 54;
+    this.drawCardRect(0, b4Y, b3W, b4H, isDark ? '#0f172a' : '#0f172a', isDark ? '#38bdf8' : '#38bdf8', 8);
+    this.drawTextDirect("L = -210,8 × 10⁵ J = -2,108 × 10⁷ J", -b3W / 2 + 16, b4Y - 4, '#38bdf8', 'bold 13px IBM Plex Mono');
+    this.drawTextDirect("Calcolo algebrico esatto prima dell'arrotondamento (3,4 ha 2 cifre significative ⟹ -2,1 · 10⁷ J)", -b3W / 2 + 16, b4Y + 14, '#94a3b8', '10px Inter');
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 4: RISULTATO UFFICIALE & BILANCIO MEGAJOULE (-21 MJ)
+  // ═══════════════════════════════════════════════════════════
+  drawStep4(ctx, isDark, progress) {
+    this.drawBadgeDirect(0, -168, "PASSO 4: RISULTATO UFFICIALE — L ≈ -2,1 · 10⁷ J = -21 MEGAJOULE", '#0f172a', '#4ade80', 12);
+
+    // Treno fermo sui binari a destra
+    const railY = 70;
+    this.drawRails(ctx, isDark, railY, -290, 290);
+    const trainX = 35;
+    this.drawTrain(ctx, isDark, trainX, railY - 10, 0.82, false);
+
+    // Bandierina d'arresto a 62 m
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(155, railY + 6); ctx.lineTo(155, railY - 48); ctx.stroke();
+    ctx.fillStyle = '#16a34a';
+    ctx.beginPath();
+    ctx.moveTo(155, railY - 48); ctx.lineTo(185, railY - 38); ctx.lineTo(155, railY - 28);
+    ctx.closePath();
+    ctx.fill();
+    this.drawTextDirect("62 m: Treno Fermo (v = 0)", 75, railY + 38, '#16a34a', 'bold 10px IBM Plex Mono');
+
+    // Box Bilancio Energetico in alto (3Blue1Brown energy meter)
+    const boxY = -68;
+    const boxW = 460;
+    const boxH = 112;
+    this.drawCardRect(0, boxY, boxW, boxH, isDark ? '#1e293b' : '#ffffff', isDark ? '#334155' : '#cbd5e1', 8);
+
+    this.drawTextDirect("TEOREMA DELL'ENERGIA CINETICA: L = ΔEk = Ek(finale) − Ek(iniziale)", -boxW / 2 + 14, boxY - 38, '#0284c7', 'bold 10px Inter');
+
+    // Barra 1: Energia Cinetica che si azzera
+    const barW = 190;
+    const curEkW = barW * (1.0 - Math.min(1.0, progress));
+    this.drawTextDirect("Ek convoglio:", -boxW / 2 + 14, boxY - 14, isDark ? '#cbd5e1' : '#334155', 'bold 10px IBM Plex Mono');
+    ctx.fillStyle = isDark ? '#334155' : '#e2e8f0';
+    ctx.fillRect(-boxW / 2 + 110, boxY - 22, barW, 11);
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(-boxW / 2 + 110, boxY - 22, curEkW, 11);
+    this.drawTextDirect(progress > 0.95 ? "0 MJ (fermo)" : "21 MJ ➔ 0 MJ", -boxW / 2 + 310, boxY - 14, '#0284c7', 'bold 10px IBM Plex Mono');
+
+    // Barra 2: Lavoro dei Freni (negativo)
+    const curBrakeW = barW * Math.min(1.0, progress);
+    this.drawTextDirect("Lavoro freni:", -boxW / 2 + 14, boxY + 8, isDark ? '#cbd5e1' : '#334155', 'bold 10px IBM Plex Mono');
+    ctx.fillStyle = isDark ? '#334155' : '#e2e8f0';
+    ctx.fillRect(-boxW / 2 + 110, boxY, barW, 11);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(-boxW / 2 + 110, boxY, curBrakeW, 11);
+    this.drawTextDirect("-21 MJ (dissipati)", -boxW / 2 + 310, boxY + 8, '#ef4444', 'bold 10px IBM Plex Mono');
+
+    // Equivalenza finale in MegaJoule
+    this.drawTextDirect("10⁷ J = 10 MegaJoule  ⟹  L = -2,1 × 10⁷ J = -21 MJ  (energia termica dispersa)", -boxW / 2 + 14, boxY + 34, '#16a34a', 'bold 10.5px Inter');
+
+    // Sigillo di conformità libro
+    this.drawBadgeDirect(0, 138, "★ Risultato Ufficiale del Libro: -2,1 · 10⁷ J  (Pagina 364) ✓", '#0f172a', '#4ade80', 13);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 5: QUIZ LIM — CONFRONTO DOPPIA FORZA & METÀ SPAZIO
+  // ═══════════════════════════════════════════════════════════
+  drawStep5(ctx, isDark, progress) {
+    this.drawBadgeDirect(0, -170, "PASSO 5: QUIZ LIM — SE F RADDOPPIA E s SI DIMEZZA, QUANTO VALE L?", '#0f172a', '#38bdf8', 12);
+
+    // Corsia 1: Caso Standard (s = 62 m, F = 3,4 · 10⁵ N)
+    const c1Y = -105;
+    this.drawRails(ctx, isDark, c1Y + 22, -260, 160);
+    this.drawTrain(ctx, isDark, -160, c1Y + 12, 0.50, false);
+    // Vettore s standard
+    this.drawArrowDirect(-150, c1Y - 14, -10, c1Y - 14, '#16a34a', 2.5, 8);
+    this.drawTextDirect("s = 62 m (corsia standard ➔)", -145, c1Y - 22, '#16a34a', 'bold 10px IBM Plex Mono');
+    // Vettore F standard
+    this.drawArrowDirect(-110, c1Y + 5, -200, c1Y + 5, '#ef4444', 2.5, 8);
+    this.drawTextDirect("F = 3,4 · 10⁵ N", -255, c1Y + 8, '#ef4444', 'bold 10px Inter');
+    this.drawTextDirect("L = F · s · (-1) = -2,1 · 10⁷ J", 30, c1Y + 8, isDark ? '#fbbf24' : '#d97706', 'bold 11px IBM Plex Mono');
+
+    // Corsia 2: Caso Frenata Doppia d'Emergenza (s' = 31 m, F' = 6,8 · 10⁵ N)
+    const c2Y = -25;
+    this.drawRails(ctx, isDark, c2Y + 22, -260, 20);
+    this.drawTrain(ctx, isDark, -160, c2Y + 12, 0.50, true);
+    // Vettore s' dimezzato
+    this.drawArrowDirect(-150, c2Y - 14, -80, c2Y - 14, '#16a34a', 2.5, 8);
+    this.drawTextDirect("s' = 31 m (metà spazio!)", -145, c2Y - 22, '#16a34a', 'bold 10px IBM Plex Mono');
+    // Vettore F' raddoppiato (più spesso!)
+    this.drawArrowDirect(-110, c2Y + 5, -255, c2Y + 5, '#ef4444', 4.5, 10);
+    this.drawTextDirect("F' = 6,8 · 10⁵ N (doppia!)", -255, c2Y - 3, '#ef4444', 'bold 10px Inter');
+    this.drawTextDirect("L' = (2F) · (s/2) · (-1) = -2,1 · 10⁷ J", 30, c2Y + 8, '#16a34a', 'bold 11px IBM Plex Mono');
+
+    // Box Dimostrazione Invarianza
+    const boxY = 56;
+    const boxW = 460;
+    const boxH = 62;
+    this.drawCardRect(0, boxY, boxW, boxH, isDark ? '#1e293b' : '#ffffff', isDark ? '#334155' : '#cbd5e1', 8);
+    this.drawTextDirect("DIMOSTRAZIONE MATEMATICA DI INVARIANZA:", -boxW / 2 + 14, boxY - 14, '#0284c7', 'bold 10px Inter');
+    this.drawTextDirect("L' = (2 · F) · (s / 2) · cos(180°) = F · s · (-1) = -2,1 × 10⁷ J  (IDENTICO!)", -boxW / 2 + 14, boxY + 4, '#16a34a', 'bold 11.5px IBM Plex Mono');
+    this.drawTextDirect("I fattori 2 e 1/2 si elidono: per fermare lo stesso treno serve sempre la stessa energia!", -boxW / 2 + 14, boxY + 20, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+
+    // Feedback Dinamico del Quiz sul Canvas
+    const fbY = 135;
+    if (this.quizSelected) {
+      if (this.quizSelected === 'B') {
+        this.drawBadgeDirect(0, fbY, "✓ RISPOSTA ESATTA: Opzione B (Il lavoro resta identico: -2,1 · 10⁷ J)!", '#16a34a', '#ffffff', 12);
+      } else if (this.quizSelected === 'A') {
+        this.drawBadgeDirect(0, fbY, "✗ Opzione A ERRATA: La forza raddoppia ma lo spazio si dimezza (2 · 1/2 = 1)!", '#dc2626', '#ffffff', 11);
+      } else {
+        this.drawBadgeDirect(0, fbY, "✗ Opzione C ERRATA: Lo spazio si dimezza ma la forza raddoppia (1/2 · 2 = 1)!", '#dc2626', '#ffffff', 11);
+      }
+    } else {
+      this.drawBadgeDirect(0, fbY, "👉 Clicca su un'opzione nel Quiz a destra per verificare la risposta!", '#0f172a', '#38bdf8', 11);
     }
-
-    if (step >= 4) {
-      this.drawBadgeDirect(cogX - 10, -145, "L = -2,1 · 10⁷ J = -21 MJ (dissipati in calore)", '#0f172a', '#4ade80', 13);
-    }
-
-    ctx.restore();
   }
 
   drawArrowDirect(x1, y1, x2, y2, color, lineWidth = 4, headSize = 12) {
@@ -2057,6 +2330,9 @@ function getStepShortTitle(step) {
 function goToStep(step) {
   if (step < 1 || step > TOTAL_STEPS) return;
   currentStep = step;
+  if (vecRenderer && step !== 5) {
+    vecRenderer.quizSelected = null;
+  }
 
   const data = STEPS_DATA[step - 1];
   document.getElementById('stepMetaBadge').innerText = data.badge;
