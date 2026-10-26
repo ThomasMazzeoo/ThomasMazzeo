@@ -1308,7 +1308,8 @@ class VectorRenderer {
     if (!w || !h) return;
 
     ctx.save();
-    ctx.clearRect(0, 0, w, h);
+    try {
+      ctx.clearRect(0, 0, w, h);
 
     const isDark = document.body.classList.contains('dark-mode');
 
@@ -1343,6 +1344,7 @@ class VectorRenderer {
     const topY = -150;      // Quota h = 18 m
     const midY = -150 + 180; // Quota h = 6 m (caduta di 12 m = 180 px)
     const botY = -150 + 270; // Quota h = 0 m (caduta totale 18 m = 270 px)
+    const quoteX = cliffX + 185; // x = 85 (definito prima delle linee di quota)
 
     // Scala: 18 m = 270 px => 1 m = 15 px
 
@@ -1387,7 +1389,6 @@ class VectorRenderer {
     this.drawTextDirect('h = 0,0 m (Suolo)', cliffX - 140, botY + 16, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
 
     // QUOTE A DESTRA (posizionate a x = 85 per evitare qualsiasi sovrapposizione)
-    const quoteX = cliffX + 185; // x = 85
     // Tratto 1 (12 m)
     this.drawArrow(quoteX, topY, quoteX, midY, '#16a34a', 2, 6);
     this.drawArrow(quoteX, midY, quoteX, topY, '#16a34a', 2, 6);
@@ -1471,8 +1472,9 @@ class VectorRenderer {
     if (step >= 3) {
       this.drawBadgeDirect(0, -180, 'Teorema: ΔK = W_peso  ➔  ½mv² = mgh', '#0f172a', '#38bdf8', 12);
     }
-
-    ctx.restore();
+    } finally {
+      ctx.restore();
+    }
   }
 
   drawArrow(x1, y1, x2, y2, color, width = 2, headSize = 8) {
