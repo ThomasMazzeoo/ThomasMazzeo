@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — L'Auto di 1200 kg e il Teorema dell'Energia Cinetica (Problema 36, Pag. 367) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ═════════════════════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra invasiva in basso: penna attivabile solo su richiesta
+   - Tavolozza penna fluttuante e trascinabile
+   - Foglio Bianco integrato con Pan (Manina) e Sposta/Seleziona
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown
+   ═════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-car: #0284c7;       /* Azzurro per l'auto e v */
+  --color-w1: #16a34a;        /* Verde per il primo lavoro W1 */
+  --color-w2: #ea580c;        /* Arancione brillante per il secondo lavoro W2 (+31%) */
+  --color-total: #2563eb;     /* Blu per energia totale K */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-car: #38bdf8;
+  --color-w1: #4ade80;
+  --color-w2: #fb923c;
+  --color-total: #60a5fa;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: var(--base-font-size);
+}
+
+.lim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* HEADER SUPERIORE */
+.lim-header {
+  height: 52px;
+  min-height: 52px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.lim-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #dcfce7;
+  border-color: #4ade80;
+  transform: translateX(-2px);
+}
+body.dark-mode .btn-back-course {
+  background: #052e16;
+  color: #4ade80;
+  border-color: #166534;
+}
+
+.course-badge {
+  background: #0284c7;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lim-title {
+  font-family: var(--font-tech);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lim-title span { color: #0284c7; font-weight: 800; }
+
+.lim-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lim-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-lim-tool:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.btn-lim-tool.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+.btn-lim-tool.primary:hover {
+  background: #0369a1;
+}
+
+/* STAGE PRINCIPALE */
+.lim-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* COLONNA SINISTRA: CANVAS */
+.lim-canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  height: 42px;
+  min-height: 42px;
+  background: var(--bg-panel);
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-tech);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.canvas-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.canvas-view-wrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  cursor: grab;
+}
+.canvas-view-wrap:active { cursor: grabbing; }
+
+#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CONTROLLI ZOOM */
+.canvas-zoom-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+.zoom-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-panel);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: all 0.15s ease;
+}
+.zoom-btn:hover {
+  background: var(--border-light);
+  color: #0284c7;
+  transform: scale(1.05);
+}
+
+.canvas-live-badge {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+/* COLONNA DESTRA: CARD PEDAGOGICA LIM */
+.lim-step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.step-card-header {
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.step-meta-badge {
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  color: #0284c7;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+body.dark-mode .step-meta-badge { color: #38bdf8; }
+
+.step-title-main {
+  font-family: var(--font-title);
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.step-card-body {
+  flex: 1;
+  padding: 14px 18px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* SCATOLE PEDAGOGICHE */
+.pedagogy-box {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  border-left: 5px solid #0284c7;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+.pedagogy-box.problem {
+  border-left-color: #64748b;
+  background: var(--bg-page);
+}
+.pedagogy-box.success {
+  border-left-color: #16a34a;
+  background: rgba(22, 163, 74, 0.05);
+}
+.pedagogy-box.highlight {
+  border-left-color: #ea580c;
+  background: rgba(234, 88, 12, 0.05);
+}
+.pedagogy-box.tip {
+  border-left-color: #2563eb;
+  background: rgba(37, 99, 235, 0.05);
+}
+.box-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* CARD FORMULA MATEMATICA GIGANTE PER LIM */
+.lim-math-card {
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border: 1.5px solid #334155;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  text-align: center;
+}
+.lim-math-card .math-line {
+  font-size: 1.22rem;
+  margin: 6px 0;
+}
+.lim-math-card .math-desc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* GRIGLIA DATI SINTETICA */
+.data-grid-lim {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.data-badge-item {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.data-badge-item .d-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.data-badge-item .d-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* SELECTOR TRATTI CONFRONTO */
+.stage-selector-wrap {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.stage-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-ui);
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+.stage-btn:hover { background: var(--border-light); }
+.stage-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+/* BARRA PASSI IN BASSO */
+.lim-footer-steps {
+  height: 58px;
+  min-height: 58px;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 20;
+}
+
+.step-nav-btn {
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.step-nav-btn:hover:not(:disabled) {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+.step-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.steps-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-bar-wrapper::-webkit-scrollbar { display: none; }
+
+.step-circle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-ui);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.step-circle-pill:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.step-circle-pill.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+}
+.step-circle-pill.completed {
+  border-color: #22c55e;
+  color: #16a34a;
+}
+body.dark-mode .step-circle-pill.completed {
+  color: #4ade80;
+  border-color: #16a34a;
+}
+
+/* SCHERMO INTERO */
+body.is-fullscreen .lim-header,
+body.is-fullscreen .lim-footer-steps {
+  display: none !important;
+}
+body.is-fullscreen .lim-stage {
+  padding: 8px;
+  gap: 8px;
+  height: 100vh;
+}
+body.is-fullscreen .lim-fullscreen-hud {
+  display: flex;
+}
+
+.lim-fullscreen-hud {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #334155;
+  border-radius: 30px;
+  padding: 6px 14px;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.hud-btn {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.hud-btn:hover { background: #334155; color: #38bdf8; }
+.hud-pills { display: flex; align-items: center; gap: 4px; }
+.hud-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.hud-pill.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* TAVOLOZZA PENNA LIM */
+#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.lim-pen-palette {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 6px 12px;
+  z-index: 80;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  flex-direction: column;
+  gap: 6px;
+  user-select: none;
+}
+.lim-pen-palette.show { display: flex; }
+.lp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #334155;
+  color: #94a3b8;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.lp-body { display: flex; align-items: center; gap: 8px; }
+.lp-group { display: flex; align-items: center; gap: 4px; }
+.lp-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.lp-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.lp-btn.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  box-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
+}
+.lp-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+.lp-color-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.25);
+  box-shadow: 0 0 6px #ffffff;
+}
+
+/* OVERLAY FOGLIO BIANCO */
+.whiteboard-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  flex-direction: column;
+  background: #0f172a;
+}
+.whiteboard-overlay.show { display: flex; }
+
+.wb-header {
+  min-height: 58px;
+  height: 58px;
+  background: #0f172a;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 8px;
+  z-index: 10;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.wb-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.wb-title { font-family: var(--font-tech); font-size: 0.95rem; color: #38bdf8; font-weight: 800; }
+.wb-slide-tag {
+  font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;
+  padding: 3px 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: 1px solid #334155;
+}
+.wb-pan-badge {
+  font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;
+  padding: 3px 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+.wb-pan-badge.panned { color: #38bdf8; background: rgba(2, 132, 199, 0.25); border-color: #0284c7; }
+
+.wb-tools { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.wb-group { display: flex; align-items: center; gap: 4px; }
+.wb-sep { width: 1px; height: 24px; background: #334155; margin: 0 4px; }
+
+.wb-tool-btn {
+  width: 36px; height: 36px; min-width: 36px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff; font-size: 1.1rem; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.wb-tool-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.wb-tool-btn.active { background: #0284c7; border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+
+.wb-color {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+.wb-color.active { border-color: #ffffff; box-shadow: 0 0 8px #ffffff; transform: scale(1.22); }
+
+.wb-size-btn {
+  width: 28px; height: 28px; border-radius: 7px; background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2); display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.wb-size-btn.active { background: rgba(255, 255, 255, 0.3); border-color: #38bdf8; }
+.wb-dot { background: #ffffff; border-radius: 50%; }
+
+.wb-btn-text {
+  font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700;
+  padding: 6px 9px; border-radius: 6px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2); color: #cbd5e1; cursor: pointer;
+}
+.wb-btn-text.active { background: #0284c7; border-color: #38bdf8; color: #ffffff; }
+
+.wb-btn-action {
+  padding: 6px 9px; border-radius: 6px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+}
+.wb-btn-action:hover { background: rgba(255, 255, 255, 0.2); }
+.wb-btn-action.danger:hover { background: #dc2626; border-color: #dc2626; }
+
+.wb-close-btn {
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800;
+  padding: 7px 12px; border-radius: 8px; background: #dc2626; border: 1px solid #ef4444; color: #ffffff;
+  cursor: pointer;
+}
+
+.wb-body { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; touch-action: none; }
+.wb-body.bg-white { background-color: #ffffff; }
+.wb-body.bg-grid {
+  background-color: #ffffff;
+  background-image: linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wb-body.bg-dark {
+  background-color: #0b1118;
+  background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.wb-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+.wb-canvas.tool-hand { cursor: grab; }
+.wb-canvas.tool-hand.grabbing { cursor: grabbing; }
+.wb-canvas.tool-select { cursor: default; }
+.wb-canvas.tool-select.dragging { cursor: grabbing; }
+
+@media (max-width: 900px) {
+  .lim-stage { grid-template-columns: 1fr; overflow-y: auto; }
+  .lim-canvas-card { height: 420px; }
+  .step-circle-pill span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="lim-app">
+  <!-- HEADER SUPERIORE -->
+  <header class="lim-header">
+    <div class="lim-header-left">
+      <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">
+        ← Indice Giordano Bruno
+      </a>
+      <span class="course-badge">Classe 2ª</span>
+      <h1 class="lim-title">
+        <span>W = ΔK</span> L'Auto di 1200 kg e il Teorema dell'Energia Cinetica (Pag. 367)
+      </h1>
+    </div>
+
+    <div class="lim-header-right">
+      <button class="btn-lim-tool pen-toggle-btn" id="btnHeaderPen" onclick="togglePenMode()" title="Attiva/Disattiva Penna per scrivere sullo schermo (Tasto P)">
+        <span>✏️</span> Penna LIM
+      </button>
+      <button class="btn-lim-tool primary" id="btnHeaderWb" onclick="openWhiteboard()" title="Apri Foglio Bianco LIM per spiegazioni libere (Tasto W)">
+        <span>📄</span> Foglio Bianco
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTextSize()" title="Ingrandisci testo per LIM">
+        <span>A+</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleTheme()" title="Tema Chiaro/Scuro">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="btn-lim-tool" onclick="toggleFullscreen()" title="Schermo Intero per LIM (Tasto F)">
+        <span>⛶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STAGE PRINCIPALE -->
+  <main class="lim-stage">
+    <!-- COLONNA SINISTRA: CANVAS HIGH-DPI -->
+    <section class="lim-canvas-card">
+      <div class="canvas-toolbar">
+        <div class="canvas-legend">
+          <div class="legend-item"><span class="legend-dot" style="background: #16a34a;"></span> Tratto 1 (60 ➔ 80 km/h: W₁)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #ea580c;"></span> Tratto 2 (80 ➔ 100 km/h: W₂)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #0284c7;"></span> Auto (1200 kg)</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+          Modello Vettoriale 3Blue1Brown
+        </div>
+      </div>
+
+      <div class="canvas-view-wrap" id="canvasWrap">
+        <div class="canvas-live-badge">
+          <span class="badge-dot"></span>
+          <span id="liveStatusText">Passo 1: Dati & Conversioni</span>
+        </div>
+
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+
+        <div class="canvas-zoom-controls">
+          <button class="zoom-btn" onclick="renderer.zoomIn()" title="Zoom In">+</button>
+          <button class="zoom-btn" onclick="renderer.zoomOut()" title="Zoom Out">−</button>
+          <button class="zoom-btn" onclick="renderer.resetZoom()" title="Ripristina Vista">↺</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLONNA DESTRA: CARD PEDAGOGICA -->
+    <section class="lim-step-card">
+      <div class="step-card-header">
+        <div>
+          <div class="step-meta-badge" id="stepMetaBadge">PASSO 1 DI 5</div>
+          <div class="step-title-main" id="stepTitleMain">Il Problema e i Dati Fondamentali</div>
+        </div>
+        <div id="stepCounterBadge" style="font-family: var(--font-mono); font-weight:800; font-size:0.9rem; color:var(--text-muted);">
+          [ 1 / 5 ]
+        </div>
+      </div>
+
+      <div class="step-card-body" id="stepCardBody">
+        <!-- Contenuto dinamico iniettato da JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER PASSI -->
+  <footer class="lim-footer-steps">
+    <button class="step-nav-btn" id="btnPrevStep" onclick="prevStep()">
+      ◀ Precedente
+    </button>
+
+    <div class="steps-bar-wrapper">
+      <div class="step-circle-pill active" onclick="goToStep(1)">
+        <strong>1</strong> <span>Dati & S.I.</span>
+      </div>
+      <div class="step-circle-pill" onclick="goToStep(2)">
+        <strong>2</strong> <span>Teorema W = ΔK</span>
+      </div>
+      <div class="step-circle-pill" onclick="goToStep(3)">
+        <strong>3</strong> <span>Tratto 1 (60➔80)</span>
+      </div>
+      <div class="step-circle-pill" onclick="goToStep(4)">
+        <strong>4</strong> <span>Tratto 2 (80➔100)</span>
+      </div>
+      <div class="step-circle-pill" onclick="goToStep(5)">
+        <strong>5</strong> <span>Confronto +31%</span>
+      </div>
+    </div>
+
+    <button class="step-nav-btn" id="btnNextStep" onclick="nextStep()">
+      Successivo ▶
+    </button>
+  </footer>
+
+  <!-- FULLSCREEN HUD (Visibile solo a schermo intero) -->
+  <div class="lim-fullscreen-hud">
+    <button class="hud-btn" onclick="prevStep()">◀</button>
+    <div class="hud-pills">
+      <div class="hud-pill active" onclick="goToStep(1)">1</div>
+      <div class="hud-pill" onclick="goToStep(2)">2</div>
+      <div class="hud-pill" onclick="goToStep(3)">3</div>
+      <div class="hud-pill" onclick="goToStep(4)">4</div>
+      <div class="hud-pill" onclick="goToStep(5)">5</div>
+    </div>
+    <button class="hud-btn" onclick="nextStep()">▶</button>
+    <button class="hud-btn" onclick="togglePenMode()">✏️ Penna</button>
+    <button class="hud-btn" onclick="openWhiteboard()">📄 Foglio</button>
+    <button class="hud-btn" onclick="toggleFullscreen()">✕ Esci</button>
+  </div>
+</div>
+
+<!-- TAVOLOZZA PENNA LIM FLUTTUANTE -->
+<div class="lim-pen-palette" id="limPenPalette">
+  <div class="lp-header" id="lpDragHandle">
+    <span>✏️ PENNA LIM VISTA</span>
+    <span style="cursor:pointer;" onclick="togglePenMode()">✕</span>
+  </div>
+  <div class="lp-body">
+    <div class="lp-group">
+      <button class="lp-btn active" id="btnLpPen" onclick="limPen.setTool('pen')" title="Penna normale">🖊️</button>
+      <button class="lp-btn" id="btnLpHighlighter" onclick="limPen.setTool('highlighter')" title="Evidenziatore">🖍️</button>
+      <button class="lp-btn" id="btnLpEraser" onclick="limPen.setTool('eraser')" title="Gomma">🧹</button>
+    </div>
+    <div class="lp-group">
+      <div class="lp-color-dot active" style="background:#dc2626;" onclick="limPen.setColor('#dc2626')"></div>
+      <div class="lp-color-dot" style="background:#2563eb;" onclick="limPen.setColor('#2563eb')"></div>
+      <div class="lp-color-dot" style="background:#16a34a;" onclick="limPen.setColor('#16a34a')"></div>
+      <div class="lp-color-dot" style="background:#d97706;" onclick="limPen.setColor('#d97706')"></div>
+      <div class="lp-color-dot" style="background:#ffffff; border-color:#94a3b8;" onclick="limPen.setColor('#ffffff')"></div>
+    </div>
+    <div class="lp-group">
+      <button class="lp-btn" onclick="limPen.clearCurrent()" title="Cancella tratti">🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY FOGLIO BIANCO PER SPIEGAZIONI LIBERE -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="wb-header">
+    <div class="wb-header-left">
+      <span class="wb-title">📄 FOGLIO BIANCO LIM</span>
+      <span class="wb-slide-tag" id="wbSlideTag">Passo 1</span>
+      <span class="wb-pan-badge" id="wbPanBadge" onclick="whiteboard.resetPan()" title="Clicca per centrare">Pan: (0, 0)</span>
+    </div>
+
+    <div class="wb-tools">
+      <div class="wb-group">
+        <button class="wb-tool-btn active" id="wbToolPen" onclick="whiteboard.setTool('pen')" title="Penna">🖊️</button>
+        <button class="wb-tool-btn" id="wbToolHighlighter" onclick="whiteboard.setTool('highlighter')" title="Evidenziatore">🖍️</button>
+        <button class="wb-tool-btn" id="wbToolEraser" onclick="whiteboard.setTool('eraser')" title="Gomma">🧹</button>
+        <button class="wb-tool-btn" id="wbToolHand" onclick="whiteboard.setTool('hand')" title="Sposta Foglio (Pan)">✋</button>
+        <button class="wb-tool-btn" id="wbToolSelect" onclick="whiteboard.setTool('select')" title="Seleziona e Trascina">🖐️</button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <div class="wb-color active" style="background:#dc2626;" onclick="whiteboard.setColor('#dc2626')"></div>
+        <div class="wb-color" style="background:#2563eb;" onclick="whiteboard.setColor('#2563eb')"></div>
+        <div class="wb-color" style="background:#16a34a;" onclick="whiteboard.setColor('#16a34a')"></div>
+        <div class="wb-color" style="background:#d97706;" onclick="whiteboard.setColor('#d97706')"></div>
+        <div class="wb-color" style="background:#0f172a;" onclick="whiteboard.setColor('#0f172a')"></div>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-size-btn" onclick="whiteboard.setSize(3)"><span class="wb-dot" style="width:4px;height:4px;"></span></button>
+        <button class="wb-size-btn active" onclick="whiteboard.setSize(6)"><span class="wb-dot" style="width:8px;height:8px;"></span></button>
+        <button class="wb-size-btn" onclick="whiteboard.setSize(12)"><span class="wb-dot" style="width:14px;height:14px;"></span></button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-btn-text active" id="wbBgWhite" onclick="whiteboard.setBg('white')">Bianco</button>
+        <button class="wb-btn-text" id="wbBgGrid" onclick="whiteboard.setBg('grid')">Quadretti</button>
+        <button class="wb-btn-text" id="wbBgDark" onclick="whiteboard.setBg('dark')">Lavagna</button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <div class="wb-group">
+        <button class="wb-btn-action" onclick="whiteboard.undo()" title="Annulla ultimo tratto">↩️ Undo</button>
+        <button class="wb-btn-action danger" onclick="whiteboard.clearCurrent()" title="Cancella tutto">🗑️ Pulisci</button>
+      </div>
+
+      <button class="wb-close-btn" onclick="closeWhiteboard()">✕ Chiudi</button>
+    </div>
+  </div>
+
+  <div class="wb-body bg-white" id="wbBody">
+    <canvas class="wb-canvas" id="wbCanvas"></canvas>
+  </div>
+</div>
+
+<script>
+// ═════════════════════════════════════════════════════════════════════════
+// STATO GLOBALE E PASSI PEDAGOGICI
+// ═════════════════════════════════════════════════════════════════════════
+
+let currentStep = 1;
+const totalSteps = 5;
+
+// Dati fisici del problema 36
+const carMass = 1200; // kg
+const v1_kmh = 60;
+const v2_kmh = 80;
+const v3_kmh = 100;
+
+const v1_ms = 60 / 3.6; // 16.667 m/s
+const v2_ms = 80 / 3.6; // 22.222 m/s
+const v3_ms = 100 / 3.6; // 27.778 m/s
+
+// Energie cinetiche (J)
+const K1 = 0.5 * carMass * (v1_ms ** 2); // 166.667 kJ
+const K2 = 0.5 * carMass * (v2_ms ** 2); // 296.296 kJ
+const K3 = 0.5 * carMass * (v3_ms ** 2); // 462.963 kJ
+
+// Lavori necessari
+const W1 = K2 - K1; // 129.630 J ≈ 1.3 · 10⁵ J
+const W2 = K3 - K2; // 166.667 J ≈ 1.7 · 10⁵ J
+
+const stepData = [
+  {
+    step: 1,
+    title: "Il Problema e i Dati Fondamentali",
+    meta: "PASSO 1 DI 5 — INTRODUZIONE & CONVERSIONI S.I.",
+    status: "Passo 1: Conversione km/h -> m/s",
+    content: `
+      <div class="pedagogy-box problem">
+        <div class="box-title">📖 TESTO DEL PROBLEMA 36 (PAG. 367)</div>
+        <p><strong>«Calcola quanto lavoro bisogna compiere su un'automobile di massa \(1200\text{ kg}\):<br>
+        a) per aumentare la sua velocità da \(60\text{ km/h}\) a \(80\text{ km/h}\);<br>
+        b) per aumentare la sua velocità da \(80\text{ km/h}\) a \(100\text{ km/h}\).»</strong></p>
+      </div>
+
+      <div class="data-grid-lim">
+        <div class="data-badge-item">
+          <div class="d-label">Massa Auto (m)</div>
+          <div class="d-val">\(1200\text{ kg}\)</div>
+        </div>
+        <div class="data-badge-item">
+          <div class="d-label">Incremento di Velocità (Δv)</div>
+          <div class="d-val">\(+20\text{ km/h}\) in entrambi i casi</div>
+        </div>
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">🔄 CONVERSIONE OBBLIGATORIA NEL S.I. (÷ 3,6)</div>
+        Per applicare le formule energetiche, trasformiamo subito le velocità in metri al secondo (\(\text{m/s}\)):
+        <ul style="margin-left: 20px; margin-top: 6px; line-height: 1.7;">
+          <li>\(v_1 = \frac{60}{3{,}6} = 16{,}67\text{ m/s} = \frac{50}{3}\text{ m/s}\)</li>
+          <li>\(v_2 = \frac{80}{3{,}6} = 22{,}22\text{ m/s} = \frac{200}{9}\text{ m/s}\)</li>
+          <li>\(v_3 = \frac{100}{3{,}6} = 27{,}78\text{ m/s} = \frac{250}{9}\text{ m/s}\)</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-box highlight">
+        <div class="box-title">❓ LA GRANDE DOMANDA PEDAGOGICA</div>
+        In entrambi i tratti l'auto accelera esattamente di <strong>\(+20\text{ km/h}\)</strong> (\(5{,}56\text{ m/s}\)).<br>
+        Servirà lo stesso lavoro nei due tratti? Scopriamolo applicando il Teorema dell'Energia Cinetica!
+      </div>
+    `
+  },
+  {
+    step: 2,
+    title: "Il Teorema dell'Energia Cinetica (delle Forze Vive)",
+    meta: "PASSO 2 DI 5 — PRINCIPIO FISICO FONDAMENTALE",
+    status: "Passo 2: Teorema W = ΔK = ½m(vf² - vi²)",
+    content: `
+      <div class="pedagogy-box">
+        <div class="box-title">⚡ ENUNCIATO DEL TEOREMA</div>
+        Il lavoro totale \(W\) compiuto dalle forze che agiscono su un corpo è uguale alla <strong>variazione della sua energia cinetica</strong> \(\Delta K\):
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-line">\(W = \Delta K = K_f - K_i = \frac{1}{2} m v_f^2 - \frac{1}{2} m v_i^2\)</div>
+        <div class="math-desc">Raccogliendo a fattor comune: \(W = \frac{1}{2} m \left(v_f^2 - v_i^2\right)\)</div>
+      </div>
+
+      <div class="pedagogy-box highlight">
+        <div class="box-title">⚠️ ATTENZIONE: LA TRAPPOLA PIÙ COMUNE DEGLI STUDENTI!</div>
+        È un errore gravissimo scrivere:
+        $$W = \frac{1}{2} m (\Delta v)^2 = \frac{1}{2} m (v_f - v_i)^2 \quad \text{❌ ERRORE!}$$
+        Infatti, per le regole dell'algebra:
+        $$(v_f^2 - v_i^2) \neq (v_f - v_i)^2$$
+        Il lavoro dipende dalla <strong>differenza dei quadrati</strong>, NON dal quadrato della differenza!
+      </div>
+
+      <div class="pedagogy-box success">
+        <div class="box-title">💡 INTUIZIONE FISICA</div>
+        A velocità maggiori, l'auto possiede già una grandissima quantità di energia cinetica. Farla accelerare di ulteriori \(20\text{ km/h}\) richiederà una spinta energetica notevolmente superiore!
+      </div>
+    `
+  },
+  {
+    step: 3,
+    title: "Calcolo Tratto 1: da 60 km/h a 80 km/h",
+    meta: "PASSO 3 DI 5 — PRIMO RISULTATO",
+    status: "Passo 3: W₁ = 1,3 · 10⁵ J",
+    content: `
+      <div class="pedagogy-box">
+        <div class="box-title">🚗 TRATTO 1: DA 60 A 80 KM/H</div>
+        Velocità iniziale: \(v_1 = 16{,}67\text{ m/s}\) \(\implies v_1^2 = 277{,}78\text{ m}^2/\text{s}^2\)<br>
+        Velocità finale: \(v_2 = 22{,}22\text{ m/s}\) \(\implies v_2^2 = 493{,}83\text{ m}^2/\text{s}^2\)
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">🔢 SVOLGIMENTO PASSO PASSO</div>
+        Calcoliamo la differenza dei quadrati delle velocità:
+        $$\Delta (v^2) = v_2^2 - v_1^2 = 493{,}83 - 277{,}78 = 216{,}05\text{ m}^2/\text{s}^2$$
+        Applichiamo ora il teorema con la massa \(m = 1200\text{ kg}\):
+        $$W_1 = \frac{1}{2} \cdot (1200\text{ kg}) \cdot 216{,}05\text{ m}^2/\text{s}^2 = 600 \cdot 216{,}05$$
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-line">\(W_1 = 129\,630\text{ J} \approx \mathbf{1{,}3 \times 10^5\text{ J}} = 130\text{ kJ}\)</div>
+        <div class="math-desc">Risultato del libro per la domanda a): 1,3 · 10⁵ J</div>
+      </div>
+
+      <div class="pedagogy-box success">
+        <div class="box-title">✅ VERIFICA CON LE ENERGIE SINGOLE</div>
+        \(K_1 = \frac{1}{2} (1200) (16{,}67)^2 = 166{,}7\text{ kJ}\)<br>
+        \(K_2 = \frac{1}{2} (1200) (22{,}22)^2 = 296{,}3\text{ kJ}\)<br>
+        \(W_1 = K_2 - K_1 = 296{,}3 - 166{,}7 = 129{,}6\text{ kJ} \approx 1{,}3 \times 10^5\text{ J}\).
+      </div>
+    `
+  },
+  {
+    step: 4,
+    title: "Calcolo Tratto 2: da 80 km/h a 100 km/h",
+    meta: "PASSO 4 DI 5 — SECONDO RISULTATO",
+    status: "Passo 4: W₂ = 1,7 · 10⁵ J",
+    content: `
+      <div class="pedagogy-box">
+        <div class="box-title">🏎️ TRATTO 2: DA 80 A 100 KM/H</div>
+        Velocità iniziale: \(v_2 = 22{,}22\text{ m/s}\) \(\implies v_2^2 = 493{,}83\text{ m}^2/\text{s}^2\)<br>
+        Velocità finale: \(v_3 = 27{,}78\text{ m/s}\) \(\implies v_3^2 = 771{,}60\text{ m}^2/\text{s}^2\)
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">🔢 SVOLGIMENTO PASSO PASSO</div>
+        Calcoliamo la nuova differenza dei quadrati delle velocità:
+        $$\Delta (v^2) = v_3^2 - v_2^2 = 771{,}60 - 493{,}83 = 277{,}77\text{ m}^2/\text{s}^2$$
+        Applichiamo il teorema con \(m = 1200\text{ kg}\):
+        $$W_2 = \frac{1}{2} \cdot (1200\text{ kg}) \cdot 277{,}77\text{ m}^2/\text{s}^2 = 600 \cdot 277{,}77$$
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-line">\(W_2 = 166\,662\text{ J} \approx \mathbf{1{,}7 \times 10^5\text{ J}} = 167\text{ kJ}\)</div>
+        <div class="math-desc">Risultato del libro per la domanda b): 1,7 · 10⁵ J</div>
+      </div>
+
+      <div class="pedagogy-box success">
+        <div class="box-title">✅ VERIFICA CON LE ENERGIE SINGOLE</div>
+        \(K_2 = 296{,}3\text{ kJ}\)<br>
+        \(K_3 = \frac{1}{2} (1200) (27{,}78)^2 = 463{,}0\text{ kJ}\)<br>
+        \(W_2 = K_3 - K_2 = 463{,}0 - 296{,}3 = 166{,}7\text{ kJ} \approx 1{,}7 \times 10^5\text{ J}\).
+      </div>
+    `
+  },
+  {
+    step: 5,
+    title: "Confronto Fisico: Perché Serve il 31% in Più?",
+    meta: "PASSO 5 DI 5 — SINTESI & ANALISI FISICA",
+    status: "Passo 5: Confronto W₂ vs W₁ (+31%)",
+    content: `
+      <div class="pedagogy-box success">
+        <div class="box-title">🏆 RISULTATI FINALI DEL LIBRO DI TESTO</div>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+          <li>Lavoro tratto a) (60 ➔ 80 km/h): \(\mathbf{W_1 = 1{,}3 \times 10^5\text{ J}}\)</li>
+          <li>Lavoro tratto b) (80 ➔ 100 km/h): \(\mathbf{W_2 = 1{,}7 \times 10^5\text{ J}}\)</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-box highlight">
+        <div class="box-title">⚖️ CONFRONTO DEI DUE LAVORI</div>
+        Confrontiamo il rapporto tra i due lavori:
+        $$\frac{W_2}{W_1} = \frac{166{,}7\text{ kJ}}{129{,}6\text{ kJ}} \approx 1{,}286 \approx \mathbf{+31\%}$$
+        Anche se l'incremento di velocità è identico (\(\Delta v = +20\text{ km/h}\)), il secondo scatto richiede quasi un terzo in più di energia e di carburante!
+      </div>
+
+      <div class="lim-math-card">
+        <div class="math-line">\(W = F \cdot \Delta s = m \cdot a \cdot \Delta s\)</div>
+        <div class="math-desc">A velocità più alta, durante l'accelerazione l'auto percorre più spazio: lo spostamento Δs è maggiore!</div>
+      </div>
+
+      <div class="pedagogy-box tip">
+        <div class="box-title">🌱 IMPLICAZIONI ECOLOGICHE E GUIDA ECONOMICA</div>
+        Questo risultato spiega fisicamente perché alle alte velocità autostradali i consumi delle automobili aumentano esponenzialmente. Per accelerare di \(20\text{ km/h}\) quando si è già veloci, il motore deve compiere un lavoro molto più gravoso!
+      </div>
+    `
+  }
+];
+
+// ═════════════════════════════════════════════════════════════════════════
+// GESTIONE CANVAS GRAFICO VETTORIALE (HIGH-DPI 3BLUE1BROWN)
+// ═════════════════════════════════════════════════════════════════════════
+
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.zoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.startX = 0;
+    this.startY = 0;
+
+    this.animProgress = 0;
+    this.animating = false;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.draw(currentStep);
+  }
+
+  initEvents() {
+    const wrap = this.canvas.parentElement;
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.target.id === 'limPenCanvas' || limPen.active) return;
+      this.isPanning = true;
+      this.startX = e.clientX - this.panX;
+      this.startY = e.clientY - this.panY;
+      wrap.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!this.isPanning) return;
+      this.panX = e.clientX - this.startX;
+      this.panY = e.clientY - this.startY;
+      this.draw(currentStep);
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        wrap.style.cursor = 'grab';
+      }
+    });
+
+    wrap.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      this.zoom = Math.max(0.5, Math.min(3.0, this.zoom * delta));
+      this.draw(currentStep);
+    }, { passive: false });
+  }
+
+  zoomIn() {
+    this.zoom = Math.min(3.0, this.zoom * 1.2);
+    this.draw(currentStep);
+  }
+  zoomOut() {
+    this.zoom = Math.max(0.5, this.zoom / 1.2);
+    this.draw(currentStep);
+  }
+  resetZoom() {
+    this.zoom = 1.0;
+    this.panX = 0;
+    this.panY = 0;
+    this.draw(currentStep);
+  }
+
+  startStepAnimation() {
+    this.animProgress = 0;
+    this.animating = true;
+    const startTime = performance.now();
+    const duration = 750;
+
+    const stepFrame = (time) => {
+      const elapsed = time - startTime;
+      this.animProgress = Math.min(1.0, elapsed / duration);
+      this.draw(currentStep, this.animProgress);
+      if (this.animProgress < 1.0) {
+        requestAnimationFrame(stepFrame);
+      } else {
+        this.animating = false;
+      }
+    };
+    requestAnimationFrame(stepFrame);
+  }
+
+  draw(step, progress = 1.0) {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!w || !h) return;
+
+    ctx.save();
+    ctx.clearRect(0, 0, w, h);
+
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Sfondo e Griglia Matematica High-DPI
+    ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    // Coordinate con Pan e Zoom centrati
+    ctx.translate(w / 2 + this.panX, h / 2 + this.panY);
+    ctx.scale(this.zoom, this.zoom);
+
+    // Griglia 3Blue1Brown
+    ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)';
+    ctx.lineWidth = 1;
+    const gridSize = 35;
+    const gridExtent = 450;
+    for (let x = -gridExtent; x <= gridExtent; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, -gridExtent);
+      ctx.lineTo(x, gridExtent);
+      ctx.stroke();
+    }
+    for (let y = -gridExtent; y <= gridExtent; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(-gridExtent, y);
+      ctx.lineTo(gridExtent, y);
+      ctx.stroke();
+    }
+
+    // DISEGNO DELLA STRADA IN ALTO
+    const roadY = -110;
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(-260, roadY - 30, 520, 60);
+
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-260, roadY - 30);
+    ctx.lineTo(260, roadY - 30);
+    ctx.moveTo(-260, roadY + 30);
+    ctx.lineTo(260, roadY + 30);
+    ctx.stroke();
+
+    // Linea di mezzeria tratteggiata
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([16, 12]);
+    ctx.beginPath();
+    ctx.moveTo(-260, roadY);
+    ctx.lineTo(260, roadY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // DISEGNO DELL'AUTO VETTORIALE (3Blue1Brown)
+    let carX = -180;
+    let carSpeedText = "60 km/h (16,7 m/s)";
+    let vVectorLen = 45;
+
+    if (step === 1) {
+      carX = -150;
+      carSpeedText = "v₁ = 60 km/h";
+      vVectorLen = 40;
+    } else if (step === 2) {
+      carX = -120;
+      carSpeedText = "v₂ = 80 km/h";
+      vVectorLen = 65;
+    } else if (step === 3) {
+      carX = -80 + progress * 60;
+      carSpeedText = "Tratto 1: 60 ➔ 80 km/h";
+      vVectorLen = 45 + progress * 20;
+    } else if (step === 4) {
+      carX = 0 + progress * 80;
+      carSpeedText = "Tratto 2: 80 ➔ 100 km/h";
+      vVectorLen = 65 + progress * 25;
+    } else if (step === 5) {
+      carX = 70;
+      carSpeedText = "v₃ = 100 km/h (27,8 m/s)";
+      vVectorLen = 90;
+    }
+
+    this.drawCar(carX, roadY - 14, '#0284c7');
+    this.drawArrow(carX + 32, roadY - 14, carX + 32 + vVectorLen, roadY - 14, '#0284c7', 3, 7);
+    this.drawBadgeDirect(carX, roadY - 44, carSpeedText, '#0f172a', '#38bdf8', 11);
+
+    // AREA GRAFICA COMPARATIVA IN BASSO (ISTOGRAMMA DELL'ENERGIA CINETICA)
+    const baseBarY = 160;
+    const barW = 60;
+    const spacing = 110;
+
+    // Assi per il grafico energetico
+    const axisColor = isDark ? '#94a3b8' : '#475569';
+    this.drawArrow(-200, baseBarY, 230, baseBarY, axisColor, 2, 7);
+    this.drawArrow(-200, baseBarY, -200, baseBarY - 210, axisColor, 2, 7);
+    this.drawTextDirect('Stato Auto', 180, baseBarY + 22, isDark ? '#cbd5e1' : '#334155', 'bold 12px Inter');
+    this.drawTextDirect('Energia K (kJ)', -235, baseBarY - 200, '#2563eb', 'bold 12px Inter');
+
+    // SCALA ENERGETICA: 100 kJ = 40 px
+    const scaleK = 0.4; // px per kJ
+
+    const hK1 = (K1 / 1000) * scaleK; // 166.7 * 0.4 = 66.7 px
+    const hK2 = (K2 / 1000) * scaleK; // 296.3 * 0.4 = 118.5 px
+    const hK3 = (K3 / 1000) * scaleK; // 463.0 * 0.4 = 185.2 px
+
+    const xBar1 = -130;
+    const xBar2 = -20;
+    const xBar3 = 90;
+
+    // Barra 1: K1 (60 km/h)
+    this.drawEnergyBar(xBar1, baseBarY, barW, hK1, '#0284c7', 'K₁', '167 kJ');
+    this.drawTextDirect('60 km/h', xBar1 + 6, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+
+    // Barra 2: K2 (80 km/h)
+    if (step >= 2) {
+      const currH2 = step === 3 ? hK1 + (hK2 - hK1) * progress : hK2;
+      this.drawEnergyBar(xBar2, baseBarY, barW, currH2, '#16a34a', 'K₂', '296 kJ');
+      this.drawTextDirect('80 km/h', xBar2 + 6, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+
+      // Evidenziazione salto W1
+      const deltaH1 = hK2 - hK1;
+      ctx.save();
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(xBar1 + barW, baseBarY - hK1);
+      ctx.lineTo(xBar2, baseBarY - hK1);
+      ctx.stroke();
+      ctx.restore();
+
+      this.drawArrow(xBar2 + barW + 12, baseBarY - hK1, xBar2 + barW + 12, baseBarY - hK2, '#16a34a', 2.5, 6);
+      this.drawBadgeDirect(xBar2 + barW + 55, baseBarY - (hK1 + hK2) / 2, 'W₁ = 130 kJ', '#16a34a', '#ffffff', 11);
+    }
+
+    // Barra 3: K3 (100 km/h)
+    if (step >= 4) {
+      const currH3 = step === 4 ? hK2 + (hK3 - hK2) * progress : hK3;
+      this.drawEnergyBar(xBar3, baseBarY, barW, currH3, '#ea580c', 'K₃', '463 kJ');
+      this.drawTextDirect('100 km/h', xBar3 + 2, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+
+      // Evidenziazione salto W2
+      ctx.save();
+      ctx.strokeStyle = '#ea580c';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(xBar2 + barW, baseBarY - hK2);
+      ctx.lineTo(xBar3, baseBarY - hK2);
+      ctx.stroke();
+      ctx.restore();
+
+      this.drawArrow(xBar3 + barW + 12, baseBarY - hK2, xBar3 + barW + 12, baseBarY - hK3, '#ea580c', 2.5, 6);
+      this.drawBadgeDirect(xBar3 + barW + 60, baseBarY - (hK2 + hK3) / 2, 'W₂ = 167 kJ (+31%!)', '#ea580c', '#ffffff', 11);
+    }
+
+    // Badge esplicativi in alto
+    if (step === 5) {
+      this.drawBadgeDirect(0, -180, 'W₂ = 1,7 · 10⁵ J  >  W₁ = 1,3 · 10⁵ J  (+31% di Lavoro!)', '#0f172a', '#fb923c', 13);
+    }
+
+    ctx.restore();
+  }
+
+  drawCar(x, y, color) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = color;
+
+    // Corpo inferiore dell'auto
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x - 30, y - 8, 60, 16, 4);
+    else ctx.rect(x - 30, y - 8, 60, 16);
+    ctx.fill();
+
+    // Cabina superiore
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(x - 18, y - 8);
+    ctx.lineTo(x - 10, y - 20);
+    ctx.lineTo(x + 12, y - 20);
+    ctx.lineTo(x + 20, y - 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ruote
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(x - 18, y + 8, 6, 0, Math.PI * 2);
+    ctx.arc(x + 18, y + 8, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cerchioni
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.arc(x - 18, y + 8, 2.5, 0, Math.PI * 2);
+    ctx.arc(x + 18, y + 8, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Fari anteriori
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.arc(x + 29, y - 2, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  drawEnergyBar(x, baseY, width, height, color, label, valText) {
+    const ctx = this.ctx;
+    ctx.save();
+
+    // Sfondo barra
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, baseY - height, width, height, [6, 6, 0, 0]);
+    else ctx.rect(x, baseY - height, width, height);
+    ctx.fill();
+
+    // Bordo superiore
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Testo interno barra
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px IBM Plex Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x + width / 2, baseY - height + 16);
+
+    // Valore in alto
+    ctx.fillStyle = color;
+    ctx.font = 'bold 11px IBM Plex Mono';
+    ctx.fillText(valText, x + width / 2, baseY - height - 8);
+
+    ctx.restore();
+  }
+
+  drawArrow(x1, y1, x2, y2, color, width = 2, headSize = 8) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headSize * Math.cos(angle - Math.PI / 6), y2 - headSize * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(x2 - headSize * Math.cos(angle + Math.PI / 6), y2 - headSize * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  drawTextDirect(text, x, y, color, font = 'bold 12px Inter') {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.font = font;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  drawBadgeDirect(x, y, text, bg, fg, fontSize = 12) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+    const w = ctx.measureText(text).width + 18;
+    const h = fontSize + 12;
+
+    ctx.fillStyle = bg;
+    ctx.shadowColor = 'rgba(0,0,0,0.25)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, 6);
+    else ctx.rect(x - w / 2, y - h / 2, w, h);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = fg;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// GESTIONE DELLA PENNA LIM FLUTTUANTE
+// ═════════════════════════════════════════════════════════════════════════
+
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.active = false;
+    this.currentTool = 'pen';
+    this.currentColor = '#dc2626';
+    this.currentSize = 6;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.initEvents();
+    this.initPaletteDrag();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      this.currentStroke = {
+        tool: this.currentTool,
+        color: this.currentColor,
+        size: this.currentSize,
+        opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x, y }]
+      };
+      this.drawPoint(x, y, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isDrawing || !this.currentStroke) return;
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(x - last.x, y - last.y) >= 2) {
+        pts.push({ x, y });
+        this.drawSegment(last, { x, y }, this.currentStroke);
+      }
+    });
+
+    const endDraw = () => {
+      if (!this.isDrawing) return;
+      this.isDrawing = false;
+      if (this.currentStroke && this.currentStroke.points.length > 0) {
+        if (!this.strokesByStep[currentStep]) this.strokesByStep[currentStep] = [];
+        this.strokesByStep[currentStep].push(this.currentStroke);
+      }
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('pointerup', endDraw);
+    this.canvas.addEventListener('pointercancel', endDraw);
+  }
+
+  drawPoint(x, y, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.4 : stroke.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const list = this.strokesByStep[currentStep] || [];
+    for (const stroke of list) {
+      if (!stroke.points || stroke.points.length === 0) continue;
+      this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+      }
+    }
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+    document.querySelectorAll('.lp-btn').forEach(b => b.classList.remove('active'));
+    if (tool === 'pen') document.getElementById('btnLpPen')?.classList.add('active');
+    if (tool === 'highlighter') document.getElementById('btnLpHighlighter')?.classList.add('active');
+    if (tool === 'eraser') document.getElementById('btnLpEraser')?.classList.add('active');
+  }
+
+  setColor(col) {
+    this.currentColor = col;
+    document.querySelectorAll('.lp-color-dot').forEach(d => {
+      d.classList.toggle('active', d.style.backgroundColor === col || d.getAttribute('data-col') === col);
+    });
+  }
+
+  clearCurrent() {
+    this.strokesByStep[currentStep] = [];
+    this.redraw();
+  }
+
+  initPaletteDrag() {
+    const pal = document.getElementById('limPenPalette');
+    const handle = document.getElementById('lpDragHandle');
+    if (!pal || !handle) return;
+
+    let isDragging = false;
+    let ox = 0, oy = 0;
+
+    handle.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      ox = e.clientX - pal.offsetLeft;
+      oy = e.clientY - pal.offsetTop;
+      handle.setPointerCapture(e.pointerId);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      pal.style.left = `${e.clientX - ox}px`;
+      pal.style.top = `${e.clientY - oy}px`;
+      pal.style.transform = 'none';
+    });
+
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// CONTROLLER FOGLIO BIANCO INTERATTIVO
+// ═════════════════════════════════════════════════════════════════════════
+
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 6;
+    this.bg = 'white';
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokesByStep = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const wrap = this.canvas.parentElement;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      const rect = this.canvas.getBoundingClientRect();
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const worldX = screenX - this.panX;
+      const worldY = screenY - this.panY;
+
+      if (this.tool === 'hand') {
+        this.isPanning = true;
+        this.panStartX = e.clientX - this.panX;
+        this.panStartY = e.clientY - this.panY;
+        this.canvas.classList.add('grabbing');
+        this.canvas.setPointerCapture(e.pointerId);
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.findStrokeAt(worldX, worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = worldX;
+          this.dragStartY = worldY;
+          this.canvas.classList.add('dragging');
+          this.canvas.setPointerCapture(e.pointerId);
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.canvas.setPointerCapture(e.pointerId);
+
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        opacity: this.tool === 'highlighter' ? 0.35 : 1.0,
+        points: [{ x: worldX, y: worldY }]
+      };
+      this.drawPoint(worldX, worldY, this.currentStroke);
+    });
+
+    this.canvas.addEventListener('pointermove', (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const worldX = screenX - this.panX;
+      const worldY = screenY - this.panY;
+
+      if (this.isPanning) {
+        this.panX = e.clientX - this.panStartX;
+        this.panY = e.clientY - this.panStartY;
+        this.updatePanBadge();
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = worldX - this.dragStartX;
+        const dy = worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = worldX;
+        this.dragStartY = worldY;
+        this.redraw();
+        return;
+      }
+
+      if (!this.isDrawing || !this.currentStroke) return;
+      const pts = this.currentStroke.points;
+      const last = pts[pts.length - 1];
+      if (Math.hypot(worldX - last.x, worldY - last.y) >= 2) {
+        pts.push({ x: worldX, y: worldY });
+        this.drawSegment(last, { x: worldX, y: worldY }, this.currentStroke);
+      }
+    });
+
+    const endAction = () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.classList.remove('grabbing');
+      }
+      if (this.isDraggingStroke) {
+        this.isDraggingStroke = false;
+        this.canvas.classList.remove('dragging');
+      }
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          if (!this.strokesByStep[currentStep]) this.strokesByStep[currentStep] = [];
+          this.strokesByStep[currentStep].push(this.currentStroke);
+        }
+        this.currentStroke = null;
+      }
+    };
+
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  findStrokeAt(wx, wy) {
+    const list = this.strokesByStep[currentStep] || [];
+    for (let i = list.length - 1; i >= 0; i--) {
+      const stroke = list[i];
+      for (const pt of stroke.points) {
+        if (Math.hypot(pt.x - wx, pt.y - wy) <= (stroke.size + 10)) {
+          return stroke;
+        }
+      }
+    }
+    return null;
+  }
+
+  drawPoint(wx, wy, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.translate(this.panX, this.panY);
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(wx, wy, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      ctx.beginPath();
+      ctx.arc(wx, wy, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawSegment(p1, p2, stroke) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.translate(this.panX, this.panY);
+    if (stroke.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = stroke.size * 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = stroke.color;
+      ctx.globalAlpha = stroke.opacity;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.4 : stroke.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  redraw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const list = this.strokesByStep[currentStep] || [];
+
+    for (const stroke of list) {
+      if (!stroke.points || stroke.points.length === 0) continue;
+      this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+      }
+    }
+
+    if (this.selectedStroke && this.selectedStroke.points.length > 0) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const pt of this.selectedStroke.points) {
+        if (pt.x < minX) minX = pt.x;
+        if (pt.y < minY) minY = pt.y;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y > maxY) maxY = pt.y;
+      }
+      const pad = 8;
+      const ctx = this.ctx;
+      ctx.save();
+      ctx.translate(this.panX, this.panY);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(minX - pad, minY - pad, (maxX - minX) + pad * 2, (maxY - minY) + pad * 2);
+      ctx.restore();
+    }
+  }
+
+  updatePanBadge() {
+    const badge = document.getElementById('wbPanBadge');
+    if (!badge) return;
+    const px = Math.round(this.panX);
+    const py = Math.round(this.panY);
+    badge.innerText = `Pan: (${px}, ${py})`;
+    badge.classList.toggle('panned', px !== 0 || py !== 0);
+  }
+
+  resetPan() {
+    this.panX = 0;
+    this.panY = 0;
+    this.updatePanBadge();
+    this.redraw();
+  }
+
+  setTool(t) {
+    this.tool = t;
+    this.canvas.className = 'wb-canvas';
+    if (t === 'hand') this.canvas.classList.add('tool-hand');
+    if (t === 'select') this.canvas.classList.add('tool-select');
+
+    document.querySelectorAll('.wb-tool-btn').forEach(b => b.classList.remove('active'));
+    if (t === 'pen') document.getElementById('wbToolPen')?.classList.add('active');
+    if (t === 'highlighter') document.getElementById('wbToolHighlighter')?.classList.add('active');
+    if (t === 'eraser') document.getElementById('wbToolEraser')?.classList.add('active');
+    if (t === 'hand') document.getElementById('wbToolHand')?.classList.add('active');
+    if (t === 'select') document.getElementById('wbToolSelect')?.classList.add('active');
+  }
+
+  setColor(c) {
+    this.color = c;
+    document.querySelectorAll('.wb-color').forEach(dot => {
+      dot.classList.toggle('active', dot.style.backgroundColor === c);
+    });
+  }
+
+  setSize(s) {
+    this.size = s;
+    document.querySelectorAll('.wb-size-btn').forEach((btn, idx) => {
+      const sizes = [3, 6, 12];
+      btn.classList.toggle('active', sizes[idx] === s);
+    });
+  }
+
+  setBg(bgType) {
+    this.bg = bgType;
+    const body = document.getElementById('wbBody');
+    if (body) {
+      body.className = `wb-body bg-${bgType}`;
+    }
+    document.querySelectorAll('.wb-btn-text').forEach(btn => btn.classList.remove('active'));
+    if (bgType === 'white') document.getElementById('wbBgWhite')?.classList.add('active');
+    if (bgType === 'grid') document.getElementById('wbBgGrid')?.classList.add('active');
+    if (bgType === 'dark') document.getElementById('wbBgDark')?.classList.add('active');
+  }
+
+  undo() {
+    const list = this.strokesByStep[currentStep];
+    if (list && list.length > 0) {
+      list.pop();
+      this.selectedStroke = null;
+      this.redraw();
+    }
+  }
+
+  clearCurrent() {
+    this.strokesByStep[currentStep] = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// NAVIGAZIONE PASSI & CONTROLLI LIM
+// ═════════════════════════════════════════════════════════════════════════
+
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function setStep(stepNum) {
+  if (stepNum < 1 || stepNum > totalSteps) return;
+  currentStep = stepNum;
+
+  const data = stepData[stepNum - 1];
+
+  // Aggiorna testi card
+  const meta = document.getElementById('stepMetaBadge');
+  if (meta) meta.innerText = data.meta;
+
+  const title = document.getElementById('stepTitleMain');
+  if (title) title.innerText = data.title;
+
+  const counter = document.getElementById('stepCounterBadge');
+  if (counter) counter.innerText = `[ ${stepNum} / ${totalSteps} ]`;
+
+  const body = document.getElementById('stepCardBody');
+  if (body) body.innerHTML = data.content;
+
+  const live = document.getElementById('liveStatusText');
+  if (live) live.innerText = data.status;
+
+  const wbSlideTag = document.getElementById('wbSlideTag');
+  if (wbSlideTag) wbSlideTag.innerText = `Passo ${stepNum}`;
+
+  // Bottoni Prev/Next
+  const prevBtn = document.getElementById('btnPrevStep');
+  if (prevBtn) prevBtn.disabled = stepNum === 1;
+
+  const nextBtn = document.getElementById('btnNextStep');
+  if (nextBtn) nextBtn.disabled = stepNum === totalSteps;
+
+  // Pills footer
+  document.querySelectorAll('.step-circle-pill').forEach((pill, idx) => {
+    pill.classList.remove('active');
+    if (idx + 1 === stepNum) pill.classList.add('active');
+    if (idx + 1 < stepNum) pill.classList.add('completed');
+    else pill.classList.remove('completed');
+  });
+
+  // Pills HUD
+  document.querySelectorAll('.hud-pill').forEach((pill, idx) => {
+    pill.classList.toggle('active', idx + 1 === stepNum);
+  });
+
+  // Render Formule KaTeX
+  if (window.renderMathInElement && body) {
+    renderMathInElement(body, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '\[', right: '\]', display: true },
+        { left: '\(', right: '\)', display: false }
+      ],
+      throwOnError: false
+    });
+  }
+
+  // Ridisegna Canvas
+  if (renderer) renderer.startStepAnimation();
+  if (limPen) limPen.redraw();
+  if (whiteboard) whiteboard.redraw();
+}
+
+function nextStep() { setStep(currentStep + 1); }
+function prevStep() { setStep(currentStep - 1); }
+function goToStep(s) { setStep(s); }
+
+// TOGGLE PENNA LIM
+function togglePenMode() {
+  const c = document.getElementById('limPenCanvas');
+  const pal = document.getElementById('limPenPalette');
+  const btn = document.getElementById('btnHeaderPen');
+
+  limPen.active = !limPen.active;
+  c.classList.toggle('active', limPen.active);
+  pal.classList.toggle('show', limPen.active);
+
+  if (limPen.active) {
+    btn.classList.add('primary');
+  } else {
+    btn.classList.remove('primary');
+  }
+}
+
+// TOGGLE FOGLIO BIANCO
+function openWhiteboard() {
+  const overlay = document.getElementById('whiteboardOverlay');
+  overlay.classList.add('show');
+  whiteboard.resize();
+}
+
+function closeWhiteboard() {
+  const overlay = document.getElementById('whiteboardOverlay');
+  overlay.classList.remove('show');
+}
+
+// TOGGLE THEME
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.innerText = isDark ? '☀️' : '🌙';
+  if (renderer) renderer.draw(currentStep);
+  if (limPen) limPen.redraw();
+}
+
+// TOGGLE TEXT SIZE
+let textScaleLevel = 0;
+function toggleTextSize() {
+  textScaleLevel = (textScaleLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  if (textScaleLevel === 1) document.body.classList.add('text-scale-1');
+  if (textScaleLevel === 2) document.body.classList.add('text-scale-2');
+}
+
+// SCHERMO INTERO
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+    document.body.classList.add('is-fullscreen');
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    document.body.classList.remove('is-fullscreen');
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    document.body.classList.remove('is-fullscreen');
+  } else {
+    document.body.classList.add('is-fullscreen');
+  }
+  setTimeout(() => {
+    if (renderer) renderer.resize();
+    if (limPen) limPen.resize();
+    if (whiteboard) whiteboard.resize();
+  }, 100);
+});
+
+// SCORCIATOIE DA TASTIERA
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const key = e.key.toUpperCase();
+  if (key === 'ARROWLEFT') prevStep();
+  if (key === 'ARROWRIGHT') nextStep();
+  if (key === 'P') togglePenMode();
+  if (key === 'W') {
+    const ov = document.getElementById('whiteboardOverlay');
+    if (ov.classList.contains('show')) closeWhiteboard();
+    else openWhiteboard();
+  }
+  if (key === 'F') toggleFullscreen();
+  if (key === 'ESCAPE') {
+    closeWhiteboard();
+    if (limPen.active) togglePenMode();
+  }
+});
+
+// INIZIALIZZAZIONE ALL'AVVIO
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  setStep(1);
+});
+</script>
+</body>
+</html>

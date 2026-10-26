@@ -602,6 +602,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-potenza-4.html"
                   }
                 ]
+              },
+              {
+                title: "🏃 L'Energia Cinetica — Problemi Guidati (Pag. 367 - 368)",
+                topics: [
+                  {
+                    title: "📈 Problema 34: Leggi il Grafico — L'Energia Cinetica e la Velocità (Pag. 367)",
+                    desc: "Dipendenza quadratica K = ½mv². Cosa accade raddoppiando v? Analisi comparativa dei 4 grafici A, B, C, D: dimostrazione del fattore 4 e identificazione del ramo di parabola (Curva A).",
+                    url: "/fisica/giordano-bruno/esercizio-cinetica-1.html"
+                  },
+                  {
+                    title: "🚗 Problema 36: L'Auto di 1200 kg e il Teorema dell'Energia Cinetica (Pag. 367)",
+                    desc: "Lavoro necessario per accelerare da 60 a 80 km/h (W₁ = 1,3 · 10⁵ J) vs da 80 a 100 km/h (W₂ = 1,7 · 10⁵ J). Perché a parità di Δv serve il 31% di energia in più?",
+                    url: "/fisica/giordano-bruno/esercizio-cinetica-2.html"
+                  },
+                  {
+                    title: "⚪ Problema a Passi 40: La Biglia sulla Sabbia (Pag. 367)",
+                    desc: "Biglia da 10 g frenata da attrito F_att = 0,078 N per s = 55 cm. Calcolo lavoro resistente W = -4,3 · 10⁻² J e determinazione velocità di lancio iniziale v₀ = 2,9 m/s.",
+                    url: "/fisica/giordano-bruno/esercizio-cinetica-3.html"
+                  },
+                  {
+                    title: "⛰️ Problema Modello 43: Pietra che Cade dalla Montagna (Pag. 367)",
+                    desc: "Pietra di 2,4 kg in caduta libera per 18,0 m. Lavoro nei primi 12,0 m (W₁ = 2,8 · 10² J), verifica del teorema dell'energia cinetica e variazione nei successivi 6,0 m (ΔK₂ = 1,4 · 10² J).",
+                    url: "/fisica/giordano-bruno/esercizio-cinetica-4.html"
+                  }
+                ]
               }
             ]
 
