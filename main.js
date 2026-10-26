@@ -527,7 +527,33 @@ const MATERIE = [
 
             desc: "Attività sperimentali e simulazioni avanzate per le classi seconde.",
 
-            chapters: []
+            chapters: [
+              {
+                title: "⚡ Lavoro ed Energia (Test Pag. 362 - 363)",
+                topics: [
+                  {
+                    title: "⚡ Quesito 1: Lavoro della Forza-Peso (Funambolo vs Dislivello)",
+                    desc: "Animazione passo-passo del Test pag. 362: funambolo a 30 m di altezza, dimostrazione vettoriale di P ⊥ Δs (α = 90° => L = 0 J) e confronto con scalatore, scoiattolo e montacarichi.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-1.html"
+                  },
+                  {
+                    title: "📐 Quesito 2: Energia Potenziale Gravitazionale e Livello di Riferimento",
+                    desc: "Simulazione interattiva del Test pag. 362: quota zero h = 0 sul tavolo, calcolo U = mgh = 0 J per la bottiglia, quote positive/negative e indipendenza del lavoro ΔU dal riferimento.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-2.html"
+                  },
+                  {
+                    title: "🧗 Quesito 7: Scalatrice e Altezza della Parete di Roccia (Formula Inversa)",
+                    desc: "Problema guidato del Test pag. 363: scalatrice di 50 kg con lavoro L = 6000 J, ricavo dell'altezza con formula inversa h = L/(mg) ≈ 12 m e analisi dimensionale.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-3.html"
+                  },
+                  {
+                    title: "🏍️ Quesito 8: Energia Cinetica della Moto e Dipendenza Quadratica",
+                    desc: "Animazione geometrica del Test pag. 363: moto di 300 kg a v = 6 m/s, calcolo Ek = ½mv² = 5400 J, rappresentazione geometrica 3Blue1Brown di v² e quadruplicazione dell'energia al raddoppio di v.",
+                    url: "/fisica/giordano-bruno/esercizio-lavoro-4.html"
+                  }
+                ]
+              }
+            ]
 
           }
 
