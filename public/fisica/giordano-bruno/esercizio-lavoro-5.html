@@ -1229,6 +1229,11 @@ function checkAnswer(opt) {
     }
   });
 
+  if (vCanvas) {
+    vCanvas.quizSelected = opt;
+    vCanvas.draw(5, 1.0);
+  }
+
   const fb = document.getElementById('quizFeedbackBox');
   if (fb) {
     fb.style.display = 'block';
@@ -1266,6 +1271,8 @@ class VectorCanvas {
     this.isDragging = false;
     this.dragStartX = 0;
     this.dragStartY = 0;
+
+    this.quizSelected = null;
 
     this.initEvents();
   }
@@ -1327,8 +1334,8 @@ class VectorCanvas {
     ctx.translate(this.centerX + this.panX, this.centerY + this.panY);
     ctx.scale(this.scale * this.zoom, this.scale * this.zoom);
 
-    // Griglia millimetrata a quadretti
-    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    // Griglia millimetrata a quadretti 3Blue1Brown
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
     ctx.lineWidth = 1;
     for (let x = -250; x <= 250; x += 25) {
       ctx.beginPath(); ctx.moveTo(x, -190); ctx.lineTo(x, 190); ctx.stroke();
@@ -1337,11 +1344,34 @@ class VectorCanvas {
       ctx.beginPath(); ctx.moveTo(-250, y); ctx.lineTo(250, y); ctx.stroke();
     }
 
-    // Punto di attacco briglie (muso del mulo): coordinate (muleX, 0)
-    const muleX = -80;
-    const muleY = 0;
+    // DIRAMAZIONE DEDICATA PER CIASCUN PASSO (1 .. 5)
+    switch (step) {
+      case 1:
+        this.drawStep1(ctx, isDark, progress);
+        break;
+      case 2:
+        this.drawStep2(ctx, isDark, progress);
+        break;
+      case 3:
+        this.drawStep3(ctx, isDark, progress);
+        break;
+      case 4:
+        this.drawStep4(ctx, isDark, progress);
+        break;
+      case 5:
+        this.drawStep5(ctx, isDark, progress);
+        break;
+      default:
+        this.drawStep1(ctx, isDark, progress);
+    }
 
-    // 1. DISEGNO STILIZZATO DEL MULO (3Blue1Brown aesthetic)
+    ctx.restore();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // DISEGNO DEL MULO STILIZZATO (3Blue1Brown aesthetic)
+  // ═══════════════════════════════════════════════════════════
+  drawMule(ctx, isDark, muleX, muleY, legWalk = 0) {
     // Corpo
     ctx.fillStyle = isDark ? '#523824' : '#854d0e';
     ctx.strokeStyle = isDark ? '#785338' : '#713f12';
@@ -1359,88 +1389,314 @@ class VectorCanvas {
     ctx.closePath();
     ctx.fill(); ctx.stroke();
 
-    // Zampe
+    // Orecchie
+    ctx.beginPath();
+    ctx.moveTo(muleX - 14, muleY - 18);
+    ctx.lineTo(muleX - 18, muleY - 32);
+    ctx.lineTo(muleX - 9, muleY - 20);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    // Zampe con lieve passo animato
     ctx.strokeStyle = isDark ? '#523824' : '#854d0e';
     ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(muleX - 85, muleY + 28); ctx.lineTo(muleX - 90, muleY + 70);
-    ctx.moveTo(muleX - 70, muleY + 28); ctx.lineTo(muleX - 65, muleY + 70);
-    ctx.moveTo(muleX - 45, muleY + 28); ctx.lineTo(muleX - 50, muleY + 70);
-    ctx.moveTo(muleX - 30, muleY + 28); ctx.lineTo(muleX - 25, muleY + 70);
+    ctx.moveTo(muleX - 85, muleY + 28); ctx.lineTo(muleX - 90 + legWalk, muleY + 70);
+    ctx.moveTo(muleX - 70, muleY + 28); ctx.lineTo(muleX - 65 - legWalk, muleY + 70);
+    ctx.moveTo(muleX - 45, muleY + 28); ctx.lineTo(muleX - 50 + legWalk, muleY + 70);
+    ctx.moveTo(muleX - 30, muleY + 28); ctx.lineTo(muleX - 25 - legWalk, muleY + 70);
     ctx.stroke();
 
-    // Punto rosso giunzione briglie
+    // Punto rosso giunzione briglie (muso)
     ctx.fillStyle = '#ef4444';
     ctx.beginPath(); ctx.arc(muleX, muleY, 5, 0, Math.PI * 2); ctx.fill();
+  }
 
-    // 2. VETTORE SPOSTAMENTO s = 12 m (ORIZZONTALE A DESTRA)
-    const sLen = 170;
-    this.drawArrowDirect(muleX, muleY, muleX + sLen, muleY, '#16a34a', 3.5, 12);
-    this.drawTextDirect("s = 12 m (moto)", muleX + sLen - 60, muleY + 22, '#16a34a', 'bold 12px IBM Plex Mono');
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 1: SITUAZIONE FISICA & DATI DEL PROBLEMA
+  // ═══════════════════════════════════════════════════════════
+  drawStep1(ctx, isDark, progress) {
+    // Mulo che avanza verso destra
+    const startMuleX = -105;
+    const endMuleX = -80;
+    const curMuleX = startMuleX + (endMuleX - startMuleX) * progress;
+    const legWalk = Math.sin(progress * Math.PI * 4) * 5;
+    this.drawMule(ctx, isDark, curMuleX, 0, legWalk);
 
-    // 3. VETTORE GIANNI: F1 = 400 N a +45° (in alto a destra)
+    // Vettore Spostamento s = 12 m (si estende progressivamente)
+    const curSLen = 170 * Math.max(0.15, progress);
+    this.drawArrowDirect(curMuleX, 0, curMuleX + curSLen, 0, '#16a34a', 3.5, 12);
+    this.drawTextDirect("s = 12 m (asse moto)", curMuleX + curSLen - 65, 24, '#16a34a', 'bold 12px IBM Plex Mono');
+
+    // Vettore Gianni: F1 = 400 N a 45°
     const ang1 = 45 * Math.PI / 180;
-    const len1 = 130 * Math.max(0.1, progress);
-    const gX = muleX + len1 * Math.cos(ang1);
-    const gY = muleY - len1 * Math.sin(ang1);
+    const len1 = 130 * Math.max(0.15, progress);
+    const gX = curMuleX + len1 * Math.cos(ang1);
+    const gY = 0 - len1 * Math.sin(ang1);
+    this.drawArrowDirect(curMuleX, 0, gX, gY, '#ef4444', 4, 13);
+    this.drawTextDirect("F₁ (Gianni) = 400 N", gX + 12, gY + 4, '#ef4444', 'bold 12px Inter');
 
+    // Arco Gianni
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(curMuleX, 0, 38, -ang1, 0, false); ctx.stroke();
+    this.drawTextDirect("α = 45°", curMuleX + 44, -14, '#ef4444', 'bold 11px IBM Plex Mono');
+
+    // Vettore Anna: F2 = 480 N a 36°
+    const ang2 = 36 * Math.PI / 180;
+    const len2 = 145 * Math.max(0.15, progress);
+    const aX = curMuleX + len2 * Math.cos(ang2);
+    const aY = 0 + len2 * Math.sin(ang2);
+    this.drawArrowDirect(curMuleX, 0, aX, aY, '#0284c7', 4, 13);
+    this.drawTextDirect("F₂ (Anna) = 480 N", aX + 12, aY - 2, '#0284c7', 'bold 12px Inter');
+
+    // Arco Anna
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(curMuleX, 0, 44, 0, ang2, false); ctx.stroke();
+    this.drawTextDirect("β = 36°", curMuleX + 48, 18, '#0284c7', 'bold 11px IBM Plex Mono');
+
+    // Schede Dati in alto
+    this.drawBadgeDirect(0, -160, 'PIANO VETTORIALE DELLE FORZE (PAG. 364)', '#0f172a', '#38bdf8', 12);
+    this.drawBadgeDirect(-120, -125, 'Gianni: F₁ = 400 N (45°)', '#1e293b', '#f87171', 11);
+    this.drawBadgeDirect(10, -125, 'Anna: F₂ = 480 N (36°)', '#1e293b', '#38bdf8', 11);
+    this.drawBadgeDirect(140, -125, 'Spostamento: s = 12 m', '#1e293b', '#4ade80', 11);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 2: IL LAVORO DI GIANNI (PROIEZIONE F1x = F1 * cos 45°)
+  // ═══════════════════════════════════════════════════════════
+  drawStep2(ctx, isDark, progress) {
+    const muleX = -80;
+    const muleY = 0;
+    this.drawMule(ctx, isDark, muleX, muleY);
+
+    // Asse Spostamento s = 12 m
+    this.drawArrowDirect(muleX, muleY, muleX + 170, muleY, '#16a34a', 3, 11);
+    this.drawTextDirect("s = 12 m (moto)", muleX + 105, muleY + 22, '#16a34a', 'bold 12px IBM Plex Mono');
+
+    // Anna in semitrasparenza (ghost) per concentrarsi su Gianni
+    const ang2 = 36 * Math.PI / 180;
+    const aX = muleX + 145 * Math.cos(ang2);
+    const aY = muleY + 145 * Math.sin(ang2);
+    this.drawArrowDirect(muleX, muleY, aX, aY, isDark ? 'rgba(2,132,199,0.2)' : 'rgba(2,132,199,0.25)', 2.5, 9);
+    this.drawTextDirect("F₂ (Anna)", aX + 8, aY, isDark ? '#475569' : '#94a3b8', '11px Inter');
+
+    // Vettore Gianni brillante
+    const ang1 = 45 * Math.PI / 180;
+    const gX = muleX + 130 * Math.cos(ang1);
+    const gY = muleY - 130 * Math.sin(ang1);
     this.drawArrowDirect(muleX, muleY, gX, gY, '#ef4444', 4, 13);
     this.drawTextDirect("F₁ (Gianni) = 400 N", gX + 12, gY + 4, '#ef4444', 'bold 12px Inter');
 
-    // Arco angolare Gianni (α = 45°)
+    // Arco Gianni
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(muleX, muleY, 38, -ang1, 0, false);
-    ctx.stroke();
-    this.drawTextDirect("α = 45°", muleX + 44, muleY - 14, '#ef4444', 'bold 11px IBM Plex Mono');
+    ctx.beginPath(); ctx.arc(muleX, muleY, 38, -ang1, 0, false); ctx.stroke();
+    this.drawTextDirect("45°", muleX + 44, muleY - 14, '#ef4444', 'bold 11px IBM Plex Mono');
 
-    // 4. VETTORE ANNA: F2 = 480 N a -36° (in basso a destra)
+    // Proiezione verticale che scende con progress
+    const projY = gY + (muleY - gY) * progress;
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(gX, projY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Componente orizzontale efficace F1x = F1 * cos(45°) = 283 N
+    const f1xLen = (gX - muleX) * progress;
+    if (f1xLen > 5) {
+      this.drawArrowDirect(muleX, muleY - 4, muleX + f1xLen, muleY - 4, '#f97316', 4.5, 12);
+      this.drawTextDirect("F₁ₓ = 283 N", muleX + f1xLen / 2 - 20, muleY - 16, '#f97316', 'bold 12px IBM Plex Mono');
+    }
+
+    // Badge formula e calcolo di Gianni
+    this.drawBadgeDirect(gX - 15, -125, "L₁ = F₁ · s · cos(45°)", '#0f172a', '#f87171', 12);
+    this.drawBadgeDirect(gX - 15, -95, "L₁ = 400 · 12 · 0,7071 = 3394 J (3,4 kJ)", '#0f172a', '#fb923c', 13);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 3: IL LAVORO DI ANNA (PROIEZIONE F2x = F2 * cos 36°)
+  // ═══════════════════════════════════════════════════════════
+  drawStep3(ctx, isDark, progress) {
+    const muleX = -80;
+    const muleY = 0;
+    this.drawMule(ctx, isDark, muleX, muleY);
+
+    // Asse Spostamento s = 12 m
+    this.drawArrowDirect(muleX, muleY, muleX + 170, muleY, '#16a34a', 3, 11);
+    this.drawTextDirect("s = 12 m (moto)", muleX + 105, muleY - 14, '#16a34a', 'bold 12px IBM Plex Mono');
+
+    // Gianni in semitrasparenza (ghost)
+    const ang1 = 45 * Math.PI / 180;
+    const gX = muleX + 130 * Math.cos(ang1);
+    const gY = muleY - 130 * Math.sin(ang1);
+    this.drawArrowDirect(muleX, muleY, gX, gY, isDark ? 'rgba(239,68,68,0.2)' : 'rgba(239,68,68,0.25)', 2.5, 9);
+    this.drawTextDirect("F₁ (Gianni)", gX + 8, gY, isDark ? '#475569' : '#94a3b8', '11px Inter');
+
+    // Vettore Anna brillante
     const ang2 = 36 * Math.PI / 180;
-    const len2 = 145 * Math.max(0.1, progress);
-    const aX = muleX + len2 * Math.cos(ang2);
-    const aY = muleY + len2 * Math.sin(ang2);
-
+    const aX = muleX + 145 * Math.cos(ang2);
+    const aY = muleY + 145 * Math.sin(ang2);
     this.drawArrowDirect(muleX, muleY, aX, aY, '#0284c7', 4, 13);
     this.drawTextDirect("F₂ (Anna) = 480 N", aX + 12, aY - 2, '#0284c7', 'bold 12px Inter');
 
-    // Arco angolare Anna (β = 36°)
+    // Arco Anna
     ctx.strokeStyle = '#0284c7';
     ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(muleX, muleY, 44, 0, ang2, false);
-    ctx.stroke();
-    this.drawTextDirect("β = 36°", muleX + 48, muleY + 18, '#0284c7', 'bold 11px IBM Plex Mono');
+    ctx.beginPath(); ctx.arc(muleX, muleY, 44, 0, ang2, false); ctx.stroke();
+    this.drawTextDirect("36°", muleX + 48, muleY + 18, '#0284c7', 'bold 11px IBM Plex Mono');
 
-    // 5. PROIEZIONI SULL'ASSE DEL MOTO (F1x e F2x)
-    if (step >= 2) {
-      // Proiezione Gianni
-      ctx.strokeStyle = isDark ? 'rgba(239,68,68,0.4)' : 'rgba(239,68,68,0.5)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(gX, muleY); ctx.stroke();
-      ctx.setLineDash([]);
-      this.drawBadgeDirect(gX - 15, -122, "L₁ = 3394 J (45°)", '#0f172a', '#f87171', 11);
+    // Proiezione verticale che sale da Anna con progress
+    const projY = aY + (muleY - aY) * progress;
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(aX, aY); ctx.lineTo(aX, projY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Componente orizzontale efficace F2x = F2 * cos(36°) = 388 N (più lunga di Gianni!)
+    const f2xLen = (aX - muleX) * progress;
+    if (f2xLen > 5) {
+      this.drawArrowDirect(muleX, muleY + 4, muleX + f2xLen, muleY + 4, '#38bdf8', 4.5, 12);
+      this.drawTextDirect("F₂ₓ = 388 N", muleX + f2xLen / 2 - 20, muleY + 22, '#38bdf8', 'bold 12px IBM Plex Mono');
     }
 
-    if (step >= 3) {
-      // Proiezione Anna
-      ctx.strokeStyle = isDark ? 'rgba(2,132,199,0.4)' : 'rgba(2,132,199,0.5)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath(); ctx.moveTo(aX, aY); ctx.lineTo(aX, muleY); ctx.stroke();
-      ctx.setLineDash([]);
-      this.drawBadgeDirect(aX - 10, 130, "L₂ = 4660 J (36°)", '#0f172a', '#38bdf8', 11);
-    }
+    // Badge formula e calcolo di Anna
+    this.drawBadgeDirect(aX - 10, 105, "L₂ = F₂ · s · cos(36°)", '#0f172a', '#38bdf8', 12);
+    this.drawBadgeDirect(aX - 10, 135, "L₂ = 480 · 12 · 0,8090 = 4660 J (4,66 kJ)", '#0f172a', '#4ade80', 13);
 
-    if (step >= 4) {
-      // Badge Lavoro Totale
-      this.drawBadgeDirect(80, -145, "L_tot = L₁ + L₂ = 8054 J ≈ 8,1 kJ", '#0f172a', '#fbbf24', 13);
-    }
-
-    ctx.restore();
+    // Notazione comparativa in alto
+    this.drawBadgeDirect(0, -145, '⚡ Anna compie PIÙ lavoro di Gianni (+1266 J): forza maggiore e angolo più stretto!', '#0f172a', '#fbbf24', 11);
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 4: IL LAVORO TOTALE (SOMMA SCALARE L_tot = L1 + L2)
+  // ═══════════════════════════════════════════════════════════
+  drawStep4(ctx, isDark, progress) {
+    const muleX = -80;
+    const muleY = 0;
+    this.drawMule(ctx, isDark, muleX, muleY);
+
+    // Asse Spostamento s = 12 m
+    this.drawArrowDirect(muleX, muleY, muleX + 170, muleY, '#16a34a', 3, 11);
+
+    // Entrambi i vettori attivi
+    const ang1 = 45 * Math.PI / 180;
+    const gX = muleX + 130 * Math.cos(ang1);
+    const gY = muleY - 130 * Math.sin(ang1);
+    this.drawArrowDirect(muleX, muleY, gX, gY, '#ef4444', 3.5, 12);
+    this.drawTextDirect("L₁ = 3,4 kJ", gX + 10, gY + 4, '#ef4444', 'bold 11px Inter');
+
+    const ang2 = 36 * Math.PI / 180;
+    const aX = muleX + 145 * Math.cos(ang2);
+    const aY = muleY + 145 * Math.sin(ang2);
+    this.drawArrowDirect(muleX, muleY, aX, aY, '#0284c7', 3.5, 12);
+    this.drawTextDirect("L₂ = 4,7 kJ", aX + 10, aY - 2, '#0284c7', 'bold 11px Inter');
+
+    // Proiezioni tratteggiate verso l'asse
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(239,68,68,0.5)';
+    ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(gX, muleY); ctx.stroke();
+    ctx.strokeStyle = 'rgba(2,132,199,0.5)';
+    ctx.beginPath(); ctx.moveTo(aX, aY); ctx.lineTo(aX, muleY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Composizione testa-coda delle due componenti orizzontali su s
+    const f1xW = gX - muleX; // 91.9 px ~ 283 N
+    const f2xW = aX - muleX; // 117.3 px ~ 388 N
+    const totalFxW = (f1xW + f2xW) * 0.75 * Math.min(1.0, progress);
+
+    this.drawArrowDirect(muleX, muleY + 4, muleX + f1xW * 0.75, muleY + 4, '#ef4444', 4, 10);
+    this.drawArrowDirect(muleX + f1xW * 0.75, muleY + 4, muleX + totalFxW, muleY + 4, '#0284c7', 4, 10);
+    this.drawTextDirect("F_tot,x = 671 N", muleX + totalFxW + 8, muleY + 8, '#f59e0b', 'bold 11px IBM Plex Mono');
+
+    // BARRA DEL LAVORO TOTALE 3Blue1Brown in alto
+    const barX = -130;
+    const barY = -145;
+    const barTotalW = 260;
+    const barH = 20;
+
+    // Segmento L1 (Rosso)
+    const l1Frac = 3394 / 8054; // ~0.421
+    const l1W = barTotalW * l1Frac * Math.min(1.0, progress);
+
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(barX, barY, l1W, barH);
+
+    // Segmento L2 (Blu)
+    const l2Frac = 4660 / 8054; // ~0.579
+    const l2W = barTotalW * l2Frac * Math.min(1.0, progress);
+
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(barX + l1W, barY, l2W, barH);
+
+    // Bordo della barra intera
+    ctx.strokeStyle = isDark ? '#ffffff' : '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barX, barY, barTotalW * Math.min(1.0, progress), barH);
+
+    // Etichette segmenti
+    if (progress > 0.4) {
+      this.drawTextDirect("L₁ (42%)", barX + 10, barY + 14, '#ffffff', 'bold 10px Inter');
+      this.drawTextDirect("L₂ (58%)", barX + l1W + 15, barY + 14, '#ffffff', 'bold 10px Inter');
+    }
+
+    // Risultato Finale in evidenza
+    this.drawBadgeDirect(0, -170, "L_tot = L₁ + L₂ = 3394 J + 4660 J = 8054 J", '#0f172a', '#fbbf24', 12);
+    this.drawBadgeDirect(0, -112, "★ Risultato Ufficiale del Libro: 8,1 kJ  (Pagina 364) ✓", '#0f172a', '#4ade80', 13);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 5: CONFRONTO CON TIRO DRITTO (0°) & QUIZ LIM
+  // ═══════════════════════════════════════════════════════════
+  drawStep5(ctx, isDark, progress) {
+    const muleX = -80;
+    const muleY = 0;
+    this.drawMule(ctx, isDark, muleX, muleY);
+
+    // Asse Spostamento s = 12 m
+    this.drawArrowDirect(muleX, muleY, muleX + 170, muleY, '#16a34a', 3, 11);
+
+    // Forze reali inclinate
+    const ang1 = 45 * Math.PI / 180;
+    const gX = muleX + 130 * Math.cos(ang1);
+    const gY = muleY - 130 * Math.sin(ang1);
+    this.drawArrowDirect(muleX, muleY, gX, gY, '#ef4444', 3, 10);
+
+    const ang2 = 36 * Math.PI / 180;
+    const aX = muleX + 145 * Math.cos(ang2);
+    const aY = muleY + 145 * Math.sin(ang2);
+    this.drawArrowDirect(muleX, muleY, aX, aY, '#0284c7', 3, 10);
+
+    // Componenti laterali opposte che si disperdono (Fy)
+    ctx.setLineDash([3, 3]);
+    this.drawArrowDirect(gX, muleY, gX, gY, '#f87171', 2, 6);
+    this.drawArrowDirect(aX, muleY, aX, aY, '#38bdf8', 2, 6);
+    ctx.setLineDash([]);
+    this.drawTextDirect("F_y laterali opposte (si annullano!)", muleX + 70, muleY + 70, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+
+    // Confronto in alto tra Lavoro Reale e Lavoro Ideale
+    this.drawBadgeDirect(0, -165, "COSA SUCCEDEREBBE SE TIRASSERO DRITTI (θ = 0°)?", '#0f172a', '#38bdf8', 12);
+
+    this.drawBadgeDirect(-85, -130, "L_reale (inclinato): 8,1 kJ", '#1e293b', '#f59e0b', 11);
+    this.drawBadgeDirect(85, -130, "L_max (a 0° dritto): 10,6 kJ", '#1e293b', '#4ade80', 11);
+
+    // Feedback Interattivo del Quiz sul Canvas
+    if (this.quizSelected) {
+      if (this.quizSelected === 'A') {
+        this.drawBadgeDirect(0, -95, "✓ RISPOSTA ESATTA: Opzione A (8,1 kJ)", '#16a34a', '#ffffff', 13);
+      } else {
+        this.drawBadgeDirect(0, -95, `✗ Opzione ${this.quizSelected} Errata — Riprova con l\'Opzione A!`, '#dc2626', '#ffffff', 12);
+      }
+    } else {
+      this.drawBadgeDirect(0, -95, "Seleziona la risposta esatta nel Quiz a destra!", '#0f172a', '#38bdf8', 11);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // UTILITY GRAFICHE
+  // ═══════════════════════════════════════════════════════════
   drawArrowDirect(x1, y1, x2, y2, color, lineWidth = 4, headSize = 12) {
     const ctx = this.ctx;
     ctx.save();
@@ -2211,6 +2467,9 @@ function setStep(stepNum) {
   currentStep = stepNum;
 
   const data = STEPS_DATA[currentStep - 1];
+  if (vCanvas && stepNum !== 5) {
+    vCanvas.quizSelected = null;
+  }
   document.getElementById('stepMetaBadge').textContent = data.badge;
   document.getElementById('stepMetaTitle').textContent = data.title;
   document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
