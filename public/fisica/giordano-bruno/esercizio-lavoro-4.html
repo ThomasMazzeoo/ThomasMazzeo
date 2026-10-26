@@ -1274,6 +1274,11 @@ function checkAnswer(opt) {
     }
   });
 
+  if (vCanvas) {
+    vCanvas.quizSelected = opt;
+    vCanvas.draw(5, 1.0);
+  }
+
   const fb = document.getElementById('quizFeedbackBox');
   if (fb) {
     fb.style.display = 'block';
@@ -1300,41 +1305,48 @@ function checkAnswer(opt) {
 class VectorCanvas {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
-    this.wrap = document.getElementById('canvasWrap');
-    if (!this.canvas || !this.wrap) return;
     this.ctx = this.canvas.getContext('2d');
+    this.wrap = this.canvas.parentElement;
     this.dpr = window.devicePixelRatio || 1;
 
+    this.width = 0;
+    this.height = 0;
+    this.scale = 1.0;
     this.zoom = 1.0;
     this.panX = 0;
     this.panY = 0;
-    this.isDragging = false;
-    this.dragStartX = 0;
-    this.dragStartY = 0;
+    this.isPanning = false;
+    this.startX = 0;
+    this.startY = 0;
+
+    this.quizSelected = null;
 
     this.initEvents();
+    this.resize();
   }
 
   initEvents() {
     this.wrap.addEventListener('pointerdown', (e) => {
-      if (penLayer && penLayer.active) return;
-      if (e.button !== 0 && e.button !== 1) return;
-      this.isDragging = true;
-      this.dragStartX = e.clientX - this.panX;
-      this.dragStartY = e.clientY - this.panY;
-      this.wrap.setPointerCapture(e.pointerId);
+      if (e.target.id === 'limPenCanvas' || (penLayer && penLayer.active)) return;
+      this.isPanning = true;
+      this.startX = e.clientX - this.panX;
+      this.startY = e.clientY - this.panY;
+      this.wrap.style.cursor = 'grabbing';
     });
 
-    this.wrap.addEventListener('pointermove', (e) => {
-      if (!this.isDragging) return;
-      this.panX = e.clientX - this.dragStartX;
-      this.panY = e.clientY - this.dragStartY;
+    window.addEventListener('pointermove', (e) => {
+      if (!this.isPanning) return;
+      this.panX = e.clientX - this.startX;
+      this.panY = e.clientY - this.startY;
       this.draw(currentStep, animProgress);
     });
 
-    const stopDrag = () => { this.isDragging = false; };
-    this.wrap.addEventListener('pointerup', stopDrag);
-    this.wrap.addEventListener('pointercancel', stopDrag);
+    window.addEventListener('pointerup', () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.wrap.style.cursor = 'grab';
+      }
+    });
 
     this.wrap.addEventListener('wheel', (e) => {
       e.preventDefault();
@@ -1372,16 +1384,51 @@ class VectorCanvas {
     ctx.translate(this.centerX + this.panX, this.centerY + this.panY);
     ctx.scale(this.scale * this.zoom, this.scale * this.zoom);
 
-    // Coordinate:
-    // Pista stradale a quota y = +60
-    const roadY = 60;
+    // Griglia millimetrata fine 3Blue1Brown
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+    ctx.lineWidth = 1;
+    for (let x = -250; x <= 250; x += 25) {
+      ctx.beginPath(); ctx.moveTo(x, -190); ctx.lineTo(x, 190); ctx.stroke();
+    }
+    for (let y = -190; y <= 190; y += 25) {
+      ctx.beginPath(); ctx.moveTo(-250, y); ctx.lineTo(250, y); ctx.stroke();
+    }
 
+    const v = currentSpeed; // 6 m/s oppure 12 m/s
+
+    // DIRAMAZIONE VISIVA DEDICATA PER OGNI PASSO (1 .. 5)
+    switch (step) {
+      case 1:
+        this.drawStep1(ctx, isDark, progress, v);
+        break;
+      case 2:
+        this.drawStep2(ctx, isDark, progress, v);
+        break;
+      case 3:
+        this.drawStep3(ctx, isDark, progress, v);
+        break;
+      case 4:
+        this.drawStep4(ctx, isDark, progress, v);
+        break;
+      case 5:
+        this.drawStep5(ctx, isDark, progress, v);
+        break;
+      default:
+        this.drawStep1(ctx, isDark, progress, v);
+    }
+
+    ctx.restore();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // COMPONENTE COMUNE: STRADA E MOTO
+  // ═══════════════════════════════════════════════════════════
+  drawRoadAndMoto(ctx, isDark, progress, v, roadY = 60, motoXOffset = 0, motoYOffset = 0) {
     // 1. ASFALTO STRADA
     ctx.fillStyle = isDark ? '#1e293b' : '#334155';
     ctx.fillRect(-220, roadY, 440, 70);
 
-    // Cordolo stradale superiore
-    ctx.fillStyle = '#ef4444';
+    // Cordolo stradale superiore a scacchi
     for (let x = -220; x < 220; x += 30) {
       ctx.fillStyle = (Math.floor(x / 30) % 2 === 0) ? '#ef4444' : '#ffffff';
       ctx.fillRect(x, roadY - 4, 30, 4);
@@ -1398,11 +1445,10 @@ class VectorCanvas {
     ctx.setLineDash([]);
 
     // 2. MOTO IN MOVIMENTO
-    const v = currentSpeed; // 6 m/s oppure 12 m/s
     const startX = -150;
     const endX = 20;
-    const motoX = startX + (endX - startX) * progress;
-    const motoY = roadY + 20;
+    const motoX = startX + (endX - startX) * progress + motoXOffset;
+    const motoY = roadY + 20 + motoYOffset;
 
     // Ruote moto (rotanti)
     const wheelR = 14;
@@ -1446,11 +1492,49 @@ class VectorCanvas {
     this.drawArrowDirect(motoX + 45, motoY - 30, motoX + 45 + vArrowLen, motoY - 30, '#16a34a', 4, 12);
     this.drawTextDirect(`v = ${v} m/s`, motoX + 55, motoY - 40, '#16a34a', 'bold 13px IBM Plex Mono');
 
-    // 4. RAPPRESENTAZIONE GEOMETRICA 3Blue1Brown DI v² (QUADRATO DELLE VELOCITÀ)
-    // Mostriamo in alto a destra o centro la griglia quadrata di v x v
-    const sqSize = 100;
-    const sqX = -120;
-    const sqY = -140;
+    return { motoX, motoY };
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 1: DATI DEL PROBLEMA & DEFINIZIONE DI ENERGIA CINETICA
+  // ═══════════════════════════════════════════════════════════
+  drawStep1(ctx, isDark, progress, v) {
+    const { motoX } = this.drawRoadAndMoto(ctx, isDark, progress, v);
+
+    // Badge massa moto che si muove con la moto
+    this.drawBadgeDirect(motoX + 10, 42, 'm = 300 kg', '#0284c7', '#ffffff', 11);
+
+    // Schede Dati del Quesito in alto
+    this.drawBadgeDirect(0, -155, 'DATI INIZIALI & MODELLO FISICO (PAG. 363)', '#0f172a', '#38bdf8', 12);
+
+    // Box dati
+    this.drawBadgeDirect(-130, -115, 'Massa: m = 300 kg', '#1e293b', '#38bdf8', 12);
+    this.drawBadgeDirect(0, -115, 'Velocità: v = 6 m/s', '#1e293b', '#4ade80', 12);
+    this.drawBadgeDirect(130, -115, 'Energia: Ek = ? [Joule]', '#1e293b', '#fbbf24', 12);
+
+    // Scheda Formula Fondamentale 3Blue1Brown
+    ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+    ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 2.5;
+    if (ctx.roundRect) ctx.roundRect(-140, -85, 280, 52, 8);
+    else ctx.rect(-140, -85, 280, 52);
+    ctx.fill(); ctx.stroke();
+
+    this.drawTextDirect('Ek = ½ · m · v²', -65, -60, '#0f172a', 'bold 18px IBM Plex Mono');
+    this.drawBadgeDirect(80, -60, '[ Joule ]', '#0f172a', '#facc15', 11);
+    this.drawTextDirect('Formula fondamentale dell\'Energia Cinetica', -115, -42, isDark ? '#94a3b8' : '#475569', '11px Inter');
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 2: IL RUOLO DECISIVO DEL QUADRATO DELLA VELOCITÀ (v²)
+  // ═══════════════════════════════════════════════════════════
+  drawStep2(ctx, isDark, progress, v) {
+    this.drawRoadAndMoto(ctx, isDark, progress, v);
+
+    // Rappresentazione ad Area 3Blue1Brown di v² (Quadrato 6 x 6)
+    const sqSize = 105;
+    const sqX = -155;
+    const sqY = -155;
 
     ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
     ctx.strokeStyle = '#8b5cf6';
@@ -1458,10 +1542,23 @@ class VectorCanvas {
     ctx.fillRect(sqX, sqY, sqSize, sqSize);
     ctx.strokeRect(sqX, sqY, sqSize, sqSize);
 
-    // Celle interne 6 x 6
+    // Celle interne 6 x 6 con accensione animata progressiva
     const nCells = 6;
     const cellW = sqSize / nCells;
-    ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)';
+    const totalCells = 36;
+    const filledCells = Math.min(totalCells, Math.floor(totalCells * progress * 1.15));
+
+    for (let row = 0; row < nCells; row++) {
+      for (let col = 0; col < nCells; col++) {
+        const cellIdx = row * nCells + col;
+        if (cellIdx < filledCells) {
+          ctx.fillStyle = 'rgba(139, 92, 246, 0.28)';
+          ctx.fillRect(sqX + col * cellW, sqY + row * cellW, cellW, cellW);
+        }
+      }
+    }
+
+    ctx.strokeStyle = 'rgba(139, 92, 246, 0.35)';
     ctx.lineWidth = 1;
     for (let i = 1; i < nCells; i++) {
       ctx.beginPath();
@@ -1470,19 +1567,215 @@ class VectorCanvas {
       ctx.stroke();
     }
 
-    // Etichette del quadrato delle velocità
-    this.drawTextDirect("v = 6", sqX + 35, sqY - 6, '#8b5cf6', 'bold 12px IBM Plex Mono');
-    this.drawTextDirect("v = 6", sqX - 32, sqY + 55, '#8b5cf6', 'bold 12px IBM Plex Mono');
-    this.drawTextDirect("v² = 36", sqX + 25, sqY + 55, '#8b5cf6', 'bold 13px IBM Plex Mono');
+    // Quote con frecce del quadrato
+    this.drawArrowDirect(sqX, sqY - 10, sqX + sqSize, sqY - 10, '#8b5cf6', 2, 5);
+    this.drawTextDirect('v = 6 m/s', sqX + 22, sqY - 15, '#8b5cf6', 'bold 12px IBM Plex Mono');
 
-    // 5. BADGE ENERGIA CINETICA FINALE
-    const curEk = (v === 6) ? 5400 : 21600;
-    this.drawBadgeDirect(60, -110, `Ek = ½ · (300 kg) · (${v} m/s)²`, '#0f172a', '#38bdf8', 12);
-    this.drawBadgeDirect(60, -70, `Ek = ${curEk} J  ${v === 6 ? '(Opzione A)' : '(4 volte tanto!)'}`, '#0f172a', '#4ade80', 14);
+    this.drawArrowDirect(sqX - 10, sqY + sqSize, sqX - 10, sqY, '#8b5cf6', 2, 5);
+    this.drawTextDirect('v = 6', sqX - 45, sqY + 56, '#8b5cf6', 'bold 12px IBM Plex Mono');
 
-    ctx.restore();
+    // Testo centrale brillante nel quadrato
+    this.drawBadgeDirect(sqX + sqSize / 2, sqY + sqSize / 2, 'v² = 36 m²/s²', '#0f172a', '#a78bfa', 12);
+
+    // Spiegazione geometrica a destra
+    this.drawBadgeDirect(65, -145, 'Area Geometrica = 36 celle', '#0f172a', '#c084fc', 12);
+    this.drawBadgeDirect(65, -105, '⚠️ v² = 6 × 6 = 36  (NON 6 × 2 = 12!)', '#0f172a', '#fb923c', 12);
+    this.drawBadgeDirect(65, -65, 'L\'energia scala come un\'AREA!', '#0f172a', '#38bdf8', 11);
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 3: CALCOLO NUMERICO PASSO-PASSO (Ek = 5400 J)
+  // ═══════════════════════════════════════════════════════════
+  drawStep3(ctx, isDark, progress, v) {
+    this.drawRoadAndMoto(ctx, isDark, progress, v);
+
+    // Pipeline di calcolo 3Blue1Brown
+    this.drawBadgeDirect(-110, -150, '1) ½ · m = 150 kg', '#1e293b', '#38bdf8', 12);
+    this.drawTextDirect('·', -25, -145, '#38bdf8', 'bold 20px Inter');
+    this.drawBadgeDirect(55, -150, '2) v² = 36 m²/s²', '#1e293b', '#c084fc', 12);
+
+    // Freccia di moltiplicazione verso il basso
+    this.drawArrowDirect(0, -135, 0, -118, '#4ade80', 2.5, 6);
+
+    // Risultato Principale evidenziato in verde
+    this.drawBadgeDirect(0, -100, '★ Ek = 150 · 36 = 5400 J (5,4 kJ)', '#0f172a', '#4ade80', 14);
+
+    // Misuratore energetico graduato a barra (Energy Meter)
+    const meterW = 300;
+    const meterX = -150;
+    const meterY = -62;
+    const meterH = 16;
+
+    ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+    ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) ctx.roundRect(meterX, meterY, meterW, meterH, 6);
+    else ctx.rect(meterX, meterY, meterW, meterH);
+    ctx.fill(); ctx.stroke();
+
+    // Riempimento progressivo barra verde
+    const fillW = Math.max(8, meterW * Math.min(1.0, progress));
+    ctx.fillStyle = '#16a34a';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(meterX, meterY, fillW, meterH, 6);
+    else ctx.rect(meterX, meterY, fillW, meterH);
+    ctx.fill();
+
+    // Tacche sul misuratore
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.font = '10px IBM Plex Mono';
+    ctx.fillText('0 J', meterX, meterY + 28);
+    ctx.fillText('2700 J (½)', meterX + meterW * 0.5 - 25, meterY + 28);
+    ctx.fillText('5400 J (Opz. A)', meterX + meterW - 75, meterY + 28);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 4: ANALISI DEGLI ERRORI TIPICI (DISTRATTORI B, C, D)
+  // ═══════════════════════════════════════════════════════════
+  drawStep4(ctx, isDark, progress, v) {
+    // Moto in basso
+    this.drawRoadAndMoto(ctx, isDark, progress, v, 75);
+
+    // Titolo Istogramma
+    this.drawBadgeDirect(0, -165, 'CONFRONTO GRAFICO OPZIONI (ANALISI DEI TRANNELLI)', '#0f172a', '#38bdf8', 12);
+
+    // Istogramma a 4 Colonne 3Blue1Brown
+    // Base a y = 20
+    const baseY = 20;
+    const maxBarH = 145; // corrisponde al distrattore B (10 800 J)
+    const barW = 42;
+
+    const bars = [
+      { id: 'A', label: '5400 J ✓', val: 5400, color: '#16a34a', desc: '½·m·v² (CORRETTO)', correct: true },
+      { id: 'B', label: '10 800 J ✗', val: 10800, color: '#ef4444', desc: 'Dimenticato ½ ! (2x)', correct: false },
+      { id: 'C', label: '900 J ✗', val: 900, color: '#f59e0b', desc: 'Dimenticato v² !', correct: false },
+      { id: 'D', label: '1800 ✗', val: 1800, color: '#0284c7', desc: 'p=m·v (Qt. moto)', correct: false }
+    ];
+
+    const posX = [-135, -45, 45, 135];
+
+    // Linea di base asse X
+    ctx.strokeStyle = isDark ? '#64748b' : '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-170, baseY);
+    ctx.lineTo(170, baseY);
+    ctx.stroke();
+
+    // Linea tratteggiata di riferimento a livello 5400 J (Opzione A)
+    const refH = (5400 / 10800) * maxBarH;
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(-170, baseY - refH);
+    ctx.lineTo(170, baseY - refH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    this.drawTextDirect('Livello esatto: 5400 J', -170, baseY - refH - 6, '#16a34a', 'bold 10px Inter');
+
+    // Disegno colonne animate
+    bars.forEach((b, idx) => {
+      const bx = posX[idx];
+      const targetH = (b.val / 10800) * maxBarH;
+      const curH = targetH * Math.min(1.0, progress);
+
+      // Colonna
+      ctx.fillStyle = b.color;
+      ctx.fillRect(bx - barW / 2, baseY - curH, barW, curH);
+
+      // Bordo
+      ctx.strokeStyle = isDark ? '#ffffff' : '#0f172a';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx - barW / 2, baseY - curH, barW, curH);
+
+      // Badge valore sopra la colonna
+      this.drawBadgeDirect(bx, baseY - curH - 12, b.label, '#0f172a', b.color, 10);
+
+      // Tag opzione sotto la colonna
+      this.drawTextDirect(b.id, bx - 5, baseY + 16, b.color, 'bold 13px Inter');
+      this.drawTextDirect(b.desc, bx - 38, baseY + 30, isDark ? '#94a3b8' : '#475569', '9px Inter');
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PASSO 5: RADDOPPIO VELOCITÀ (v -> 2v => Ek -> 4Ek) & QUIZ
+  // ═══════════════════════════════════════════════════════════
+  drawStep5(ctx, isDark, progress, v) {
+    this.drawRoadAndMoto(ctx, isDark, progress, v, 65);
+
+    // Dimostrazione ad Aree del Fattore 4x
+    // A sinistra: Quadrato a v = 6 m/s (1 blocco)
+    const q1Size = 48;
+    const q1X = -135;
+    const q1Y = -140;
+
+    ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+    ctx.strokeStyle = '#8b5cf6';
+    ctx.lineWidth = 2;
+    ctx.fillRect(q1X, q1Y, q1Size, q1Size);
+    ctx.strokeRect(q1X, q1Y, q1Size, q1Size);
+
+    this.drawTextDirect('v = 6', q1X + 8, q1Y - 6, '#8b5cf6', 'bold 11px IBM Plex Mono');
+    this.drawBadgeDirect(q1X + q1Size / 2, q1Y + q1Size / 2, '5400 J', '#0f172a', '#a78bfa', 10);
+    this.drawTextDirect('1 Blocco (1x)', q1X - 8, q1Y + q1Size + 14, isDark ? '#94a3b8' : '#475569', '10px Inter');
+
+    // Freccia al centro
+    this.drawBadgeDirect(0, -155, 'v raddoppia (×2)  ⟹  Ek quadruplica (×4 = 2²)!', '#0f172a', '#fbbf24', 12);
+    this.drawArrowDirect(-65, -116, 15, -116, '#f59e0b', 3, 8);
+
+    // A destra: Quadrato a v = 12 m/s (4 blocchi identici numerati [1], [2], [3], [4])
+    const q2Size = 96;
+    const q2X = 35;
+    const q2Y = -140;
+    const half = q2Size / 2;
+
+    ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 2.5;
+    ctx.fillRect(q2X, q2Y, q2Size, q2Size);
+    ctx.strokeRect(q2X, q2Y, q2Size, q2Size);
+
+    // 4 Sottoblocchi animati
+    const subBlocks = [
+      { x: q2X, y: q2Y, num: '1' },
+      { x: q2X + half, y: q2Y, num: '2' },
+      { x: q2X, y: q2Y + half, num: '3' },
+      { x: q2X + half, y: q2Y + half, num: '4' }
+    ];
+
+    const activeSubs = Math.floor(4 * Math.min(1.0, progress * 1.2));
+    subBlocks.forEach((sb, idx) => {
+      ctx.strokeStyle = 'rgba(22, 163, 74, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(sb.x, sb.y, half, half);
+
+      if (idx < activeSubs) {
+        ctx.fillStyle = 'rgba(22, 163, 74, 0.22)';
+        ctx.fillRect(sb.x, sb.y, half, half);
+      }
+
+      ctx.fillStyle = '#16a34a';
+      ctx.font = 'bold 12px IBM Plex Mono';
+      ctx.fillText(`[${sb.num}]`, sb.x + half / 2 - 8, sb.y + half / 2 + 4);
+    });
+
+    this.drawTextDirect('v = 12 m/s', q2X + 20, q2Y - 6, '#16a34a', 'bold 11px IBM Plex Mono');
+    this.drawBadgeDirect(q2X + half, q2Y + q2Size + 16, 'Ek = 4 · 5400 = 21 600 J (4x!)', '#0f172a', '#4ade80', 11);
+
+    // Feedback Interattivo del Quiz sul Canvas
+    if (this.quizSelected) {
+      if (this.quizSelected === 'A') {
+        this.drawBadgeDirect(0, -10, '✓ RISPOSTA ESATTA: Opzione A (5400 J)', '#16a34a', '#ffffff', 13);
+      } else {
+        this.drawBadgeDirect(0, -10, `✗ Opzione ${this.quizSelected} Errata — Riprova con l\'Opzione A!`, '#dc2626', '#ffffff', 12);
+      }
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // UTILITY GRAFICHE
+  // ═══════════════════════════════════════════════════════════
   drawArrowDirect(x1, y1, x2, y2, color, lineWidth = 4, headSize = 12) {
     const ctx = this.ctx;
     ctx.save();
@@ -2268,6 +2561,9 @@ function setStep(stepNum) {
 
   if (data.defaultSpeed) {
     setSpeedMode(data.defaultSpeed);
+  }
+  if (vCanvas && stepNum !== 5) {
+    vCanvas.quizSelected = null;
   }
 
   const bodyEl = document.getElementById('stepCardBody');
