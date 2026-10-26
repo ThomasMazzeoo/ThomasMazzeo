@@ -102,15 +102,17 @@ html, body {
    HEADER SUPERIORE (VISIBILE SOLO IN NORMALE)
    ═══════════════════════════════════════════ */
 .lim-header {
-  height: 52px;
+  height: auto;
   min-height: 52px;
   background: var(--bg-panel);
   border-bottom: 2px solid var(--border-ui);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
+  padding: 8px 1.25rem;
   z-index: 20;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .lim-header-left {
@@ -233,17 +235,19 @@ html, body {
 }
 
 .canvas-toolbar {
-  height: 42px;
+  height: auto;
   min-height: 42px;
   background: var(--bg-panel);
   border-bottom: 1.5px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 6px 12px;
   font-family: var(--font-tech);
   font-size: 0.88rem;
   color: var(--text-secondary);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .canvas-legend {
@@ -251,6 +255,7 @@ html, body {
   align-items: center;
   gap: 12px;
   font-size: 0.82rem;
+  flex-wrap: wrap;
 }
 .legend-item {
   display: flex;
@@ -780,6 +785,34 @@ body.is-fullscreen .lim-fullscreen-hud,
 /* ═══════════════════════════════════════════
    RESPONSIVITÀ PER SCHERMI PIÙ PICCOLI O TABLET
    ═══════════════════════════════════════════ */
+@media (max-width: 1280px) {
+  .lim-header {
+    height: auto !important;
+    min-height: 52px;
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  .lim-header-title {
+    font-size: 0.88rem;
+    order: 3;
+    width: 100%;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-light);
+  }
+  .lim-header-tools {
+    gap: 6px;
+  }
+  .btn-lim-tool {
+    padding: 5px 8px;
+    font-size: 0.78rem;
+  }
+  .canvas-toolbar {
+    height: auto !important;
+    min-height: 40px;
+    padding: 6px 10px;
+  }
+}
+
 @media (max-width: 992px) {
   html, body { overflow-y: auto; height: auto; }
   .lim-app { height: auto; min-height: 100vh; }
@@ -1858,12 +1891,18 @@ class VectorCanvas {
 
   getTrackSplinePoint(t) {
     const pts = this.trackPoints;
+    if (!pts || pts.length === 0) return { x: 0, y: 0 };
     const n = pts.length;
-    const rawIdx = (t % 1) * n;
+    if (isNaN(t)) t = 0;
+    let normT = ((t % 1) + 1) % 1; // Always in [0, 1)
+
+    const rawIdx = normT * n;
     const i = Math.floor(rawIdx);
     const frac = rawIdx - i;
-    const p1 = pts[i % n];
-    const p2 = pts[(i + 1) % n];
+    const idx1 = ((i % n) + n) % n;
+    const idx2 = (((i + 1) % n) + n) % n;
+    const p1 = pts[idx1] || pts[0];
+    const p2 = pts[idx2] || pts[0];
     return {
       x: p1.x + (p2.x - p1.x) * frac,
       y: p1.y + (p2.y - p1.y) * frac
@@ -3209,12 +3248,12 @@ function replayCurrentStepAnimation() {
   animProgress = 0;
 
   function loop(now) {
-    const elapsed = now - animStartTime;
+    const elapsed = Math.max(0, now - animStartTime);
     animProgress = Math.min(elapsed / animDuration, 1.0);
 
     // Easing cubico dolce
     const ease = 1 - Math.pow(1 - animProgress, 3);
-    if (vCanvas) vCanvas.draw(currentStep, ease);
+    if (vCanvas) vCanvas.draw(currentStep, Math.max(0, Math.min(1.0, ease)));
 
     if (animProgress < 1.0) {
       animId = requestAnimationFrame(loop);
