@@ -291,7 +291,7 @@ html, body {
 /* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
 .canvas-zoom-controls {
   position: absolute;
-  top: 10px;
+  bottom: 12px;
   right: 12px;
   display: flex;
   flex-direction: column;
@@ -1807,14 +1807,26 @@ class VectorExerciseCanvas {
     const rect = this.wrap.getBoundingClientRect();
     this.width = rect.width;
     this.height = rect.height;
-    this.canvas.width = this.width * this.dpr;
-    this.canvas.height = this.height * this.dpr;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    const minDim = Math.min(this.width, this.height);
-    this.baseScale = (minDim / 95) * 0.95;
-    this.originX = 85;
-    this.originY = this.height - 75;
+    // Margini rigorosi per contenere completamente gli assi (xMax=85, yMax=75),
+    // le frecce, i numeri e le etichette senza MAI fuoriuscire dal canvas
+    const marginLeft = 100;
+    const marginRight = 60;
+    const marginTop = 50;
+    const marginBottom = 50;
+
+    const availableW = Math.max(100, this.width - marginLeft - marginRight);
+    const availableH = Math.max(100, this.height - marginTop - marginBottom);
+
+    const scaleX = availableW / 85;
+    const scaleY = availableH / 75;
+
+    this.baseScale = Math.min(scaleX, scaleY);
+    this.originX = marginLeft;
+    this.originY = this.height - marginBottom;
   }
 
   toScreen(nX, nY) {
@@ -1974,19 +1986,23 @@ class VectorExerciseCanvas {
     const w = ctx.measureText(text).width + 16;
     const h = fontSize + 12;
 
+    // Blocca il badge affinché rimanga sempre visibile dentro i bordi del canvas
+    const clampedX = Math.max(w / 2 + 8, Math.min(this.width - w / 2 - 8, p.x));
+    const clampedY = Math.max(h / 2 + 8, Math.min(this.height - h / 2 - 8, p.y));
+
     ctx.fillStyle = bg;
     ctx.shadowColor = 'rgba(0,0,0,0.25)';
     ctx.shadowBlur = 6;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(p.x - w / 2, p.y - h / 2, w, h, 6);
-    else ctx.rect(p.x - w / 2, p.y - h / 2, w, h);
+    if (ctx.roundRect) ctx.roundRect(clampedX - w / 2, clampedY - h / 2, w, h, 6);
+    else ctx.rect(clampedX - w / 2, clampedY - h / 2, w, h);
     ctx.fill();
 
     ctx.shadowBlur = 0;
     ctx.fillStyle = fg;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, p.x, p.y);
+    ctx.fillText(text, clampedX, clampedY);
     ctx.restore();
   }
 
@@ -2078,7 +2094,7 @@ class VectorExerciseCanvas {
 
       this.drawPointMarker(45, 60, "P(45, 60)", PROBLEM.F.color);
       this.drawBadge(22, -8, "F_x = 45 N", PROBLEM.Fx.color, "#ffffff", 11);
-      this.drawBadge(-14, 30, "F_y = 60 N", PROBLEM.Fy.color, "#ffffff", 12);
+      this.drawBadge(-10, 30, "F_y = 60 N", PROBLEM.Fy.color, "#ffffff", 12);
       this.drawBadge(22, 36, "F = 75 N", PROBLEM.F.color, "#ffffff", 12);
       return;
     }
@@ -2093,7 +2109,7 @@ class VectorExerciseCanvas {
       this.drawDashedLine(0, 60, 45, 60, '#ea580c', 2);
 
       this.drawBadge(22, -8, "F_x = 45 N", PROBLEM.Fx.color, "#ffffff", 11);
-      this.drawBadge(-14, 30, "F_y = 60 N", PROBLEM.Fy.color, "#ffffff", 12);
+      this.drawBadge(-10, 30, "F_y = 60 N", PROBLEM.Fy.color, "#ffffff", 12);
       this.drawBadge(22, 36, "F = 75 N", PROBLEM.F.color, "#ffffff", 12);
       this.drawBadge(55, 18, "✅ Risposta Esatta: A (60 N)", "#16a34a", "#ffffff", 14);
     }

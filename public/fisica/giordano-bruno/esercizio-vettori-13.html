@@ -291,7 +291,7 @@ html, body {
 /* CONTROLLI ZOOM FLUTTUANTI SUL CANVAS */
 .canvas-zoom-controls {
   position: absolute;
-  top: 10px;
+  bottom: 12px;
   right: 12px;
   display: flex;
   flex-direction: column;
@@ -1829,7 +1829,12 @@ class VectorCanvas {
 
     if (label) {
       ctx.font = 'bold 13px IBM Plex Mono, monospace';
-      ctx.fillText(label, (fromX + toX) / 2 + labelOffset.x, (fromY + toY) / 2 + labelOffset.y);
+      const textW = ctx.measureText(label).width;
+      let lx = (fromX + toX) / 2 + (labelOffset.x || 0);
+      let ly = (fromY + toY) / 2 + (labelOffset.y !== undefined ? labelOffset.y : -12);
+      // Evita fuoriuscite di testo dal canvas
+      lx = Math.max(8, Math.min(this.width - textW - 8, lx));
+      ctx.fillText(label, lx, ly);
     }
     ctx.restore();
   }
@@ -1843,16 +1848,18 @@ class VectorCanvas {
     ctx.fillStyle = isDark ? '#0b1329' : '#f8fafc';
     ctx.fillRect(0, 0, this.width, this.height);
 
-    // Griglia a quadretti di sfondo
-    const sq = (this.width / 22) * this.zoom;
-    const centerX = this.width * 0.52 + this.panX;
+    // Griglia a quadretti di sfondo con margine bilanciato:
+    // A sinistra: 13.5 quadretti disponibili -> il vettore da 12 quadretti (-3v) non fuoriesce mai!
+    // A destra: 10 quadretti disponibili -> il vettore da 8 quadretti (+2v) ha pieno margine!
+    const sq = (this.width / 23.5) * this.zoom;
+    const centerX = this.width * (13.5 / 23.5) + this.panX;
     const topY = this.height * 0.12 + this.panY;
     const laneH = this.height * 0.19 * this.zoom;
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
 
-    for (let x = centerX - 14 * sq; x <= centerX + 10 * sq; x += sq) {
+    for (let x = centerX - 14 * sq; x <= centerX + 11 * sq; x += sq) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, this.height);
