@@ -334,11 +334,38 @@ body.dark-mode .lim-header-title { color: #38bdf8; }
   left: 12px;
   display: flex;
   gap: 6px;
-  z-index: 10;
+  z-index: 100;
+  pointer-events: auto;
   background: rgba(15, 23, 42, 0.85);
   padding: 4px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-card-scen {
+  font-family: var(--font-tech), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #0284c7;
+  background: rgba(2, 132, 199, 0.08);
+  color: #0284c7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-card-scen:hover {
+  background: rgba(2, 132, 199, 0.22);
+  transform: translateY(-1px);
+}
+.btn-card-scen.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.45);
 }
 .scenario-btn {
   background: transparent;
@@ -1052,14 +1079,14 @@ body.is-fullscreen .lim-fullscreen-hud {
           <span id="canvasBadgeText">Passo 1: Il Funambolo sulla fune (h = 30 m)</span>
         </div>
 
-        <div class="canvas-scenario-switcher" id="scenarioSwitcher">
+        <div class="canvas-scenario-switcher" id="scenarioSwitcher" onpointerdown="event.stopPropagation()">
           <button class="scenario-btn active" id="btnScenA" onclick="setScenario('A')">A: Funambolo</button>
           <button class="scenario-btn" id="btnScenB" onclick="setScenario('B')">B: Scalatore</button>
           <button class="scenario-btn" id="btnScenC" onclick="setScenario('C')">C: Scoiattolo</button>
           <button class="scenario-btn" id="btnScenD" onclick="setScenario('D')">D: Piattaforma</button>
         </div>
 
-        <div class="canvas-zoom-controls">
+        <div class="canvas-zoom-controls" onpointerdown="event.stopPropagation()">
           <button class="zoom-btn" onclick="zoomCanvas(1.2)" title="Ingrandisci Zoom Canvas (o premi +)">🔍+</button>
           <button class="zoom-btn" onclick="zoomCanvas(0.83)" title="Riduci Zoom Canvas (o premi -)">🔍−</button>
           <button class="zoom-btn" onclick="resetCanvasZoom()" title="Ripristina Vista (o premi 0)">🎯</button>
@@ -1332,8 +1359,12 @@ const STEPS_DATA = [
       </div>
 
       <div class="pedagogy-box tip">
-        <div class="box-title">🎮 Prova i pulsanti sul Canvas:</div>
-        Clicca su <strong>B: Scalatore</strong>, <strong>C: Scoiattolo</strong> o <strong>D: Piattaforma</strong> in basso a sinistra nel canvas per vedere ciascuna animazione!
+        <div class="box-title">🎮 Seleziona lo scenario da analizzare (clicca qui o sul canvas):</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0;">
+          <button class="btn-card-scen active" id="cardBtnScenB" onclick="setScenario('B')">🧗 B: Scalatore (L &gt; 0)</button>
+          <button class="btn-card-scen" id="cardBtnScenC" onclick="setScenario('C')">🐿️ C: Scoiattolo (L &lt; 0)</button>
+          <button class="btn-card-scen" id="cardBtnScenD" onclick="setScenario('D')">🏗️ D: Piattaforma (L ≠ 0)</button>
+        </div>
       </div>
     `
   },
@@ -1453,6 +1484,9 @@ class VectorCanvas {
   initEvents() {
     this.wrap.addEventListener('pointerdown', (e) => {
       if (penLayer && penLayer.active) return;
+      if (e.target.closest('button') || e.target.closest('.canvas-scenario-switcher') || e.target.closest('.canvas-zoom-controls')) {
+        return;
+      }
       if (e.button !== 0 && e.button !== 1) return;
       this.isDragging = true;
       this.dragStartX = e.clientX - this.panX;
@@ -1727,11 +1761,11 @@ class VectorCanvas {
 
     // VETTORE SPOSTAMENTO Δs (verso il basso ↓, azzurro)
     this.drawArrowDirect(climberX + 35, climberY - 20, climberX + 35, climberY + 50, '#0284c7', 4, 11);
-    this.drawTextDirect("Δs (verso il basso ↓)", climberX + 48, climberY + 12, '#0284c7', 'bold 12px Inter');
+    this.drawTextDirect("Δs (verso il basso ↓)", climberX + 45, climberY + 68, '#0284c7', 'bold 12px Inter');
 
     // VETTORE FORZA PESO P (verso il basso ↓, rosso, parallelo e concorde)
     this.drawArrowDirect(climberX + 115, climberY - 20, climberX + 115, climberY + 50, '#dc2626', 4, 11);
-    this.drawTextDirect("P = mg (verso il basso ↓)", climberX + 128, climberY + 12, '#dc2626', 'bold 12px Inter');
+    this.drawTextDirect("P = mg (verso il basso ↓)", climberX + 125, climberY - 28, '#dc2626', 'bold 12px Inter');
 
     this.drawBadgeDirect(60, -90, "α = 0°  ⟹  cos(0°) = +1", '#0f172a', '#fbbf24', 13);
     this.drawBadgeDirect(60, 90, "L_P = +P · Δs > 0  (Lavoro Motore: favorisce la discesa)", '#0f172a', '#4ade80', 13);
@@ -2748,6 +2782,9 @@ function setScenario(scen) {
   ['A', 'B', 'C', 'D'].forEach(s => {
     const btn = document.getElementById('btnScen' + s);
     if (btn) btn.classList.toggle('active', s === scen);
+
+    const cardBtn = document.getElementById('cardBtnScen' + s);
+    if (cardBtn) cardBtn.classList.toggle('active', s === scen);
   });
 
   const badgeEl = document.getElementById('canvasBadgeText');
@@ -2756,6 +2793,11 @@ function setScenario(scen) {
     else if (scen === 'B') badgeEl.textContent = 'Scenario B: Scalatore calato in basso (α = 0° ⟹ L > 0)';
     else if (scen === 'C') badgeEl.textContent = "Scenario C: Scoiattolo che sale sull'albero (α = 180° ⟹ L < 0)";
     else if (scen === 'D') badgeEl.textContent = 'Scenario D: Persona su piattaforma che sale (Δh > 0 ⟹ L ≠ 0)';
+  }
+
+  // Ridisegna immediatamente il canvas sul nuovo scenario
+  if (vCanvas) {
+    vCanvas.draw(currentStep, vCanvas.time || 0);
   }
 }
 
@@ -2768,12 +2810,12 @@ function setStep(stepNum) {
   document.getElementById('stepMetaTitle').textContent = data.title;
   document.getElementById('canvasBadgeText').textContent = data.canvasBadge;
 
+  const bodyEl = document.getElementById('stepCardBody');
+  bodyEl.innerHTML = data.render();
+
   if (data.defaultScenario) {
     setScenario(data.defaultScenario);
   }
-
-  const bodyEl = document.getElementById('stepCardBody');
-  bodyEl.innerHTML = data.render();
 
   // Rendering formule matematiche KaTeX
   if (window.renderMathInElement) {
