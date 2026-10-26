@@ -1379,6 +1379,9 @@ const STEPS_DATA = [
 ];
 
 function checkAnswer(opt) {
+  // Sincronizza immediatamente il canvas con lo scenario selezionato
+  setScenario(opt);
+
   ['A', 'B', 'C', 'D'].forEach(o => {
     const btn = document.getElementById('qOpt' + o);
     if (!btn) return;
@@ -1395,14 +1398,23 @@ function checkAnswer(opt) {
     fb.style.display = 'block';
     if (opt === 'A') {
       fb.className = 'pedagogy-box success';
-      fb.innerHTML = '<div class="box-title">✅ Risposta Esatta: Opzione A!</div>Dato che la forza peso è ortogonale allo spostamento orizzontale (\\( \\alpha = 90^\\circ \\)), si ha \\( L = P \\cdot \\Delta s \\cdot \\cos(90^\\circ) = 0\\text{ J} \\).';
-    } else {
+      fb.innerHTML = `<div class="box-title">✅ Risposta Esatta: Opzione A (Funambolo)!</div>Dato che la forza-peso è ortogonale allo spostamento orizzontale (\\( \\alpha = 90^\\circ \\)), si ha \\( L = P \\cdot \\Delta s \\cdot \\cos(90^\\circ) = 0\\text{ J} \\). La quota resta costante a \\(30\\text{ m}\\), perciò la gravità non compie alcun lavoro.`;
+    } else if (opt === 'B') {
       fb.className = 'pedagogy-box highlight';
-      fb.innerHTML = '<div class="box-title">❌ Non corretto!</div>Nell\'opzione ' + opt + ' c\'è una componente di spostamento verticale, quindi la forza-peso compie lavoro non nullo! Riprova con l\'opzione A.';
+      fb.innerHTML = `<div class="box-title">❌ Opzione B (Scalatore) non corretta!</div>Nello scalatore calato verso il basso, la forza-peso e lo spostamento hanno la stessa identica direzione e verso (\\( \\alpha = 0^\\circ \\implies \\cos(0^\\circ) = +1 \\)), perciò \\( L = +P \\cdot \\Delta s > 0 \\) (<strong>Lavoro Motore</strong>). Guarda la simulazione a sinistra!`;
+    } else if (opt === 'C') {
+      fb.className = 'pedagogy-box highlight';
+      fb.innerHTML = `<div class="box-title">❌ Opzione C (Scoiattolo) non corretta!</div>Nello scoiattolo che sale lungo l'albero, lo spostamento è verso l'alto (\\( \\uparrow \\)) mentre il peso tira verso il basso (\\( \\downarrow \\)): l'angolo è piatto (\\( \\alpha = 180^\\circ \\implies \\cos(180^\\circ) = -1 \\)), quindi \\( L = -P \\cdot \\Delta s < 0 \\) (<strong>Lavoro Resistente</strong>). Guarda la simulazione a sinistra!`;
+    } else if (opt === 'D') {
+      fb.className = 'pedagogy-box highlight';
+      fb.innerHTML = `<div class="box-title">❌ Opzione D (Piattaforma) non corretta!</div>Mentre la persona cammina, la piattaforma sta salendo in quota (\\( \\Delta h > 0 \\)), perciò c'è una componente verticale di moto opposta alla forza-peso: \\( L = -mg\\Delta h \\neq 0 \\) (<strong>Lavoro non nullo</strong>). Guarda la simulazione a sinistra!`;
     }
     if (window.renderMathInElement) {
       renderMathInElement(fb, {
-        delimiters: [{ left: '\\(', right: '\\)', display: false }],
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\(', right: '\\)', display: false }
+        ],
         throwOnError: false
       });
     }
@@ -1428,7 +1440,14 @@ class VectorCanvas {
     this.dragStartX = 0;
     this.dragStartY = 0;
 
+    // Animazione fluida continua 60 FPS
+    this.time = 0;
+    this.lastLoopTime = performance.now();
+
     this.initEvents();
+
+    this.loop = this.loop.bind(this);
+    requestAnimationFrame(this.loop);
   }
 
   initEvents() {
@@ -1445,7 +1464,6 @@ class VectorCanvas {
       if (!this.isDragging) return;
       this.panX = e.clientX - this.dragStartX;
       this.panY = e.clientY - this.dragStartY;
-      this.draw(currentStep, animProgress);
     });
 
     const stopDrag = () => { this.isDragging = false; };
@@ -1456,7 +1474,6 @@ class VectorCanvas {
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.12 : 0.89;
       this.zoom = Math.max(0.5, Math.min(3.0, this.zoom * factor));
-      this.draw(currentStep, animProgress);
     }, { passive: false });
 
     window.addEventListener('resize', () => this.resize());
@@ -1473,16 +1490,24 @@ class VectorCanvas {
     this.centerX = this.width * 0.50;
     this.centerY = this.height * 0.52;
     this.scale = Math.min(this.width / 500, this.height / 420) * 1.0;
-
-    this.draw(currentStep, animProgress);
   }
 
-  draw(step, progress) {
+  loop(now) {
+    const dt = Math.min((now - this.lastLoopTime) / 1000, 0.1);
+    this.lastLoopTime = now;
+    this.time += dt;
+
+    this.draw(currentStep, this.time);
+    requestAnimationFrame(this.loop);
+  }
+
+  draw(step, time = 0) {
     const ctx = this.ctx;
+    if (!this.width || !this.height) return;
     const isDark = document.body.classList.contains('dark-mode');
 
-    // Sfondo pulito
-    ctx.fillStyle = isDark ? '#0b1329' : '#f8fafc';
+    // Sfondo pulito Whiteboard 3Blue1Brown
+    ctx.fillStyle = isDark ? '#0b1329' : '#ffffff';
     ctx.fillRect(0, 0, this.width, this.height);
 
     ctx.save();
@@ -1490,7 +1515,7 @@ class VectorCanvas {
     ctx.scale(this.scale * this.zoom, this.scale * this.zoom);
 
     // Griglia millimetrata soft di sottofondo 3Blue1Brown
-    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(15,23,42,0.04)';
     ctx.lineWidth = 1;
     const gSize = 25;
     for (let x = -250; x <= 250; x += gSize) {
@@ -1501,53 +1526,59 @@ class VectorCanvas {
     }
 
     if (currentScenario === 'A') {
-      this.drawScenarioA(step, progress, isDark);
+      this.drawScenarioA(step, time, isDark);
     } else if (currentScenario === 'B') {
-      this.drawScenarioB(step, progress, isDark);
+      this.drawScenarioB(step, time, isDark);
     } else if (currentScenario === 'C') {
-      this.drawScenarioC(step, progress, isDark);
+      this.drawScenarioC(step, time, isDark);
     } else if (currentScenario === 'D') {
-      this.drawScenarioD(step, progress, isDark);
+      this.drawScenarioD(step, time, isDark);
     }
 
     ctx.restore();
   }
 
-  // SCENARIO A: FUNAMBOLO SU FUNE ORIZZONTALE (h = 30 m)
-  drawScenarioA(step, progress, isDark) {
+  // ─────────────────────────────────────────────────────────────
+  // SCENARIO A: FUNAMBOLO SU FUNE ORIZZONTALE (h = 30 m, L = 0)
+  // ─────────────────────────────────────────────────────────────
+  drawScenarioA(step, time, isDark) {
     const ctx = this.ctx;
 
     // Suolo a y = +130
     ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(-230, 130);
-    ctx.lineTo(230, 130);
+    ctx.moveTo(-240, 130);
+    ctx.lineTo(240, 130);
     ctx.stroke();
 
-    // Terreno tratteggiato
-    ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
-    ctx.fillRect(-230, 130, 460, 20);
+    // Terreno
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(-240, 130, 480, 25);
 
     // Etichetta Suolo (h = 0 m)
-    ctx.font = 'bold 12px IBM Plex Mono, monospace';
+    ctx.font = 'bold 11px IBM Plex Mono, monospace';
     ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
-    ctx.fillText("Suolo: h = 0 m", -210, 145);
+    ctx.fillText("Suolo: h = 0 m", -220, 148);
 
-    // Pilastri / Torri a sinistra e destra
+    // Torri metalliche di supporto (sinistra e destra)
     ctx.fillStyle = isDark ? '#334155' : '#cbd5e1';
-    ctx.fillRect(-200, -70, 24, 200);
-    ctx.fillRect(176, -70, 24, 200);
+    ctx.fillRect(-205, -70, 24, 200);
+    ctx.fillRect(181, -70, 24, 200);
+    ctx.strokeStyle = isDark ? '#64748b' : '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-205, -70, 24, 200);
+    ctx.strokeRect(181, -70, 24, 200);
 
     // Fune orizzontale a quota y = -60 (30 m dal suolo)
-    ctx.strokeStyle = isDark ? '#cbd5e1' : '#334155';
+    ctx.strokeStyle = isDark ? '#cbd5e1' : '#1e293b';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(-200, -60);
-    ctx.lineTo(176, -60);
+    ctx.moveTo(-205, -60);
+    ctx.lineTo(181, -60);
     ctx.stroke();
 
-    // Quota h = 30 m con freccia verticale
+    // Quota h = 30 m tratteggiata verticale
     ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([4, 4]);
@@ -1557,24 +1588,26 @@ class VectorCanvas {
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = '#f59e0b';
-    ctx.font = 'bold 12px IBM Plex Mono, monospace';
-    ctx.fillText("h = 30 m (costante)", 60, 40);
+    ctx.font = 'bold 11px IBM Plex Mono, monospace';
+    ctx.fillText("h = 30 m (costante)", 50, 35);
 
-    // Posizione animata del funambolo lungo la fune
-    const startX = -100;
-    const targetX = 40;
-    const walkerX = startX + (targetX - startX) * progress;
+    // Moto continuo oscillante del funambolo
+    const walkCycle = 0.5 + 0.5 * Math.sin(time * 1.4);
+    const walkerX = -75 + 85 * walkCycle;
     const walkerY = -60;
 
-    // Disegno stilizzato del Funambolo (3Blue1Brown aesthetic)
-    // Gambe
+    // Inclinazione oscillante asta di bilanciamento
+    const poleTilt = Math.sin(time * 2.8) * 0.08;
+
+    // Gambe animate in camminata
     ctx.strokeStyle = '#0284c7';
     ctx.lineWidth = 3;
+    const legOffset = Math.sin(time * 5.6) * 4;
     ctx.beginPath();
-    ctx.moveTo(walkerX - 6, walkerY);
+    ctx.moveTo(walkerX - 6 + legOffset, walkerY);
     ctx.lineTo(walkerX, walkerY - 22);
-    ctx.lineTo(walkerX + 6, walkerY);
-    // Tronco
+    ctx.lineTo(walkerX + 6 - legOffset, walkerY);
+    // Busto
     ctx.moveTo(walkerX, walkerY - 22);
     ctx.lineTo(walkerX, walkerY - 45);
     ctx.stroke();
@@ -1586,14 +1619,18 @@ class VectorCanvas {
     ctx.fill();
 
     // Asta di bilanciamento orizzontale
+    ctx.save();
+    ctx.translate(walkerX, walkerY - 32);
+    ctx.rotate(poleTilt);
     ctx.strokeStyle = '#d97706';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 3.5;
     ctx.beginPath();
-    ctx.moveTo(walkerX - 35, walkerY - 32);
-    ctx.lineTo(walkerX + 35, walkerY - 32);
+    ctx.moveTo(-38, 0);
+    ctx.lineTo(38, 0);
     ctx.stroke();
+    ctx.restore();
 
-    // Baricentro del funambolo (punto di applicazione)
+    // Baricentro (punto di applicazione dei vettori)
     const cmX = walkerX;
     const cmY = walkerY - 28;
     ctx.fillStyle = '#f59e0b';
@@ -1602,156 +1639,341 @@ class VectorCanvas {
     ctx.fill();
 
     // VETTORE SPOSTAMENTO Δs (Orizzontale, azzurro)
-    const sLen = 70 * Math.max(0.2, progress);
-    this.drawArrowDirect(cmX, cmY, cmX + sLen, cmY, '#0284c7', 4, 12);
-    this.drawTextDirect("Δs (orizzontale)", cmX + sLen + 10, cmY - 8, '#0284c7', 'bold 13px Inter');
+    const sLen = 70;
+    this.drawArrowDirect(cmX, cmY, cmX + sLen, cmY, '#0284c7', 4, 11);
+    this.drawTextDirect("Δs (orizzontale)", cmX + sLen + 8, cmY - 8, '#0284c7', 'bold 12px Inter');
 
     // VETTORE FORZA PESO P (Verticale verso il basso, rosso)
     const pLen = 75;
-    this.drawArrowDirect(cmX, cmY, cmX, cmY + pLen, '#ef4444', 4, 12);
-    this.drawTextDirect("P = mg (verticale ↓)", cmX + 8, cmY + pLen + 14, '#ef4444', 'bold 13px Inter');
+    this.drawArrowDirect(cmX, cmY, cmX, cmY + pLen, '#dc2626', 4, 11);
+    this.drawTextDirect("P = mg (verticale ↓)", cmX + 8, cmY + pLen + 14, '#dc2626', 'bold 12px Inter');
 
     // ARCO AD ANGOLO RETTO 90°
     ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(cmX + 16, cmY);
     ctx.lineTo(cmX + 16, cmY + 16);
     ctx.lineTo(cmX, cmY + 16);
     ctx.stroke();
-    // Punto interno angolo retto
     ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
     ctx.arc(cmX + 8, cmY + 8, 2.5, 0, Math.PI * 2);
     ctx.fill();
 
-    this.drawTextDirect("α = 90°", cmX + 22, cmY + 22, '#f59e0b', 'bold 13px IBM Plex Mono');
+    this.drawTextDirect("α = 90°", cmX + 22, cmY + 22, '#f59e0b', 'bold 12px IBM Plex Mono');
 
     // Badge formula del lavoro in basso al centro
-    this.drawBadgeDirect(0, 100, "L = P · Δs · cos(90°) = 0 J", '#0f172a', '#38bdf8', 14);
+    this.drawBadgeDirect(0, 100, "L = P · Δs · cos(90°) = 0 J  (Lavoro Nullo)", '#0f172a', '#38bdf8', 13);
   }
 
-  // SCENARIO B: SCALATORE CALATO IN BASSO (L > 0)
-  drawScenarioB(step, progress, isDark) {
+  // ─────────────────────────────────────────────────────────────
+  // SCENARIO B: SCALATORE CALATO IN BASSO (α = 0°, L > 0)
+  // ─────────────────────────────────────────────────────────────
+  drawScenarioB(step, time, isDark) {
     const ctx = this.ctx;
+
     // Parete verticale di roccia a sinistra
     ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
-    ctx.fillRect(-220, -180, 80, 360);
+    ctx.fillRect(-220, -180, 85, 360);
     ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
     ctx.lineWidth = 2;
-    ctx.strokeRect(-220, -180, 80, 360);
+    ctx.strokeRect(-220, -180, 85, 360);
 
-    // Corda di calata dall'alto
-    const startY = -120;
-    const targetY = -20;
-    const climberY = startY + (targetY - startY) * progress;
-    const climberX = -110;
+    // Suolo
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-240, 130);
+    ctx.lineTo(240, 130);
+    ctx.stroke();
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(-240, 130, 480, 25);
+    ctx.font = 'bold 11px IBM Plex Mono, monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText("Suolo: h = 0 m", -220, 148);
+
+    // Corda di calata dall'ancoraggio superiore
+    const cycleB = (time * 0.35) % 1.0;
+    const climberY = -110 + 130 * cycleB;
+    const climberX = -105;
 
     ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(climberX, -180);
-    ctx.lineTo(climberX, climberY - 20);
+    ctx.lineTo(climberX, climberY - 22);
     ctx.stroke();
 
-    // Scalatore
+    // Scalatore stilizzato
     ctx.fillStyle = '#16a34a';
     ctx.beginPath();
-    ctx.arc(climberX, climberY - 25, 8, 0, Math.PI * 2);
+    ctx.arc(climberX, climberY - 28, 8, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#16a34a';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(climberX, climberY - 17);
-    ctx.lineTo(climberX, climberY + 5);
-    ctx.lineTo(climberX - 12, climberY + 18);
+    ctx.moveTo(climberX, climberY - 20);
+    ctx.lineTo(climberX, climberY + 4);
+    // Gambe appoggiate alla parete
+    ctx.lineTo(climberX - 25, climberY + 14);
     ctx.stroke();
 
-    // VETTORE SPOSTAMENTO Δs (verso il basso ↓)
-    this.drawArrowDirect(climberX + 35, climberY - 20, climberX + 35, climberY + 45, '#0284c7', 4, 12);
-    this.drawTextDirect("Δs (verso il basso ↓)", climberX + 50, climberY + 10, '#0284c7', 'bold 12px Inter');
+    // Braccia che tengono la corda
+    ctx.beginPath();
+    ctx.moveTo(climberX, climberY - 12);
+    ctx.lineTo(climberX - 6, climberY - 20);
+    ctx.stroke();
 
-    // VETTORE FORZA PESO P (verso il basso ↓)
-    this.drawArrowDirect(climberX + 110, climberY - 20, climberX + 110, climberY + 55, '#ef4444', 4, 12);
-    this.drawTextDirect("P (verso il basso ↓)", climberX + 125, climberY + 10, '#ef4444', 'bold 12px Inter');
+    // VETTORE SPOSTAMENTO Δs (verso il basso ↓, azzurro)
+    this.drawArrowDirect(climberX + 35, climberY - 20, climberX + 35, climberY + 50, '#0284c7', 4, 11);
+    this.drawTextDirect("Δs (verso il basso ↓)", climberX + 48, climberY + 12, '#0284c7', 'bold 12px Inter');
 
-    this.drawBadgeDirect(40, -90, "α = 0°  ==>  cos(0°) = +1", '#0f172a', '#fbbf24', 13);
-    this.drawBadgeDirect(40, 90, "L_P = +P · Δs > 0 (Lavoro Motore)", '#0f172a', '#4ade80', 14);
+    // VETTORE FORZA PESO P (verso il basso ↓, rosso, parallelo e concorde)
+    this.drawArrowDirect(climberX + 115, climberY - 20, climberX + 115, climberY + 50, '#dc2626', 4, 11);
+    this.drawTextDirect("P = mg (verso il basso ↓)", climberX + 128, climberY + 12, '#dc2626', 'bold 12px Inter');
+
+    this.drawBadgeDirect(60, -90, "α = 0°  ⟹  cos(0°) = +1", '#0f172a', '#fbbf24', 13);
+    this.drawBadgeDirect(60, 90, "L_P = +P · Δs > 0  (Lavoro Motore: favorisce la discesa)", '#0f172a', '#4ade80', 13);
   }
 
-  // SCENARIO C: SCOIATTOLO CHE SALE SULL'ALBERO (L < 0)
-  drawScenarioC(step, progress, isDark) {
+  // ─────────────────────────────────────────────────────────────
+  // SCENARIO C: SCOIATTOLO CHE SALE SULL'ALBERO (α = 180°, L < 0)
+  // ─────────────────────────────────────────────────────────────
+  drawScenarioC(step, time, isDark) {
     const ctx = this.ctx;
-    // Tronco d'albero al centro
-    ctx.fillStyle = isDark ? '#3b2210' : '#854d0e';
-    ctx.fillRect(-40, -180, 50, 360);
 
-    const startY = 80;
-    const targetY = -40;
-    const sqY = startY + (targetY - startY) * progress;
-    const sqX = 20;
-
-    // Scoiattolo stilizzato che sale
-    ctx.fillStyle = '#ea580c';
-    ctx.beginPath();
-    ctx.ellipse(sqX, sqY, 14, 22, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(sqX, sqY - 24, 9, 0, Math.PI * 2);
-    ctx.fill();
-
-    // VETTORE SPOSTAMENTO Δs (verso l'alto ↑)
-    this.drawArrowDirect(sqX + 50, sqY + 20, sqX + 50, sqY - 50, '#0284c7', 4, 12);
-    this.drawTextDirect("Δs (verso l'alto ↑)", sqX + 65, sqY - 20, '#0284c7', 'bold 12px Inter');
-
-    // VETTORE PESO P (verso il basso ↓)
-    this.drawArrowDirect(sqX + 120, sqY - 30, sqX + 120, sqY + 40, '#ef4444', 4, 12);
-    this.drawTextDirect("P (verso il basso ↓)", sqX + 135, sqY + 10, '#ef4444', 'bold 12px Inter');
-
-    this.drawBadgeDirect(-120, -90, "α = 180°  ==>  cos(180°) = -1", '#0f172a', '#fbbf24', 13);
-    this.drawBadgeDirect(-120, 90, "L_P = -P · Δs < 0 (Lavoro Resistente)", '#0f172a', '#f87171', 14);
-  }
-
-  // SCENARIO D: PERSONA SU PIATTAFORMA CHE SALE (L ≠ 0)
-  drawScenarioD(step, progress, isDark) {
-    const ctx = this.ctx;
-    const startY = 80;
-    const targetY = -40;
-    const platY = startY + (targetY - startY) * progress;
-
-    // Colonne guida montacarichi
+    // Suolo verde/terreno
     ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(-160, -180, 20, 360);
-    ctx.strokeRect(140, -180, 20, 360);
-
-    // Piattaforma orizzontale
-    ctx.fillStyle = isDark ? '#334155' : '#cbd5e1';
-    ctx.fillRect(-140, platY, 280, 16);
-
-    // Persona che cammina sulla piattaforma
-    const pX = -60 + 80 * progress;
-    const pY = platY;
-    ctx.strokeStyle = '#0284c7';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(pX, pY);
-    ctx.lineTo(pX, pY - 30);
+    ctx.moveTo(-240, 130);
+    ctx.lineTo(240, 130);
     ctx.stroke();
-    ctx.fillStyle = '#0284c7';
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(-240, 130, 480, 25);
+    ctx.font = 'bold 11px IBM Plex Mono, monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText("Suolo: h = 0 m", -220, 148);
+
+    // Tronco d'albero realistico (x da -85 a -25)
+    ctx.fillStyle = isDark ? '#451a03' : '#78350f';
+    ctx.fillRect(-85, -180, 60, 310);
+    ctx.strokeStyle = isDark ? '#78350f' : '#92400e';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-85, -180, 60, 310);
+
+    // Venature verticali della corteccia
+    ctx.strokeStyle = isDark ? '#78350f' : '#92400e';
+    ctx.lineWidth = 1.5;
+    for (let bx = -75; bx < -25; bx += 14) {
+      ctx.beginPath();
+      ctx.moveTo(bx, -180);
+      ctx.lineTo(bx + 4, 130);
+      ctx.stroke();
+    }
+
+    // Chioma verde stilizzata in alto
+    ctx.fillStyle = isDark ? '#14532d' : '#16a34a';
     ctx.beginPath();
-    ctx.arc(pX, pY - 37, 7, 0, Math.PI * 2);
+    ctx.arc(-80, -170, 45, 0, Math.PI * 2);
+    ctx.arc(-40, -185, 55, 0, Math.PI * 2);
+    ctx.arc(0, -170, 40, 0, Math.PI * 2);
     ctx.fill();
 
-    // VETTORE SPOSTAMENTO COMPLESSIVO (obliquo: orizzontale + verticale)
-    this.drawArrowDirect(pX + 25, pY - 25, pX + 80, pY - 70, '#0284c7', 4, 12);
-    this.drawTextDirect("Δs_tot (sale in quota!)", pX + 90, pY - 50, '#0284c7', 'bold 12px Inter');
+    // Moto di salita continua dello scoiattolo lungo la corteccia
+    const cycleC = (time * 0.45) % 1.0;
+    const sqY = 85 - 170 * cycleC;
+    const sqX = -25; // attaccato alla corteccia destra
 
-    // VETTORE PESO P (verticale verso il basso)
-    this.drawArrowDirect(pX, pY - 25, pX, pY + 45, '#ef4444', 4, 12);
-    this.drawTextDirect("P (verso il basso ↓)", pX + 10, pY + 40, '#ef4444', 'bold 12px Inter');
+    // Disegno stilizzato dello Scoiattolo che si arrampica
+    ctx.save();
+    ctx.translate(sqX, sqY);
 
-    this.drawBadgeDirect(0, 110, "Δh > 0  ==>  L_P = -m g Δh ≠ 0 (Compie lavoro!)", '#0f172a', '#fbbf24', 13);
+    // Coda folta arancione incurvata indietro
+    ctx.fillStyle = '#c2410c';
+    ctx.beginPath();
+    ctx.ellipse(12, 16, 10, 22, -0.35, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Corpo scoiattolo
+    ctx.fillStyle = '#ea580c';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 13, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Zampette che fanno presa sulla corteccia
+    const pawShift = Math.sin(time * 12) * 3;
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(-10, -14 + pawShift, 8, 4);
+    ctx.fillRect(-10, 10 - pawShift, 8, 4);
+
+    // Testa
+    ctx.beginPath();
+    ctx.arc(2, -22, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Orecchie a punta
+    ctx.beginPath();
+    ctx.moveTo(-1, -29); ctx.lineTo(3, -37); ctx.lineTo(6, -29);
+    ctx.fill();
+
+    // Occhietto
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(4, -23, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+
+    // Baricentro scoiattolo
+    const cmX = sqX + 2;
+    const cmY = sqY;
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(cmX, cmY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // VETTORI CONTRAPPOSTI (α = 180°)
+    const vecX = sqX + 38;
+
+    // 1. VETTORE SPOSTAMENTO Δs (verso l'alto ↑, azzurro)
+    this.drawArrowDirect(vecX, cmY, vecX, cmY - 65, '#0284c7', 4, 11);
+    this.drawTextDirect("Δs (verso l'alto ↑)", vecX + 10, cmY - 45, '#0284c7', 'bold 12px Inter');
+
+    // 2. VETTORE PESO P (verso il basso ↓, rosso)
+    this.drawArrowDirect(vecX, cmY, vecX, cmY + 65, '#dc2626', 4, 11);
+    this.drawTextDirect("P = mg (verso il basso ↓)", vecX + 10, cmY + 45, '#dc2626', 'bold 12px Inter');
+
+    // Arco semicircolare che mostra l'angolo piatto α = 180°
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(vecX, cmY, 18, -Math.PI / 2, Math.PI / 2, false);
+    ctx.stroke();
+    this.drawTextDirect("α = 180°", vecX + 22, cmY + 4, '#f59e0b', 'bold 12px IBM Plex Mono');
+
+    // Badge esplicativi a destra (chiari e non sovrapposti)
+    this.drawBadgeDirect(100, -80, "α = 180°  ⟹  cos(180°) = -1", '#0f172a', '#fbbf24', 13);
+    this.drawBadgeDirect(100, 80, "L_P = -P · Δs < 0  (Lavoro Resistente: oppone la salita!)", '#0f172a', '#f87171', 13);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SCENARIO D: PERSONA SU PIATTAFORMA CHE SALE (Δh > 0, L ≠ 0)
+  // ─────────────────────────────────────────────────────────────
+  drawScenarioD(step, time, isDark) {
+    const ctx = this.ctx;
+
+    // Suolo a y = +130
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-240, 130);
+    ctx.lineTo(240, 130);
+    ctx.stroke();
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(-240, 130, 480, 25);
+    ctx.font = 'bold 11px IBM Plex Mono, monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText("Suolo: h = 0 m", -220, 148);
+
+    // Colonne guida del montacarichi (tralicci metallici laterali)
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-165, -170, 22, 300);
+    ctx.strokeRect(143, -170, 22, 300);
+
+    for (let ty = -170; ty < 130; ty += 28) {
+      ctx.beginPath();
+      ctx.moveTo(-165, ty); ctx.lineTo(-143, ty + 28);
+      ctx.moveTo(143, ty); ctx.lineTo(165, ty + 28);
+      ctx.stroke();
+    }
+
+    // Trave superiore e argano
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(-30, -180, 60, 14);
+
+    // Salita continua della piattaforma
+    const cycleD = (time * 0.30) % 1.0;
+    const platY = 75 - 150 * cycleD;
+
+    // Cavi di sospensione dall'argano alla piattaforma
+    ctx.strokeStyle = isDark ? '#cbd5e1' : '#1e293b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-20, -166); ctx.lineTo(-120, platY);
+    ctx.moveTo(20, -166); ctx.lineTo(120, platY);
+    ctx.stroke();
+
+    // Piattaforma orizzontale in acciaio
+    ctx.fillStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.fillRect(-135, platY, 270, 14);
+    ctx.strokeStyle = isDark ? '#64748b' : '#475569';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-135, platY, 270, 14);
+
+    // Ringhiera di sicurezza gialla
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-135, platY - 20); ctx.lineTo(135, platY - 20);
+    ctx.moveTo(-120, platY); ctx.lineTo(-120, platY - 20);
+    ctx.moveTo(120, platY); ctx.lineTo(120, platY - 20);
+    ctx.stroke();
+
+    // Persona che cammina sulla piattaforma mentre essa sale
+    const pX = -55 + 110 * cycleD;
+    const pY = platY;
+
+    // Omino stilizzato
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 3;
+    const stepSwing = Math.sin(time * 6) * 3;
+    ctx.beginPath();
+    ctx.moveTo(pX - 5 + stepSwing, pY);
+    ctx.lineTo(pX, pY - 20);
+    ctx.lineTo(pX + 5 - stepSwing, pY);
+    // Busto
+    ctx.moveTo(pX, pY - 20);
+    ctx.lineTo(pX, pY - 42);
+    ctx.stroke();
+
+    // Testa
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(pX, pY - 49, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Baricentro persona
+    const cmX = pX;
+    const cmY = pY - 24;
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(cmX, cmY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // SCOMPOSIZIONE DEI VETTORI SPOSTAMENTO
+    // 1. Spostamento orizzontale di camminata Δs_orizzontale (arancione)
+    this.drawArrowDirect(cmX, cmY, cmX + 45, cmY, '#d97706', 2.5, 8);
+    this.drawTextDirect("Δs_orizz (L=0)", cmX + 10, cmY - 8, '#d97706', 'bold 10px IBM Plex Mono');
+
+    // 2. Dislivello verticale della piattaforma Δh (verde)
+    this.drawArrowDirect(135, 130, 135, platY, '#16a34a', 3, 9);
+    this.drawArrowDirect(135, platY, 135, 130, '#16a34a', 3, 9);
+    this.drawTextDirect("Δh > 0 (sale!)", 145, (130 + platY) / 2 + 4, '#16a34a', 'bold 11px IBM Plex Mono');
+
+    // 3. Spostamento totale obliquo Δs_tot (azzurro)
+    this.drawArrowDirect(cmX, cmY, cmX + 45, cmY - 45, '#0284c7', 3.5, 10);
+    this.drawTextDirect("Δs_tot", cmX + 48, cmY - 48, '#0284c7', 'bold 11px Inter');
+
+    // 4. Forza Peso P (verso il basso, rossa)
+    this.drawArrowDirect(cmX, cmY, cmX, cmY + 50, '#dc2626', 3.5, 10);
+    this.drawTextDirect("P = mg ↓", cmX - 55, cmY + 30, '#dc2626', 'bold 11px Inter');
+
+    // Badge esplicativi
+    this.drawBadgeDirect(0, -145, "Spostamento Composto: Δs_tot = Δs_orizz + Δh (verso l'alto)", '#0f172a', '#38bdf8', 12);
+    this.drawBadgeDirect(0, 100, "Δh > 0  ⟹  L_P = -m · g · Δh ≠ 0  (La gravità compie lavoro resistente!)", '#0f172a', '#fbbf24', 12);
   }
 
   drawArrowDirect(x1, y1, x2, y2, color, lineWidth = 4, headSize = 12) {
@@ -1809,10 +2031,6 @@ class VectorCanvas {
     ctx.restore();
   }
 }
-
-// ═══════════════════════════════════════════════════════════
-// GESTIONE DELLA PENNA LIM FLUTTUANTE
-// ═══════════════════════════════════════════════════════════
 
 class LimPenLayer {
   constructor(canvasId) {
@@ -2531,7 +2749,14 @@ function setScenario(scen) {
     const btn = document.getElementById('btnScen' + s);
     if (btn) btn.classList.toggle('active', s === scen);
   });
-  replayCurrentStepAnimation();
+
+  const badgeEl = document.getElementById('canvasBadgeText');
+  if (badgeEl) {
+    if (scen === 'A') badgeEl.textContent = 'Scenario A: Il Funambolo su fune (α = 90° ⟹ L = 0 J)';
+    else if (scen === 'B') badgeEl.textContent = 'Scenario B: Scalatore calato in basso (α = 0° ⟹ L > 0)';
+    else if (scen === 'C') badgeEl.textContent = "Scenario C: Scoiattolo che sale sull'albero (α = 180° ⟹ L < 0)";
+    else if (scen === 'D') badgeEl.textContent = 'Scenario D: Persona su piattaforma che sale (Δh > 0 ⟹ L ≠ 0)';
+  }
 }
 
 function setStep(stepNum) {
