@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Il Salto col Parapendio dalla Rupe di 500 m (Problema 83, Pag. 372) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra fissa invasiva in basso: penna fluttuante attivabile a piacere
+   - Foglio Bianco con Pan (✋) e Sposta/Seleziona (🖐️)
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown su fondo bianco puro
+   - Rupe 500 m, parapendio con scia aerodinamica e bilancio energetico
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-k: #2563eb;       /* Blu per Energia Cinetica K */
+  --color-ug: #16a34a;      /* Verde per Energia Potenziale Gravitazionale U_g */
+  --color-diss: #dc2626;    /* Rosso per Attrito Aria / Energia Dissipata */
+  --color-glider: #0284c7;  /* Azzurro per la vela del parapendio */
+  --color-tot: #7c3aed;     /* Viola per Energia Meccanica Iniziale */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-k: #60a5fa;
+  --color-ug: #4ade80;
+  --color-diss: #f87171;
+  --color-glider: #38bdf8;
+  --color-tot: #a78bfa;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ──────────────── HEADER ──────────────── */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #2563eb;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37,99,235,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.title-container h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-container p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-tool {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-tool:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-tool:hover {
+  background: #1e293b;
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+}
+
+/* ──────────────── LAYOUT PRINCIPALE ──────────────── */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 1750px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ──────────────── AREA CANVAS VETTORIALE ──────────────── */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-toolbar {
+  padding: 8px 14px;
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+body.dark-mode .canvas-toolbar {
+  background: rgba(19, 27, 46, 0.95);
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: var(--bg-canvas);
+  overflow: hidden;
+}
+
+canvas#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+canvas#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+canvas#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* CONTROLLI SIMULAZIONE SOTTO AL CANVAS */
+.sim-controls-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sim {
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-sim:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-sim:hover {
+  background: #1e293b;
+}
+
+.btn-sim-primary {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+}
+
+.sim-state-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.state-tag-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+.state-tag-btn:hover {
+  transform: translateY(-1px);
+}
+.state-tag-btn.tag-0 { border-color: var(--color-ug); color: var(--color-ug); }
+.state-tag-btn.tag-0:hover, .state-tag-btn.tag-0.active { background: var(--color-ug); color: white; }
+
+.state-tag-btn.tag-mid { border-color: var(--color-k); color: var(--color-k); }
+.state-tag-btn.tag-mid:hover, .state-tag-btn.tag-mid.active { background: var(--color-k); color: white; }
+
+.state-tag-btn.tag-land { border-color: var(--color-diss); color: var(--color-diss); }
+.state-tag-btn.tag-land:hover, .state-tag-btn.tag-land.active { background: var(--color-diss); color: white; }
+
+/* ──────────────── PANNELLO PASSI DIDATTICI ──────────────── */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 12px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.step-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+body.dark-mode .callout-box {
+  background: #064e3b33;
+  color: #86efac;
+}
+
+.callout-warning {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+}
+body.dark-mode .callout-warning {
+  background: #7f1d1d33;
+  color: #fca5a5;
+}
+
+.callout-info {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-info {
+  background: #1e3a8a33;
+  color: #bfdbfe;
+}
+
+.math-display-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* ──────────────── SLIDERS DINAMICI ──────────────── */
+.params-section {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.param-val {
+  font-family: var(--font-mono);
+  color: #2563eb;
+  font-weight: 700;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  cursor: pointer;
+}
+
+/* ──────────────── FOOTER PASSI DIDATTICI ──────────────── */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 35;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-pill {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.35);
+}
+
+.btn-nav-step {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-nav-step:hover:not(:disabled) {
+  background: #1e293b;
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────── BARRA PENNA LIM FLUTTUANTE TRASCINABILE ──────────────── */
+.lim-floating-bar {
+  position: fixed;
+  top: 80px;
+  right: 25px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.75rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+.lim-drag-handle:active {
+  cursor: grabbing;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+.lim-color-dot:hover {
+  transform: scale(1.15);
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-lim-action:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-lim-action:hover {
+  background: #1e293b;
+}
+
+/* ──────────────── MODALE FOGLIO BIANCO INTERATTIVO ──────────────── */
+.whiteboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+.whiteboard-modal {
+  width: 95vw;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 3px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+body.dark-mode .whiteboard-modal {
+  background: #0f172a;
+}
+.whiteboard-header {
+  padding: 10px 18px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.dark-mode .whiteboard-header {
+  background: #1e293b;
+}
+.whiteboard-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.whiteboard-canvas-wrap {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}
+body.dark-mode .whiteboard-canvas-wrap {
+  background: #0b0f19;
+}
+canvas#wbCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* MODALITÀ SCHERMO INTERO */
+body.is-fullscreen .app-header {
+  padding: 6px 14px;
+}
+body.is-fullscreen .main-container {
+  padding: 10px 14px;
+}
+body.is-fullscreen .canvas-wrapper {
+  height: 540px;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER CON CONTROLLI ════════════════ -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">← Indice Giordano Bruno</a>
+    <span class="school-tag">ISS Giordano Bruno • Seconde</span>
+    <div class="title-container">
+      <h1>🪂 Problema 83: Il Salto col Parapendio dalla Rupe di 500 m <span style="font-size: 0.8em; color: var(--text-muted); font-weight: normal;">(Pag. 372)</span></h1>
+      <p>Dissipazione per resistenza aerodinamica: \(\Delta E = E_0 - E_f pprox 4{,}4 	imes 10^5	ext{ J}\)</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Ingrandisci testo LIM">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">🌙 Tema</button>
+    <button class="btn-tool" id="btnOpenWhiteboard" title="Apri Foglio Bianco (W)">📄 Foglio Bianco</button>
+    <button class="btn-tool" id="btnTogglePen" title="Attiva/Disattiva Penna LIM (P)">✏️ Penna LIM</button>
+    <button class="btn-tool btn-tool-primary" id="btnFullscreen" title="Schermo Intero (F)">⛶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- ════════════════ LAYOUT PRINCIPALE ════════════════ -->
+<main class="main-container">
+  
+  <!-- COLONNA SINISTRA: CANVAS FISICO + CONTROLLI SIMULAZIONE -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span>VETTORE FISICO DINAMICO • 3BLUE1BROWN VECTORS</span>
+        <span id="canvasStats">\(m = 90	ext{ kg} \quad h_0 = 500	ext{ m} \quad v_f = 5{,}0	ext{ m/s}\)</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- CONTROLLI SIMULAZIONE INTERATTIVA -->
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">▶ Avvia Volo</button>
+        <button class="btn-sim" id="btnResetSim">↺ Riposiziona</button>
+        <button class="btn-sim" id="btnSlowMo">🐢 Rallentatore</button>
+      </div>
+      <div class="sim-state-tags">
+        <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">Punti notevoli:</span>
+        <button class="state-tag-btn tag-0" id="btnGoState0" title="Alla rupe: h0 = 500 m, v0 = 0">In Cima (500 m)</button>
+        <button class="state-tag-btn tag-mid" id="btnGoMid" title="A metà discesa: h = 250 m">A Mezza Quota</button>
+        <button class="state-tag-btn tag-land" id="btnGoLand" title="Atterraggio dolce: vf = 5.0 m/s">Atterraggio (5,0 m/s)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNA DESTRA: PASSI DIDATTICI ED ESPLORAZIONE -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepContentCard">
+      <!-- Il contenuto didattico viene iniettato dinamicamente via JS in base al passo attivo -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════ FOOTER PASSI DIDATTICI ════════════════ -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">← Passo Precedente</button>
+
+  <div class="step-pills-list">
+    <button class="step-pill active" data-step="1">1</button>
+    <button class="step-pill" data-step="2">2</button>
+    <button class="step-pill" data-step="3">3</button>
+    <button class="step-pill" data-step="4">4</button>
+    <button class="step-pill" data-step="5">5</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Passo Successivo →</button>
+</footer>
+
+<!-- ════════════════ TAVOLOZZA PENNA LIM FLUTTUANTE ════════════════ -->
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>✏️ PENNA LIM</span>
+    <span>⠿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimEraser">🧹 Gomma</button>
+    <button class="btn-lim-action" id="btnLimClear">🗑️ Pulisci</button>
+    <button class="btn-lim-action" id="btnLimClose">✖ Chiudi</button>
+  </div>
+</div>
+
+<!-- ════════════════ MODALE FOGLIO BIANCO ════════════════ -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="whiteboard-modal">
+    <div class="whiteboard-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong style="font-family:var(--font-tech); letter-spacing:1px; color:#2563eb;">📄 FOGLIO BIANCO LIM DIGITALE</strong>
+        <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">Scrivi o disegna liberamente note per la classe</span>
+      </div>
+      <div class="whiteboard-tools">
+        <button class="btn-tool active" id="btnWbToolPen">✏️ Penna</button>
+        <button class="btn-tool" id="btnWbToolEraser">🧹 Gomma</button>
+        <button class="btn-tool" id="btnWbToolPan" title="Trascina foglio (Pan)">✋ Pan</button>
+        <button class="btn-tool" id="btnWbToolSelect" title="Seleziona e sposta tratti">🖐️ Sposta</button>
+        <button class="btn-tool" id="btnWbClear">🗑️ Svuota</button>
+        <button class="btn-tool" id="btnWbClose" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">✖ Chiudi</button>
+      </div>
+    </div>
+    <div class="whiteboard-canvas-wrap">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPT JAVASCRIPT DINAMICO ED ANIMAZIONE ════════════════ -->
+<script>
+/* ──────────────── STATO GLOBALE E PARAMETRI FISICI ──────────────── */
+const STATE = {
+  // Dati Problema 83 (Pag. 372)
+  m: 90,            // kg (Davide + attrezzatura)
+  h0: 500,          // m (quota rupe)
+  vf: 5.0,          // m/s (velocità terminale all'atterraggio)
+  g: 9.8,           // m/s^2
+
+  // Valori energetici teorici
+  get E0() {
+    return this.m * this.g * this.h0; // 90 * 9.8 * 500 = 441000 J = 4.41 * 10^5 J
+  },
+  get Ef() {
+    return 0.5 * this.m * this.vf * this.vf; // 0.5 * 90 * 25 = 1125 J
+  },
+  get Ediss() {
+    return this.E0 - this.Ef; // 441000 - 1125 = 439875 J -> 4.4 * 10^5 J
+  },
+  get vFreeFall() {
+    return Math.sqrt(2 * this.g * this.h0); // sqrt(2 * 9.8 * 500) = 99 m/s = 356 km/h!
+  },
+  get percDiss() {
+    return (this.Ediss / this.E0) * 100; // ~99.7%
+  },
+
+  // Animazione volo (0.0 -> 1.0)
+  simProgress: 0.0,
+  isPlaying: false,
+  isSlowMo: false,
+  activeStep: 1,
+  fontSizeLevel: 0
+};
+
+/* ──────────────── DEFINIZIONE DEI 5 PASSI DIDATTICI ──────────────── */
+const STEPS_DATA = {
+  1: {
+    badge: "PASSO 1 DI 5 • COMPRENSIONE FISICA",
+    title: "La Rupe di 500 m e il Ruolo del Parapendio",
+    render: () => `
+      <p class="step-description">
+        Davide si lancia col parapendio da una rupe alta <strong>\(h_0 = 500\text{ m}\)</strong> sul fondo valle.
+        La sua massa totale, comprensiva di vela, imbragatura e casco, è <strong>\(m = 90\text{ kg}\)</strong>.
+        Grazie alla grande superficie alare della vela, Davide scende planando dolcemente e tocca il suolo a una velocità controllata di soli <strong>\(v_f = 5{,}0\text{ m/s} = 18\text{ km/h}\)</strong>.
+      </p>
+
+      <div class="callout-box callout-warning">
+        ⚡ <strong>Cosa sarebbe accaduto senza parapendio?</strong>
+        <p style="margin-top:6px; line-height:1.5;">
+          Se non ci fosse l'attrito dell'aria, tutta l'energia potenziale si trasformerebbe in energia cinetica:<br>
+          \(v = \sqrt{2gh_0} = \sqrt{2 \cdot 9{,}8 \cdot 500} = 99\text{ m/s} \approx \mathbf{356\text{ km/h}}\) (la velocità di una Formula 1!).<br>
+          È proprio la <strong>forza di attrito viscoso dell'aria</strong> che dissipa quasi tutta l'energia, consentendogli di atterrare illeso.
+        </p>
+      </div>
+
+      <div class="math-display-card">
+        $$\Delta E_{\text{mecc}} = E_{\text{finale}} - E_{\text{iniziale}} = W_{\text{attrito aria}} < 0$$
+        $$E_{\text{dissipata}} = E_0 - E_f$$
+      </div>
+
+      <div class="callout-box">
+        💡 <strong>Osservazione LIM:</strong> Clicca sui tasti <em>"In Cima"</em>, <em>"A Mezza Quota"</em> e <em>"Atterraggio"</em> sotto al canvas per osservare la planata e la dissipazione continua di energia meccanica!
+      </div>
+    `
+  },
+
+  2: {
+    badge: "PASSO 2 DI 5 • STATO INIZIALE ALLA RUPE",
+    title: "Calcolo dell'Energia Meccanica Iniziale E₀",
+    render: () => `
+      <p class="step-description">
+        Fissiamo il livello zero dell'energia potenziale sul fondo della valle (<strong>\(h = 0\text{ m}\)</strong>).
+        Al momento del decollo dalla rupe a quota <strong>\(h_0 = 500\text{ m}\)</strong>, partendo praticamente da fermo (<strong>\(v_0 = 0\)</strong>), tutta l'energia meccanica coincide con l'energia potenziale gravitazionale:
+      </p>
+
+      <div class="math-display-card">
+        $$E_0 = U_{g,0} + K_0 = m \cdot g \cdot h_0 + 0$$
+        $$E_0 = 90\text{ kg} \cdot 9{,}8\text{ m/s}^2 \cdot 500\text{ m}$$
+        $$E_0 = 882 \cdot 500 = \mathbf{441\,000\text{ J}} = \mathbf{4{,}41 \times 10^5\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-info">
+        🏔️ <strong>Patrimonio Energetico:</strong> Davide parte con un'energia potenziale colossale di <strong>\(441\text{ kJ}\)</strong> dovuta all'elevata quota della rupe rispetto alla valle!
+      </div>
+    `
+  },
+
+  3: {
+    badge: "PASSO 3 DI 5 • STATO FINALE AL SUOLO",
+    title: "Calcolo dell'Energia Meccanica Finale all'Atterraggio",
+    render: () => `
+      <p class="step-description">
+        Nel momento in cui Davide sta per posare i piedi a terra (quota <strong>\(h = 0\text{ m} \implies U_{g,f} = 0\)</strong>), la sua velocità residua è di <strong>\(v_f = 5{,}0\text{ m/s}\)</strong>.
+        Tutta l'energia meccanica rimasta è dunque unicamente energia cinetica:
+      </p>
+
+      <div class="math-display-card">
+        $$E_f = U_{g,f} + K_f = 0 + \frac{1}{2} m v_f^2$$
+        $$E_f = \frac{1}{2} \cdot 90\text{ kg} \cdot (5{,}0\text{ m/s})^2$$
+        $$E_f = 45 \cdot 25 = \mathbf{1125\text{ J}} = \mathbf{1{,}125 \times 10^3\text{ J}}$$
+      </div>
+
+      <div class="callout-box">
+        ⚖️ <strong>Confronto Impressionante:</strong> Dei <strong>\(441\,000\text{ J}\)</strong> iniziali, alla fine del volo restano solo <strong>\(1125\text{ J}\)</strong> di energia cinetica!
+      </div>
+    `
+  },
+
+  4: {
+    badge: "PASSO 4 DI 5 • RISOLUZIONE QUESITO",
+    title: "Calcolo dell'Energia Meccanica Trasformata in Altre Forme",
+    render: () => `
+      <p class="step-description">
+        La quantità di energia meccanica che si è trasformata in altre forme (energia termica dell'aria e vortici di turbolenza atmosferica) è la differenza tra l'energia iniziale e quella finale:
+      </p>
+
+      <div class="math-display-card">
+        $$\Delta E = E_0 - E_f = 441\,000\text{ J} - 1125\text{ J} = \mathbf{439\,875\text{ J}}$$
+        $$\Delta E \approx \mathbf{4{,}4 \times 10^5\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-warning">
+        🎯 <strong>Risultato Libro:</strong> L'energia trasformata in altre forme è esattamente <strong>\(4{,}4 \times 10^5\text{ J}\)</strong>!
+      </div>
+
+      <div class="math-display-card" style="margin-top:10px;">
+        $$\text{Percentuale dissipata: } \eta = \frac{439\,875}{441\,000} \cdot 100 = \mathbf{99{,}74\%}$$
+      </div>
+
+      <div class="callout-box">
+        🔥 <strong>Nota di Termodinamica:</strong> Il <strong>99,7%</strong> dell'energia è stata ceduta all'atmosfera sotto forma di calore generato dall'attrito aerodinamico con la tela del parapendio!
+      </div>
+    `
+  },
+
+  5: {
+    badge: "PASSO 5 DI 5 • LABORATORIO INTERATTIVO",
+    title: "Esplora i Parametri e Simula la Planata",
+    render: () => `
+      <p class="step-description">
+        Modifica la quota della rupe <strong>\(h_0\)</strong>, la massa totale <strong>\(m\)</strong> o la velocità di atterraggio <strong>\(v_f\)</strong> per analizzare l'effetto sulla dissipazione energetica!
+      </p>
+
+      <div class="params-section">
+        <div class="param-row">
+          <div class="param-header">
+            <span>Quota rupe \(h_0\):</span>
+            <span class="param-val" id="valH0">${STATE.h0} m</span>
+          </div>
+          <input type="range" id="sliderH0" min="200" max="1000" step="50" value="${STATE.h0}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Massa Davide + attrezzatura \(m\):</span>
+            <span class="param-val" id="valM">${STATE.m} kg</span>
+          </div>
+          <input type="range" id="sliderM" min="60" max="140" step="5" value="${STATE.m}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Velocità all'atterraggio \(v_f\):</span>
+            <span class="param-val" id="valVf">${STATE.vf.toFixed(1)} m/s</span>
+          </div>
+          <input type="range" id="sliderVf" min="2.0" max="10.0" step="0.5" value="${STATE.vf}">
+        </div>
+      </div>
+
+      <div class="callout-box" id="liveResultsBox" style="margin-top:10px;">
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia iniziale alla rupe: <strong>\(E_0 = ${(STATE.E0 / 1000).toFixed(1)}\text{ kJ}\)</strong><br>
+        Energia cinetica finale: <strong>\(E_f = ${STATE.Ef.toFixed(0)}\text{ J}\)</strong><br>
+        Energia dissipata in calore: <strong>\(E_{\text{diss}} = ${(STATE.Ediss / 1000).toFixed(1)}\text{ kJ} \; (${STATE.percDiss.toFixed(1)}\%)\)</strong><br>
+        Velocità nel vuoto senza attrito: <strong>\(v_{\text{vuoto}} = ${STATE.vFreeFall.toFixed(1)}\text{ m/s} \; (${(STATE.vFreeFall * 3.6).toFixed(0)}\text{ km/h})\)</strong>
+      </div>
+    `
+  }
+};
+
+/* ──────────────── GESTORE PASSI DIDATTICI ──────────────── */
+function setStep(stepNum) {
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 5) stepNum = 5;
+  STATE.activeStep = stepNum;
+
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    const s = parseInt(pill.getAttribute('data-step'), 10);
+    pill.classList.toggle('active', s === stepNum);
+  });
+
+  document.getElementById('btnPrevStep').disabled = (stepNum === 1);
+  document.getElementById('btnNextStep').disabled = (stepNum === 5);
+
+  const card = document.getElementById('stepContentCard');
+  const data = STEPS_DATA[stepNum];
+  card.innerHTML = `
+    <div class="step-header">
+      <span class="step-badge">${data.badge}</span>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">Passo ${stepNum} di 5</span>
+    </div>
+    <h2 class="step-title">${data.title}</h2>
+    ${data.render()}
+  `;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(card, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\(', right: '\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+
+  if (stepNum === 5) {
+    attachStep5Listeners();
+  }
+
+  if (stepNum === 1 || stepNum === 2) {
+    STATE.simProgress = 0.0;
+  } else if (stepNum === 3 || stepNum === 4) {
+    STATE.simProgress = 1.0;
+  }
+}
+
+function prevStep() { setStep(STATE.activeStep - 1); }
+function nextStep() { setStep(STATE.activeStep + 1); }
+
+function attachStep5Listeners() {
+  const sH0 = document.getElementById('sliderH0');
+  const sM  = document.getElementById('sliderM');
+  const sVf = document.getElementById('sliderVf');
+
+  function update() {
+    STATE.h0 = parseFloat(sH0.value);
+    STATE.m  = parseFloat(sM.value);
+    STATE.vf = parseFloat(sVf.value);
+
+    document.getElementById('valH0').textContent = STATE.h0 + ' m';
+    document.getElementById('valM').textContent = STATE.m + ' kg';
+    document.getElementById('valVf').textContent = STATE.vf.toFixed(1) + ' m/s';
+
+    const box = document.getElementById('liveResultsBox');
+    if (box) {
+      box.innerHTML = `
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia iniziale alla rupe: <strong>\(E_0 = ${(STATE.E0 / 1000).toFixed(1)}\text{ kJ}\)</strong><br>
+        Energia cinetica finale: <strong>\(E_f = ${STATE.Ef.toFixed(0)}\text{ J}\)</strong><br>
+        Energia dissipata in calore: <strong>\(E_{\text{diss}} = ${(STATE.Ediss / 1000).toFixed(1)}\text{ kJ} \; (${STATE.percDiss.toFixed(1)}\%)\)</strong><br>
+        Velocità nel vuoto senza attrito: <strong>\(v_{\text{vuoto}} = ${STATE.vFreeFall.toFixed(1)}\text{ m/s} \; (${(STATE.vFreeFall * 3.6).toFixed(0)}\text{ km/h})\)</strong>
+      `;
+      if (window.renderMathInElement) {
+        renderMathInElement(box, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\(', right: '\)', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const stats = document.getElementById('canvasStats');
+    if (stats) {
+      stats.innerHTML = `\(m = ${STATE.m}\text{ kg} \quad h_0 = ${STATE.h0}\text{ m} \quad v_f = ${STATE.vf.toFixed(1)}\text{ m/s}\)`;
+      if (window.renderMathInElement) {
+        renderMathInElement(stats, {
+          delimiters: [{left: '\(', right: '\)', display: false}],
+          throwOnError: false
+        });
+      }
+    }
+  }
+
+  if (sH0) sH0.addEventListener('input', update);
+  if (sM)  sM.addEventListener('input', update);
+  if (sVf) sVf.addEventListener('input', update);
+}
+
+/* ──────────────── VETTORE RENDERER (CANVAS 3BLUE1BROWN) ──────────────── */
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 0;
+    this.height = 0;
+
+    this.lastTime = performance.now();
+    this.airParticles = [];
+    this.initLoop();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+
+  initLoop() {
+    const loop = (currentTime) => {
+      const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+      this.lastTime = currentTime;
+
+      this.updatePhysics(dt);
+      this.render();
+
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  updatePhysics(dt) {
+    if (!STATE.isPlaying) return;
+
+    const speed = STATE.isSlowMo ? 0.08 : 0.22;
+    STATE.simProgress += dt * speed;
+
+    if (STATE.simProgress > 1.15) {
+      STATE.simProgress = 0.0;
+      this.airParticles = [];
+    }
+  }
+
+  getGliderState(p) {
+    const W = this.width;
+    const H = this.height;
+
+    const cliffX = W * 0.24;
+    const cliffY = H * 0.32;
+    const floorY = H * 0.82;
+    const landX  = W * 0.82;
+
+    const u = Math.min(1.0, Math.max(0.0, p));
+
+    // Traiettoria di planata curva dolce
+    const x = cliffX + u * (landX - cliffX);
+    // Quota reale da h0 a 0
+    const currentH = STATE.h0 * (1 - u);
+    const y = cliffY + u * (floorY - cliffY);
+
+    // Velocità: da 0 (partenza) a 5 m/s terminale
+    const currentV = Math.min(STATE.vf, (0.2 + 0.8 * u) * STATE.vf);
+
+    return {
+      x, y, currentH, currentV, u,
+      cliffX, cliffY, floorY, landX
+    };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const W = this.width;
+    const H = this.height;
+    if (W === 0 || H === 0) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const g = this.getGliderState(STATE.simProgress);
+
+    // Particelle di scia aerodinamica (attrito con l'aria)
+    if (STATE.isPlaying && Math.random() < 0.4) {
+      this.airParticles.push({
+        x: g.x - 15 + (Math.random() - 0.5) * 20,
+        y: g.y - 10 + (Math.random() - 0.5) * 15,
+        vx: -1.5 - Math.random() * 2,
+        vy: -0.5 + (Math.random() - 0.5) * 1,
+        life: 1.0
+      });
+    }
+
+    // 1. Griglia 3Blue1Brown
+    this.drawGrid(ctx, W, H);
+
+    // 2. Scenario paesaggistico: Rupe 500 m e Valle
+    this.drawLandscape(ctx, g, W, H);
+
+    // 3. Linee guida quote e freccia 500 m
+    this.drawDimensions(ctx, g);
+
+    // 4. Scia termica di attrito aria (particelle rosse/arancio)
+    this.drawAirFriction(ctx);
+
+    // 5. Davide con vela del parapendio vettoriale
+    this.drawParaglider(ctx, g);
+
+    // 6. Bilancio energetico dinamico con barra calore dissipato
+    this.drawEnergyBars(ctx, g, W, H);
+  }
+
+  drawGrid(ctx, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.04)';
+    ctx.lineWidth = 1;
+    const step = 30;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawLandscape(ctx, g, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // 1. Rupe a sinistra
+    ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(0, g.cliffY);
+    ctx.lineTo(g.cliffX - 20, g.cliffY);
+    // Parete a strapiombo rocciosa
+    ctx.lineTo(g.cliffX, g.cliffY + 40);
+    ctx.lineTo(g.cliffX - 10, g.cliffY + 90);
+    ctx.lineTo(g.cliffX + 10, g.cliffY + 160);
+    ctx.lineTo(g.cliffX - 5, g.floorY);
+    ctx.lineTo(0, g.floorY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bordo rupe
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Fondo valle verdeggiante
+    ctx.fillStyle = isDark ? '#064e3b33' : '#dcfce7';
+    ctx.fillRect(0, g.floorY, W, H - g.floorY);
+
+    ctx.strokeStyle = isDark ? '#16a34a' : '#22c55e';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, g.floorY);
+    ctx.lineTo(W, g.floorY);
+    ctx.stroke();
+
+    // Etichette scenario
+    ctx.font = '700 12px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#475569';
+    ctx.fillText('RUPE DI DECOLLO', 25, g.cliffY - 12);
+    ctx.fillText('FONDO VALLE (h = 0 m)', W - 180, g.floorY + 22);
+
+    ctx.restore();
+  }
+
+  drawDimensions(ctx, g) {
+    ctx.save();
+    // Linea orizzontale tratteggiata quota rupe
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(20, g.cliffY);
+    ctx.lineTo(g.cliffX + 40, g.cliffY);
+    ctx.stroke();
+
+    // Freccia verticale 500 m
+    const dimX = 50;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(dimX, g.floorY);
+    ctx.lineTo(dimX, g.cliffY);
+    ctx.stroke();
+
+    this.drawArrowHead(ctx, dimX, g.floorY, Math.PI / 2, 7, '#16a34a');
+    this.drawArrowHead(ctx, dimX, g.cliffY, -Math.PI / 2, 7, '#16a34a');
+
+    ctx.font = '700 13px "Inter", sans-serif';
+    ctx.fillStyle = '#16a34a';
+    ctx.fillText(`h₀ = ${STATE.h0} m`, dimX + 12, (g.floorY + g.cliffY) / 2);
+
+    ctx.restore();
+  }
+
+  drawAirFriction(ctx) {
+    ctx.save();
+    for (let i = this.airParticles.length - 1; i >= 0; i--) {
+      const p = this.airParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.035;
+
+      if (p.life <= 0) {
+        this.airParticles.splice(i, 1);
+        continue;
+      }
+
+      ctx.fillStyle = `rgba(220, 38, 38, ${p.life * 0.7})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3 * p.life + 1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawParaglider(ctx, g) {
+    ctx.save();
+    ctx.translate(g.x, g.y);
+
+    // Vela arcuata superiore
+    const wingW = 54;
+    const wingH = 14;
+
+    ctx.fillStyle = '#0284c7'; // Azzurro cielo vela
+    ctx.beginPath();
+    ctx.moveTo(-wingW * 0.5, -35);
+    ctx.quadraticCurveTo(0, -50, wingW * 0.5, -35);
+    ctx.quadraticCurveTo(0, -42, -wingW * 0.5, -35);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spicchi colorati vela
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.moveTo(-wingW * 0.25, -38);
+    ctx.quadraticCurveTo(0, -48, wingW * 0.25, -38);
+    ctx.quadraticCurveTo(0, -44, -wingW * 0.25, -38);
+    ctx.fill();
+
+    // Fascio cavi di sospensione
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-wingW * 0.45, -35);
+    ctx.lineTo(0, -10);
+    ctx.moveTo(-wingW * 0.15, -39);
+    ctx.lineTo(0, -10);
+    ctx.moveTo(wingW * 0.15, -39);
+    ctx.lineTo(0, -10);
+    ctx.moveTo(wingW * 0.45, -35);
+    ctx.lineTo(0, -10);
+    ctx.stroke();
+
+    // Pilota Davide sospeso
+    // Casco
+    ctx.fillStyle = '#ea580c';
+    ctx.beginPath();
+    ctx.arc(0, -12, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Imbragatura corpo
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-3, -8, 6, 9);
+
+    // Gambe
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-2, 1);
+    ctx.lineTo(3, 8);
+    ctx.moveTo(2, 1);
+    ctx.lineTo(6, 6);
+    ctx.stroke();
+
+    // Vettore velocità v planata
+    if (g.currentV > 0.5) {
+      const vScale = g.currentV * 5;
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(10, 0);
+      ctx.lineTo(10 + vScale * 1.5, vScale);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, 10 + vScale * 1.5, vScale, Math.atan2(vScale, vScale * 1.5), 6, '#2563eb');
+
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#2563eb';
+      ctx.fillText(`v = ${g.currentV.toFixed(1)} m/s`, 18 + vScale * 1.5, vScale + 4);
+    }
+
+    ctx.restore();
+  }
+
+  drawEnergyBars(ctx, g, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Energie istantanee
+    const Ug = STATE.m * STATE.g * g.currentH;
+    const K = 0.5 * STATE.m * g.currentV * g.currentV;
+    const Ediss = STATE.E0 - (Ug + K);
+    const Etot = Ug + K + Ediss;
+
+    const panelX = W - 305;
+    const panelY = 16;
+    const panelW = 285;
+    const panelH = 120;
+
+    ctx.fillStyle = isDark ? 'rgba(19, 27, 46, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = '700 11px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('ENERGIE MECCANICHE & CALORE DISSIPATO', panelX + 12, panelY + 18);
+
+    const maxE = STATE.E0; // 441000 J scala
+    const barMaxW = 145;
+    const startBarsX = panelX + 50;
+
+    const drawSingleBar = (yOffset, label, val, color) => {
+      const bY = panelY + yOffset;
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.fillText(label, panelX + 12, bY + 11);
+
+      ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, barMaxW, 12, 3);
+      ctx.fill();
+
+      const w = Math.max(0, Math.min(barMaxW, (val / maxE) * barMaxW));
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, w, 12, 3);
+      ctx.fill();
+
+      ctx.font = '600 10.5px "IBM Plex Mono", monospace';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      const kVal = (val / 1000).toFixed(1) + ' kJ';
+      ctx.fillText(kVal, startBarsX + barMaxW + 6, bY + 10);
+    };
+
+    drawSingleBar(28, 'Ug', Ug, '#16a34a');
+    drawSingleBar(48, 'K', K, '#2563eb');
+    drawSingleBar(68, 'Ediss', Ediss, '#dc2626');
+    drawSingleBar(90, 'Etot', Etot, '#7c3aed');
+
+    ctx.restore();
+  }
+
+  drawArrowHead(ctx, x, y, angle, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-size, -size * 0.5);
+    ctx.lineTo(-size, size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ──────────────── PENNA LIM FLUTTUANTE ──────────────── */
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.active = false;
+    this.color = '#dc2626';
+    this.lineWidth = 5;
+    this.isDrawing = false;
+    this.strokes = [];
+    this.currentStroke = null;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const startDraw = (e) => {
+      if (!this.active) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      const pos = getPos(e);
+      this.currentStroke = { color: this.color, width: this.lineWidth, points: [pos] };
+      this.strokes.push(this.currentStroke);
+      this.drawSegment(pos, pos);
+    };
+
+    const moveDraw = (e) => {
+      if (!this.active || !this.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      const pts = this.currentStroke.points;
+      const lastPos = pts[pts.length - 1];
+      pts.push(pos);
+      this.drawSegment(lastPos, pos);
+    };
+
+    const endDraw = () => {
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+
+    this.canvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', moveDraw, { passive: false });
+    window.addEventListener('touchend', endDraw);
+  }
+
+  drawSegment(p1, p2) {
+    this.ctx.strokeStyle = this.currentStroke.color;
+    this.ctx.lineWidth = this.currentStroke.width;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.beginPath();
+    this.ctx.moveTo(p1.x, p1.y);
+    this.ctx.lineTo(p2.x, p2.y);
+    this.ctx.stroke();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.strokeStyle = stroke.color;
+      this.ctx.lineWidth = stroke.width;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+/* ──────────────── FOGLIO BIANCO DIGITALE ──────────────── */
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 5;
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        screenX: cx - rect.left,
+        screenY: cy - rect.top,
+        worldX: cx - rect.left - this.panX,
+        worldY: cy - rect.top - this.panY
+      };
+    };
+
+    const onPointerDown = (e) => {
+      const pos = getPos(e);
+
+      if (this.tool === 'pan') {
+        this.isPanning = true;
+        this.panStartX = pos.screenX - this.panX;
+        this.panStartY = pos.screenY - this.panY;
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.hitTestStroke(pos.worldX, pos.worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = pos.worldX;
+          this.dragStartY = pos.worldY;
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        points: [{ x: pos.worldX, y: pos.worldY }]
+      };
+      this.strokes.push(this.currentStroke);
+      this.redraw();
+    };
+
+    const onPointerMove = (e) => {
+      const pos = getPos(e);
+
+      if (this.isPanning) {
+        this.panX = pos.screenX - this.panStartX;
+        this.panY = pos.screenY - this.panStartY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = pos.worldX - this.dragStartX;
+        const dy = pos.worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = pos.worldX;
+        this.dragStartY = pos.worldY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDrawing && this.currentStroke) {
+        this.currentStroke.points.push({ x: pos.worldX, y: pos.worldY });
+        this.redraw();
+      }
+    };
+
+    const onPointerUp = () => {
+      this.isPanning = false;
+      this.isDraggingStroke = false;
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    this.canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  hitTestStroke(wx, wy) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const stroke = this.strokes[i];
+      for (const p of stroke.points) {
+        const dist = Math.hypot(p.x - wx, p.y - wy);
+        if (dist < 15) return stroke;
+      }
+    }
+    return null;
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.save();
+      this.ctx.strokeStyle = (stroke.tool === 'eraser') ? '#ffffff' : stroke.color;
+      this.ctx.lineWidth = stroke.size;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+
+      if (stroke === this.selectedStroke) {
+        this.ctx.strokeStyle = '#2563eb';
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.stroke();
+      }
+      this.ctx.restore();
+    }
+
+    this.ctx.restore();
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+/* ──────────────── GESTIONE EVENTI GLOBALI ──────────────── */
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  limPen.active = !limPen.active;
+  document.getElementById('limPenCanvas').classList.toggle('active', limPen.active);
+  document.getElementById('btnTogglePen').classList.toggle('active', limPen.active);
+  document.getElementById('limFloatingBar').classList.toggle('show', limPen.active);
+}
+
+function openWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.add('show');
+  setTimeout(() => whiteboard.resize(), 50);
+}
+
+function closeWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.remove('show');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function cycleFontSize() {
+  STATE.fontSizeLevel = (STATE.fontSizeLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const btn = document.getElementById('btnScaleFont');
+  if (STATE.fontSizeLevel === 1) {
+    document.body.classList.add('text-scale-1');
+    btn.textContent = 'A++ Testo';
+  } else if (STATE.fontSizeLevel === 2) {
+    document.body.classList.add('text-scale-2');
+    btn.textContent = 'A Standard';
+  } else {
+    btn.textContent = 'A+ Testo';
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('btnToggleDark').textContent = isDark ? '☀️ Chiaro' : '🌙 Tema';
+}
+
+/* ──────────────── INIZIALIZZAZIONE DOM ──────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  document.getElementById('btnTogglePen').addEventListener('click', togglePenMode);
+  document.getElementById('btnOpenWhiteboard').addEventListener('click', openWhiteboard);
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+  document.getElementById('btnScaleFont').addEventListener('click', cycleFontSize);
+  document.getElementById('btnToggleDark').addEventListener('click', toggleDarkMode);
+
+  document.getElementById('btnPrevStep').addEventListener('click', prevStep);
+  document.getElementById('btnNextStep').addEventListener('click', nextStep);
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const step = parseInt(e.target.getAttribute('data-step'), 10);
+      setStep(step);
+    });
+  });
+
+  const btnPlay = document.getElementById('btnPlayPause');
+  btnPlay.addEventListener('click', () => {
+    STATE.isPlaying = !STATE.isPlaying;
+    btnPlay.textContent = STATE.isPlaying ? '⏸ Sospendi' : '▶ Avvia Volo';
+  });
+
+  document.getElementById('btnResetSim').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Volo';
+  });
+
+  const btnSlow = document.getElementById('btnSlowMo');
+  btnSlow.addEventListener('click', () => {
+    STATE.isSlowMo = !STATE.isSlowMo;
+    btnSlow.classList.toggle('active', STATE.isSlowMo);
+    btnSlow.textContent = STATE.isSlowMo ? '🐇 Normale' : '🐢 Rallentatore';
+  });
+
+  document.getElementById('btnGoState0').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Volo';
+  });
+  document.getElementById('btnGoMid').addEventListener('click', () => {
+    STATE.simProgress = 0.50;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Volo';
+  });
+  document.getElementById('btnGoLand').addEventListener('click', () => {
+    STATE.simProgress = 1.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Volo';
+  });
+
+  document.querySelectorAll('.lim-color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+      e.target.classList.add('active');
+      limPen.color = e.target.getAttribute('data-color');
+      limPen.lineWidth = 5;
+    });
+  });
+
+  document.getElementById('btnLimEraser').addEventListener('click', () => {
+    limPen.color = document.body.classList.contains('dark-mode') ? '#0f172a' : '#ffffff';
+    limPen.lineWidth = 20;
+  });
+
+  document.getElementById('btnLimClear').addEventListener('click', () => limPen.clear());
+  document.getElementById('btnLimClose').addEventListener('click', togglePenMode);
+
+  // Floating LIM bar drag
+  const bar = document.getElementById('limFloatingBar');
+  const handle = document.getElementById('limDragHandle');
+  let isDraggingBar = false;
+  let barStartX = 0, barStartY = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    isDraggingBar = true;
+    barStartX = e.clientX - bar.offsetLeft;
+    barStartY = e.clientY - bar.offsetTop;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingBar) return;
+    bar.style.left = (e.clientX - barStartX) + 'px';
+    bar.style.top = (e.clientY - barStartY) + 'px';
+    bar.style.right = 'auto';
+  });
+  window.addEventListener('mouseup', () => { isDraggingBar = false; });
+
+  // Whiteboard buttons
+  document.getElementById('btnWbClose').addEventListener('click', closeWhiteboard);
+  document.getElementById('btnWbClear').addEventListener('click', () => whiteboard.clear());
+  document.getElementById('btnWbToolPen').addEventListener('click', (e) => {
+    whiteboard.tool = 'pen';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolEraser').addEventListener('click', (e) => {
+    whiteboard.tool = 'eraser';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolPan').addEventListener('click', (e) => {
+    whiteboard.tool = 'pan';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolSelect').addEventListener('click', (e) => {
+    whiteboard.tool = 'select';
+    setWbActiveTool(e.target);
+  });
+
+  function setWbActiveTool(btn) {
+    ['btnWbToolPen', 'btnWbToolEraser', 'btnWbToolPan', 'btnWbToolSelect'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    btn.classList.add('active');
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toUpperCase();
+    if (key === 'ARROWLEFT') prevStep();
+    if (key === 'ARROWRIGHT') nextStep();
+    if (key === 'P') togglePenMode();
+    if (key === 'W') {
+      const ov = document.getElementById('whiteboardOverlay');
+      if (ov.classList.contains('show')) closeWhiteboard();
+      else openWhiteboard();
+    }
+    if (key === 'F') toggleFullscreen();
+    if (key === 'ESCAPE') {
+      closeWhiteboard();
+      if (limPen.active) togglePenMode();
+    }
+  });
+
+  setStep(1);
+});
+</script>
+</body>
+</html>

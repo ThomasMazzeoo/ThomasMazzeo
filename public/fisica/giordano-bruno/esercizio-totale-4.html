@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Il Roller Coaster sui Due Giri della Morte con Attrito (Problema 96, Pag. 373) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra fissa invasiva in basso: penna fluttuante attivabile a piacere
+   - Foglio Bianco con Pan (✋) e Sposta/Seleziona (🖐️)
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown su fondo bianco puro
+   - Tracciato doppio loop (giri della morte), punti A e B, lavoro di attrito -3.3 * 10^5 J
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-point-a: #2563eb;  /* Blu per punto A (43 m, 20 m/s) */
+  --color-point-b: #ea580c;  /* Arancio per punto B (34 m, 17 m/s) */
+  --color-k: #2563eb;        /* Blu per Energia Cinetica K */
+  --color-ug: #16a34a;       /* Verde per Energia Potenziale Gravitazionale U_g */
+  --color-diss: #dc2626;     /* Rosso per Lavoro Resistente / Attrito */
+  --color-tot: #7c3aed;      /* Viola per Energia Meccanica Totale */
+  --color-train: #0284c7;    /* Azzurro coaster */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-point-a: #60a5fa;
+  --color-point-b: #fb923c;
+  --color-k: #60a5fa;
+  --color-ug: #4ade80;
+  --color-diss: #f87171;
+  --color-tot: #a78bfa;
+  --color-train: #38bdf8;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ──────────────── HEADER ──────────────── */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #2563eb;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37,99,235,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.title-container h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-container p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-tool {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-tool:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-tool:hover {
+  background: #1e293b;
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+}
+
+/* ──────────────── LAYOUT PRINCIPALE ──────────────── */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 1750px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ──────────────── AREA CANVAS VETTORIALE ──────────────── */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-toolbar {
+  padding: 8px 14px;
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+body.dark-mode .canvas-toolbar {
+  background: rgba(19, 27, 46, 0.95);
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: var(--bg-canvas);
+  overflow: hidden;
+}
+
+canvas#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+canvas#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+canvas#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* CONTROLLI SIMULAZIONE SOTTO AL CANVAS */
+.sim-controls-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sim {
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-sim:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-sim:hover {
+  background: #1e293b;
+}
+
+.btn-sim-primary {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+}
+
+.sim-state-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.state-tag-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+.state-tag-btn:hover {
+  transform: translateY(-1px);
+}
+.state-tag-btn.tag-a { border-color: var(--color-point-a); color: var(--color-point-a); }
+.state-tag-btn.tag-a:hover, .state-tag-btn.tag-a.active { background: var(--color-point-a); color: white; }
+
+.state-tag-btn.tag-loop { border-color: var(--color-k); color: var(--color-k); }
+.state-tag-btn.tag-loop:hover, .state-tag-btn.tag-loop.active { background: var(--color-k); color: white; }
+
+.state-tag-btn.tag-b { border-color: var(--color-point-b); color: var(--color-point-b); }
+.state-tag-btn.tag-b:hover, .state-tag-btn.tag-b.active { background: var(--color-point-b); color: white; }
+
+/* ──────────────── PANNELLO PASSI DIDATTICI ──────────────── */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 12px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.step-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+body.dark-mode .callout-box {
+  background: #064e3b33;
+  color: #86efac;
+}
+
+.callout-warning {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+}
+body.dark-mode .callout-warning {
+  background: #7f1d1d33;
+  color: #fca5a5;
+}
+
+.callout-info {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-info {
+  background: #1e3a8a33;
+  color: #bfdbfe;
+}
+
+.math-display-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* ──────────────── SLIDERS DINAMICI ──────────────── */
+.params-section {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.param-val {
+  font-family: var(--font-mono);
+  color: #2563eb;
+  font-weight: 700;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  cursor: pointer;
+}
+
+/* ──────────────── FOOTER PASSI DIDATTICI ──────────────── */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 35;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-pill {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.35);
+}
+
+.btn-nav-step {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-nav-step:hover:not(:disabled) {
+  background: #1e293b;
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────── BARRA PENNA LIM FLUTTUANTE TRASCINABILE ──────────────── */
+.lim-floating-bar {
+  position: fixed;
+  top: 80px;
+  right: 25px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.75rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+.lim-drag-handle:active {
+  cursor: grabbing;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+.lim-color-dot:hover {
+  transform: scale(1.15);
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-lim-action:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-lim-action:hover {
+  background: #1e293b;
+}
+
+/* ──────────────── MODALE FOGLIO BIANCO INTERATTIVO ──────────────── */
+.whiteboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+.whiteboard-modal {
+  width: 95vw;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 3px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+body.dark-mode .whiteboard-modal {
+  background: #0f172a;
+}
+.whiteboard-header {
+  padding: 10px 18px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.dark-mode .whiteboard-header {
+  background: #1e293b;
+}
+.whiteboard-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.whiteboard-canvas-wrap {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}
+body.dark-mode .whiteboard-canvas-wrap {
+  background: #0b0f19;
+}
+canvas#wbCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* MODALITÀ SCHERMO INTERO */
+body.is-fullscreen .app-header {
+  padding: 6px 14px;
+}
+body.is-fullscreen .main-container {
+  padding: 10px 14px;
+}
+body.is-fullscreen .canvas-wrapper {
+  height: 540px;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER CON CONTROLLI ════════════════ -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">← Indice Giordano Bruno</a>
+    <span class="school-tag">ISS Giordano Bruno • Seconde</span>
+    <div class="title-container">
+      <h1>🎢 Problema 96: Il Roller Coaster sui Due Giri della Morte con Attrito <span style="font-size: 0.8em; color: var(--text-muted); font-weight: normal;">(Pag. 373)</span></h1>
+      <p>Lavoro resistente delle forze di attrito: \(W_{	ext{attrito}} = E_B - E_A = -3{,}3 	imes 10^5	ext{ J}\)</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Ingrandisci testo LIM">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">🌙 Tema</button>
+    <button class="btn-tool" id="btnOpenWhiteboard" title="Apri Foglio Bianco (W)">📄 Foglio Bianco</button>
+    <button class="btn-tool" id="btnTogglePen" title="Attiva/Disattiva Penna LIM (P)">✏️ Penna LIM</button>
+    <button class="btn-tool btn-tool-primary" id="btnFullscreen" title="Schermo Intero (F)">⛶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- ════════════════ LAYOUT PRINCIPALE ════════════════ -->
+<main class="main-container">
+  
+  <!-- COLONNA SINISTRA: CANVAS FISICO + CONTROLLI SIMULAZIONE -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span>VETTORE FISICO DINAMICO • 3BLUE1BROWN VECTORS</span>
+        <span id="canvasStats">\(m = 2300	ext{ kg} \quad h_A = 43	ext{ m} \quad h_B = 34	ext{ m}\)</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- CONTROLLI SIMULAZIONE INTERATTIVA -->
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">▶ Avvia Corsa</button>
+        <button class="btn-sim" id="btnResetSim">↺ Riposiziona in A</button>
+        <button class="btn-sim" id="btnSlowMo">🐢 Rallentatore</button>
+      </div>
+      <div class="sim-state-tags">
+        <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">Punti notevoli:</span>
+        <button class="state-tag-btn tag-a" id="btnGoA" title="Punto A: hA = 43 m, vA = 20 m/s">Punto A (43 m)</button>
+        <button class="state-tag-btn tag-loop" id="btnGoLoop" title="Giro della morte (Loop 1)">Nel Loop 1</button>
+        <button class="state-tag-btn tag-b" id="btnGoB" title="Punto B: hB = 34 m, vB = 17 m/s">Punto B (34 m)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNA DESTRA: PASSI DIDATTICI ED ESPLORAZIONE -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepContentCard">
+      <!-- Il contenuto didattico viene iniettato dinamicamente via JS in base al passo attivo -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════ FOOTER PASSI DIDATTICI ════════════════ -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">← Passo Precedente</button>
+
+  <div class="step-pills-list">
+    <button class="step-pill active" data-step="1">1</button>
+    <button class="step-pill" data-step="2">2</button>
+    <button class="step-pill" data-step="3">3</button>
+    <button class="step-pill" data-step="4">4</button>
+    <button class="step-pill" data-step="5">5</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Passo Successivo →</button>
+</footer>
+
+<!-- ════════════════ TAVOLOZZA PENNA LIM FLUTTUANTE ════════════════ -->
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>✏️ PENNA LIM</span>
+    <span>⠿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimEraser">🧹 Gomma</button>
+    <button class="btn-lim-action" id="btnLimClear">🗑️ Pulisci</button>
+    <button class="btn-lim-action" id="btnLimClose">✖ Chiudi</button>
+  </div>
+</div>
+
+<!-- ════════════════ MODALE FOGLIO BIANCO ════════════════ -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="whiteboard-modal">
+    <div class="whiteboard-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong style="font-family:var(--font-tech); letter-spacing:1px; color:#2563eb;">📄 FOGLIO BIANCO LIM DIGITALE</strong>
+        <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">Scrivi o disegna liberamente note per la classe</span>
+      </div>
+      <div class="whiteboard-tools">
+        <button class="btn-tool active" id="btnWbToolPen">✏️ Penna</button>
+        <button class="btn-tool" id="btnWbToolEraser">🧹 Gomma</button>
+        <button class="btn-tool" id="btnWbToolPan" title="Trascina foglio (Pan)">✋ Pan</button>
+        <button class="btn-tool" id="btnWbToolSelect" title="Seleziona e sposta tratti">🖐️ Sposta</button>
+        <button class="btn-tool" id="btnWbClear">🗑️ Svuota</button>
+        <button class="btn-tool" id="btnWbClose" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">✖ Chiudi</button>
+      </div>
+    </div>
+    <div class="whiteboard-canvas-wrap">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPT JAVASCRIPT DINAMICO ED ANIMAZIONE ════════════════ -->
+<script>
+/* ──────────────── STATO GLOBALE E PARAMETRI FISICI ──────────────── */
+const STATE = {
+  // Dati Problema 96 (Pag. 373)
+  m: 2300,          // kg (massa treno + passeggeri)
+  hA: 43,           // m (quota punto A)
+  vA: 20,           // m/s (velocità in A)
+  deltaH: 9,        // m (dislivello tra A e B: B è 9 m più in basso)
+  vB: 17,           // m/s (velocità in B)
+  g: 9.8,           // m/s^2
+
+  get hB() {
+    return this.hA - this.deltaH; // 43 - 9 = 34 m
+  },
+
+  // Calcolo energie meccaniche
+  get EA() {
+    return this.m * (this.g * this.hA + 0.5 * this.vA * this.vA); // ~1.429 * 10^6 J
+  },
+  get EB() {
+    return this.m * (this.g * this.hB + 0.5 * this.vB * this.vB); // ~1.099 * 10^6 J
+  },
+  get Wattr() {
+    return this.EB - this.EA; // ~ -3.3 * 10^5 J
+  },
+  get Ediss() {
+    return Math.abs(this.Wattr); // ~3.3 * 10^5 J
+  },
+
+  // Animazione lungo la spline del percorso [0.0 -> 1.0]
+  simProgress: 0.0,
+  isPlaying: false,
+  isSlowMo: false,
+  activeStep: 1,
+  fontSizeLevel: 0
+};
+
+/* ──────────────── DEFINIZIONE DEI 5 PASSI DIDATTICI ──────────────── */
+const STEPS_DATA = {
+  1: {
+    badge: "PASSO 1 DI 5 • ANALISI DEL CIRCUITO",
+    title: "I Due Giri della Morte e le Forze Dissipative",
+    render: () => `
+      <p class="step-description">
+        Il treno di un roller coaster, di massa complessiva <strong>\(m = 2300\text{ kg}\)</strong> con tutti i passeggeri a bordo, deve affrontare due giri della morte consecutivi.
+        Il punto <strong>\(A\)</strong> si trova a <strong>\(h_A = 43\text{ m}\)</strong> dal suolo e il treno vi transita a <strong>\(v_A = 20\text{ m/s}\)</strong>.
+        Dopo aver percorso la ripida discesa e l'anello del primo giro della morte, il treno risale fino al colle intermedio <strong>\(B\)</strong>, posto <strong>\(9\text{ m}\)</strong> più in basso rispetto ad \(A\) (<strong>\(h_B = 34\text{ m}\)</strong>), dove la velocità rilevata è <strong>\(v_B = 17\text{ m/s}\)</strong>.
+      </p>
+
+      <div class="callout-box callout-warning">
+        ⚡ <strong>Teorema dell'Energia Meccanica con Attrito:</strong>
+        <p style="margin-top:6px; line-height:1.5;">
+          A causa dell'attrito radente delle ruote sui binari d'acciaio e della resistenza dell'aria, l'energia meccanica non si conserva.<br>
+          Il lavoro resistente compiuto dalle forze di attrito è uguale alla <strong>variazione dell'energia meccanica totale</strong> tra il punto iniziale e quello finale:
+        </p>
+      </div>
+
+      <div class="math-display-card">
+        $$W_{\text{attrito}} = \Delta E_{\text{mecc}} = E_B - E_A$$
+      </div>
+
+      <div class="callout-box callout-info">
+        💡 <strong>Osservazione LIM:</strong> Clicca sui pulsanti <em>"Punto A"</em>, <em>"Nel Loop 1"</em> e <em>"Punto B"</em> per osservare le diverse fasi del moto sul canvas vettoriale!
+      </div>
+    `
+  },
+
+  2: {
+    badge: "PASSO 2 DI 5 • ENERGIA MECCANICA AL PUNTO A",
+    title: "Calcolo dell'Energia Meccanica Totale in A",
+    render: () => `
+      <p class="step-description">
+        Nel punto <strong>\(A\)</strong> a quota <strong>\(h_A = 43\text{ m}\)</strong>, il treno possiede sia energia potenziale gravitazionale che energia cinetica:
+      </p>
+
+      <div class="math-display-card">
+        $$U_{g,A} = m \cdot g \cdot h_A = 2300\text{ kg} \cdot 9{,}8\text{ m/s}^2 \cdot 43\text{ m} = \mathbf{969\,220\text{ J}}$$
+        $$K_A = \frac{1}{2} m v_A^2 = \frac{1}{2} \cdot 2300\text{ kg} \cdot (20\text{ m/s})^2 = 1150 \cdot 400 = \mathbf{460\,000\text{ J}}$$
+        $$E_A = U_{g,A} + K_A = 969\,220\text{ J} + 460\,000\text{ J} = \mathbf{1\,429\,220\text{ J}}$$
+        $$E_A \approx \mathbf{1{,}43 \times 10^6\text{ J}}$$
+      </div>
+
+      <div class="callout-box">
+        🎢 <strong>Significato:</strong> All'ingresso del percorso, il treno dispone di oltre <strong>1,4 milioni di Joule</strong> di energia meccanica totale!
+      </div>
+    `
+  },
+
+  3: {
+    badge: "PASSO 3 DI 5 • ENERGIA MECCANICA AL PUNTO B",
+    title: "Calcolo dell'Energia Meccanica Totale in B",
+    render: () => `
+      <p class="step-description">
+        Il punto <strong>\(B\)</strong> si trova \(9\text{ m}\) più in basso rispetto ad \(A\):
+        $$\mathbf{h_B = 43\text{ m} - 9\text{ m} = 34\text{ m}}$$
+        La velocità misurata in questo punto è <strong>\(v_B = 17\text{ m/s}\)</strong>:
+      </p>
+
+      <div class="math-display-card">
+        $$U_{g,B} = m \cdot g \cdot h_B = 2300\text{ kg} \cdot 9{,}8\text{ m/s}^2 \cdot 34\text{ m} = \mathbf{766\,360\text{ J}}$$
+        $$K_B = \frac{1}{2} m v_B^2 = \frac{1}{2} \cdot 2300\text{ kg} \cdot (17\text{ m/s})^2 = 1150 \cdot 289 = \mathbf{332\,350\text{ J}}$$
+        $$E_B = U_{g,B} + K_B = 766\,360\text{ J} + 332\,350\text{ J} = \mathbf{1\,098\,710\text{ J}}$$
+        $$E_B \approx \mathbf{1{,}10 \times 10^6\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-info">
+        🔍 <strong>Perdita Evidente:</strong> L'energia meccanica in \(B\) (\(1{,}10 \times 10^6\text{ J}\)) è nettamente inferiore a quella in \(A\) (\(1{,}43 \times 10^6\text{ J}\)).
+      </div>
+    `
+  },
+
+  4: {
+    badge: "PASSO 4 DI 5 • RISOLUZIONE QUESITO",
+    title: "Calcolo del Lavoro delle Forze di Attrito",
+    render: () => `
+      <p class="step-description">
+        Applichiamo il teorema dell'energia meccanica per calcolare il lavoro resistente compiuto dalle forze di attrito nel tratto tra \(A\) e \(B\):
+      </p>
+
+      <div class="math-display-card">
+        $$W_{\text{attrito}} = E_B - E_A = 1\,098\,710\text{ J} - 1\,429\,220\text{ J} = \mathbf{-330\,510\text{ J}}$$
+        $$W_{\text{attrito}} \approx \mathbf{-3{,}3 \times 10^5\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-warning">
+        🎯 <strong>Risultato Libro:</strong> Il lavoro resistente compiuto dalle forze di attrito è <strong>\(-3{,}3 \times 10^5\text{ J}\)</strong>!
+      </div>
+
+      <div class="callout-box" style="margin-top:10px;">
+        💡 <strong>Perché il segno è negativo?</strong><br>
+        Le forze di attrito hanno sempre verso opposto a quello dello spostamento instantaneo (\(\cos 180^\circ = -1\)), sottraendo continuamente energia al veicolo e trasformandola in calore per surriscaldamento delle ruote e dei binari.
+      </div>
+    `
+  },
+
+  5: {
+    badge: "PASSO 5 DI 5 • LABORATORIO INTERATTIVO",
+    title: "Esplora i Parametri e Simula il Percorso",
+    render: () => `
+      <p class="step-description">
+        Modifica la velocità in \(A\), il dislivello tra i punti o la massa del treno.
+        Verifica come cambiano le energie e il lavoro resistente dissipato lungo il primo anello della morte!
+      </p>
+
+      <div class="params-section">
+        <div class="param-row">
+          <div class="param-header">
+            <span>Velocità in A \(v_A\):</span>
+            <span class="param-val" id="valVA">${STATE.vA} m/s</span>
+          </div>
+          <input type="range" id="sliderVA" min="15" max="28" step="1" value="${STATE.vA}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Velocità in B \(v_B\):</span>
+            <span class="param-val" id="valVB">${STATE.vB} m/s</span>
+          </div>
+          <input type="range" id="sliderVB" min="10" max="22" step="1" value="${STATE.vB}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Dislivello quota \(\Delta h\) (A - B):</span>
+            <span class="param-val" id="valDeltaH">${STATE.deltaH} m</span>
+          </div>
+          <input type="range" id="sliderDeltaH" min="3" max="18" step="1" value="${STATE.deltaH}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Massa treno \(m\):</span>
+            <span class="param-val" id="valM">${STATE.m} kg</span>
+          </div>
+          <input type="range" id="sliderM" min="1000" max="4000" step="100" value="${STATE.m}">
+        </div>
+      </div>
+
+      <div class="callout-box" id="liveResultsBox" style="margin-top:10px;">
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia in A: <strong>\(E_A = ${(STATE.EA / 1e6).toFixed(3)} \times 10^6\text{ J}\)</strong><br>
+        Energia in B: <strong>\(E_B = ${(STATE.EB / 1e6).toFixed(3)} \times 10^6\text{ J}\)</strong><br>
+        Lavoro attrito: <strong>\(W_{\text{attr}} = ${(STATE.Wattr / 1e5).toFixed(1)} \times 10^5\text{ J}\)</strong>
+      </div>
+    `
+  }
+};
+
+/* ──────────────── GESTORE PASSI DIDATTICI ──────────────── */
+function setStep(stepNum) {
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 5) stepNum = 5;
+  STATE.activeStep = stepNum;
+
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    const s = parseInt(pill.getAttribute('data-step'), 10);
+    pill.classList.toggle('active', s === stepNum);
+  });
+
+  document.getElementById('btnPrevStep').disabled = (stepNum === 1);
+  document.getElementById('btnNextStep').disabled = (stepNum === 5);
+
+  const card = document.getElementById('stepContentCard');
+  const data = STEPS_DATA[stepNum];
+  card.innerHTML = `
+    <div class="step-header">
+      <span class="step-badge">${data.badge}</span>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">Passo ${stepNum} di 5</span>
+    </div>
+    <h2 class="step-title">${data.title}</h2>
+    ${data.render()}
+  `;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(card, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\(', right: '\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+
+  if (stepNum === 5) {
+    attachStep5Listeners();
+  }
+
+  if (stepNum === 1 || stepNum === 2) {
+    STATE.simProgress = 0.0; // In A
+  } else if (stepNum === 3 || stepNum === 4) {
+    STATE.simProgress = 0.65; // In B
+  }
+}
+
+function prevStep() { setStep(STATE.activeStep - 1); }
+function nextStep() { setStep(STATE.activeStep + 1); }
+
+function attachStep5Listeners() {
+  const sVA = document.getElementById('sliderVA');
+  const sVB = document.getElementById('sliderVB');
+  const sDH = document.getElementById('sliderDeltaH');
+  const sM  = document.getElementById('sliderM');
+
+  function update() {
+    STATE.vA = parseFloat(sVA.value);
+    STATE.vB = parseFloat(sVB.value);
+    STATE.deltaH = parseFloat(sDH.value);
+    STATE.m  = parseFloat(sM.value);
+
+    document.getElementById('valVA').textContent = STATE.vA + ' m/s';
+    document.getElementById('valVB').textContent = STATE.vB + ' m/s';
+    document.getElementById('valDeltaH').textContent = STATE.deltaH + ' m';
+    document.getElementById('valM').textContent = STATE.m + ' kg';
+
+    const box = document.getElementById('liveResultsBox');
+    if (box) {
+      box.innerHTML = `
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia in A: <strong>\(E_A = ${(STATE.EA / 1e6).toFixed(3)} \times 10^6\text{ J}\)</strong><br>
+        Energia in B: <strong>\(E_B = ${(STATE.EB / 1e6).toFixed(3)} \times 10^6\text{ J}\)</strong><br>
+        Lavoro attrito: <strong>\(W_{\text{attr}} = ${(STATE.Wattr / 1e5).toFixed(1)} \times 10^5\text{ J}\)</strong>
+      `;
+      if (window.renderMathInElement) {
+        renderMathInElement(box, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\(', right: '\)', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const stats = document.getElementById('canvasStats');
+    if (stats) {
+      stats.innerHTML = `\(m = ${STATE.m}\text{ kg} \quad h_A = ${STATE.hA}\text{ m} \quad h_B = ${STATE.hB}\text{ m}\)`;
+      if (window.renderMathInElement) {
+        renderMathInElement(stats, {
+          delimiters: [{left: '\(', right: '\)', display: false}],
+          throwOnError: false
+        });
+      }
+    }
+  }
+
+  if (sVA) sVA.addEventListener('input', update);
+  if (sVB) sVB.addEventListener('input', update);
+  if (sDH) sDH.addEventListener('input', update);
+  if (sM)  sM.addEventListener('input', update);
+}
+
+/* ──────────────── VETTORE RENDERER (CANVAS 3BLUE1BROWN) ──────────────── */
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 0;
+    this.height = 0;
+
+    this.lastTime = performance.now();
+    this.sparks = [];
+    this.initLoop();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+
+  initLoop() {
+    const loop = (currentTime) => {
+      const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+      this.lastTime = currentTime;
+
+      this.updatePhysics(dt);
+      this.render();
+
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  updatePhysics(dt) {
+    if (!STATE.isPlaying) return;
+
+    const speed = STATE.isSlowMo ? 0.08 : 0.22;
+    STATE.simProgress += dt * speed;
+
+    if (STATE.simProgress > 1.05) {
+      STATE.simProgress = 0.0;
+    }
+  }
+
+  // Geometria del tracciato a doppio giro della morte (stile figura di pag. 373)
+  // p in [0.0, 1.0]:
+  // 0.00 -> 0.15: Rampa iniziale colle A (quota 43 m)
+  // 0.15 -> 0.48: Discesa e Primo Giro della Morte (Loop 1)
+  // 0.48 -> 0.65: Risalita al colle intermedio B (quota 34 m)
+  // 0.65 -> 0.95: Secondo Giro della Morte (Loop 2)
+  // 0.95 -> 1.00: Arrivo alla stazione finale
+  getTrackPoint(p) {
+    const W = this.width;
+    const H = this.height;
+
+    const floorY = H * 0.85;
+    const scaleY = (H * 0.65) / 50; // pixel per metro
+
+    const yA = floorY - STATE.hA * scaleY;
+    const yB = floorY - STATE.hB * scaleY;
+
+    // Coordinate chiave
+    const xA = W * 0.10;
+    const loop1CenterX = W * 0.35;
+    const loop1Radius = W * 0.11;
+    const loop1CenterY = floorY - loop1Radius - 8;
+
+    const xB = W * 0.58;
+    const loop2CenterX = W * 0.77;
+    const loop2Radius = W * 0.09;
+    const loop2CenterY = floorY - loop2Radius - 8;
+
+    let x = 0, y = 0, angle = 0, currentH = 0, currentV = 0, isLooping = false;
+
+    if (p <= 0.15) {
+      // Tratto 1: Partenza da A verso l'imbocco del primo loop
+      const u = p / 0.15;
+      x = xA + u * (loop1CenterX - loop1Radius - xA);
+      // Discesa
+      y = yA + u * u * (floorY - yA);
+      currentH = STATE.hA - u * u * STATE.hA;
+      currentV = STATE.vA + u * 15;
+      angle = Math.atan2(floorY - yA, loop1CenterX - loop1Radius - xA) * u;
+    } else if (p <= 0.48) {
+      // Tratto 2: Giro della morte 1 (cerchio antiorario)
+      const u = (p - 0.15) / 0.33; // [0, 1]
+      // Angolo da -PI/2 (fondo) a 3*PI/2 (giro completo)
+      const theta = -Math.PI * 0.5 + u * Math.PI * 2;
+      x = loop1CenterX + loop1Radius * Math.sin(theta);
+      y = loop1CenterY - loop1Radius * Math.cos(theta);
+      currentH = (floorY - y) / scaleY;
+      currentV = Math.max(12, 32 - (currentH / 43) * 16);
+      angle = theta;
+      isLooping = true;
+    } else if (p <= 0.65) {
+      // Tratto 3: Uscita dal loop 1 e risalita al colle B
+      const u = (p - 0.48) / 0.17;
+      x = (loop1CenterX + loop1Radius) + u * (xB - (loop1CenterX + loop1Radius));
+      // Risalita sigmoidale
+      const smooth = u * u * (3 - 2 * u);
+      y = floorY - smooth * (floorY - yB);
+      currentH = smooth * STATE.hB;
+      currentV = STATE.vB + (1 - u) * 8;
+      angle = -Math.atan2(floorY - yB, xB - (loop1CenterX + loop1Radius)) * (1 - u);
+    } else if (p <= 0.95) {
+      // Tratto 4: Secondo giro della morte (Loop 2)
+      const u = (p - 0.65) / 0.30;
+      const theta = -Math.PI * 0.5 + u * Math.PI * 2;
+      x = loop2CenterX + loop2Radius * Math.sin(theta);
+      y = loop2CenterY - loop2Radius * Math.cos(theta);
+      currentH = (floorY - y) / scaleY;
+      currentV = Math.max(10, 26 - (currentH / 34) * 14);
+      angle = theta;
+      isLooping = true;
+    } else {
+      // Tratto 5: Uscita finale
+      const u = (p - 0.95) / 0.05;
+      x = (loop2CenterX + loop2Radius) + u * (W * 0.95 - (loop2CenterX + loop2Radius));
+      y = floorY;
+      currentH = 0;
+      currentV = 14;
+      angle = 0;
+    }
+
+    return {
+      x, y, angle, currentH, currentV, isLooping,
+      floorY, yA, yB, xA, xB, loop1CenterX, loop1CenterY, loop1Radius,
+      loop2CenterX, loop2CenterY, loop2Radius
+    };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const W = this.width;
+    const H = this.height;
+    if (W === 0 || H === 0) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const pt = this.getTrackPoint(STATE.simProgress);
+
+    // Scintille di attrito nei loop
+    if (STATE.isPlaying && pt.isLooping && Math.random() < 0.45) {
+      this.sparks.push({
+        x: pt.x + (Math.random() - 0.5) * 8,
+        y: pt.y + (Math.random() - 0.5) * 8,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() - 0.5) * 3,
+        life: 1.0
+      });
+    }
+
+    // 1. Griglia 3Blue1Brown
+    this.drawGrid(ctx, W, H);
+
+    // 2. Terreno e tralicci di sostegno metallici
+    this.drawSupports(ctx, pt, W, H);
+
+    // 3. Binari del doppio loop
+    this.drawTrack(ctx, pt, W);
+
+    // 4. Quote dimensionali A (43 m), B (34 m) e dislivello 9 m
+    this.drawMarkersAndDimensions(ctx, pt);
+
+    // 5. Scintille attrito
+    this.drawSparks(ctx);
+
+    // 6. Treno articolato del roller coaster con passeggeri
+    this.drawTrain(ctx, pt);
+
+    // 7. Bilancio energetico e lavoro resistente di attrito
+    this.drawEnergyBars(ctx, pt, W, H);
+  }
+
+  drawGrid(ctx, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.04)';
+    ctx.lineWidth = 1;
+    const step = 30;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawSupports(ctx, pt, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Suolo
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(0, pt.floorY, W, H - pt.floorY);
+
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, pt.floorY);
+    ctx.lineTo(W, pt.floorY);
+    ctx.stroke();
+
+    // Tralicci d'acciaio sotto colle A e B
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 2;
+
+    const drawTruss = (x, topY) => {
+      ctx.beginPath();
+      ctx.moveTo(x - 12, pt.floorY);
+      ctx.lineTo(x, topY);
+      ctx.lineTo(x + 12, pt.floorY);
+      ctx.stroke();
+    };
+
+    drawTruss(pt.xA, pt.yA);
+    drawTruss(pt.xB, pt.yB);
+    drawTruss(pt.loop1CenterX, pt.loop1CenterY + pt.loop1Radius);
+    drawTruss(pt.loop2CenterX, pt.loop2CenterY + pt.loop2Radius);
+
+    ctx.restore();
+  }
+
+  drawTrack(ctx, pt, W) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Disegna campionando la curva per un tracciato liscio e continuo
+    ctx.strokeStyle = isDark ? '#64748b' : '#475569';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    for (let s = 0; s <= 1.0; s += 0.005) {
+      const p = this.getTrackPoint(s);
+      if (s === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+
+    // Secondo binario parallelo sottile
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let s = 0; s <= 1.0; s += 0.005) {
+      const p = this.getTrackPoint(s);
+      if (s === 0) ctx.moveTo(p.x, p.y + 3);
+      else ctx.lineTo(p.x, p.y + 3);
+    }
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  drawMarkersAndDimensions(ctx, pt) {
+    ctx.save();
+
+    // Marcatore A (43 m)
+    ctx.fillStyle = '#2563eb';
+    ctx.beginPath();
+    ctx.arc(pt.xA, pt.yA, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = '800 13px "Inter", sans-serif';
+    ctx.fillStyle = '#2563eb';
+    ctx.fillText('Punto A', pt.xA - 22, pt.yA - 16);
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.fillText(`h = 43 m | v = 20 m/s`, pt.xA - 45, pt.yA - 2);
+
+    // Marcatore B (34 m)
+    ctx.fillStyle = '#ea580c';
+    ctx.beginPath();
+    ctx.arc(pt.xB, pt.yB, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = '800 13px "Inter", sans-serif';
+    ctx.fillStyle = '#ea580c';
+    ctx.fillText('Punto B', pt.xB - 22, pt.yB - 16);
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.fillText(`h = 34 m | v = 17 m/s`, pt.xB - 45, pt.yB - 2);
+
+    // Dislivello 9 m tra A e B
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+
+    ctx.beginPath();
+    ctx.moveTo(pt.xA + 10, pt.yA);
+    ctx.lineTo(pt.xB + 50, pt.yA);
+    ctx.moveTo(pt.xB + 10, pt.yB);
+    ctx.lineTo(pt.xB + 50, pt.yB);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(pt.xB + 45, pt.yA);
+    ctx.lineTo(pt.xB + 45, pt.yB);
+    ctx.stroke();
+    this.drawArrowHead(ctx, pt.xB + 45, pt.yA, -Math.PI / 2, 5, '#dc2626');
+    this.drawArrowHead(ctx, pt.xB + 45, pt.yB, Math.PI / 2, 5, '#dc2626');
+
+    ctx.font = '700 12px "Inter", sans-serif';
+    ctx.fillStyle = '#dc2626';
+    ctx.fillText('9 m', pt.xB + 52, (pt.yA + pt.yB) / 2 + 4);
+
+    ctx.restore();
+  }
+
+  drawSparks(ctx) {
+    ctx.save();
+    for (let i = this.sparks.length - 1; i >= 0; i--) {
+      const s = this.sparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life -= 0.05;
+
+      if (s.life <= 0) {
+        this.sparks.splice(i, 1);
+        continue;
+      }
+
+      ctx.fillStyle = `rgba(234, 88, 12, ${s.life})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 2.5 * s.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawTrain(ctx, pt) {
+    ctx.save();
+    ctx.translate(pt.x, pt.y);
+    ctx.rotate(pt.angle);
+
+    const carW = 28;
+    const carH = 12;
+
+    // Carrozza principale blu
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.roundRect(-carW * 0.5, -carH - 4, carW, carH, 4);
+    ctx.fill();
+
+    // Parabrezza
+    ctx.fillStyle = '#93c5fd';
+    ctx.fillRect(carW * 0.2, -carH - 2, 6, 6);
+
+    // Sagome passeggeri stilizzate
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(-carW * 0.2, -carH - 6, 2.5, 0, Math.PI * 2);
+    ctx.arc(carW * 0.05, -carH - 6, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ruote sui binari
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(-carW * 0.3, -2, 3.5, 0, Math.PI * 2);
+    ctx.arc(carW * 0.3, -2, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Vettore velocità verde
+    if (pt.currentV > 1) {
+      const vScale = pt.currentV * 1.5;
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(carW * 0.5 + 4, -carH * 0.5);
+      ctx.lineTo(carW * 0.5 + 4 + vScale, -carH * 0.5);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, carW * 0.5 + 4 + vScale, -carH * 0.5, 0, 6, '#16a34a');
+    }
+
+    ctx.restore();
+  }
+
+  drawEnergyBars(ctx, pt, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Calcolo bilancio energetico
+    const Ug = STATE.m * STATE.g * pt.currentH;
+    const K = 0.5 * STATE.m * pt.currentV * pt.currentV;
+    const Ediss = (STATE.simProgress >= 0.65) ? STATE.Ediss : (STATE.simProgress / 0.65) * STATE.Ediss;
+    const Etot = Ug + K + Ediss;
+
+    const panelX = W - 305;
+    const panelY = 16;
+    const panelW = 285;
+    const panelH = 120;
+
+    ctx.fillStyle = isDark ? 'rgba(19, 27, 46, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = '700 11px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('BILANCIO MECCANICO & LAVORO ATTRITO', panelX + 12, panelY + 18);
+
+    const maxE = 1.5e6; // 1.5 MJ scala
+    const barMaxW = 140;
+    const startBarsX = panelX + 50;
+
+    const drawSingleBar = (yOffset, label, val, color) => {
+      const bY = panelY + yOffset;
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.fillText(label, panelX + 12, bY + 11);
+
+      ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, barMaxW, 12, 3);
+      ctx.fill();
+
+      const w = Math.max(0, Math.min(barMaxW, (val / maxE) * barMaxW));
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, w, 12, 3);
+      ctx.fill();
+
+      ctx.font = '600 10.5px "IBM Plex Mono", monospace';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      const mVal = (val / 1e5).toFixed(1) + ' · 10⁵ J';
+      ctx.fillText(mVal, startBarsX + barMaxW + 6, bY + 10);
+    };
+
+    drawSingleBar(28, 'Ug', Ug, '#16a34a');
+    drawSingleBar(48, 'K', K, '#2563eb');
+    drawSingleBar(68, '|W_att|', Ediss, '#dc2626');
+    drawSingleBar(90, 'Etot', Etot, '#7c3aed');
+
+    ctx.restore();
+  }
+
+  drawArrowHead(ctx, x, y, angle, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-size, -size * 0.5);
+    ctx.lineTo(-size, size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ──────────────── PENNA LIM FLUTTUANTE ──────────────── */
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.active = false;
+    this.color = '#dc2626';
+    this.lineWidth = 5;
+    this.isDrawing = false;
+    this.strokes = [];
+    this.currentStroke = null;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const startDraw = (e) => {
+      if (!this.active) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      const pos = getPos(e);
+      this.currentStroke = { color: this.color, width: this.lineWidth, points: [pos] };
+      this.strokes.push(this.currentStroke);
+      this.drawSegment(pos, pos);
+    };
+
+    const moveDraw = (e) => {
+      if (!this.active || !this.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      const pts = this.currentStroke.points;
+      const lastPos = pts[pts.length - 1];
+      pts.push(pos);
+      this.drawSegment(lastPos, pos);
+    };
+
+    const endDraw = () => {
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+
+    this.canvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', moveDraw, { passive: false });
+    window.addEventListener('touchend', endDraw);
+  }
+
+  drawSegment(p1, p2) {
+    this.ctx.strokeStyle = this.currentStroke.color;
+    this.ctx.lineWidth = this.currentStroke.width;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.beginPath();
+    this.ctx.moveTo(p1.x, p1.y);
+    this.ctx.lineTo(p2.x, p2.y);
+    this.ctx.stroke();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.strokeStyle = stroke.color;
+      this.ctx.lineWidth = stroke.width;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+/* ──────────────── FOGLIO BIANCO DIGITALE ──────────────── */
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 5;
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        screenX: cx - rect.left,
+        screenY: cy - rect.top,
+        worldX: cx - rect.left - this.panX,
+        worldY: cy - rect.top - this.panY
+      };
+    };
+
+    const onPointerDown = (e) => {
+      const pos = getPos(e);
+
+      if (this.tool === 'pan') {
+        this.isPanning = true;
+        this.panStartX = pos.screenX - this.panX;
+        this.panStartY = pos.screenY - this.panY;
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.hitTestStroke(pos.worldX, pos.worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = pos.worldX;
+          this.dragStartY = pos.worldY;
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        points: [{ x: pos.worldX, y: pos.worldY }]
+      };
+      this.strokes.push(this.currentStroke);
+      this.redraw();
+    };
+
+    const onPointerMove = (e) => {
+      const pos = getPos(e);
+
+      if (this.isPanning) {
+        this.panX = pos.screenX - this.panStartX;
+        this.panY = pos.screenY - this.panStartY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = pos.worldX - this.dragStartX;
+        const dy = pos.worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = pos.worldX;
+        this.dragStartY = pos.worldY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDrawing && this.currentStroke) {
+        this.currentStroke.points.push({ x: pos.worldX, y: pos.worldY });
+        this.redraw();
+      }
+    };
+
+    const onPointerUp = () => {
+      this.isPanning = false;
+      this.isDraggingStroke = false;
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    this.canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  hitTestStroke(wx, wy) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const stroke = this.strokes[i];
+      for (const p of stroke.points) {
+        const dist = Math.hypot(p.x - wx, p.y - wy);
+        if (dist < 15) return stroke;
+      }
+    }
+    return null;
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.save();
+      this.ctx.strokeStyle = (stroke.tool === 'eraser') ? '#ffffff' : stroke.color;
+      this.ctx.lineWidth = stroke.size;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+
+      if (stroke === this.selectedStroke) {
+        this.ctx.strokeStyle = '#2563eb';
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.stroke();
+      }
+      this.ctx.restore();
+    }
+
+    this.ctx.restore();
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+/* ──────────────── GESTIONE EVENTI GLOBALI ──────────────── */
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  limPen.active = !limPen.active;
+  document.getElementById('limPenCanvas').classList.toggle('active', limPen.active);
+  document.getElementById('btnTogglePen').classList.toggle('active', limPen.active);
+  document.getElementById('limFloatingBar').classList.toggle('show', limPen.active);
+}
+
+function openWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.add('show');
+  setTimeout(() => whiteboard.resize(), 50);
+}
+
+function closeWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.remove('show');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function cycleFontSize() {
+  STATE.fontSizeLevel = (STATE.fontSizeLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const btn = document.getElementById('btnScaleFont');
+  if (STATE.fontSizeLevel === 1) {
+    document.body.classList.add('text-scale-1');
+    btn.textContent = 'A++ Testo';
+  } else if (STATE.fontSizeLevel === 2) {
+    document.body.classList.add('text-scale-2');
+    btn.textContent = 'A Standard';
+  } else {
+    btn.textContent = 'A+ Testo';
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('btnToggleDark').textContent = isDark ? '☀️ Chiaro' : '🌙 Tema';
+}
+
+/* ──────────────── INIZIALIZZAZIONE DOM ──────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  document.getElementById('btnTogglePen').addEventListener('click', togglePenMode);
+  document.getElementById('btnOpenWhiteboard').addEventListener('click', openWhiteboard);
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+  document.getElementById('btnScaleFont').addEventListener('click', cycleFontSize);
+  document.getElementById('btnToggleDark').addEventListener('click', toggleDarkMode);
+
+  document.getElementById('btnPrevStep').addEventListener('click', prevStep);
+  document.getElementById('btnNextStep').addEventListener('click', nextStep);
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const step = parseInt(e.target.getAttribute('data-step'), 10);
+      setStep(step);
+    });
+  });
+
+  const btnPlay = document.getElementById('btnPlayPause');
+  btnPlay.addEventListener('click', () => {
+    STATE.isPlaying = !STATE.isPlaying;
+    btnPlay.textContent = STATE.isPlaying ? '⏸ Sospendi' : '▶ Avvia Corsa';
+  });
+
+  document.getElementById('btnResetSim').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Corsa';
+  });
+
+  const btnSlow = document.getElementById('btnSlowMo');
+  btnSlow.addEventListener('click', () => {
+    STATE.isSlowMo = !STATE.isSlowMo;
+    btnSlow.classList.toggle('active', STATE.isSlowMo);
+    btnSlow.textContent = STATE.isSlowMo ? '🐇 Normale' : '🐢 Rallentatore';
+  });
+
+  document.getElementById('btnGoA').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Corsa';
+  });
+  document.getElementById('btnGoLoop').addEventListener('click', () => {
+    STATE.simProgress = 0.32;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Corsa';
+  });
+  document.getElementById('btnGoB').addEventListener('click', () => {
+    STATE.simProgress = 0.65;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Corsa';
+  });
+
+  document.querySelectorAll('.lim-color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+      e.target.classList.add('active');
+      limPen.color = e.target.getAttribute('data-color');
+      limPen.lineWidth = 5;
+    });
+  });
+
+  document.getElementById('btnLimEraser').addEventListener('click', () => {
+    limPen.color = document.body.classList.contains('dark-mode') ? '#0f172a' : '#ffffff';
+    limPen.lineWidth = 20;
+  });
+
+  document.getElementById('btnLimClear').addEventListener('click', () => limPen.clear());
+  document.getElementById('btnLimClose').addEventListener('click', togglePenMode);
+
+  // Floating LIM bar drag
+  const bar = document.getElementById('limFloatingBar');
+  const handle = document.getElementById('limDragHandle');
+  let isDraggingBar = false;
+  let barStartX = 0, barStartY = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    isDraggingBar = true;
+    barStartX = e.clientX - bar.offsetLeft;
+    barStartY = e.clientY - bar.offsetTop;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingBar) return;
+    bar.style.left = (e.clientX - barStartX) + 'px';
+    bar.style.top = (e.clientY - barStartY) + 'px';
+    bar.style.right = 'auto';
+  });
+  window.addEventListener('mouseup', () => { isDraggingBar = false; });
+
+  // Whiteboard buttons
+  document.getElementById('btnWbClose').addEventListener('click', closeWhiteboard);
+  document.getElementById('btnWbClear').addEventListener('click', () => whiteboard.clear());
+  document.getElementById('btnWbToolPen').addEventListener('click', (e) => {
+    whiteboard.tool = 'pen';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolEraser').addEventListener('click', (e) => {
+    whiteboard.tool = 'eraser';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolPan').addEventListener('click', (e) => {
+    whiteboard.tool = 'pan';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolSelect').addEventListener('click', (e) => {
+    whiteboard.tool = 'select';
+    setWbActiveTool(e.target);
+  });
+
+  function setWbActiveTool(btn) {
+    ['btnWbToolPen', 'btnWbToolEraser', 'btnWbToolPan', 'btnWbToolSelect'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    btn.classList.add('active');
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toUpperCase();
+    if (key === 'ARROWLEFT') prevStep();
+    if (key === 'ARROWRIGHT') nextStep();
+    if (key === 'P') togglePenMode();
+    if (key === 'W') {
+      const ov = document.getElementById('whiteboardOverlay');
+      if (ov.classList.contains('show')) closeWhiteboard();
+      else openWhiteboard();
+    }
+    if (key === 'F') toggleFullscreen();
+    if (key === 'ESCAPE') {
+      closeWhiteboard();
+      if (limPen.active) togglePenMode();
+    }
+  });
+
+  setStep(1);
+});
+</script>
+</body>
+</html>

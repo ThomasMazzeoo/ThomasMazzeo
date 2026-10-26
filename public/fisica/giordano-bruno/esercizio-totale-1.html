@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Il Rimbalzo del Pallone da Basket e la Dissipazione (Problema 82, Pag. 372) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra fissa invasiva in basso: penna fluttuante attivabile a piacere
+   - Foglio Bianco con Pan (✋) e Sposta/Seleziona (🖐️)
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown su fondo bianco puro
+   - Traiettoria stroboscopica, quota 1 (1.30 m), quota 2 (0.80 m) e bilancio energetico
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-k: #2563eb;       /* Blu per Energia Cinetica K */
+  --color-ug: #16a34a;      /* Verde per Energia Potenziale Gravitazionale U_g */
+  --color-diss: #dc2626;    /* Rosso per Energia Dissipata / Calore */
+  --color-ball: #ea580c;    /* Arancio classico pallone da basket */
+  --color-tot: #7c3aed;     /* Viola per Energia Meccanica Totale */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-k: #60a5fa;
+  --color-ug: #4ade80;
+  --color-diss: #f87171;
+  --color-ball: #fb923c;
+  --color-tot: #a78bfa;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ──────────────── HEADER ──────────────── */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #2563eb;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37,99,235,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.title-container h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-container p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-tool {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-tool:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-tool:hover {
+  background: #1e293b;
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+}
+
+/* ──────────────── LAYOUT PRINCIPALE ──────────────── */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 1750px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ──────────────── AREA CANVAS VETTORIALE ──────────────── */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-toolbar {
+  padding: 8px 14px;
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+body.dark-mode .canvas-toolbar {
+  background: rgba(19, 27, 46, 0.95);
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: var(--bg-canvas);
+  overflow: hidden;
+}
+
+canvas#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+canvas#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+canvas#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* CONTROLLI SIMULAZIONE SOTTO AL CANVAS */
+.sim-controls-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sim {
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-sim:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-sim:hover {
+  background: #1e293b;
+}
+
+.btn-sim-primary {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+}
+
+.sim-state-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.state-tag-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+.state-tag-btn:hover {
+  transform: translateY(-1px);
+}
+.state-tag-btn.tag-1 { border-color: var(--color-ug); color: var(--color-ug); }
+.state-tag-btn.tag-1:hover, .state-tag-btn.tag-1.active { background: var(--color-ug); color: white; }
+
+.state-tag-btn.tag-ground { border-color: var(--color-k); color: var(--color-k); }
+.state-tag-btn.tag-ground:hover, .state-tag-btn.tag-ground.active { background: var(--color-k); color: white; }
+
+.state-tag-btn.tag-2 { border-color: var(--color-diss); color: var(--color-diss); }
+.state-tag-btn.tag-2:hover, .state-tag-btn.tag-2.active { background: var(--color-diss); color: white; }
+
+/* ──────────────── PANNELLO PASSI DIDATTICI ──────────────── */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 12px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.step-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+body.dark-mode .callout-box {
+  background: #064e3b33;
+  color: #86efac;
+}
+
+.callout-warning {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+}
+body.dark-mode .callout-warning {
+  background: #7f1d1d33;
+  color: #fca5a5;
+}
+
+.callout-info {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-info {
+  background: #1e3a8a33;
+  color: #bfdbfe;
+}
+
+.math-display-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* ──────────────── SLIDERS DINAMICI ──────────────── */
+.params-section {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.param-val {
+  font-family: var(--font-mono);
+  color: #2563eb;
+  font-weight: 700;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  cursor: pointer;
+}
+
+/* ──────────────── FOOTER PASSI DIDATTICI ──────────────── */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 35;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-pill {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.35);
+}
+
+.btn-nav-step {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-nav-step:hover:not(:disabled) {
+  background: #1e293b;
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────── BARRA PENNA LIM FLUTTUANTE TRASCINABILE ──────────────── */
+.lim-floating-bar {
+  position: fixed;
+  top: 80px;
+  right: 25px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.75rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+.lim-drag-handle:active {
+  cursor: grabbing;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+.lim-color-dot:hover {
+  transform: scale(1.15);
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-lim-action:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-lim-action:hover {
+  background: #1e293b;
+}
+
+/* ──────────────── MODALE FOGLIO BIANCO INTERATTIVO ──────────────── */
+.whiteboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+.whiteboard-modal {
+  width: 95vw;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 3px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+body.dark-mode .whiteboard-modal {
+  background: #0f172a;
+}
+.whiteboard-header {
+  padding: 10px 18px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.dark-mode .whiteboard-header {
+  background: #1e293b;
+}
+.whiteboard-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.whiteboard-canvas-wrap {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}
+body.dark-mode .whiteboard-canvas-wrap {
+  background: #0b0f19;
+}
+canvas#wbCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* MODALITÀ SCHERMO INTERO */
+body.is-fullscreen .app-header {
+  padding: 6px 14px;
+}
+body.is-fullscreen .main-container {
+  padding: 10px 14px;
+}
+body.is-fullscreen .canvas-wrapper {
+  height: 540px;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER CON CONTROLLI ════════════════ -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">← Indice Giordano Bruno</a>
+    <span class="school-tag">ISS Giordano Bruno • Seconde</span>
+    <div class="title-container">
+      <h1>🏀 Problema 82: Il Rimbalzo del Pallone da Basket e la Dissipazione <span style="font-size: 0.8em; color: var(--text-muted); font-weight: normal;">(Pag. 372)</span></h1>
+      <p>L'energia totale e le forze non conservative: \(\Delta E_{	ext{mecc}} = W_{	ext{nc}} = -E_{	ext{diss}}\)</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Ingrandisci testo LIM">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">🌙 Tema</button>
+    <button class="btn-tool" id="btnOpenWhiteboard" title="Apri Foglio Bianco (W)">📄 Foglio Bianco</button>
+    <button class="btn-tool" id="btnTogglePen" title="Attiva/Disattiva Penna LIM (P)">✏️ Penna LIM</button>
+    <button class="btn-tool btn-tool-primary" id="btnFullscreen" title="Schermo Intero (F)">⛶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- ════════════════ LAYOUT PRINCIPALE ════════════════ -->
+<main class="main-container">
+  
+  <!-- COLONNA SINISTRA: CANVAS FISICO + CONTROLLI SIMULAZIONE -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span>VETTORE FISICO DINAMICO • 3BLUE1BROWN VECTORS</span>
+        <span id="canvasStats">\(m = 0{,}600	ext{ kg} \quad h_1 = 1{,}30	ext{ m} \quad h_2 = 0{,}80	ext{ m}\)</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- CONTROLLI SIMULAZIONE INTERATTIVA -->
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">▶ Avvia Rimbalzo</button>
+        <button class="btn-sim" id="btnResetSim">↺ Riposiziona</button>
+        <button class="btn-sim" id="btnSlowMo">🐢 Rallentatore</button>
+      </div>
+      <div class="sim-state-tags">
+        <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">Punti notevoli:</span>
+        <button class="state-tag-btn tag-1" id="btnGoState1" title="Quota iniziale: h1 = 1.30 m">Quota Iniziale (1,30 m)</button>
+        <button class="state-tag-btn tag-ground" id="btnGoGround" title="Impatto al suolo: K massimo">Al Suolo (Urto)</button>
+        <button class="state-tag-btn tag-2" id="btnGoState2" title="Quota rimbalzo: h2 = 0.80 m">Rimbalzo (0,80 m)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNA DESTRA: PASSI DIDATTICI ED ESPLORAZIONE -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepContentCard">
+      <!-- Il contenuto didattico viene iniettato dinamicamente via JS in base al passo attivo -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════ FOOTER PASSI DIDATTICI ════════════════ -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">← Passo Precedente</button>
+
+  <div class="step-pills-list">
+    <button class="step-pill active" data-step="1">1</button>
+    <button class="step-pill" data-step="2">2</button>
+    <button class="step-pill" data-step="3">3</button>
+    <button class="step-pill" data-step="4">4</button>
+    <button class="step-pill" data-step="5">5</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Passo Successivo →</button>
+</footer>
+
+<!-- ════════════════ TAVOLOZZA PENNA LIM FLUTTUANTE ════════════════ -->
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>✏️ PENNA LIM</span>
+    <span>⠿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimEraser">🧹 Gomma</button>
+    <button class="btn-lim-action" id="btnLimClear">🗑️ Pulisci</button>
+    <button class="btn-lim-action" id="btnLimClose">✖ Chiudi</button>
+  </div>
+</div>
+
+<!-- ════════════════ MODALE FOGLIO BIANCO ════════════════ -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="whiteboard-modal">
+    <div class="whiteboard-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong style="font-family:var(--font-tech); letter-spacing:1px; color:#2563eb;">📄 FOGLIO BIANCO LIM DIGITALE</strong>
+        <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">Scrivi o disegna liberamente note per la classe</span>
+      </div>
+      <div class="whiteboard-tools">
+        <button class="btn-tool active" id="btnWbToolPen">✏️ Penna</button>
+        <button class="btn-tool" id="btnWbToolEraser">🧹 Gomma</button>
+        <button class="btn-tool" id="btnWbToolPan" title="Trascina foglio (Pan)">✋ Pan</button>
+        <button class="btn-tool" id="btnWbToolSelect" title="Seleziona e sposta tratti">🖐️ Sposta</button>
+        <button class="btn-tool" id="btnWbClear">🗑️ Svuota</button>
+        <button class="btn-tool" id="btnWbClose" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">✖ Chiudi</button>
+      </div>
+    </div>
+    <div class="whiteboard-canvas-wrap">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPT JAVASCRIPT DINAMICO ED ANIMAZIONE ════════════════ -->
+<script>
+/* ──────────────── STATO GLOBALE E PARAMETRI FISICI ──────────────── */
+const STATE = {
+  // Dati Problema 82 (Pag. 372)
+  m: 0.600,         // kg (massa pallone)
+  h1: 1.30,         // m (quota iniziale di caduta)
+  h2: 0.80,         // m (quota di risalita dopo il rimbalzo)
+  g: 9.8,           // m/s^2
+
+  // Valori energetici teorici
+  get E1() {
+    return this.m * this.g * this.h1; // ~7.644 J
+  },
+  get E2() {
+    return this.m * this.g * this.h2; // ~4.704 J
+  },
+  get Ediss() {
+    return this.E1 - this.E2;         // ~2.94 J -> 2.9 J
+  },
+  get percDiss() {
+    return (this.Ediss / this.E1) * 100; // ~38.5%
+  },
+
+  // Animazione temporale cinematica (fasi del rimbalzo)
+  // phase: 0 = fermo in cima h1
+  //        1 = caduta verso il suolo
+  //        2 = compressione al suolo (impatto anelastico)
+  //        3 = risalita fino a h2
+  //        4 = culmine h2 raggiunto
+  simTime: 0,
+  isPlaying: false,
+  isSlowMo: false,
+  activeStep: 1,
+  fontSizeLevel: 0
+};
+
+/* ──────────────── DEFINIZIONE DEI 5 PASSI DIDATTICI ──────────────── */
+const STEPS_DATA = {
+  1: {
+    badge: "PASSO 1 DI 5 • ANALISI DEL FENOMENO",
+    title: "Perché il Pallone non Torna all'Altezza Iniziale?",
+    render: () => `
+      <p class="step-description">
+        Un pallone da basket di massa <strong>\(m = 0{,}600\text{ kg}\)</strong> viene lasciato cadere da fermo da un'altezza <strong>\(h_1 = 1{,}30\text{ m}\)</strong>.
+        Dopo aver colpito il pavimento, rimbalza e risale fino a un'altezza massima <strong>\(h_2 = 0{,}80\text{ m}\)</strong>, notevolmente inferiore a quella di partenza.
+      </p>
+
+      <div class="callout-box callout-warning">
+        ❓ <strong>Cosa sta succedendo all'energia meccanica?</strong>
+        <p style="margin-top:6px; line-height:1.5;">
+          Se l'energia meccanica si conservasse (urto perfettamente elastico e nessun attrito con l'aria), il pallone dovrebbe ritornare esattamente alla quota di <strong>\(1{,}30\text{ m}\)</strong>.<br>
+          La diminuzione di quota dimostra la presenza di <strong>forze non conservative</strong> (deformazione anelastica del cuoio/gomma, attrito viscoso con l'aria, onde sonore e calore generato nell'urto).
+        </p>
+      </div>
+
+      <div class="math-display-card">
+        $$\Delta E_{\text{mecc}} = E_2 - E_1 = W_{\text{attrito}} < 0$$
+        $$E_{\text{dissipata}} = E_1 - E_2$$
+      </div>
+
+      <div class="callout-box callout-info">
+        💡 <strong>Principio di Conservazione dell'Energia Totale:</strong> L'energia non scompare nel nulla! La quota mancante si è trasformata in <em>energia interna (termica)</em> del pallone e del pavimento, e in una piccola frazione di <em>energia acustica</em> ("boing!").
+      </div>
+    `
+  },
+
+  2: {
+    badge: "PASSO 2 DI 5 • STATO INIZIALE",
+    title: "Calcolo dell'Energia Meccanica Iniziale E₁",
+    render: () => `
+      <p class="step-description">
+        Nel punto di rilascio più alto (<strong>\(h_1 = 1{,}30\text{ m}\)</strong>), il pallone viene lasciato cadere da fermo (<strong>\(v_1 = 0\text{ m/s}\)</strong>).
+        L'energia cinetica è nulla e tutta l'energia meccanica iniziale coincide con l'energia potenziale gravitazionale rispetto al pavimento (livello zero di riferimento).
+      </p>
+
+      <div class="math-display-card">
+        $$U_{g,1} = m \cdot g \cdot h_1 = 0{,}600\text{ kg} \cdot 9{,}8\text{ m/s}^2 \cdot 1{,}30\text{ m}$$
+        $$U_{g,1} = 5{,}88 \cdot 1{,}30 = \mathbf{7{,}644\text{ J}} \approx 7{,}6\text{ J}$$
+        $$K_1 = 0 \implies E_1 = U_{g,1} + K_1 = \mathbf{7{,}644\text{ J}}$$
+      </div>
+
+      <div class="callout-box">
+        🏀 <strong>Significato:</strong> Prima di iniziare la caduta, il sistema possiede un patrimonio energetico di circa <strong>7,64 Joule</strong> pronto a trasformarsi in velocità durante la discesa.
+      </div>
+    `
+  },
+
+  3: {
+    badge: "PASSO 3 DI 5 • STATO FINALE (RIMBALZO)",
+    title: "Calcolo dell'Energia Meccanica Residua E₂",
+    render: () => `
+      <p class="step-description">
+        Dopo l'urto col suolo, il pallone risale fino al culmine della parabola dove la sua velocità verticale torna momentaneamente a zero (<strong>\(v_2 = 0\text{ m/s}\)</strong>) alla quota <strong>\(h_2 = 0{,}80\text{ m}\)</strong>.
+      </p>
+
+      <div class="math-display-card">
+        $$U_{g,2} = m \cdot g \cdot h_2 = 0{,}600\text{ kg} \cdot 9{,}8\text{ m/s}^2 \cdot 0{,}80\text{ m}$$
+        $$U_{g,2} = 5{,}88 \cdot 0{,}80 = \mathbf{4{,}704\text{ J}} \approx 4{,}7\text{ J}$$
+        $$K_2 = 0 \implies E_2 = U_{g,2} + K_2 = \mathbf{4{,}704\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-info">
+        🔍 <strong>Confronto Immediato:</strong>
+        All'inizio avevamo <strong>\(7{,}644\text{ J}\)</strong>, mentre dopo il rimbalzo ne sono rimasti soltanto <strong>\(4{,}704\text{ J}\)</strong>. La differenza rappresenta l'energia dissipata nell'ambiente!
+      </div>
+    `
+  },
+
+  4: {
+    badge: "PASSO 4 DI 5 • RISOLUZIONE QUESITO",
+    title: "Calcolo dell'Energia Meccanica Dissipata",
+    render: () => `
+      <p class="step-description">
+        L'energia meccanica trasformata in altre forme (calore per attrito con l'aria e isteresi anelastica del pallone durante la compressione sul suolo) è data dalla variazione dell'energia meccanica:
+      </p>
+
+      <div class="math-display-card">
+        $$\Delta E_{\text{mecc}} = E_2 - E_1 = 4{,}704\text{ J} - 7{,}644\text{ J} = \mathbf{-2{,}94\text{ J}}$$
+        $$E_{\text{dissipata}} = |\Delta E_{\text{mecc}}| = 7{,}644\text{ J} - 4{,}704\text{ J} = 2{,}94\text{ J} \approx \mathbf{2{,}9\text{ J}}$$
+      </div>
+
+      <div class="callout-box callout-warning">
+        🎯 <strong>Risultato Libro:</strong> La quantità di energia meccanica trasformata in altre forme è <strong>\(2{,}9\text{ J}\)</strong>!
+      </div>
+
+      <div class="math-display-card" style="margin-top:10px;">
+        $$\text{Percentuale dissipata: } \eta = \frac{E_{\text{diss}}}{E_1} \cdot 100 = \frac{2{,}94}{7{,}644} \cdot 100 \approx \mathbf{38{,}5\%}$$
+      </div>
+
+      <div class="callout-box">
+        🔥 <strong>Insight Didattico:</strong> Quasi il <strong>39%</strong> dell'energia meccanica iniziale è stata convertita in calore interno nel pallone e nel parquet della palestra!
+      </div>
+    `
+  },
+
+  5: {
+    badge: "PASSO 5 DI 5 • LABORATORIO INTERATTIVO",
+    title: "Esplora i Parametri e Simula la Perdita di Quota",
+    render: () => `
+      <p class="step-description">
+        Varia la quota iniziale <strong>\(h_1\)</strong>, la quota di rimbalzo <strong>\(h_2\)</strong> o la massa <strong>\(m\)</strong>.
+        Osserva in tempo reale la quota di calore dissipata nella barra rossa dell'istogramma e la traiettoria stroboscopica nel canvas!
+      </p>
+
+      <div class="params-section">
+        <div class="param-row">
+          <div class="param-header">
+            <span>Quota di rilascio \(h_1\):</span>
+            <span class="param-val" id="valH1">${STATE.h1.toFixed(2)} m</span>
+          </div>
+          <input type="range" id="sliderH1" min="0.90" max="2.20" step="0.05" value="${STATE.h1}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Quota di risalita \(h_2\):</span>
+            <span class="param-val" id="valH2">${STATE.h2.toFixed(2)} m</span>
+          </div>
+          <input type="range" id="sliderH2" min="0.30" max="1.80" step="0.05" value="${STATE.h2}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Massa pallone \(m\):</span>
+            <span class="param-val" id="valM">${STATE.m.toFixed(3)} kg</span>
+          </div>
+          <input type="range" id="sliderM" min="0.300" max="1.000" step="0.050" value="${STATE.m}">
+        </div>
+      </div>
+
+      <div class="callout-box" id="liveResultsBox" style="margin-top:10px;">
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia iniziale: <strong>\(E_1 = ${STATE.E1.toFixed(2)}\text{ J}\)</strong><br>
+        Energia residua: <strong>\(E_2 = ${STATE.E2.toFixed(2)}\text{ J}\)</strong><br>
+        Energia dissipata: <strong>\(E_{\text{diss}} = ${STATE.Ediss.toFixed(2)}\text{ J} \; (${STATE.percDiss.toFixed(1)}\%)\)</strong>
+      </div>
+    `
+  }
+};
+
+/* ──────────────── GESTORE PASSI DIDATTICI ──────────────── */
+function setStep(stepNum) {
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 5) stepNum = 5;
+  STATE.activeStep = stepNum;
+
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    const s = parseInt(pill.getAttribute('data-step'), 10);
+    pill.classList.toggle('active', s === stepNum);
+  });
+
+  document.getElementById('btnPrevStep').disabled = (stepNum === 1);
+  document.getElementById('btnNextStep').disabled = (stepNum === 5);
+
+  const card = document.getElementById('stepContentCard');
+  const data = STEPS_DATA[stepNum];
+  card.innerHTML = `
+    <div class="step-header">
+      <span class="step-badge">${data.badge}</span>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">Passo ${stepNum} di 5</span>
+    </div>
+    <h2 class="step-title">${data.title}</h2>
+    ${data.render()}
+  `;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(card, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\(', right: '\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+
+  if (stepNum === 5) {
+    attachStep5Listeners();
+  }
+
+  // Posizionamento didattico della simulazione
+  if (stepNum === 1 || stepNum === 2) {
+    STATE.simTime = 0; // Quota h1
+  } else if (stepNum === 3 || stepNum === 4) {
+    STATE.simTime = 1.0; // Culmine h2
+  }
+}
+
+function prevStep() { setStep(STATE.activeStep - 1); }
+function nextStep() { setStep(STATE.activeStep + 1); }
+
+function attachStep5Listeners() {
+  const sH1 = document.getElementById('sliderH1');
+  const sH2 = document.getElementById('sliderH2');
+  const sM  = document.getElementById('sliderM');
+
+  function update() {
+    STATE.h1 = parseFloat(sH1.value);
+    STATE.h2 = parseFloat(sH2.value);
+    if (STATE.h2 >= STATE.h1) {
+      STATE.h2 = STATE.h1 - 0.10;
+      sH2.value = STATE.h2;
+    }
+    STATE.m = parseFloat(sM.value);
+
+    document.getElementById('valH1').textContent = STATE.h1.toFixed(2) + ' m';
+    document.getElementById('valH2').textContent = STATE.h2.toFixed(2) + ' m';
+    document.getElementById('valM').textContent = STATE.m.toFixed(3) + ' kg';
+
+    const box = document.getElementById('liveResultsBox');
+    if (box) {
+      box.innerHTML = `
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia iniziale: <strong>\(E_1 = ${STATE.E1.toFixed(2)}\text{ J}\)</strong><br>
+        Energia residua: <strong>\(E_2 = ${STATE.E2.toFixed(2)}\text{ J}\)</strong><br>
+        Energia dissipata: <strong>\(E_{\text{diss}} = ${STATE.Ediss.toFixed(2)}\text{ J} \; (${STATE.percDiss.toFixed(1)}\%)\)</strong>
+      `;
+      if (window.renderMathInElement) {
+        renderMathInElement(box, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\(', right: '\)', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const stats = document.getElementById('canvasStats');
+    if (stats) {
+      stats.innerHTML = `\(m = ${STATE.m.toFixed(3)}\text{ kg} \quad h_1 = ${STATE.h1.toFixed(2)}\text{ m} \quad h_2 = ${STATE.h2.toFixed(2)}\text{ m}\)`;
+      if (window.renderMathInElement) {
+        renderMathInElement(stats, {
+          delimiters: [{left: '\(', right: '\)', display: false}],
+          throwOnError: false
+        });
+      }
+    }
+  }
+
+  if (sH1) sH1.addEventListener('input', update);
+  if (sH2) sH2.addEventListener('input', update);
+  if (sM)  sM.addEventListener('input', update);
+}
+
+/* ──────────────── VETTORE RENDERER (CANVAS 3BLUE1BROWN) ──────────────── */
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 0;
+    this.height = 0;
+
+    this.lastTime = performance.now();
+    this.strobePoints = [];
+    this.initLoop();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+
+  initLoop() {
+    const loop = (currentTime) => {
+      const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+      this.lastTime = currentTime;
+
+      this.updatePhysics(dt);
+      this.render();
+
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  updatePhysics(dt) {
+    if (!STATE.isPlaying) return;
+
+    const speed = STATE.isSlowMo ? 0.35 : 0.85;
+    STATE.simTime += dt * speed;
+
+    // Se ciclo finito (> 1.25), ricomincia
+    if (STATE.simTime > 1.25) {
+      STATE.simTime = 0;
+      this.strobePoints = [];
+    }
+  }
+
+  // Geometria temporale del rimbalzo
+  // t in [0, 1.0]:
+  // 0.0 -> 0.45: caduta da h1 (parabola di caduta)
+  // 0.45 -> 0.55: contatto con il suolo e deformazione
+  // 0.55 -> 1.00: risalita fino a h2
+  getBallState(t) {
+    const W = this.width;
+    const H = this.height;
+
+    const floorY = H * 0.78;
+    const maxPixelH = H * 0.55;
+    const meterScale = maxPixelH / 1.5; // pixel per metro
+
+    const x1 = W * 0.28;
+    const xGround = W * 0.50;
+    const x2 = W * 0.72;
+
+    let x = 0;
+    let y = 0;
+    let currentH = 0;
+    let currentV = 0;
+    let squishY = 1.0;
+    let squishX = 1.0;
+    let isBounced = false;
+
+    if (t <= 0.45) {
+      // Fase 1: Caduta da h1
+      const u = t / 0.45; // [0, 1]
+      // Accelerazione quadratica: u^2
+      currentH = STATE.h1 * (1 - u * u);
+      x = x1 + u * (xGround - x1);
+      y = floorY - currentH * meterScale;
+      // v = sqrt(2g(h1 - h))
+      currentV = Math.sqrt(Math.max(0, 2 * STATE.g * (STATE.h1 - currentH)));
+      isBounced = false;
+    } else if (t <= 0.55) {
+      // Fase 2: Urto anelastico al suolo e deformazione
+      const u = (t - 0.45) / 0.10; // [0, 1]
+      const deform = Math.sin(u * Math.PI) * 0.35;
+      squishY = 1.0 - deform;
+      squishX = 1.0 + deform * 0.5;
+      x = xGround;
+      y = floorY;
+      currentH = 0;
+      currentV = 0;
+      isBounced = true;
+    } else {
+      // Fase 3: Risalita decelerata fino a h2
+      const u = (t - 0.55) / 0.45; // [0, 1]
+      // Decelerazione verso il vertice: (1 - (1-u)^2)
+      const fraction = 1 - (1 - u) * (1 - u);
+      currentH = fraction * STATE.h2;
+      x = xGround + u * (x2 - xGround);
+      y = floorY - currentH * meterScale;
+      // v residua
+      currentV = Math.sqrt(Math.max(0, 2 * STATE.g * (STATE.h2 - currentH)));
+      isBounced = true;
+    }
+
+    return {
+      x, y, currentH, currentV, squishX, squishY, isBounced,
+      floorY, meterScale, x1, x2, xGround
+    };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const W = this.width;
+    const H = this.height;
+    if (W === 0 || H === 0) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const b = this.getBallState(Math.min(1.0, STATE.simTime));
+
+    // Aggiungi punto stroboscopico
+    if (STATE.isPlaying && Math.random() < 0.25) {
+      this.strobePoints.push({ x: b.x, y: b.y, h: b.currentH });
+      if (this.strobePoints.length > 25) this.strobePoints.shift();
+    }
+
+    // 1. Griglia 3Blue1Brown
+    this.drawGrid(ctx, W, H);
+
+    // 2. Pavimento parquet palestra
+    this.drawFloor(ctx, b, W, H);
+
+    // 3. Linee di quota h1 (1.30 m) e h2 (0.80 m)
+    this.drawDimensionLines(ctx, b, W);
+
+    // 4. Traccia stroboscopica delle posizioni precedenti
+    this.drawStrobeTrack(ctx);
+
+    // 5. Pallone da basket vettoriale
+    this.drawBasketball(ctx, b);
+
+    // 6. Grafico Dinamico dell'Energia con Dissipazione Termica
+    this.drawEnergyBars(ctx, b, W, H);
+  }
+
+  drawGrid(ctx, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.04)';
+    ctx.lineWidth = 1;
+    const step = 30;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawFloor(ctx, b, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Pavimento solido
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(0, b.floorY, W, H - b.floorY);
+
+    // Linea di terra evidenziata
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, b.floorY);
+    ctx.lineTo(W, b.floorY);
+    ctx.stroke();
+
+    // Linea tratteggiata di battuta parquet
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    for (let x = 20; x < W; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, b.floorY + 8);
+      ctx.lineTo(x + 20, b.floorY + 28);
+      ctx.stroke();
+    }
+
+    // Scritta livello zero di potenziale
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('LIVELLO ZERO ENERGIA POTENZIALE (h = 0 m)', 25, b.floorY + 24);
+
+    ctx.restore();
+  }
+
+  drawDimensionLines(ctx, b, W) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    const yH1 = b.floorY - STATE.h1 * b.meterScale;
+    const yH2 = b.floorY - STATE.h2 * b.meterScale;
+
+    // Linea orizzontale tratteggiata quota h1
+    ctx.strokeStyle = '#16a34a'; // Verde quota 1
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(b.x1 - 35, yH1);
+    ctx.lineTo(b.x1 + 60, yH1);
+    ctx.stroke();
+
+    // Freccia verticale h1 = 1.30 m
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(b.x1 - 25, b.floorY);
+    ctx.lineTo(b.x1 - 25, yH1);
+    ctx.stroke();
+    this.drawArrowHead(ctx, b.x1 - 25, b.floorY, Math.PI / 2, 6, '#16a34a');
+    this.drawArrowHead(ctx, b.x1 - 25, yH1, -Math.PI / 2, 6, '#16a34a');
+
+    ctx.font = '700 12px "Inter", sans-serif';
+    ctx.fillStyle = '#16a34a';
+    ctx.fillText(`h₁ = ${STATE.h1.toFixed(2)} m`, b.x1 - 105, (b.floorY + yH1) / 2 + 4);
+
+    // Linea orizzontale tratteggiata quota h2
+    ctx.strokeStyle = '#dc2626'; // Rosso quota 2 (ridotta per dissipazione)
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(b.x2 - 50, yH2);
+    ctx.lineTo(b.x2 + 40, yH2);
+    ctx.stroke();
+
+    // Freccia verticale h2 = 0.80 m
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(b.x2 + 25, b.floorY);
+    ctx.lineTo(b.x2 + 25, yH2);
+    ctx.stroke();
+    this.drawArrowHead(ctx, b.x2 + 25, b.floorY, Math.PI / 2, 6, '#dc2626');
+    this.drawArrowHead(ctx, b.x2 + 25, yH2, -Math.PI / 2, 6, '#dc2626');
+
+    ctx.font = '700 12px "Inter", sans-serif';
+    ctx.fillStyle = '#dc2626';
+    ctx.fillText(`h₂ = ${STATE.h2.toFixed(2)} m`, b.x2 + 35, (b.floorY + yH2) / 2 + 4);
+
+    // Quota mancante Δh (dispersione in calore)
+    ctx.strokeStyle = 'rgba(220, 38, 38, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(b.x2 + 25, yH2);
+    ctx.lineTo(b.x2 + 25, yH1);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#dc2626';
+    ctx.fillText(`Δh = ${(STATE.h1 - STATE.h2).toFixed(2)} m (Persa)`, b.x2 + 35, (yH1 + yH2) / 2 + 4);
+
+    ctx.restore();
+  }
+
+  drawStrobeTrack(ctx) {
+    ctx.save();
+    for (const pt of this.strobePoints) {
+      ctx.fillStyle = 'rgba(234, 88, 12, 0.25)';
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y - 18, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawBasketball(ctx, b) {
+    ctx.save();
+    const radius = 20;
+
+    ctx.translate(b.x, b.y - radius * b.squishY);
+    ctx.scale(b.squishX, b.squishY);
+
+    // Ombra a terra
+    const shadowScale = Math.max(0.2, 1 - (b.currentH / STATE.h1) * 0.7);
+    ctx.save();
+    ctx.translate(0, radius * b.squishY);
+    ctx.fillStyle = `rgba(0,0,0,${0.18 * shadowScale})`;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, radius * 1.1 * shadowScale, 5 * shadowScale, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Sfera arancione basket con sfumatura radiale
+    const grad = ctx.createRadialGradient(-radius * 0.3, -radius * 0.3, radius * 0.1, 0, 0, radius);
+    grad.addColorStop(0, '#fb923c');
+    grad.addColorStop(0.7, '#ea580c');
+    grad.addColorStop(1, '#c2410c');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Linee caratteristiche nere della palla da basket
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.8;
+
+    // Linea equatoriale orizzontale
+    ctx.beginPath();
+    ctx.moveTo(-radius, 0);
+    ctx.lineTo(radius, 0);
+    ctx.stroke();
+
+    // Linea meridiana verticale
+    ctx.beginPath();
+    ctx.moveTo(0, -radius);
+    ctx.lineTo(0, radius);
+    ctx.stroke();
+
+    // Archi curvi laterali
+    ctx.beginPath();
+    ctx.arc(-radius * 1.05, 0, radius * 0.85, -Math.PI * 0.35, Math.PI * 0.35);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(radius * 1.05, 0, radius * 0.85, Math.PI * 0.65, Math.PI * 1.35);
+    ctx.stroke();
+
+    // Vettore velocità v uscente
+    if (b.currentV > 0.1) {
+      const vDir = (STATE.simTime <= 0.45) ? 1 : -1; // 1 verso il basso, -1 verso l'alto
+      const vScale = b.currentV * 7;
+
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(radius + 6, 0);
+      ctx.lineTo(radius + 6, vScale * vDir);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, radius + 6, vScale * vDir, vDir > 0 ? Math.PI / 2 : -Math.PI / 2, 7, '#2563eb');
+
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#2563eb';
+      ctx.fillText(`v = ${b.currentV.toFixed(1)} m/s`, radius + 14, (vScale * vDir) * 0.6);
+    }
+
+    ctx.restore();
+  }
+
+  drawEnergyBars(ctx, b, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Calcolo energie istantanee
+    const Ug = STATE.m * STATE.g * b.currentH;
+    const K = 0.5 * STATE.m * b.currentV * b.currentV;
+    const Ediss = b.isBounced ? STATE.Ediss : 0;
+    const Etot = Ug + K + Ediss;
+
+    const panelX = 20;
+    const panelY = 16;
+    const panelW = 270;
+    const panelH = 120;
+
+    ctx.fillStyle = isDark ? 'rgba(19, 27, 46, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    // Intestazione
+    ctx.font = '700 11px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('BILANCIO ENERGIA TOTALE & DISSIPATA', panelX + 12, panelY + 18);
+
+    const maxE = 10.0; // Joule scala fissa
+    const barMaxW = 140;
+    const startBarsX = panelX + 50;
+
+    const drawSingleBar = (yOffset, label, val, color) => {
+      const bY = panelY + yOffset;
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.fillText(label, panelX + 12, bY + 11);
+
+      ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, barMaxW, 12, 3);
+      ctx.fill();
+
+      const w = Math.max(0, Math.min(barMaxW, (val / maxE) * barMaxW));
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, w, 12, 3);
+      ctx.fill();
+
+      ctx.font = '600 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      ctx.fillText(`${val.toFixed(2)} J`, startBarsX + barMaxW + 8, bY + 10);
+    };
+
+    drawSingleBar(28, 'Ug', Ug, '#16a34a');
+    drawSingleBar(48, 'K', K, '#2563eb');
+    drawSingleBar(68, 'Ediss', Ediss, '#dc2626');
+    drawSingleBar(90, 'Etot', Etot, '#7c3aed');
+
+    ctx.restore();
+  }
+
+  drawArrowHead(ctx, x, y, angle, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-size, -size * 0.5);
+    ctx.lineTo(-size, size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ──────────────── PENNA LIM FLUTTUANTE ──────────────── */
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.active = false;
+    this.color = '#dc2626';
+    this.lineWidth = 5;
+    this.isDrawing = false;
+    this.strokes = [];
+    this.currentStroke = null;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    };
+
+    const startDraw = (e) => {
+      if (!this.active) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      const pos = getPos(e);
+      this.currentStroke = {
+        color: this.color,
+        width: this.lineWidth,
+        points: [pos]
+      };
+      this.strokes.push(this.currentStroke);
+      this.drawSegment(pos, pos);
+    };
+
+    const moveDraw = (e) => {
+      if (!this.active || !this.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      const pts = this.currentStroke.points;
+      const lastPos = pts[pts.length - 1];
+      pts.push(pos);
+      this.drawSegment(lastPos, pos);
+    };
+
+    const endDraw = () => {
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+
+    this.canvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', moveDraw, { passive: false });
+    window.addEventListener('touchend', endDraw);
+  }
+
+  drawSegment(p1, p2) {
+    this.ctx.strokeStyle = this.currentStroke.color;
+    this.ctx.lineWidth = this.currentStroke.width;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.beginPath();
+    this.ctx.moveTo(p1.x, p1.y);
+    this.ctx.lineTo(p2.x, p2.y);
+    this.ctx.stroke();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.strokeStyle = stroke.color;
+      this.ctx.lineWidth = stroke.width;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+/* ──────────────── FOGLIO BIANCO DIGITALE ──────────────── */
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 5;
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        screenX: cx - rect.left,
+        screenY: cy - rect.top,
+        worldX: cx - rect.left - this.panX,
+        worldY: cy - rect.top - this.panY
+      };
+    };
+
+    const onPointerDown = (e) => {
+      const pos = getPos(e);
+
+      if (this.tool === 'pan') {
+        this.isPanning = true;
+        this.panStartX = pos.screenX - this.panX;
+        this.panStartY = pos.screenY - this.panY;
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.hitTestStroke(pos.worldX, pos.worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = pos.worldX;
+          this.dragStartY = pos.worldY;
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        points: [{ x: pos.worldX, y: pos.worldY }]
+      };
+      this.strokes.push(this.currentStroke);
+      this.redraw();
+    };
+
+    const onPointerMove = (e) => {
+      const pos = getPos(e);
+
+      if (this.isPanning) {
+        this.panX = pos.screenX - this.panStartX;
+        this.panY = pos.screenY - this.panStartY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = pos.worldX - this.dragStartX;
+        const dy = pos.worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = pos.worldX;
+        this.dragStartY = pos.worldY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDrawing && this.currentStroke) {
+        this.currentStroke.points.push({ x: pos.worldX, y: pos.worldY });
+        this.redraw();
+      }
+    };
+
+    const onPointerUp = () => {
+      this.isPanning = false;
+      this.isDraggingStroke = false;
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    this.canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  hitTestStroke(wx, wy) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const stroke = this.strokes[i];
+      for (const p of stroke.points) {
+        const dist = Math.hypot(p.x - wx, p.y - wy);
+        if (dist < 15) return stroke;
+      }
+    }
+    return null;
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.save();
+      this.ctx.strokeStyle = (stroke.tool === 'eraser') ? '#ffffff' : stroke.color;
+      this.ctx.lineWidth = stroke.size;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+
+      if (stroke === this.selectedStroke) {
+        this.ctx.strokeStyle = '#2563eb';
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.stroke();
+      }
+      this.ctx.restore();
+    }
+
+    this.ctx.restore();
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+/* ──────────────── GESTIONE EVENTI GLOBALI ──────────────── */
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  limPen.active = !limPen.active;
+  document.getElementById('limPenCanvas').classList.toggle('active', limPen.active);
+  document.getElementById('btnTogglePen').classList.toggle('active', limPen.active);
+  document.getElementById('limFloatingBar').classList.toggle('show', limPen.active);
+}
+
+function openWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.add('show');
+  setTimeout(() => whiteboard.resize(), 50);
+}
+
+function closeWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.remove('show');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function cycleFontSize() {
+  STATE.fontSizeLevel = (STATE.fontSizeLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const btn = document.getElementById('btnScaleFont');
+  if (STATE.fontSizeLevel === 1) {
+    document.body.classList.add('text-scale-1');
+    btn.textContent = 'A++ Testo';
+  } else if (STATE.fontSizeLevel === 2) {
+    document.body.classList.add('text-scale-2');
+    btn.textContent = 'A Standard';
+  } else {
+    btn.textContent = 'A+ Testo';
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('btnToggleDark').textContent = isDark ? '☀️ Chiaro' : '🌙 Tema';
+}
+
+/* ──────────────── INIZIALIZZAZIONE DOM ──────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  document.getElementById('btnTogglePen').addEventListener('click', togglePenMode);
+  document.getElementById('btnOpenWhiteboard').addEventListener('click', openWhiteboard);
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+  document.getElementById('btnScaleFont').addEventListener('click', cycleFontSize);
+  document.getElementById('btnToggleDark').addEventListener('click', toggleDarkMode);
+
+  document.getElementById('btnPrevStep').addEventListener('click', prevStep);
+  document.getElementById('btnNextStep').addEventListener('click', nextStep);
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const step = parseInt(e.target.getAttribute('data-step'), 10);
+      setStep(step);
+    });
+  });
+
+  const btnPlay = document.getElementById('btnPlayPause');
+  btnPlay.addEventListener('click', () => {
+    STATE.isPlaying = !STATE.isPlaying;
+    btnPlay.textContent = STATE.isPlaying ? '⏸ Sospendi' : '▶ Avvia Rimbalzo';
+  });
+
+  document.getElementById('btnResetSim').addEventListener('click', () => {
+    STATE.simTime = 0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Rimbalzo';
+  });
+
+  const btnSlow = document.getElementById('btnSlowMo');
+  btnSlow.addEventListener('click', () => {
+    STATE.isSlowMo = !STATE.isSlowMo;
+    btnSlow.classList.toggle('active', STATE.isSlowMo);
+    btnSlow.textContent = STATE.isSlowMo ? '🐇 Normale' : '🐢 Rallentatore';
+  });
+
+  document.getElementById('btnGoState1').addEventListener('click', () => {
+    STATE.simTime = 0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Rimbalzo';
+  });
+  document.getElementById('btnGoGround').addEventListener('click', () => {
+    STATE.simTime = 0.50;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Rimbalzo';
+  });
+  document.getElementById('btnGoState2').addEventListener('click', () => {
+    STATE.simTime = 1.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Avvia Rimbalzo';
+  });
+
+  document.querySelectorAll('.lim-color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+      e.target.classList.add('active');
+      limPen.color = e.target.getAttribute('data-color');
+      limPen.lineWidth = 5;
+    });
+  });
+
+  document.getElementById('btnLimEraser').addEventListener('click', () => {
+    limPen.color = document.body.classList.contains('dark-mode') ? '#0f172a' : '#ffffff';
+    limPen.lineWidth = 20;
+  });
+
+  document.getElementById('btnLimClear').addEventListener('click', () => limPen.clear());
+  document.getElementById('btnLimClose').addEventListener('click', togglePenMode);
+
+  // Floating LIM bar drag
+  const bar = document.getElementById('limFloatingBar');
+  const handle = document.getElementById('limDragHandle');
+  let isDraggingBar = false;
+  let barStartX = 0, barStartY = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    isDraggingBar = true;
+    barStartX = e.clientX - bar.offsetLeft;
+    barStartY = e.clientY - bar.offsetTop;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingBar) return;
+    bar.style.left = (e.clientX - barStartX) + 'px';
+    bar.style.top = (e.clientY - barStartY) + 'px';
+    bar.style.right = 'auto';
+  });
+  window.addEventListener('mouseup', () => { isDraggingBar = false; });
+
+  // Whiteboard buttons
+  document.getElementById('btnWbClose').addEventListener('click', closeWhiteboard);
+  document.getElementById('btnWbClear').addEventListener('click', () => whiteboard.clear());
+  document.getElementById('btnWbToolPen').addEventListener('click', (e) => {
+    whiteboard.tool = 'pen';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolEraser').addEventListener('click', (e) => {
+    whiteboard.tool = 'eraser';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolPan').addEventListener('click', (e) => {
+    whiteboard.tool = 'pan';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolSelect').addEventListener('click', (e) => {
+    whiteboard.tool = 'select';
+    setWbActiveTool(e.target);
+  });
+
+  function setWbActiveTool(btn) {
+    ['btnWbToolPen', 'btnWbToolEraser', 'btnWbToolPan', 'btnWbToolSelect'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    btn.classList.add('active');
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toUpperCase();
+    if (key === 'ARROWLEFT') prevStep();
+    if (key === 'ARROWRIGHT') nextStep();
+    if (key === 'P') togglePenMode();
+    if (key === 'W') {
+      const ov = document.getElementById('whiteboardOverlay');
+      if (ov.classList.contains('show')) closeWhiteboard();
+      else openWhiteboard();
+    }
+    if (key === 'F') toggleFullscreen();
+    if (key === 'ESCAPE') {
+      closeWhiteboard();
+      if (limPen.active) togglePenMode();
+    }
+  });
+
+  setStep(1);
+});
+</script>
+</body>
+</html>

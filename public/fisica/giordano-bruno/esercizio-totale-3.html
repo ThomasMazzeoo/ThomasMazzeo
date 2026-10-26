@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Guidato LIM — Il Fucile a Molla e il Lancio Verticale (Problema 94, Pag. 373) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN OTTIMIZZATO PER LIM — VISTA NORMALE & SCHERMO INTERO
+   - Nessuna barra fissa invasiva in basso: penna fluttuante attivabile a piacere
+   - Foglio Bianco con Pan (✋) e Sposta/Seleziona (🖐️)
+   - Formule KaTeX renderizzate dinamicamente ad ogni passo
+   - Canvas vettoriale High-DPI 3Blue1Brown su fondo bianco puro
+   - Fucile a molla verticale, pallina sparata a quota 1.6 m, istogramma a 3 energie
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --color-uel: #ea580c;    /* Arancio per Energia Potenziale Elastica U_el */
+  --color-k: #2563eb;      /* Blu per Energia Cinetica K */
+  --color-ug: #16a34a;     /* Verde per Energia Potenziale Gravitazionale U_g */
+  --color-tot: #7c3aed;    /* Viola per Energia Meccanica Totale E_tot */
+  --color-ball: #0284c7;   /* Azzurro metallico per la pallina */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-title: 'Orbitron', sans-serif;
+  --font-tech: 'Share Tech Mono', monospace;
+
+  --base-font-size: 16px;
+}
+
+body.dark-mode {
+  --bg-page: #0b0f19;
+  --bg-panel: #131b2e;
+  --bg-canvas: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1e293b;
+  --color-uel: #fb923c;
+  --color-k: #60a5fa;
+  --color-ug: #4ade80;
+  --color-tot: #a78bfa;
+  --color-ball: #38bdf8;
+}
+
+.text-scale-1 { font-size: 1.12rem !important; }
+.text-scale-2 { font-size: 1.25rem !important; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ──────────────── HEADER ──────────────── */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #2563eb;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37,99,235,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.title-container h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-container p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-tool {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-tool:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-tool:hover {
+  background: #1e293b;
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+}
+
+/* ──────────────── LAYOUT PRINCIPALE ──────────────── */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 1750px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ──────────────── AREA CANVAS VETTORIALE ──────────────── */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.canvas-card {
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-toolbar {
+  padding: 8px 14px;
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+body.dark-mode .canvas-toolbar {
+  background: rgba(19, 27, 46, 0.95);
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: var(--bg-canvas);
+  overflow: hidden;
+}
+
+canvas#vecCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+canvas#limPenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+canvas#limPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* CONTROLLI SIMULAZIONE SOTTO AL CANVAS */
+.sim-controls-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sim {
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-sim:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-sim:hover {
+  background: #1e293b;
+}
+
+.btn-sim-primary {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+}
+
+.sim-state-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.state-tag-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+.state-tag-btn:hover {
+  transform: translateY(-1px);
+}
+.state-tag-btn.tag-0 { border-color: var(--color-uel); color: var(--color-uel); }
+.state-tag-btn.tag-0:hover, .state-tag-btn.tag-0.active { background: var(--color-uel); color: white; }
+
+.state-tag-btn.tag-muzzle { border-color: var(--color-k); color: var(--color-k); }
+.state-tag-btn.tag-muzzle:hover, .state-tag-btn.tag-muzzle.active { background: var(--color-k); color: white; }
+
+.state-tag-btn.tag-apex { border-color: var(--color-ug); color: var(--color-ug); }
+.state-tag-btn.tag-apex:hover, .state-tag-btn.tag-apex.active { background: var(--color-ug); color: white; }
+
+/* ──────────────── PANNELLO PASSI DIDATTICI ──────────────── */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 12px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.step-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+body.dark-mode .callout-box {
+  background: #064e3b33;
+  color: #86efac;
+}
+
+.callout-info {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-info {
+  background: #1e3a8a33;
+  color: #bfdbfe;
+}
+
+.math-display-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* ──────────────── SLIDERS DINAMICI ──────────────── */
+.params-section {
+  background: var(--bg-page);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.param-val {
+  font-family: var(--font-mono);
+  color: #2563eb;
+  font-weight: 700;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  cursor: pointer;
+}
+
+/* ──────────────── FOOTER PASSI DIDATTICI ──────────────── */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 35;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-pill {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.35);
+}
+
+.btn-nav-step {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+body.dark-mode .btn-nav-step:hover:not(:disabled) {
+  background: #1e293b;
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────── BARRA PENNA LIM FLUTTUANTE TRASCINABILE ──────────────── */
+.lim-floating-bar {
+  position: fixed;
+  top: 80px;
+  right: 25px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.75rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+.lim-drag-handle:active {
+  cursor: grabbing;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+.lim-color-dot:hover {
+  transform: scale(1.15);
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-lim-action:hover {
+  background: #f1f5f9;
+}
+body.dark-mode .btn-lim-action:hover {
+  background: #1e293b;
+}
+
+/* ──────────────── MODALE FOGLIO BIANCO INTERATTIVO ──────────────── */
+.whiteboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.whiteboard-overlay.show {
+  display: flex;
+}
+.whiteboard-modal {
+  width: 95vw;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 3px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+body.dark-mode .whiteboard-modal {
+  background: #0f172a;
+}
+.whiteboard-header {
+  padding: 10px 18px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.dark-mode .whiteboard-header {
+  background: #1e293b;
+}
+.whiteboard-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.whiteboard-canvas-wrap {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}
+body.dark-mode .whiteboard-canvas-wrap {
+  background: #0b0f19;
+}
+canvas#wbCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* MODALITÀ SCHERMO INTERO */
+body.is-fullscreen .app-header {
+  padding: 6px 14px;
+}
+body.is-fullscreen .main-container {
+  padding: 10px 14px;
+}
+body.is-fullscreen .canvas-wrapper {
+  height: 540px;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER CON CONTROLLI ════════════════ -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">← Indice Giordano Bruno</a>
+    <span class="school-tag">ISS Giordano Bruno • Seconde</span>
+    <div class="title-container">
+      <h1>🎯 Problema 94: Il Fucile a Molla e il Lancio Verticale <span style="font-size: 0.8em; color: var(--text-muted); font-weight: normal;">(Pag. 373)</span></h1>
+      <p>Trasformazione completa dell'energia potenziale elastica in gravitazionale: \(U_{	ext{el}} 	o K 	o U_g\)</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Ingrandisci testo LIM">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">🌙 Tema</button>
+    <button class="btn-tool" id="btnOpenWhiteboard" title="Apri Foglio Bianco (W)">📄 Foglio Bianco</button>
+    <button class="btn-tool" id="btnTogglePen" title="Attiva/Disattiva Penna LIM (P)">✏️ Penna LIM</button>
+    <button class="btn-tool btn-tool-primary" id="btnFullscreen" title="Schermo Intero (F)">⛶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- ════════════════ LAYOUT PRINCIPALE ════════════════ -->
+<main class="main-container">
+  
+  <!-- COLONNA SINISTRA: CANVAS FISICO + CONTROLLI SIMULAZIONE -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span>VETTORE FISICO DINAMICO • 3BLUE1BROWN VECTORS</span>
+        <span id="canvasStats">\(k = 20	ext{ N/m} \quad \Delta x = 20	ext{ cm} \quad m = 25	ext{ g}\)</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="vecCanvas"></canvas>
+        <canvas id="limPenCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- CONTROLLI SIMULAZIONE INTERATTIVA -->
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">▶ Spara Pallina</button>
+        <button class="btn-sim" id="btnResetSim">↺ Ricarica Fucile</button>
+        <button class="btn-sim" id="btnSlowMo">🐢 Rallentatore</button>
+      </div>
+      <div class="sim-state-tags">
+        <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">Punti notevoli:</span>
+        <button class="state-tag-btn tag-0" id="btnGoState0" title="Molla compressa di 20 cm">1. Carico (Molla)</button>
+        <button class="state-tag-btn tag-muzzle" id="btnGoMuzzle" title="Uscita dalla volata (v max)">2. Uscita Volata</button>
+        <button class="state-tag-btn tag-apex" id="btnGoApex" title="Massima altezza h = 1.6 m">3. Apice (1,6 m)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNA DESTRA: PASSI DIDATTICI ED ESPLORAZIONE -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepContentCard">
+      <!-- Il contenuto didattico viene iniettato dinamicamente via JS in base al passo attivo -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════ FOOTER PASSI DIDATTICI ════════════════ -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">← Passo Precedente</button>
+
+  <div class="step-pills-list">
+    <button class="step-pill active" data-step="1">1</button>
+    <button class="step-pill" data-step="2">2</button>
+    <button class="step-pill" data-step="3">3</button>
+    <button class="step-pill" data-step="4">4</button>
+    <button class="step-pill" data-step="5">5</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Passo Successivo →</button>
+</footer>
+
+<!-- ════════════════ TAVOLOZZA PENNA LIM FLUTTUANTE ════════════════ -->
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>✏️ PENNA LIM</span>
+    <span>⠿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimEraser">🧹 Gomma</button>
+    <button class="btn-lim-action" id="btnLimClear">🗑️ Pulisci</button>
+    <button class="btn-lim-action" id="btnLimClose">✖ Chiudi</button>
+  </div>
+</div>
+
+<!-- ════════════════ MODALE FOGLIO BIANCO ════════════════ -->
+<div class="whiteboard-overlay" id="whiteboardOverlay">
+  <div class="whiteboard-modal">
+    <div class="whiteboard-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong style="font-family:var(--font-tech); letter-spacing:1px; color:#2563eb;">📄 FOGLIO BIANCO LIM DIGITALE</strong>
+        <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">Scrivi o disegna liberamente note per la classe</span>
+      </div>
+      <div class="whiteboard-tools">
+        <button class="btn-tool active" id="btnWbToolPen">✏️ Penna</button>
+        <button class="btn-tool" id="btnWbToolEraser">🧹 Gomma</button>
+        <button class="btn-tool" id="btnWbToolPan" title="Trascina foglio (Pan)">✋ Pan</button>
+        <button class="btn-tool" id="btnWbToolSelect" title="Seleziona e sposta tratti">🖐️ Sposta</button>
+        <button class="btn-tool" id="btnWbClear">🗑️ Svuota</button>
+        <button class="btn-tool" id="btnWbClose" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">✖ Chiudi</button>
+      </div>
+    </div>
+    <div class="whiteboard-canvas-wrap">
+      <canvas id="wbCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPT JAVASCRIPT DINAMICO ED ANIMAZIONE ════════════════ -->
+<script>
+/* ──────────────── STATO GLOBALE E PARAMETRI FISICI ──────────────── */
+const STATE = {
+  // Dati Problema 94 (Pag. 373)
+  k: 20,            // N/m (costante molla)
+  dx: 0.20,         // m (compressione molla 20 cm)
+  m: 0.025,         // kg (massa pallina 25 g)
+  g: 9.8,           // m/s^2
+
+  // Valori energetici teorici
+  get Eel0() {
+    return 0.5 * this.k * this.dx * this.dx; // 0.5 * 20 * 0.04 = 0.40 J
+  },
+  get hMax() {
+    return this.Eel0 / (this.m * this.g);    // 0.40 / (0.025 * 9.8) = 1.632 m -> 1.6 m
+  },
+  get vMuzzle() {
+    // A rilascio completo molla: Ug = m*g*dx = 0.049 J, K = 0.40 - 0.049 = 0.351 J
+    const kRes = this.Eel0 - (this.m * this.g * this.dx);
+    return Math.sqrt(Math.max(0, (2 * kRes) / this.m)); // ~5.3 m/s
+  },
+
+  // Animazione volo (0.0 -> 1.0)
+  simProgress: 0.0,
+  isPlaying: false,
+  isSlowMo: false,
+  activeStep: 1,
+  fontSizeLevel: 0
+};
+
+/* ──────────────── DEFINIZIONE DEI 5 PASSI DIDATTICI ──────────────── */
+const STEPS_DATA = {
+  1: {
+    badge: "PASSO 1 DI 5 • SCHEMA DEL PROBLEMA",
+    title: "Il Fucile a Molla e le Forme di Energia in Gioco",
+    render: () => `
+      <p class="step-description">
+        Un fucile giocattolo a molla è puntato in verticale verso l'alto.
+        La molla ha costante elastica <strong>\(k = 20\text{ N/m}\)</strong> ed è compressa di <strong>\(\Delta x = 20\text{ cm} = 0{,}20\text{ m}\)</strong>.
+        A contatto con la molla c'è una pallina di massa <strong>\(m = 25\text{ g} = 0{,}025\text{ kg}\)</strong>.
+        Trascurando tutti gli attriti, vogliamo calcolare l'altezza <strong>\(h\)</strong> dal punto di partenza raggiunta dalla pallina quando viene sparata.
+      </p>
+
+      <div class="callout-box callout-info">
+        🎯 <strong>Definizione Fondamentale del Livello Zero:</strong>
+        <p style="margin-top:6px; line-height:1.5;">
+          Fissiamo la quota <strong>\(y = 0\)</strong> nel <em>punto di partenza</em>, cioè nella posizione in cui la pallina si trova a molla completamente compressa.<br>
+          In questo stato iniziale, la pallina è ferma (<strong>\(v = 0\)</strong>) e tutta l'energia meccanica del sistema risiede nell'<strong>energia potenziale elastica</strong> della molla compressa.
+        </p>
+      </div>
+
+      <div class="math-display-card">
+        $$\text{In assenza di attriti: } E_{\text{mecc}} = U_{\text{el}} + K + U_g = \text{costante}$$
+        $$E_{\text{iniziale}} = E_{\text{culmine}}$$
+      </div>
+    `
+  },
+
+  2: {
+    badge: "PASSO 2 DI 5 • ENERGIA INIZIALE",
+    title: "Calcolo dell'Energia Elastica Immagazzinata E₀",
+    render: () => `
+      <p class="step-description">
+        Prima dello sparo, la molla è contratta di <strong>\(\Delta x = 0{,}20\text{ m}\)</strong>.
+        Poiché la pallina è ferma (\(K_0 = 0\)) e si trova alla quota di riferimento (\(U_{g,0} = 0\)), l'energia meccanica totale è unicamente elastica:
+      </p>
+
+      <div class="math-display-card">
+        $$U_{\text{el},0} = \frac{1}{2} k (\Delta x)^2 = \frac{1}{2} \cdot 20\text{ N/m} \cdot (0{,}20\text{ m})^2$$
+        $$U_{\text{el},0} = 10 \cdot 0{,}04 = \mathbf{0{,}40\text{ J}}$$
+        $$E_0 = U_{\text{el},0} = \mathbf{0{,}40\text{ J}}$$
+      </div>
+
+      <div class="callout-box">
+        🔋 <strong>Serbatoio Energetico:</strong> La molla ha accumulato esattamente <strong>\(0{,}40\text{ Joule}\)</strong> di energia pronta a essere trasferita alla pallina per lanciarla in aria!
+      </div>
+    `
+  },
+
+  3: {
+    badge: "PASSO 3 DI 5 • CULMINE DELLA TRAIETTORIA",
+    title: "Stato Finale al Massimo dell'Altezza",
+    render: () => `
+      <p class="step-description">
+        Quando la molla si estende, spinge la pallina fino all'estremità della canna (volata) e poi la rilascia.
+        La pallina prosegue il suo volo verticale decelerata dalla sola forza di gravità, fino a raggiungere la massima altezza <strong>\(h\)</strong> dove si arresta per un istante (<strong>\(v = 0\)</strong>).
+      </p>
+
+      <div class="math-display-card">
+        $$\text{All'apice del volo: } K_f = 0, \quad U_{\text{el},f} = 0$$
+        $$E_f = U_{g,f} = m \cdot g \cdot h$$
+      </div>
+
+      <p class="step-description">
+        In questo punto estremo, tutta l'energia elastica iniziale si è trasformata per intero in energia potenziale gravitazionale!
+      </p>
+
+      <div class="callout-box callout-info">
+        ✨ <strong>Catena di Trasformazione:</strong>
+        \(U_{\text{el}} \; (0{,}40\text{ J}) \longrightarrow K + U_g \; (\text{lungo la canna}) \longrightarrow U_g \; (0{,}40\text{ J al culmine})\).
+      </div>
+    `
+  },
+
+  4: {
+    badge: "PASSO 4 DI 5 • RISOLUZIONE QUESITO",
+    title: "Calcolo dell'Altezza Massima h dal Punto di Partenza",
+    render: () => `
+      <p class="step-description">
+        Eguagliamo l'energia meccanica iniziale e quella finale in virtù della legge di conservazione:
+      </p>
+
+      <div class="math-display-card">
+        $$E_0 = E_f \implies \frac{1}{2} k (\Delta x)^2 = m \cdot g \cdot h$$
+        $$0{,}40\text{ J} = (0{,}025\text{ kg} \cdot 9{,}8\text{ m/s}^2) \cdot h$$
+        $$0{,}40 = 0{,}245 \cdot h$$
+      </div>
+
+      <p class="step-description">
+        Isoliamo l'altezza incognita <strong>\(h\)</strong> applicando la formula inversa:
+      </p>
+
+      <div class="math-display-card">
+        $$h = \frac{0{,}40}{0{,}245} = 1{,}6326\dots\text{ m} \approx \mathbf{1{,}6\text{ m}}$$
+      </div>
+
+      <div class="callout-box">
+        🎯 <strong>Risultato Libro:</strong> L'altezza raggiunta dalla pallina dal punto di partenza è esattamente <strong>\(1{,}6\text{ m}\)</strong>!
+      </div>
+    `
+  },
+
+  5: {
+    badge: "PASSO 5 DI 5 • LABORATORIO INTERATTIVO",
+    title: "Esplora i Parametri e Spara la Pallina",
+    render: () => `
+      <p class="step-description">
+        Modifica la costante elastica <strong>\(k\)</strong>, la compressione iniziale <strong>\(\Delta x\)</strong> o la massa <strong>\(m\)</strong>.
+        Guarda in tempo reale come si modificano la velocità di uscita e la quota massima raggiunta sul righello!
+      </p>
+
+      <div class="params-section">
+        <div class="param-row">
+          <div class="param-header">
+            <span>Costante elastica \(k\):</span>
+            <span class="param-val" id="valK">${STATE.k} N/m</span>
+          </div>
+          <input type="range" id="sliderK" min="10" max="60" step="2" value="${STATE.k}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Compressione molla \(\Delta x\):</span>
+            <span class="param-val" id="valDx">${(STATE.dx * 100).toFixed(0)} cm</span>
+          </div>
+          <input type="range" id="sliderDx" min="0.10" max="0.35" step="0.01" value="${STATE.dx}">
+        </div>
+
+        <div class="param-row">
+          <div class="param-header">
+            <span>Massa pallina \(m\):</span>
+            <span class="param-val" id="valM">${(STATE.m * 1000).toFixed(0)} g</span>
+          </div>
+          <input type="range" id="sliderM" min="0.010" max="0.080" step="0.005" value="${STATE.m}">
+        </div>
+      </div>
+
+      <div class="callout-box" id="liveResultsBox" style="margin-top:10px;">
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia elastica iniziale: <strong>\(U_{\text{el}} = ${STATE.Eel0.toFixed(3)}\text{ J}\)</strong><br>
+        Velocità alla volata del fucile: <strong>\(v_{\text{volata}} = ${STATE.vMuzzle.toFixed(2)}\text{ m/s}\)</strong><br>
+        Altezza massima raggiunta: <strong>\(h = ${STATE.hMax.toFixed(2)}\text{ m}\)</strong>
+      </div>
+    `
+  }
+};
+
+/* ──────────────── GESTORE PASSI DIDATTICI ──────────────── */
+function setStep(stepNum) {
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 5) stepNum = 5;
+  STATE.activeStep = stepNum;
+
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    const s = parseInt(pill.getAttribute('data-step'), 10);
+    pill.classList.toggle('active', s === stepNum);
+  });
+
+  document.getElementById('btnPrevStep').disabled = (stepNum === 1);
+  document.getElementById('btnNextStep').disabled = (stepNum === 5);
+
+  const card = document.getElementById('stepContentCard');
+  const data = STEPS_DATA[stepNum];
+  card.innerHTML = `
+    <div class="step-header">
+      <span class="step-badge">${data.badge}</span>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">Passo ${stepNum} di 5</span>
+    </div>
+    <h2 class="step-title">${data.title}</h2>
+    ${data.render()}
+  `;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(card, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\(', right: '\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+
+  if (stepNum === 5) {
+    attachStep5Listeners();
+  }
+
+  if (stepNum === 1 || stepNum === 2) {
+    STATE.simProgress = 0.0;
+  } else if (stepNum === 3 || stepNum === 4) {
+    STATE.simProgress = 1.0;
+  }
+}
+
+function prevStep() { setStep(STATE.activeStep - 1); }
+function nextStep() { setStep(STATE.activeStep + 1); }
+
+function attachStep5Listeners() {
+  const sK  = document.getElementById('sliderK');
+  const sDx = document.getElementById('sliderDx');
+  const sM  = document.getElementById('sliderM');
+
+  function update() {
+    STATE.k  = parseFloat(sK.value);
+    STATE.dx = parseFloat(sDx.value);
+    STATE.m  = parseFloat(sM.value);
+
+    document.getElementById('valK').textContent = STATE.k + ' N/m';
+    document.getElementById('valDx').textContent = (STATE.dx * 100).toFixed(0) + ' cm';
+    document.getElementById('valM').textContent = (STATE.m * 1000).toFixed(0) + ' g';
+
+    const box = document.getElementById('liveResultsBox');
+    if (box) {
+      box.innerHTML = `
+        <strong>Valori Calcolati in Tempo Reale:</strong><br>
+        Energia elastica iniziale: <strong>\(U_{\text{el}} = ${STATE.Eel0.toFixed(3)}\text{ J}\)</strong><br>
+        Velocità alla volata del fucile: <strong>\(v_{\text{volata}} = ${STATE.vMuzzle.toFixed(2)}\text{ m/s}\)</strong><br>
+        Altezza massima raggiunta: <strong>\(h = ${STATE.hMax.toFixed(2)}\text{ m}\)</strong>
+      `;
+      if (window.renderMathInElement) {
+        renderMathInElement(box, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\(', right: '\)', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const stats = document.getElementById('canvasStats');
+    if (stats) {
+      stats.innerHTML = `\(k = ${STATE.k}\text{ N/m} \quad \Delta x = ${(STATE.dx * 100).toFixed(0)}\text{ cm} \quad m = ${(STATE.m * 1000).toFixed(0)}\text{ g}\)`;
+      if (window.renderMathInElement) {
+        renderMathInElement(stats, {
+          delimiters: [{left: '\(', right: '\)', display: false}],
+          throwOnError: false
+        });
+      }
+    }
+  }
+
+  if (sK)  sK.addEventListener('input', update);
+  if (sDx) sDx.addEventListener('input', update);
+  if (sM)  sM.addEventListener('input', update);
+}
+
+/* ──────────────── VETTORE RENDERER (CANVAS 3BLUE1BROWN) ──────────────── */
+class VectorRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 0;
+    this.height = 0;
+
+    this.lastTime = performance.now();
+    this.initLoop();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+
+  initLoop() {
+    const loop = (currentTime) => {
+      const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+      this.lastTime = currentTime;
+
+      this.updatePhysics(dt);
+      this.render();
+
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  updatePhysics(dt) {
+    if (!STATE.isPlaying) return;
+
+    const speed = STATE.isSlowMo ? 0.35 : 0.85;
+    STATE.simProgress += dt * speed;
+
+    if (STATE.simProgress > 1.25) {
+      STATE.simProgress = 0.0;
+    }
+  }
+
+  getGunGeometry(p) {
+    const W = this.width;
+    const H = this.height;
+
+    const barrelX = W * 0.42;
+    const baseFloorY = H * 0.82;
+    const pxPerMeter = (H * 0.58) / 1.8; // scala pixel per metro
+
+    // Quota 0 = fondo della molla compressa
+    const startY = baseFloorY - 10;
+    const maxH = STATE.hMax;
+    const apexY = startY - maxH * pxPerMeter;
+
+    const u = Math.min(1.0, Math.max(0.0, p));
+
+    // Decelerazione naturale quadratica verso il vertice: (1 - (1-u)^2)
+    const fracH = 1 - (1 - u) * (1 - u);
+    const currentH = fracH * maxH;
+    const ballY = startY - currentH * pxPerMeter;
+
+    // Velocità: da vMuzzle a 0
+    const currentV = Math.sqrt(Math.max(0, 2 * STATE.g * (maxH - currentH)));
+
+    // Compressione residua molla (finché ballY è sotto la volata di riposo)
+    const muzzleRestY = startY - STATE.dx * pxPerMeter;
+    const currentSpringHeadY = Math.min(muzzleRestY, ballY);
+
+    return {
+      barrelX, baseFloorY, pxPerMeter, startY, apexY, ballY,
+      currentH, currentV, muzzleRestY, currentSpringHeadY
+    };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const W = this.width;
+    const H = this.height;
+    if (W === 0 || H === 0) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const geo = this.getGunGeometry(STATE.simProgress);
+
+    // 1. Griglia 3Blue1Brown
+    this.drawGrid(ctx, W, H);
+
+    // 2. Basamento e banco da laboratorio
+    this.drawBase(ctx, geo, W, H);
+
+    // 3. Righello metrico verticale con tacche e quote
+    this.drawMetricRuler(ctx, geo);
+
+    // 4. Canna del fucile e molla verticale elastica
+    this.drawGunAndSpring(ctx, geo);
+
+    // 5. Pallina lanciata con vettore velocità
+    this.drawBall(ctx, geo);
+
+    // 6. Bilancio energetico dinamico a 3 barre (U_el, K, U_g, E_tot)
+    this.drawEnergyBars(ctx, geo, W, H);
+  }
+
+  drawGrid(ctx, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.04)';
+    ctx.lineWidth = 1;
+    const step = 30;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawBase(ctx, geo, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Tavolo di supporto
+    ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+    ctx.fillRect(0, geo.baseFloorY, W, H - geo.baseFloorY);
+
+    ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, geo.baseFloorY);
+    ctx.lineTo(W, geo.baseFloorY);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  drawMetricRuler(ctx, geo) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+    const rulerX = geo.barrelX - 80;
+
+    // Asta righello verticale
+    ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(rulerX, geo.startY);
+    ctx.lineTo(rulerX, geo.apexY - 30);
+    ctx.stroke();
+
+    // Tacche metriche ogni 20 cm
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+
+    for (let hM = 0; hM <= 2.0; hM += 0.20) {
+      const y = geo.startY - hM * geo.pxPerMeter;
+      ctx.beginPath();
+      ctx.moveTo(rulerX - 6, y);
+      ctx.lineTo(rulerX + 6, y);
+      ctx.stroke();
+
+      ctx.fillText(`${hM.toFixed(1)} m`, rulerX - 48, y + 4);
+    }
+
+    // Linea orizzontale tratteggiata quota massima h = 1.6 m
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(rulerX, geo.apexY);
+    ctx.lineTo(geo.barrelX + 80, geo.apexY);
+    ctx.stroke();
+
+    // Freccia altezza massima
+    ctx.setLineDash([]);
+    ctx.font = '700 13px "Inter", sans-serif';
+    ctx.fillStyle = '#16a34a';
+    ctx.fillText(`h = ${STATE.hMax.toFixed(2)} m (Apice)`, geo.barrelX + 45, geo.apexY - 8);
+
+    // Linea di compressione iniziale Δx
+    const dxY = geo.startY - STATE.dx * geo.pxPerMeter;
+    ctx.strokeStyle = '#ea580c';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(rulerX, dxY);
+    ctx.lineTo(geo.barrelX + 50, dxY);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+    ctx.font = '700 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#ea580c';
+    ctx.fillText(`Δx = ${(STATE.dx * 100).toFixed(0)} cm`, geo.barrelX + 45, (geo.startY + dxY) / 2 + 4);
+
+    ctx.restore();
+  }
+
+  drawGunAndSpring(ctx, geo) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    const barrelW = 34;
+    const barrelTopY = geo.startY - STATE.dx * geo.pxPerMeter - 10;
+    const barrelH = (geo.baseFloorY - barrelTopY);
+
+    // Canna trasparente con riflessi metallici
+    ctx.fillStyle = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(241, 245, 249, 0.6)';
+    ctx.fillRect(geo.barrelX - barrelW * 0.5, barrelTopY, barrelW, barrelH);
+
+    ctx.strokeStyle = isDark ? '#64748b' : '#94a3b8';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(geo.barrelX - barrelW * 0.5, barrelTopY, barrelW, barrelH);
+
+    // Base pesante di ancoraggio
+    ctx.fillStyle = isDark ? '#334155' : '#475569';
+    ctx.fillRect(geo.barrelX - 28, geo.baseFloorY - 10, 56, 10);
+
+    // Molla elicoidale all'interno della canna
+    const springBottomY = geo.startY;
+    const springTopY = geo.currentSpringHeadY;
+    const springLen = Math.max(10, springBottomY - springTopY);
+
+    const coils = 10;
+    const coilH = springLen / coils;
+    const coilW = 12;
+
+    ctx.strokeStyle = '#ea580c'; // Arancio molla
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    ctx.moveTo(geo.barrelX, springBottomY);
+
+    for (let i = 0; i < coils; i++) {
+      const y1 = springBottomY - (i + 0.5) * coilH;
+      const y2 = springBottomY - (i + 1.0) * coilH;
+      const xSign = (i % 2 === 0) ? 1 : -1;
+      ctx.lineTo(geo.barrelX + xSign * coilW, y1);
+      ctx.lineTo(geo.barrelX, y2);
+    }
+    ctx.stroke();
+
+    // Piattello della molla
+    ctx.fillStyle = isDark ? '#cbd5e1' : '#334155';
+    ctx.fillRect(geo.barrelX - 14, springTopY - 4, 28, 5);
+
+    ctx.restore();
+  }
+
+  drawBall(ctx, geo) {
+    ctx.save();
+    const r = 10;
+
+    ctx.translate(geo.barrelX, geo.ballY - r);
+
+    // Sfera con riflesso metallico azzurro/argento
+    const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.1, 0, 0, r);
+    grad.addColorStop(0, '#bae6fd');
+    grad.addColorStop(0.6, '#0284c7');
+    grad.addColorStop(1, '#0369a1');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Vettore velocità verticale v
+    if (geo.currentV > 0.2) {
+      const vScale = geo.currentV * 8;
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(r + 6, 0);
+      ctx.lineTo(r + 6, -vScale);
+      ctx.stroke();
+
+      this.drawArrowHead(ctx, r + 6, -vScale, -Math.PI / 2, 6, '#2563eb');
+
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#2563eb';
+      ctx.fillText(`v = ${geo.currentV.toFixed(1)} m/s`, r + 14, -vScale * 0.5);
+    }
+
+    ctx.restore();
+  }
+
+  drawEnergyBars(ctx, geo, W, H) {
+    ctx.save();
+    const isDark = document.body.classList.contains('dark-mode');
+
+    // Calcolo componenti di energia meccanica
+    const currentComp = Math.max(0, (geo.startY - geo.currentSpringHeadY) / geo.pxPerMeter);
+    const Uel = 0.5 * STATE.k * currentComp * currentComp;
+    const Ug = STATE.m * STATE.g * geo.currentH;
+    const K = 0.5 * STATE.m * geo.currentV * geo.currentV;
+    const Etot = Uel + Ug + K;
+
+    const panelX = W - 290;
+    const panelY = 16;
+    const panelW = 270;
+    const panelH = 120;
+
+    ctx.fillStyle = isDark ? 'rgba(19, 27, 46, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = '700 11px "Inter", sans-serif';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillText('BILANCIO ENERGETICO CONSERVATIVO', panelX + 12, panelY + 18);
+
+    const maxE = 0.50; // Joule scala
+    const barMaxW = 140;
+    const startBarsX = panelX + 50;
+
+    const drawSingleBar = (yOffset, label, val, color) => {
+      const bY = panelY + yOffset;
+      ctx.font = '700 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = color;
+      ctx.fillText(label, panelX + 12, bY + 11);
+
+      ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, barMaxW, 12, 3);
+      ctx.fill();
+
+      const w = Math.max(0, Math.min(barMaxW, (val / maxE) * barMaxW));
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(startBarsX, bY, w, 12, 3);
+      ctx.fill();
+
+      ctx.font = '600 11px "IBM Plex Mono", monospace';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      ctx.fillText(`${val.toFixed(2)} J`, startBarsX + barMaxW + 8, bY + 10);
+    };
+
+    drawSingleBar(28, 'Uel', Uel, '#ea580c');
+    drawSingleBar(48, 'K', K, '#2563eb');
+    drawSingleBar(68, 'Ug', Ug, '#16a34a');
+    drawSingleBar(90, 'Etot', Etot, '#7c3aed');
+
+    ctx.restore();
+  }
+
+  drawArrowHead(ctx, x, y, angle, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-size, -size * 0.5);
+    ctx.lineTo(-size, size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ──────────────── PENNA LIM FLUTTUANTE ──────────────── */
+class LimPenLayer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.active = false;
+    this.color = '#dc2626';
+    this.lineWidth = 5;
+    this.isDrawing = false;
+    this.strokes = [];
+    this.currentStroke = null;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const startDraw = (e) => {
+      if (!this.active) return;
+      e.preventDefault();
+      this.isDrawing = true;
+      const pos = getPos(e);
+      this.currentStroke = { color: this.color, width: this.lineWidth, points: [pos] };
+      this.strokes.push(this.currentStroke);
+      this.drawSegment(pos, pos);
+    };
+
+    const moveDraw = (e) => {
+      if (!this.active || !this.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      const pts = this.currentStroke.points;
+      const lastPos = pts[pts.length - 1];
+      pts.push(pos);
+      this.drawSegment(lastPos, pos);
+    };
+
+    const endDraw = () => {
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+
+    this.canvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', moveDraw, { passive: false });
+    window.addEventListener('touchend', endDraw);
+  }
+
+  drawSegment(p1, p2) {
+    this.ctx.strokeStyle = this.currentStroke.color;
+    this.ctx.lineWidth = this.currentStroke.width;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.beginPath();
+    this.ctx.moveTo(p1.x, p1.y);
+    this.ctx.lineTo(p2.x, p2.y);
+    this.ctx.stroke();
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.strokeStyle = stroke.color;
+      this.ctx.lineWidth = stroke.width;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+    }
+  }
+
+  clear() {
+    this.strokes = [];
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+/* ──────────────── FOGLIO BIANCO DIGITALE ──────────────── */
+class WhiteboardController {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    this.tool = 'pen';
+    this.color = '#dc2626';
+    this.size = 5;
+
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+
+    this.strokes = [];
+    this.currentStroke = null;
+    this.isDrawing = false;
+
+    this.selectedStroke = null;
+    this.isDraggingStroke = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+
+    this.initEvents();
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width * this.dpr;
+    this.canvas.height = rect.height * this.dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.redraw();
+  }
+
+  initEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        screenX: cx - rect.left,
+        screenY: cy - rect.top,
+        worldX: cx - rect.left - this.panX,
+        worldY: cy - rect.top - this.panY
+      };
+    };
+
+    const onPointerDown = (e) => {
+      const pos = getPos(e);
+
+      if (this.tool === 'pan') {
+        this.isPanning = true;
+        this.panStartX = pos.screenX - this.panX;
+        this.panStartY = pos.screenY - this.panY;
+        return;
+      }
+
+      if (this.tool === 'select') {
+        const found = this.hitTestStroke(pos.worldX, pos.worldY);
+        this.selectedStroke = found;
+        if (found) {
+          this.isDraggingStroke = true;
+          this.dragStartX = pos.worldX;
+          this.dragStartY = pos.worldY;
+        }
+        this.redraw();
+        return;
+      }
+
+      this.isDrawing = true;
+      this.currentStroke = {
+        tool: this.tool,
+        color: this.color,
+        size: this.size,
+        points: [{ x: pos.worldX, y: pos.worldY }]
+      };
+      this.strokes.push(this.currentStroke);
+      this.redraw();
+    };
+
+    const onPointerMove = (e) => {
+      const pos = getPos(e);
+
+      if (this.isPanning) {
+        this.panX = pos.screenX - this.panStartX;
+        this.panY = pos.screenY - this.panStartY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDraggingStroke && this.selectedStroke) {
+        const dx = pos.worldX - this.dragStartX;
+        const dy = pos.worldY - this.dragStartY;
+        for (const pt of this.selectedStroke.points) {
+          pt.x += dx;
+          pt.y += dy;
+        }
+        this.dragStartX = pos.worldX;
+        this.dragStartY = pos.worldY;
+        this.redraw();
+        return;
+      }
+
+      if (this.isDrawing && this.currentStroke) {
+        this.currentStroke.points.push({ x: pos.worldX, y: pos.worldY });
+        this.redraw();
+      }
+    };
+
+    const onPointerUp = () => {
+      this.isPanning = false;
+      this.isDraggingStroke = false;
+      this.isDrawing = false;
+      this.currentStroke = null;
+    };
+
+    this.canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    this.canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  hitTestStroke(wx, wy) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const stroke = this.strokes[i];
+      for (const p of stroke.points) {
+        const dist = Math.hypot(p.x - wx, p.y - wy);
+        if (dist < 15) return stroke;
+      }
+    }
+    return null;
+  }
+
+  redraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
+    for (const stroke of this.strokes) {
+      if (stroke.points.length < 2) continue;
+      this.ctx.save();
+      this.ctx.strokeStyle = (stroke.tool === 'eraser') ? '#ffffff' : stroke.color;
+      this.ctx.lineWidth = stroke.size;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      this.ctx.stroke();
+
+      if (stroke === this.selectedStroke) {
+        this.ctx.strokeStyle = '#2563eb';
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.stroke();
+      }
+      this.ctx.restore();
+    }
+
+    this.ctx.restore();
+  }
+
+  clear() {
+    this.strokes = [];
+    this.selectedStroke = null;
+    this.redraw();
+  }
+}
+
+/* ──────────────── GESTIONE EVENTI GLOBALI ──────────────── */
+let renderer = null;
+let limPen = null;
+let whiteboard = null;
+
+function togglePenMode() {
+  limPen.active = !limPen.active;
+  document.getElementById('limPenCanvas').classList.toggle('active', limPen.active);
+  document.getElementById('btnTogglePen').classList.toggle('active', limPen.active);
+  document.getElementById('limFloatingBar').classList.toggle('show', limPen.active);
+}
+
+function openWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.add('show');
+  setTimeout(() => whiteboard.resize(), 50);
+}
+
+function closeWhiteboard() {
+  document.getElementById('whiteboardOverlay').classList.remove('show');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function cycleFontSize() {
+  STATE.fontSizeLevel = (STATE.fontSizeLevel + 1) % 3;
+  document.body.classList.remove('text-scale-1', 'text-scale-2');
+  const btn = document.getElementById('btnScaleFont');
+  if (STATE.fontSizeLevel === 1) {
+    document.body.classList.add('text-scale-1');
+    btn.textContent = 'A++ Testo';
+  } else if (STATE.fontSizeLevel === 2) {
+    document.body.classList.add('text-scale-2');
+    btn.textContent = 'A Standard';
+  } else {
+    btn.textContent = 'A+ Testo';
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('btnToggleDark').textContent = isDark ? '☀️ Chiaro' : '🌙 Tema';
+}
+
+/* ──────────────── INIZIALIZZAZIONE DOM ──────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderer = new VectorRenderer('vecCanvas');
+  limPen = new LimPenLayer('limPenCanvas');
+  whiteboard = new WhiteboardController('wbCanvas');
+
+  renderer.resize();
+  limPen.resize();
+  whiteboard.resize();
+
+  window.addEventListener('resize', () => {
+    renderer.resize();
+    limPen.resize();
+    whiteboard.resize();
+  });
+
+  document.getElementById('btnTogglePen').addEventListener('click', togglePenMode);
+  document.getElementById('btnOpenWhiteboard').addEventListener('click', openWhiteboard);
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+  document.getElementById('btnScaleFont').addEventListener('click', cycleFontSize);
+  document.getElementById('btnToggleDark').addEventListener('click', toggleDarkMode);
+
+  document.getElementById('btnPrevStep').addEventListener('click', prevStep);
+  document.getElementById('btnNextStep').addEventListener('click', nextStep);
+  document.querySelectorAll('.step-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const step = parseInt(e.target.getAttribute('data-step'), 10);
+      setStep(step);
+    });
+  });
+
+  const btnPlay = document.getElementById('btnPlayPause');
+  btnPlay.addEventListener('click', () => {
+    STATE.isPlaying = !STATE.isPlaying;
+    btnPlay.textContent = STATE.isPlaying ? '⏸ Sospendi' : '▶ Spara Pallina';
+  });
+
+  document.getElementById('btnResetSim').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Spara Pallina';
+  });
+
+  const btnSlow = document.getElementById('btnSlowMo');
+  btnSlow.addEventListener('click', () => {
+    STATE.isSlowMo = !STATE.isSlowMo;
+    btnSlow.classList.toggle('active', STATE.isSlowMo);
+    btnSlow.textContent = STATE.isSlowMo ? '🐇 Normale' : '🐢 Rallentatore';
+  });
+
+  document.getElementById('btnGoState0').addEventListener('click', () => {
+    STATE.simProgress = 0.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Spara Pallina';
+  });
+  document.getElementById('btnGoMuzzle').addEventListener('click', () => {
+    STATE.simProgress = 0.25;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Spara Pallina';
+  });
+  document.getElementById('btnGoApex').addEventListener('click', () => {
+    STATE.simProgress = 1.0;
+    STATE.isPlaying = false;
+    btnPlay.textContent = '▶ Spara Pallina';
+  });
+
+  document.querySelectorAll('.lim-color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+      e.target.classList.add('active');
+      limPen.color = e.target.getAttribute('data-color');
+      limPen.lineWidth = 5;
+    });
+  });
+
+  document.getElementById('btnLimEraser').addEventListener('click', () => {
+    limPen.color = document.body.classList.contains('dark-mode') ? '#0f172a' : '#ffffff';
+    limPen.lineWidth = 20;
+  });
+
+  document.getElementById('btnLimClear').addEventListener('click', () => limPen.clear());
+  document.getElementById('btnLimClose').addEventListener('click', togglePenMode);
+
+  // Floating LIM bar drag
+  const bar = document.getElementById('limFloatingBar');
+  const handle = document.getElementById('limDragHandle');
+  let isDraggingBar = false;
+  let barStartX = 0, barStartY = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    isDraggingBar = true;
+    barStartX = e.clientX - bar.offsetLeft;
+    barStartY = e.clientY - bar.offsetTop;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingBar) return;
+    bar.style.left = (e.clientX - barStartX) + 'px';
+    bar.style.top = (e.clientY - barStartY) + 'px';
+    bar.style.right = 'auto';
+  });
+  window.addEventListener('mouseup', () => { isDraggingBar = false; });
+
+  // Whiteboard buttons
+  document.getElementById('btnWbClose').addEventListener('click', closeWhiteboard);
+  document.getElementById('btnWbClear').addEventListener('click', () => whiteboard.clear());
+  document.getElementById('btnWbToolPen').addEventListener('click', (e) => {
+    whiteboard.tool = 'pen';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolEraser').addEventListener('click', (e) => {
+    whiteboard.tool = 'eraser';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolPan').addEventListener('click', (e) => {
+    whiteboard.tool = 'pan';
+    setWbActiveTool(e.target);
+  });
+  document.getElementById('btnWbToolSelect').addEventListener('click', (e) => {
+    whiteboard.tool = 'select';
+    setWbActiveTool(e.target);
+  });
+
+  function setWbActiveTool(btn) {
+    ['btnWbToolPen', 'btnWbToolEraser', 'btnWbToolPan', 'btnWbToolSelect'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    btn.classList.add('active');
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toUpperCase();
+    if (key === 'ARROWLEFT') prevStep();
+    if (key === 'ARROWRIGHT') nextStep();
+    if (key === 'P') togglePenMode();
+    if (key === 'W') {
+      const ov = document.getElementById('whiteboardOverlay');
+      if (ov.classList.contains('show')) closeWhiteboard();
+      else openWhiteboard();
+    }
+    if (key === 'F') toggleFullscreen();
+    if (key === 'ESCAPE') {
+      closeWhiteboard();
+      if (limPen.active) togglePenMode();
+    }
+  });
+
+  setStep(1);
+});
+</script>
+</body>
+</html>

@@ -652,6 +652,31 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/esercizio-meccanica-4.html"
                   }
                 ]
+              },
+              {
+                title: "🔥 L'Energia Totale e la Dissipazione — Problemi Guidati (Pag. 372 - 373)",
+                topics: [
+                  {
+                    title: "🏀 Problema 82: Il Rimbalzo del Pallone da Basket e la Dissipazione (Pag. 372)",
+                    desc: "Caduta da h₁ = 1,30 m e risalita a h₂ = 0,80 m per un pallone da 600 g. Calcolo dell'energia meccanica trasformata in calore e deformazione (E_diss = 2,9 J, pari al 38,5% dell'energia iniziale).",
+                    url: "/fisica/giordano-bruno/esercizio-totale-1.html"
+                  },
+                  {
+                    title: "🪂 Problema 83: Il Salto col Parapendio dalla Rupe di 500 m (Pag. 372)",
+                    desc: "Volo di Davide (90 kg) da h₀ = 500 m con atterraggio a v_f = 5,0 m/s. Dimostrazione della dissipazione del 99,7% dell'energia meccanica iniziale per attrito viscoso dell'aria (ΔE = 4,4 · 10⁵ J).",
+                    url: "/fisica/giordano-bruno/esercizio-totale-2.html"
+                  },
+                  {
+                    title: "🎯 Problema 94: Il Fucile a Molla e il Lancio Verticale (Pag. 373)",
+                    desc: "Molla compressa di Δx = 20 cm (k = 20 N/m) che spara una pallina da 25 g. Conversione integrale da energia elastica (0,40 J) a potenziale gravitazionale per raggiungere la quota massima h = 1,6 m.",
+                    url: "/fisica/giordano-bruno/esercizio-totale-3.html"
+                  },
+                  {
+                    title: "🎢 Problema 96: Il Roller Coaster sui Due Giri della Morte con Attrito (Pag. 373)",
+                    desc: "Treno da 2300 kg dal punto A (43 m, 20 m/s) al punto B (34 m, 17 m/s) attraverso il primo loop. Calcolo del lavoro resistente negativo compiuto dalle forze di attrito (W_attr = -3,3 · 10⁵ J).",
+                    url: "/fisica/giordano-bruno/esercizio-totale-4.html"
+                  }
+                ]
               }
             ]
 
