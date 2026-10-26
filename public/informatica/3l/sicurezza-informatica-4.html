@@ -905,54 +905,48 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   inset: 0;
   z-index: 900;
   flex-direction: column;
-  background: #ffffff;
+  background: #0f172a;
 }
 .whiteboard-overlay.show {
   display: flex;
 }
 
-.whiteboard-overlay.bg-white {
-  background: #ffffff;
-}
-.whiteboard-overlay.bg-grid {
-  background-color: #ffffff;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
-.whiteboard-overlay.bg-dark {
-  background-color: #0b1118;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
-
 .wb-header {
   height: 58px;
+  min-height: 58px;
   background: #0f172a;
   border-bottom: 2px solid #334155;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
+  padding: 0 14px;
   z-index: 10;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+  gap: 8px;
+}
+.wb-header::-webkit-scrollbar {
+  display: none;
 }
 
 .wb-header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-title {
   font-family: var(--fv);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   letter-spacing: 1px;
   color: #38bdf8;
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  white-space: nowrap;
 }
 .wb-slide-tag {
   font-family: var(--fm);
@@ -962,28 +956,57 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid #334155;
+  white-space: nowrap;
+}
+.wb-pan-badge {
+  font-family: var(--fm);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.wb-pan-badge:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+.wb-pan-badge.panned {
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.25);
+  border-color: #0284c7;
 }
 
 .wb-tools {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-group {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-sep {
   width: 1px;
   height: 24px;
   background: #334155;
   margin: 0 3px;
+  flex-shrink: 0;
 }
 
 .wb-tool-btn {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   border: 1.5px solid rgba(255, 255, 255, 0.2);
@@ -994,6 +1017,8 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
 }
 .wb-tool-btn:hover {
   background: rgba(255, 255, 255, 0.22);
@@ -1007,10 +1032,13 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 .wb-color {
   width: 24px;
   height: 24px;
+  min-width: 24px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
 }
 .wb-color:hover {
   transform: scale(1.15);
@@ -1024,6 +1052,7 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 .wb-size-btn {
   width: 28px;
   height: 28px;
+  min-width: 28px;
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1032,6 +1061,8 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
 }
 .wb-size-btn:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -1057,6 +1088,8 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-btn-text:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -1066,6 +1099,7 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   background: #0284c7;
   color: #ffffff;
   border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
 .wb-btn-action {
@@ -1074,12 +1108,16 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .wb-btn-action:hover {
   background: rgba(255, 255, 255, 0.25);
@@ -1087,6 +1125,11 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
 .wb-btn-action.danger:hover {
   background: #ef4444;
   border-color: #ef4444;
+}
+
+.wb-header-right {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .btn-close-wb {
@@ -1105,38 +1148,65 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
   gap: 8px;
   transition: all 0.15s ease;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .btn-close-wb:hover {
   background: #dc2626;
   transform: translateY(-1px);
 }
 
+/* Area Foglio / Canvas e sfondi pannabili */
 .whiteboard-body {
   flex: 1;
   position: relative;
   width: 100%;
   height: calc(100vh - 58px);
-  cursor: crosshair;
   overflow: hidden;
-}
-#whiteboardCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
   touch-action: none;
 }
+.whiteboard-body.bg-white {
+  background-color: #ffffff;
+  background-image: none;
+}
+.whiteboard-body.bg-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.whiteboard-body.bg-dark {
+  background-color: #0b1118;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
 
-
-/* Scala Caratteri LIM */
-body.font-scale-1 .slide p,
-body.font-scale-1 ul.pts li,
-body.font-scale-1 .steps li{font-size:1.35rem!important}
-body.font-scale-1 .ctitle{font-size:1.6rem!important}
-body.font-scale-2 .slide p,
-body.font-scale-2 ul.pts li,
-body.font-scale-2 .steps li{font-size:1.5rem!important}
-body.font-scale-2 .ctitle{font-size:1.75rem!important}
-
+#whiteboardCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+#whiteboardCanvas.tool-hand {
+  cursor: grab;
+}
+#whiteboardCanvas.tool-hand.grabbing,
+#whiteboardCanvas.grabbing {
+  cursor: grabbing !important;
+}
+#whiteboardCanvas.tool-select {
+  cursor: default;
+}
+#whiteboardCanvas.tool-select.dragging,
+#whiteboardCanvas.dragging {
+  cursor: grabbing !important;
+}
 </style>
 </head>
 <body>
@@ -2265,18 +2335,32 @@ initTheme();
 <!-- ============================================================
      OVERLAY FOGLIO BIANCO / LAVAGNA BIANCA PER LA LIM
      ============================================================ -->
-<div id="whiteboardOverlay" class="whiteboard-overlay bg-white">
+<div id="whiteboardOverlay" class="whiteboard-overlay">
   <div class="wb-header">
     <div class="wb-header-left">
       <span class="wb-title">📄 FOGLIO BIANCO APPUNTI</span>
       <span class="wb-slide-tag" id="wbCurrentSlideTag">Slide 01: COPERTINA</span>
+      <span class="wb-pan-badge" id="wbPanBadge" onclick="resetWbPan()" title="Visuale corrente. Clicca per ricentrare (0, 0)">
+        🧭 (0, 0)
+      </span>
     </div>
 
     <div class="wb-tools">
       <div class="wb-group">
-        <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="Penna normale">✏️</button>
-        <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="Evidenziatore">🖍️</button>
-        <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="Gomma per cancellare">🧽</button>
+        <button class="wb-tool-btn active" id="wbToolPen" onclick="setWbTool('pen')" title="✏️ Penna normale">✏️</button>
+        <button class="wb-tool-btn" id="wbToolHighlighter" onclick="setWbTool('highlighter')" title="🖍️ Evidenziatore">🖍️</button>
+        <button class="wb-tool-btn" id="wbToolEraser" onclick="setWbTool('eraser')" title="🧽 Gomma per cancellare">🧽</button>
+        <button class="wb-tool-btn" id="wbToolSelect" onclick="setWbTool('select')" title="🖐️ Sposta / Seleziona elementi disegnati">🖐️</button>
+        <button class="wb-tool-btn" id="wbToolHand" onclick="setWbTool('hand')" title="✋ Manina Pan (trascina per spostarti nel foglio)">✋</button>
+      </div>
+
+      <div class="wb-sep"></div>
+
+      <!-- Ricentra se spostato -->
+      <div class="wb-group">
+        <button class="wb-btn-text" id="wbBtnRecenter" onclick="resetWbPan()" title="Ricentra la visuale del foglio a coordinate (0, 0)">
+          🎯 Centra
+        </button>
       </div>
 
       <div class="wb-sep"></div>
@@ -2288,6 +2372,7 @@ initTheme();
         <button class="wb-color" style="background:#16a34a" data-color="#16a34a" onclick="setWbColor('#16a34a')" title="Verde"></button>
         <button class="wb-color" style="background:#d97706" data-color="#d97706" onclick="setWbColor('#d97706')" title="Ambra / Arancione"></button>
         <button class="wb-color" style="background:#9333ea" data-color="#9333ea" onclick="setWbColor('#9333ea')" title="Viola"></button>
+        <button class="wb-color" style="background:#ffffff; border:1.5px solid #94a3b8;" data-color="#ffffff" onclick="setWbColor('#ffffff')" title="Bianco"></button>
       </div>
 
       <div class="wb-sep"></div>
@@ -2310,6 +2395,7 @@ initTheme();
 
       <div class="wb-group">
         <button class="wb-btn-action" onclick="undoWbStroke()" title="Annulla ultimo tratto (Ctrl+Z)">↩️</button>
+        <button class="wb-btn-action danger" id="wbBtnDeleteSelected" onclick="deleteSelectedWbStroke()" title="Elimina elemento selezionato" style="display:none;">🗑️ Elimina</button>
         <button class="wb-btn-action danger" onclick="clearWbStrokes()" title="Cancella tutto il foglio">🗑️ Pulisci</button>
       </div>
     </div>
@@ -2321,10 +2407,11 @@ initTheme();
     </div>
   </div>
 
-  <div class="whiteboard-body" id="whiteboardBody">
+  <div class="whiteboard-body bg-white" id="whiteboardBody">
     <canvas id="whiteboardCanvas"></canvas>
   </div>
 </div>
+
 
 <!-- ============================================================
      SCRIPT MOTORE LIM (GLOBAL SCOPE)
@@ -2553,14 +2640,32 @@ class WhiteboardLayer {
     this.dpr = window.devicePixelRatio || 1;
 
     this.isOpen = false;
-    this.currentTool = 'pen';
+    this.currentTool = 'pen'; // 'pen', 'highlighter', 'eraser', 'select', 'hand'
     this.currentColor = '#0f172a';
     this.currentSize = 6;
     this.bgMode = 'white';
 
+    // Coordinate di Pan (Manina)
+    this.panX = 0;
+    this.panY = 0;
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+    this.initialPanX = 0;
+    this.initialPanY = 0;
+    this.spacePressed = false;
+
+    // Tratti conservati in coordinate mondo
     this.strokes = [];
     this.currentStroke = null;
     this.isDrawing = false;
+
+    // Gestione Sposta / Seleziona in coordinate mondo
+    this.selectedStroke = null;
+    this.isDraggingObject = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.initialPoints = [];
 
     this.initEvents();
   }
@@ -2568,13 +2673,69 @@ class WhiteboardLayer {
   resize() {
     const body = document.getElementById('whiteboardBody');
     if (!body || !this.canvas) return;
+    this.dpr = window.devicePixelRatio || 1;
     const rect = body.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
     this.width = rect.width;
     this.height = rect.height;
-    this.canvas.width = this.width * this.dpr;
-    this.canvas.height = this.height * this.dpr;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.redraw();
+  }
+
+  getPoint(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      screenX: e.clientX - rect.left,
+      screenY: e.clientY - rect.top,
+      worldX: (e.clientX - rect.left) - this.panX,
+      worldY: (e.clientY - rect.top) - this.panY
+    };
+  }
+
+  computeBBox(stroke) {
+    if (!stroke.points || stroke.points.length === 0) {
+      return { minX: 0, minY: 0, maxX: 0, maxY: 0, width: 0, height: 0 };
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const pad = Math.max((stroke.size || 6) / 2, 6);
+    for (const p of stroke.points) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    return {
+      minX: minX - pad,
+      minY: minY - pad,
+      maxX: maxX + pad,
+      maxY: maxY + pad,
+      width: (maxX - minX) + pad * 2,
+      height: (maxY - minY) + pad * 2
+    };
+  }
+
+  findStrokeAt(worldX, worldY) {
+    for (let i = this.strokes.length - 1; i >= 0; i--) {
+      const s = this.strokes[i];
+      if (s.tool === 'eraser') continue;
+      if (!s.bbox) s.bbox = this.computeBBox(s);
+      const b = s.bbox;
+      const pad = 16;
+      if (worldX >= b.minX - pad && worldX <= b.maxX + pad && worldY >= b.minY - pad && worldY <= b.maxY + pad) {
+        const thresh = Math.max(16, (s.size || 6) * 1.5);
+        for (let j = 0; j < s.points.length; j++) {
+          if (Math.hypot(s.points[j].x - worldX, s.points[j].y - worldY) <= thresh) {
+            return s;
+          }
+        }
+        if (b.width <= 50 && b.height <= 50) {
+          return s;
+        }
+      }
+    }
+    return null;
   }
 
   initEvents() {
@@ -2582,54 +2743,205 @@ class WhiteboardLayer {
       if (this.isOpen) this.resize();
     });
 
-    this.canvas.addEventListener('pointerdown', (e) => {
-      if (!this.isOpen || e.button !== 0) return;
-      e.preventDefault();
-      this.isDrawing = true;
-      this.canvas.setPointerCapture(e.pointerId);
+    window.addEventListener('keydown', (e) => {
+      if (!this.isOpen) return;
+      if (e.code === 'Space' && !this.spacePressed && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        this.spacePressed = true;
+        this.canvas.classList.add('tool-hand');
+      }
+      if (e.key === 'Escape') {
+        this.close();
+      }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && this.selectedStroke) {
+        this.deleteSelected();
+      }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+        e.preventDefault();
+        this.undo();
+      }
+    });
 
-      const rect = this.canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    window.addEventListener('keyup', (e) => {
+      if (!this.isOpen) return;
+      if (e.code === 'Space' && this.spacePressed) {
+        this.spacePressed = false;
+        if (!this.isPanning && this.currentTool !== 'hand') {
+          this.canvas.classList.remove('tool-hand');
+        }
+      }
+    });
+
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.isOpen) return;
+      const isMiddleClick = e.button === 1;
+      const isLeftClick = e.button === 0;
+      if (!isLeftClick && !isMiddleClick) return;
+
+      e.preventDefault();
+      this.canvas.setPointerCapture(e.pointerId);
+      const pt = this.getPoint(e);
+
+      // 1. MANINA (PAN)
+      if (this.currentTool === 'hand' || isMiddleClick || this.spacePressed) {
+        this.isPanning = true;
+        this.panStartX = e.clientX;
+        this.panStartY = e.clientY;
+        this.initialPanX = this.panX;
+        this.initialPanY = this.panY;
+        this.canvas.classList.add('grabbing');
+        return;
+      }
+
+      // 2. SPOSTA / SELEZIONA
+      if (this.currentTool === 'select') {
+        if (this.selectedStroke && this.selectedStroke.bbox) {
+          const b = this.selectedStroke.bbox;
+          const pad = 14;
+          if (pt.worldX >= b.minX - pad && pt.worldX <= b.maxX + pad && pt.worldY >= b.minY - pad && pt.worldY <= b.maxY + pad) {
+            this.isDraggingObject = true;
+            this.dragStartX = pt.worldX;
+            this.dragStartY = pt.worldY;
+            this.initialPoints = this.selectedStroke.points.map(p => ({ x: p.x, y: p.y }));
+            this.canvas.classList.add('dragging');
+            return;
+          }
+        }
+
+        const hit = this.findStrokeAt(pt.worldX, pt.worldY);
+        if (hit) {
+          this.selectedStroke = hit;
+          this.isDraggingObject = true;
+          this.dragStartX = pt.worldX;
+          this.dragStartY = pt.worldY;
+          this.initialPoints = hit.points.map(p => ({ x: p.x, y: p.y }));
+          this.canvas.classList.add('dragging');
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        } else {
+          this.selectedStroke = null;
+          this.updateDeleteButtonVisibility();
+          this.redraw();
+        }
+        return;
+      }
+
+      // 3. DISEGNO
+      this.isDrawing = true;
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
 
       this.currentStroke = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         tool: this.currentTool,
         color: this.currentColor,
         size: this.currentSize,
         opacity: this.currentTool === 'highlighter' ? 0.35 : 1.0,
-        points: [{ x, y }]
+        points: [{ x: pt.worldX, y: pt.worldY }]
       };
 
-      this.drawPoint(x, y, this.currentStroke);
+      this.redraw();
     });
 
     this.canvas.addEventListener('pointermove', (e) => {
+      if (!this.isOpen) return;
+      const pt = this.getPoint(e);
+
+      // Pan con la manina
+      if (this.isPanning) {
+        e.preventDefault();
+        this.panX = this.initialPanX + (e.clientX - this.panStartX);
+        this.panY = this.initialPanY + (e.clientY - this.panStartY);
+        this.updatePanDisplay();
+        this.redraw();
+        return;
+      }
+
+      // Sposta oggetto selezionato
+      if (this.currentTool === 'select') {
+        if (this.isDraggingObject && this.selectedStroke) {
+          e.preventDefault();
+          const dx = pt.worldX - this.dragStartX;
+          const dy = pt.worldY - this.dragStartY;
+          for (let i = 0; i < this.selectedStroke.points.length; i++) {
+            this.selectedStroke.points[i].x = this.initialPoints[i].x + dx;
+            this.selectedStroke.points[i].y = this.initialPoints[i].y + dy;
+          }
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+          this.redraw();
+        }
+        return;
+      }
+
+      // Disegno
       if (!this.isDrawing || !this.currentStroke) return;
       e.preventDefault();
-      const rect = this.canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
       const pts = this.currentStroke.points;
       const lastPt = pts[pts.length - 1];
 
-      if (Math.hypot(x - lastPt.x, y - lastPt.y) >= 2) {
-        pts.push({ x, y });
-        this.drawSegment(lastPt, { x, y }, this.currentStroke);
+      if (Math.hypot(pt.worldX - lastPt.x, pt.worldY - lastPt.y) >= 2) {
+        pts.push({ x: pt.worldX, y: pt.worldY });
+        this.redraw();
       }
     });
 
-    const endDraw = () => {
-      if (!this.isDrawing) return;
-      this.isDrawing = false;
-      if (this.currentStroke && this.currentStroke.points.length > 0) {
-        this.strokes.push(this.currentStroke);
+    const endAction = () => {
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.classList.remove('grabbing');
+        if (this.spacePressed) {
+          if (this.currentTool !== 'hand') {
+            this.canvas.classList.remove('tool-hand');
+          }
+        }
       }
-      this.currentStroke = null;
+
+      if (this.isDraggingObject) {
+        this.isDraggingObject = false;
+        this.canvas.classList.remove('dragging');
+        if (this.selectedStroke) {
+          this.selectedStroke.bbox = this.computeBBox(this.selectedStroke);
+        }
+        this.redraw();
+      }
+
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        if (this.currentStroke && this.currentStroke.points.length > 0) {
+          this.currentStroke.bbox = this.computeBBox(this.currentStroke);
+          this.strokes.push(this.currentStroke);
+        }
+        this.currentStroke = null;
+        this.redraw();
+      }
     };
 
-    this.canvas.addEventListener('pointerup', endDraw);
-    this.canvas.addEventListener('pointercancel', endDraw);
+    this.canvas.addEventListener('pointerup', endAction);
+    this.canvas.addEventListener('pointercancel', endAction);
+  }
+
+  updatePanDisplay() {
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.style.backgroundPosition = `${this.panX}px ${this.panY}px`;
+    }
+    const badge = document.getElementById('wbPanBadge');
+    if (badge) {
+      const signX = this.panX >= 0 ? '+' : '';
+      const signY = this.panY >= 0 ? '+' : '';
+      badge.textContent = `🧭 (${signX}${Math.round(this.panX)}, ${signY}${Math.round(this.panY)})`;
+      badge.classList.toggle('panned', this.panX !== 0 || this.panY !== 0);
+    }
+    const btnRecenter = document.getElementById('wbBtnRecenter');
+    if (btnRecenter) {
+      btnRecenter.classList.toggle('active', this.panX !== 0 || this.panY !== 0);
+    }
+  }
+
+  resetPan() {
+    this.panX = 0;
+    this.panY = 0;
+    this.updatePanDisplay();
+    this.redraw();
   }
 
   drawPoint(x, y, stroke) {
@@ -2638,13 +2950,13 @@ class WhiteboardLayer {
     if (stroke.tool === 'eraser') {
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      ctx.arc(x, y, stroke.size * 2.5, 0, Math.PI * 2);
+      ctx.arc(x, y, stroke.size * 2.8, 0, Math.PI * 2);
       ctx.fill();
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = stroke.color;
       ctx.globalAlpha = stroke.opacity;
-      const r = stroke.tool === 'highlighter' ? stroke.size * 1.2 : stroke.size / 2;
+      const r = stroke.tool === 'highlighter' ? stroke.size * 1.3 : stroke.size / 2;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
@@ -2660,7 +2972,7 @@ class WhiteboardLayer {
 
     if (stroke.tool === 'eraser') {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.lineWidth = stroke.size * 5.0;
+      ctx.lineWidth = stroke.size * 5.5;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
@@ -2669,7 +2981,7 @@ class WhiteboardLayer {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = stroke.color;
       ctx.globalAlpha = stroke.opacity;
-      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.6 : stroke.size;
+      ctx.lineWidth = stroke.tool === 'highlighter' ? stroke.size * 2.5 : stroke.size;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
@@ -2678,8 +2990,61 @@ class WhiteboardLayer {
     ctx.restore();
   }
 
+  drawSelectionBox(stroke) {
+    if (!stroke || !stroke.bbox) return;
+    const b = stroke.bbox;
+    const ctx = this.ctx;
+    ctx.save();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.08)';
+    ctx.fillRect(b.minX, b.minY, b.width, b.height);
+
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    const h = 8;
+    const corners = [
+      { x: b.minX, y: b.minY },
+      { x: b.maxX, y: b.minY },
+      { x: b.minX, y: b.maxY },
+      { x: b.maxX, y: b.maxY }
+    ];
+    for (const c of corners) {
+      ctx.fillRect(c.x - h / 2, c.y - h / 2, h, h);
+      ctx.strokeRect(c.x - h / 2, c.y - h / 2, h, h);
+    }
+
+    const text = "🖐️ Trascina per spostare";
+    ctx.font = 'bold 11px sans-serif';
+    const textW = ctx.measureText(text).width;
+    const pillW = textW + 16;
+    const pillH = 20;
+    const pillX = Math.max(6, b.minX);
+    const pillY = Math.max(22, b.minY - 6);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(pillX, pillY - pillH, pillW, pillH, 5);
+    else ctx.rect(pillX, pillY - pillH, pillW, pillH);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(text, pillX + 8, pillY - 5);
+
+    ctx.restore();
+  }
+
   redraw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.save();
+    this.ctx.translate(this.panX, this.panY);
+
     for (const stroke of this.strokes) {
       if (stroke.points.length === 1) {
         this.drawPoint(stroke.points[0].x, stroke.points[0].y, stroke);
@@ -2689,18 +3054,114 @@ class WhiteboardLayer {
         }
       }
     }
+
+    if (this.currentStroke) {
+      if (this.currentStroke.points.length === 1) {
+        this.drawPoint(this.currentStroke.points[0].x, this.currentStroke.points[0].y, this.currentStroke);
+      } else {
+        for (let i = 1; i < this.currentStroke.points.length; i++) {
+          this.drawSegment(this.currentStroke.points[i - 1], this.currentStroke.points[i], this.currentStroke);
+        }
+      }
+    }
+
+    if (this.selectedStroke) {
+      this.drawSelectionBox(this.selectedStroke);
+    }
+
+    this.ctx.restore();
+  }
+
+  deleteSelected() {
+    if (!this.selectedStroke) return;
+    const idx = this.strokes.indexOf(this.selectedStroke);
+    if (idx !== -1) {
+      this.strokes.splice(idx, 1);
+    }
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.redraw();
+  }
+
+  updateDeleteButtonVisibility() {
+    const btn = document.getElementById('wbBtnDeleteSelected');
+    if (btn) {
+      btn.style.display = this.selectedStroke ? 'inline-flex' : 'none';
+    }
   }
 
   undo() {
     if (this.strokes.length > 0) {
       this.strokes.pop();
+      this.selectedStroke = null;
+      this.updateDeleteButtonVisibility();
       this.redraw();
     }
   }
 
   clear() {
     this.strokes = [];
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
     this.redraw();
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
+    this.canvas.classList.remove('tool-hand', 'grabbing', 'tool-select', 'dragging');
+    if (tool === 'hand') {
+      this.canvas.classList.add('tool-hand');
+    } else if (tool === 'select') {
+      this.canvas.classList.add('tool-select');
+    }
+    ['pen', 'highlighter', 'eraser', 'select', 'hand'].forEach(t => {
+      const btn = document.getElementById('wbTool' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.classList.toggle('active', t === tool);
+    });
+    this.redraw();
+  }
+
+  setColor(color) {
+    this.currentColor = color;
+    if (this.currentTool === 'eraser' || this.currentTool === 'select' || this.currentTool === 'hand') {
+      this.setTool('pen');
+    }
+    document.querySelectorAll('#wbColorGroup .wb-color').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-color') === color);
+    });
+  }
+
+  setSize(size) {
+    this.currentSize = size;
+    [3, 6, 14].forEach(s => {
+      const btn = document.getElementById('wbSize' + s);
+      if (btn) btn.classList.toggle('active', s === size);
+    });
+  }
+
+  setBg(mode) {
+    this.bgMode = mode;
+    const body = document.getElementById('whiteboardBody');
+    if (body) {
+      body.className = `whiteboard-body bg-${mode}`;
+    }
+    ['white', 'grid', 'dark'].forEach(m => {
+      const btn = document.getElementById('wbBgBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) btn.classList.toggle('active', m === mode);
+    });
+
+    if (mode === 'dark') {
+      if (this.currentColor === '#0f172a') {
+        this.setColor('#38bdf8');
+      }
+    } else {
+      if (this.currentColor === '#ffffff') {
+        this.setColor('#0f172a');
+      }
+    }
+    this.updatePanDisplay();
   }
 
   open() {
@@ -2712,29 +3173,16 @@ class WhiteboardLayer {
       const label = (typeof labels !== 'undefined' && labels[cur]) ? labels[cur] : '';
       tag.textContent = 'Slide ' + slideNum + (label ? ': ' + label : '');
     }
-    setTimeout(() => this.resize(), 50);
+    this.updatePanDisplay();
+    this.resize();
+    requestAnimationFrame(() => this.resize());
   }
 
   close() {
     this.isOpen = false;
     this.overlay.classList.remove('show');
-  }
-
-  setBg(mode) {
-    this.bgMode = mode;
-    this.overlay.classList.remove('bg-white', 'bg-grid', 'bg-dark');
-    this.overlay.classList.add('bg-' + mode);
-
-    document.querySelectorAll('.wb-btn-text').forEach(b => b.classList.remove('active'));
-    if (mode === 'white') document.getElementById('wbBgBtnWhite').classList.add('active');
-    if (mode === 'grid') document.getElementById('wbBgBtnGrid').classList.add('active');
-    if (mode === 'dark') document.getElementById('wbBgBtnDark').classList.add('active');
-
-    if (mode === 'dark' && this.currentColor === '#0f172a') {
-      window.setWbColor('#ffffff');
-    } else if (mode !== 'dark' && this.currentColor === '#ffffff') {
-      window.setWbColor('#0f172a');
-    }
+    this.selectedStroke = null;
+    this.updateDeleteButtonVisibility();
   }
 }
 
@@ -2805,29 +3253,15 @@ window.closeWhiteboard = function() {
 };
 
 window.setWbTool = function(tool) {
-  if (!window.whiteboardLayer) return;
-  window.whiteboardLayer.currentTool = tool;
-  document.querySelectorAll('.wb-tool-btn').forEach(b => b.classList.remove('active'));
-  if (tool === 'pen') document.getElementById('wbToolPen').classList.add('active');
-  if (tool === 'highlighter') document.getElementById('wbToolHighlighter').classList.add('active');
-  if (tool === 'eraser') document.getElementById('wbToolEraser').classList.add('active');
+  if (window.whiteboardLayer) window.whiteboardLayer.setTool(tool);
 };
 
 window.setWbColor = function(color) {
-  if (!window.whiteboardLayer) return;
-  window.whiteboardLayer.currentColor = color;
-  if (window.whiteboardLayer.currentTool === 'eraser') window.setWbTool('pen');
-  document.querySelectorAll('.wb-color').forEach(s => {
-    s.classList.toggle('active', s.dataset.color === color);
-  });
+  if (window.whiteboardLayer) window.whiteboardLayer.setColor(color);
 };
 
 window.setWbSize = function(size) {
-  if (!window.whiteboardLayer) return;
-  window.whiteboardLayer.currentSize = size;
-  document.querySelectorAll('.wb-size-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('wbSize' + size);
-  if (btn) btn.classList.add('active');
+  if (window.whiteboardLayer) window.whiteboardLayer.setSize(size);
 };
 
 window.setWbBg = function(mode) {
@@ -2840,6 +3274,14 @@ window.undoWbStroke = function() {
 
 window.clearWbStrokes = function() {
   if (window.whiteboardLayer) window.whiteboardLayer.clear();
+};
+
+window.deleteSelectedWbStroke = function() {
+  if (window.whiteboardLayer) window.whiteboardLayer.deleteSelected();
+};
+
+window.resetWbPan = function() {
+  if (window.whiteboardLayer) window.whiteboardLayer.resetPan();
 };
 
 window.toggleFullscreen = function() {
