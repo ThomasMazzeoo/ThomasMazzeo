@@ -1222,7 +1222,7 @@ const stepData = [
       <div class="pedagogy-box highlight">
         <div class="box-title">⚖️ CONFRONTO DEI DUE LAVORI</div>
         Confrontiamo il rapporto tra i due lavori:
-        $$\\frac{W_2}{W_1} = \\frac{166{,}7\\text{ kJ}}{129{,}6\\text{ kJ}} \\approx 1{,}286 \\approx \\mathbf{+31\%}$$
+        $$\\frac{W_2}{W_1} = \\frac{166{,}7\\text{ kJ}}{129{,}6\\text{ kJ}} \\approx 1{,}286 \\approx \\mathbf{+31}\\%$$
         Anche se l'incremento di velocità è identico (\\(\\Delta v = +20\\text{ km/h}\\)), il secondo scatto richiede quasi un terzo in più di energia e di carburante!
       </div>
 
@@ -1435,8 +1435,8 @@ class VectorRenderer {
 
     // AREA GRAFICA COMPARATIVA IN BASSO (ISTOGRAMMA DELL'ENERGIA CINETICA)
     const baseBarY = 160;
-    const barW = 60;
-    const spacing = 110;
+    const barW = 50;
+    const spacing = 125;
 
     // Assi per il grafico energetico
     const axisColor = isDark ? '#94a3b8' : '#475569';
@@ -1452,25 +1452,24 @@ class VectorRenderer {
     const hK2 = (K2 / 1000) * scaleK; // 296.3 * 0.4 = 118.5 px
     const hK3 = (K3 / 1000) * scaleK; // 463.0 * 0.4 = 185.2 px
 
-    const xBar1 = -130;
-    const xBar2 = -20;
-    const xBar3 = 90;
+    const xBar1 = -150;
+    const xBar2 = -25;
+    const xBar3 = 100;
 
     // Barra 1: K1 (60 km/h)
     this.drawEnergyBar(xBar1, baseBarY, barW, hK1, '#0284c7', 'K₁', '167 kJ');
-    this.drawTextDirect('60 km/h', xBar1 + 6, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+    this.drawTextDirect('60 km/h', xBar1 + 3, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
 
     // Barra 2: K2 (80 km/h)
     if (step >= 2) {
       const currH2 = step === 3 ? hK1 + (hK2 - hK1) * progress : hK2;
       this.drawEnergyBar(xBar2, baseBarY, barW, currH2, '#16a34a', 'K₂', '296 kJ');
-      this.drawTextDirect('80 km/h', xBar2 + 6, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+      this.drawTextDirect('80 km/h', xBar2 + 3, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
 
-      // Evidenziazione salto W1
-      const deltaH1 = hK2 - hK1;
+      // Evidenziazione salto W1 nel varco perfetto tra Barra 1 e Barra 2
       ctx.save();
       ctx.strokeStyle = '#16a34a';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.8;
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(xBar1 + barW, baseBarY - hK1);
@@ -1478,20 +1477,21 @@ class VectorRenderer {
       ctx.stroke();
       ctx.restore();
 
-      this.drawArrow(xBar2 + barW + 12, baseBarY - hK1, xBar2 + barW + 12, baseBarY - hK2, '#16a34a', 2.5, 6);
-      this.drawBadgeDirect(xBar2 + barW + 55, baseBarY - (hK1 + hK2) / 2, 'W₁ = 130 kJ', '#16a34a', '#ffffff', 11);
+      const mid1X = (xBar1 + barW + xBar2) / 2; // -62.5 px
+      this.drawArrow(mid1X, baseBarY - hK1, mid1X, baseBarY - hK2, '#16a34a', 2.5, 6);
+      this.drawBadgeDirect(mid1X, baseBarY - (hK1 + hK2) / 2, 'W₁ = 130 kJ', '#16a34a', '#ffffff', 10);
     }
 
     // Barra 3: K3 (100 km/h)
     if (step >= 4) {
       const currH3 = step === 4 ? hK2 + (hK3 - hK2) * progress : hK3;
       this.drawEnergyBar(xBar3, baseBarY, barW, currH3, '#ea580c', 'K₃', '463 kJ');
-      this.drawTextDirect('100 km/h', xBar3 + 2, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
+      this.drawTextDirect('100 km/h', xBar3 + 1, baseBarY + 18, isDark ? '#cbd5e1' : '#334155', 'bold 11px IBM Plex Mono');
 
-      // Evidenziazione salto W2
+      // Evidenziazione salto W2 nel varco perfetto tra Barra 2 e Barra 3
       ctx.save();
       ctx.strokeStyle = '#ea580c';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.8;
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(xBar2 + barW, baseBarY - hK2);
@@ -1499,13 +1499,21 @@ class VectorRenderer {
       ctx.stroke();
       ctx.restore();
 
-      this.drawArrow(xBar3 + barW + 12, baseBarY - hK2, xBar3 + barW + 12, baseBarY - hK3, '#ea580c', 2.5, 6);
-      this.drawBadgeDirect(xBar3 + barW + 60, baseBarY - (hK2 + hK3) / 2, 'W₂ = 167 kJ (+31%!)', '#ea580c', '#ffffff', 11);
+      const mid2X = (xBar2 + barW + xBar3) / 2; // 62.5 px
+      this.drawArrow(mid2X, baseBarY - hK2, mid2X, baseBarY - hK3, '#ea580c', 2.5, 6);
+      this.drawBadgeDirect(mid2X, baseBarY - (hK2 + hK3) / 2, 'W₂ = 167 kJ', '#ea580c', '#ffffff', 10);
+
+      // Confronto a destra di Barra 3 (Passo 5)
+      if (step === 5) {
+        this.drawBadgeDirect(195, baseBarY - (hK2 + hK3) / 2, '+31% in Più!', '#d97706', '#ffffff', 11);
+        this.drawTextDirect('W₂ > W₁ (+37 kJ)', 158, baseBarY - (hK2 + hK3) / 2 + 18, isDark ? '#fbbf24' : '#d97706', 'bold 10px IBM Plex Mono');
+        this.drawTextDirect('Stessa Δv (+20 km/h)', 158, baseBarY - (hK2 + hK3) / 2 + 32, isDark ? '#94a3b8' : '#64748b', '10px Inter');
+      }
     }
 
     // Badge esplicativi in alto
     if (step === 5) {
-      this.drawBadgeDirect(0, -180, 'W₂ = 1,7 · 10⁵ J  >  W₁ = 1,3 · 10⁵ J  (+31% di Lavoro!)', '#0f172a', '#fb923c', 13);
+      this.drawBadgeDirect(0, -175, 'W₂ = 1,7 · 10⁵ J  >  W₁ = 1,3 · 10⁵ J  (+31% di Lavoro in più!)', '#0f172a', '#fb923c', 13);
     }
 
     ctx.restore();
