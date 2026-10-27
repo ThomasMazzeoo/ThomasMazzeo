@@ -1103,7 +1103,7 @@
         prima impari a smascherare 5 link trappola (<strong>Blue Team</strong>);
         poi crei un finto SMS per capire i trucchi usati dai criminali (<strong>Red Team</strong>);
         risolvi una finta emergenza familiare senza cadere nel panico (<strong>Zero Trust</strong>);
-        e infine blocchi un attacco reale prima che crei danni all'azienda (<strong>Incident Response</strong>).
+        e infine esamini una finta email scovando tutti i segnali d'allarme nascosti (<strong>Email Phishing</strong>).
         Al termine scarica il tuo <strong>Report in PDF</strong>.
       </p>
 
@@ -1471,120 +1471,79 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         MISSIONE 4 – BLUE TEAM: INCIDENT RESPONSE & TRIAGE SIEM
+         MISSIONE 4 – BLUE TEAM: ANATOMIA DI UN'EMAIL DI PHISHING
          ══════════════════════════════════════════ -->
     <section class="lab-section lab-section--blue">
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-badge blue">🔵 MISSIONE 4</span>
           <div class="section-title">
-            Blue Team: Incident Response &amp; Triage SIEM
-            <small>Blocca l'attacco ed evita che faccia danni all'azienda</small>
+            Blue Team: Anatomia di un'Email di Phishing
+            <small>Trova i segnali d'allarme nell'email sospetta ed evita la trappola</small>
           </div>
         </div>
-        <span class="badge badge--blue" id="m4StatusBadge">In attesa di triage</span>
+        <span class="badge badge--blue" id="m4StatusBadge">In attesa di analisi</span>
       </div>
 
       <p style="font-size:0.9rem; line-height:1.6; margin-bottom:8px;">
-        <strong>Scenario Operativo:</strong> Alle ore 14:38, un dipendente dell'ufficio contabilità cade nell'inganno dell'SMS truffa e inserisce le proprie credenziali sul portale clone.
-        La dashboard del <strong>SIEM (Security Information and Event Management)</strong> del tuo SOC genera immediatamente una notifica di allarme critico (Severity: CRITICAL).
+        <strong>Scenario Operativo:</strong> Nella tua casella di posta compare un'email allarmante che sembra arrivare da un noto servizio di acquisti online.
+        Prima di farti prendere dal panico o cliccare impulsivamente sul link, esamina l'email e smaschera i <strong>4 segnali d'allarme</strong> spiegati a lezione nella <em>Slide 7</em>.
       </p>
 
-      <!-- SIEM Terminal Alert Box -->
-      <div class="code-banner" style="border-left-color:var(--redteam); background:#0b1120; color:#f87171;">
-        <span style="color:#ef4444; font-weight:800;">[SIEM ALERT #9402 — SEVERITY: CRITICAL 🔴]</span><br>
-        <span style="color:#94a3b8;">TIMESTAMP:</span> 14:38:22 UTC &nbsp;|&nbsp; <span style="color:#94a3b8;">SOURCE:</span> EDR-AGENT-04 (Endpoint Detection &amp; Response)<br>
-        <span style="color:#94a3b8;">HOST:</span> WS-FINANCE-02 (IP: 192.168.1.45) &nbsp;|&nbsp; <span style="color:#94a3b8;">USER:</span> l.bianchi@azienda.it<br>
-        <span style="color:#94a3b8;">TRIGGER:</span> Credential Submission to Untrusted Domain &nbsp;|&nbsp; <span style="color:#94a3b8;">DESTINATION:</span> 185.220.101.5 (bit.ly/sblocco-poste)<br>
-        <span style="color:#facc15;">ANOMALOUS EVENT:</span> Nuovo tentativo di autenticazione da IP esterno non riconosciuto (Lagos, Nigeria)
+      <!-- Mockup Email Realistica -->
+      <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin:12px 0 16px; box-shadow:0 2px 8px rgba(0,0,0,0.06); color:#1e293b;">
+        <div style="background:#f1f5f9; padding:10px 14px; border-bottom:1px solid #cbd5e1; font-size:0.85rem; display:flex; flex-direction:column; gap:4px;">
+          <div><strong style="color:#475569;">DA:</strong> Servizio Clienti &lt;<span style="color:#dc2626; font-family:monospace; font-weight:700;">assistenza-clienti@amazon-supporto-sicurezza.com</span>&gt;</div>
+          <div><strong style="color:#475569;">A:</strong> studente@email.it</div>
+          <div><strong style="color:#475569;">OGGETTO:</strong> <span style="font-weight:700; color:#dc2626;">⚠️ Urgente: Acquisto anomalo di 289,90 € rilevato sul tuo account</span></div>
+          <div style="font-size:0.75rem; color:#64748b;">Oggi, 14:38 • Ricevuta nella posta in arrivo</div>
+        </div>
+        <div style="padding:16px; font-size:0.9rem; line-height:1.6;">
+          <p style="margin:0 0 10px;"><strong>Gentile Cliente,</strong></p>
+          <p style="margin:0 0 10px;">abbiamo rilevato un tentativo di accesso sospetto al tuo account e un ordine non autorizzato per un totale di <strong>€ 289,90</strong>.</p>
+          <p style="margin:0 0 14px;">Se non riconosci questo acquisto, devi verificare la tua identità <strong>entro 12 ore</strong> per annullare l'addebito ed evitare il blocco permanente del tuo account.</p>
+          <div style="text-align:center; margin:16px 0;">
+            <span style="display:inline-block; background:#dc2626; color:#ffffff; font-weight:700; padding:10px 22px; border-radius:6px; font-size:0.88rem; cursor:not-allowed; letter-spacing:0.5px;">
+              🔒 VERIFICA IDENTITÀ E ANNULLA ORDINE
+            </span>
+          </div>
+          <p style="font-size:0.8rem; color:#64748b; margin:14px 0 0;">Amazon Customer Security Team</p>
+        </div>
       </div>
 
       <div class="rule-box blue">
-        <strong>📋 Azioni Richieste all'Analista SOC:</strong>
-        <ol style="padding-left:18px; margin-top:6px; line-height:1.7;">
-          <li><strong>Estrai gli Indicatori di Compromissione (IoC)</strong> dall'allarme SIEM (IP malevolo e account vittima).</li>
-          <li><strong>Definisci la sequenza delle 4 azioni di contenimento</strong> assegnando l'ordine corretto di priorità (da 1 = Azione Immediata a 4 = Azione Conclusiva).</li>
-          <li><strong>Valuta il ruolo della 2FA</strong>: se l'account vittima aveva attiva l'autenticazione a due fattori, l'attaccante può accedere al conto solo con la password rubata?</li>
-        </ol>
+        <strong>📋 Azioni Richieste all'Analista (Segnali d'Allarme da individuare):</strong>
+        <p style="margin-top:4px; font-size:0.85rem;">Rispondi con parole tue a ciascun punto analizzando attentamente gli elementi dell'email sopra riportata.</p>
       </div>
 
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:14px;">
+        <!-- Domanda 1: Falso Mittente -->
         <div class="form-group">
-          <label for="iocIp">IoC 1: Indirizzo IP Malevolo Destinazione da bloccare su Firewall</label>
-          <input type="text" id="iocIp" placeholder="Indirizzo IP malevolo da estrarre dai log..." oninput="onDataChanged()">
+          <label for="emailMittenteResp">1. Analisi del Mittente Reale:</label>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Osserva l'indirizzo tra le parentesi angolari <code>&lt; &gt;</code>: perché dimostra che il messaggio NON proviene da Amazon?</p>
+          <textarea id="emailMittenteResp" class="table-textarea" style="min-height:75px;" placeholder="Spiega con parole tue cosa noti nell'indirizzo email e qual è il dominio ufficiale che ti aspetteresti..." oninput="onDataChanged()"></textarea>
         </div>
+
+        <!-- Domanda 2: Leve Psicologiche & Cifra -->
         <div class="form-group">
-          <label for="iocUser">IoC 2: Account Utente Compromesso da mettere in sicurezza</label>
-          <input type="text" id="iocUser" placeholder="Email / account della vittima da estrarre dai log..." oninput="onDataChanged()">
+          <label for="emailLeveResp">2. Pressione Psicologica &amp; Cifra:</label>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Quali leve psicologiche vengono usate nel testo (es. urgenza, paura) e a cosa serve la cifra precisa di € 289,90?</p>
+          <textarea id="emailLeveResp" class="table-textarea" style="min-height:75px;" placeholder="Descrivi l'effetto che il conto alla rovescia e l'importo inventato vogliono provocare sul destinatario..." oninput="onDataChanged()"></textarea>
         </div>
-      </div>
 
-      <!-- Tabella Priorità Contenimento -->
-      <div style="margin: 14px 0 16px;">
-        <label style="font-size:0.75rem; font-weight:800; color:var(--blueteam); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
-          Sequenza Tattica del Protocollo di Contenimento (Assegna priorità da 1ª a 4ª):
-        </label>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <span style="font-size:0.85rem; color:var(--text-dark);">
-              <strong>Isolamento della postazione (WS-FINANCE-02)</strong>: sconnettere la macchina dalla rete (cavo/Wi-Fi via EDR) per impedire movimenti laterali o esfiltrazione dati.
-            </span>
-            <select id="prioIsolamento" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
-              <option value="">-- Priorità --</option>
-              <option value="1">1ª Azione</option>
-              <option value="2">2ª Azione</option>
-              <option value="3">3ª Azione</option>
-              <option value="4">4ª Azione</option>
-            </select>
-          </div>
-
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <span style="font-size:0.85rem; color:var(--text-dark);">
-              <strong>Revoca sessioni &amp; Reset Password immediato</strong>: invalidare tutti i token di accesso attivi e reimpostare una nuova passphrase robusta.
-            </span>
-            <select id="prioReset" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
-              <option value="">-- Priorità --</option>
-              <option value="1">1ª Azione</option>
-              <option value="2">2ª Azione</option>
-              <option value="3">3ª Azione</option>
-              <option value="4">4ª Azione</option>
-            </select>
-          </div>
-
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <span style="font-size:0.85rem; color:var(--text-dark);">
-              <strong>Blacklist IoC su Firewall &amp; Proxy aziendale</strong>: bloccare l'IP esterno malevolo rilevato e l'URL truffaldino per proteggere tutti gli altri dipendenti.
-            </span>
-            <select id="prioBlacklist" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
-              <option value="">-- Priorità --</option>
-              <option value="1">1ª Azione</option>
-              <option value="2">2ª Azione</option>
-              <option value="3">3ª Azione</option>
-              <option value="4">4ª Azione</option>
-            </select>
-          </div>
-
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <span style="font-size:0.85rem; color:var(--text-dark);">
-              <strong>Emissione Security Advisory interno</strong>: inviare un bollettino d'allerta tempestivo al personale per avvisare dell'attacco di smishing in corso.
-            </span>
-            <select id="prioAdvisory" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
-              <option value="">-- Priorità --</option>
-              <option value="1">1ª Azione</option>
-              <option value="2">2ª Azione</option>
-              <option value="3">3ª Azione</option>
-              <option value="4">4ª Azione</option>
-            </select>
-          </div>
+        <!-- Domanda 3: Saluto generico e dettagli -->
+        <div class="form-group">
+          <label for="emailDettagliResp">3. Saluto Generico &amp; Assenza Dettagli:</label>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Perché l'email dice solo "Gentile Cliente" anziché il tuo nome e non indica quale articolo sarebbe stato acquistato?</p>
+          <textarea id="emailDettagliResp" class="table-textarea" style="min-height:75px;" placeholder="Spiega con parole tue perché l'assenza di dettagli reali dimostra che si tratta di una truffa..." oninput="onDataChanged()"></textarea>
         </div>
-      </div>
 
-      <!-- Quesito Tecnico 2FA -->
-      <div class="form-group" style="margin-top:14px;">
-        <label for="analisi2FA" style="color:var(--blueteam);">
-          Analisi Tecnica: Se l'account vittima aveva attiva l'Autenticazione a Due Fattori (2FA), l'attaccante può accedere al conto con le sole credenziali rubate? Spiega il ruolo del 2FA:
-        </label>
-        <textarea id="analisi2FA" class="table-textarea" style="min-height:85px;" placeholder="Motiva con parole tue se l'attaccante può o meno completare l'accesso con la sola password e quale protezione offre il secondo fattore..." oninput="onDataChanged()"></textarea>
+        <!-- Domanda 4: Regola d'Oro di Difesa -->
+        <div class="form-group">
+          <label for="emailDifesaResp">4. Regola d'Oro di Difesa:</label>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Se hai il dubbio che l'acquisto sia vero, cosa devi fare per verificare in totale sicurezza senza cliccare il pulsante?</p>
+          <textarea id="emailDifesaResp" class="table-textarea" style="min-height:75px;" placeholder="Descrivi l'azione corretta da compiere secondo la regola pratica spiegata nelle slide..." oninput="onDataChanged()"></textarea>
+        </div>
       </div>
     </section>
 
@@ -1616,7 +1575,7 @@
         </li>
         <li class="checklist-item">
           <span class="check-status" id="chkStatusM4">⬜</span>
-          <span>Missione 4: Triage allarme SIEM, estrazione IoC e protocollo di contenimento</span>
+          <span>Missione 4: 4 segnali d'allarme dell'email di phishing analizzati</span>
         </li>
         <li class="checklist-item">
           <span class="check-status" id="chkStatusReport">⬜</span>
@@ -1657,16 +1616,16 @@
           <dd>Principio di non fidarsi mai a priori. La verifica "fuori canale" (out-of-band) consiste nel verificare la richiesta tramite un canale differente e disaccoppiato (es. telefonata a voce tradizionale).</dd>
         </div>
         <div class="glossary-item">
-          <dt>SIEM (Security Information &amp; Event Management)</dt>
-          <dd>Piattaforma centrale del SOC che raccoglie, correla e analizza i log di server, endpoint e firewall per rilevare minacce in tempo reale.</dd>
+          <dt>Email Phishing &amp; Segnali d'Allarme</dt>
+          <dd>Email che simula un'azienda fidata (come Amazon o banche). Si riconosce da mittente sospetto, urgenza artificiale, saluto generico e importi inventati.</dd>
         </div>
         <div class="glossary-item">
-          <dt>IoC (Indicator of Compromise)</dt>
-          <dd>Elementi forensi (indirizzi IP, hash malevoli, URL di phishing) che segnalano con certezza un'intrusione o violazione della sicurezza.</dd>
+          <dt>Regola d'Oro della Difesa</dt>
+          <dd>Non cliccare mai sui link contenuti in email o SMS allarmanti. Se hai un dubbio reale, digita tu stesso l'indirizzo ufficiale nel browser o apri l'app.</dd>
         </div>
         <div class="glossary-item">
-          <dt>Incident Response &amp; Contenimento</dt>
-          <dd>Procedura operativa del Blue Team per isolare i dispositivi compromessi, revocare le sessioni violate, bloccare gli IoC e mitigare il danno.</dd>
+          <dt>Le 4 Leve Psicologiche</dt>
+          <dd>Urgenza (fretta di agire), Paura (minaccia di blocchi o perdite), Autorità (fingersi istituzioni o aziende) e Curiosità (promesse di premi o dettagli personali).</dd>
         </div>
       </div>
     </div>
@@ -1817,32 +1776,37 @@
           </div>
         </div>
 
-        <!-- SEZIONE 4: INCIDENT RESPONSE & TRIAGE SIEM -->
+        <!-- SEZIONE 4: BLUE TEAM (ANATOMIA EMAIL PHISHING) -->
         <div class="print-section">
           <div class="print-section-title blue">
-            <span>MISSIONE 4 — Blue Team: Incident Response, IoC &amp; Contenimento Allarme SIEM</span>
-            <span style="font-weight:400; font-size:9px;">REMEDIATION PLAYBOOK</span>
+            <span>MISSIONE 4 — Blue Team: Anatomia di un'Email di Phishing (I 4 Segnali d'Allarme)</span>
+            <span style="font-weight:400; font-size:9px;">PHISHING DETECTION</span>
           </div>
           <div class="print-section-body">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:4px;">
+            <div style="font-size:9.5px; color:#4b5563; margin-bottom:5px; padding:3px 6px; background:#f8fafc; border-left:3px solid #2563eb;">
+              <strong>Oggetto dell'esame:</strong> Finta email di notifica ordine Amazon da <em>assistenza-clienti@amazon-supporto-sicurezza.com</em> con richiesta verifica identità in 12h.
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:4px;">
               <div class="print-q-box">
-                <div class="print-q-label">IoC 1 — IP Destinazione Malevolo (Firewall Blacklist):</div>
-                <div class="print-q-answer mono" id="repPrintIocIp" style="font-weight:700; color:#b91c1c;">--</div>
+                <div class="print-q-label">1. Analisi del Mittente Reale (Dominio Sospetto):</div>
+                <div class="print-q-answer" id="repPrintEmailMittente" style="min-height:28px;">--</div>
               </div>
               <div class="print-q-box">
-                <div class="print-q-label">IoC 2 — Account Utente Compromesso da Resettare:</div>
-                <div class="print-q-answer mono" id="repPrintIocUser" style="font-weight:700; color:#0369a1;">--</div>
+                <div class="print-q-label">2. Pressione Psicologica &amp; Importo Inventato:</div>
+                <div class="print-q-answer" id="repPrintEmailLeve" style="min-height:28px;">--</div>
               </div>
             </div>
 
-            <div class="print-q-box" style="margin-bottom:4px;">
-              <div class="print-q-label">Sequenza di Priorità Tattica di Contenimento SOC:</div>
-              <div class="print-q-answer" id="repPrintPrio" style="font-size:10px;">--</div>
-            </div>
-
-            <div class="print-q-box">
-              <div class="print-q-label">Analisi sulla Resistenza dell'Autenticazione a Due Fattori (2FA):</div>
-              <div class="print-q-answer" id="repPrintAnalisi2FA" style="min-height:30px;">--</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+              <div class="print-q-box">
+                <div class="print-q-label">3. Saluto Generico &amp; Assenza Dettagli Ordine:</div>
+                <div class="print-q-answer" id="repPrintEmailDettagli" style="min-height:28px;">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">4. Regola d'Oro di Difesa (Verifica Sicura):</div>
+                <div class="print-q-answer" id="repPrintEmailDifesa" style="min-height:28px;">--</div>
+              </div>
             </div>
           </div>
         </div>
@@ -2045,22 +2009,18 @@
       }
 
       // Missione 4
-      const iocIp = document.getElementById('iocIp') ? document.getElementById('iocIp').value.trim() : '';
-      const iocUser = document.getElementById('iocUser') ? document.getElementById('iocUser').value.trim() : '';
-      const pIso = document.getElementById('prioIsolamento') ? document.getElementById('prioIsolamento').value : '';
-      const pRes = document.getElementById('prioReset') ? document.getElementById('prioReset').value : '';
-      const pBlk = document.getElementById('prioBlacklist') ? document.getElementById('prioBlacklist').value : '';
-      const pAdv = document.getElementById('prioAdvisory') ? document.getElementById('prioAdvisory').value : '';
-      const analisi2FA = document.getElementById('analisi2FA') ? document.getElementById('analisi2FA').value.trim() : '';
+      const emMittente = document.getElementById('emailMittenteResp') ? document.getElementById('emailMittenteResp').value.trim() : '';
+      const emLeve = document.getElementById('emailLeveResp') ? document.getElementById('emailLeveResp').value.trim() : '';
+      const emDettagli = document.getElementById('emailDettagliResp') ? document.getElementById('emailDettagliResp').value.trim() : '';
+      const emDifesa = document.getElementById('emailDifesaResp') ? document.getElementById('emailDifesaResp').value.trim() : '';
 
-      const isM4IocOk = (iocIp.length >= 7 && iocUser.length >= 3);
-      const isM4PrioOk = !!(pIso && pRes && pBlk && pAdv);
-      const isM42faOk = (analisi2FA.length >= 25);
-      const isM4Ok = (isM4IocOk && isM4PrioOk && isM42faOk);
+      const m4Fields = [emMittente, emLeve, emDettagli, emDifesa];
+      const m4FilledCount = m4Fields.filter(f => f.length >= 10).length;
+      const isM4Ok = (m4FilledCount === 4);
 
       const m4Badge = document.getElementById('m4StatusBadge');
       if (m4Badge) {
-        m4Badge.textContent = isM4Ok ? '✓ Triage & Contenimento Definiti' : (isM4IocOk ? 'Bozza parziale' : 'In attesa di triage');
+        m4Badge.textContent = isM4Ok ? '✓ 4/4 Segnali Analizzati' : `${m4FilledCount}/4 Segnali analizzati`;
         m4Badge.className = isM4Ok ? 'badge badge--blue' : 'badge badge--amber';
       }
 
@@ -2084,9 +2044,7 @@
       if (isM2SmsOk) score += 12;
       if (isM2LeveOk) score += 12;
       if (isM3Ok) score += 16;
-      if (isM4IocOk) score += 6;
-      if (isM4PrioOk) score += 7;
-      if (isM42faOk) score += 7; // M4 tot = 20%
+      score += (m4FilledCount / 4) * 20; // M4 tot = 20%
 
       const totalPct = Math.round(score);
       const progressFill = document.getElementById('progressBarFill');
@@ -2123,13 +2081,10 @@
       document.getElementById('smsSpiegazione').value = '';
       document.getElementById('zeroTrustResp').value = '';
 
-      document.getElementById('iocIp').value = '';
-      document.getElementById('iocUser').value = '';
-      document.getElementById('prioIsolamento').value = '';
-      document.getElementById('prioReset').value = '';
-      document.getElementById('prioBlacklist').value = '';
-      document.getElementById('prioAdvisory').value = '';
-      document.getElementById('analisi2FA').value = '';
+      document.getElementById('emailMittenteResp').value = '';
+      document.getElementById('emailLeveResp').value = '';
+      document.getElementById('emailDettagliResp').value = '';
+      document.getElementById('emailDifesaResp').value = '';
 
       localStorage.removeItem('soc_analyst_lab_data');
       onDataChanged();
@@ -2216,13 +2171,10 @@
         if (data.smsSpiegazione) document.getElementById('smsSpiegazione').value = data.smsSpiegazione;
         if (data.zeroTrustResp) document.getElementById('zeroTrustResp').value = data.zeroTrustResp;
 
-        if (data.iocIp) document.getElementById('iocIp').value = data.iocIp;
-        if (data.iocUser) document.getElementById('iocUser').value = data.iocUser;
-        if (data.prioIsolamento) document.getElementById('prioIsolamento').value = data.prioIsolamento;
-        if (data.prioReset) document.getElementById('prioReset').value = data.prioReset;
-        if (data.prioBlacklist) document.getElementById('prioBlacklist').value = data.prioBlacklist;
-        if (data.prioAdvisory) document.getElementById('prioAdvisory').value = data.prioAdvisory;
-        if (data.analisi2FA) document.getElementById('analisi2FA').value = data.analisi2FA;
+        if (data.emailMittenteResp) document.getElementById('emailMittenteResp').value = data.emailMittenteResp;
+        if (data.emailLeveResp) document.getElementById('emailLeveResp').value = data.emailLeveResp;
+        if (data.emailDettagliResp) document.getElementById('emailDettagliResp').value = data.emailDettagliResp;
+        if (data.emailDifesaResp) document.getElementById('emailDifesaResp').value = data.emailDifesaResp;
 
         updatePhonePreview();
         checkProgress();
@@ -2281,17 +2233,10 @@
       document.getElementById('repPrintZeroTrust').textContent = getVal('zeroTrustResp');
 
       // Popola Missione 4
-      document.getElementById('repPrintIocIp').textContent = getVal('iocIp');
-      document.getElementById('repPrintIocUser').textContent = getVal('iocUser');
-
-      const pIso = getVal('prioIsolamento', '-');
-      const pRes = getVal('prioReset', '-');
-      const pBlk = getVal('prioBlacklist', '-');
-      const pAdv = getVal('prioAdvisory', '-');
-      const prioSummary = `1. Isolamento Postazione [Priorità: ${pIso}] • 2. Revoca Token & Reset Password [Priorità: ${pRes}] • 3. Blacklist IoC Firewall [Priorità: ${pBlk}] • 4. Security Advisory [Priorità: ${pAdv}]`;
-      document.getElementById('repPrintPrio').textContent = prioSummary;
-
-      document.getElementById('repPrintAnalisi2FA').textContent = getVal('analisi2FA');
+      document.getElementById('repPrintEmailMittente').textContent = getVal('emailMittenteResp');
+      document.getElementById('repPrintEmailLeve').textContent = getVal('emailLeveResp');
+      document.getElementById('repPrintEmailDettagli').textContent = getVal('emailDettagliResp');
+      document.getElementById('repPrintEmailDifesa').textContent = getVal('emailDifesaResp');
     }
 
     function openReportPreview() {
@@ -2447,28 +2392,19 @@
       txt += '  SCENARIO: Messaggio WhatsApp da contatto familiare con richiesta denaro.' + NL + NL;
       txt += '  RISPOSTA TATTICA OPERATIVA (max 2-3 righe):' + NL + simpleBox(zeroTrust, 60) + NL;
 
-      const iocIp = document.getElementById('iocIp').value.trim() || '(non inserito)';
-      const iocUser = document.getElementById('iocUser').value.trim() || '(non inserito)';
-      const pIso = document.getElementById('prioIsolamento').value || '-';
-      const pRes = document.getElementById('prioReset').value || '-';
-      const pBlk = document.getElementById('prioBlacklist').value || '-';
-      const pAdv = document.getElementById('prioAdvisory').value || '-';
-      const a2fa = document.getElementById('analisi2FA').value.trim() || '(non inserita)';
+      const emMittente = document.getElementById('emailMittenteResp').value.trim() || '(non inserito)';
+      const emLeve = document.getElementById('emailLeveResp').value.trim() || '(non inserito)';
+      const emDettagli = document.getElementById('emailDettagliResp').value.trim() || '(non inserito)';
+      const emDifesa = document.getElementById('emailDifesaResp').value.trim() || '(non inserito)';
 
       txt += SEP + NL + NL;
-      txt += '  MISSIONE 4 – BLUE TEAM: INCIDENT RESPONSE & TRIAGE SIEM' + NL;
+      txt += '  MISSIONE 4 – BLUE TEAM: ANATOMIA DI UN\'EMAIL DI PHISHING' + NL;
       txt += LINE + NL + NL;
-      txt += '  ALLARME: [SIEM ALERT #9402 - CRITICAL] Credential Submission' + NL + NL;
-      txt += '  INDICATORI DI COMPROMISSIONE (IoC):' + NL;
-      txt += '  - IP Destinazione Malevolo (Firewall) : ' + iocIp + NL;
-      txt += '  - Account Utente Compromesso           : ' + iocUser + NL + NL;
-      txt += '  SEQUENZA PROTOCOLLO CONTENIMENTO:' + NL;
-      txt += '  [Prio ' + pIso + '] Isolamento Postazione (WS-FINANCE-02)' + NL;
-      txt += '  [Prio ' + pRes + '] Revoca Sessioni & Reset Password' + NL;
-      txt += '  [Prio ' + pBlk + '] Blacklist IoC su Firewall & Proxy' + NL;
-      txt += '  [Prio ' + pAdv + '] Emissione Security Advisory Interno' + NL + NL;
-      txt += '  ANALISI RESILIENZA 2FA (AUTENTICAZIONE A DUE FATTORI):' + NL;
-      txt += simpleBox(a2fa, 60) + NL;
+      txt += '  ANALISI DEI 4 SEGNALI D\'ALLARME (SLIDE 7):' + NL + NL;
+      txt += '  1. MITTENTE REALE VS DOMINIO UFFICIALE:' + NL + simpleBox(emMittente, 60) + NL;
+      txt += '  2. PRESSIONE PSICOLOGICA & CIFRA INVENTATA:' + NL + simpleBox(emLeve, 60) + NL;
+      txt += '  3. SALUTO GENERICO & ASSENZA DETTAGLI:' + NL + simpleBox(emDettagli, 60) + NL;
+      txt += '  4. REGOLA D\'ORO DI DIFESA (VERIFICA SICURA):' + NL + simpleBox(emDifesa, 60) + NL;
 
       txt += SEP + NL;
       txt += '  Fine Log Operativo SOC • Laboratorio di Informatica' + NL;
