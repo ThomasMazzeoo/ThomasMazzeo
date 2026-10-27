@@ -1098,7 +1098,7 @@
       <div class="progress-bar-wrap">
         <div class="progress-bar-fill" id="progressBarFill"></div>
       </div>
-      <span class="progress-text" id="progressText">0 / 3 missioni (0%)</span>
+      <span class="progress-text" id="progressText">0 / 4 missioni (0%)</span>
     </div>
 
     <!-- Pulsanti Azione e Consegna -->
@@ -1125,11 +1125,12 @@
         <span class="badge badge--blue">🔵 Blue Team (Difesa)</span>
         <span class="badge badge--red">🔴 Red Team (Attacco)</span>
         <span class="badge badge--violet">🔒 Zero Trust Architecture</span>
+        <span class="badge badge--blue">🚨 Incident Response (Playbook)</span>
       </div>
       <h1 class="hero-title">SOC Analyst: <span class="shield">Blue Team 🛡️</span> vs <span class="fire">Red Team 🔥</span></h1>
       <p class="hero-desc">
         Sei un analista di primo livello in un <strong>Security Operations Center (SOC)</strong>.
-        Vestirai prima i panni del difensore (<strong>Blue Team</strong>) per condurre l'esame a raggi X su 5 URL malevoli intercettati; passerai poi all'attacco simulato didattico (<strong>Red Team</strong>) ideando un'esca di Smishing con ingegneria sociale per comprendere le leve dei criminali; infine applicherai la procedura di verifica <strong>Zero Trust</strong> per neutralizzare una frode dal vivo.
+        Vestirai prima i panni del difensore (<strong>Blue Team</strong>) per condurre l'esame a raggi X su 5 URL malevoli intercettati; passerai poi all'attacco simulato didattico (<strong>Red Team</strong>) ideando un'esca di Smishing con ingegneria sociale per comprendere le leve dei criminali; applicherai la procedura di verifica <strong>Zero Trust</strong> per neutralizzare una frode familiare; infine guiderai l'<strong>Incident Response (Blue Team)</strong> analizzando un allarme SIEM critico per estrarre gli Indicatori di Compromissione (IoC) e attuare il protocollo di contenimento immediato.
         Al termine genera e stampa il tuo <strong>Report Operativo in PDF</strong>.
       </p>
 
@@ -1502,6 +1503,124 @@
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════════
+         MISSIONE 4 – BLUE TEAM: INCIDENT RESPONSE & TRIAGE SIEM
+         ══════════════════════════════════════════ -->
+    <section class="lab-section lab-section--blue">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge blue">🔵 MISSIONE 4 (26 – 30 min)</span>
+          <div class="section-title">
+            Blue Team: Incident Response &amp; Triage SIEM
+            <small>Rilevamento violazione, estrazione IoC e protocollo di contenimento immediato</small>
+          </div>
+        </div>
+        <span class="badge badge--blue" id="m4StatusBadge">In attesa di triage</span>
+      </div>
+
+      <p style="font-size:0.9rem; line-height:1.6; margin-bottom:8px;">
+        <strong>Scenario Operativo:</strong> Alle ore 14:38, un dipendente dell'ufficio contabilità cade nell'inganno dell'SMS truffa e inserisce le proprie credenziali sul portale clone.
+        La dashboard del <strong>SIEM (Security Information and Event Management)</strong> del tuo SOC genera immediatamente una notifica di allarme critico (Severity: CRITICAL).
+      </p>
+
+      <!-- SIEM Terminal Alert Box -->
+      <div class="code-banner" style="border-left-color:var(--redteam); background:#0b1120; color:#f87171;">
+        <span style="color:#ef4444; font-weight:800;">[SIEM ALERT #9402 — SEVERITY: CRITICAL 🔴]</span><br>
+        <span style="color:#94a3b8;">TIMESTAMP:</span> 14:38:22 UTC &nbsp;|&nbsp; <span style="color:#94a3b8;">SOURCE:</span> EDR-AGENT-04 (Endpoint Detection &amp; Response)<br>
+        <span style="color:#94a3b8;">HOST:</span> WS-FINANCE-02 (IP: 192.168.1.45) &nbsp;|&nbsp; <span style="color:#94a3b8;">USER:</span> l.bianchi@azienda.it<br>
+        <span style="color:#94a3b8;">TRIGGER:</span> Credential Submission to Untrusted Domain &nbsp;|&nbsp; <span style="color:#94a3b8;">DESTINATION:</span> 185.220.101.5 (bit.ly/sblocco-poste)<br>
+        <span style="color:#facc15;">ANOMALOUS EVENT:</span> Nuovo tentativo di autenticazione da IP esterno non riconosciuto (Lagos, Nigeria)
+      </div>
+
+      <div class="rule-box blue">
+        <strong>📋 Azioni Richieste all'Analista SOC:</strong>
+        <ol style="padding-left:18px; margin-top:6px; line-height:1.7;">
+          <li><strong>Estrai gli Indicatori di Compromissione (IoC)</strong> dall'allarme SIEM (IP malevolo e account vittima).</li>
+          <li><strong>Definisci la sequenza delle 4 azioni di contenimento</strong> assegnando l'ordine corretto di priorità (da 1 = Azione Immediata a 4 = Azione Conclusiva).</li>
+          <li><strong>Valuta il ruolo della 2FA</strong>: se l'account vittima aveva attiva l'autenticazione a due fattori, l'attaccante può accedere al conto solo con la password rubata?</li>
+        </ol>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+        <div class="form-group">
+          <label for="iocIp">IoC 1: Indirizzo IP Malevolo Destinazione da bloccare su Firewall</label>
+          <input type="text" id="iocIp" placeholder="es. 185.220.x.x (dall'alert SIEM)" oninput="onDataChanged()">
+        </div>
+        <div class="form-group">
+          <label for="iocUser">IoC 2: Account Utente Compromesso da mettere in sicurezza</label>
+          <input type="text" id="iocUser" placeholder="es. email utente dall'alert SIEM" oninput="onDataChanged()">
+        </div>
+      </div>
+
+      <!-- Tabella Priorità Contenimento -->
+      <div style="margin: 14px 0 16px;">
+        <label style="font-size:0.75rem; font-weight:800; color:var(--blueteam); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
+          Sequenza Tattica del Protocollo di Contenimento (Assegna priorità da 1ª a 4ª):
+        </label>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <span style="font-size:0.85rem; color:var(--text-dark);">
+              <strong>Isolamento della postazione (WS-FINANCE-02)</strong>: sconnettere la macchina dalla rete (cavo/Wi-Fi via EDR) per impedire movimenti laterali o esfiltrazione dati.
+            </span>
+            <select id="prioIsolamento" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
+              <option value="">-- Priorità --</option>
+              <option value="1">1ª Azione</option>
+              <option value="2">2ª Azione</option>
+              <option value="3">3ª Azione</option>
+              <option value="4">4ª Azione</option>
+            </select>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <span style="font-size:0.85rem; color:var(--text-dark);">
+              <strong>Revoca sessioni &amp; Reset Password immediato</strong>: invalidare tutti i token di accesso attivi e reimpostare una nuova passphrase robusta.
+            </span>
+            <select id="prioReset" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
+              <option value="">-- Priorità --</option>
+              <option value="1">1ª Azione</option>
+              <option value="2">2ª Azione</option>
+              <option value="3">3ª Azione</option>
+              <option value="4">4ª Azione</option>
+            </select>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <span style="font-size:0.85rem; color:var(--text-dark);">
+              <strong>Blacklist IoC su Firewall &amp; Proxy aziendale</strong>: bloccare l'IP esterno (185.220.101.5) e l'URL truffaldino per proteggere tutti gli altri dipendenti.
+            </span>
+            <select id="prioBlacklist" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
+              <option value="">-- Priorità --</option>
+              <option value="1">1ª Azione</option>
+              <option value="2">2ª Azione</option>
+              <option value="3">3ª Azione</option>
+              <option value="4">4ª Azione</option>
+            </select>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <span style="font-size:0.85rem; color:var(--text-dark);">
+              <strong>Emissione Security Advisory interno</strong>: inviare un bollettino d'allerta tempestivo al personale per avvisare dell'attacco di smishing in corso.
+            </span>
+            <select id="prioAdvisory" class="table-select" style="width:130px; flex-shrink:0;" onchange="onDataChanged()">
+              <option value="">-- Priorità --</option>
+              <option value="1">1ª Azione</option>
+              <option value="2">2ª Azione</option>
+              <option value="3">3ª Azione</option>
+              <option value="4">4ª Azione</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quesito Tecnico 2FA -->
+      <div class="form-group" style="margin-top:14px;">
+        <label for="analisi2FA" style="color:var(--blueteam);">
+          Analisi Tecnica: Se l'account vittima aveva attiva l'Autenticazione a Due Fattori (2FA), l'attaccante può accedere al conto con le sole credenziali rubate? Spiega il ruolo del 2FA:
+        </label>
+        <textarea id="analisi2FA" class="table-textarea" style="min-height:85px;" placeholder="Spiega perché la sola password non basta all'aggressore se è presente il secondo fattore di autenticazione (TOTP / app auth)..." oninput="onDataChanged()"></textarea>
+      </div>
+    </section>
+
     <!-- CHECKLIST FINALE -->
     <div class="checklist-card">
       <div class="checklist-title">
@@ -1527,6 +1646,10 @@
         <li class="checklist-item">
           <span class="check-status" id="chkStatusM3">⬜</span>
           <span>Missione 3: Procedura Zero Trust e verifica fuori canale</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusM4">⬜</span>
+          <span>Missione 4: Triage allarme SIEM, estrazione IoC e protocollo di contenimento</span>
         </li>
         <li class="checklist-item">
           <span class="check-status" id="chkStatusReport">⬜</span>
@@ -1565,6 +1688,18 @@
         <div class="glossary-item">
           <dt>Zero Trust &amp; Fuori Canale</dt>
           <dd>Principio di non fidarsi mai a priori. La verifica "fuori canale" (out-of-band) consiste nel verificare la richiesta tramite un canale differente e disaccoppiato (es. telefonata a voce tradizionale).</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>SIEM (Security Information &amp; Event Management)</dt>
+          <dd>Piattaforma centrale del SOC che raccoglie, correla e analizza i log di server, endpoint e firewall per rilevare minacce in tempo reale.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>IoC (Indicator of Compromise)</dt>
+          <dd>Elementi forensi (indirizzi IP, hash malevoli, URL di phishing) che segnalano con certezza un'intrusione o violazione della sicurezza.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Incident Response &amp; Contenimento</dt>
+          <dd>Procedura operativa del Blue Team per isolare i dispositivi compromessi, revocare le sessioni violate, bloccare gli IoC e mitigare il danno.</dd>
         </div>
       </div>
     </div>
@@ -1710,7 +1845,37 @@
             </div>
             <div class="print-q-box">
               <div class="print-q-label">Procedura Operativa Zero Trust &amp; Spiegazione del Canale Non Affidabile:</div>
-              <div class="print-q-answer" id="repPrintZeroTrust" style="min-height:35px;">--</div>
+              <div class="print-q-answer" id="repPrintZeroTrust" style="min-height:30px;">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4: INCIDENT RESPONSE & TRIAGE SIEM -->
+        <div class="print-section">
+          <div class="print-section-title blue">
+            <span>MISSIONE 4 — Blue Team: Incident Response, IoC &amp; Contenimento Allarme SIEM</span>
+            <span style="font-weight:400; font-size:9px;">REMEDIATION PLAYBOOK</span>
+          </div>
+          <div class="print-section-body">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:4px;">
+              <div class="print-q-box">
+                <div class="print-q-label">IoC 1 — IP Destinazione Malevolo (Firewall Blacklist):</div>
+                <div class="print-q-answer mono" id="repPrintIocIp" style="font-weight:700; color:#b91c1c;">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">IoC 2 — Account Utente Compromesso da Resettare:</div>
+                <div class="print-q-answer mono" id="repPrintIocUser" style="font-weight:700; color:#0369a1;">--</div>
+              </div>
+            </div>
+
+            <div class="print-q-box" style="margin-bottom:4px;">
+              <div class="print-q-label">Sequenza di Priorità Tattica di Contenimento SOC:</div>
+              <div class="print-q-answer" id="repPrintPrio" style="font-size:10px;">--</div>
+            </div>
+
+            <div class="print-q-box">
+              <div class="print-q-label">Analisi sulla Resistenza dell'Autenticazione a Due Fattori (2FA):</div>
+              <div class="print-q-answer" id="repPrintAnalisi2FA" style="min-height:30px;">--</div>
             </div>
           </div>
         </div>
@@ -1912,6 +2077,26 @@
         m3Badge.className = isM3Ok ? 'badge badge--violet' : 'badge badge--amber';
       }
 
+      // Missione 4
+      const iocIp = document.getElementById('iocIp') ? document.getElementById('iocIp').value.trim() : '';
+      const iocUser = document.getElementById('iocUser') ? document.getElementById('iocUser').value.trim() : '';
+      const pIso = document.getElementById('prioIsolamento') ? document.getElementById('prioIsolamento').value : '';
+      const pRes = document.getElementById('prioReset') ? document.getElementById('prioReset').value : '';
+      const pBlk = document.getElementById('prioBlacklist') ? document.getElementById('prioBlacklist').value : '';
+      const pAdv = document.getElementById('prioAdvisory') ? document.getElementById('prioAdvisory').value : '';
+      const analisi2FA = document.getElementById('analisi2FA') ? document.getElementById('analisi2FA').value.trim() : '';
+
+      const isM4IocOk = (iocIp.length >= 7 && iocUser.length >= 3);
+      const isM4PrioOk = !!(pIso && pRes && pBlk && pAdv);
+      const isM42faOk = (analisi2FA.length >= 25);
+      const isM4Ok = (isM4IocOk && isM4PrioOk && isM42faOk);
+
+      const m4Badge = document.getElementById('m4StatusBadge');
+      if (m4Badge) {
+        m4Badge.textContent = isM4Ok ? '✓ Triage & Contenimento Definiti' : (isM4IocOk ? 'Bozza parziale' : 'In attesa di triage');
+        m4Badge.className = isM4Ok ? 'badge badge--blue' : 'badge badge--amber';
+      }
+
       // Checklist Status Elements
       const setCheck = (id, ok) => {
         const el = document.getElementById(id);
@@ -1922,15 +2107,19 @@
       setCheck('chkStatusM2Sms', isM2SmsOk);
       setCheck('chkStatusM2Leve', isM2LeveOk);
       setCheck('chkStatusM3', isM3Ok);
-      setCheck('chkStatusReport', (isInfoOk && isM1Ok && isM2Ok && isM3Ok));
+      setCheck('chkStatusM4', isM4Ok);
+      setCheck('chkStatusReport', (isInfoOk && isM1Ok && isM2Ok && isM3Ok && isM4Ok));
 
-      // Calcolo percentuale totale
+      // Calcolo percentuale totale bilanciato su 4 missioni
       let score = 0;
-      if (isInfoOk) score += 10;
-      score += (m1FilledCount / 5) * 40; // 40%
-      if (isM2SmsOk) score += 15;
-      if (isM2LeveOk) score += 15;
-      if (isM3Ok) score += 20;
+      if (isInfoOk) score += 8;
+      score += (m1FilledCount / 5) * 32; // 32%
+      if (isM2SmsOk) score += 12;
+      if (isM2LeveOk) score += 12;
+      if (isM3Ok) score += 16;
+      if (isM4IocOk) score += 6;
+      if (isM4PrioOk) score += 7;
+      if (isM42faOk) score += 7; // M4 tot = 20%
 
       const totalPct = Math.round(score);
       const progressFill = document.getElementById('progressBarFill');
@@ -1941,9 +2130,10 @@
       if (isM1Ok) missioniCompletate++;
       if (isM2Ok) missioniCompletate++;
       if (isM3Ok) missioniCompletate++;
+      if (isM4Ok) missioniCompletate++;
 
       if (progressText) {
-        progressText.textContent = `${missioniCompletate} / 3 missioni (${totalPct}%)`;
+        progressText.textContent = `${missioniCompletate} / 4 missioni (${totalPct}%)`;
       }
     }
 
@@ -1976,7 +2166,14 @@
       chkAutorita: false,
       chkCuriosita: false,
       smsSpiegazione: 'In questo attacco simulato ho combinato la leva della PAURA (la minaccia della sospensione e del blocco definitivo del conto) con la leva dell\'URGENZA (il limite restrittivo di 60 minuti), spingendo la vittima ad agire impulsivamente senza controllare il link fittizio né il mittente.',
-      zeroTrustResp: 'Eseguire immediatamente una verifica "fuori canale" (out-of-band), telefonando direttamente alla mamma con una normale chiamata vocale cellulare tradizionale o contattando un familiare vicino a lei. Rispondere sulla stessa chat di WhatsApp non è valido perché se l\'account o la sessione WhatsApp sono stati compromessi, il truffatore legge e risponde in prima persona simulando la vittima.'
+      zeroTrustResp: 'Eseguire immediatamente una verifica "fuori canale" (out-of-band), telefonando direttamente alla mamma con una normale chiamata vocale cellulare tradizionale o contattando un familiare vicino a lei. Rispondere sulla stessa chat di WhatsApp non è valido perché se l\'account o la sessione WhatsApp sono stati compromessi, il truffatore legge e risponde in prima persona simulando la vittima.',
+      iocIp: '185.220.101.5',
+      iocUser: 'l.bianchi@azienda.it',
+      prioIsolamento: '1',
+      prioReset: '2',
+      prioBlacklist: '3',
+      prioAdvisory: '4',
+      analisi2FA: 'No, l\'attaccante non può accedere al conto solo con le credenziali rubate se è attivo il 2FA. L\'Autenticazione a Due Fattori richiede un secondo elemento di convalida indipendente (es. notifica push biometrica o codice temporaneo TOTP su app) presente esclusivamente sul dispositivo fisico della vittima, bloccando l\'accesso dell\'aggressore anche in caso di furto della password.'
     };
 
     function loadSampleData() {
@@ -2010,6 +2207,14 @@
       document.getElementById('smsSpiegazione').value = SAMPLE_DATA.smsSpiegazione;
       document.getElementById('zeroTrustResp').value = SAMPLE_DATA.zeroTrustResp;
 
+      document.getElementById('iocIp').value = SAMPLE_DATA.iocIp;
+      document.getElementById('iocUser').value = SAMPLE_DATA.iocUser;
+      document.getElementById('prioIsolamento').value = SAMPLE_DATA.prioIsolamento;
+      document.getElementById('prioReset').value = SAMPLE_DATA.prioReset;
+      document.getElementById('prioBlacklist').value = SAMPLE_DATA.prioBlacklist;
+      document.getElementById('prioAdvisory').value = SAMPLE_DATA.prioAdvisory;
+      document.getElementById('analisi2FA').value = SAMPLE_DATA.analisi2FA;
+
       onDataChanged();
       showToast('✨ Dati di esempio caricati con successo! Ora puoi visualizzare o scaricare il PDF già compilato.');
     }
@@ -2031,6 +2236,14 @@
       });
       document.getElementById('smsSpiegazione').value = '';
       document.getElementById('zeroTrustResp').value = '';
+
+      document.getElementById('iocIp').value = '';
+      document.getElementById('iocUser').value = '';
+      document.getElementById('prioIsolamento').value = '';
+      document.getElementById('prioReset').value = '';
+      document.getElementById('prioBlacklist').value = '';
+      document.getElementById('prioAdvisory').value = '';
+      document.getElementById('analisi2FA').value = '';
 
       localStorage.removeItem('soc_analyst_lab_data');
       onDataChanged();
@@ -2055,7 +2268,14 @@
         chkAutorita: document.getElementById('chkAutorita').checked,
         chkCuriosita: document.getElementById('chkCuriosita').checked,
         smsSpiegazione: document.getElementById('smsSpiegazione').value,
-        zeroTrustResp: document.getElementById('zeroTrustResp').value
+        zeroTrustResp: document.getElementById('zeroTrustResp').value,
+        iocIp: document.getElementById('iocIp').value,
+        iocUser: document.getElementById('iocUser').value,
+        prioIsolamento: document.getElementById('prioIsolamento').value,
+        prioReset: document.getElementById('prioReset').value,
+        prioBlacklist: document.getElementById('prioBlacklist').value,
+        prioAdvisory: document.getElementById('prioAdvisory').value,
+        analisi2FA: document.getElementById('analisi2FA').value
       };
       for (let i = 1; i <= 5; i++) {
         data[`d${i}`] = document.getElementById(`d${i}`).value;
@@ -2109,6 +2329,14 @@
         if (typeof data.chkCuriosita === 'boolean') document.getElementById('chkCuriosita').checked = data.chkCuriosita;
         if (data.smsSpiegazione) document.getElementById('smsSpiegazione').value = data.smsSpiegazione;
         if (data.zeroTrustResp) document.getElementById('zeroTrustResp').value = data.zeroTrustResp;
+
+        if (data.iocIp) document.getElementById('iocIp').value = data.iocIp;
+        if (data.iocUser) document.getElementById('iocUser').value = data.iocUser;
+        if (data.prioIsolamento) document.getElementById('prioIsolamento').value = data.prioIsolamento;
+        if (data.prioReset) document.getElementById('prioReset').value = data.prioReset;
+        if (data.prioBlacklist) document.getElementById('prioBlacklist').value = data.prioBlacklist;
+        if (data.prioAdvisory) document.getElementById('prioAdvisory').value = data.prioAdvisory;
+        if (data.analisi2FA) document.getElementById('analisi2FA').value = data.analisi2FA;
 
         updatePhonePreview();
         checkProgress();
@@ -2165,6 +2393,19 @@
 
       // Popola Missione 3
       document.getElementById('repPrintZeroTrust').textContent = getVal('zeroTrustResp');
+
+      // Popola Missione 4
+      document.getElementById('repPrintIocIp').textContent = getVal('iocIp');
+      document.getElementById('repPrintIocUser').textContent = getVal('iocUser');
+
+      const pIso = getVal('prioIsolamento', '-');
+      const pRes = getVal('prioReset', '-');
+      const pBlk = getVal('prioBlacklist', '-');
+      const pAdv = getVal('prioAdvisory', '-');
+      const prioSummary = `1. Isolamento Postazione [Priorità: ${pIso}] • 2. Revoca Token & Reset Password [Priorità: ${pRes}] • 3. Blacklist IoC Firewall [Priorità: ${pBlk}] • 4. Security Advisory [Priorità: ${pAdv}]`;
+      document.getElementById('repPrintPrio').textContent = prioSummary;
+
+      document.getElementById('repPrintAnalisi2FA').textContent = getVal('analisi2FA');
     }
 
     function openReportPreview() {
@@ -2326,6 +2567,29 @@
       txt += LINE + NL + NL;
       txt += '  SCENARIO: Messaggio WhatsApp da contatto familiare con richiesta denaro.' + NL + NL;
       txt += '  RISPOSTA TATTICA OPERATIVA (max 2-3 righe):' + NL + simpleBox(zeroTrust, 60) + NL;
+
+      const iocIp = document.getElementById('iocIp').value.trim() || '(non inserito)';
+      const iocUser = document.getElementById('iocUser').value.trim() || '(non inserito)';
+      const pIso = document.getElementById('prioIsolamento').value || '-';
+      const pRes = document.getElementById('prioReset').value || '-';
+      const pBlk = document.getElementById('prioBlacklist').value || '-';
+      const pAdv = document.getElementById('prioAdvisory').value || '-';
+      const a2fa = document.getElementById('analisi2FA').value.trim() || '(non inserita)';
+
+      txt += SEP + NL + NL;
+      txt += '  MISSIONE 4 – BLUE TEAM: INCIDENT RESPONSE & TRIAGE SIEM' + NL;
+      txt += LINE + NL + NL;
+      txt += '  ALLARME: [SIEM ALERT #9402 - CRITICAL] Credential Submission' + NL + NL;
+      txt += '  INDICATORI DI COMPROMISSIONE (IoC):' + NL;
+      txt += '  - IP Destinazione Malevolo (Firewall) : ' + iocIp + NL;
+      txt += '  - Account Utente Compromesso           : ' + iocUser + NL + NL;
+      txt += '  SEQUENZA PROTOCOLLO CONTENIMENTO:' + NL;
+      txt += '  [Prio ' + pIso + '] Isolamento Postazione (WS-FINANCE-02)' + NL;
+      txt += '  [Prio ' + pRes + '] Revoca Sessioni & Reset Password' + NL;
+      txt += '  [Prio ' + pBlk + '] Blacklist IoC su Firewall & Proxy' + NL;
+      txt += '  [Prio ' + pAdv + '] Emissione Security Advisory Interno' + NL + NL;
+      txt += '  ANALISI RESILIENZA 2FA (AUTENTICAZIONE A DUE FATTORI):' + NL;
+      txt += simpleBox(a2fa, 60) + NL;
 
       txt += SEP + NL;
       txt += '  Fine Log Operativo SOC • Laboratorio di Informatica' + NL;
