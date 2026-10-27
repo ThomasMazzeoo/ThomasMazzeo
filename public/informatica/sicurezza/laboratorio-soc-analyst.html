@@ -208,15 +208,6 @@
       background: var(--primary-dark);
       transform: translateY(-1px);
     }
-    .btn--sample {
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #fde68a;
-    }
-    .btn--sample:hover {
-      background: #fde68a;
-      color: #78350f;
-    }
     .btn--txt {
       background: #f1f5f9;
       color: #334155;
@@ -287,24 +278,6 @@
       line-height: 1.55;
     }
 
-    /* Quick Fill Bar */
-    .demo-bar {
-      margin-top: 0.95rem;
-      padding-top: 0.85rem;
-      border-top: 1px dashed var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .demo-bar-text {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-    .demo-bar-text strong {
-      color: var(--text-dark);
-    }
 
     /* Student Form Section */
     .student-card {
@@ -1103,9 +1076,6 @@
 
     <!-- Pulsanti Azione e Consegna -->
     <div class="top-header__right">
-      <button type="button" class="btn btn--sample" onclick="loadSampleData()" title="Popola automaticamente con risposte di esempio eccellenti per testare o stampare subito il PDF completo">
-        <span>✨</span> Esempio Compilato
-      </button>
       <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
         <span>👁️</span> Anteprima
       </button>
@@ -1134,20 +1104,6 @@
         Al termine genera e stampa il tuo <strong>Report Operativo in PDF</strong>.
       </p>
 
-      <!-- Barra di supporto didattico e precompilazione -->
-      <div class="demo-bar">
-        <div class="demo-bar-text">
-          💡 <strong>Modalità Docente / Test:</strong> Vuoi consultare o stampare immediatamente il PDF con tutte le soluzioni corrette già compilate?
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn btn--sample" onclick="loadSampleData()" style="font-size:0.78rem; padding:4px 10px;">
-            ✨ Carica Soluzione Esempio
-          </button>
-          <button type="button" class="btn btn--secondary" onclick="clearForm()" style="font-size:0.78rem; padding:4px 10px;">
-            🗑️ Svuota Modulo
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- DATI OPERATORE STUDENTE -->
@@ -2137,87 +2093,6 @@
       }
     }
 
-    // ══════════════════════════════════════════
-    // SAMPLE DATA / PRE-COMPILAZIONE ECCELLENTE
-    // ══════════════════════════════════════════
-    const SAMPLE_DATA = {
-      studenteNome: 'Mario',
-      studenteCognome: 'Rossi',
-      studenteClasse: '3°L RIM',
-      d1: 'aggiornamento-pagamento.info',
-      v1: 'TRUFFA',
-      m1: 'Il dominio effettivo a sinistra dello slash è aggiornamento-pagamento.info (.info sconosciuto); netflix.com è solo un finto sottodominio ingannevole.',
-      d2: 'verifica-identita.net',
-      v2: 'TRUFFA',
-      m2: 'Connessione priva di cifratura (http://) e dominio reale .net civetta; sicurezza.postepay.it è una stringa nel sottodominio creata dall\'aggressore.',
-      d3: 'supporto-apple.com',
-      v3: 'TRUFFA',
-      m3: 'Typosquatting: Apple utilizza esclusivamente il dominio di secondo livello registrato apple.com (es. support.apple.com), non domini generici con trattini.',
-      d4: 'instagram.com',
-      v4: 'LEGITTIMO',
-      m4: 'Il dominio effettivo a sinistra del primo slash è instagram.com, protetto dal protocollo cifrato sicuro HTTPS.',
-      d5: 'accesso-clienti.com',
-      v5: 'TRUFFA',
-      m5: 'Il dominio primario è accesso-clienti.com (.com registrato da terzi); banca-intesa.it è solo un sottodominio truffaldino.',
-      smsMittente: 'PostePay Info',
-      smsText: 'ATTENZIONE: La tua carta PostePay è stata sospesa per attività anomala. Verifica subito la tua identità entro 60 minuti su bit.ly/sblocco-poste per evitare il blocco totale. Assistenza Clienti Poste.',
-      chkUrgenza: true,
-      chkPaura: true,
-      chkAutorita: false,
-      chkCuriosita: false,
-      smsSpiegazione: 'In questo attacco simulato ho combinato la leva della PAURA (la minaccia della sospensione e del blocco definitivo del conto) con la leva dell\'URGENZA (il limite restrittivo di 60 minuti), spingendo la vittima ad agire impulsivamente senza controllare il link fittizio né il mittente.',
-      zeroTrustResp: 'Eseguire immediatamente una verifica "fuori canale" (out-of-band), telefonando direttamente alla mamma con una normale chiamata vocale cellulare tradizionale o contattando un familiare vicino a lei. Rispondere sulla stessa chat di WhatsApp non è valido perché se l\'account o la sessione WhatsApp sono stati compromessi, il truffatore legge e risponde in prima persona simulando la vittima.',
-      iocIp: '185.220.101.5',
-      iocUser: 'l.bianchi@azienda.it',
-      prioIsolamento: '1',
-      prioReset: '2',
-      prioBlacklist: '3',
-      prioAdvisory: '4',
-      analisi2FA: 'No, l\'attaccante non può accedere al conto solo con le credenziali rubate se è attivo il 2FA. L\'Autenticazione a Due Fattori richiede un secondo elemento di convalida indipendente (es. notifica push biometrica o codice temporaneo TOTP su app) presente esclusivamente sul dispositivo fisico della vittima, bloccando l\'accesso dell\'aggressore anche in caso di furto della password.'
-    };
-
-    function loadSampleData() {
-      // Data odierna
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('studenteData').value = today;
-
-      // Se c'è già una classe nella URL query param mantienila, altrimenti metti quella di default
-      const p = new URLSearchParams(window.location.search);
-      const c = p.get('classe');
-      let classLabel = '3°L RIM';
-      if (c === '2h') classLabel = '2H AFM';
-      else if (c === '2g') classLabel = '2G AFM';
-
-      document.getElementById('studenteNome').value = SAMPLE_DATA.studenteNome;
-      document.getElementById('studenteCognome').value = SAMPLE_DATA.studenteCognome;
-      document.getElementById('studenteClasse').value = classLabel;
-
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById(`d${i}`).value = SAMPLE_DATA[`d${i}`];
-        document.getElementById(`v${i}`).value = SAMPLE_DATA[`v${i}`];
-        document.getElementById(`m${i}`).value = SAMPLE_DATA[`m${i}`];
-      }
-
-      document.getElementById('smsMittente').value = SAMPLE_DATA.smsMittente;
-      document.getElementById('smsText').value = SAMPLE_DATA.smsText;
-      document.getElementById('chkUrgenza').checked = SAMPLE_DATA.chkUrgenza;
-      document.getElementById('chkPaura').checked = SAMPLE_DATA.chkPaura;
-      document.getElementById('chkAutorita').checked = SAMPLE_DATA.chkAutorita;
-      document.getElementById('chkCuriosita').checked = SAMPLE_DATA.chkCuriosita;
-      document.getElementById('smsSpiegazione').value = SAMPLE_DATA.smsSpiegazione;
-      document.getElementById('zeroTrustResp').value = SAMPLE_DATA.zeroTrustResp;
-
-      document.getElementById('iocIp').value = SAMPLE_DATA.iocIp;
-      document.getElementById('iocUser').value = SAMPLE_DATA.iocUser;
-      document.getElementById('prioIsolamento').value = SAMPLE_DATA.prioIsolamento;
-      document.getElementById('prioReset').value = SAMPLE_DATA.prioReset;
-      document.getElementById('prioBlacklist').value = SAMPLE_DATA.prioBlacklist;
-      document.getElementById('prioAdvisory').value = SAMPLE_DATA.prioAdvisory;
-      document.getElementById('analisi2FA').value = SAMPLE_DATA.analisi2FA;
-
-      onDataChanged();
-      showToast('✨ Dati di esempio caricati con successo! Ora puoi visualizzare o scaricare il PDF già compilato.');
-    }
 
     function clearForm() {
       if (!confirm('Vuoi davvero cancellare tutti i dati inseriti nel modulo?')) return;
@@ -2411,11 +2286,8 @@
     function openReportPreview() {
       const nome = document.getElementById('studenteNome').value.trim();
       if (!nome) {
-        if (confirm('I campi sono attualmente vuoti. Desideri caricare le soluzioni di esempio prima di visualizzare il report?')) {
-          loadSampleData();
-        } else {
-          document.getElementById('studenteNome').focus();
-        }
+        alert('⚠️ Attenzione: Inserisci almeno Nome e Cognome prima di visualizzare il Report!');
+        document.getElementById('studenteNome').focus();
       }
       populatePrintReport();
       document.getElementById('report-modal').classList.add('active');
@@ -2428,13 +2300,9 @@
     function downloadDirectPDF() {
       const nome = document.getElementById('studenteNome').value.trim();
       if (!nome) {
-        if (confirm('I campi sono vuoti. Desideri pre-compilare il modulo con le soluzioni di esempio e scaricare subito il PDF completo?')) {
-          loadSampleData();
-        } else {
-          alert('Inserisci almeno Nome e Cognome prima di procedere.');
-          document.getElementById('studenteNome').focus();
-          return;
-        }
+        alert('⚠️ Attenzione: Inserisci almeno Nome e Cognome prima di scaricare il Report PDF!');
+        document.getElementById('studenteNome').focus();
+        return;
       }
       populatePrintReport();
 

@@ -91,7 +91,7 @@ const MATERIE = [
               },
               {
                 title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
-                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con report PDF A4 precompilabile.",
+                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con generazione e consegna del report operativo in PDF A4.",
                 url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=3l"
               },
 
@@ -184,7 +184,7 @@ const MATERIE = [
               },
               {
                 title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
-                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con report PDF A4 precompilabile.",
+                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con generazione e consegna del report operativo in PDF A4.",
                 url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=2h"
               },
 
@@ -277,7 +277,7 @@ const MATERIE = [
               },
               {
                 title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
-                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con report PDF A4 precompilabile.",
+                desc: "Laboratorio operativo per analisti SOC in 4 missioni: triage e raggi X sugli URL contraffatti (Blue Team), creazione dell'esca smishing (Red Team), verifica Zero Trust e gestione allarme SIEM con protocollo di contenimento; con generazione e consegna del report operativo in PDF A4.",
                 url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=2g"
               },
 
