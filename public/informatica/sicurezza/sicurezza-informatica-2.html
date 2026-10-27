@@ -1166,6 +1166,7 @@ body.light-theme .lim-hdr-btn.white-btn:hover {
      ================================================================ -->
 <header id="hd">
   <div style="display:flex;align-items:center;gap:14px">
+    <a id="lab-btn" href="/informatica/sicurezza/laboratorio-soc-analyst.html" class="back-link-terminal" style="color:var(--a);border-color:var(--a);background:rgba(255,176,0,0.08);font-size:1.05rem;" title="Apri il Laboratorio SOC Analyst">🛡️ LAB SOC ANALYST</a>
     <a id="back-btn" href="/#informatica" class="back-link-terminal" title="Torna indietro">◀ TORNA</a>
     <div class="logo">SEC_102<span class="blink">_</span></div>
   </div>
@@ -2386,8 +2387,10 @@ initTheme();
   const p = new URLSearchParams(window.location.search);
   const ref = document.referrer;
   const back = document.getElementById('back-btn');
-  if (!back) return;
+  const lab = document.getElementById('lab-btn');
   const c = p.get('classe');
+  if (lab && c) lab.href = `/informatica/sicurezza/laboratorio-soc-analyst.html?classe=${c}`;
+  if (!back) return;
   if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
     back.href = '/#3l-relazioni-internazionali';
     back.textContent = '◀ 3°L RIM';

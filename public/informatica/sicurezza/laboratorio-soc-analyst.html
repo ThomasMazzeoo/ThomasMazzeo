@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio di Informatica — SOC Analyst: Red Team vs Blue Team | Simulazione & Report PDF</title>
+  <meta name="description" content="Laboratorio pratico per analisti SOC: analisi e raggi X sugli URL contraffatti (Blue Team), creazione di esca smishing (Red Team), protocollo Zero Trust e report PDF compatto.">
+  
+  <!-- Open Graph / Meta Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thomas Mazzeo — Didattica">
+  <meta property="og:url" content="https://thomasmazzeo.it/informatica/sicurezza/laboratorio-soc-analyst.html">
+  <meta property="og:title" content="Laboratorio di Informatica — SOC Analyst: Red Team vs Blue Team">
+  <meta property="og:description" content="Laboratorio operativo per analisti SOC: Triage URL, simulazione di ingegneria sociale, protocollo Zero Trust e generazione report PDF.">
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://thomasmazzeo.it/informatica/sicurezza/laboratorio-soc-analyst.html">
+  <meta name="twitter:title" content="Laboratorio di Informatica — SOC Analyst: Red Team vs Blue Team">
+  <meta name="twitter:description" content="Laboratorio pratico per analisti SOC: Triage URL, ingegneria sociale e Zero Trust.">
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Google Fonts: Inter per leggibilità e IBM Plex Mono per codici -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- html2pdf.js per download PDF diretto -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* ============================================================
+       RESET & BASE THEME
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #0284c7;
+      --text-dark: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      --blueteam: #1565c0;
+      --blueteam-dark: #0d47a1;
+      --blueteam-light: #eff6ff;
+      --blueteam-border: #bfdbfe;
+      --redteam: #dc2626;
+      --redteam-dark: #991b1b;
+      --redteam-light: #fef2f2;
+      --redteam-border: #fecaca;
+      --zerotrust: #7c3aed;
+      --zerotrust-dark: #5b21b6;
+      --zerotrust-light: #faf5ff;
+      --zerotrust-border: #e9d5ff;
+      --codegreen: #059669;
+      --codegreen-light: #ecfdf5;
+      --codegreen-border: #a7f3d0;
+      --orange: #d97706;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 3rem;
+    }
+
+    /* ============================================================
+       TOP HEADER (STICKY, ACTIONS & PROGRESS)
+       ============================================================ */
+    .top-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      z-index: 100;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+    }
+
+    .top-header__left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--primary-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--primary-border);
+      padding: 4px 10px;
+      background: var(--primary-light);
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .header-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .top-header__center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .progress-bar-wrap {
+      width: 90px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    .progress-text {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .top-header__right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      border: none;
+      outline: none;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .btn--secondary {
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1px solid #cbd5e1;
+    }
+    .btn--secondary:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .btn--primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(2, 132, 199, 0.2);
+    }
+    .btn--primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn--sample {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+    .btn--sample:hover {
+      background: #fde68a;
+      color: #78350f;
+    }
+    .btn--txt {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn--txt:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* ============================================================
+       MAIN CONTAINER
+       ============================================================ */
+    .container {
+      max-width: 980px;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+      border: 1px solid #cbd5e1;
+      border-left: 6px solid var(--blueteam);
+      border-radius: 12px;
+      padding: 1.2rem 1.6rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.35rem;
+      position: relative;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge--blue { background: var(--blueteam-light); color: var(--blueteam); border: 1px solid var(--blueteam-border); }
+    .badge--red { background: var(--redteam-light); color: var(--redteam); border: 1px solid var(--redteam-border); }
+    .badge--violet { background: var(--zerotrust-light); color: var(--zerotrust); border: 1px solid var(--zerotrust-border); }
+    .badge--amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+    .hero-title {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      line-height: 1.25;
+      margin-bottom: 0.45rem;
+      letter-spacing: -0.4px;
+    }
+    .hero-title .fire { color: var(--redteam); }
+    .hero-title .shield { color: var(--blueteam); }
+
+    .hero-desc {
+      font-size: 0.92rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    /* Quick Fill Bar */
+    .demo-bar {
+      margin-top: 0.95rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .demo-bar-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .demo-bar-text strong {
+      color: var(--text-dark);
+    }
+
+    /* Student Form Section */
+    .student-card {
+      background: var(--surface);
+      border: 1.5px solid var(--blueteam-border);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      margin-bottom: 1.35rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--blueteam);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: #f8fafc;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    /* Section Cards */
+    .lab-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 1.35rem;
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s ease;
+      position: relative;
+    }
+    .lab-section--blue { border-top: 4px solid var(--blueteam); }
+    .lab-section--red { border-top: 4px solid var(--redteam); }
+    .lab-section--violet { border-top: 4px solid var(--zerotrust); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.95rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-badge.blue { background: var(--blueteam); }
+    .section-badge.red { background: var(--redteam); }
+    .section-badge.violet { background: var(--zerotrust); }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+    }
+    .section-title small {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Callout & Rule Boxes */
+    .rule-box {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin: 10px 0 16px;
+    }
+    .rule-box.blue {
+      background: var(--blueteam-light);
+      border: 1px solid var(--blueteam-border);
+      color: #1e3a8a;
+    }
+    .rule-box.red {
+      background: var(--redteam-light);
+      border: 1px solid var(--redteam-border);
+      color: #7f1d1d;
+    }
+    .rule-box.violet {
+      background: var(--zerotrust-light);
+      border: 1px solid var(--zerotrust-border);
+      color: #4c1d95;
+    }
+    .rule-box strong { font-weight: 800; }
+
+    .code-banner {
+      background: #0f172a;
+      color: #38bdf8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin: 10px 0;
+      border-left: 4px solid var(--codegreen);
+    }
+
+    /* Steps list */
+    ol.steps {
+      padding-left: 20px;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      margin: 8px 0 14px;
+      color: var(--text-body);
+    }
+    ol.steps strong { color: var(--text-dark); }
+
+    /* URL Analysis Table */
+    .url-table-wrap {
+      overflow-x: auto;
+      margin: 14px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .url-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background: #ffffff;
+      text-align: left;
+    }
+    .url-table thead tr {
+      background: #0f172a;
+      color: #ffffff;
+    }
+    .url-table th {
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .url-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s ease;
+    }
+    .url-table tbody tr:hover {
+      background: #f8fafc;
+    }
+    .url-table td {
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+    .url-cell {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #334155;
+      word-break: break-all;
+      line-height: 1.45;
+      min-width: 200px;
+    }
+    .url-cell .url-num {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      background: #e2e8f0;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.72rem;
+      margin-right: 6px;
+      color: #0f172a;
+    }
+
+    .table-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      outline: none;
+      background: #f8fafc;
+      transition: all 0.15s ease;
+    }
+    .table-input:focus {
+      background: #ffffff;
+      border-color: var(--primary);
+    }
+    .table-select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      outline: none;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .table-select:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .table-textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      background: #f8fafc;
+      resize: vertical;
+      min-height: 48px;
+      transition: all 0.15s ease;
+    }
+    .table-textarea:focus {
+      background: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Leve Table */
+    .leve-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px;
+      font-size: 0.84rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .leve-table thead tr { background: #1e293b; color: #ffffff; }
+    .leve-table th { padding: 8px 12px; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .leve-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); background: #ffffff; }
+    .leve-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+    }
+    .leve-badge--urgenza { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .leve-badge--paura { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .leve-badge--autorita { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .leve-badge--curiosita { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+    /* Mission 2 Two Column Layout (Form + Smartphone Mockup) */
+    .redteam-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      margin-top: 14px;
+    }
+    @media (max-width: 840px) {
+      .redteam-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Checkbox Group */
+    .leve-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 6px 0 10px;
+    }
+    .leve-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .leve-label:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .leve-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--redteam);
+      cursor: pointer;
+    }
+
+    /* Smartphone Device Mockup */
+    .phone-mock {
+      background: #0f172a;
+      border: 8px solid #1e293b;
+      border-radius: 28px;
+      padding: 14px 12px;
+      box-shadow: var(--shadow-lg);
+      max-width: 320px;
+      margin: 0 auto;
+      color: #ffffff;
+      position: sticky;
+      top: 75px;
+    }
+    .phone-notch {
+      width: 70px;
+      height: 8px;
+      background: #334155;
+      border-radius: 4px;
+      margin: 0 auto 12px;
+    }
+    .phone-header {
+      text-align: center;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .phone-sender-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--redteam);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+    .phone-sender-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .phone-time-stamp {
+      font-size: 0.65rem;
+      color: #94a3b8;
+    }
+    .phone-bubble {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px 14px 14px 2px;
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #f1f5f9;
+      min-height: 90px;
+      word-break: break-word;
+    }
+    .phone-bubble .preview-placeholder {
+      color: #64748b;
+      font-style: italic;
+    }
+    .phone-bubble code {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+    }
+    .phone-footer-hint {
+      margin-top: 10px;
+      font-size: 0.68rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    /* WhatsApp Card (Mission 3) */
+    .wa-card {
+      background: #e5ddd5;
+      background-image: radial-gradient(#d4cbbe 1px, transparent 1px);
+      background-size: 16px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 12px 0 16px;
+    }
+    .wa-bubble {
+      background: #ffffff;
+      border-radius: 0 12px 12px 12px;
+      padding: 12px 16px;
+      max-width: 520px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      position: relative;
+    }
+    .wa-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #075e54;
+    }
+    .wa-msg {
+      font-size: 0.88rem;
+      color: #111827;
+      line-height: 1.5;
+    }
+    .wa-time {
+      font-size: 0.68rem;
+      color: #6b7280;
+      text-align: right;
+      margin-top: 4px;
+    }
+    .wa-leve-tag {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #4b5563;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* Checklist Section */
+    .checklist-card {
+      background: #f0fdf4;
+      border: 1.5px solid var(--codegreen-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 1.35rem;
+    }
+    .checklist-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #065f46;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .checklist-list {
+      list-style: none;
+      font-size: 0.84rem;
+      color: #166534;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 6px 14px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .check-status {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* Glossary Accordion */
+    .glossary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1.35rem;
+      overflow: hidden;
+    }
+    .glossary-header {
+      padding: 10px 16px;
+      background: #f8fafc;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .glossary-body {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+    }
+    .glossary-item dt {
+      font-weight: 800;
+      color: var(--blueteam);
+      font-family: var(--font-mono);
+      margin-bottom: 2px;
+    }
+    .glossary-item dd {
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* Bottom Action Box */
+    .bottom-action-box {
+      background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+      border: 1.5px solid var(--blueteam-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .bottom-action-box__text {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+    }
+    .bottom-action-box__text small {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      top: 55px;
+      right: 20px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ============================================================
+       REPORT MODAL & PRINT STYLES (A4 COMPACT PERFECT FORMAT)
+       ============================================================ */
+    #report-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+    #report-modal.active { display: block; }
+
+    .modal-dialog {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 12px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      padding: 1.8rem;
+      position: relative;
+    }
+
+    .modal-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 2px solid #e2e8f0;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Print Paper Styles */
+    .print-paper {
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .print-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .print-school {
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+      color: #475569;
+      text-transform: uppercase;
+    }
+    .print-doc-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-top: 1px;
+    }
+
+    .print-meta-grid {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 0.75rem;
+      font-size: 10.5px;
+    }
+    .print-meta-item span {
+      display: block;
+      color: #64748b;
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .print-meta-item strong {
+      color: #0f172a;
+      font-size: 11.5px;
+    }
+
+    .print-section {
+      margin-bottom: 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .print-section-title {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+    .print-section-title.blue { background: #1565c0; }
+    .print-section-title.red { background: #b91c1c; }
+    .print-section-title.violet { background: #6d28d9; }
+
+    .print-section-body {
+      padding: 6px 8px;
+      background: #ffffff;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+    .print-table th, .print-table td {
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      text-align: left;
+    }
+    .print-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .print-table td.mono {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+    }
+
+    .print-q-box {
+      margin-bottom: 4px;
+    }
+    .print-q-label {
+      font-weight: 800;
+      font-size: 10px;
+      color: #1e293b;
+      margin-bottom: 1px;
+    }
+    .print-q-answer {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      color: #0f172a;
+      white-space: pre-wrap;
+    }
+
+    .print-footer-signatures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 0.95rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 10.5px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .print-sig-line {
+      border-bottom: 1px solid #94a3b8;
+      height: 26px;
+      margin-top: 3px;
+    }
+
+    /* Print media rule */
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #report-modal {
+        position: static;
+        padding: 0;
+        background: transparent;
+      }
+      .modal-dialog {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .modal-controls, .top-header, .container, #toast {
+        display: none !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 8mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER (STICKY, ACTIONS & PROGRESS) -->
+  <header class="top-header">
+    <div class="top-header__left">
+      <a id="back-btn" href="/#informatica" class="back-btn" title="Torna alla sezione">◀ INDIETRO</a>
+      <span class="header-tag">🛡️ SOC ANALYST LAB</span>
+    </div>
+
+    <!-- Barra di completamento integrata -->
+    <div class="top-header__center">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-text" id="progressText">0 / 3 missioni (0%)</span>
+    </div>
+
+    <!-- Pulsanti Azione e Consegna -->
+    <div class="top-header__right">
+      <button type="button" class="btn btn--sample" onclick="loadSampleData()" title="Popola automaticamente con risposte di esempio eccellenti per testare o stampare subito il PDF completo">
+        <span>✨</span> Esempio Compilato
+      </button>
+      <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Visualizza anteprima del documento compatto">
+        <span>👁️</span> Anteprima
+      </button>
+      <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()" title="Scarica direttamente il Report in formato PDF">
+        <span>📥</span> Scarica PDF Diretto
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- HERO BRIEFING -->
+    <div class="hero-card">
+      <div class="hero-meta">
+        <span class="badge badge--blue">🛡️ SOC Operations (30 min)</span>
+        <span class="badge badge--blue">🔵 Blue Team (Difesa)</span>
+        <span class="badge badge--red">🔴 Red Team (Attacco)</span>
+        <span class="badge badge--violet">🔒 Zero Trust Architecture</span>
+      </div>
+      <h1 class="hero-title">SOC Analyst: <span class="shield">Blue Team 🛡️</span> vs <span class="fire">Red Team 🔥</span></h1>
+      <p class="hero-desc">
+        Sei un analista di primo livello in un <strong>Security Operations Center (SOC)</strong>.
+        Vestirai prima i panni del difensore (<strong>Blue Team</strong>) per condurre l'esame a raggi X su 5 URL malevoli intercettati; passerai poi all'attacco simulato didattico (<strong>Red Team</strong>) ideando un'esca di Smishing con ingegneria sociale per comprendere le leve dei criminali; infine applicherai la procedura di verifica <strong>Zero Trust</strong> per neutralizzare una frode dal vivo.
+        Al termine genera e stampa il tuo <strong>Report Operativo in PDF</strong>.
+      </p>
+
+      <!-- Barra di supporto didattico e precompilazione -->
+      <div class="demo-bar">
+        <div class="demo-bar-text">
+          💡 <strong>Modalità Docente / Test:</strong> Vuoi consultare o stampare immediatamente il PDF con tutte le soluzioni corrette già compilate?
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn--sample" onclick="loadSampleData()" style="font-size:0.78rem; padding:4px 10px;">
+            ✨ Carica Soluzione Esempio
+          </button>
+          <button type="button" class="btn btn--secondary" onclick="clearForm()" style="font-size:0.78rem; padding:4px 10px;">
+            🗑️ Svuota Modulo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATI OPERATORE STUDENTE -->
+    <div class="student-card">
+      <div class="student-grid">
+        <div class="form-group">
+          <label for="studenteNome">Nome Agente / Studente</label>
+          <input type="text" id="studenteNome" placeholder="es. Mario" oninput="onDataChanged()">
+        </div>
+        <div class="form-group">
+          <label for="studenteCognome">Cognome Agente / Studente</label>
+          <input type="text" id="studenteCognome" placeholder="es. Rossi" oninput="onDataChanged()">
+        </div>
+        <div class="form-group">
+          <label for="studenteClasse">Classe</label>
+          <input type="text" id="studenteClasse" placeholder="es. 3°L RIM" oninput="onDataChanged()">
+        </div>
+        <div class="form-group">
+          <label for="studenteData">Data Sessione</label>
+          <input type="date" id="studenteData" oninput="onDataChanged()">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         MISSIONE 1 – BLUE TEAM: RAGGI X SUGLI URL
+         ══════════════════════════════════════════ -->
+    <section class="lab-section lab-section--blue">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge blue">🔵 MISSIONE 1 (3 – 13 min)</span>
+          <div class="section-title">
+            Blue Team: Raggi X sugli URL
+            <small>Triage e scomposizione forense dei domini malevoli intercettati</small>
+          </div>
+        </div>
+        <span class="badge badge--blue" id="m1StatusBadge">5 URL da analizzare</span>
+      </div>
+
+      <p style="font-size:0.9rem; line-height:1.6; margin-bottom:8px;">
+        <strong>Contesto:</strong> Il tuo Security Operations Center ha intercettato 5 URL sospetti nei log di navigazione aziendale.
+        Il tuo compito è analizzarli, individuare il <strong>vero proprietario del dominio</strong> e classificarli prima che gli utenti clicchino.
+      </p>
+
+      <div class="rule-box blue">
+        <strong>🔑 La Regola d'Oro del SOC — "Leggi da destra a sinistra":</strong><br>
+        Il <strong>dominio reale</strong> si trova sempre immediatamente a sinistra del primo slash (<code>/</code>) della cartella leggendo da destra verso sinistra.<br>
+        <strong>Esempio:</strong> in <code>https://banca.it.truffa.com/login</code> il proprietario effettivo è <code style="font-family:var(--font-mono); font-weight:700; color:var(--redteam);">truffa.com</code> (tutto ciò che sta prima sono sottodomini creati dall'aggressore per ingannare).
+      </div>
+
+      <div class="code-banner">
+        1. https://www.netflix.com.aggiornamento-pagamento.info/login<br>
+        2. http://sicurezza.postepay.it.verifica-identita.net/sblocco<br>
+        3. https://supporto-apple.com/recupero-password<br>
+        4. https://www.instagram.com/privacy/settings<br>
+        5. https://banca-intesa.it.accesso-clienti.com/auth
+      </div>
+
+      <ol class="steps">
+        <li>Per ciascun URL individua ed estrai il <strong>dominio reale</strong> registrato.</li>
+        <li>Formula il <strong>verdetto operativo</strong>: seleziona se è <strong>LEGITTIMO</strong> o <strong>TRUFFA</strong>.</li>
+        <li>Argomenta con una sintetica <strong>motivazione tecnica</strong>.</li>
+      </ol>
+
+      <div class="url-table-wrap">
+        <table class="url-table">
+          <thead>
+            <tr>
+              <th style="width:36px; text-align:center;">#</th>
+              <th style="width:300px;">URL Intercettato</th>
+              <th style="width:190px;">Dominio Reale Estrapolato</th>
+              <th style="width:145px;">Verdetto SOC</th>
+              <th>Motivazione Tecnica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- URL 1 -->
+            <tr>
+              <td style="text-align:center; font-weight:800;">1</td>
+              <td class="url-cell">https://www.netflix.com.aggiornamento-pagamento.info/login</td>
+              <td>
+                <input type="text" class="table-input" id="d1" placeholder="es. dominio.info" oninput="onDataChanged()">
+              </td>
+              <td>
+                <select class="table-select" id="v1" onchange="onDataChanged()">
+                  <option value="">-- Seleziona --</option>
+                  <option value="LEGITTIMO">✅ LEGITTIMO</option>
+                  <option value="TRUFFA">❌ TRUFFA</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="table-textarea" id="m1" placeholder="Perché è legittimo o truffa?" oninput="onDataChanged()"></textarea>
+              </td>
+            </tr>
+
+            <!-- URL 2 -->
+            <tr>
+              <td style="text-align:center; font-weight:800;">2</td>
+              <td class="url-cell">http://sicurezza.postepay.it.verifica-identita.net/sblocco</td>
+              <td>
+                <input type="text" class="table-input" id="d2" placeholder="es. dominio.net" oninput="onDataChanged()">
+              </td>
+              <td>
+                <select class="table-select" id="v2" onchange="onDataChanged()">
+                  <option value="">-- Seleziona --</option>
+                  <option value="LEGITTIMO">✅ LEGITTIMO</option>
+                  <option value="TRUFFA">❌ TRUFFA</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="table-textarea" id="m2" placeholder="Nota protocollo http e dominio..." oninput="onDataChanged()"></textarea>
+              </td>
+            </tr>
+
+            <!-- URL 3 -->
+            <tr>
+              <td style="text-align:center; font-weight:800;">3</td>
+              <td class="url-cell">https://supporto-apple.com/recupero-password</td>
+              <td>
+                <input type="text" class="table-input" id="d3" placeholder="es. dominio.com" oninput="onDataChanged()">
+              </td>
+              <td>
+                <select class="table-select" id="v3" onchange="onDataChanged()">
+                  <option value="">-- Seleziona --</option>
+                  <option value="LEGITTIMO">✅ LEGITTIMO</option>
+                  <option value="TRUFFA">❌ TRUFFA</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="table-textarea" id="m3" placeholder="Analisi typosquatting vs apple.com..." oninput="onDataChanged()"></textarea>
+              </td>
+            </tr>
+
+            <!-- URL 4 -->
+            <tr>
+              <td style="text-align:center; font-weight:800;">4</td>
+              <td class="url-cell">https://www.instagram.com/privacy/settings</td>
+              <td>
+                <input type="text" class="table-input" id="d4" placeholder="es. dominio.com" oninput="onDataChanged()">
+              </td>
+              <td>
+                <select class="table-select" id="v4" onchange="onDataChanged()">
+                  <option value="">-- Seleziona --</option>
+                  <option value="LEGITTIMO">✅ LEGITTIMO</option>
+                  <option value="TRUFFA">❌ TRUFFA</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="table-textarea" id="m4" placeholder="Dominio ufficiale e protocollo..." oninput="onDataChanged()"></textarea>
+              </td>
+            </tr>
+
+            <!-- URL 5 -->
+            <tr>
+              <td style="text-align:center; font-weight:800;">5</td>
+              <td class="url-cell">https://banca-intesa.it.accesso-clienti.com/auth</td>
+              <td>
+                <input type="text" class="table-input" id="d5" placeholder="es. dominio.com" oninput="onDataChanged()">
+              </td>
+              <td>
+                <select class="table-select" id="v5" onchange="onDataChanged()">
+                  <option value="">-- Seleziona --</option>
+                  <option value="LEGITTIMO">✅ LEGITTIMO</option>
+                  <option value="TRUFFA">❌ TRUFFA</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="table-textarea" id="m5" placeholder="Sottodominio civetta vs vero TLD..." oninput="onDataChanged()"></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         MISSIONE 2 – RED TEAM: CREA L'ESCA
+         ══════════════════════════════════════════ -->
+    <section class="lab-section lab-section--red">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge red">🔴 MISSIONE 2 (13 – 23 min)</span>
+          <div class="section-title">
+            Red Team: Crea l'Esca (Simulazione Smishing)
+            <small>Analisi psicologica delle 4 leve di Social Engineering</small>
+          </div>
+        </div>
+        <span class="badge badge--red" id="m2StatusBadge">In attesa di bozza</span>
+      </div>
+
+      <p style="font-size:0.9rem; line-height:1.6; margin-bottom:8px;">
+        <strong>Contesto didattico:</strong> Per difendere un'infrastruttura dagli attacchi bisogna prima comprenderne a fondo le dinamiche offensive.
+        Costruirai un <strong>SMS truffa simulato (Smishing)</strong> all'interno di questo ambiente controllato, combinando ad arte le leve psicologiche usate dal cybercrimine per costringere la vittima al clic impulsivo.
+      </p>
+
+      <table class="leve-table">
+        <thead>
+          <tr>
+            <th style="width:130px;">Leva Psicologica</th>
+            <th>Meccanismo d'Attacco &amp; Reazione della Vittima</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="leve-badge leve-badge--urgenza">URGENZA</span></td>
+            <td>Impone un conto alla rovescia (es. "entro 15 min", "ora o mai più"): spegne il pensiero critico e induce all'azione precipitosa.</td>
+          </tr>
+          <tr>
+            <td><span class="leve-badge leve-badge--paura">PAURA</span></td>
+            <td>Minaccia danni irreparabili (blocco conto bancario, multa da 2.000€, denuncia penale, perdita dati) gettando la vittima nel panico.</td>
+          </tr>
+          <tr>
+            <td><span class="leve-badge leve-badge--autorita">AUTORITÀ</span></td>
+            <td>Finge l'identità di enti istituzionali o colossi intoccabili (Agenzia delle Entrate, Polizia Postale, Poste Italiane, Apple, Bank).</td>
+          </tr>
+          <tr>
+            <td><span class="leve-badge leve-badge--curiosita">CURIOSITÀ</span></td>
+            <td>Promette un premio inaspettato, un rimborso fiscale o foto private compromettenti per stuzzicare il clic fatale.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="rule-box red">
+        <strong>📏 Vincoli Tattici Obbligatori (tutti sottoposti a valutazione SOC):</strong>
+        <ul style="padding-left:18px; margin-top:6px; line-height:1.7;">
+          <li><strong>Massimo 3 frasi</strong>: gli SMS reali sono brevi e diretti.</li>
+          <li>Includi un <strong>finto mittente (Spoofing)</strong> credibile (es. <em>PostePay Info</em>, <em>Servizio Sicurezza</em>, <em>Apple Security</em>).</li>
+          <li>Attiva esattamente <strong>DUE leve psicologiche combinate</strong> (es. Urgenza + Paura).</li>
+          <li>Inserisci un <strong>link accorciato fittizio</strong> (es. <code>bit.ly/sblocco-poste</code> o <code>is.gd/verifica-conto</code>).</li>
+          <li>Spiega obbligatoriamente nella <strong>frase esplicativa</strong> perché la combinazione scelta è efficace.</li>
+        </ul>
+      </div>
+
+      <!-- Grid con Form e Smartphone Mockup Live -->
+      <div class="redteam-grid">
+        <!-- Colonna Sinistra: Campi Input -->
+        <div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="smsMittente">Finto Mittente (Sender ID Spoofing)</label>
+            <input type="text" id="smsMittente" placeholder="es. PostePay Info, Apple Alert, Banca Intesa..." oninput="onDataChanged()">
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="smsText">Testo dell'SMS Simulato (max 3 frasi con link fittizio)</label>
+              <span id="smsSentenceCount" style="font-size:0.75rem; font-weight:700; color:var(--text-muted);">0 / 3 frasi</span>
+            </div>
+            <textarea id="smsText" class="table-textarea" style="min-height:85px;" placeholder='es. "AVVISO POSTEPAY: Il tuo conto è stato temporaneamente bloccato per accesso anomalo. Verifica subito le tue credenziali entro 2 ore su bit.ly/sblocco-poste per evitare il fermo definitivo."' oninput="onDataChanged()"></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label>Leve Psicologiche Attivate (seleziona esattamente 2):</label>
+              <span id="leveCounterBadge" style="font-size:0.75rem; font-weight:800; color:var(--redteam);">0 / 2 selezionate</span>
+            </div>
+            <div class="leve-options">
+              <label class="leve-label">
+                <input type="checkbox" id="chkUrgenza" value="URGENZA" onchange="onLevaCheckboxChanged()">
+                <span class="leve-badge leve-badge--urgenza">URGENZA</span>
+              </label>
+              <label class="leve-label">
+                <input type="checkbox" id="chkPaura" value="PAURA" onchange="onLevaCheckboxChanged()">
+                <span class="leve-badge leve-badge--paura">PAURA</span>
+              </label>
+              <label class="leve-label">
+                <input type="checkbox" id="chkAutorita" value="AUTORITÀ" onchange="onLevaCheckboxChanged()">
+                <span class="leve-badge leve-badge--autorita">AUTORITÀ</span>
+              </label>
+              <label class="leve-label">
+                <input type="checkbox" id="chkCuriosita" value="CURIOSITÀ" onchange="onLevaCheckboxChanged()">
+                <span class="leve-badge leve-badge--curiosita">CURIOSITÀ</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="smsSpiegazione">Frase Esplicativa sulle Leve Utilizzate</label>
+            <textarea id="smsSpiegazione" class="table-textarea" style="min-height:75px;" placeholder='"In questo attacco ho usato la combinazione di PAURA e URGENZA perché..."' oninput="onDataChanged()"></textarea>
+          </div>
+        </div>
+
+        <!-- Colonna Destra: Mockup Smartphone Live -->
+        <div>
+          <div class="phone-mock">
+            <div class="phone-notch"></div>
+            <div class="phone-header">
+              <div class="phone-sender-avatar" id="phoneAvatar">🚨</div>
+              <div class="phone-sender-name" id="phoneSenderDisplay">Mittente Spoofato</div>
+              <div class="phone-time-stamp">Messaggio SMS • Oggi, 11:42</div>
+            </div>
+            <div class="phone-bubble" id="phoneBubbleDisplay">
+              <span class="preview-placeholder">Digita il testo a sinistra: vedrai l'anteprima in tempo reale su questo schermo...</span>
+            </div>
+            <div class="phone-footer-hint">Simulatore Ricezione Smartphone</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         MISSIONE 3 – ZERO TRUST: PROTOCOLLO DI VERIFICA
+         ══════════════════════════════════════════ -->
+    <section class="lab-section lab-section--violet">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge violet">🔒 MISSIONE 3 (23 – 28 min)</span>
+          <div class="section-title">
+            Zero Trust: Protocollo di Verifica Fuori Canale
+            <small>Procedura di emergenza di fronte a compromissione di account familiare</small>
+          </div>
+        </div>
+        <span class="badge badge--violet" id="m3StatusBadge">In attesa</span>
+      </div>
+
+      <p style="font-size:0.9rem; line-height:1.6; margin-bottom:8px;">
+        <strong>Principio Cardine della Cyber-Security:</strong> L'architettura <strong>Zero Trust</strong> impone una regola assoluta: <em>"Non fidarsi mai, verificare sempre"</em> (Never Trust, Always Verify).
+        Nessun messaggio digitale può essere ritenuto autentico solo perché proviene da un numero o un contatto fidato: gli account possono essere hackerati, clonati o simulati con tecniche di SIM Swapping.
+      </p>
+
+      <div class="rule-box violet">
+        <strong>⚠️ Scenario di Crisi Operativa:</strong><br>
+        Ricevi questo messaggio su <strong>WhatsApp</strong> dal contatto memorizzato in rubrica come <em>"Mamma"</em>:
+      </div>
+
+      <!-- WhatsApp Mockup -->
+      <div class="wa-card">
+        <div class="wa-bubble">
+          <div class="wa-header">
+            <span>💚 Mamma (WhatsApp)</span>
+            <span style="font-size:0.75rem; color:#6b7280; font-weight:normal;">Oggi, 14:32</span>
+          </div>
+          <div class="wa-msg">
+            "Tesoro, ho perso il bancomat e sono bloccata alla cassa del supermercato senza un euro.
+            Puoi farmi una ricarica istantanea di 50 euro su questo IBAN virtuale di una mia amica?
+            Fai presto che la fila e la cassiera stanno protestando!"
+          </div>
+          <div class="wa-time">14:32 ✓✓</div>
+        </div>
+        <div class="wa-leve-tag">
+          <strong>Leve criminali rilevate:</strong> Urgenza <em>("fai presto, fila in cassa")</em> + Paura <em>("bloccata senza soldi")</em> + Autorità emotiva <em>(figura materna)</em>.
+        </div>
+      </div>
+
+      <div class="rule-box violet">
+        <strong>❓ Quesito di Incident Response (max 2-3 righe):</strong><br>
+        Qual è l'<strong>unica mossa tattica da compiere immediatamente</strong> per applicare il protocollo Zero Trust e sventare la potenziale truffa?<br>
+        Spiega inoltre <strong>perché inviare un messaggio di chiarimento sulla stessa chat di WhatsApp NON è una procedura di sicurezza valida</strong>.
+      </div>
+
+      <div class="form-group" style="margin-top:12px;">
+        <label for="zeroTrustResp" style="color:var(--zerotrust);">La tua Soluzione Operativa Zero Trust (max 2-3 righe):</label>
+        <textarea id="zeroTrustResp" class="table-textarea" style="min-height:95px;" placeholder="Spiega l'azione immediata di verifica fuori canale (out-of-band) e il motivo dell'inutilità del canale WhatsApp se compromesso..." oninput="onDataChanged()"></textarea>
+      </div>
+    </section>
+
+    <!-- CHECKLIST FINALE -->
+    <div class="checklist-card">
+      <div class="checklist-title">
+        <span>✅</span> Checklist di Validazione del Report SOC
+      </div>
+      <ul class="checklist-list">
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusInfo">⬜</span>
+          <span>Dati studente e data compilati</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusM1">⬜</span>
+          <span>Missione 1: 5 URL analizzati con dominio, verdetto e note</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusM2Sms">⬜</span>
+          <span>Missione 2: Finto mittente, link e testo SMS (max 3 frasi)</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusM2Leve">⬜</span>
+          <span>Missione 2: Esattamente 2 leve psicologiche con motivazione</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusM3">⬜</span>
+          <span>Missione 3: Procedura Zero Trust e verifica fuori canale</span>
+        </li>
+        <li class="checklist-item">
+          <span class="check-status" id="chkStatusReport">⬜</span>
+          <span>Pronto per anteprima e download PDF</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- GLOSSARIO OPERATIVO COMPATTO -->
+    <div class="glossary-card">
+      <div class="glossary-header" onclick="toggleGlossary()">
+        <span>📖 Glossario Tecnico Operativo (SOC &amp; Cyber-Security)</span>
+        <span id="glossaryToggleIcon">▼</span>
+      </div>
+      <div class="glossary-body" id="glossaryBody" style="display:none;">
+        <div class="glossary-item">
+          <dt>SOC (Security Operations Center)</dt>
+          <dd>Centro operativo centralizzato in cui gli analisti monitorano, rilevano e rispondono agli incidenti di sicurezza informatica in tempo reale.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Blue Team</dt>
+          <dd>Squadra di difesa aziendale che protegge le infrastrutture, analizza log e URL malevoli, e mitiga gli attacchi informatici.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Red Team</dt>
+          <dd>Squadra offensiva etica che simula attacchi reali, tattiche di phishing e intrusione per svelare le falle prima dei criminali.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Smishing &amp; Spoofing</dt>
+          <dd>Lo smishing è phishing via SMS; lo spoofing è la falsificazione dell'identità o del numero telefonico del mittente per farsi credere un ente noto.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Dominio &amp; TLD</dt>
+          <dd>La porzione cardine dell'indirizzo web immediatamente precedente al primo slash (<code>/</code>). I sottodomini a sinistra sono controllati dal titolare del dominio principale.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Zero Trust &amp; Fuori Canale</dt>
+          <dd>Principio di non fidarsi mai a priori. La verifica "fuori canale" (out-of-band) consiste nel verificare la richiesta tramite un canale differente e disaccoppiato (es. telefonata a voce tradizionale).</dd>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-PAGE ACTION BANNER -->
+    <div class="bottom-action-box">
+      <div class="bottom-action-box__text">
+        <span>Consegna Sessione di Laboratorio</span>
+        <small>Genera il Report in PDF A4 per la valutazione oppure scarica il Log operativo testuale</small>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn--txt" onclick="saveLog()" title="Salva ed esporta il Log in formato testuale puro (.txt)">
+          <span>💾</span> Salva Log TXT
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="openReportPreview()" title="Apri anteprima del Report A4">
+          <span>👁️</span> Anteprima Report
+        </button>
+        <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()" title="Scarica il PDF già compilato">
+          <span>📥</span> Scarica PDF Diretto
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast">Notifica</div>
+
+  <!-- ============================================================
+       MODALE REPORT A4 (ANTEPRIMA E AREA DI STAMPA PDF)
+       ============================================================ -->
+  <div id="report-modal">
+    <div class="modal-dialog">
+      <!-- Barra di controllo modale -->
+      <div class="modal-controls">
+        <div style="font-weight:800; color:#0f172a; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+          <span>📄</span> Anteprima Documento di Consegna (A4 Compatto)
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn--secondary" onclick="closeReportPreview()">Chiudi</button>
+          <button type="button" class="btn btn--primary" onclick="downloadDirectPDF()">📥 Scarica PDF Diretto</button>
+        </div>
+      </div>
+
+      <!-- AREA EFFETTIVA DI STAMPA REPORT (A4 COMPACT) -->
+      <div id="print-area" class="print-paper">
+        <!-- HEADER SCUOLA & SOC -->
+        <div class="print-header">
+          <div>
+            <div class="print-school">ISTITUTO STATALE D'ISTRUZIONE SUPERIORE — LABORATORIO DI INFORMATICA</div>
+            <div class="print-doc-title">SOC ANALYST OPERATIONAL REPORT</div>
+            <div style="font-size:10px; color:#475569; font-weight:700;">RED TEAM VS BLUE TEAM • SIMULAZIONE &amp; TRIAGE DELLE MINACCE</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:8.5px; color:#64748b; font-weight:800;">PROTOCOLLO OPERATIVO</div>
+            <div style="font-family:var(--font-mono); font-size:11px; font-weight:800; color:#0f172a;" id="repPrintId">SOC-2026-B</div>
+          </div>
+        </div>
+
+        <!-- METADATI STUDENTE / OPERATORE -->
+        <div class="print-meta-grid">
+          <div class="print-meta-item">
+            <span>AGENTE / STUDENTE:</span>
+            <strong id="repPrintNome">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>CLASSE:</span>
+            <strong id="repPrintClasse">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>DATA SESSIONE:</span>
+            <strong id="repPrintData">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>DOCENTE / SOC LEAD:</span>
+            <strong>Prof. Thomas Mazzeo</strong>
+          </div>
+        </div>
+
+        <!-- SEZIONE 1: BLUE TEAM (RAGGI X SUGLI URL) -->
+        <div class="print-section">
+          <div class="print-section-title blue">
+            <span>MISSIONE 1 — Blue Team: Raggi X &amp; Triage URL Malevoli</span>
+            <span style="font-weight:400; font-size:9px;">INCIDENT LOG TRIAGE</span>
+          </div>
+          <div class="print-section-body" style="padding:0">
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th style="width:24px; text-align:center;">#</th>
+                  <th style="width:230px;">URL Intercettato</th>
+                  <th style="width:145px;">Dominio Reale Rilevato</th>
+                  <th style="width:90px; text-align:center;">Verdetto</th>
+                  <th>Motivazione Tecnica</th>
+                </tr>
+              </thead>
+              <tbody id="repPrintUrlTbody">
+                <!-- Verrà popolato dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEZIONE 2: RED TEAM (CREA L'ESCA - SMISHING) -->
+        <div class="print-section">
+          <div class="print-section-title red">
+            <span>MISSIONE 2 — Red Team: Simulazione Attacco Smishing &amp; Leve Psicologiche</span>
+            <span style="font-weight:400; font-size:9px;">THREAT EMULATION</span>
+          </div>
+          <div class="print-section-body">
+            <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px; margin-bottom:5px;">
+              <div class="print-q-box">
+                <div class="print-q-label">Mittente Falsificato (Spoofing):</div>
+                <div class="print-q-answer mono" id="repPrintMittente" style="font-weight:700; color:#b91c1c;">--</div>
+              </div>
+              <div class="print-q-box">
+                <div class="print-q-label">Leve Psicologiche Attivate (Esattamente 2):</div>
+                <div class="print-q-answer" id="repPrintLeve" style="font-weight:700; color:#0f172a;">--</div>
+              </div>
+            </div>
+
+            <div class="print-q-box" style="margin-bottom:5px;">
+              <div class="print-q-label">Testo SMS Simulato (max 3 frasi con link fittizio):</div>
+              <div class="print-q-answer" id="repPrintSmsText" style="font-style:italic;">--</div>
+            </div>
+
+            <div class="print-q-box">
+              <div class="print-q-label">Analisi Tecnica: Perché la combinazione di queste leve induce la vittima all'errore:</div>
+              <div class="print-q-answer" id="repPrintSmsSpiegazione">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 3: ZERO TRUST (VERIFICA FUORI CANALE) -->
+        <div class="print-section">
+          <div class="print-section-title violet">
+            <span>MISSIONE 3 — Protocollo Zero Trust &amp; Verifica Fuori Canale (Scenario WhatsApp)</span>
+            <span style="font-weight:400; font-size:9px;">INCIDENT MITIGATION</span>
+          </div>
+          <div class="print-section-body">
+            <div style="font-size:9.5px; color:#4b5563; margin-bottom:5px; padding:3px 6px; background:#f8fafc; border-left:3px solid #7c3aed;">
+              <strong>Scenario:</strong> Richiesta di bonifico urgente di 50€ da presunto contatto WhatsApp familiare ("Mamma bloccata alla cassa del market").
+            </div>
+            <div class="print-q-box">
+              <div class="print-q-label">Procedura Operativa Zero Trust &amp; Spiegazione del Canale Non Affidabile:</div>
+              <div class="print-q-answer" id="repPrintZeroTrust" style="min-height:35px;">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER FIRME -->
+        <div class="print-footer-signatures">
+          <div>
+            <span>Firma dell'Agente / Analista (Auditor):</span>
+            <div class="print-sig-line"></div>
+          </div>
+          <div>
+            <span>Convalida del Docente / SOC Manager:</span>
+            <div class="print-sig-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // ══════════════════════════════════════════
+    // URL ROUTING & BACK BUTTON
+    // ══════════════════════════════════════════
+    (function initBackBtn() {
+      const p = new URLSearchParams(window.location.search);
+      const ref = document.referrer;
+      const back = document.getElementById('back-btn');
+      if (!back) return;
+      const c = p.get('classe');
+      if (c === '3l' || (ref && ref.includes('#3l-relazioni-internazionali'))) {
+        back.href = '/#3l-relazioni-internazionali';
+        back.textContent = '◀ 3°L RIM';
+      } else if (c === '2h' || (ref && ref.includes('#2h-finanza-marketing'))) {
+        back.href = '/#2h-finanza-marketing';
+        back.textContent = '◀ 2H AFM';
+      } else if (c === '2g' || (ref && ref.includes('#2g-finanza-marketing'))) {
+        back.href = '/#2g-finanza-marketing';
+        back.textContent = '◀ 2G AFM';
+      } else {
+        back.href = '/#informatica';
+        back.textContent = '◀ INFORMATICA';
+      }
+    })();
+
+    // ══════════════════════════════════════════
+    // URL DEFINITIONS
+    // ══════════════════════════════════════════
+    const URLS_DEF = [
+      { id: 1, url: 'https://www.netflix.com.aggiornamento-pagamento.info/login' },
+      { id: 2, url: 'http://sicurezza.postepay.it.verifica-identita.net/sblocco' },
+      { id: 3, url: 'https://supporto-apple.com/recupero-password' },
+      { id: 4, url: 'https://www.instagram.com/privacy/settings' },
+      { id: 5, url: 'https://banca-intesa.it.accesso-clienti.com/auth' }
+    ];
+
+    // ══════════════════════════════════════════
+    // TOAST & GLOSSARY
+    // ══════════════════════════════════════════
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2400);
+    }
+
+    function toggleGlossary() {
+      const body = document.getElementById('glossaryBody');
+      const icon = document.getElementById('glossaryToggleIcon');
+      if (body.style.display === 'none') {
+        body.style.display = 'grid';
+        icon.textContent = '▲';
+      } else {
+        body.style.display = 'none';
+        icon.textContent = '▼';
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // LEVE CHECKBOX LIMIT (ESATTAMENTE 2)
+    // ══════════════════════════════════════════
+    function onLevaCheckboxChanged() {
+      const boxes = ['chkUrgenza', 'chkPaura', 'chkAutorita', 'chkCuriosita'].map(id => document.getElementById(id));
+      const checked = boxes.filter(b => b.checked);
+
+      if (checked.length > 2) {
+        showToast('⚠️ Puoi selezionare al massimo 2 leve psicologiche!');
+        // Deseleziona l'ultimo
+        event.target.checked = false;
+      }
+      onDataChanged();
+    }
+
+    function getSelectedLeve() {
+      const leve = [];
+      if (document.getElementById('chkUrgenza').checked)   leve.push('URGENZA');
+      if (document.getElementById('chkPaura').checked)     leve.push('PAURA');
+      if (document.getElementById('chkAutorita').checked)  leve.push('AUTORITÀ');
+      if (document.getElementById('chkCuriosita').checked) leve.push('CURIOSITÀ');
+      return leve;
+    }
+
+    // ══════════════════════════════════════════
+    // LIVE UI SYNC & SMARTPHONE PREVIEW
+    // ══════════════════════════════════════════
+    function updatePhonePreview() {
+      const senderVal = document.getElementById('smsMittente').value.trim();
+      const textVal = document.getElementById('smsText').value.trim();
+
+      const phoneSender = document.getElementById('phoneSenderDisplay');
+      const phoneAvatar = document.getElementById('phoneAvatar');
+      const phoneBubble = document.getElementById('phoneBubbleDisplay');
+
+      if (senderVal) {
+        phoneSender.textContent = senderVal;
+        phoneAvatar.textContent = senderVal.charAt(0).toUpperCase();
+      } else {
+        phoneSender.textContent = 'Mittente Spoofato';
+        phoneAvatar.textContent = '🚨';
+      }
+
+      if (textVal) {
+        // Evidenzia link
+        let formatted = textVal.replace(/((https?:\/\/)?(bit\.ly|is\.gd|tinyurl\.com|[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+)\/[^\s]+)/gi, '<code>$1</code>');
+        phoneBubble.innerHTML = formatted;
+      } else {
+        phoneBubble.innerHTML = '<span class="preview-placeholder">Digita il testo a sinistra: vedrai l\'anteprima in tempo reale su questo schermo...</span>';
+      }
+
+      // Sentence counter
+      const sentences = textVal.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const cntEl = document.getElementById('smsSentenceCount');
+      if (cntEl) {
+        cntEl.textContent = `${sentences.length} / 3 frasi`;
+        cntEl.style.color = sentences.length > 3 ? 'var(--redteam)' : (sentences.length >= 1 ? 'var(--codegreen)' : 'var(--text-muted)');
+      }
+
+      // Leve counter badge
+      const leve = getSelectedLeve();
+      const badge = document.getElementById('leveCounterBadge');
+      if (badge) {
+        badge.textContent = `${leve.length} / 2 selezionate`;
+        badge.style.color = leve.length === 2 ? 'var(--codegreen)' : (leve.length > 2 ? 'var(--redteam)' : 'var(--orange)');
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // PROGRESS TRACKING & CHECKLIST SYNC
+    // ══════════════════════════════════════════
+    function onDataChanged() {
+      updatePhonePreview();
+      checkProgress();
+      saveToStorage();
+    }
+
+    function checkProgress() {
+      const nome = document.getElementById('studenteNome').value.trim();
+      const cognome = document.getElementById('studenteCognome').value.trim();
+      const isInfoOk = !!(nome && cognome);
+
+      // Missione 1
+      let m1FilledCount = 0;
+      for (let i = 1; i <= 5; i++) {
+        const d = document.getElementById(`d${i}`).value.trim();
+        const v = document.getElementById(`v${i}`).value;
+        const m = document.getElementById(`m${i}`).value.trim();
+        if (d && v && m) m1FilledCount++;
+      }
+      const isM1Ok = (m1FilledCount === 5);
+      const m1Badge = document.getElementById('m1StatusBadge');
+      if (m1Badge) {
+        m1Badge.textContent = isM1Ok ? '✓ 5/5 URL Analizzati' : `${m1FilledCount}/5 URL analizzati`;
+        m1Badge.className = isM1Ok ? 'badge badge--blue' : 'badge badge--amber';
+      }
+
+      // Missione 2
+      const mittente = document.getElementById('smsMittente').value.trim();
+      const smsText = document.getElementById('smsText').value.trim();
+      const leve = getSelectedLeve();
+      const smsSpiega = document.getElementById('smsSpiegazione').value.trim();
+
+      const isM2SmsOk = !!(mittente && smsText);
+      const isM2LeveOk = (leve.length === 2 && !!smsSpiega);
+      const isM2Ok = (isM2SmsOk && isM2LeveOk);
+
+      const m2Badge = document.getElementById('m2StatusBadge');
+      if (m2Badge) {
+        m2Badge.textContent = isM2Ok ? '✓ Esca Creata & Conforme' : 'Bozza incompleta';
+        m2Badge.className = isM2Ok ? 'badge badge--red' : 'badge badge--amber';
+      }
+
+      // Missione 3
+      const zeroTrust = document.getElementById('zeroTrustResp').value.trim();
+      const isM3Ok = zeroTrust.length >= 25;
+
+      const m3Badge = document.getElementById('m3StatusBadge');
+      if (m3Badge) {
+        m3Badge.textContent = isM3Ok ? '✓ Risposta Inserita' : 'In attesa di soluzione';
+        m3Badge.className = isM3Ok ? 'badge badge--violet' : 'badge badge--amber';
+      }
+
+      // Checklist Status Elements
+      const setCheck = (id, ok) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = ok ? '✅' : '⬜';
+      };
+      setCheck('chkStatusInfo', isInfoOk);
+      setCheck('chkStatusM1', isM1Ok);
+      setCheck('chkStatusM2Sms', isM2SmsOk);
+      setCheck('chkStatusM2Leve', isM2LeveOk);
+      setCheck('chkStatusM3', isM3Ok);
+      setCheck('chkStatusReport', (isInfoOk && isM1Ok && isM2Ok && isM3Ok));
+
+      // Calcolo percentuale totale
+      let score = 0;
+      if (isInfoOk) score += 10;
+      score += (m1FilledCount / 5) * 40; // 40%
+      if (isM2SmsOk) score += 15;
+      if (isM2LeveOk) score += 15;
+      if (isM3Ok) score += 20;
+
+      const totalPct = Math.round(score);
+      const progressFill = document.getElementById('progressBarFill');
+      const progressText = document.getElementById('progressText');
+      if (progressFill) progressFill.style.width = `${totalPct}%`;
+
+      let missioniCompletate = 0;
+      if (isM1Ok) missioniCompletate++;
+      if (isM2Ok) missioniCompletate++;
+      if (isM3Ok) missioniCompletate++;
+
+      if (progressText) {
+        progressText.textContent = `${missioniCompletate} / 3 missioni (${totalPct}%)`;
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // SAMPLE DATA / PRE-COMPILAZIONE ECCELLENTE
+    // ══════════════════════════════════════════
+    const SAMPLE_DATA = {
+      studenteNome: 'Mario',
+      studenteCognome: 'Rossi',
+      studenteClasse: '3°L RIM',
+      d1: 'aggiornamento-pagamento.info',
+      v1: 'TRUFFA',
+      m1: 'Il dominio effettivo a sinistra dello slash è aggiornamento-pagamento.info (.info sconosciuto); netflix.com è solo un finto sottodominio ingannevole.',
+      d2: 'verifica-identita.net',
+      v2: 'TRUFFA',
+      m2: 'Connessione priva di cifratura (http://) e dominio reale .net civetta; sicurezza.postepay.it è una stringa nel sottodominio creata dall\'aggressore.',
+      d3: 'supporto-apple.com',
+      v3: 'TRUFFA',
+      m3: 'Typosquatting: Apple utilizza esclusivamente il dominio di secondo livello registrato apple.com (es. support.apple.com), non domini generici con trattini.',
+      d4: 'instagram.com',
+      v4: 'LEGITTIMO',
+      m4: 'Il dominio effettivo a sinistra del primo slash è instagram.com, protetto dal protocollo cifrato sicuro HTTPS.',
+      d5: 'accesso-clienti.com',
+      v5: 'TRUFFA',
+      m5: 'Il dominio primario è accesso-clienti.com (.com registrato da terzi); banca-intesa.it è solo un sottodominio truffaldino.',
+      smsMittente: 'PostePay Info',
+      smsText: 'ATTENZIONE: La tua carta PostePay è stata sospesa per attività anomala. Verifica subito la tua identità entro 60 minuti su bit.ly/sblocco-poste per evitare il blocco totale. Assistenza Clienti Poste.',
+      chkUrgenza: true,
+      chkPaura: true,
+      chkAutorita: false,
+      chkCuriosita: false,
+      smsSpiegazione: 'In questo attacco simulato ho combinato la leva della PAURA (la minaccia della sospensione e del blocco definitivo del conto) con la leva dell\'URGENZA (il limite restrittivo di 60 minuti), spingendo la vittima ad agire impulsivamente senza controllare il link fittizio né il mittente.',
+      zeroTrustResp: 'Eseguire immediatamente una verifica "fuori canale" (out-of-band), telefonando direttamente alla mamma con una normale chiamata vocale cellulare tradizionale o contattando un familiare vicino a lei. Rispondere sulla stessa chat di WhatsApp non è valido perché se l\'account o la sessione WhatsApp sono stati compromessi, il truffatore legge e risponde in prima persona simulando la vittima.'
+    };
+
+    function loadSampleData() {
+      // Data odierna
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('studenteData').value = today;
+
+      // Se c'è già una classe nella URL query param mantienila, altrimenti metti quella di default
+      const p = new URLSearchParams(window.location.search);
+      const c = p.get('classe');
+      let classLabel = '3°L RIM';
+      if (c === '2h') classLabel = '2H AFM';
+      else if (c === '2g') classLabel = '2G AFM';
+
+      document.getElementById('studenteNome').value = SAMPLE_DATA.studenteNome;
+      document.getElementById('studenteCognome').value = SAMPLE_DATA.studenteCognome;
+      document.getElementById('studenteClasse').value = classLabel;
+
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`d${i}`).value = SAMPLE_DATA[`d${i}`];
+        document.getElementById(`v${i}`).value = SAMPLE_DATA[`v${i}`];
+        document.getElementById(`m${i}`).value = SAMPLE_DATA[`m${i}`];
+      }
+
+      document.getElementById('smsMittente').value = SAMPLE_DATA.smsMittente;
+      document.getElementById('smsText').value = SAMPLE_DATA.smsText;
+      document.getElementById('chkUrgenza').checked = SAMPLE_DATA.chkUrgenza;
+      document.getElementById('chkPaura').checked = SAMPLE_DATA.chkPaura;
+      document.getElementById('chkAutorita').checked = SAMPLE_DATA.chkAutorita;
+      document.getElementById('chkCuriosita').checked = SAMPLE_DATA.chkCuriosita;
+      document.getElementById('smsSpiegazione').value = SAMPLE_DATA.smsSpiegazione;
+      document.getElementById('zeroTrustResp').value = SAMPLE_DATA.zeroTrustResp;
+
+      onDataChanged();
+      showToast('✨ Dati di esempio caricati con successo! Ora puoi visualizzare o scaricare il PDF già compilato.');
+    }
+
+    function clearForm() {
+      if (!confirm('Vuoi davvero cancellare tutti i dati inseriti nel modulo?')) return;
+      document.getElementById('studenteNome').value = '';
+      document.getElementById('studenteCognome').value = '';
+      document.getElementById('studenteClasse').value = '';
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`d${i}`).value = '';
+        document.getElementById(`v${i}`).value = '';
+        document.getElementById(`m${i}`).value = '';
+      }
+      document.getElementById('smsMittente').value = '';
+      document.getElementById('smsText').value = '';
+      ['chkUrgenza', 'chkPaura', 'chkAutorita', 'chkCuriosita'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+      document.getElementById('smsSpiegazione').value = '';
+      document.getElementById('zeroTrustResp').value = '';
+
+      localStorage.removeItem('soc_analyst_lab_data');
+      onDataChanged();
+      showToast('Campi svuotati.');
+    }
+
+    // ══════════════════════════════════════════
+    // LOCAL STORAGE
+    // ══════════════════════════════════════════
+    const STORAGE_KEY = 'soc_analyst_lab_data';
+
+    function saveToStorage() {
+      const data = {
+        nome: document.getElementById('studenteNome').value,
+        cognome: document.getElementById('studenteCognome').value,
+        // Non salviamo persistentemente la classe per consentire la corretta selezione per sessione
+        data: document.getElementById('studenteData').value,
+        smsMittente: document.getElementById('smsMittente').value,
+        smsText: document.getElementById('smsText').value,
+        chkUrgenza: document.getElementById('chkUrgenza').checked,
+        chkPaura: document.getElementById('chkPaura').checked,
+        chkAutorita: document.getElementById('chkAutorita').checked,
+        chkCuriosita: document.getElementById('chkCuriosita').checked,
+        smsSpiegazione: document.getElementById('smsSpiegazione').value,
+        zeroTrustResp: document.getElementById('zeroTrustResp').value
+      };
+      for (let i = 1; i <= 5; i++) {
+        data[`d${i}`] = document.getElementById(`d${i}`).value;
+        data[`v${i}`] = document.getElementById(`v${i}`).value;
+        data[`m${i}`] = document.getElementById(`m${i}`).value;
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {}
+    }
+
+    function loadFromStorage() {
+      // Imposta data odierna come default
+      const dtEl = document.getElementById('studenteData');
+      if (dtEl && !dtEl.value) {
+        dtEl.value = new Date().toISOString().split('T')[0];
+      }
+
+      // Imposta classe da query param se presente
+      const p = new URLSearchParams(window.location.search);
+      const c = p.get('classe');
+      const clsEl = document.getElementById('studenteClasse');
+      if (clsEl && !clsEl.value && c) {
+        if (c === '3l') clsEl.value = '3°L RIM';
+        else if (c === '2h') clsEl.value = '2H AFM';
+        else if (c === '2g') clsEl.value = '2G AFM';
+      }
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          checkProgress();
+          return;
+        }
+        const data = JSON.parse(raw);
+        if (data.nome) document.getElementById('studenteNome').value = data.nome;
+        if (data.cognome) document.getElementById('studenteCognome').value = data.cognome;
+        if (data.data) document.getElementById('studenteData').value = data.data;
+
+        for (let i = 1; i <= 5; i++) {
+          if (data[`d${i}`]) document.getElementById(`d${i}`).value = data[`d${i}`];
+          if (data[`v${i}`]) document.getElementById(`v${i}`).value = data[`v${i}`];
+          if (data[`m${i}`]) document.getElementById(`m${i}`).value = data[`m${i}`];
+        }
+
+        if (data.smsMittente) document.getElementById('smsMittente').value = data.smsMittente;
+        if (data.smsText) document.getElementById('smsText').value = data.smsText;
+        if (typeof data.chkUrgenza === 'boolean') document.getElementById('chkUrgenza').checked = data.chkUrgenza;
+        if (typeof data.chkPaura === 'boolean') document.getElementById('chkPaura').checked = data.chkPaura;
+        if (typeof data.chkAutorita === 'boolean') document.getElementById('chkAutorita').checked = data.chkAutorita;
+        if (typeof data.chkCuriosita === 'boolean') document.getElementById('chkCuriosita').checked = data.chkCuriosita;
+        if (data.smsSpiegazione) document.getElementById('smsSpiegazione').value = data.smsSpiegazione;
+        if (data.zeroTrustResp) document.getElementById('zeroTrustResp').value = data.zeroTrustResp;
+
+        updatePhonePreview();
+        checkProgress();
+      } catch (e) {
+        checkProgress();
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // REPORT GENERATION & POPULATION (PRINT PAPER)
+    // ══════════════════════════════════════════
+    function populatePrintReport() {
+      const getVal = (id, def = '--') => {
+        const el = document.getElementById(id);
+        return (el && el.value.trim()) ? el.value.trim() : def;
+      };
+
+      const nome = getVal('studenteNome');
+      const cognome = getVal('studenteCognome');
+      const fullName = (nome === '--' && cognome === '--') ? '--' : `${nome} ${cognome}`.trim();
+      document.getElementById('repPrintNome').textContent = fullName;
+      document.getElementById('repPrintClasse').textContent = getVal('studenteClasse');
+      document.getElementById('repPrintData').textContent = getVal('studenteData');
+
+      // Popola Tabella Missione 1
+      const tbody = document.getElementById('repPrintUrlTbody');
+      tbody.innerHTML = '';
+      URLS_DEF.forEach(item => {
+        const d = getVal(`d${item.id}`);
+        const v = getVal(`v${item.id}`, 'DA VALUTARE');
+        const m = getVal(`m${item.id}`);
+
+        const tr = document.createElement('tr');
+        const isTruffa = (v === 'TRUFFA');
+        const isLegit = (v === 'LEGITTIMO');
+        const vColor = isTruffa ? '#dc2626' : (isLegit ? '#16a34a' : '#64748b');
+
+        tr.innerHTML = `
+          <td style="text-align:center; font-weight:700;">${item.id}</td>
+          <td class="mono" style="word-break:break-all;">${item.url}</td>
+          <td class="mono" style="font-weight:700; color:#0369a1;">${d}</td>
+          <td style="text-align:center; font-weight:800; color:${vColor}; font-size:9.5px;">${v}</td>
+          <td style="font-size:9.5px; line-height:1.35;">${m}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Popola Missione 2
+      document.getElementById('repPrintMittente').textContent = getVal('smsMittente');
+      const leve = getSelectedLeve();
+      document.getElementById('repPrintLeve').textContent = leve.length > 0 ? leve.join(' + ') : '-- (Nessuna selezionata)';
+      document.getElementById('repPrintSmsText').textContent = getVal('smsText');
+      document.getElementById('repPrintSmsSpiegazione').textContent = getVal('smsSpiegazione');
+
+      // Popola Missione 3
+      document.getElementById('repPrintZeroTrust').textContent = getVal('zeroTrustResp');
+    }
+
+    function openReportPreview() {
+      const nome = document.getElementById('studenteNome').value.trim();
+      if (!nome) {
+        if (confirm('I campi sono attualmente vuoti. Desideri caricare le soluzioni di esempio prima di visualizzare il report?')) {
+          loadSampleData();
+        } else {
+          document.getElementById('studenteNome').focus();
+        }
+      }
+      populatePrintReport();
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportPreview() {
+      document.getElementById('report-modal').classList.remove('active');
+    }
+
+    function downloadDirectPDF() {
+      const nome = document.getElementById('studenteNome').value.trim();
+      if (!nome) {
+        if (confirm('I campi sono vuoti. Desideri pre-compilare il modulo con le soluzioni di esempio e scaricare subito il PDF completo?')) {
+          loadSampleData();
+        } else {
+          alert('Inserisci almeno Nome e Cognome prima di procedere.');
+          document.getElementById('studenteNome').focus();
+          return;
+        }
+      }
+      populatePrintReport();
+
+      const modal = document.getElementById('report-modal');
+      const wasOpen = modal && modal.classList.contains('active');
+      if (!wasOpen && modal) {
+        modal.classList.add('active');
+      }
+
+      showToast('Generazione PDF A4 in corso...');
+
+      const currentNome = document.getElementById('studenteNome').value.trim() || 'Studente';
+      const currentCognome = document.getElementById('studenteCognome').value.trim() || '';
+      const cleanFile = `Report_SOC_Analyst_${currentNome}_${currentCognome}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = `${cleanFile}.pdf`;
+
+      const element = document.getElementById('print-area');
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast('✓ PDF scaricato con successo!');
+          }).catch(err => {
+            console.error('Errore html2pdf, ripiego su window.print:', err);
+            window.print();
+          });
+        }, 150);
+      } else {
+        window.print();
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // SALVA LOG TXT ORIGINALE DEL LAB 2
+    // ══════════════════════════════════════════
+    function pad(str, len) {
+      str = String(str || '');
+      return str.length >= len ? str.slice(0, len) : str + ' '.repeat(len - str.length);
+    }
+    function wrapText(text, maxLen) {
+      if (!text) return [''];
+      const words = text.split(/\s+/);
+      const lines = []; let cur = '';
+      words.forEach(w => {
+        const try_ = cur ? cur + ' ' + w : w;
+        if (try_.length <= maxLen) { cur = try_; }
+        else {
+          if (cur) lines.push(cur);
+          while (w.length > maxLen) { lines.push(w.slice(0, maxLen)); w = w.slice(maxLen); }
+          cur = w;
+        }
+      });
+      if (cur) lines.push(cur);
+      return lines.length ? lines : [''];
+    }
+    function simpleBox(text, w) {
+      w = w || 60;
+      const inner = w - 2;
+      const lines = wrapText(text, inner);
+      let out = '  ┌' + '─'.repeat(w) + '┐\n';
+      lines.forEach(l => { out += '  │ ' + pad(l, inner) + ' │\n'; });
+      out += '  └' + '─'.repeat(w) + '┘\n';
+      return out;
+    }
+
+    function saveLog() {
+      const nome    = document.getElementById('studenteNome').value.trim()    || '(non inserito)';
+      const cognome = document.getElementById('studenteCognome').value.trim() || '(non inserito)';
+      const classe  = document.getElementById('studenteClasse').value.trim()  || '(non inserita)';
+      const data    = document.getElementById('studenteData').value           || '(non inserita)';
+
+      const smsMittente    = document.getElementById('smsMittente').value.trim()    || '(non inserito)';
+      const smsText        = document.getElementById('smsText').value.trim()         || '(non inserito)';
+      const leve           = getSelectedLeve();
+      const smsSpiegazione = document.getElementById('smsSpiegazione').value.trim() || '(non inserita)';
+      const zeroTrust      = document.getElementById('zeroTrustResp').value.trim()  || '(non inserito)';
+
+      const SEP  = '═'.repeat(66);
+      const LINE = '─'.repeat(66);
+      const NL   = '\n';
+      let txt = '';
+
+      txt += SEP + NL;
+      txt += '   LOG OPERATIVO SOC – RED TEAM vs BLUE TEAM' + NL;
+      txt += '   Laboratorio Pratico di Cyber-Security' + NL;
+      txt += SEP + NL + NL;
+      txt += '  AGENTE  : ' + nome + ' ' + cognome + NL;
+      txt += '  CLASSE  : ' + classe + NL;
+      txt += '  DATA    : ' + data + NL;
+      txt += NL + SEP + NL + NL;
+
+      txt += '  MISSIONE 1 – BLUE TEAM: RAGGI X SUGLI URL' + NL;
+      txt += LINE + NL + NL;
+
+      URLS_DEF.forEach(item => {
+        const d = document.getElementById(`d${item.id}`).value.trim() || '(non inserito)';
+        const v = document.getElementById(`v${item.id}`).value || '(non scelto)';
+        const m = document.getElementById(`m${item.id}`).value.trim() || '(non compilato)';
+
+        txt += `  URL #${item.id} : ${item.url}` + NL;
+        txt += '  ' + LINE.slice(0, 62) + NL;
+        txt += '  ┌──────────────────┬──────────────┬─────────────────────────┐' + NL;
+        txt += '  │ DOMINIO REALE    │ ' + pad(d, 12) + ' │ VERDETTO: ' + pad(v, 15) + '│' + NL;
+        txt += '  ├──────────────────┴──────────────┴─────────────────────────┤' + NL;
+        const mLines = wrapText(m, 58);
+        mLines.forEach((l, li) => {
+          if (li === 0) txt += '  │ MOTIVAZIONE: ' + pad(l, 49) + ' │' + NL;
+          else          txt += '  │              ' + pad(l, 49) + ' │' + NL;
+        });
+        txt += '  └────────────────────────────────────────────────────────────┘' + NL + NL;
+      });
+
+      txt += SEP + NL + NL;
+      txt += '  MISSIONE 2 – RED TEAM: CREA L\'ESCA (SMS SMISHING)' + NL;
+      txt += LINE + NL + NL;
+      txt += '  MITTENTE FINTO (Spoofing):' + NL + simpleBox(smsMittente, 60) + NL;
+      txt += '  TESTO SMS (max 3 frasi):' + NL + simpleBox(smsText, 60) + NL;
+      txt += '  LEVE PSICOLOGICHE ATTIVATE:' + NL + simpleBox(leve.length > 0 ? leve.join(' + ') : '(nessuna)', 60) + NL;
+      txt += '  FRASE ESPLICATIVA:' + NL + simpleBox(smsSpiegazione, 60) + NL;
+
+      txt += SEP + NL + NL;
+      txt += '  MISSIONE 3 – ZERO TRUST: PROTOCOLLO DI VERIFICA' + NL;
+      txt += LINE + NL + NL;
+      txt += '  SCENARIO: Messaggio WhatsApp da contatto familiare con richiesta denaro.' + NL + NL;
+      txt += '  RISPOSTA TATTICA OPERATIVA (max 2-3 righe):' + NL + simpleBox(zeroTrust, 60) + NL;
+
+      txt += SEP + NL;
+      txt += '  Fine Log Operativo SOC • Laboratorio di Informatica' + NL;
+      txt += SEP + NL;
+
+      const fileName = 'Log_SOC_' + nome.replace(/\s+/g,'') + '_' + cognome.replace(/\s+/g,'') + '.txt';
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = fileName;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Log TXT scaricato.');
+    }
+
+    // ══════════════════════════════════════════
+    // INITIALIZATION
+    // ══════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromStorage();
+    });
+  </script>
+</body>
+</html>

@@ -89,6 +89,11 @@ const MATERIE = [
                 url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=3l"
 
               },
+              {
+                title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
+                desc: "Laboratorio operativo per analisti SOC: analisi forense e raggi X sugli URL contraffatti (Blue Team), simulazione di attacco Smishing con ingegneria sociale (Red Team), protocollo Zero Trust e report PDF compatto precompilabile.",
+                url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=3l"
+              },
 
               {
 
@@ -177,6 +182,11 @@ const MATERIE = [
                 url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=2h"
 
               },
+              {
+                title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
+                desc: "Laboratorio operativo per analisti SOC: analisi forense e raggi X sugli URL contraffatti (Blue Team), simulazione di attacco Smishing con ingegneria sociale (Red Team), protocollo Zero Trust e report PDF compatto precompilabile.",
+                url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=2h"
+              },
 
               {
 
@@ -264,6 +274,11 @@ const MATERIE = [
 
                 url: "/informatica/sicurezza/sicurezza-informatica-2.html?classe=2g"
 
+              },
+              {
+                title: "🛡️ Laboratorio 2: SOC Analyst — Red Team vs Blue Team",
+                desc: "Laboratorio operativo per analisti SOC: analisi forense e raggi X sugli URL contraffatti (Blue Team), simulazione di attacco Smishing con ingegneria sociale (Red Team), protocollo Zero Trust e report PDF compatto precompilabile.",
+                url: "/informatica/sicurezza/laboratorio-soc-analyst.html?classe=2g"
               },
 
               {
