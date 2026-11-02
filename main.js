@@ -395,8 +395,19 @@ const MATERIE = [
             id: "giordano-bruno-seconde",
             title: "2° classi",
             icon: "📐",
-            desc: "Attività sperimentali e simulazioni avanzate per le classi seconde.",
-            chapters: []
+            desc: "Attività sperimentali, termologia e simulazioni avanzate per le classi seconde.",
+            chapters: [
+              {
+                title: "🔥 01. Dilatazione Termica Lineare con Comparatore",
+                resources: [
+                  {
+                    title: "🚀 Lezione Interattiva LIM: Dilatazione Lineare & Comparatore",
+                    desc: "Presentazione animata 100vh per LIM: formula ΔL = λ·L₀·ΔT, simulatore del comparatore centesimale (0.01 mm), vapore, dilatazione di alluminio, rame e ferro, calcolo di λ e sfida finale a squadre.",
+                    url: "/fisica/giordano-bruno/dilatazione-termica.html"
+                  }
+                ]
+              }
+            ]
           }
 ,
           {
