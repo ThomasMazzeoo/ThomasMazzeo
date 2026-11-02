@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>03B. Trattamento Dati con Excel / Fogli (SC 1.3.5) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   03B: Trattamento Dati con Excel / Fogli (SC 1.3.5)
+   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-excel: #107c41;
+  --argon-excel-light: rgba(16, 124, 65, 0.12);
+  --argon-excel-hover: #0b582e;
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-danger: #f5365c;
+  --argon-warning: #fb6340;
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  --argon-text-light: #8898aa;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  zoom: var(--lim-zoom);
+}
+
+/* TOP APP BAR */
+.argon-topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--argon-dark);
+}
+
+.school-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(87deg, #107c41 0, #2dce89 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);
+}
+
+.school-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.school-sub {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--argon-excel);
+  letter-spacing: 0.5px;
+}
+
+.topbar-center {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: #e9ecef;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+  color: #adb5bd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.step-node.active {
+  background: var(--argon-excel);
+  border-color: var(--argon-excel);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 124, 65, 0.45);
+  transform: scale(1.15);
+}
+
+.step-node.completed {
+  background: var(--argon-success);
+  border-color: var(--argon-success);
+  color: #ffffff;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lim-pill-badge {
+  background: var(--argon-excel-light);
+  color: var(--argon-excel);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.lim-btn {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* VIEWPORT SLIDES */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 24px;
+  display: flex;
+}
+
+.slide-card {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 24px;
+  right: 24px;
+  background: var(--argon-card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.99);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-card.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  z-index: 5;
+}
+
+.slide-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f3f9;
+  flex-shrink: 0;
+}
+
+.slide-title-group h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.pill-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.pill-badge.excel { background: var(--argon-excel-light); color: var(--argon-excel); }
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: rgba(45, 206, 137, 0.12); color: #2dce89; }
+.pill-badge.warning { background: rgba(251, 99, 64, 0.14); color: #c4411d; }
+
+.slide-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.callout-box {
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.callout-box.excel {
+  background: #f0fdf4;
+  border-left: 5px solid var(--argon-excel);
+  color: #166534;
+}
+.callout-box.primary {
+  background: #f4f6fd;
+  border-left: 5px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+.callout-box.warning {
+  background: #fff8f5;
+  border-left: 5px solid var(--argon-warning);
+  color: #9c3015;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Navigazione */
+.argon-bottombar {
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.nav-btn.prev {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+}
+.nav-btn.next {
+  background: var(--argon-excel);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 124, 65, 0.35);
+}
+.nav-btn.next:hover:not(:disabled) {
+  background: var(--argon-excel-hover);
+}
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.interactive-tab-btn {
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.interactive-tab-btn.active {
+  background: var(--argon-excel-light);
+  border-color: var(--argon-excel);
+  color: var(--argon-excel);
+}
+
+/* Tabella Griglia Excel */
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+}
+.excel-table th {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 6px 10px;
+  color: #475569;
+  font-weight: 700;
+  text-align: center;
+}
+.excel-table td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  text-align: center;
+  background: #ffffff;
+}
+.excel-table tr.header-row th {
+  background: #e2e8f0;
+}
+.excel-cell-active {
+  outline: 2px solid var(--argon-excel);
+  background: #f0fdf4 !important;
+}
+
+.argon-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--argon-darker);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+.argon-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="argon-topbar">
+    <div class="topbar-left">
+      <a href="/index.html" class="school-badge" title="Torna alla Home">
+        <div class="school-badge-icon">📊</div>
+        <div class="school-badge-text">
+          <span class="school-title">ITIS Giordano Bruno</span>
+          <span class="school-sub">Fisica • SC 1.3.5 Excel Lab</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-center">
+      <div class="steps-indicator" id="steps-indicator">
+        <div class="step-node active" data-step="1" title="1. Excel: Il Superpotere">1</div>
+        <div class="step-node" data-step="2" title="2. L'Incantesimo dell'Uguale">2</div>
+        <div class="step-node" data-step="3" title="3. Formule di Laboratorio">3</div>
+        <div class="step-node" data-step="4" title="4. Autofill Magico">4</div>
+        <div class="step-node" data-step="5" title="5. Simulatore Foglio LIM">5</div>
+        <div class="step-node" data-step="6" title="6. Notazione Scientifica">6</div>
+        <div class="step-node" data-step="7" title="7. Tabella per Relazione 3">7</div>
+        <div class="step-node" data-step="8" title="8. Sfida Debugger LIM">8</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="lim-pill-badge" id="slide-name-badge">
+        <span>PASSO 1 DI 8</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
+    </div>
+  </header>
+
+  <!-- VIEWPORT SLIDES -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: EXCEL IL SUPERPOTERE
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="IL SUPERPOTERE EXCEL">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⚡ Perché Usare Excel? Il "Cheat Code" del Laboratorio</h1>
+          <p class="slide-subtitle">Chi vuole fare 60 calcoli di propagazione a mano con la calcolatrice? Nessuno!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">MS EXCEL / GOOGLE FOGLI</span>
+          <span class="pill-badge dark">SC 1.3.5</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box excel">
+          🏭 <strong>L'ANALOGIA DELLA FABBRICA AUTOMATICA (Factorio / Minecraft Redstone):</strong><br>
+          Excel non è un foglio per commercialisti. È una <strong>catena di montaggio robotica</strong>! Le celle sono scatole collegate da tubi invisibili: se cambi il numero nella scatola di partenza, tutte le altre si aggiornano per magia in 1 millisecondo!
+        </div>
+
+        <div class="grid-2">
+          <!-- Calcolatrice vs Excel -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-danger);">
+            <div style="font-size: 2rem; margin-bottom: 4px;">🖩</div>
+            <strong style="color: var(--argon-danger); font-size: 1.05rem;">Senza Foglio di Calcolo (Calcolatrice)</strong>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45; margin-top: 6px;">
+              • Devi digitare ogni numero tasto per tasto.<br>
+              • Se sbagli una cifra alla 10ª misura, devi rifare TUTTO da capo.<br>
+              • Rischio elevatissimo di errori di battitura.<br>
+              • Zero grafici automatici.
+            </p>
+          </div>
+
+          <!-- Con Excel -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel); background: #fafdfc;">
+            <div style="font-size: 2rem; margin-bottom: 4px;">🚀</div>
+            <strong style="color: var(--argon-excel); font-size: 1.05rem;">Con Excel / Fogli Google</strong>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45; margin-top: 6px;">
+              • Scrivi la formula <strong>una sola volta</strong>.<br>
+              • Trascini il quadratino e calcoli 100 righe all'istante.<br>
+              • Se cambi una misura, tutti i volumi si correggono da soli.<br>
+              • Tabelle perfette da stampare per la Relazione 3!
+            </p>
+          </div>
+        </div>
+
+        <!-- Mappa coordinate celle -->
+        <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-around;">
+          <div style="text-align: center;">
+            <span style="font-size: 0.8rem; color: var(--argon-text-muted); font-weight: 700;">COLONNE:</span><br>
+            <strong style="font-size: 1.1rem; color: var(--argon-excel);">Lettere (A, B, C, D...)</strong>
+          </div>
+          <div style="font-size: 1.5rem; color: #cbd5e1;">+</div>
+          <div style="text-align: center;">
+            <span style="font-size: 0.8rem; color: var(--argon-text-muted); font-weight: 700;">RIGHE:</span><br>
+            <strong style="font-size: 1.1rem; color: var(--argon-primary);">Numeri (1, 2, 3, 4...)</strong>
+          </div>
+          <div style="font-size: 1.5rem; color: #cbd5e1;">=</div>
+          <div style="text-align: center;">
+            <span style="font-size: 0.8rem; color: var(--argon-text-muted); font-weight: 700;">CELLA (BATTICUORE):</span><br>
+            <strong style="font-size: 1.25rem; color: #c2410c; font-family: 'JetBrains Mono', monospace;">Cella B4</strong>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: L'INCANTESIMO DELL'UGUALE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="INCANTESIMO UGUALE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>✨ L'Incantesimo dell'Uguale: Il Tasto "=" Attiva il Robot!</h1>
+          <p class="slide-subtitle">La differenza fondamentale tra scrivere un testo stupido e attivare il motore matematico</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">SINTASSI FORMULA</span>
+          <span class="pill-badge warning">REGOLA 1 DI EXCEL</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Senza uguale vs Con uguale -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Regola Fondamentale:</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Se scrivi in una cella <code>12 * 5</code>, Excel la considera una semplice scritta di testo. Ma se metti il simbolo <strong>=</strong> davanti, si attiva il motore matematico:
+              </p>
+            </div>
+
+            <!-- Tabella dimostrativa -->
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+              <div style="color: #b91c1c; margin-bottom: 8px;">
+                ❌ Scrivi: <strong>12 * 5</strong><br>
+                ➔ Risultato a schermo: <em>12 * 5</em> (Nessun calcolo!)
+              </div>
+              <div style="color: #15803d;">
+                ✅ Scrivi: <strong>= 12 * 5</strong><br>
+                ➔ Risultato a schermo: <strong>60</strong> (Robot attivo!)
+              </div>
+            </div>
+
+            <div class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              ⚠️ <strong>I 4 Operatori al Computer:</strong><br>
+              Addizione: <code>+</code> | Sottrazione: <code>-</code> | Moltiplicazione: <code>*</code> (asterisco!) | Divisione: <code>/</code> (slash!)
+            </div>
+          </div>
+
+          <!-- Console Live Interattiva per Testare le Formule -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Console Live: Prova la Formula alla LIM</strong>
+            
+            <div style="background: #ffffff; border: 2px solid var(--argon-excel); border-radius: 10px; padding: 12px;">
+              <label style="font-size: 0.78rem; font-weight: 700; color: var(--argon-text-muted);">BARRA DELLA FORMULA (fx):</label>
+              <div style="display: flex; gap: 8px; margin-top: 4px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 800; color: var(--argon-excel); padding: 4px;">=</span>
+                <input type="text" id="live-fx-input" value="B2 * C2 * D2" style="flex: 1; padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px;" oninput="evalLiveFormula()">
+              </div>
+            </div>
+
+            <!-- Valori celle simulate -->
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              Valori fittizi nelle celle:<br>
+              • Cella B2 (Quota a) = <strong>40.0</strong><br>
+              • Cella C2 (Quota b) = <strong>25.0</strong><br>
+              • Cella D2 (Quota c) = <strong>15.0</strong>
+            </div>
+
+            <!-- Output Cella -->
+            <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">VALORE RESTITUITO NELLA CELLA E2:</span><br>
+              <strong id="live-fx-result" style="font-size: 1.4rem; color: #15803d;">15000.0</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: FORMULE DI LABORATORIO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="FORMULE DI LABORATORIO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🧰 Il Kit delle Formule per la Relazione 3</h1>
+          <p class="slide-subtitle">Le 4 funzioni magiche di Excel per calcolare medie, scarti e volumi senza fatica</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">FUNZIONI CHIAVE</span>
+          <span class="pill-badge info">AUTOMAZIONE DATI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Funzione 1: MEDIA -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: var(--argon-primary); font-size: 1rem;">1. Valor Medio</strong>
+              <span class="pill-badge primary">=MEDIA(inizio:fine)</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 8px;">
+              Calcola la media aritmetica di un gruppo di celle selezionate.
+            </p>
+            <div style="background: #f4f6fd; border-radius: 8px; padding: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              <code>=MEDIA(B2:B4)</code><br>
+              <span style="color: #64748b; font-size: 0.75rem;">(Fa la somma di B2, B3, B4 e divide per 3)</span>
+            </div>
+          </div>
+
+          <!-- Funzione 2: SEMIDISPERSIONE -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #c2410c; font-size: 1rem;">2. Semidispersione Max</strong>
+              <span class="pill-badge warning">=(MAX - MIN) / 2</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 8px;">
+              Trova lo scarto tra la misura più grande e quella più piccola.
+            </p>
+            <div style="background: #fff8f5; border-radius: 8px; padding: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              <code>=(MAX(B2:B4) - MIN(B2:B4)) / 2</code><br>
+              <span style="color: #64748b; font-size: 0.75rem;">(Incertezza statistica rapida)</span>
+            </div>
+          </div>
+
+          <!-- Funzione 3: PI GRECO -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: var(--argon-excel); font-size: 1rem;">3. Pi Greco a 15 Cifre</strong>
+              <span class="pill-badge excel">=PI.GRECO()</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 8px;">
+              Non scrivere mai 3.14 a mano! Usa la costante esatta con le parentesi vuote.
+            </p>
+            <div style="background: #f0fdf4; border-radius: 8px; padding: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              <code>=PI.GRECO() * (D2/2)^2 * H2</code><br>
+              <span style="color: #64748b; font-size: 0.75rem;">(Volume perfetto del cilindro)</span>
+            </div>
+          </div>
+
+          <!-- Funzione 4: RADQ -->
+          <div class="argon-card" style="border-top: 4px solid #11cdef;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #0b93ab; font-size: 1rem;">4. Radice Quadrata</strong>
+              <span class="pill-badge info">=RADQ(cella)</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 8px;">
+              Estrae la radice quadrata di un numero o di una formula.
+            </p>
+            <div style="background: #eefbff; border-radius: 8px; padding: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              <code>=RADQ(A2^2 + B2^2)</code><br>
+              <span style="color: #64748b; font-size: 0.75rem;">(Teorema di Pitagora / Diagonale)</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: IL QUADRATINO DI RIEMPIMENTO (AUTOFILL)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="AUTOFILL MAGICO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🎯 La Magia del Quadratino Verde: L'Autofill</h1>
+          <p class="slide-subtitle">Trascina dall'angolo in basso a destra e calcola 100 righe di dati in mezzo secondo!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">SUPERPOTERE VELOCITÀ</span>
+          <span class="pill-badge success">SWISH-BLING!</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Spiegazione -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Come Funziona il Quadratino di Riempimento:</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Quando selezioni una cella contenente una formula, nell'angolo in basso a destra compare un piccolo <strong>quadratino verde</strong> (maniglia di riempimento).
+              </p>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Se ci clicchi sopra e <strong>trascini verso il basso</strong>, Excel adatta automaticamente le righe: nella riga 3 userà <code>A3*B3</code>, nella riga 4 <code>A4*B4</code>, e così via!
+              </p>
+            </div>
+
+            <!-- Tasto prova animazione -->
+            <button class="interactive-tab-btn active" id="btn-demo-autofill" onclick="triggerAutofillDemo()" style="justify-content: center; font-size: 1rem;">
+              ⚡ Prova l'Autofill Live alla LIM!
+            </button>
+          </div>
+
+          <!-- Dimostrazione visuale tabella -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulazione Trascinamento Griglia:</strong>
+            
+            <table class="excel-table" id="autofill-demo-table">
+              <tr class="header-row">
+                <th></th><th>A (Base)</th><th>B (Altezza)</th><th>C (Area = A*B)</th>
+              </tr>
+              <tr>
+                <th>1</th><td>10</td><td>5</td><td id="cell-c1" class="excel-cell-active" style="color: var(--argon-excel); font-weight: 800;">=A1*B1 ➔ 50</td>
+              </tr>
+              <tr>
+                <th>2</th><td>12</td><td>6</td><td id="cell-c2" style="color: #cbd5e1;">(vuota)</td>
+              </tr>
+              <tr>
+                <th>3</th><td>15</td><td>8</td><td id="cell-c3" style="color: #cbd5e1;">(vuota)</td>
+              </tr>
+              <tr>
+                <th>4</th><td>20</td><td>10</td><td id="cell-c4" style="color: #cbd5e1;">(vuota)</td>
+              </tr>
+            </table>
+
+            <div id="autofill-status-box" class="callout-box excel" style="padding: 6px 12px; margin: 0; font-size: 0.8rem;">
+              Premi il tasto a sinistra per trascinare la formula su tutta la colonna!
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: SIMULATORE FOGLIO LIM LIVE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="SIMULATORE FOGLIO LIM">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🖥️ Laboratorio Digitale: Il Foglio di Calcolo Interattivo</h1>
+          <p class="slide-subtitle">Tocca le celle per inserire i dati del cilindro e attiva la "Visione a Raggi X" per vedere le formule!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">FOGLIO LIVE</span>
+          <span class="pill-badge info" id="xray-badge">MODALITÀ VALORI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <!-- Controlli del Foglio -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <div style="display: flex; gap: 8px;">
+            <button class="interactive-tab-btn" onclick="setPresetSheet(1)">🧪 Campione Cilindro 1</button>
+            <button class="interactive-tab-btn" onclick="setPresetSheet(2)">📦 Campione Parallelepipedo 2</button>
+          </div>
+          <button class="interactive-tab-btn" id="btn-xray" onclick="toggleXRayMode()" style="background: #eef2ff; border-color: var(--argon-primary); color: var(--argon-primary);">
+            👁️ Visione a Raggi X (Formule)
+          </button>
+        </div>
+
+        <!-- Griglia Excel Completa Interattiva -->
+        <div class="argon-card" style="flex: 1; border-top: 4px solid var(--argon-excel); padding: 10px; justify-content: space-between;">
+          
+          <table class="excel-table" id="interactive-sheet-table">
+            <tr class="header-row">
+              <th style="width: 35px;"></th>
+              <th>A (Solido)</th>
+              <th>B (Quota 1)</th>
+              <th>C (Quota 2)</th>
+              <th>D (Quota 3)</th>
+              <th style="background: #e0f2fe; color: #0369a1;">E (Volume mm³)</th>
+              <th style="background: #fef3c7; color: #92400e;">F (e_r Totale)</th>
+              <th style="background: #dcfce7; color: #166534;">G (Incertezza ΔV)</th>
+            </tr>
+            <tr>
+              <th>1</th>
+              <td><strong>Cilindro A</strong></td>
+              <td id="s-b1">24.50 mm</td>
+              <td id="s-c1">54.20 mm</td>
+              <td id="s-d1">-</td>
+              <td id="s-e1" style="font-weight: 800; color: #0284c7;">25546.8 mm³</td>
+              <td id="s-f1" style="font-weight: 700; color: #b45309;">0.501%</td>
+              <td id="s-g1" style="font-weight: 800; color: #15803d;">± 128.0 mm³</td>
+            </tr>
+            <tr>
+              <th>2</th>
+              <td><strong>Blocchetto B</strong></td>
+              <td id="s-b2">40.10 mm</td>
+              <td id="s-c2">25.30 mm</td>
+              <td id="s-d2">15.20 mm</td>
+              <td id="s-e2" style="font-weight: 800; color: #0284c7;">15420.7 mm³</td>
+              <td id="s-f2" style="font-weight: 700; color: #b45309;">0.651%</td>
+              <td id="s-g2" style="font-weight: 800; color: #15803d;">± 100.4 mm³</td>
+            </tr>
+          </table>
+
+          <!-- Spiegazione Cella Selezionata -->
+          <div id="sheet-formula-expl" class="callout-box excel" style="padding: 8px 14px; margin: 0; font-size: 0.84rem;">
+            <strong>Formula Volume Cilindro (Cella E1):</strong> <code>=PI.GRECO() * (B1/2)^2 * C1</code> (calcola base per altezza con il raggio dimezzato).
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: NOTAZIONE SCIENTIFICA IN EXCEL
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="NOTAZIONE SCIENTIFICA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔬 Notazione Scientifica e Arrotondamenti in Excel</h1>
+          <p class="slide-subtitle">Come convertire i numeri in m³ e regolare i decimali senza errori di cifre significative</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">FORMATO CELLE</span>
+          <span class="pill-badge dark">SCIENTIFICO (E-05)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Notazione scientifica con la lettera E -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Cosa Significa la "E" di Excel?</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Sui computer e nelle calcolatrici non c'è il tasto per scrivere "10 alla meno 5". Si usa la lettera <strong>E</strong> (Exponent):
+              </p>
+            </div>
+
+            <div style="background: #f4f6fd; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; text-align: center;">
+              <div style="font-size: 1.3rem; color: var(--argon-primary); font-weight: 800; margin-bottom: 4px;">
+                2.55E-05 m³
+              </div>
+              <div style="font-size: 0.85rem; color: #525f7f;">
+                Significa esattamente: <strong>2.55 × 10⁻⁵ m³</strong>
+              </div>
+            </div>
+
+            <div class="callout-box info" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              Per impostarla: Tasto destro sulla cella ➔ <strong>Formato Celle</strong> ➔ <strong>Scientifico</strong> (2 posizioni decimali).
+            </div>
+          </div>
+
+          <!-- Pulsanti Aumenta / Riduci Decimali -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">I Tasti Magici per le Cifre Significative:</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Invece di cancellare cifre a mano, usa i pulsanti della barra degli strumenti per mostrare solo i decimali necessari:
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+              <button class="interactive-tab-btn" onclick="adjustDecimals(-1)">⬅️ .00 ➔ .0 (Riduci Decimali)</button>
+              <button class="interactive-tab-btn" onclick="adjustDecimals(1)">➡️ .0 ➔ .00 (Aumenta Decimali)</button>
+            </div>
+
+            <div style="background: #fafdfb; border: 2px solid #22c55e; border-radius: 10px; padding: 12px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">VALORE VISUALIZZATO NELLA CELLA:</span><br>
+              <strong id="decimal-demo-val" style="font-size: 1.4rem; color: #15803d;">25546.82 mm³</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: TABELLA PER RELAZIONE 3
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="TABELLA RELAZIONE 3">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📋 Come Impostare la Tabella per la Relazione 3 (Voto 3)</h1>
+          <p class="slide-subtitle">La griglia ufficiale da stampare o allegare per ottenere il massimo punteggio</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel">MODELLO RELAZIONE</span>
+          <span class="pill-badge success">VOTO 3 (SC 1.3.5)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="callout-box excel" style="padding: 10px 16px;">
+          🎯 <strong>LISTA DI CONTROLLO DEL DOCENTE (RUBRICA DI VALUTAZIONE):</strong>
+        </div>
+
+        <div class="grid-3" style="flex: 1;">
+          
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <strong style="color: var(--argon-primary); font-size: 0.95rem; margin-bottom: 6px;">1. Intestazioni con Unità</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); line-height: 1.4;">
+              Ogni colonna deve avere il nome della grandezza e la sua unità di misura tra parentesi quadre: es. <strong>Quota a [mm]</strong>, <strong>Volume [mm³]</strong>, <strong>Volume [m³]</strong>.
+            </p>
+          </div>
+
+          <div class="argon-card" style="border-top: 4px solid var(--argon-excel);">
+            <strong style="color: var(--argon-excel); font-size: 0.95rem; margin-bottom: 6px;">2. Formule e Non Numeri Fissi</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); line-height: 1.4;">
+              Nelle colonne dei volumi e degli errori devono comparire le formule (<code>=B2*C2*D2</code>) e non i risultati calcolati a mano con la calcolatrice!
+            </p>
+          </div>
+
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning);">
+            <strong style="color: #c2410c; font-size: 0.95rem; margin-bottom: 6px;">3. Cifre Significative Coerenti</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); line-height: 1.4;">
+              L'incertezza assoluta deve avere 1 o al massimo 2 cifre significative, e il valore medio deve terminare alla stessa cifra decimale!
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA LIM DEBUGGER EXCEL
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA DEBUGGER LIM">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: Il Debugger di Excel!</h1>
+          <p class="slide-subtitle">Trova l'errore commesso dagli studenti nelle formule e conquista l'abilitazione informatica!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge excel" id="quiz-badge-step">DOMANDA 1 DI 5</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="argon-card" style="flex: 1; border-top: 4px solid var(--argon-excel); justify-content: space-between; padding: 18px 24px;">
+          
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span id="quiz-topic" class="pill-badge excel">DEBUG FORMULE</span>
+              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
+            </div>
+
+            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
+              Caricamento quesito...
+            </h2>
+
+            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+          </div>
+
+          <div id="quiz-feedback-box" class="callout-box excel" style="display: none; padding: 10px 16px; margin: 0;">
+            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
+            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
+              Prossimo Quesito ➜
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="argon-bottombar">
+    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
+      ◀ Slide Precedente
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Usa le frecce ⬅️ / ➡️ o la barra spaziatrice</span>
+    </div>
+
+    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
+      Slide Successiva ▶
+    </button>
+  </footer>
+
+  <div class="argon-toast" id="argon-toast">Notifica</div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    let limZoom = 1;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playBeep(freq, type = 'sine', duration = 0.12) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('argon-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function goToSlide(step) {
+      if (step < 1 || step > totalSlides) return;
+      currentSlide = step;
+
+      document.querySelectorAll('.slide-card').forEach(slide => {
+        const s = parseInt(slide.dataset.step);
+        slide.classList.toggle('active', s === currentSlide);
+      });
+
+      document.querySelectorAll('.step-node').forEach(node => {
+        const s = parseInt(node.dataset.step);
+        node.classList.toggle('active', s === currentSlide);
+        node.classList.toggle('completed', s < currentSlide);
+      });
+
+      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
+      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
+
+      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
+      if (activeCard) {
+        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
+        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
+      }
+
+      playBeep(480, 'triangle', 0.08);
+    }
+
+    function changeSlide(delta) {
+      goToSlide(currentSlide + delta);
+    }
+
+    document.querySelectorAll('.step-node').forEach(node => {
+      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      else if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      if (limZoom < 1.35) {
+        limZoom += 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      if (limZoom > 0.85) {
+        limZoom -= 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+
+    // ── SLIDE 2: CONSOLE LIVE FORMULA ──────────
+    function evalLiveFormula() {
+      const input = document.getElementById('live-fx-input').value.trim();
+      const res = document.getElementById('live-fx-result');
+      // Sostituisce variabili B2=40, C2=25, D2=15
+      let parsed = input.replace(/B2/g, '40').replace(/C2/g, '25').replace(/D2/g, '15');
+      try {
+        const val = eval(parsed);
+        if (typeof val === 'number' && !isNaN(val)) {
+          res.textContent = val.toFixed(1);
+          res.style.color = '#15803d';
+        } else {
+          res.textContent = '#ERRORE';
+          res.style.color = '#b91c1c';
+        }
+      } catch(e) {
+        res.textContent = '#SINTASSI?';
+        res.style.color = '#b91c1c';
+      }
+    }
+
+    // ── SLIDE 4: AUTOFILL DEMO ──────────
+    function triggerAutofillDemo() {
+      playBeep(720, 'square', 0.1);
+      setTimeout(() => {
+        document.getElementById('cell-c2').textContent = '=A2*B2 ➔ 72';
+        document.getElementById('cell-c2').style.color = '#15803d';
+        document.getElementById('cell-c2').style.fontWeight = '700';
+      }, 150);
+      setTimeout(() => {
+        document.getElementById('cell-c3').textContent = '=A3*B3 ➔ 120';
+        document.getElementById('cell-c3').style.color = '#15803d';
+        document.getElementById('cell-c3').style.fontWeight = '700';
+      }, 300);
+      setTimeout(() => {
+        document.getElementById('cell-c4').textContent = '=A4*B4 ➔ 200';
+        document.getElementById('cell-c4').style.color = '#15803d';
+        document.getElementById('cell-c4').style.fontWeight = '700';
+        playBeep(940, 'triangle', 0.25);
+        document.getElementById('autofill-status-box').innerHTML = '🎉 <strong>SWISH-BLING!</strong> Tutte le righe calcolate in 0.3 secondi grazie alla maniglia di riempimento!';
+      }, 450);
+    }
+
+    // ── SLIDE 5: FOGLIO LIVE & MODALITÀ RAGGI X ──────────
+    let xrayMode = false;
+
+    function toggleXRayMode() {
+      xrayMode = !xrayMode;
+      document.getElementById('xray-badge').textContent = xrayMode ? 'MODALITÀ RAGGI X (FORMULE)' : 'MODALITÀ VALORI';
+      document.getElementById('btn-xray').textContent = xrayMode ? '👁️ Torna a Valori Numerici' : '👁️ Visione a Raggi X (Formule)';
+
+      if (xrayMode) {
+        document.getElementById('s-e1').textContent = '=PI.GRECO()*(B1/2)^2*C1';
+        document.getElementById('s-f1').textContent = '=2*(0.05/B1) + (0.05/C1)';
+        document.getElementById('s-g1').textContent = '=E1 * F1';
+        document.getElementById('s-e2').textContent = '=B2 * C2 * D2';
+        document.getElementById('s-f2').textContent = '=(0.05/B2)+(0.05/C2)+(0.05/D2)';
+        document.getElementById('s-g2').textContent = '=E2 * F2';
+        document.getElementById('sheet-formula-expl').innerHTML = '🔍 <strong>RAGGI X ATTIVI:</strong> Ecco cosa c\'è dentro le celle! Excel esegue le formule usando le coordinate.';
+        playBeep(640, 'sine', 0.15);
+      } else {
+        document.getElementById('s-e1').textContent = '25546.8 mm³';
+        document.getElementById('s-f1').textContent = '0.501%';
+        document.getElementById('s-g1').textContent = '± 128.0 mm³';
+        document.getElementById('s-e2').textContent = '15420.7 mm³';
+        document.getElementById('s-f2').textContent = '0.651%';
+        document.getElementById('s-g2').textContent = '± 100.4 mm³';
+        document.getElementById('sheet-formula-expl').innerHTML = '<strong>Formula Volume Cilindro (Cella E1):</strong> <code>=PI.GRECO() * (B1/2)^2 * C1</code> (calcola base per altezza con il raggio dimezzato).';
+        playBeep(480, 'sine', 0.15);
+      }
+    }
+
+    function setPresetSheet(n) {
+      if (n === 1) showToast("Selezionato Cilindro A (Diametro 24.50 mm, Altezza 54.20 mm)");
+      else showToast("Selezionato Blocchetto B (40.10 × 25.30 × 15.20 mm)");
+      playBeep(520);
+    }
+
+    // ── SLIDE 6: REGOLAZIONE DECIMALI ──────────
+    let decCount = 2;
+    function adjustDecimals(delta) {
+      decCount = Math.max(0, Math.min(5, decCount + delta));
+      const val = 25546.82345;
+      document.getElementById('decimal-demo-val').textContent = val.toFixed(decCount) + ' mm³';
+      playBeep(580 + (decCount * 40));
+    }
+
+    // ── QUIZ SLIDE 8 ──────────
+    const quizData = [
+      {
+        topic: "Attivazione Formule",
+        q: "Uno studente scrive nella cella A1 la scritta '10*20' ma sullo schermo compare sempre '10*20' invece di 200. Qual è l'errore?",
+        opts: [
+          "Ha dimenticato di mettere il simbolo '=' prima della formula",
+          "Ha usato il computer spento",
+          "Excel non sa fare le moltiplicazioni",
+          "Doveva scrivere '10 x 20'"
+        ],
+        correct: 0,
+        exp: "Esatto! Senza il simbolo '=' all'inizio, Excel tratta la cella come testo e non esegue alcun calcolo matematico!"
+      },
+      {
+        topic: "Moltiplicazione al Computer",
+        q: "Qual è il simbolo corretto per moltiplicare due celle in Excel (es. cella A1 per cella B1)?",
+        opts: ["= A1 x B1", "= A1 * B1 (con l'asterisco)", "= A1 . B1", "= MOLTIPLICA(A1, B1)"],
+        correct: 1,
+        exp: "Perfetto! In informatica la moltiplicazione si indica sempre con l'asterisco '*' per evitare confusione con la lettera 'x'!"
+      },
+      {
+        topic: "Pi Greco in Excel",
+        q: "Qual è la sintassi corretta per richiamare il valore di Pi Greco a 15 cifre decimali in una formula?",
+        opts: ["= 3.14", "= PIGRECO", "= PI.GRECO() (con le parentesi aperte e chiuse)", "= P()"],
+        correct: 2,
+        exp: "Bravissimi! Le funzioni in Excel richiedono sempre le parentesi: =PI.GRECO() restituisce 3.14159265358979...!"
+      },
+      {
+        topic: "Autofill e Trascinamento",
+        q: "A cosa serve il quadratino verde posizionato nell'angolo in basso a destra della cella attiva?",
+        opts: [
+          "A cancellare la cella",
+          "A trascinare e copiare la formula sulle righe successive adattando le coordinate (Autofill)",
+          "A colorare la cella di verde",
+          "A salvare il file su chiavetta"
+        ],
+        correct: 1,
+        exp: "Ottimo! È la maniglia di riempimento: permette di calcolare centinaia di righe in un secondo!"
+      },
+      {
+        topic: "Notazione Scientifica",
+        q: "Nella colonna del volume in m³ leggi il valore '3.45E-05'. Cosa significa?",
+        opts: [
+          "C'è stato un errore di tipo E5",
+          "3.45 × 10⁻⁵ m³ (cioè 0.0000345 m³)",
+          "3.45 - 5 = -1.55 m³",
+          "3.45 Euro"
+        ],
+        correct: 1,
+        exp: "Grandiosi! La lettera E sta per Exponent in base 10: 3.45E-05 = 3.45 × 10⁻⁵ m³!"
+      }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function loadQuiz() {
+      const q = quizData[quizIndex];
+      document.getElementById('quiz-counter').textContent = `Quesito ${quizIndex + 1} di ${quizData.length}`;
+      document.getElementById('quiz-badge-step').textContent = `DOMANDA ${quizIndex + 1} DI ${quizData.length}`;
+      document.getElementById('quiz-topic').textContent = q.topic;
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const grid = document.getElementById('quiz-options-grid');
+      grid.innerHTML = '';
+      document.getElementById('quiz-feedback-box').style.display = 'none';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'interactive-tab-btn';
+        btn.style.textAlign = 'left';
+        btn.style.padding = '12px 16px';
+        btn.style.fontSize = '0.9rem';
+        btn.innerHTML = `<strong style="color: var(--argon-excel); margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
+        btn.onclick = () => checkQuizAnswer(idx, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function checkQuizAnswer(selectedIdx, btnEl) {
+      const q = quizData[quizIndex];
+      const buttons = document.querySelectorAll('#quiz-options-grid button');
+      buttons.forEach(b => b.disabled = true);
+
+      const fBox = document.getElementById('quiz-feedback-box');
+      const fIcon = document.getElementById('quiz-feedback-icon');
+      const fText = document.getElementById('quiz-feedback-text');
+
+      if (selectedIdx === q.correct) {
+        btnEl.style.background = '#dcfce7';
+        btnEl.style.borderColor = '#22c55e';
+        btnEl.style.color = '#15803d';
+        fBox.className = 'callout-box excel';
+        fIcon.textContent = '🎉';
+        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
+        quizScore += 20;
+        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
+        playBeep(720, 'sine', 0.2);
+      } else {
+        btnEl.style.background = '#fee2e2';
+        btnEl.style.borderColor = '#ef4444';
+        btnEl.style.color = '#b91c1c';
+        buttons[q.correct].style.background = '#dcfce7';
+        buttons[q.correct].style.borderColor = '#22c55e';
+        buttons[q.correct].style.color = '#15803d';
+        fBox.className = 'callout-box warning';
+        fIcon.textContent = '💡';
+        fText.innerHTML = `<strong>NON ESATTO.</strong> ${q.exp}`;
+        playBeep(240, 'sawtooth', 0.2);
+      }
+
+      fBox.style.display = 'flex';
+      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+      if (quizIndex < quizData.length - 1) {
+        quizIndex++;
+        loadQuiz();
+      } else {
+        const grid = document.getElementById('quiz-options-grid');
+        grid.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fdf4; border: 2px solid #107c41; border-radius: 12px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">📊</div>
+            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! CERTIFICAZIONE EXCEL LAB SUPERATA!</h3>
+            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio di Squadra: <strong>${quizScore} / 100 PUNTI</strong></p>
+            <p style="font-size: 0.85rem; color: #166534;">Ora avete tutte le competenze per elaborare i dati della Relazione 3 sul foglio di calcolo con zero errori!</p>
+          </div>
+        `;
+        document.getElementById('quiz-question').textContent = "Risultato della Verifica LIM";
+        document.getElementById('quiz-feedback-box').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        playBeep(920, 'triangle', 0.4);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      goToSlide(1);
+      loadQuiz();
+    });
+  </script>
+</body>
+</html>

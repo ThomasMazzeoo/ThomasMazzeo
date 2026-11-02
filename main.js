@@ -403,6 +403,21 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
+              },
+              {
+                title: "📦 03. Misure Indirette e Propagazione: Aree e Volumi (Relazione 3 - Voto 3)",
+                topics: [
+                  {
+                    title: "Lezione Interattiva LIM (SC 1.1.4): Propagazione Errori su Aree e Volumi",
+                    desc: "Slide animate per LIM 100vh: misure dirette vs indirette, analogia dei vagoni sfocati, la cornice fantasma dell'area, volume del parallelepipedo e cilindro (doppio peso del raggio), conversione mm³ in m³ e laboratorio 3D live.",
+                    url: "/fisica/giordano-bruno/misure-indirette-propagazione.html"
+                  },
+                  {
+                    title: "Laboratorio Digitale LIM (SC 1.3.5): Trattamento Dati con Excel & Fogli",
+                    desc: "Slide animate per LIM 100vh: la catena di montaggio di Excel, l'incantesimo dell'uguale '=', formule statistiche e di propagazione, autofill magico col quadratino verde, simulatore foglio interattivo con visione a Raggi X e guida tabella Relazione 3.",
+                    url: "/fisica/giordano-bruno/excel-laboratorio-fisica.html"
+                  }
+                ]
               }
             ]
           },
