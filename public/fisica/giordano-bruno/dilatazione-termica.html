@@ -15,8 +15,8 @@
 /* ═══════════════════════════════════════════════════════════════════
    ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
    Istituto Tecnico Industriale Statale "Giordano Bruno"
-   01: Dilatazione Termica Lineare con Comparatore Centesimale
-   Progettata per LIM • 100vh no-scroll • Stile fresco e accattivante
+   01: Dilatazione Termica Lineare con Comparatore (Classi 2°)
+   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
    ═══════════════════════════════════════════════════════════════════ */
 :root {
   --argon-primary: #5e72e4;
@@ -24,26 +24,22 @@
   --argon-primary-light: rgba(94, 114, 228, 0.12);
   --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
   
-  --argon-secondary: #f4f5f7;
-  --argon-info: #11cdef;
-  --argon-info-light: rgba(17, 205, 239, 0.12);
-  
-  --argon-success: #2dce89;
-  --argon-success-hover: #26af74;
-  --argon-success-light: rgba(45, 206, 137, 0.12);
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
   
   --argon-danger: #f5365c;
   --argon-danger-light: rgba(245, 54, 92, 0.12);
   
-  --argon-warning: #fb6340;
-  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  --argon-success: #2dce89;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
   
   --argon-dark: #172b4d;
   --argon-darker: #0f1c30;
-  
   --argon-text-main: #32325d;
   --argon-text-muted: #525f7f;
-  --argon-text-light: #8898aa;
   
   --argon-bg: #f8f9fe;
   --argon-card-bg: #ffffff;
@@ -51,11 +47,7 @@
   
   --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
   --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-  --argon-shadow-hover: 0 18px 40px rgba(50, 50, 93, 0.16), 0 8px 20px rgba(0, 0, 0, 0.1);
 
-  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  
   --lim-zoom: 1;
 }
 
@@ -63,54 +55,24 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
+  user-select: none;
 }
 
-html, body {
-  width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  font-family: var(--font-sans);
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--argon-bg);
   color: var(--argon-text-main);
-  font-size: calc(14.5px * var(--lim-zoom));
-  line-height: 1.45;
-}
-
-/* Background Blueprint Grid */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(251, 99, 64, 0.05) 0%, transparent 60%),
-    linear-gradient(to right, rgba(94, 114, 228, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(94, 114, 228, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px, 32px 32px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app-container {
-  position: relative;
-  z-index: 1;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
+  zoom: var(--lim-zoom);
 }
 
-/* ══════════════════════════════════════════════
-   HEADER
-   ══════════════════════════════════════════════ */
-.app-header {
+/* TOPBAR */
+.argon-topbar {
   height: 60px;
-  min-height: 60px;
   background: #ffffff;
   border-bottom: 1px solid var(--argon-border);
   box-shadow: var(--argon-shadow-sm);
@@ -118,153 +80,189 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  z-index: 20;
+  z-index: 100;
+  flex-shrink: 0;
 }
 
-.header-left {
+.topbar-left {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.btn-back-course {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border: 1.5px solid var(--argon-border);
-  color: var(--argon-primary);
-  font-weight: 700;
-  font-size: 0.85rem;
-  padding: 7px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.btn-back-course:hover {
-  background: var(--argon-primary-light);
-  border-color: var(--argon-primary);
-  transform: translateX(-2px);
+  gap: 16px;
 }
 
 .school-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--argon-secondary);
-  border: 1px solid var(--argon-border);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--argon-dark);
+}
+
+.school-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(87deg, #fb6340 0, #f5365c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(251, 99, 64, 0.3);
+}
+
+.school-title {
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--argon-dark);
 }
 
-.lesson-title-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 800;
+.school-sub {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
   color: #fb6340;
-  font-size: 0.95rem;
-  letter-spacing: -0.2px;
+  letter-spacing: 0.5px;
 }
 
-.header-right {
+.topbar-center {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: #e9ecef;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+  color: #adb5bd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.step-node.active {
+  background: #fb6340;
+  border-color: #fb6340;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.45);
+  transform: scale(1.15);
+}
+
+.step-node.completed {
+  background: var(--argon-success);
+  border-color: var(--argon-success);
+  color: #ffffff;
+}
+
+.topbar-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.phase-pill {
-  background: rgba(251, 99, 64, 0.12);
-  border: 1px solid rgba(251, 99, 64, 0.25);
-  color: #fb6340;
-  font-weight: 800;
-  font-size: 0.8rem;
-  padding: 5px 14px;
+.lim-pill-badge {
+  background: var(--argon-warning-light);
+  color: #c4411d;
+  padding: 5px 12px;
   border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .lim-btn {
   background: #ffffff;
   border: 1px solid var(--argon-border);
   color: var(--argon-text-muted);
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.95rem;
   font-weight: 700;
-  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s;
 }
 
-.lim-btn:hover {
-  color: var(--argon-primary);
-  border-color: var(--argon-primary);
-  background: var(--argon-primary-light);
-}
-
-/* ══════════════════════════════════════════════
-   VIEWPORT SLIDES (100vh no-scroll)
-   ══════════════════════════════════════════════ */
+/* VIEWPORT SLIDES */
 .slides-viewport {
   flex: 1;
   position: relative;
   overflow: hidden;
-  padding: 16px 28px 12px 28px;
+  padding: 16px 24px;
   display: flex;
-  flex-direction: column;
 }
 
 .slide-card {
   position: absolute;
-  inset: 16px 28px 12px 28px;
+  top: 16px;
+  bottom: 16px;
+  left: 24px;
+  right: 24px;
   background: var(--argon-card-bg);
-  border: 1px solid var(--argon-border);
   border-radius: 16px;
+  border: 1px solid var(--argon-border);
   box-shadow: var(--argon-shadow);
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px) scale(0.995);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
   padding: 20px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.99);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .slide-card.active {
   opacity: 1;
-  visibility: visible;
+  pointer-events: auto;
   transform: translateY(0) scale(1);
   z-index: 5;
 }
 
-/* Slide Header */
 .slide-header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--argon-border);
-  padding-bottom: 10px;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f3f9;
+  flex-shrink: 0;
 }
 
 .slide-title-group h1 {
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   font-weight: 800;
   color: var(--argon-dark);
-  letter-spacing: -0.3px;
-  line-height: 1.25;
+  letter-spacing: -0.5px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -273,64 +271,76 @@ body::before {
 .slide-subtitle {
   font-size: 0.88rem;
   color: var(--argon-text-muted);
+  margin-top: 3px;
   font-weight: 500;
-  margin-top: 2px;
-}
-
-.slide-badges {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .pill-badge {
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 12px;
-  letter-spacing: 0.3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
-
+.pill-badge.warning { background: var(--argon-warning-light); color: #c4411d; }
+.pill-badge.danger { background: var(--argon-danger-light); color: #a71d37; }
 .pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
 .pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
-.pill-badge.danger { background: var(--argon-danger-light); color: var(--argon-danger); }
-.pill-badge.warning { background: var(--argon-warning-light); color: var(--argon-warning); }
-.pill-badge.info { background: var(--argon-info-light); color: #0891b2; }
-.pill-badge.dark { background: rgba(23, 43, 77, 0.1); color: var(--argon-dark); }
+.pill-badge.dark { background: #e9ecef; color: var(--argon-dark); }
 
-/* Slide Body */
 .slide-body {
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  justify-content: space-between;
+  gap: 12px;
+}
+
+.callout-box {
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.callout-box.warning {
+  background: #fff8f5;
+  border-left: 5px solid var(--argon-warning);
+  color: #9c3015;
+}
+.callout-box.danger {
+  background: #fdf2f4;
+  border-left: 5px solid var(--argon-danger);
+  color: #a71d37;
+}
+.callout-box.primary {
+  background: #f4f6fd;
+  border-left: 5px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+.callout-box.success {
+  background: #f0fbf6;
+  border-left: 5px solid var(--argon-success);
+  color: #1a6b47;
 }
 
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 14px;
   flex: 1;
-  align-items: stretch;
-  overflow: hidden;
+  min-height: 0;
 }
 
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 14px;
   flex: 1;
-  align-items: stretch;
-  overflow: hidden;
-}
-
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  flex: 1;
+  min-height: 0;
 }
 
 .argon-card {
@@ -338,670 +348,476 @@ body::before {
   border: 1px solid var(--argon-border);
   border-radius: 12px;
   padding: 14px 18px;
-  box-shadow: 0 2px 5px rgba(50, 50, 93, 0.04);
+  box-shadow: var(--argon-shadow-sm);
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
+  overflow: hidden;
 }
 
-.argon-card:hover {
-  border-color: rgba(94, 114, 228, 0.4);
-  box-shadow: 0 4px 12px rgba(50, 50, 93, 0.08);
-}
-
-.argon-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.argon-card-title {
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: var(--argon-dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Callout Box */
-.callout-box {
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 0.88rem;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  line-height: 1.4;
-}
-
-.callout-box.primary {
-  background: rgba(94, 114, 228, 0.08);
-  border-left: 4px solid var(--argon-primary);
-  color: var(--argon-dark);
-}
-
-.callout-box.success {
-  background: rgba(45, 206, 137, 0.1);
-  border-left: 4px solid var(--argon-success);
-  color: #065f46;
-}
-
-.callout-box.warning {
-  background: rgba(251, 99, 64, 0.1);
-  border-left: 4px solid var(--argon-warning);
-  color: #9a3412;
-}
-
-.callout-box.danger {
-  background: rgba(245, 54, 92, 0.1);
-  border-left: 4px solid var(--argon-danger);
-  color: #991b1b;
-}
-
-/* ══════════════════════════════════════════════
-   INTERACTIVE SIMULATOR (DILATOMETRO & COMPARATORE)
-   ══════════════════════════════════════════════ */
-.simulator-bench {
-  background: #0f172a;
-  border: 2px solid #334155;
-  border-radius: 14px;
-  padding: 16px;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.tube-container {
-  background: #1e293b;
-  border-radius: 10px;
-  padding: 16px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border: 1px solid #475569;
-}
-
-.metal-tube-bar {
-  height: 22px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #94a3b8 0%, #cbd5e1 50%, #94a3b8 100%);
-  position: relative;
-  transition: width 0.3s ease, background 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 8px;
-}
-
-.metal-tube-bar.hot {
-  background: linear-gradient(90deg, #ea580c 0%, #f97316 50%, #ea580c 100%);
-  box-shadow: 0 0 16px rgba(249, 115, 22, 0.6);
-}
-
-.metal-tube-tip {
-  width: 6px;
-  height: 28px;
-  background: #e2e8f0;
-  border-radius: 2px;
-  position: absolute;
-  right: -3px;
-  top: -3px;
-  border: 1px solid #475569;
-}
-
-/* Dial Gauge (Comparatore a quadrante) */
-.dial-gauge-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.dial-gauge-svg {
-  width: 170px;
-  height: 170px;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
-}
-
-.needle {
-  transform-origin: 100px 100px;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
-}
-
-/* Material Selector Buttons */
-.mat-btn {
-  background: #1e293b;
-  border: 1.5px solid #475569;
-  color: #e2e8f0;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.mat-btn:hover {
-  background: #334155;
-  border-color: #94a3b8;
-}
-
-.mat-btn.active {
-  background: var(--argon-primary);
-  border-color: var(--argon-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.4);
-}
-
-/* Temp Controls */
-.temp-slider-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255,255,255,0.06);
-  padding: 10px 14px;
-  border-radius: 8px;
-}
-
-.temp-slider {
-  flex: 1;
-  accent-color: #fb6340;
-  cursor: pointer;
-}
-
-/* Quiz Option Button */
-.quiz-option-btn {
-  width: 100%;
-  text-align: left;
-  background: #ffffff;
-  border: 2px solid var(--argon-border);
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 0.92rem;
-  color: var(--argon-dark);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-  line-height: 1.35;
-}
-
-.quiz-option-btn:hover {
-  border-color: var(--argon-primary);
-  background: var(--argon-primary-light);
-  transform: translateX(4px);
-}
-
-.quiz-option-btn.correct {
-  border-color: var(--argon-success) !important;
-  background: var(--argon-success-light) !important;
-  color: #064e3b !important;
-}
-
-.quiz-option-btn.wrong {
-  border-color: var(--argon-danger) !important;
-  background: var(--argon-danger-light) !important;
-  color: #7f1d1d !important;
-}
-
-/* ══════════════════════════════════════════════
-   FOOTER NAVIGATION & STEPPER
-   ══════════════════════════════════════════════ */
-.app-footer {
-  height: 60px;
-  min-height: 60px;
+.argon-bottombar {
+  height: 64px;
   background: #ffffff;
   border-top: 1px solid var(--argon-border);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  gap: 16px;
-  z-index: 20;
+  flex-shrink: 0;
 }
 
-.stepper-dots {
+.nav-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.step-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--argon-secondary);
-  border: 2px solid var(--argon-border);
-  color: var(--argon-text-light);
-  font-size: 0.8rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.step-dot:hover {
-  border-color: var(--argon-primary);
-  color: var(--argon-primary);
-}
-
-.step-dot.active {
-  background: var(--argon-primary);
-  border-color: var(--argon-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.4);
-  transform: scale(1.1);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.btn-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 20px;
-  border-radius: 30px;
-  font-size: 0.88rem;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
   border: none;
+  transition: all 0.2s;
 }
-
-.btn-nav-prev {
-  background: var(--argon-secondary);
-  color: var(--argon-text-main);
+.nav-btn.prev {
+  background: #ffffff;
   border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
 }
-
-.btn-nav-prev:hover:not(:disabled) {
-  background: #e9ecef;
-  transform: translateX(-2px);
-}
-
-.btn-nav-next {
-  background: var(--argon-primary-gradient);
+.nav-btn.next {
+  background: #fb6340;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.35);
 }
-
-.btn-nav-next:hover:not(:disabled) {
-  transform: translateX(2px);
-  box-shadow: 0 6px 16px rgba(94, 114, 228, 0.45);
+.nav-btn.next:hover:not(:disabled) {
+  background: #e24e2d;
 }
-
-.btn-nav:disabled {
+.nav-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
 }
 
-.feedback-toast {
-  position: fixed;
-  bottom: 74px;
-  right: 24px;
-  background: var(--argon-dark);
-  color: #ffffff;
-  padding: 10px 18px;
-  border-radius: 8px;
-  box-shadow: var(--argon-shadow);
-  display: none;
+.interactive-tab-btn {
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  cursor: pointer;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.85rem;
+  gap: 8px;
+}
+.interactive-tab-btn.active {
+  background: var(--argon-warning-light);
+  border-color: #fb6340;
+  color: #c4411d;
+}
+
+.argon-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--argon-darker);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
   font-weight: 600;
-  z-index: 100;
-  animation: slideToast 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
 }
-
-@keyframes slideToast {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 1024px) {
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .stepper-dots .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
+.argon-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-
-  <!-- ══════════════════════════════════════════════
-       HEADER
-       ══════════════════════════════════════════════ -->
-  <header class="app-header">
-    <div class="header-left">
-      <a href="/#giordano-bruno-seconde" class="btn-back-course" title="Torna a Classi Seconde">
-        <span>←</span>
-        <span>LABORATORIO FISICA</span>
+  <!-- TOP BAR -->
+  <header class="argon-topbar">
+    <div class="topbar-left">
+      <a href="/index.html" class="school-badge" title="Torna alla Home">
+        <div class="school-badge-icon">🔥</div>
+        <div class="school-badge-text">
+          <span class="school-title">ITIS Giordano Bruno</span>
+          <span class="school-sub">Fisica • 2° Classi • Dilatazione Lineare</span>
+        </div>
       </a>
-      <span class="school-badge">🏫 ITIS Giordano Bruno</span>
-      <div class="lesson-title-badge">
-        <span>🔥 01: Dilatazione Termica Lineare con Comparatore</span>
+    </div>
+
+    <div class="topbar-center">
+      <div class="steps-indicator" id="steps-indicator">
+        <div class="step-node active" data-step="1" title="1. Fenomeno Reale">1</div>
+        <div class="step-node" data-step="2" title="2. Reticolo Atomico Live">2</div>
+        <div class="step-node" data-step="3" title="3. Triangolo della Formula">3</div>
+        <div class="step-node" data-step="4" title="4. Dilatometro a Vapore">4</div>
+        <div class="step-node" data-step="5" title="5. Comparatore a Quadrante">5</div>
+        <div class="step-node" data-step="6" title="6. Simulatore Banco Live">6</div>
+        <div class="step-node" data-step="7" title="7. Calcolo Relazione 1">7</div>
+        <div class="step-node" data-step="8" title="8. Sfida del Termologo">8</div>
       </div>
     </div>
 
-    <div class="header-right">
-      <div class="phase-pill" id="phase-indicator">
-        <span id="phase-step-badge">PASSO 1 DI 8</span>
-        <span>•</span>
-        <span id="phase-name-badge">IL FENOMENO REALE</span>
+    <div class="topbar-right">
+      <div class="lim-pill-badge" id="slide-name-badge">
+        <span>PASSO 1 DI 8</span>
       </div>
-      <button class="lim-btn" id="btn-zoom-out" title="Rimpicciolisci testo per LIM (A-)">A-</button>
-      <button class="lim-btn" id="btn-zoom-in" title="Ingrandisci testo per LIM (A+)">A+</button>
-      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero per LIM (F11)">⛶</button>
+      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
     </div>
   </header>
 
-  <!-- ══════════════════════════════════════════════
-       VIEWPORT SLIDES (100vh no scroll)
-       ══════════════════════════════════════════════ -->
+  <!-- VIEWPORT SLIDES -->
   <main class="slides-viewport">
 
     <!-- ──────────────────────────────────────────
-         SLIDE 1: PERCHÉ LE COSE SI ALLUNGANO COL CALDO
+         SLIDE 1: IL FENOMENO REALE (TORRE EIFFEL & PONTI)
          ────────────────────────────────────────── -->
     <article class="slide-card active" data-step="1" data-name="IL FENOMENO REALE">
       <div class="slide-header">
         <div class="slide-title-group">
-          <h1>🌡️ Perché le Cose si Allungano quando fa Caldo?</h1>
-          <p class="slide-subtitle">Dalla Torre Eiffel che cresce di 15 cm d'estate ai giunti a pettine dei ponti autostradali</p>
+          <h1>🗼 Perché le Cose Crescono col Caldo?</h1>
+          <p class="slide-subtitle">Dalla Torre Eiffel che si allunga di 15 cm d'estate ai giunti a pettine dei viadotti autostradali</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge warning">FISICA TERMICA</span>
+          <span class="pill-badge warning">FENOMENOLOGIA</span>
           <span class="pill-badge dark">SC 1.2.9</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="callout-box warning">
-          <strong>☀️ IL MONDO REALE NON È STATICO: SI ALLUNGA E SI ACCORCIA IN CONTINUAZIONE!</strong><br>
-          Ogni materiale solido (ferro, rame, alluminio, cemento) si espande quando la sua temperatura aumenta e si ritira quando si raffredda. Se un ingegnere non calcola questo effetto, le strutture crollano!
+        
+        <!-- Selettore Esempio Interattivo -->
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 4px;">
+          <button class="interactive-tab-btn active" id="tab-real-eiffel" onclick="setRealDemo('eiffel')">🗼 Torre Eiffel (Parigi)</button>
+          <button class="interactive-tab-btn" id="tab-real-bridge" onclick="setRealDemo('bridge')">🌉 Giunti a Pettine del Ponte</button>
         </div>
 
-        <div class="grid-2">
-          <!-- Colonna Sinistra: 3 Esempi Incredibili -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div class="argon-card" style="border-left: 4px solid #fb6340;">
-              <strong style="color: #fb6340; font-size: 0.92rem;">🗼 1. La Torre Eiffel Cresce di 15 cm!</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                D'estate sotto il sole cocente di Parigi a 35 °C, il ferro della torre si dilata: la punta diventa fino a <strong>15 centimetri più alta</strong> rispetto alle fredde giornate invernali a 0 °C!
-              </p>
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid var(--argon-danger);">
-              <strong style="color: var(--argon-danger); font-size: 0.92rem;">🚂 2. I Binari dei Treni che si Piegano:</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Se gli operai saldassero le rotaie d'acciaio senza lasciare una fessura di respiro, d'estate l'acciaio si allungherebbe spingendo con tonnellate di forza fino a piegarsi come un serpente!
-              </p>
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
-              <strong style="color: var(--argon-primary); font-size: 0.92rem;">🌉 3. I Giunti "a Pettine" sui Ponti:</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                In autostrada sul viadotto senti il tipico "tum-tum": sono placche metalliche a denti che scorrono per permettere al ponte di allungarsi senza spaccare l'asfalto.
-              </p>
-            </div>
-          </div>
-
-          <!-- Colonna Destra: Il Trucco Quotidiano & Obiettivo -->
-          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); justify-content: space-between;">
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Box Spiegazione e Dati Reali -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
             <div>
-              <div class="argon-card-header">
-                <span class="argon-card-title">🫙 Il Trucco della Nonna per la Marmellata!</span>
-                <span class="pill-badge success">VITA QUOTIDIANA</span>
-              </div>
-              <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
-                Il barattolo di vetro non si apre? Metti il coperchio di metallo sotto il getto d'acqua calda del lavandino per 15 secondi!
-                <br><br>
-                <strong>Perché funziona?</strong> Perché il coperchio metallico si dilata molto più velocemente del vetro, si allarga di qualche frazione di millimetro e il barattolo si svita senza alcuno sforzo!
+              <strong id="real-title" style="color: #c2410c; font-size: 1.1rem;">La Torre Eiffel si Allunga di ben 15 cm!</strong>
+              <p id="real-p1" style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                La Torre Eiffel è una struttura in ferro forgiato alta circa <strong>330 metri</strong>. Tra l'inverno gelido (-5°C) e l'estate torrida (+40°C) c'è un'escursione termica di <strong>ΔT = 45°C</strong>.
               </p>
             </div>
 
-            <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--argon-border); font-size: 0.82rem; margin-top: 8px;">
-              <strong>🎯 La Missione di Oggi in Laboratorio:</strong><br>
-              Prendiamo un tubo metallico, lo scaldiamo con il vapore a 100 °C e misuriamo con precisione millimetrica l'allungamento con uno strumento ad alta precisione: il <strong>Comparatore Centesimale</strong>!
+            <!-- Cursore Stagione Inverno / Estate -->
+            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 10px; padding: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Regola la Stagione / Temperatura:</span>
+                <span id="season-temp-disp" style="font-family: 'JetBrains Mono', monospace; color: #c2410c; font-size: 1.1rem;">Estate (+40°C)</span>
+              </div>
+              <input type="range" id="season-range" min="-10" max="45" step="5" value="40" style="width: 100%; accent-color: #fb6340;" oninput="updateSeasonSim(this.value)">
+            </div>
+
+            <div id="real-calc-box" class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.82rem;">
+              <strong>Calcolo Dilatazione:</strong> ΔL = (12 × 10⁻⁶) × 330 m × 45°C = <strong>+0.178 m (+17.8 cm!)</strong>
             </div>
           </div>
+
+          <!-- Grafica Vettoriale SVG Animata -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Modello Geometrico in Espansione</strong>
+              <span id="real-badge-status" class="pill-badge warning">DILATAZIONE TERMICA</span>
+            </div>
+
+            <!-- Canvas/SVG Illustrativo -->
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative;">
+              <svg id="svg-eiffel" width="220" height="160" viewBox="0 0 220 160" style="overflow: visible; transition: transform 0.3s ease;">
+                <!-- Traliccio Eiffel stilizzato -->
+                <path d="M 60,150 L 100,50 L 110,15 L 120,50 L 160,150" fill="none" stroke="#64748b" stroke-width="4"/>
+                <line x1="80" y1="105" x2="140" y2="105" stroke="#64748b" stroke-width="3"/>
+                <line x1="93" y1="65" x2="127" y2="65" stroke="#64748b" stroke-width="3"/>
+                <line x1="110" y1="15" x2="110" y2="0" stroke="#f59e0b" stroke-width="3"/>
+                <circle cx="110" cy="0" r="4" fill="#f59e0b"/>
+                
+                <!-- Quota allungamento -->
+                <line x1="180" y1="150" x2="180" y2="0" stroke="#fb6340" stroke-dasharray="2,2"/>
+                <text id="eiffel-height-text" x="185" y="75" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#c2410c">+ 15 cm</text>
+              </svg>
+
+              <!-- Grafica alternativa ponte autostradale (nascosta di default) -->
+              <svg id="svg-bridge" width="260" height="120" viewBox="0 0 260 120" style="display: none; overflow: visible;">
+                <!-- Sezione viadotto sinistra -->
+                <rect x="20" y="40" width="100" height="35" fill="#94a3b8" rx="2"/>
+                <path d="M 120,40 L 135,47 L 120,55 L 135,62 L 120,70 L 120,75" stroke="#475569" stroke-width="3" fill="none"/>
+                <!-- Sezione viadotto destra mobile -->
+                <g id="bridge-right-block" style="transform: translateX(10px); transition: transform 0.2s;">
+                  <path d="M 140,40 L 125,47 L 140,55 L 125,62 L 140,70 L 140,75" stroke="#475569" stroke-width="3" fill="none"/>
+                  <rect x="140" y="40" width="100" height="35" fill="#64748b" rx="2"/>
+                </g>
+                <text x="130" y="25" font-size="9" font-weight="800" fill="#0284c7" text-anchor="middle">GIUNTO A PETTINE</text>
+              </svg>
+            </div>
+
+            <div style="font-size: 0.78rem; color: #64748b;">
+              Senza giunti di dilatazione nei ponti, la spinta termica del metallo farebbe crepare i piloni di cemento armato!
+            </div>
+          </div>
+
         </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 2: COSA SUCCEDE DENTRO LA MATERIA
+         SLIDE 2: RETICOLO ATOMICO LIVE (SIMULATORE CANVAS)
          ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="2" data-name="GLI ATOMI CHE BALLANO">
+    <article class="slide-card" data-step="2" data-name="RETICOLO ATOMICO LIVE">
       <div class="slide-header">
         <div class="slide-title-group">
           <h1>🔬 Sotto il Microscopio: Gli Atomi che Ballano!</h1>
-          <p class="slide-subtitle">La temperatura non è una sostanza magica: è l'agitazione termica delle particelle</p>
+          <p class="slide-subtitle">La temperatura non è una sostanza magica: è l'energia cinetica di agitazione degli atomi!</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge info">MODELLO MICROSCOPICO</span>
-          <span class="pill-badge primary">ENERGIA TERMICA</span>
+          <span class="pill-badge warning">FISICA MICROSCOPICA</span>
+          <span class="pill-badge info">SIMULATORE DI RETICOLO</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Spiegazione Didattica -->
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div class="callout-box primary">
-              <strong>💡 CHE COS'È VERAMENTE IL "CALORE"?</strong><br>
-              In fisica, il calore è <strong>energia in movimento</strong>. Quando scaldi un metallo, fornisci energia agli atomi che formano il reticolo cristallino.
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid #0891b2;">
-              <strong style="color: #0891b2; font-size: 0.9rem;">❄️ A BASSA TEMPERATURA (Freddo):</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Gli atomi sono collegati da legami che funzionano come molle. Vibrano pochissimo attorno al loro posto fisso. La distanza media tra un atomo e l'altro è minima: il metallo ha la sua lunghezza base <strong>L₀</strong>.
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Controlli Termici -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div>
+              <strong style="color: #c2410c; font-size: 1.05rem;">Cosa Succede tra gli Atomi?</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                In un metallo solido gli atomi non sono immobili: sono legati da "molle" elettromagnetiche e <strong>vibrano continuamente</strong> attorno alla loro posizione di equilibrio.
               </p>
             </div>
 
-            <div class="argon-card" style="border-left: 4px solid #ea580c;">
-              <strong style="color: #ea580c; font-size: 0.9rem;">🔥 AD ALTA TEMPERATURA (Caldo):</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Gli atomi acquistano una fortissima energia cinetica: vibrano furiosamente, si spingono a vicenda e hanno bisogno di più spazio attorno! La distanza media tra loro aumenta.
-              </p>
+            <!-- Cursore Temperatura Kelvin -->
+            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 10px; padding: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Temperatura Termodinamica (Kelvin):</span>
+                <span id="kelvin-disp" style="font-family: 'JetBrains Mono', monospace; color: #c2410c; font-size: 1.1rem;">300 K (27°C Ambiente)</span>
+              </div>
+              <input type="range" id="kelvin-range" min="0" max="900" step="25" value="300" style="width: 100%; accent-color: #fb6340;" oninput="onKelvinSlider(this.value)">
+            </div>
+
+            <!-- Pulsanti preset rapidi -->
+            <div style="display: flex; gap: 8px;">
+              <button class="interactive-tab-btn" onclick="setKelvinPreset(0)">❄️ Zero Assoluto (0 K)</button>
+              <button class="interactive-tab-btn" onclick="setKelvinPreset(300)">🌡️ Ambiente (300 K)</button>
+              <button class="interactive-tab-btn" onclick="setKelvinPreset(800)">🔥 Fiamma Viva (800 K)</button>
+            </div>
+
+            <div id="atom-desc-box" class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              A 300 K gli atomi oscillano moderatamente. La distanza media interatomica è stabile.
             </div>
           </div>
 
-          <!-- Illustrazione Visiva Reticolo e Molle -->
-          <div class="argon-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: #fafbfe;">
-            <div style="font-weight: 800; color: var(--argon-dark); font-size: 0.92rem; margin-bottom: 8px;">
-              🔍 Il Reticolo Cristallino con le "Molle Atomiche"
+          <!-- Canvas Interattivo Simulazione Reticolo -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Vibrazione Molecolare in Tempo Reale</strong>
+              <span id="lattice-spacing-badge" class="pill-badge primary">SPAZIATURA: 1.00x</span>
             </div>
 
-            <svg width="340" height="150" viewBox="0 0 340 150" style="max-width: 100%;">
-              <!-- Barra fredda -->
-              <text x="15" y="32" font-family="Open Sans" font-size="11" font-weight="700" fill="#0891b2">A Freddo (20°C):</text>
-              <g transform="translate(130, 20)">
-                <circle cx="0" cy="10" r="8" fill="#38bdf8"/>
-                <line x1="8" y1="10" x2="32" y2="10" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2,2"/>
-                <circle cx="40" cy="10" r="8" fill="#38bdf8"/>
-                <line x1="48" y1="10" x2="72" y2="10" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2,2"/>
-                <circle cx="80" cy="10" r="8" fill="#38bdf8"/>
-                <line x1="88" y1="10" x2="112" y2="10" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2,2"/>
-                <circle cx="120" cy="10" r="8" fill="#38bdf8"/>
-              </g>
+            <!-- Canvas HTML5 Atomi che Ballano -->
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #0f1c30; border-radius: 10px; overflow: hidden; position: relative;">
+              <canvas id="atom-canvas" width="300" height="150" style="width: 100%; height: 100%;"></canvas>
+            </div>
 
-              <!-- Freccia Calore -->
-              <path d="M 170 52 L 170 70" stroke="#ea580c" stroke-width="3" marker-end="url(#arrow)"/>
-              <text x="180" y="65" font-family="Open Sans" font-size="10" font-weight="700" fill="#ea580c">+ Calore (Vapore)</text>
-
-              <!-- Barra calda allungata -->
-              <text x="15" y="105" font-family="Open Sans" font-size="11" font-weight="700" fill="#ea580c">A Caldo (100°C):</text>
-              <g transform="translate(130, 93)">
-                <circle cx="0" cy="10" r="8" fill="#fb923c"/>
-                <line x1="8" y1="10" x2="42" y2="10" stroke="#ea580c" stroke-width="2"/>
-                <circle cx="50" cy="10" r="8" fill="#fb923c"/>
-                <line x1="58" y1="10" x2="92" y2="10" stroke="#ea580c" stroke-width="2"/>
-                <circle cx="100" cy="10" r="8" fill="#fb923c"/>
-                <line x1="108" y1="10" x2="142" y2="10" stroke="#ea580c" stroke-width="2"/>
-                <circle cx="150" cy="10" r="8" fill="#fb923c"/>
-              </g>
-
-              <!-- Allungamento evidenziato -->
-              <line x1="250" y1="35" x2="250" y2="125" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
-              <line x1="280" y1="35" x2="280" y2="125" stroke="#ea580c" stroke-width="1" stroke-dasharray="3,3"/>
-              <line x1="250" y1="135" x2="280" y2="135" stroke="#ea580c" stroke-width="2"/>
-              <text x="265" y="148" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#ea580c" text-anchor="middle">+ ΔL</text>
-            </svg>
-
-            <p style="font-size: 0.8rem; color: var(--argon-text-muted); margin-top: 6px;">
-              Ogni minuscolo spazio tra due atomi aumenta di una frazione di miliardesimo di metro. Ma sommandoli per miliardi di atomi in fila, la barra intera <strong>cresce visibilmente</strong>!
-            </p>
+            <div style="font-size: 0.78rem; color: #64748b;">
+              💡 <strong>La Causa dell'Allungamento:</strong> A causa della forma asimmetrica delle forze intermolecolari, più gli atomi oscillano, più la loro <strong>distanza media aumenta</strong>, allungando macroscopica l'intera barra!
+            </div>
           </div>
+
         </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 3: LA FORMULA MATEMATICA SPIEGATA
+         SLIDE 3: IL TRIANGOLO DELLA FORMULA
          ────────────────────────────────────────── -->
     <article class="slide-card" data-step="3" data-name="LA FORMULA DI DILATAZIONE">
       <div class="slide-header">
         <div class="slide-title-group">
           <h1>📐 La Formula della Dilatazione: Decifriamola Insieme!</h1>
-          <p class="slide-subtitle">Nessuna formula da imparare a memoria: solo 3 fattori perfettamente logici</p>
+          <p class="slide-subtitle">Nessuna formula da imparare a memoria: tocca le variabili per isolarle e vedere le formule inverse!</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge primary">ΔL = λ · L₀ · ΔT</span>
-          <span class="pill-badge success">UNITÀ DI MISURA</span>
+          <span class="pill-badge warning">ΔL = λ · L₀ · ΔT</span>
+          <span class="pill-badge success">METODO TRIANGOLO</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Box Formula Gigante -->
-          <div class="argon-card" style="justify-content: space-around; background: linear-gradient(180deg, #fafbfe 0%, #f1f5f9 100%);">
-            <div style="text-align: center;">
-              <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: var(--argon-text-light); letter-spacing: 1px;">
-                La Legge della Dilatazione Termica Lineare
-              </span>
-              <div style="font-family: var(--font-mono); font-size: 2.1rem; font-weight: 800; color: #fb6340; margin: 10px 0; background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #fed7aa; box-shadow: 0 4px 12px rgba(251,99,64,0.15);">
+        
+        <!-- Pulsanti Selettore Variabili -->
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 4px;">
+          <button class="interactive-tab-btn active" id="btn-var-dl" onclick="setFormulaVar('dl')">📏 Allungamento (ΔL)</button>
+          <button class="interactive-tab-btn" id="btn-var-lambda" onclick="setFormulaVar('lambda')">🧪 Coefficiente (λ) [FORMULA LABORATORIO]</button>
+          <button class="interactive-tab-btn" id="btn-var-dt" onclick="setFormulaVar('dt')">🌡️ Salto Termico (ΔT)</button>
+        </div>
+
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Box Formula Dinamica -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div>
+              <strong id="var-formula-title" style="color: #c2410c; font-size: 1.1rem;">Formula Diretta: L'Allungamento Termico (ΔL)</strong>
+              <p id="var-formula-p" style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                L'allungamento dipende da tre soli fattori moltiplicati tra loro: quanto è lungo il tubo all'inizio (<strong>L₀</strong>), quanto lo scaldi (<strong>ΔT</strong>) e di che materiale è fatto (<strong>λ</strong>).
+              </p>
+            </div>
+
+            <!-- Tabellone Formula con HTML Semantico -->
+            <div id="formula-math-display" style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 12px; padding: 14px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <div style="font-size: 1.6rem; color: #c2410c; font-weight: 800;">
                 ΔL = λ · L₀ · ΔT
               </div>
-            </div>
-
-            <!-- Formula Inversa per la Relazione -->
-            <div style="background: #ffffff; border: 1.5px solid var(--argon-border); border-radius: 10px; padding: 10px 14px; text-align: center;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: var(--argon-primary); text-transform: uppercase;">
-                Formula Inversa (Quella che userai nella Relazione):
-              </span>
-              <div style="font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--argon-dark); margin-top: 4px;">
-                λ = ΔL / (L₀ · ΔT)  <span style="font-size: 0.85rem; color: #64748b;">[°C⁻¹ oppure K⁻¹]</span>
+              <div id="formula-units-sub" style="font-size: 0.85rem; color: #7c2d12; margin-top: 4px;">
+                [m] = [K⁻¹] · [m] · [K]
               </div>
             </div>
-          </div>
 
-          <!-- I 3 Fattori Spiegati Semplici -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
-              <strong style="color: var(--argon-primary); font-size: 0.88rem;">1. L₀ — La Lunghezza Iniziale [m o mm]:</strong>
-              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Più la sbarra è lunga a freddo, più atomi ci sono in fila pronti a spingersi! Una sbarra di 2 metri si allunga esattamente il <strong>doppio</strong> di una sbarra da 1 metro.
-              </p>
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid #ea580c;">
-              <strong style="color: #ea580c; font-size: 0.88rem;">2. ΔT = T₂ - T₁ — Il Salto di Temperatura [°C o K]:</strong>
-              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Quanto calore hai dato alla sbarra. Se scaldi da 20 °C a 100 °C, il salto è <strong>ΔT = 80 °C</strong>. Più sale la temperatura, più la sbarra cresce.
-              </p>
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
-              <strong style="color: var(--argon-success); font-size: 0.88rem;">3. λ (Lambda) — Il "DNA" del Metallo [°C⁻¹]:</strong>
-              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
-                È la carta d'identità del materiale! Ci dice di quanti metri si allunga 1 metro di metallo scaldato di 1 °C. Ogni metallo ha il suo valore!
-              </p>
+            <div id="var-tip-box" class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              Se raddoppi la lunghezza iniziale <strong>L₀</strong>, anche l'allungamento <strong>ΔL</strong> raddoppia (proporzionalità diretta).
             </div>
           </div>
+
+          <!-- Gara di Allungamento tra i 3 Metalli -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Gara di Dilatazione (Stessa Barra 1 metro, Scaldata di 80°C)</strong>
+              <button class="interactive-tab-btn" onclick="runMetalsRace()">🔥 Fai la Gara!</button>
+            </div>
+
+            <!-- 3 Barre affiancate con allungamento visibile -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin: 6px 0;">
+              <!-- Alluminio -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700;">
+                  <span style="color: #0284c7;">1. ALLUMINIO (λ = 24 × 10⁻⁶ K⁻¹)</span>
+                  <span id="race-al-val" style="font-family: 'JetBrains Mono', monospace; color: #0284c7;">+ 1.92 mm</span>
+                </div>
+                <div style="height: 14px; background: #e0f2fe; border-radius: 7px; overflow: hidden; margin-top: 3px;">
+                  <div id="race-al-bar" style="width: 80%; height: 100%; background: #0284c7; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+
+              <!-- Rame -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700;">
+                  <span style="color: #d97706;">2. RAME / OTTONE (λ = 17 × 10⁻⁶ K⁻¹)</span>
+                  <span id="race-cu-val" style="font-family: 'JetBrains Mono', monospace; color: #d97706;">+ 1.36 mm</span>
+                </div>
+                <div style="height: 14px; background: #fef3c7; border-radius: 7px; overflow: hidden; margin-top: 3px;">
+                  <div id="race-cu-bar" style="width: 56%; height: 100%; background: #d97706; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+
+              <!-- Ferro -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700;">
+                  <span style="color: #475569;">3. FERRO / ACCIAIO (λ = 12 × 10⁻⁶ K⁻¹)</span>
+                  <span id="race-fe-val" style="font-family: 'JetBrains Mono', monospace; color: #475569;">+ 0.96 mm</span>
+                </div>
+                <div style="height: 14px; background: #f1f5f9; border-radius: 7px; overflow: hidden; margin-top: 3px;">
+                  <div id="race-fe-bar" style="width: 40%; height: 100%; background: #475569; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size: 0.78rem; color: #64748b;">
+              L'Alluminio si dilata il <strong>DOPPIO</strong> rispetto al Ferro a parità di temperatura!
+            </div>
+          </div>
+
         </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 4: L'APPARATO DI BANCO
+         SLIDE 4: DILATOMETRO DIDATTICO A VAPORE
          ────────────────────────────────────────── -->
     <article class="slide-card" data-step="4" data-name="L'APPARATO DI BANCO">
       <div class="slide-header">
         <div class="slide-title-group">
           <h1>⚙️ L'Esperimento al Banco: Il Dilatometro Didattico</h1>
-          <p class="slide-subtitle">Come riscaldiamo la barra metallica in totale sicurezza nel laboratorio dell'ITIS</p>
+          <p class="slide-subtitle">Tocca i punti caldi dell'apparato per scoprire come riscaldiamo il tubo in totale sicurezza</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge primary">LABORATORIO REALE</span>
-          <span class="pill-badge warning">CALDAIA A VAPORE</span>
+          <span class="pill-badge primary">APPARATO SPERIMENTALE</span>
+          <span class="pill-badge warning">HOTSPOT INTERATTIVI</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-4" style="gap: 12px;">
-          <!-- Componente 1: Caldaia / Vapore -->
-          <div class="argon-card" style="text-align: center; align-items: center;">
-            <div style="font-size: 2.2rem; margin-bottom: 6px;">♨️</div>
-            <strong style="font-size: 0.9rem; color: var(--argon-dark);">1. Generatore di Vapore</strong>
-            <p style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 4px;">
-              Una caldaia elettrica che produce vapore d'acqua a circa 100 °C. Il vapore entra dentro il tubo cavo attraverso tubi siliconici resistenti al calore.
-            </p>
-          </div>
+        
+        <!-- Apparato Banco SVG Interattivo con Hotspots -->
+        <div class="argon-card" style="flex: 1; border-top: 4px solid var(--argon-primary); padding: 12px; justify-content: space-between; background: #fafbfe;">
+          
+          <svg width="100%" height="180" viewBox="0 0 600 180" style="overflow: visible;">
+            <!-- Piano del banco -->
+            <line x1="30" y1="150" x2="570" y2="150" stroke="#cbd5e1" stroke-width="3"/>
+            
+            <!-- Generatore di Vapore (Caldaia) a sinistra -->
+            <rect x="50" y="80" width="55" height="70" fill="#475569" stroke="#1e293b" stroke-width="2" rx="4"/>
+            <text x="77" y="120" font-size="8" fill="white" font-weight="700" text-anchor="middle">CALDAIA</text>
+            <circle cx="77" cy="72" r="6" fill="#ef4444"/>
 
-          <!-- Componente 2: Il Tubo Cavo -->
-          <div class="argon-card" style="text-align: center; align-items: center;">
-            <div style="font-size: 2.2rem; margin-bottom: 6px;">📏</div>
-            <strong style="font-size: 0.9rem; color: var(--argon-dark);">2. Tubo Metallico Cavo</strong>
-            <p style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 4px;">
-              Lungo circa 60 cm (L₀ = 600 mm). È cavo all'interno proprio per far scorrere il vapore e riscaldarsi in modo uniforme in pochi minuti.
-            </p>
-          </div>
+            <!-- Tubo di collegamento vapore siliconico -->
+            <path d="M 83,72 C 110,50 120,80 150,85" fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="3,3"/>
+            <text x="115" y="60" font-size="8" fill="#0284c7" font-weight="700">VAPORE</text>
 
-          <!-- Componente 3: Termometro a Sonda -->
-          <div class="argon-card" style="text-align: center; align-items: center;">
-            <div style="font-size: 2.2rem; margin-bottom: 6px;">🌡️</div>
-            <strong style="font-size: 0.9rem; color: var(--argon-dark);">3. Termometro Digitale</strong>
-            <p style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 4px;">
-              Una sonda termometrica a contatto con la barra misura T₁ a freddo (circa 20 °C) e T₂ a caldo (tra 95 °C e 98 °C). Sensibilità: 0.1 °C.
-            </p>
-          </div>
+            <!-- Supporto fisso sinistro del tubo (punto fermo x=150) -->
+            <rect x="145" y="90" width="16" height="60" fill="#334155" rx="2"/>
+            <circle cx="153" cy="98" r="4" fill="#fbbf24"/>
 
-          <!-- Componente 4: Il Comparatore -->
-          <div class="argon-card" style="text-align: center; align-items: center; border: 2px solid var(--argon-primary);">
-            <div style="font-size: 2.2rem; margin-bottom: 6px;">⏱️</div>
-            <strong style="font-size: 0.9rem; color: var(--argon-primary);">4. Comparatore a Quadrante</strong>
-            <p style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 4px;">
-              Messo a contatto con l'estremità libera: quando il tubo si allunga, spinge il tastatore e misura l'allungamento con sensibilità di 0.01 mm!
-            </p>
+            <!-- Tubo metallico in espansione (da x=150 a x=430) -->
+            <rect id="bench-metal-tube" x="153" y="92" width="280" height="12" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5" rx="2"/>
+            <text x="290" y="85" font-size="9" fill="#475569" font-weight="800" text-anchor="middle">TUBO METALLICO (L₀ = 600 mm)</text>
+
+            <!-- Sonda Termometro Digitale immersa a metà tubo -->
+            <line x1="290" y1="40" x2="290" y2="92" stroke="#ef4444" stroke-width="2"/>
+            <rect x="275" y="20" width="30" height="20" fill="#1e293b" rx="3"/>
+            <text id="bench-temp-lcd" x="290" y="34" font-size="8" font-family="'JetBrains Mono', monospace" fill="#22c55e" font-weight="800" text-anchor="middle">20.0°C</text>
+
+            <!-- Scarico condensa a destra -->
+            <path d="M 433,104 L 433,135" stroke="#38bdf8" stroke-width="3"/>
+            <rect x="425" y="135" width="16" height="15" fill="#e2e8f0" stroke="#94a3b8"/>
+
+            <!-- Tastatore del comparatore a contatto con l'estremità mobile x=433 -->
+            <line x1="433" y1="98" x2="475" y2="98" stroke="#0f172a" stroke-width="3"/>
+
+            <!-- Comparatore centesimale a quadrante montato su supporto rigido -->
+            <circle cx="505" cy="98" r="28" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+            <circle cx="505" cy="98" r="3" fill="#ef4444"/>
+            <!-- Lancetta grande -->
+            <line id="bench-gauge-needle" x1="505" y1="98" x2="505" y2="76" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+            <text x="505" y="136" font-size="7" fill="#64748b" text-anchor="middle">COMPARATORE</text>
+            <rect x="495" y="126" width="20" height="24" fill="#334155"/>
+
+            <!-- Hotspots Interattivi Cliccabili (Pulsanti Cerchio con lettere) -->
+            <g style="cursor: pointer;" onclick="showBenchHotspot(1)"><circle cx="77" cy="115" r="10" fill="#fb6340"/><text x="77" y="119" font-size="10" fill="white" font-weight="800" text-anchor="middle">1</text></g>
+            <g style="cursor: pointer;" onclick="showBenchHotspot(2)"><circle cx="290" cy="100" r="10" fill="#fb6340"/><text x="290" y="104" font-size="10" fill="white" font-weight="800" text-anchor="middle">2</text></g>
+            <g style="cursor: pointer;" onclick="showBenchHotspot(3)"><circle cx="290" cy="30" r="10" fill="#fb6340"/><text x="290" y="34" font-size="10" fill="white" font-weight="800" text-anchor="middle">3</text></g>
+            <g style="cursor: pointer;" onclick="showBenchHotspot(4)"><circle cx="505" cy="98" r="10" fill="#fb6340"/><text x="505" y="102" font-size="10" fill="white" font-weight="800" text-anchor="middle">4</text></g>
+          </svg>
+
+          <!-- Didascalia Hotspot Selezionato -->
+          <div id="hotspot-desc-card" class="callout-box primary" style="padding: 8px 14px; margin: 0; font-size: 0.85rem;">
+            <strong>Tocca un numero sull'apparato:</strong> 1 = Caldaia a vapore | 2 = Tubo metallico L₀ | 3 = Termocoppia digitale | 4 = Comparatore centesimale.
           </div>
         </div>
 
-        <div class="callout-box primary" style="margin-top: 10px; margin-bottom: 0;">
-          <strong>🔒 IL TRUCCO MECCANICO DEL BANCO:</strong><br>
-          La barra è bloccata con una vite stretta solo sul lato sinistro. Così l'estremità destra è libera di muoversi e spingere il perno del comparatore!
-        </div>
       </div>
     </article>
 
@@ -1011,711 +827,986 @@ body::before {
     <article class="slide-card" data-step="5" data-name="COME LEGGERE IL COMPARATORE">
       <div class="slide-header">
         <div class="slide-title-group">
-          <h1>⏱️ Il Comparatore Centesimale: Come si Legge?</h1>
-          <p class="slide-subtitle">Uno strumento meccanico straordinario che misura frazioni invisibili a occhio nudo</p>
+          <h1>⏱️ Il Comparatore Centesimale: Anatomia del Quadrante</h1>
+          <p class="slide-subtitle">Come fa una lancetta a misurare il centesimo di millimetro (0.01 mm)? Muovi lo slider per vederla girare!</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge success">SENSIBILITÀ: 0.01 mm</span>
-          <span class="pill-badge dark">100 TACCHE = 1 mm</span>
+          <span class="pill-badge warning">SENSIBILITÀ 0.01 mm</span>
+          <span class="pill-badge success">DOPPIA LANCETTA</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Colonna Sinistra: Come Funziona -->
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div class="callout-box warning">
-              <strong>🤔 PERCHÉ NON USIAMO UN NORMALE RIGHELLO?</strong><br>
-              In questa prova il tubo metallico si allungherà di circa <strong>0.8 o 1.2 millimetri</strong>! Con un righello scolastico vedresti appena una tacchetta sfocata. Il comparatore trasforma questo spostamento invisibile in una lancetta che compie un intero giro d'orologio!
-            </div>
-
-            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
-              <strong style="color: var(--argon-primary);">1. LA LANCETTA GRANDE (I Centesimi):</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Il quadrante è diviso in <strong>100 tacche</strong>. Ogni tacchetta vale esattamente <strong>0.01 mm</strong> (un centesimo di millimetro!). Se la lancetta si sposta di 45 tacche, il tubo si è allungato di 0.45 mm.
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Controlli e Spiegazione Lancette -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div>
+              <strong style="color: #c2410c; font-size: 1.05rem;">La Doppia Scala del Comparatore:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Il comparatore trasforma il movimento microscopico del tastatore in una rotazione ad altissima visibilità:
               </p>
             </div>
 
-            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
-              <strong style="color: var(--argon-info);">2. IL PICCOLO CONTATORE (I Millimetri Interi):</strong>
-              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
-                C'è un piccolo orologio interno con numeri da 1 a 10: ogni volta che la lancetta grande fa un giro intero di 100 tacche, la lancetta piccola scatta di <strong>1 millimetro</strong>.
-              </p>
+            <!-- Slider Allungamento da 0 a 2.5 mm -->
+            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 10px; padding: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Muovi il Tastatore (Allungamento ΔL):</span>
+                <span id="gauge-slider-disp" style="font-family: 'JetBrains Mono', monospace; color: #c2410c; font-size: 1.15rem;">1.25 mm</span>
+              </div>
+              <input type="range" id="gauge-slider" min="0" max="3" step="0.01" value="1.25" style="width: 100%; accent-color: #fb6340;" oninput="onGaugeSlider(this.value)">
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.5;">
+              • <strong>Lancetta Piccola (Contagiri):</strong> Conta i millimetri interi (1 giro completo = 1 mm).<br>
+              • <strong>Lancetta Grande (Centesimi):</strong> 100 tacche sul bordo. Ciascuna tacca vale esattamente <strong>0.01 mm</strong>!
+            </div>
+
+            <div class="callout-box success" style="padding: 6px 12px; margin: 0; font-size: 0.8rem;">
+              Valore letto: <strong>1 giro completo + 25 centesimi = 1.25 mm</strong>!
             </div>
           </div>
 
-          <!-- Colonna Destra: Illustrazione e Regola dell'Azzeramento -->
-          <div class="argon-card" style="background: #fafbfe; align-items: center; justify-content: space-around; text-align: center;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--argon-dark);">
-              🎯 La Regola d'Oro prima di Scaldare: L'AZZERAMENTO!
+          <!-- Quadrante Grande Interattivo SVG -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between; align-items: center;">
+            
+            <svg width="220" height="200" viewBox="0 0 220 200">
+              <!-- Quadrante Esterno -->
+              <circle cx="110" cy="100" r="85" fill="#ffffff" stroke="#1e293b" stroke-width="4"/>
+              
+              <!-- Tacche da 0 a 100 (ogni 10 tacche = numero) -->
+              <g stroke="#334155" stroke-width="1.2">
+                <!-- 0 --> <line x1="110" y1="18" x2="110" y2="28" stroke-width="2.5"/><text x="110" y="38" font-size="9" font-weight="800" fill="#1e293b" text-anchor="middle">0</text>
+                <!-- 10 --> <line x1="158" y1="34" x2="152" y2="42"/><text x="148" y="52" font-size="8" fill="#64748b" text-anchor="middle">10</text>
+                <!-- 20 --> <line x1="188" y1="74" x2="180" y2="78"/><text x="172" y="84" font-size="8" fill="#64748b" text-anchor="middle">20</text>
+                <!-- 30 --> <line x1="192" y1="120" x2="182" y2="118"/><text x="172" y="122" font-size="8" fill="#64748b" text-anchor="middle">30</text>
+                <!-- 40 --> <line x1="168" y1="162" x2="160" y2="154"/><text x="150" y="152" font-size="8" fill="#64748b" text-anchor="middle">40</text>
+                <!-- 50 --> <line x1="110" y1="182" x2="110" y2="172" stroke-width="2.5"/><text x="110" y="166" font-size="9" font-weight="800" fill="#1e293b" text-anchor="middle">50</text>
+                <!-- 60 --> <line x1="52" y1="162" x2="60" y2="154"/><text x="70" y="152" font-size="8" fill="#64748b" text-anchor="middle">60</text>
+                <!-- 70 --> <line x1="28" y1="120" x2="38" y2="118"/><text x="48" y="122" font-size="8" fill="#64748b" text-anchor="middle">70</text>
+                <!-- 80 --> <line x1="32" y1="74" x2="40" y2="78"/><text x="48" y="84" font-size="8" fill="#64748b" text-anchor="middle">80</text>
+                <!-- 90 --> <line x1="62" y1="34" x2="68" y2="42"/><text x="72" y="52" font-size="8" fill="#64748b" text-anchor="middle">90</text>
+              </g>
+
+              <!-- Quadrantino piccolo contagiri interno (a ore 12, centro cx=110, cy=65) -->
+              <circle cx="110" cy="68" r="18" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+              <text x="110" y="58" font-size="6" font-weight="700" fill="#475569" text-anchor="middle">0</text>
+              <text x="122" y="70" font-size="6" font-weight="700" fill="#475569" text-anchor="middle">2</text>
+              <text x="110" y="82" font-size="6" font-weight="700" fill="#475569" text-anchor="middle">5</text>
+              <!-- Lancetta piccola contagiri -->
+              <line id="needle-small" x1="110" y1="68" x2="116" y2="62" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Perno centrale e Lancetta Grande Centesimale -->
+              <circle cx="110" cy="100" r="5" fill="#ef4444"/>
+              <line id="needle-big" x1="110" y1="100" x2="160" y2="75" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="110" cy="100" r="2" fill="#ffffff"/>
+            </svg>
+
+            <!-- Display Digitale Sovrapposto -->
+            <div style="background: #fafdfb; border: 2px solid #22c55e; border-radius: 8px; padding: 6px 14px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.72rem; color: #166534; font-weight: 700;">MISURA UFFICIALE COMPARATORE:</span><br>
+              <strong id="gauge-readout-pill" style="font-size: 1.25rem; color: #15803d;">ΔL = (1.25 ± 0.01) mm</strong>
             </div>
 
-            <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 2px dashed #94a3b8; max-width: 320px;">
-              <span style="font-size: 2.2rem;">🔄</span>
-              <div style="font-weight: 700; color: var(--argon-primary); margin-top: 6px;">Ruota la ghiera esterna!</div>
-              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 4px;">
-                Prima di accendere la caldaia, ruota la ghiera di metallo finché lo <strong>ZERO</strong> non si trova perfettamente sotto la punta della lancetta. Così misurerai solo e soltanto l'allungamento dovuto al calore!
-              </p>
-            </div>
-
-            <div class="callout-box success" style="margin-bottom: 0;">
-              <strong>Esempio di Lettura Rapida:</strong><br>
-              Lancetta piccola su 1 mm + lancetta grande sulla tacca 14 = <strong>Allungamento ΔL = 1.14 mm</strong>!
-            </div>
           </div>
+
         </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 6: SIMULATORE INTERATTIVO BENCH
+         SLIDE 6: SIMULATORE DI BANCO LIVE
          ────────────────────────────────────────── -->
     <article class="slide-card" data-step="6" data-name="SIMULATORE DI BANCO">
       <div class="slide-header">
         <div class="slide-title-group">
           <h1>🧪 Simulatore di Banco: Scalda il Tubo e Guarda il Comparatore!</h1>
-          <p class="slide-subtitle">Scegli il metallo, aumenta la temperatura con lo slider o il vapore e osserva la lancetta girare live</p>
+          <p class="slide-subtitle">Scegli il metallo, attiva la caldaia a vapore e osserva l'allungamento in tempo reale</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge primary">SIMULAZIONE LIVE</span>
+          <span class="pill-badge warning">SIMULATORE COMPLETO</span>
           <span class="pill-badge success">PROVA ALLUMINIO, RAME, FERRO</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Console del Simulatore -->
-          <div class="simulator-bench">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="font-weight: 800; font-size: 0.95rem; color: #f8fafc;">SELEZIONA IL TUBO METALLICO:</span>
-                <span class="pill-badge" id="sim-mat-badge" style="background:#3b82f6; color:#fff;">ALLUMINIO</span>
-              </div>
-
-              <!-- Selezione Materiale -->
-              <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-                <button class="mat-btn active" id="btn-mat-al" onclick="selectMetal('al')">Alluminio (λ = 24·10⁻⁶)</button>
-                <button class="mat-btn" id="btn-mat-cu" onclick="selectMetal('cu')">Rame (λ = 17·10⁻⁶)</button>
-                <button class="mat-btn" id="btn-mat-fe" onclick="selectMetal('fe')">Ferro / Acciaio (λ = 12·10⁻⁶)</button>
-              </div>
-
-              <!-- Rappresentazione Visiva Tubo nel Dilatometro -->
-              <div class="tube-container">
-                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8;">
-                  <span>Morsetto Fisso (Sinistra)</span>
-                  <span>Tubo L₀ = 600 mm</span>
-                  <span>Punta Tastatore (Destra)</span>
-                </div>
-
-                <div style="width: 100%; background: #0f172a; padding: 4px; border-radius: 8px; overflow: hidden;">
-                  <div class="metal-tube-bar" id="sim-tube-bar" style="width: 85%;">
-                    <div class="metal-tube-tip"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slider Temperatura -->
-              <div style="margin-top: 14px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
-                  <span>Temperatura Barra:</span>
-                  <strong style="color: #fb923c; font-family: var(--font-mono); font-size: 1.1rem;" id="sim-temp-display">20.0 °C</strong>
-                </div>
-                <div class="temp-slider-wrap">
-                  <span style="font-size: 0.75rem; color: #94a3b8;">20°C</span>
-                  <input type="range" min="20" max="100" step="0.5" value="20" class="temp-slider" id="sim-temp-slider" oninput="updateSimFromSlider()">
-                  <span style="font-size: 0.75rem; color: #fb923c;">100°C</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bottoni Rapidi -->
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-              <button class="btn-nav btn-nav-next" style="flex:1; justify-content: center; padding: 8px;" onclick="heatWithSteam()">
-                ♨️ Scalda a Vapore (96 °C)
-              </button>
-              <button class="btn-nav btn-nav-prev" style="justify-content: center; padding: 8px;" onclick="coolDown()">
-                ❄️ Raffredda (20 °C)
-              </button>
-            </div>
+        
+        <!-- Scelta Metallo & Pulsanti Vapore -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <div style="display: flex; gap: 8px;">
+            <button class="interactive-tab-btn active" id="btn-met-al" onclick="setSimMetal('al')">⚪ Alluminio (24×10⁻⁶)</button>
+            <button class="interactive-tab-btn" id="btn-met-cu" onclick="setSimMetal('cu')">🟠 Rame / Ottone (17×10⁻⁶)</button>
+            <button class="interactive-tab-btn" id="btn-met-fe" onclick="setSimMetal('fe')">🔘 Ferro / Acciaio (12×10⁻⁶)</button>
           </div>
 
-          <!-- Quadrante Comparatore Live -->
-          <div class="argon-card" style="align-items: center; justify-content: space-between; text-align: center; background: #fafbfe;">
-            <div style="font-weight: 800; color: var(--argon-dark); font-size: 0.95rem;">
-              ⏱️ COMPARATORE CENTESIMALE (0.01 mm)
-            </div>
-
-            <!-- SVG Comparatore Quadrante -->
-            <div class="dial-gauge-wrapper">
-              <svg class="dial-gauge-svg" viewBox="0 0 200 200">
-                <!-- Cassa esterna -->
-                <circle cx="100" cy="100" r="95" fill="#f8fafc" stroke="#334155" stroke-width="8"/>
-                <circle cx="100" cy="100" r="88" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-                
-                <!-- Tacche e numeri (0, 10, 20... 90) -->
-                <!-- 0 -->
-                <text x="100" y="32" font-family="JetBrains Mono" font-size="12" font-weight="800" fill="#0f172a" text-anchor="middle">0</text>
-                <!-- 25 -->
-                <text x="170" y="104" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#64748b" text-anchor="middle">25</text>
-                <!-- 50 -->
-                <text x="100" y="174" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#64748b" text-anchor="middle">50</text>
-                <!-- 75 -->
-                <text x="30" y="104" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#64748b" text-anchor="middle">75</text>
-                
-                <text x="100" y="70" font-family="Open Sans" font-size="8" font-weight="700" fill="#94a3b8" text-anchor="middle">0.01 mm</text>
-                
-                <!-- Lancetta piccola contatore millimetri -->
-                <circle cx="100" cy="125" r="16" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
-                <line x1="100" y1="125" x2="100" y2="114" stroke="#f5365c" stroke-width="2" id="small-needle" stroke-linecap="round"/>
-                <circle cx="100" cy="125" r="2.5" fill="#f5365c"/>
-                
-                <!-- Lancetta Grande Principale -->
-                <g class="needle" id="gauge-needle">
-                  <line x1="100" y1="112" x2="100" y2="28" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
-                  <polygon points="97,34 103,34 100,24" fill="#ef4444"/>
-                  <circle cx="100" cy="100" r="6" fill="#0f172a"/>
-                  <circle cx="100" cy="100" r="2.5" fill="#ffffff"/>
-                </g>
-              </svg>
-            </div>
-
-            <!-- Tabellino Risultato Live -->
-            <div style="background: #ffffff; border: 1.5px solid var(--argon-border); border-radius: 10px; padding: 10px 16px; width: 100%;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
-                <span>Salto Termico ΔT:</span>
-                <strong style="color: #fb6340; font-family: var(--font-mono);" id="sim-res-dt">0.0 °C</strong>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 800;">
-                <span style="color: var(--argon-dark);">Allungamento Letto ΔL:</span>
-                <strong style="color: var(--argon-primary); font-family: var(--font-mono); font-size: 1.15rem;" id="sim-res-dl">0.00 mm</strong>
-              </div>
-            </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="interactive-tab-btn" id="btn-steam-on" onclick="startSteamHeating()" style="background: #fff5f2; border-color: #fb6340; color: #fb6340;">
+              ♨️ Attiva Vapore (Scalda a 98°C)
+            </button>
+            <button class="interactive-tab-btn" onclick="coolDownSim()">❄️ Raffredda (20°C)</button>
           </div>
         </div>
+
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Controlli Slider Manuali & Termometro -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Stato Termico del Dilatometro</strong>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Temperatura del Fluido:</span>
+                <span id="sim-temp-disp" style="font-family: 'JetBrains Mono', monospace; color: #c2410c; font-size: 1.15rem;">20.0 °C</span>
+              </div>
+              <input type="range" id="sim-temp-range" min="20" max="100" step="0.5" value="20" style="width: 100%; accent-color: #fb6340;" oninput="updateSimManual(this.value)">
+            </div>
+
+            <!-- Tabella Dati Sperimentali Registrati -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.55;">
+              • Lunghezza Iniziale L₀: <strong>600 mm</strong> (± 1 mm)<br>
+              • Temp. Iniziale T₁: <strong>20.0 °C</strong> &nbsp;|&nbsp; Temp. Attuale T₂: <strong id="sim-t2-val">20.0 °C</strong><br>
+              • Salto Termico ΔT: <strong id="sim-dt-val">0.0 °C</strong><br>
+              • Allungamento Letto ΔL: <strong id="sim-dl-val" style="color: #c2410c;">0.00 mm</strong> (± 0.01 mm)
+            </div>
+
+            <div id="sim-status-box" class="callout-box success" style="padding: 6px 12px; margin: 0; font-size: 0.8rem;">
+              Banco a riposo: temperatura ambiente stabile a 20.0°C.
+            </div>
+          </div>
+
+          <!-- Disegno Banco Animato con Vapore & Comparatore Live -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Vista Strumentale Real-Time</strong>
+              <span id="sim-metal-badge" class="pill-badge primary">ALLUMINIO</span>
+            </div>
+
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+              <!-- Nuvola di Vapore Animata SVG -->
+              <div id="steam-cloud" style="position: absolute; top: 10px; font-size: 2rem; opacity: 0; transition: opacity 0.3s;">♨️ ☁️</div>
+
+              <!-- Comparatore Live in Miniatura -->
+              <svg width="150" height="130" viewBox="0 0 150 130">
+                <circle cx="75" cy="65" r="55" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+                <!-- Tacche principali -->
+                <line x1="75" y1="12" x2="75" y2="20" stroke="#1e293b" stroke-width="2"/>
+                <line x1="128" y1="65" x2="120" y2="65" stroke="#1e293b" stroke-width="1.5"/>
+                <line x1="75" y1="118" x2="75" y2="110" stroke="#1e293b" stroke-width="2"/>
+                <line x1="22" y1="65" x2="30" y2="65" stroke="#1e293b" stroke-width="1.5"/>
+                <!-- Lancetta live ruotante -->
+                <circle cx="75" cy="65" r="4" fill="#ef4444"/>
+                <line id="sim-needle" x1="75" y1="65" x2="75" y2="24" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+
+              <!-- Lettura del Comparatore Digitale -->
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 800; color: #c2410c; margin-top: 4px;">
+                ΔL = <span id="sim-dl-display">0.00</span> mm
+              </div>
+            </div>
+
+            <!-- Calcolo Automatico del Coefficiente -->
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 8px; padding: 6px 14px; width: 100%; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+              λ sperimentale calcolato: <strong id="sim-lambda-res" style="color: #15803d;">In attesa di riscaldamento...</strong>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 7: CALCOLO RELAZIONE & METALLO MISTERIOSO
+         SLIDE 7: CALCOLO RELAZIONE 1 (VOTO 1)
          ────────────────────────────────────────── -->
     <article class="slide-card" data-step="7" data-name="CALCOLO RELAZIONE">
       <div class="slide-header">
         <div class="slide-title-group">
           <h1>📝 Dati al Banco: Come si Compila la Relazione n° 1</h1>
-          <p class="slide-subtitle">Dalle misure raccolte alla determinazione del coefficiente λ senza errori nei calcoli</p>
+          <p class="slide-subtitle">Inserisci i tuoi dati reali per verificare il coefficiente λ e identificare il metallo del campione</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge primary">RELAZIONE 1</span>
-          <span class="pill-badge success">ESEMPIO COMPLETO</span>
+          <span class="pill-badge success">RELAZIONE 1 (VOTO 1)</span>
+          <span class="pill-badge info">PROPAGAZIONE ERRORI</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Tabella delle Misure -->
-          <div class="argon-card">
-            <div class="argon-card-header">
-              <span class="argon-card-title">📊 Tabella Misure di un Gruppo Reale</span>
-              <span class="pill-badge primary">DATI SPERIMENTALI</span>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
-              <thead>
-                <tr style="border-bottom: 2px solid var(--argon-border); color: var(--argon-text-light);">
-                  <th style="padding: 6px;">Grandezza</th>
-                  <th style="padding: 6px;">Simbolo</th>
-                  <th style="padding: 6px;">Valore Letto</th>
-                  <th style="padding: 6px;">Unità S.I.</th>
-                </tr>
-              </thead>
-              <tbody style="color: var(--argon-text-main);">
-                <tr style="border-bottom: 1px solid var(--argon-border);">
-                  <td style="padding: 6px;">Lunghezza Iniziale Tubo</td>
-                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700;">L₀</td>
-                  <td style="padding: 6px; font-weight: 700;">600 ± 1</td>
-                  <td style="padding: 6px;">mm (0.600 m)</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--argon-border);">
-                  <td style="padding: 6px;">Temperatura Iniziale</td>
-                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700;">T₁</td>
-                  <td style="padding: 6px; font-weight: 700;">20.5 ± 0.1</td>
-                  <td style="padding: 6px;">°C</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--argon-border);">
-                  <td style="padding: 6px;">Temperatura Finale Vapore</td>
-                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700;">T₂</td>
-                  <td style="padding: 6px; font-weight: 700;">96.5 ± 0.1</td>
-                  <td style="padding: 6px;">°C</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--argon-border);">
-                  <td style="padding: 6px; font-weight: 700; color: #fb6340;">Variazione Temperatura</td>
-                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700;">ΔT</td>
-                  <td style="padding: 6px; font-weight: 700; color: #fb6340;">76.0 ± 0.2</td>
-                  <td style="padding: 6px;">°C</td>
-                </tr>
-                <tr>
-                  <td style="padding: 6px; font-weight: 700; color: var(--argon-primary);">Allungamento Comparatore</td>
-                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700;">ΔL</td>
-                  <td style="padding: 6px; font-weight: 700; color: var(--argon-primary);">1.09 ± 0.01</td>
-                  <td style="padding: 6px;">mm (0.00109 m)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Input Guidato Dati Banco -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Inserimento Dati Sperimentali</strong>
 
-          <!-- Calcolo del Coefficiente e Verdetto -->
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
-              <span style="font-weight: 700; color: var(--argon-primary); font-size: 0.9rem;">1. APPLICAZIONE DELLA FORMULA:</span>
-              <div style="font-family: var(--font-mono); font-size: 1rem; margin-top: 6px; background: #fafbfe; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--argon-border);">
-                λ = 0.00109 m / (0.600 m × 76.0 °C) = <strong>23.9 × 10⁻⁶ °C⁻¹</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--argon-text-muted);">Lunghezza L₀ [mm]:</label>
+                <input type="number" id="rel-l0" value="600" class="interactive-tab-btn" style="width: 100%; padding: 6px; font-family: 'JetBrains Mono', monospace;" oninput="calcReportLambda()">
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--argon-text-muted);">Allungamento ΔL [mm]:</label>
+                <input type="number" step="0.01" id="rel-dl" value="1.12" class="interactive-tab-btn" style="width: 100%; padding: 6px; font-family: 'JetBrains Mono', monospace;" oninput="calcReportLambda()">
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--argon-text-muted);">Temp. Iniziale T₁ [°C]:</label>
+                <input type="number" step="0.1" id="rel-t1" value="20.0" class="interactive-tab-btn" style="width: 100%; padding: 6px; font-family: 'JetBrains Mono', monospace;" oninput="calcReportLambda()">
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--argon-text-muted);">Temp. Finale T₂ [°C]:</label>
+                <input type="number" step="0.1" id="rel-t2" value="97.5" class="interactive-tab-btn" style="width: 100%; padding: 6px; font-family: 'JetBrains Mono', monospace;" oninput="calcReportLambda()">
               </div>
             </div>
 
-            <div class="argon-card" style="border-left: 4px solid var(--argon-success); background: #f0fdf4;">
-              <span style="font-weight: 700; color: var(--argon-success); font-size: 0.9rem;">2. VERDETTO: METALLO RICONOSCIUTO!</span>
-              <p style="font-size: 0.84rem; color: #166534; margin-top: 4px;">
-                Confrontando con la tabella dei materiali:<br>
-                • Alluminio: <strong>24 × 10⁻⁶ °C⁻¹</strong><br>
-                • Rame: <strong>17 × 10⁻⁶ °C⁻¹</strong><br>
-                • Ferro: <strong>12 × 10⁻⁶ °C⁻¹</strong><br>
-                Il valore ottenuto (23.9 × 10⁻⁶) coincide perfettamente con l'<strong>ALLUMINIO</strong> con un errore inferiore all'1%!
-              </p>
+            <!-- Formule Propagazione Incertezza -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.45;">
+              Incertezze strumenti: Δ(L₀) = 1 mm | Δ(ΔL) = 0.01 mm | Δ(T) = 0.2 °C<br>
+              <strong>e_r(λ) = e_r(ΔL) + e_r(L₀) + e_r(ΔT)</strong>
+            </div>
+
+            <button class="interactive-tab-btn active" onclick="fillReportTestData()" style="justify-content: center;">
+              🧪 Carica Misure Campione Laboratorio
+            </button>
+          </div>
+
+          <!-- Risultato Analisi e Riconoscimento Metallo -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Esito dell'Esperimento</strong>
+              <span id="metal-match-badge" class="pill-badge success">ALLUMINIO IDENTIFICATO</span>
+            </div>
+
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
+              • Variazione Termica: <strong>ΔT = <span id="out-dt">77.5</span> °C (K)</strong><br>
+              • Coefficiente Sperimentale:<br>
+              &nbsp;&nbsp;<strong>λ = ΔL / (L₀ · ΔT) = <span id="out-lambda-sci" style="color: #15803d; font-size: 1.05rem; font-weight: 800;">24.08 × 10⁻⁶ K⁻¹</span></strong><br>
+              • Errore Relativo Propagato: <strong>e_r = <span id="out-er">1.25%</span></strong><br>
+              • Incertezza Assoluta: <strong>Δλ = ± <span id="out-dlambda">0.30</span> × 10⁻⁶ K⁻¹</strong>
+            </div>
+
+            <!-- Scrittura Ufficiale Relazione -->
+            <div style="background: #f0fbf6; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">SCRITTURA UFFICIALE NELLA RELAZIONE 1:</span><br>
+              <strong id="out-final-str" style="font-size: 1.2rem; color: #15803d;">λ = (24.1 ± 0.3) × 10⁻⁶ K⁻¹</strong>
             </div>
           </div>
+
         </div>
+
       </div>
     </article>
 
     <!-- ──────────────────────────────────────────
-         SLIDE 8: SFIDA FINALE LIM
+         SLIDE 8: SFIDA LIM DEL TERMOLOGO
          ────────────────────────────────────────── -->
     <article class="slide-card" data-step="8" data-name="SFIDA LIM: QUIZ DEL TERMOLOGO">
       <div class="slide-header">
         <div class="slide-title-group">
-          <h1>🏆 Sfida alla LIM: Il Quiz del Termologo!</h1>
-          <p class="slide-subtitle">5 quesiti interattivi a squadre per conquistare l'abilitazione alla Relazione 1</p>
+          <h1>🏆 Sfida alla LIM: Il Quiz del Mastro Termologo!</h1>
+          <p class="slide-subtitle">5 scenari per dimostrare la padronanza delle misure di dilatazione e comparatore</p>
         </div>
         <div class="slide-badges">
-          <span class="pill-badge warning">SFIDA A SQUADRE</span>
-          <span class="pill-badge success" id="quiz-score-badge">PUNTEGGIO: 0/5</span>
+          <span class="pill-badge warning" id="quiz-badge-step">QUESITO 1 DI 5</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
         </div>
       </div>
 
       <div class="slide-body">
-        <div class="grid-2">
-          <!-- Box Domanda Corrente -->
-          <div class="argon-card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <div class="argon-card-header">
-                <span class="argon-card-title" id="quiz-question-num">DOMANDA 1 DI 5</span>
-                <span class="pill-badge primary" id="quiz-topic-tag">Fenomeno Reale</span>
-              </div>
-              <h2 id="quiz-question-text" style="font-size: 1.05rem; font-weight: 700; color: var(--argon-dark); line-height: 1.35; margin-bottom: 12px;">
-                Perché sui binari dei treni e sui ponti autostradali vengono sempre lasciati dei piccoli spazi vuoti?
-              </h2>
-
-              <div id="quiz-options-container">
-                <!-- Generato da JS -->
-              </div>
+        
+        <div class="argon-card" style="flex: 1; border-top: 4px solid #fb6340; justify-content: space-between; padding: 18px 24px;">
+          
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span id="quiz-topic" class="pill-badge warning">DILATAZIONE TERMICA</span>
+              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
             </div>
 
-            <div id="quiz-explanation-box" class="callout-box info" style="display: none; margin-top: 8px; margin-bottom: 0;">
-              <!-- Spiegazione -->
-            </div>
+            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
+              Caricamento quesito...
+            </h2>
+
+            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
           </div>
 
-          <!-- Tabellone Risultati Finale -->
-          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
-            <div style="font-size: 3.2rem; margin-bottom: 6px;" id="quiz-trophy-icon">🎯</div>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--argon-dark);" id="quiz-final-title">Pronti per la Sfida?</h3>
-            <p style="font-size: 0.86rem; color: var(--argon-text-muted); max-width: 360px; margin-top: 4px;" id="quiz-final-desc">
-              Toccate la risposta corretta sullo schermo della LIM. Chi ottiene almeno 4 punti su 5 è abilitato alla stesura della Relazione 1!
-            </p>
-
-            <div style="margin-top: 16px; width: 100%; max-width: 280px;">
-              <button class="btn-nav btn-nav-next" style="width: 100%; justify-content: center;" onclick="nextQuizQuestion()" id="btn-next-question">
-                Prossima Domanda →
-              </button>
-            </div>
+          <div id="quiz-feedback-box" class="callout-box warning" style="display: none; padding: 10px 16px; margin: 0;">
+            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
+            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
           </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
+              Prossimo Quesito ➜
+            </button>
+          </div>
+
         </div>
+
       </div>
     </article>
 
   </main>
 
-  <!-- ══════════════════════════════════════════════
-       FOOTER NAVIGATION & STEPPER
-       ══════════════════════════════════════════════ -->
-  <footer class="app-footer">
-    <div class="stepper-dots" id="stepper-container">
-      <button class="step-dot active" onclick="goToStep(1)" title="1. Fenomeno Reale">1</button>
-      <button class="step-dot" onclick="goToStep(2)" title="2. Atomi che Ballano">2</button>
-      <button class="step-dot" onclick="goToStep(3)" title="3. La Formula">3</button>
-      <button class="step-dot" onclick="goToStep(4)" title="4. Apparato di Banco">4</button>
-      <button class="step-dot" onclick="goToStep(5)" title="5. Il Comparatore">5</button>
-      <button class="step-dot" onclick="goToStep(6)" title="6. Simulatore Live">6</button>
-      <button class="step-dot" onclick="goToStep(7)" title="7. Calcolo Relazione">7</button>
-      <button class="step-dot" onclick="goToStep(8)" title="8. Sfida Finale">8</button>
+  <!-- BOTTOM BAR -->
+  <footer class="argon-bottombar">
+    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
+      ◀ Slide Precedente
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Frecce ⬅️ / ➡️ o barra spaziatrice</span>
     </div>
 
-    <div class="nav-actions">
-      <button class="btn-nav btn-nav-prev" id="btn-prev" onclick="changeStep(-1)" disabled>
-        <span>◄</span>
-        <span>Precedente</span>
-      </button>
-      <button class="btn-nav btn-nav-next" id="btn-next" onclick="changeStep(1)">
-        <span>Successiva</span>
-        <span>►</span>
-      </button>
-    </div>
+    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
+      Slide Successiva ▶
+    </button>
   </footer>
 
-  <div class="feedback-toast" id="toast"></div>
+  <div class="argon-toast" id="argon-toast">Notifica</div>
 
-</div>
+  <!-- JAVASCRIPT ANIMAZIONI & SIMULATORI -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    let limZoom = 1;
+    let audioCtx = null;
 
-<script>
-/* ═══════════════════════════════════════════════════════════════════
-   LOGICA PRESENTAZIONE & SIMULATORE COMPARATORE
-   ═══════════════════════════════════════════════════════════════════ */
-
-let currentStep = 1;
-const totalSteps = 8;
-let limZoomLevel = 1.0;
-
-const slides = document.querySelectorAll('.slide-card');
-const dots = document.querySelectorAll('.step-dot');
-const btnPrev = document.getElementById('btn-prev');
-const btnNext = document.getElementById('btn-next');
-const phaseStepBadge = document.getElementById('phase-step-badge');
-const phaseNameBadge = document.getElementById('phase-name-badge');
-
-function goToStep(step) {
-  if (step < 1 || step > totalSteps) return;
-  currentStep = step;
-
-  slides.forEach(slide => {
-    slide.classList.remove('active');
-    if (parseInt(slide.getAttribute('data-step')) === currentStep) {
-      slide.classList.add('active');
-      const stepName = slide.getAttribute('data-name');
-      phaseStepBadge.textContent = `PASSO ${currentStep} DI ${totalSteps}`;
-      phaseNameBadge.textContent = stepName;
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
     }
-  });
 
-  dots.forEach((dot, idx) => {
-    dot.classList.toggle('active', idx + 1 === currentStep);
-  });
-
-  btnPrev.disabled = (currentStep === 1);
-  btnNext.disabled = (currentStep === totalSteps);
-  btnNext.innerHTML = (currentStep === totalSteps) ? '<span>Fine Lezione</span> <span>✓</span>' : '<span>Successiva</span> <span>►</span>';
-}
-
-function changeStep(delta) {
-  goToStep(currentStep + delta);
-}
-
-// Navigazione tastiera LIM
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-    if (currentStep < totalSteps) changeStep(1);
-  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-    if (currentStep > 1) changeStep(-1);
-  }
-});
-
-// Zoom LIM
-document.getElementById('btn-zoom-in').addEventListener('click', () => {
-  if (limZoomLevel < 1.35) {
-    limZoomLevel += 0.08;
-    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
-    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
-  }
-});
-
-document.getElementById('btn-zoom-out').addEventListener('click', () => {
-  if (limZoomLevel > 0.85) {
-    limZoomLevel -= 0.08;
-    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
-    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
-  }
-});
-
-// Fullscreen
-document.getElementById('btn-fullscreen').addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  } else {
-    document.exitFullscreen().catch(() => {});
-  }
-});
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'flex';
-  setTimeout(() => { t.style.display = 'none'; }, 2200);
-}
-
-/* ──────────────────────────────────────────
-   LOGICA SIMULATORE COMPARATORE (PASSO 6)
-   ────────────────────────────────────────── */
-const materials = {
-  al: { name: "ALLUMINIO", lambda: 24e-6, color: "#3b82f6" },
-  cu: { name: "RAME", lambda: 17e-6, color: "#f97316" },
-  fe: { name: "FERRO / ACCIAIO", lambda: 12e-6, color: "#64748b" }
-};
-
-let currentMat = 'al';
-let currentTemp = 20.0;
-const L0 = 0.600; // 600 mm = 0.6 m
-
-function selectMetal(key) {
-  currentMat = key;
-  document.querySelectorAll('.mat-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(`btn-mat-${key}`).classList.add('active');
-  const mat = materials[key];
-  const badge = document.getElementById('sim-mat-badge');
-  badge.textContent = mat.name;
-  badge.style.background = mat.color;
-  updateSimulator();
-  playAudioBeep(440, 0.1);
-  showToast(`Materiale selezionato: ${mat.name}`);
-}
-
-function updateSimFromSlider() {
-  currentTemp = parseFloat(document.getElementById('sim-temp-slider').value);
-  updateSimulator();
-}
-
-function heatWithSteam() {
-  animateTempTo(96.0);
-}
-
-function coolDown() {
-  animateTempTo(20.0);
-}
-
-function animateTempTo(targetT) {
-  const step = (targetT > currentTemp) ? 2 : -2;
-  const interval = setInterval(() => {
-    if ((step > 0 && currentTemp >= targetT) || (step < 0 && currentTemp <= targetT)) {
-      currentTemp = targetT;
-      document.getElementById('sim-temp-slider').value = currentTemp;
-      updateSimulator();
-      clearInterval(interval);
-    } else {
-      currentTemp += step;
-      document.getElementById('sim-temp-slider').value = currentTemp;
-      updateSimulator();
+    function playBeep(freq, type = 'sine', duration = 0.12) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
     }
-  }, 25);
-  playAudioBeep(targetT > 50 ? 550 : 330, 0.15);
-}
 
-function updateSimulator() {
-  document.getElementById('sim-temp-display').textContent = currentTemp.toFixed(1) + " °C";
-  const deltaT = Math.max(0, currentTemp - 20.0);
-  document.getElementById('sim-res-dt').textContent = deltaT.toFixed(1) + " °C";
-
-  const lambda = materials[currentMat].lambda;
-  const deltaL_m = lambda * L0 * deltaT;
-  const deltaL_mm = deltaL_m * 1000;
-
-  document.getElementById('sim-res-dl').textContent = deltaL_mm.toFixed(3) + " mm";
-
-  // Aggiorna aspetto tubo
-  const tubeBar = document.getElementById('sim-tube-bar');
-  if (currentTemp > 45) {
-    tubeBar.classList.add('hot');
-  } else {
-    tubeBar.classList.remove('hot');
-  }
-
-  // Rotazione lancetta grande (1 giro = 1 mm = 360 gradi)
-  const deg = (deltaL_mm * 360) % 360;
-  const needle = document.getElementById('gauge-needle');
-  if (needle) {
-    needle.style.transform = `rotate(${deg}deg)`;
-  }
-
-  // Rotazione lancetta piccola (10 mm = 360 gradi => 1 mm = 36 gradi)
-  const smallDeg = (deltaL_mm / 10) * 360;
-  const smallNeedle = document.getElementById('small-needle');
-  if (smallNeedle) {
-    smallNeedle.style.transform = `rotate(${smallDeg}deg)`;
-    smallNeedle.style.transformOrigin = "100px 125px";
-  }
-}
-
-/* ──────────────────────────────────────────
-   SLIDE 8: SFIDA LIM INTERATTIVA (5 QUESITI)
-   ────────────────────────────────────────── */
-const quizQuestions = [
-  {
-    topic: "Fenomeno Reale",
-    q: "Perché sui ponti autostradali e sui binari dei treni vengono lasciati dei piccoli spazi vuoti (giunti di dilatazione)?",
-    options: [
-      "Per far defluire più velocemente l'acqua piovana.",
-      "Perché col caldo estivo metallo e cemento si allungano: senza spazi si piegherebbero o spaccherebbero!",
-      "Per risparmiare sui materiali di costruzione.",
-      "Soltanto per motivi estetici."
-    ],
-    correct: 1,
-    exp: "Esatto! Tutti i metalli si allungano al salire della temperatura. I giunti di dilatazione lasciano lo spazio necessario per evitare che le strutture si spezzino!"
-  },
-  {
-    topic: "La Formula",
-    q: "Che cosa rappresenta il simbolo λ (lambda) nella formula ΔL = λ · L₀ · ΔT?",
-    options: [
-      "La lunghezza totale della sbarra a 100 °C.",
-      "Il coefficiente di dilatazione lineare: è una caratteristica propria di ciascun materiale.",
-      "L'incertezza dello strumento di misura.",
-      "La temperatura del vapore d'acqua."
-    ],
-    correct: 1,
-    exp: "Bravissimi! λ (lambda) è il 'DNA' termico del metallo: dice di quanto si allunga ogni metro di materiale per ciascun grado di temperatura."
-  },
-  {
-    topic: "Lettura del Comparatore",
-    q: "Un comparatore centesimale ha sensibilità 0.01 mm. Se la lancetta grande compie mezzo giro (50 tacche), di quanto si è allungata la barra?",
-    options: [
-      "Di 5.0 millimetri.",
-      "Di esattamente 0.50 millimetri (mezzo millimetro).",
-      "Di 0.05 millimetri.",
-      "Di 50 centimetri."
-    ],
-    correct: 1,
-    exp: "Centro! Ogni tacca vale 0.01 mm, quindi 50 tacche corrispondono a 50 × 0.01 mm = 0.50 mm!"
-  },
-  {
-    topic: "Materiali a Confronto",
-    q: "A parità di lunghezza e riscaldamento, tra Alluminio (λ = 24·10⁻⁶), Rame (λ = 17·10⁻⁶) e Ferro (λ = 12·10⁻⁶), quale sbarra si allunga di più?",
-    options: [
-      "Il Ferro, perché è il metallo più denso e duro.",
-      "Il Rame, perché conduce meglio l'elettricità.",
-      "L'Alluminio, perché ha il coefficiente di dilatazione lineare λ più grande!",
-      "Si allungano tutti esattamente della stessa quantità."
-    ],
-    correct: 2,
-    exp: "Perfetto! Più grande è il coefficiente λ, maggiore è l'allungamento a parità di temperatura e lunghezza iniziale."
-  },
-  {
-    topic: "Procedura Sperimentale",
-    q: "Perché prima di accendere la caldaia a vapore è fondamentale ruotare la ghiera del comparatore per portare lo ZERO sotto la lancetta?",
-    options: [
-      "Per evitare che lo strumento si surriscaldi e si rompa.",
-      "Per annullare l'errore di zero e misurare solo e soltanto l'allungamento ΔL dovuto al calore.",
-      "Per verificare che la lancetta non sia incollata.",
-      "È indifferente: si può iniziare da qualsiasi numero a caso."
-    ],
-    correct: 1,
-    exp: "Ottimo lavoro! Azzerando il quadrante sulla barra a freddo, ogni tacca percorsa dalla lancetta rappresenterà con esattezza l'allungamento effettivo ΔL!"
-  }
-];
-
-let quizIndex = 0;
-let quizScore = 0;
-let answeredCurrent = false;
-
-function loadQuizQuestion(index) {
-  answeredCurrent = false;
-  const q = quizQuestions[index];
-  document.getElementById('quiz-question-num').textContent = `DOMANDA ${index + 1} DI ${quizQuestions.length}`;
-  document.getElementById('quiz-topic-tag').textContent = q.topic;
-  document.getElementById('quiz-question-text').textContent = q.q;
-
-  const container = document.getElementById('quiz-options-container');
-  container.innerHTML = '';
-
-  const expBox = document.getElementById('quiz-explanation-box');
-  expBox.style.display = 'none';
-
-  q.options.forEach((optText, optIdx) => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-option-btn';
-    btn.innerHTML = `<span style="width:24px; height:24px; min-width:24px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; color:var(--argon-dark);">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
-    btn.onclick = () => handleAnswer(optIdx, btn);
-    container.appendChild(btn);
-  });
-
-  const nextBtn = document.getElementById('btn-next-question');
-  nextBtn.textContent = (index === quizQuestions.length - 1) ? "Mostra Risultato & Abilitazione 🏁" : "Prossima Domanda →";
-}
-
-function handleAnswer(selectedIndex, clickedBtn) {
-  if (answeredCurrent) return;
-  answeredCurrent = true;
-
-  const q = quizQuestions[quizIndex];
-  const allBtns = document.querySelectorAll('.quiz-option-btn');
-  const expBox = document.getElementById('quiz-explanation-box');
-
-  if (selectedIndex === q.correct) {
-    quizScore++;
-    clickedBtn.classList.add('correct');
-    playAudioBeep(587, 0.2);
-    expBox.className = 'callout-box success';
-    expBox.innerHTML = `<strong>✓ RISPOSTA ESATTA!</strong> ${q.exp}`;
-  } else {
-    clickedBtn.classList.add('wrong');
-    allBtns[q.correct].classList.add('correct');
-    playAudioBeep(200, 0.35);
-    expBox.className = 'callout-box danger';
-    expBox.innerHTML = `<strong>✗ RISPOSTA SBAGLIATA!</strong> ${q.exp}`;
-  }
-
-  expBox.style.display = 'block';
-  document.getElementById('quiz-score-badge').textContent = `PUNTEGGIO: ${quizScore}/${quizQuestions.length}`;
-}
-
-function nextQuizQuestion() {
-  if (quizIndex < quizQuestions.length - 1) {
-    quizIndex++;
-    loadQuizQuestion(quizIndex);
-  } else {
-    const isPassed = quizScore >= 4;
-    document.getElementById('quiz-trophy-icon').textContent = isPassed ? "🏅" : "📚";
-    document.getElementById('quiz-final-title').textContent = isPassed ? "CLASSE ABILITATA ALLA RELAZIONE 1!" : "REVISIONE RAPIDA CONSIGLIATA";
-    document.getElementById('quiz-final-desc').innerHTML = `Punteggio ottenuto: <strong>${quizScore} su ${quizQuestions.length}</strong>.<br>` +
-      (isPassed ? 
-        "<span style='color:#2dce89; font-weight:700;'>🎉 COMPLIMENTI!</span> Avete dimostrato piena comprensione della dilatazione e del comparatore centesimale. Siete pronti per l'esperimento al banco!" : 
-        "Rivedete con il prof i passaggi sul calcolo di λ e sulla lettura del comparatore prima di procedere.");
-    
-    if (isPassed) {
-      playAudioBeep(523, 0.15);
-      setTimeout(() => playAudioBeep(659, 0.15), 160);
-      setTimeout(() => playAudioBeep(784, 0.3), 320);
+    function showToast(msg) {
+      const t = document.getElementById('argon-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
     }
-    showToast(`Sfida Completata: ${quizScore}/${quizQuestions.length} punti!`);
-  }
-}
 
-function playAudioBeep(freq, duration) {
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-  } catch(e) {}
-}
+    function goToSlide(step) {
+      if (step < 1 || step > totalSlides) return;
+      currentSlide = step;
 
-document.addEventListener('DOMContentLoaded', () => {
-  goToStep(1);
-  loadQuizQuestion(0);
-  updateSimulator();
-});
-</script>
+      document.querySelectorAll('.slide-card').forEach(slide => {
+        const s = parseInt(slide.dataset.step);
+        slide.classList.toggle('active', s === currentSlide);
+      });
 
+      document.querySelectorAll('.step-node').forEach(node => {
+        const s = parseInt(node.dataset.step);
+        node.classList.toggle('active', s === currentSlide);
+        node.classList.toggle('completed', s < currentSlide);
+      });
+
+      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
+      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
+
+      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
+      if (activeCard) {
+        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
+        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
+      }
+
+      playBeep(520, 'triangle', 0.08);
+    }
+
+    function changeSlide(delta) {
+      goToSlide(currentSlide + delta);
+    }
+
+    document.querySelectorAll('.step-node').forEach(node => {
+      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      else if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      if (limZoom < 1.35) {
+        limZoom += 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      if (limZoom > 0.85) {
+        limZoom -= 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+
+    // ── SLIDE 1: FENOMENO REALE (EIFFEL / PONTE) ──────────
+    let realDemoMode = 'eiffel';
+
+    function setRealDemo(mode) {
+      realDemoMode = mode;
+      document.getElementById('tab-real-eiffel').classList.toggle('active', mode === 'eiffel');
+      document.getElementById('tab-real-bridge').classList.toggle('active', mode === 'bridge');
+
+      const svgEiffel = document.getElementById('svg-eiffel');
+      const svgBridge = document.getElementById('svg-bridge');
+      const title = document.getElementById('real-title');
+      const p1 = document.getElementById('real-p1');
+
+      if (mode === 'eiffel') {
+        svgEiffel.style.display = 'block';
+        svgBridge.style.display = 'none';
+        title.textContent = "La Torre Eiffel si Allunga di ben 15 cm!";
+        p1.textContent = "La Torre Eiffel è una struttura in ferro forgiato alta circa 330 metri. Tra l'inverno gelido (-5°C) e l'estate torrida (+40°C) c'è un'escursione termica di ΔT = 45°C.";
+      } else {
+        svgEiffel.style.display = 'none';
+        svgBridge.style.display = 'block';
+        title.textContent = "I Giunti a Pettine dei Ponti Stradali";
+        p1.textContent = "Sulle autostrade e viadotti, le campate di cemento e acciaio lunghe centinaia di metri si espandono d'estate. I giunti a pettine scorrono l'uno dentro l'altro evitando la rottura!";
+      }
+      updateSeasonSim(document.getElementById('season-range').value);
+      playBeep(440);
+    }
+
+    function updateSeasonSim(temp) {
+      temp = parseFloat(temp);
+      const disp = document.getElementById('season-temp-disp');
+      const calcBox = document.getElementById('real-calc-box');
+      const heightText = document.getElementById('eiffel-height-text');
+      const eiffelSvg = document.getElementById('svg-eiffel');
+      const bridgeBlock = document.getElementById('bridge-right-block');
+
+      disp.textContent = `${temp > 0 ? '+' : ''}${temp}°C (${temp <= 5 ? 'Inverno Freddo' : temp >= 30 ? 'Estate Calda' : 'Primavera'})`;
+
+      // dT rispetto allo zero base (-10°C)
+      const dT = temp - (-10);
+      const dL_cm = (12e-6 * 330 * dT * 100); // cm
+      heightText.textContent = `+ ${dL_cm.toFixed(1)} cm`;
+
+      // Scala visiva lieve su Eiffel
+      const scaleFactor = 1 + (dL_cm / 120);
+      eiffelSvg.style.transform = `scaleY(${scaleFactor})`;
+
+      // Scorrimento giunto ponte
+      if (bridgeBlock) {
+        const bridgePx = Math.max(0, 18 - (temp * 0.3));
+        bridgeBlock.style.transform = `translateX(${bridgePx}px)`;
+      }
+
+      calcBox.innerHTML = `<strong>Calcolo Allungamento Termico:</strong> ΔL = (12 × 10⁻⁶ K⁻¹) × 330 m × ${dT.toFixed(0)}°C = <strong>+ ${(dL_cm/100).toFixed(3)} m (+ ${dL_cm.toFixed(1)} cm)</strong>`;
+    }
+
+    // ── SLIDE 2: CANVAS RETICOLO ATOMICO ANIMATO ──────────
+    let atomT = 300; // Kelvin
+    const canvas = document.getElementById('atom-canvas');
+    let ctx = canvas ? canvas.getContext('2d') : null;
+
+    const cols = 5;
+    const rows = 3;
+    let atoms = [];
+
+    function initAtoms() {
+      atoms = [];
+      const spacingX = 50;
+      const spacingY = 40;
+      const startX = 50;
+      const startY = 35;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          atoms.push({
+            baseX: startX + c * spacingX,
+            baseY: startY + r * spacingY,
+            x: startX + c * spacingX,
+            y: startY + r * spacingY,
+            vx: 0,
+            vy: 0
+          });
+        }
+      }
+    }
+
+    function animateAtoms() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const amp = (atomT / 300) * 4.5; // ampiezza vibrazione
+      const thermalExpansionFactor = 1 + ((atomT - 300) / 300) * 0.08;
+
+      // Disegna molle tra atomi adiacenti
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.lineWidth = 1.5;
+
+      for (let i = 0; i < atoms.length; i++) {
+        const a1 = atoms[i];
+        // Vibrazione casuale legata a T
+        const jitterX = atomT === 0 ? 0 : (Math.random() - 0.5) * amp;
+        const jitterY = atomT === 0 ? 0 : (Math.random() - 0.5) * amp;
+        
+        // Espansione macroscopica dal centro (x=150)
+        const expandedBaseX = 150 + (a1.baseX - 150) * Math.max(0.9, thermalExpansionFactor);
+        a1.x = expandedBaseX + jitterX;
+        a1.y = a1.baseY + jitterY;
+
+        // Disegna collegamenti
+        for (let j = i + 1; j < atoms.length; j++) {
+          const a2 = atoms[j];
+          const dist = Math.hypot(a1.baseX - a2.baseX, a1.baseY - a2.baseY);
+          if (dist < 60) {
+            ctx.beginPath();
+            ctx.moveTo(a1.x, a1.y);
+            ctx.lineTo(a2.x, a2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Disegna atomi (sfere dorate/rosse con glow)
+      for (const a of atoms) {
+        ctx.beginPath();
+        const rColor = atomT > 500 ? '#f59e0b' : '#38bdf8';
+        ctx.arc(a.x, a.y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = rColor;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(animateAtoms);
+    }
+
+    function onKelvinSlider(val) {
+      atomT = parseFloat(val);
+      document.getElementById('kelvin-disp').textContent = `${atomT} K (${(atomT - 273.15).toFixed(0)}°C)`;
+      const spacingBadge = document.getElementById('lattice-spacing-badge');
+      const desc = document.getElementById('atom-desc-box');
+
+      const expPct = (((atomT / 300) - 1) * 8).toFixed(1);
+      spacingBadge.textContent = `SPAZIATURA: ${(1 + expPct/100).toFixed(3)}x (${expPct > 0 ? '+' : ''}${expPct}%)`;
+
+      if (atomT === 0) {
+        desc.innerHTML = "❄️ <strong>ZERO ASSOLUTO (0 K):</strong> Agitazione termica nulla! Gli atomi sono congelati, ampiezza di vibrazione = 0.";
+      } else if (atomT < 400) {
+        desc.innerHTML = "🌡️ <strong>TEMPERATURA AMBIENTE (300 K):</strong> Vibrazioni moderate attorno alle posizioni fisse del reticolo metallico.";
+      } else {
+        desc.innerHTML = "🔥 <strong>RISCALDAMENTO FORTE:</strong> Gli atomi oscillano violentemente! La spaziatura interatomica media aumenta, allungando macroscopica il pezzo.";
+        playBeep(260 + atomT/2, 'sine', 0.04);
+      }
+    }
+
+    function setKelvinPreset(k) {
+      document.getElementById('kelvin-range').value = k;
+      onKelvinSlider(k);
+    }
+
+    // ── SLIDE 3: IL TRIANGOLO DELLA FORMULA ──────────
+    function setFormulaVar(v) {
+      document.querySelectorAll('#btn-var-dl, #btn-var-lambda, #btn-var-dt').forEach(b => b.classList.remove('active'));
+      const title = document.getElementById('var-formula-title');
+      const p = document.getElementById('var-formula-p');
+      const disp = document.getElementById('formula-math-display');
+      const sub = document.getElementById('formula-units-sub');
+      const tip = document.getElementById('var-tip-box');
+
+      if (v === 'dl') {
+        document.getElementById('btn-var-dl').classList.add('active');
+        title.textContent = "Formula Diretta: L'Allungamento Termico (ΔL)";
+        p.textContent = "L'allungamento dipende da tre fattori moltiplicati tra loro: lunghezza iniziale, variazione di temperatura e materiale.";
+        disp.innerHTML = '<div style="font-size: 1.6rem; color: #c2410c; font-weight: 800;">ΔL = λ · L₀ · ΔT</div>';
+        sub.textContent = "[m] = [K⁻¹] · [m] · [K]";
+        tip.textContent = "Se raddoppi la lunghezza iniziale L₀, anche l'allungamento ΔL raddoppia (proporzionalità diretta).";
+        playBeep(440);
+      } else if (v === 'lambda') {
+        document.getElementById('btn-var-lambda').classList.add('active');
+        title.textContent = "Formula Inversa: Il Coefficiente di Dilatazione (λ)";
+        p.textContent = "È la formula fondamentale della nostra Relazione n° 1: calcoliamo il coefficiente specifico del metallo dividendo l'allungamento per L₀ e ΔT.";
+        disp.innerHTML = '<div style="font-size: 1.6rem; color: #15803d; font-weight: 800;">λ = ΔL / (L₀ · ΔT)</div>';
+        sub.textContent = "[K⁻¹] = [m] / ([m] · [K])";
+        tip.textContent = "Nel nostro esperimento misuriamo ΔL col comparatore, L₀ col metro e ΔT con la termocoppia per trovare λ!";
+        playBeep(580);
+      } else if (v === 'dt') {
+        document.getElementById('btn-var-dt').classList.add('active');
+        title.textContent = "Formula Inversa: La Variazione di Temperatura (ΔT)";
+        p.textContent = "Permette di calcolare di quanto si è scaldata una barra metallica conoscendo solo di quanti millimetri si è allungata!";
+        disp.innerHTML = '<div style="font-size: 1.6rem; color: #0284c7; font-weight: 800;">ΔT = ΔL / (λ · L₀)</div>';
+        sub.textContent = "[K] = [m] / ([K⁻¹] · [m])";
+        tip.textContent = "Principio di funzionamento dei vecchi termometri bimetallici industriali!";
+        playBeep(500);
+      }
+    }
+
+    function runMetalsRace() {
+      playBeep(640, 'triangle', 0.2);
+      document.getElementById('race-al-bar').style.width = '10%';
+      document.getElementById('race-cu-bar').style.width = '10%';
+      document.getElementById('race-fe-bar').style.width = '10%';
+
+      setTimeout(() => {
+        document.getElementById('race-al-bar').style.width = '100%';
+        document.getElementById('race-cu-bar').style.width = '70.8%';
+        document.getElementById('race-fe-bar').style.width = '50.0%';
+        playBeep(880, 'sine', 0.25);
+        showToast("🔥 Vince l'Alluminio! Con λ = 24 × 10⁻⁶ K⁻¹ si allunga il doppio dell'Acciaio!");
+      }, 200);
+    }
+
+    // ── SLIDE 4: HOTSPOTS APPARATO BANCO ──────────
+    function showBenchHotspot(n) {
+      const card = document.getElementById('hotspot-desc-card');
+      playBeep(520);
+      if (n === 1) {
+        card.className = "callout-box warning";
+        card.innerHTML = "<strong>1. CALDAIA A VAPORE:</strong> Genera vapore saturo a 100°C. È collegata con un tubo siliconico sigillato alla testata della barra metallica.";
+      } else if (n === 2) {
+        card.className = "callout-box primary";
+        card.innerHTML = "<strong>2. TUBO METALLICO CAVA (L₀ = 600 mm):</strong> Alluminio o Rame. Fissato rigidamente a sinistra (punto zero), libero di allungarsi solo verso destra.";
+      } else if (n === 3) {
+        card.className = "callout-box success";
+        card.innerHTML = "<strong>3. SONDA TERMETRICA DIGITALE:</strong> Rileva la temperatura iniziale ambiente T₁ (circa 20°C) e la temperatura finale del vapore T₂ (circa 98°C).";
+      } else if (n === 4) {
+        card.className = "callout-box danger";
+        card.innerHTML = "<strong>4. COMPARATORE CENTESIMALE (Sensibilità 0.01 mm):</strong> Il suo tastatore tocca la punta mobile del tubo. Quando il tubo si allunga, la lancetta gira misurando l'espansione!";
+      }
+    }
+
+    // ── SLIDE 5: QUADRANTE COMPARATORE INTERATTIVO ──────────
+    function onGaugeSlider(val) {
+      val = parseFloat(val);
+      document.getElementById('gauge-slider-disp').textContent = val.toFixed(2) + ' mm';
+      document.getElementById('gauge-readout-pill').textContent = `ΔL = (${val.toFixed(2)} ± 0.01) mm`;
+
+      // Lancetta grande centesimale (1 giro = 1 mm = 360 gradi)
+      const degreesBig = (val % 1) * 360;
+      const radBig = (degreesBig - 90) * (Math.PI / 180);
+      const nxBig = 110 + 55 * Math.cos(radBig);
+      const nyBig = 100 + 55 * Math.sin(radBig);
+      const lineBig = document.getElementById('needle-big');
+      if (lineBig) {
+        lineBig.setAttribute('x2', nxBig);
+        lineBig.setAttribute('y2', nyBig);
+      }
+
+      // Lancetta piccola contagiri (10 mm = 360 gradi, 36 gradi per mm)
+      const degreesSmall = (val / 10) * 360;
+      const radSmall = (degreesSmall - 90) * (Math.PI / 180);
+      const nxSmall = 110 + 12 * Math.cos(radSmall);
+      const nySmall = 68 + 12 * Math.sin(radSmall);
+      const lineSmall = document.getElementById('needle-small');
+      if (lineSmall) {
+        lineSmall.setAttribute('x2', nxSmall);
+        lineSmall.setAttribute('y2', nySmall);
+      }
+    }
+
+    // ── SLIDE 6: SIMULATORE BANCO COMPLETO ──────────
+    let simMetal = 'al'; // 'al', 'cu', 'fe'
+    const lambdaTable = { al: 24e-6, cu: 17e-6, fe: 12e-6 };
+    let steamInterval = null;
+
+    function setSimMetal(m) {
+      simMetal = m;
+      document.getElementById('btn-met-al').classList.toggle('active', m === 'al');
+      document.getElementById('btn-met-cu').classList.toggle('active', m === 'cu');
+      document.getElementById('btn-met-fe').classList.toggle('active', m === 'fe');
+
+      const badge = document.getElementById('sim-metal-badge');
+      if (m === 'al') badge.textContent = "ALLUMINIO (24 × 10⁻⁶)";
+      else if (m === 'cu') badge.textContent = "RAME / OTTONE (17 × 10⁻⁶)";
+      else badge.textContent = "FERRO / ACCIAIO (12 × 10⁻⁶)";
+
+      updateSimManual(document.getElementById('sim-temp-range').value);
+      playBeep(520);
+    }
+
+    function updateSimManual(temp) {
+      temp = parseFloat(temp);
+      document.getElementById('sim-temp-disp').textContent = temp.toFixed(1) + ' °C';
+      document.getElementById('sim-t2-val').textContent = temp.toFixed(1) + ' °C';
+
+      const L0 = 600; // mm
+      const T1 = 20.0;
+      const dT = Math.max(0, temp - T1);
+      document.getElementById('sim-dt-val').textContent = dT.toFixed(1) + ' °C';
+
+      const lambda = lambdaTable[simMetal];
+      const dL = lambda * L0 * dT; // mm
+
+      document.getElementById('sim-dl-val').textContent = dL.toFixed(2) + ' mm';
+      document.getElementById('sim-dl-display').textContent = dL.toFixed(2);
+
+      // Ruota lancetta comparatore in miniatura (1 giro = 1 mm)
+      const degrees = (dL % 1) * 360;
+      const rad = (degrees - 90) * (Math.PI / 180);
+      const nx = 75 + 40 * Math.cos(rad);
+      const ny = 65 + 40 * Math.sin(rad);
+      const needle = document.getElementById('sim-needle');
+      if (needle) {
+        needle.setAttribute('x2', nx);
+        needle.setAttribute('y2', ny);
+      }
+
+      const resText = document.getElementById('sim-lambda-res');
+      if (dT > 5) {
+        const lambdaCalc = dL / (L0 * dT);
+        resText.textContent = `λ = ${(lambdaCalc * 1e6).toFixed(1)} × 10⁻⁶ K⁻¹ (Corrisponde al metallo selezionato!)`;
+      } else {
+        resText.textContent = "In attesa di riscaldamento...";
+      }
+    }
+
+    function startSteamHeating() {
+      if (steamInterval) clearInterval(steamInterval);
+      document.getElementById('steam-cloud').style.opacity = '1';
+      document.getElementById('sim-status-box').className = 'callout-box warning';
+      document.getElementById('sim-status-box').innerHTML = "♨️ <strong>VAPORE ATTIVO:</strong> Il vapore saturo a 100°C scorre nel tubo. La temperatura sale rapidamente!";
+      playBeep(320, 'square', 0.4);
+
+      let currentT = parseFloat(document.getElementById('sim-temp-range').value);
+      steamInterval = setInterval(() => {
+        if (currentT < 98.0) {
+          currentT += 2.0;
+          document.getElementById('sim-temp-range').value = currentT;
+          updateSimManual(currentT);
+          playBeep(440 + currentT * 3, 'sine', 0.05);
+        } else {
+          clearInterval(steamInterval);
+          document.getElementById('sim-status-box').className = 'callout-box success';
+          document.getElementById('sim-status-box').innerHTML = "✔️ <strong>REGIME TERMICO RAGGIUNTO (98.0°C):</strong> Dilatazione stabilizzata al valore massimo.";
+        }
+      }, 70);
+    }
+
+    function coolDownSim() {
+      if (steamInterval) clearInterval(steamInterval);
+      document.getElementById('steam-cloud').style.opacity = '0';
+      document.getElementById('sim-temp-range').value = 20.0;
+      updateSimManual(20.0);
+      document.getElementById('sim-status-box').className = 'callout-box success';
+      document.getElementById('sim-status-box').innerHTML = "❄️ Tubo raffreddato a temperatura ambiente (20°C). Comparatore azzerato.";
+      playBeep(380);
+    }
+
+    // ── SLIDE 7: CALCOLO RELAZIONE 1 ──────────
+    function calcReportLambda() {
+      const L0 = parseFloat(document.getElementById('rel-l0').value) || 600;
+      const dL = parseFloat(document.getElementById('rel-dl').value) || 0;
+      const T1 = parseFloat(document.getElementById('rel-t1').value) || 20;
+      const T2 = parseFloat(document.getElementById('rel-t2').value) || 97.5;
+
+      const dT = T2 - T1;
+      document.getElementById('out-dt').textContent = dT.toFixed(1);
+
+      if (L0 > 0 && dT > 0 && dL > 0) {
+        const lambda = dL / (L0 * dT);
+        const lambda_x10_6 = lambda * 1e6;
+        document.getElementById('out-lambda-sci').textContent = `${lambda_x10_6.toFixed(2)} × 10⁻⁶ K⁻¹`;
+
+        // Propagazione incertezza
+        const er_dL = 0.01 / dL;
+        const er_L0 = 1 / L0;
+        const er_dT = 0.2 / dT;
+        const er_tot = er_dL + er_L0 + er_dT;
+        const d_lambda = er_tot * lambda_x10_6;
+
+        document.getElementById('out-er').textContent = (er_tot * 100).toFixed(2) + '%';
+        document.getElementById('out-dlambda').textContent = d_lambda.toFixed(2);
+        document.getElementById('out-final-str').textContent = `λ = (${lambda_x10_6.toFixed(1)} ± ${d_lambda.toFixed(1)}) × 10⁻⁶ K⁻¹`;
+
+        // Identificazione metallo
+        const badge = document.getElementById('metal-match-badge');
+        if (Math.abs(lambda_x10_6 - 24) < 3.5) {
+          badge.textContent = "ALLUMINIO IDENTIFICATO (λ tab = 24)";
+          badge.className = "pill-badge success";
+        } else if (Math.abs(lambda_x10_6 - 17) < 3.0) {
+          badge.textContent = "RAME / OTTONE IDENTIFICATO (λ tab = 17)";
+          badge.className = "pill-badge warning";
+        } else {
+          badge.textContent = "FERRO / ACCIAIO IDENTIFICATO (λ tab = 12)";
+          badge.className = "pill-badge dark";
+        }
+      }
+    }
+
+    function fillReportTestData() {
+      document.getElementById('rel-l0').value = "600";
+      document.getElementById('rel-dl').value = "1.12";
+      document.getElementById('rel-t1').value = "20.0";
+      document.getElementById('rel-t2').value = "97.5";
+      calcReportLambda();
+      playBeep(640, 'sine', 0.15);
+      showToast("✓ Misure reali del laboratorio caricate (Campione Alluminio)");
+    }
+
+    // ── SLIDE 8: QUIZ DEL TERMOLOGO ──────────
+    const quizData = [
+      {
+        topic: "Comparatore a Quadrante",
+        q: "La lancetta grande del comparatore ha compiuto un giro completo (100 tacche) e si è fermata sulla 24ª tacca. Qual è l'allungamento letto?",
+        opts: ["0.24 mm", "1.24 mm (1 giro da 1 mm + 0.24 mm)", "24 mm", "0.024 mm"],
+        correct: 1,
+        exp: "Esatto! 1 giro completo della lancetta grande vale 1.00 mm (segnato anche dal contagiri interno) + 24 centesimi = 1.24 mm!"
+      },
+      {
+        topic: "Materiali e Dilatazione",
+        q: "Hai 3 barre identiche di Alluminio, Rame e Ferro lunghe 1 metro. Le scaldi tutte da 20°C a 100°C. Quale si allungherà di più?",
+        opts: [
+          "Il Ferro perché è più resistente",
+          "L'Alluminio, perché ha il coefficiente λ più alto (24 × 10⁻⁶ K⁻¹)",
+          "Il Rame perché conduce meglio l'elettricità",
+          "Tutte e tre si allungano esattamente dello stesso valore"
+        ],
+        correct: 1,
+        exp: "Perfetto! Con λ = 24 × 10⁻⁶ K⁻¹, l'Alluminio si dilata il doppio rispetto al ferro (12 × 10⁻⁶ K⁻¹)!"
+      },
+      {
+        topic: "Unità di Misura del Coefficiente λ",
+        q: "Qual è l'unità di misura corretta del coefficiente di dilatazione termica lineare λ nel Sistema Internazionale?",
+        opts: ["Metri al secondo (m/s)", "Kelvin alla meno uno (K⁻¹ oppure 1/°C)", "Joule (J)", "Millimetri quadri (mm²)"],
+        correct: 1,
+        exp: "Bravissimi! Dalla formula inversa λ = ΔL / (L₀ · ΔT), i metri si semplificano e rimane 1/K = K⁻¹!"
+      },
+      {
+        topic: "Punti Fermi del Dilatometro",
+        q: "Nel dilatometro didattico, perché una delle due estremità del tubo è serrata con una vite fissa al telaio del banco?",
+        opts: [
+          "Per non far uscire il vapore",
+          "Per vincolare lo zero a sinistra e costringere tutta la dilatazione ΔL a spingere contro il comparatore a destra",
+          "Perché il tubo era troppo corto",
+          "Per evitare che il tavolo si sposti"
+        ],
+        correct: 1,
+        exp: "Ottimo! Fissando rigidamente l'estremità sinistra, l'intero allungamento termico dell'asta si concentra a destra sul tastatore!"
+      },
+      {
+        topic: "Misura di Temperatura",
+        q: "Perché durante l'esperimento la temperatura finale del vapore T₂ si misura all'interno del tubo e non all'esterno?",
+        opts: [
+          "Perché all'esterno il metallo scambia calore con l'aria ed è più freddo del cuore della barra",
+          "Perché la termocoppia funziona solo al buio",
+          "È indifferente misurarla dentro o fuori",
+          "Perché il vapore dentro è freddo"
+        ],
+        correct: 0,
+        exp: "Esatto! La superficie esterna subisce dissipazione per convezione con l'aria dell'aula; il fluido termovettore interno garantisce la temperatura T₂ effettiva!"
+      }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function loadQuiz() {
+      const q = quizData[quizIndex];
+      document.getElementById('quiz-counter').textContent = `Quesito ${quizIndex + 1} di ${quizData.length}`;
+      document.getElementById('quiz-badge-step').textContent = `QUESITO ${quizIndex + 1} DI ${quizData.length}`;
+      document.getElementById('quiz-topic').textContent = q.topic;
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const grid = document.getElementById('quiz-options-grid');
+      grid.innerHTML = '';
+      document.getElementById('quiz-feedback-box').style.display = 'none';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'interactive-tab-btn';
+        btn.style.textAlign = 'left';
+        btn.style.padding = '12px 16px';
+        btn.style.fontSize = '0.9rem';
+        btn.innerHTML = `<strong style="color: #fb6340; margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
+        btn.onclick = () => checkQuizAnswer(idx, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function checkQuizAnswer(selectedIdx, btnEl) {
+      const q = quizData[quizIndex];
+      const buttons = document.querySelectorAll('#quiz-options-grid button');
+      buttons.forEach(b => b.disabled = true);
+
+      const fBox = document.getElementById('quiz-feedback-box');
+      const fIcon = document.getElementById('quiz-feedback-icon');
+      const fText = document.getElementById('quiz-feedback-text');
+
+      if (selectedIdx === q.correct) {
+        btnEl.style.background = '#dcfce7';
+        btnEl.style.borderColor = '#22c55e';
+        btnEl.style.color = '#15803d';
+        fBox.className = 'callout-box success';
+        fIcon.textContent = '🎉';
+        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
+        quizScore += 20;
+        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
+        playBeep(680, 'sine', 0.2);
+      } else {
+        btnEl.style.background = '#fee2e2';
+        btnEl.style.borderColor = '#ef4444';
+        btnEl.style.color = '#b91c1c';
+        buttons[q.correct].style.background = '#dcfce7';
+        buttons[q.correct].style.borderColor = '#22c55e';
+        buttons[q.correct].style.color = '#15803d';
+        fBox.className = 'callout-box warning';
+        fIcon.textContent = '💡';
+        fText.innerHTML = `<strong>ATTENZIONE:</strong> ${q.exp}`;
+        playBeep(240, 'sawtooth', 0.2);
+      }
+
+      fBox.style.display = 'flex';
+      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+      if (quizIndex < quizData.length - 1) {
+        quizIndex++;
+        loadQuiz();
+      } else {
+        const grid = document.getElementById('quiz-options-grid');
+        grid.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fbf6; border: 2px solid #2dce89; border-radius: 12px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">🔥</div>
+            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! CERTIFICAZIONE TERMOLOGIA SUPERATA!</h3>
+            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio Finale: <strong>${quizScore} / 100 PUNTI</strong></p>
+            <p style="font-size: 0.85rem; color: #166534;">Siete pronti a condurre l'esperimento del dilatometro e redigere la Relazione n° 1!</p>
+          </div>
+        `;
+        document.getElementById('quiz-question').textContent = "Esito Verifica LIM";
+        document.getElementById('quiz-feedback-box').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        playBeep(880, 'triangle', 0.4);
+      }
+    }
+
+    // Inizializzazione al caricamento
+    document.addEventListener('DOMContentLoaded', () => {
+      goToSlide(1);
+      updateSeasonSim(40);
+      initAtoms();
+      animateAtoms();
+      onGaugeSlider(1.25);
+      updateSimManual(20.0);
+      calcReportLambda();
+      loadQuiz();
+    });
+  </script>
 </body>
 </html>
