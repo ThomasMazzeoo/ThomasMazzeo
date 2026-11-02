@@ -6,118 +6,162 @@
 <title>La Relazione di Laboratorio & Metodologia: Il Pendolo — ISS Giordano Bruno</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 /* ═══════════════════════════════════════════
-   DESIGN SYSTEM: ESSENZIALE, PULITO, RETRO NEON
+   DESIGN SYSTEM LIM: SFONDO BIANCO, ALTO CONTRASTO,
+   OTTIMIZZATO PER PROIEZIONE E DISTANZA
    ═══════════════════════════════════════════ */
 :root {
-  --bg: #070b14;
-  --card-bg: #0d1527;
-  --card-inner: #070c18;
-  --green: #39ff14;
-  --green-rgb: 57, 255, 20;
-  --cyan: #00f5ff;
-  --yellow: #ffee00;
-  --orange: #ff9900;
-  --red: #ff3366;
-  --red-rgb: 255, 51, 102;
-  --white: #f0f4fc;
-  --text-dim: #8b9bb4;
-  --border: rgba(57, 255, 20, 0.22);
-  --border-cyan: rgba(0, 245, 255, 0.22);
-  --glow-green: 0 0 16px rgba(57, 255, 20, 0.35);
-  --glow-cyan: 0 0 16px rgba(0, 245, 255, 0.35);
-  --font-pixel: 'Press Start 2P', monospace;
-  --font-title: 'Orbitron', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
-  --font-body: 'IBM Plex Mono', monospace;
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;       /* Slate 900: nero quasi puro, massima leggibilità */
+  --text-muted: #334155;      /* Slate 700: mai testo sbiadito o grigio chiaro */
+  --text-light: #64748b;
+  
+  --primary: #1d4ed8;         /* Blu reale intenso */
+  --primary-bg: #eff6ff;
+  --primary-border: #93c5fd;
+  
+  --green: #047857;           /* Smeraldo intenso */
+  --green-bg: #ecfdf5;
+  --green-border: #6ee7b7;
+  --green-text: #064e3b;
+  
+  --red: #b91c1c;             /* Rosso scuro vivo */
+  --red-bg: #fef2f2;
+  --red-border: #fca5a5;
+  --red-text: #7f1d1d;
+  
+  --yellow: #b45309;          /* Ambra scuro intenso */
+  --yellow-bg: #fffbeb;
+  --yellow-border: #fde68a;
+  --yellow-text: #78350f;
+
+  --border: #cbd5e1;          /* Bordo netto Slate 300 */
+  --border-strong: #94a3b8;
+  
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --lim-scale: 1;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background-color: var(--bg);
-  color: var(--white);
-  font-family: var(--font-body);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 17px;
+  line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image:
-    linear-gradient(rgba(57, 255, 20, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(57, 255, 20, 0.025) 1px, transparent 1px);
-  background-size: 32px 32px;
-  position: relative;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scanline leggera */
-body::after {
+/* Griglia millimetrata delicata stile quaderno di fisica */
+body::before {
   content: "";
   display: block;
   position: fixed;
   inset: 0;
-  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.18) 50%);
-  background-size: 100% 4px;
-  z-index: 999;
+  background-image: 
+    linear-gradient(#e2e8f0 1px, transparent 1px),
+    linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+  background-size: 28px 28px;
   pointer-events: none;
-  opacity: 0.25;
+  opacity: 0.55;
+  z-index: 0;
 }
 
 /* ═══════════════════════════════════════════
-   TOP NAVIGATION BAR
+   TOP NAVIGATION BAR (LIM COMPATIBLE)
    ═══════════════════════════════════════════ */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 1.75rem;
-  background: #040812;
-  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.8rem;
+  background: #ffffff;
+  border-bottom: 2px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .back-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  color: var(--green);
+  gap: 0.5rem;
+  color: var(--primary);
   text-decoration: none;
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  letter-spacing: 1px;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: rgba(57, 255, 20, 0.06);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.9rem;
+  border: 2px solid var(--primary-border);
+  border-radius: 8px;
+  background: var(--primary-bg);
   transition: all 0.2s ease;
 }
 .back-link:hover {
-  background: rgba(57, 255, 20, 0.18);
-  box-shadow: var(--glow-green);
+  background: #dbeafe;
+  border-color: var(--primary);
   transform: translateX(-2px);
 }
 
 .school-tag {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  color: var(--cyan);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+}
+.school-tag .badge-school {
+  background: #e2e8f0;
+  color: #1e293b;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.zoom-btn {
+  background: #ffffff;
+  border: 1.5px solid var(--border-strong);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.zoom-btn:hover {
+  background: #f1f5f9;
+  border-color: var(--primary);
 }
 
 .step-indicator {
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  color: var(--yellow);
-  background: rgba(255, 238, 0, 0.1);
-  border: 1px solid rgba(255, 238, 0, 0.3);
-  padding: 0.35rem 0.85rem;
-  border-radius: 4px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--primary);
+  background: var(--primary-bg);
+  border: 2px solid var(--primary-border);
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
 }
 
 /* ═══════════════════════════════════════════
@@ -125,11 +169,15 @@ body::after {
    ═══════════════════════════════════════════ */
 .main-stage {
   flex: 1;
-  max-width: 1040px;
+  max-width: 1120px;
   width: 95%;
   margin: 1.5rem auto 2.5rem;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s ease;
+  transform-origin: top center;
 }
 
 .step-header {
@@ -139,43 +187,45 @@ body::after {
 
 .step-subtitle-badge {
   display: inline-block;
-  font-family: var(--font-pixel);
-  font-size: 0.58rem;
-  color: var(--cyan);
-  background: rgba(0, 245, 255, 0.08);
-  border: 1px solid var(--border-cyan);
-  padding: 0.25rem 0.6rem;
-  border-radius: 3px;
-  margin-bottom: 0.45rem;
-  letter-spacing: 1.5px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: var(--primary);
+  background: #dbeafe;
+  border: 1.5px solid var(--primary-border);
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .step-title {
-  font-family: var(--font-title);
-  font-size: 1.6rem;
-  color: var(--green);
-  text-shadow: var(--glow-green);
-  letter-spacing: 1.5px;
-  margin-bottom: 0.35rem;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
 }
 
 .step-rule {
-  color: var(--text-dim);
-  font-size: 0.95rem;
-  max-width: 760px;
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  max-width: 860px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.55;
+  font-weight: 500;
 }
 
-/* Focus Card */
+/* Focus Card: Sfondo Bianco Brillante, Bordo Netto */
 .focus-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.85rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
-  animation: cardFade 0.25s ease;
-  min-height: 440px;
+  background: var(--bg-card);
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 2.2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+  animation: cardFade 0.2s ease;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -187,166 +237,128 @@ body::after {
 }
 
 /* ═══════════════════════════════════════════
-   LAYOUT A CONFRONTO AFFIANCATO
+   LAYOUT A CONFRONTO AFFIANCATO (LIM HIGH VISIBILITY)
    ═══════════════════════════════════════════ */
 .compare-frame {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.2rem;
+  gap: 1.4rem;
+  margin-bottom: 1.3rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .compare-frame {
     grid-template-columns: 1fr;
   }
 }
 
 .col-bad {
-  background: rgba(255, 51, 102, 0.04);
-  border: 1.5px solid rgba(255, 51, 102, 0.35);
-  border-radius: 8px;
-  padding: 1.25rem 1.4rem;
+  background: var(--red-bg);
+  border: 2px solid var(--red-border);
+  border-radius: 12px;
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
 .col-bad-header {
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  color: var(--red);
-  letter-spacing: 1px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--red-text);
+  letter-spacing: 0.5px;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  border-bottom: 1px solid rgba(255, 51, 102, 0.2);
-  padding-bottom: 0.5rem;
+  gap: 0.5rem;
+  border-bottom: 2px solid rgba(185, 28, 28, 0.2);
+  padding-bottom: 0.6rem;
+  text-transform: uppercase;
 }
 
 .col-good {
-  background: rgba(57, 255, 20, 0.04);
-  border: 1.5px solid rgba(57, 255, 20, 0.35);
-  border-radius: 8px;
-  padding: 1.25rem 1.4rem;
+  background: var(--green-bg);
+  border: 2px solid var(--green-border);
+  border-radius: 12px;
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
 .col-good-header {
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  color: var(--green);
-  letter-spacing: 1px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--green-text);
+  letter-spacing: 0.5px;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  border-bottom: 1px solid rgba(57, 255, 20, 0.2);
-  padding-bottom: 0.5rem;
+  gap: 0.5rem;
+  border-bottom: 2px solid rgba(4, 120, 87, 0.2);
+  padding-bottom: 0.6rem;
+  text-transform: uppercase;
 }
 
 .doc-paper {
   background: #ffffff;
-  color: #1a1a2e;
-  border-radius: 6px;
-  padding: 1.25rem 1.4rem;
-  font-family: 'Times New Roman', serif;
-  line-height: 1.5;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  font-size: 0.88rem;
+  color: #0f172a;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 1.3rem 1.4rem;
+  font-family: var(--font-main);
+  line-height: 1.6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  font-size: 1.02rem;
   flex: 1;
 }
 
 .doc-paper h4 {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   text-align: center;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .tag-bad {
-  background: rgba(255, 51, 102, 0.15);
-  color: #c40033;
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-weight: bold;
-  border-bottom: 1px dashed var(--red);
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  border-bottom: 2px solid #ef4444;
 }
 
 .tag-good {
-  background: rgba(30, 168, 10, 0.15);
-  color: #0b6b0b;
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-weight: bold;
-  border-bottom: 1px solid var(--green);
+  background: #dcfce7;
+  color: #166534;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  border-bottom: 2px solid #22c55e;
 }
 
 .why-box {
-  margin-top: 0.8rem;
-  font-size: 0.8rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  line-height: 1.5;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  line-height: 1.55;
+  font-weight: 500;
 }
 .why-box-bad {
-  background: rgba(255, 51, 102, 0.1);
-  color: #ff99aa;
-  border-left: 3px solid var(--red);
+  background: #ffffff;
+  color: var(--red-text);
+  border-left: 4px solid var(--red);
+  border: 1.5px solid var(--red-border);
+  border-left-width: 5px;
 }
 .why-box-good {
-  background: rgba(57, 255, 20, 0.1);
-  color: #bbffaa;
-  border-left: 3px solid var(--green);
-}
-
-/* Colonna Taccuino Appunti */
-.col-notebook {
-  background: rgba(255, 238, 0, 0.03);
-  border: 1.5px solid rgba(255, 238, 0, 0.35);
-  border-radius: 8px;
-  padding: 1.25rem 1.4rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.col-notebook-header {
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  color: var(--yellow);
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-bottom: 1px solid rgba(255, 238, 0, 0.2);
-  padding-bottom: 0.5rem;
-}
-
-.notebook-paper {
-  background: #081122;
-  color: #dce7f8;
-  border: 1px solid rgba(255, 238, 0, 0.2);
-  border-radius: 6px;
-  padding: 1.2rem 1.3rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1.55;
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-  flex: 1;
-}
-
-.notebook-paper h4 {
-  color: var(--yellow);
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  border-bottom: 1px dashed rgba(255, 238, 0, 0.3);
-  padding-bottom: 4px;
+  background: #ffffff;
+  color: var(--green-text);
+  border: 1.5px solid var(--green-border);
+  border-left: 5px solid var(--green);
 }
 
 /* ═══════════════════════════════════════════
@@ -354,91 +366,109 @@ body::after {
    ═══════════════════════════════════════════ */
 .calc-table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 0.8rem 0;
-  font-size: 0.85rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.6rem 0;
+  font-size: 1.02rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
 }
 .calc-table th, .calc-table td {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  padding: 0.65rem 0.75rem;
   text-align: center;
+}
+.calc-table th:last-child, .calc-table td:last-child {
+  border-right: none;
+}
+.calc-table tr:last-child td {
+  border-bottom: none;
 }
 .calc-table th {
-  background: rgba(57, 255, 20, 0.08);
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 0.95rem;
 }
 .calc-table input {
-  width: 70px;
-  background: #050811;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--yellow);
+  width: 82px;
+  background: #ffffff;
+  border: 2px solid var(--border-strong);
+  color: #0f172a;
   font-family: var(--font-mono);
-  font-size: 0.92rem;
+  font-size: 1.05rem;
+  font-weight: 700;
   text-align: center;
-  padding: 3px 4px;
-  border-radius: 4px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  transition: all 0.15s;
 }
 .calc-table input:focus {
-  border-color: var(--cyan);
+  border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+  background: #eff6ff;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
 }
 
 .badge-scartato {
   display: inline-block;
-  background: rgba(255, 51, 102, 0.2);
+  background: #fee2e2;
   color: var(--red);
-  border: 1px solid var(--red);
-  border-radius: 3px;
-  font-size: 0.7rem;
-  padding: 1px 5px;
-  font-weight: bold;
+  border: 1.5px solid var(--red);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  padding: 3px 8px;
+  font-weight: 800;
 }
 .badge-valido {
   display: inline-block;
-  background: rgba(57, 255, 20, 0.15);
+  background: #dcfce7;
   color: var(--green);
-  border: 1px solid var(--green);
-  border-radius: 3px;
-  font-size: 0.7rem;
-  padding: 1px 5px;
+  border: 1.5px solid var(--green);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  padding: 3px 8px;
+  font-weight: 700;
 }
 
 .table-scartata-row {
-  background: rgba(255, 51, 102, 0.07);
+  background: #fff1f2 !important;
   text-decoration: line-through;
-  opacity: 0.7;
+  color: #9f1239;
+}
+.table-scartata-row td {
+  opacity: 0.85;
 }
 
 /* ═══════════════════════════════════════════
-   BOTTOM ACTION BAR
+   BOTTOM ACTION BAR (TOUCH & LIM FRIENDLY)
    ═══════════════════════════════════════════ */
 .bottom-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 2px solid #e2e8f0;
 }
 
 .step-jump-selector {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .jump-btn {
-  background: var(--card-inner);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-dim);
-  font-family: var(--font-pixel);
-  font-size: 0.55rem;
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
+  background: #ffffff;
+  border: 2px solid var(--border-strong);
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 0.95rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -446,97 +476,111 @@ body::after {
   justify-content: center;
 }
 .jump-btn:hover {
-  border-color: var(--green);
-  color: var(--white);
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
 }
 .jump-btn.active {
-  background: var(--green);
-  color: var(--bg);
-  border-color: var(--green);
-  box-shadow: var(--glow-green);
-  font-weight: bold;
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+  font-weight: 800;
+  transform: scale(1.08);
 }
 
 .nav-btn {
-  font-family: var(--font-pixel);
-  font-size: 0.65rem;
-  padding: 0.8rem 1.4rem;
-  border-radius: 6px;
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .btn-prev {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-dim);
+  background: #ffffff;
+  border: 2px solid var(--border-strong);
+  color: var(--text-main);
 }
 .btn-prev:hover:not(:disabled) {
-  border-color: var(--white);
-  color: var(--white);
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
   transform: translateX(-3px);
 }
 .btn-prev:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
+  border-color: var(--border);
 }
 
 .btn-next {
-  background: var(--green);
-  border: 1px solid var(--green);
-  color: var(--bg);
-  font-weight: bold;
-  box-shadow: var(--glow-green);
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.25);
 }
 .btn-next:hover {
-  background: #50ff33;
-  box-shadow: 0 0 22px rgba(57, 255, 20, 0.6);
+  background: #1e40af;
+  border-color: #1e40af;
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.35);
   transform: translateX(3px);
 }
 
 .focus-feedback {
-  background: rgba(0, 245, 255, 0.06);
-  border-left: 3px solid var(--cyan);
-  padding: 0.8rem 1.1rem;
-  border-radius: 0 6px 6px 0;
-  font-size: 0.82rem;
-  margin-top: 1.25rem;
-  line-height: 1.5;
-  color: var(--white);
+  background: #f0fdf4;
+  border-left: 5px solid var(--green);
+  border: 1.5px solid var(--green-border);
+  border-left-width: 5px;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  margin-top: 1.3rem;
+  line-height: 1.6;
+  color: var(--green-text);
+  font-weight: 500;
 }
 
 /* Scheda Compito Stampabile */
 .hw-box {
-  background: var(--card-inner);
-  border: 1px solid rgba(255, 238, 0, 0.35);
-  border-radius: 8px;
-  padding: 1.4rem;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
 }
 .hw-badge {
-  font-family: var(--font-pixel);
-  font-size: 0.6rem;
-  color: var(--yellow);
-  margin-bottom: 0.5rem;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--primary);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
 }
 .hw-task-item {
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid var(--cyan);
-  padding: 0.55rem 0.85rem;
-  margin-bottom: 0.5rem;
-  border-radius: 0 4px 4px 0;
-  font-size: 0.82rem;
-  line-height: 1.5;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-left: 5px solid var(--primary);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #1e293b;
 }
 
 /* Print Clean */
 @media print {
   body { background: #fff !important; color: #000 !important; }
-  .top-bar, .bottom-nav, .focus-feedback { display: none !important; }
+  body::before { display: none !important; }
+  .top-bar, .bottom-nav, .focus-feedback, .top-controls { display: none !important; }
   .focus-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+  .hw-box { border: 1px solid #000 !important; box-shadow: none !important; }
 }
 </style>
 </head>
@@ -548,15 +592,20 @@ body::after {
       <span>◄</span> CORSI FISICA
     </a>
     <div class="school-tag">
-      <span>🏫</span> ISS GIORDANO BRUNO — LABORATORIO DI FISICA (CLASSI PRIME)
+      <span class="badge-school">ISS GIORDANO BRUNO</span>
+      <span>LABORATORIO DI FISICA (CLASSI PRIME)</span>
     </div>
-    <div class="step-indicator" id="stepCounterText">
-      PASSO 1 DI 8
+    <div class="top-controls">
+      <button class="zoom-btn" onclick="adjustLimZoom(0.1)" title="Ingrandisci testo per LIM">A+</button>
+      <button class="zoom-btn" onclick="adjustLimZoom(-0.1)" title="Riduci testo">A-</button>
+      <div class="step-indicator" id="stepCounterText">
+        PASSO 1 DI 8
+      </div>
     </div>
   </header>
 
   <!-- ── Main Stage ── -->
-  <main class="main-stage">
+  <main class="main-stage" id="mainStage">
 
     <div class="step-header">
       <div class="step-subtitle-badge" id="stepBadge">FASE 1 — IL METODO SCIENTIFICO</div>
@@ -602,6 +651,15 @@ body::after {
 let currentStep = 1;
 const totalSteps = 8;
 let currentMassTab = 'm1'; // 'm1' | 'm2'
+let limZoomScale = 1.0;
+
+function adjustLimZoom(delta) {
+  limZoomScale = Math.min(Math.max(limZoomScale + delta, 0.8), 1.35);
+  const stage = document.getElementById('mainStage');
+  if (stage) {
+    stage.style.transform = `scale(${limZoomScale})`;
+  }
+}
 
 // Dati realistici per pendolo con filo L = 50.0 cm (T teorico ~ 1.42 s, 5 oscillazioni ~ 7.1 s)
 const PENDOLO_DATA = {
@@ -628,41 +686,49 @@ const STEPS = [
         <!-- Colonna Errata -->
         <div class="col-bad">
           <div class="col-bad-header">
-            <span>❌</span> 1. COSA NON FARE (ERRORI COMUNI)
+            <span>❌</span> 1. COSA NON FARE (ERRORI GRAVI)
           </div>
           <div class="doc-paper">
-            <h4 style="color: #c40033;">ESPERIMENTO COL PENDOLO</h4>
-            <p><strong>Obiettivo:</strong> <span class="tag-bad">"Oggi ci siamo divertiti a far dondolare due palline attaccate a uno spago per vedere quale andava più veloce."</span></p>
-            <p><strong>Strumenti:</strong> <span class="tag-bad">"Abbiamo usato il cronometro del cellulare e un metro trovato in aula."</span></p>
-            <p><strong>Misure:</strong> "Tempo preso a caso: <span class="tag-bad">1.4285714 secondi precisi</span> per un giro solo."</p>
+            <h4 style="color: #991b1b;">ESPERIMENTO COL PENDOLO</h4>
+            <p style="margin-bottom:0.6rem;"><strong>Obiettivo:</strong> <span class="tag-bad">"Oggi ci siamo divertiti a far dondolare due palline attaccate a uno spago per vedere quale andava più veloce."</span></p>
+            <p style="margin-bottom:0.6rem;"><strong>Strumenti:</strong> <span class="tag-bad">"Abbiamo usato il cronometro del cellulare e un metro trovato in aula."</span></p>
+            <p style="margin-bottom:0.6rem;"><strong>Misure:</strong> "Tempo preso a caso: <span class="tag-bad">1.4285714 secondi precisi</span> per un giro solo."</p>
             <p><strong>Conclusioni:</strong> <span class="tag-bad">"L'esperimento è venuto perfetto, non ci sono stati errori."</span></p>
           </div>
           <div class="why-box why-box-bad">
-            <strong>❌ Errori gravi:</strong> Diario informale soggettivo, strumenti senza portata né sensibilità, misura di una sola oscillazione (errore umano altissimo!), numeri a caso senza incertezza e negazione degli errori.
+            <strong>❌ Errori da evitare assolutamente:</strong><br>
+            • Linguaggio informale da diario ("ci siamo divertiti").<br>
+            • Strumenti senza marca, portata né sensibilità.<br>
+            • Misura di 1 sola oscillazione (l'errore umano è enorme: ~15%!).<br>
+            • Numeri con troppi decimali finti e la frase falsa "non ci sono errori".
           </div>
         </div>
 
         <!-- Colonna Corretta -->
         <div class="col-good">
           <div class="col-good-header">
-            <span>✔️</span> 2. COSA DEVI FARE (METODO SCIENTIFICO)
+            <span>✔️</span> 2. COSA DEVI FARE (METODO RIGOROSO)
           </div>
           <div class="doc-paper">
-            <h4 style="color: #0b6b0b;">PROVA 2: IL PERIODO DI OSCILLAZIONE DEL PENDOLO</h4>
-            <p><strong>Obiettivo:</strong> <span class="tag-good">"Determinare sperimentalmente se il periodo T dipende dal valore della massa appesa (m₁ ed m₂), mantenendo costante la lunghezza L."</span></p>
-            <p><strong>Strumenti:</strong> <span class="tag-good">"Cronometro digitale (p: 99 min, s: 0.01 s), Bilancia tecnica (p: 500 g, s: 0.1 g), Asta millimetrata (p: 100 cm, s: 0.1 cm)."</span></p>
-            <p><strong>Metodologia:</strong> <span class="tag-good">"Misura di 5 oscillazioni / 5 per abbattere il tempo di reazione; 12 prove scartando max e min."</span></p>
-            <p><strong>Risultati:</strong> <span class="tag-good">t₁ = (1.42 ± 0.02) s &nbsp;|&nbsp; t₂ = (1.42 ± 0.02) s</span></p>
-            <p><strong>Conclusioni:</strong> <span class="tag-good">"Periodo invariato: verificata l'indipendenza dalla massa (isocronismo del pendolo)."</span></p>
+            <h4 style="color: #166534;">PROVA 2: IL PERIODO DI OSCILLAZIONE DEL PENDOLO</h4>
+            <p style="margin-bottom:0.6rem;"><strong>Obiettivo:</strong> <span class="tag-good">"Determinare sperimentalmente se il periodo T dipende dal valore della massa appesa (m₁ ed m₂), mantenendo costante la lunghezza L del filo."</span></p>
+            <p style="margin-bottom:0.6rem;"><strong>Strumenti:</strong> <span class="tag-good">"Cronometro digitale (p: 99 min, s: 0.01 s), Bilancia tecnica (p: 500 g, s: 0.1 g), Asta millimetrata (p: 100 cm, s: 0.1 cm)."</span></p>
+            <p style="margin-bottom:0.6rem;"><strong>Metodologia:</strong> <span class="tag-good">"Misura a blocchi di 5 oscillazioni / 5 per abbattere il tempo di reazione; 12 prove scartando max e min."</span></p>
+            <p style="margin-bottom:0.6rem;"><strong>Risultati:</strong> <span class="tag-good">t₁ = (1.42 ± 0.02) s &nbsp;|&nbsp; t₂ = (1.42 ± 0.02) s</span></p>
+            <p><strong>Conclusioni:</strong> <span class="tag-good">"Periodi coincidenti: confermata la legge dell'isocronismo del pendolo."</span></p>
           </div>
           <div class="why-box why-box-good">
-            <strong>✔️ Punti di forza:</strong> Verbo all'infinito, caratteristiche metrologiche, metodo di riduzione degli errori accidentali, scarto outlier, media sulle 10 misure centrali e spirito critico.
+            <strong>✔️ I punti di forza scientifici:</strong><br>
+            • Inizia con un <strong>verbo all'infinito</strong> (Determinare, Misurare).<br>
+            • Scheda metrologica completa (digitale/analogico, portata e sensibilità).<br>
+            • Spiegazione della tecnica anti-errore (5 oscillazioni e 12 misure con scarto outlier).<br>
+            • Calcolo statistico della media aritmetica e confronto delle incertezze.
           </div>
         </div>
       </div>
 
       <div class="focus-feedback">
-        💡 <strong>Regola d'Oro:</strong> La relazione deve essere <strong>riproducibile</strong>. Chiunque la legga deve poter allestire lo stesso identico banco e verificare i tuoi stessi risultati!
+        💡 <strong>Principio fondamentale di laboratorio:</strong> Una relazione scientifica deve essere <strong>riproducibile</strong>. Chiunque la legga deve poter allestire lo stesso banco di misura e ottenere i tuoi stessi risultati!
       </div>
     `
   },
@@ -679,14 +745,14 @@ const STEPS = [
           <div class="col-bad-header">
             <span>❌</span> COSA NON SCRIVERE
           </div>
-          <div style="font-size: 0.88rem; line-height: 1.6; color: #ff99aa; margin-bottom: 0.8rem;">
-            <em>"Oggi con il gruppo abbiamo fatto oscillare la pallina per vedere se quella pesante cadeva prima di quella leggera."</em>
+          <div style="font-size: 1.05rem; line-height: 1.6; color: #991b1b; margin-bottom: 0.8rem; font-weight: 600;">
+            <em>"Oggi con il gruppo abbiamo fatto oscillare la pallina per vedere se quella pesante andava più svelta di quella leggera."</em>
           </div>
           <div class="why-box why-box-bad">
             <strong>Perché è bocciato:</strong><br>
             • Descrive un'azione manuale, non lo scopo dell'indagine scientifica.<br>
             • Non definisce la grandezza fisica da misurare (il <strong>Periodo T</strong>).<br>
-            • Confonde la caduta libera con l'oscillazione armonica vincolata.
+            • Confonde la velocità generica con il tempo dell'oscillazione periodica.
           </div>
         </div>
 
@@ -695,8 +761,8 @@ const STEPS = [
           <div class="col-good-header">
             <span>✔️</span> COME DEVI FORMULARLO
           </div>
-          <div style="font-size: 0.88rem; line-height: 1.6; color: #bbffaa; margin-bottom: 0.8rem;">
-            <em>"<strong>Determinare</strong> sperimentalmente il periodo di oscillazione <strong>T</strong> di un pendolo semplice con due masse diverse (<strong>m₁</strong> ed <strong>m₂</strong>) appese a un filo di lunghezza costante <strong>L</strong>, al fine di verificare se il periodo dipenda o meno dalla massa."</em>
+          <div style="font-size: 1.05rem; line-height: 1.6; color: #166534; margin-bottom: 0.8rem; font-weight: 600;">
+            <em>"<strong>Determinare</strong> sperimentalmente il periodo di oscillazione <strong>T</strong> di un pendolo semplice con due masse diverse (<strong>m₁</strong> ed <strong>m₂</strong>) appese a un filo di lunghezza costante <strong>L</strong>, al fine di verificare se il periodo dipenda o meno dal valore della massa."</em>
           </div>
           <div class="why-box why-box-good">
             <strong>Formula vincente:</strong><br>
@@ -707,40 +773,44 @@ const STEPS = [
         </div>
       </div>
 
-      <!-- Box Definizione Fisica del Periodo con Diagramma SVG -->
-      <div style="background: rgba(0, 245, 255, 0.05); border: 1px solid var(--border-cyan); border-radius: 8px; padding: 1.1rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 260px;">
-          <div style="font-family: var(--font-pixel); font-size: 0.65rem; color: var(--cyan); margin-bottom: 0.5rem;">
+      <!-- Box Definizione Fisica del Periodo con Diagramma SVG ad Alto Contrasto -->
+      <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 1.4rem; display: flex; align-items: center; gap: 1.8rem; flex-wrap: wrap; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+        <div style="flex: 1; min-width: 280px;">
+          <div style="font-weight: 800; font-size: 0.88rem; color: var(--primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
             DEFINIZIONE METROLOGICA: COS'È IL PERIODO T?
           </div>
-          <p style="font-size: 0.85rem; line-height: 1.6; color: var(--white); margin-bottom: 0.5rem;">
+          <p style="font-size: 1.05rem; line-height: 1.6; color: #1e293b; margin-bottom: 0.6rem;">
             Il <strong>periodo di oscillazione (T)</strong> di un pendolo è il tempo impiegato dalla massa appesa a compiere un'<strong>oscillazione completa</strong>:
           </p>
-          <div style="background: rgba(0,0,0,0.4); border-left: 3px solid var(--green); padding: 0.5rem 0.8rem; font-size: 0.82rem; color: var(--green);">
-            Partenza dall'estremo destro ➔ passaggio dal centro ➔ estremo sinistro ➔ ritorno all'estremo destro di partenza nello stesso verso di moto!
+          <div style="background: var(--green-bg); border-left: 5px solid var(--green); padding: 0.75rem 1rem; font-size: 1.02rem; color: var(--green-text); font-weight: 700; border-radius: 0 8px 8px 0;">
+            Partenza dall'estremo destro ➔ passaggio dal centro ➔ arrivo all'estremo sinistro ➔ ritorno all'estremo destro di partenza nello stesso verso di moto!
           </div>
+          <p style="font-size: 0.95rem; color: #475569; margin-top: 0.6rem;">
+            ⚠️ <em>Attenzione:</em> Se fermi il cronometro quando la sfera arriva a sinistra, hai misurato solo mezza oscillazione (T/2), non il periodo intero!
+          </p>
         </div>
+
         <div style="text-align: center; flex-shrink: 0; margin: 0 auto;">
-          <svg width="180" height="150" viewBox="0 0 180 150" style="background:#040711; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+          <svg width="220" height="180" viewBox="0 0 220 180" style="background:#f8fafc; border-radius:10px; border:2px solid #cbd5e1;">
             <!-- Asta di supporto verticale -->
-            <line x1="90" y1="10" x2="90" y2="140" stroke="#64748b" stroke-width="4"/>
-            <polygon points="70,140 110,140 90,130" fill="#475569"/>
+            <line x1="110" y1="12" x2="110" y2="165" stroke="#334155" stroke-width="5"/>
+            <rect x="85" y="165" width="50" height="10" fill="#1e293b" rx="2"/>
             <!-- Morsetto superiore -->
-            <rect x="82" y="15" width="16" height="14" fill="#94a3b8" rx="2"/>
+            <rect x="100" y="16" width="20" height="16" fill="#475569" rx="3"/>
             <!-- Posizione a riposo (tratteggiata) -->
-            <line x1="90" y1="22" x2="90" y2="115" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3"/>
-            <circle cx="90" cy="115" r="9" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="2,2"/>
-            <!-- Posizione estrema sinistra (tratteggiata) -->
-            <line x1="90" y1="22" x2="40" y2="105" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="3,3"/>
-            <circle cx="40" cy="105" r="9" fill="none" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="2,2"/>
-            <!-- Filo reale inclinato a destra -->
-            <line x1="90" y1="22" x2="140" y2="105" stroke="#39ff14" stroke-width="2"/>
-            <circle cx="140" cy="105" r="10" fill="#39ff14"/>
+            <line x1="110" y1="24" x2="110" y2="135" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
+            <circle cx="110" cy="135" r="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3"/>
+            <!-- Posizione estrema sinistra (tratteggiata rossa) -->
+            <line x1="110" y1="24" x2="48" y2="120" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,4"/>
+            <circle cx="48" cy="120" r="11" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <!-- Filo reale a destra con sfera piena verde -->
+            <line x1="110" y1="24" x2="172" y2="120" stroke="#047857" stroke-width="3"/>
+            <circle cx="172" cy="120" r="12" fill="#059669" stroke="#064e3b" stroke-width="2"/>
             <!-- Quota Lunghezza L -->
-            <text x="122" y="60" fill="#00f5ff" font-family="monospace" font-size="11" font-weight="bold">L</text>
-            <!-- Arco traiettoria oscillazione -->
-            <path d="M 40,105 Q 90,122 140,105" fill="none" stroke="#ffee00" stroke-width="1.5" stroke-dasharray="2,2"/>
-            <text x="90" y="130" fill="#ffee00" font-family="monospace" font-size="9" text-anchor="middle">← 1 oscillazione completa (T) →</text>
+            <text x="150" y="70" fill="#1d4ed8" font-family="monospace" font-size="14" font-weight="bold">L = 50 cm</text>
+            <!-- Arco traiettoria oscillazione completa -->
+            <path d="M 48,120 Q 110,146 172,120" fill="none" stroke="#b45309" stroke-width="2.5" stroke-dasharray="3,3"/>
+            <text x="110" y="156" fill="#b45309" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">← 1 Oscillazione Completa (T) →</text>
           </svg>
         </div>
       </div>
@@ -750,7 +820,7 @@ const STEPS = [
   // ── PASSO 3: STRUMENTI DI MISURA VS MATERIALE ──
   {
     badge: "FASE 3 — LA METROLOGIA",
-    title: "STRUMENTI DI MISURA VS MATERIALE",
+    title: "STRUMENTI DI MISURA VS MATERIALE AUSILIARIO",
     rule: "Distinzione metrologica fondamentale: uno strumento di misura ha una Portata e una Sensibilità; il materiale serve all'allestimento ma non effettua misure.",
     render: () => `
       <div class="compare-frame">
@@ -759,16 +829,16 @@ const STEPS = [
           <div class="col-bad-header">
             <span>❌</span> ERRORE NELLA SCHEDA STRUMENTI
           </div>
-          <div style="font-size: 0.88rem; color: #ff99aa; line-height: 1.6; margin-bottom: 0.8rem;">
-            <strong>Materiali e strumenti:</strong><br>
-            • Asta e morsa da banco<br>
+          <div style="font-size: 1.05rem; color: #991b1b; line-height: 1.7; margin-bottom: 0.8rem; font-weight: 500;">
+            <strong>Materiali e strumenti usati:</strong><br>
+            • Asta metallica e morsa da banco<br>
             • Cronometro<br>
-            • Due pesetti<br>
+            • Due pesetti da laboratorio<br>
             • Filo da cucito<br>
-            • Bilancia
+            • Bilancia da cucina
           </div>
           <div class="why-box why-box-bad">
-            <strong>Gravi mancanze:</strong><br>
+            <strong>Gravi mancanze da matita blu:</strong><br>
             1. Mescola insieme attrezzi che misurano con oggetti di supporto.<br>
             2. Non indica la tipologia (analogico vs digitale).<br>
             3. Non specifica né la <strong>portata</strong> né la <strong>sensibilità</strong> di bilancia, cronometro o metro!
@@ -778,28 +848,28 @@ const STEPS = [
         <!-- Colonna Corretta -->
         <div class="col-good">
           <div class="col-good-header">
-            <span>✔️</span> SCHEDA METROLOGICA CORRETTA
+            <span>✔️</span> SCHEDA METROLOGICA IMPECCABILE
           </div>
-          <div style="font-size: 0.84rem; color: #bbffaa; line-height: 1.6; margin-bottom: 0.6rem;">
+          <div style="font-size: 1.02rem; color: #166534; line-height: 1.65; margin-bottom: 0.6rem; font-weight: 600;">
             <strong>1. Strumenti di Misura Utilizzati:</strong><br>
             • <strong>Bilancia tecnica digitale:</strong> Portata 500 g | Sensibilità 0.1 g<br>
             • <strong>Cronometro digitale:</strong> Portata 99 min 59.99 s | Sensibilità 0.01 s<br>
             • <strong>Asta metrica millimetrata:</strong> Portata 100 cm | Sensibilità 0.1 cm (1 mm)<br><br>
-            <strong>2. Materiale Utilizzato (non strumenti):</strong><br>
+            <strong>2. Materiale Ausiliario (non strumenti):</strong><br>
             • Supporto verticale ad asta metallica con morsa di fissaggio<br>
             • Filo inestensibile di lunghezza costante L = 50.0 cm<br>
             • Due masse metalliche diverse (m₁ = 25.4 g ed m₂ = 88.7 g)
           </div>
           <div class="why-box why-box-good">
-            <strong>Definizioni chiave:</strong><br>
-            • <strong>PORTATA:</strong> Valore massimo misurabile prima del fondo scala.<br>
-            • <strong>SENSIBILITÀ:</strong> La più piccola divisione leggibile dallo strumento.
+            <strong>Definizioni chiave da imparare:</strong><br>
+            • <strong>PORTATA:</strong> Il valore massimo misurabile prima del fondo scala.<br>
+            • <strong>SENSIBILITÀ:</strong> La più piccola divisione o cifra leggibile dallo strumento.
           </div>
         </div>
       </div>
 
       <div class="focus-feedback">
-        📏 <strong>Nota per la bilancia:</strong> Le due masse vanno pesate prima dell'esperimento indicando l'incertezza assoluta: <em>m₁ = (25.4 ± 0.1) g</em> e <em>m₂ = (88.7 ± 0.1) g</em>.
+        📏 <strong>Nota per la bilancia:</strong> Le due masse vanno pesate con cura prima di montare il pendolo e registrate con l'incertezza assoluta della bilancia: <em>m₁ = (25.4 ± 0.1) g</em> e <em>m₂ = (88.7 ± 0.1) g</em>.
       </div>
     `
   },
@@ -810,13 +880,13 @@ const STEPS = [
     title: "I 2 SEGRETI PER RIDURRE GLI ERRORI ACCIDENTALI",
     rule: "Il cronometro manuale genera grandi errori accidentali dovuti ai riflessi umani (~0.2 s). Ecco le 2 operazioni metodologiche obbligatorie richieste nella traccia.",
     render: () => `
-      <div style="background: rgba(255, 51, 102, 0.08); border: 1.5px solid var(--red); border-radius: 8px; padding: 1.1rem; margin-bottom: 1.2rem;">
-        <div style="font-family: var(--font-pixel); font-size: 0.65rem; color: var(--red); margin-bottom: 0.4rem;">
+      <div style="background: var(--red-bg); border: 2px solid var(--red-border); border-radius: 12px; padding: 1.3rem; margin-bottom: 1.3rem;">
+        <div style="font-weight: 800; font-size: 0.95rem; color: var(--red); margin-bottom: 0.4rem; text-transform: uppercase;">
           ⚠️ IL PROBLEMA FISICO: L'ERRORE ACCIDENTALE DEL TEMPO DI REAZIONE
         </div>
-        <p style="font-size: 0.85rem; line-height: 1.55; color: #ffccd5;">
-          Un'oscillazione singola dura circa <strong>1.4 s</strong>. Il tempo medio di reazione dell'occhio e del dito umano nel premere il pulsante del cronometro è di circa <strong>0.15 – 0.25 s</strong> (sia alla partenza che allo stop).<br>
-          Se cronometri 1 sola oscillazione, l'errore accidentale incide per oltre il <strong>14%</strong>: un valore inaccettabile per la fisica!
+        <p style="font-size: 1.05rem; line-height: 1.6; color: #7f1d1d; font-weight: 500;">
+          Un'oscillazione singola dura circa <strong>1.4 s</strong>. Il tempo medio di reazione fisiologico dell'occhio e del dito umano nel premere il tasto del cronometro è di circa <strong>0.2 s</strong> (sia allo start che allo stop).<br>
+          Se cronometri 1 sola oscillazione, l'errore accidentale incide per oltre il <strong>14%</strong>: un valore scientificamente inaccettabile!
         </p>
       </div>
 
@@ -826,38 +896,38 @@ const STEPS = [
           <div class="col-good-header">
             <span>⚡</span> OPERAZIONE 1: LE 5 OSCILLAZIONI
           </div>
-          <p style="font-size: 0.84rem; line-height: 1.55; color: #bbffaa; margin-bottom: 0.6rem;">
-            <strong>Cosa fare:</strong> Si lascia oscillare il pendolo e si contano <strong>5 oscillazioni complete</strong> prima di fermare il cronometro. Nella tabella si registra il tempo totale diviso per 5:
+          <p style="font-size: 1.02rem; line-height: 1.6; color: var(--green-text); margin-bottom: 0.6rem; font-weight: 500;">
+            <strong>Cosa fare:</strong> Si avvia il cronometro e si contano <strong>5 oscillazioni complete consecutive</strong>. Nella tabella si registra il tempo totale diviso per 5:
           </p>
-          <div style="background: #041006; border: 1px solid var(--green); border-radius: 6px; padding: 0.5rem; text-align: center; font-family: var(--font-mono); font-size: 1rem; color: var(--green); margin-bottom: 0.6rem;">
-            T = t_cronometro / 5
+          <div style="background: #ffffff; border: 2px solid var(--green); border-radius: 8px; padding: 0.75rem; text-align: center; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--green); margin-bottom: 0.75rem;">
+            T = t_totale / 5
           </div>
           <div class="why-box why-box-good">
-            <strong>Perché funziona:</strong><br>
-            L'errore di reazione (0.2 s) resta costante ma si distribuisce su 5 periodi: l'errore sul singolo periodo diventa <strong>0.2 s / 5 = 0.04 s</strong>! L'incertezza si abbatte di ben 5 volte.
+            <strong>Perché funziona matematicamente:</strong><br>
+            L'errore umano di reazione (0.2 s) resta costante ma si distribuisce su 5 periodi: l'errore sul singolo periodo diventa <strong>0.2 s / 5 = 0.04 s</strong>! L'incertezza accidentale si riduce di ben 5 volte.
           </div>
         </div>
 
         <!-- Operazione 2: 12 Misure e Scarto Estremi -->
-        <div class="col-good" style="border-color: rgba(255, 238, 0, 0.4); background: rgba(255, 238, 0, 0.04);">
-          <div class="col-good-header" style="color: var(--yellow); border-bottom-color: rgba(255, 238, 0, 0.25);">
-            <span>🎯</span> OPERAZIONE 2: 12 MISURE & SCARTO OUTLIER
+        <div class="col-good" style="border-color: var(--yellow-border); background: var(--yellow-bg);">
+          <div class="col-good-header" style="color: var(--yellow-text); border-bottom-color: rgba(180, 83, 9, 0.25);">
+            <span>🎯</span> OPERAZIONE 2: 12 MISURE &amp; SCARTO OUTLIER
           </div>
-          <p style="font-size: 0.84rem; line-height: 1.55; color: #ffe680; margin-bottom: 0.6rem;">
-            <strong>Cosa fare:</strong> Si ripetono <strong>12 misure</strong> indipendenti per ciascuna massa. Prima di calcolare la media aritmetica, si <strong>scartano obbligatoriamente il valore più grande e quello più piccolo</strong>!
+          <p style="font-size: 1.02rem; line-height: 1.6; color: var(--yellow-text); margin-bottom: 0.6rem; font-weight: 500;">
+            <strong>Cosa fare:</strong> Si ripetono <strong>12 prove</strong> per ciascuna massa. Prima di calcolare la media aritmetica, si <strong>scartano obbligatoriamente il valore più alto e il valore più basso</strong>!
           </p>
-          <div style="background: #141200; border: 1px solid var(--yellow); border-radius: 6px; padding: 0.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.88rem; color: var(--yellow); margin-bottom: 0.6rem;">
+          <div style="background: #ffffff; border: 2px solid var(--yellow); border-radius: 8px; padding: 0.75rem; text-align: center; font-family: var(--font-mono); font-size: 1.08rem; font-weight: 800; color: var(--yellow-text); margin-bottom: 0.75rem;">
             12 Misure ➔ Scarta MAX &amp; MIN ➔ Media su 10 Misure
           </div>
-          <div class="why-box" style="background: rgba(255, 238, 0, 0.1); color: #fff0aa; border-left: 3px solid var(--yellow);">
-            <strong>Perché si scartano i due estremi:</strong><br>
-            Il valore più alto e il più basso sono quasi sempre causati da <em>errori grossolani</em> (un click in ritardo, una falsa partenza, un colpo di tosse). Eliminarli garantisce una media altamente attendibile.
+          <div class="why-box" style="background: #ffffff; color: var(--yellow-text); border: 1.5px solid var(--yellow-border); border-left: 5px solid var(--yellow);">
+            <strong>Perché si eliminano i due estremi:</strong><br>
+            Il valore più alto e il più basso sono quasi sempre causati da <em>errori grossolani</em> (un click in ritardo, una falsa partenza, un calo di concentrazione). Eliminarli garantisce una media priva di distorsioni.
           </div>
         </div>
       </div>
 
       <div class="focus-feedback">
-        💡 <strong>Metodologia da descrivere nella relazione:</strong> Nel paragrafo <em>Descrizione della Prova</em> devi spiegare con parole tue esattamente perché hai effettuato 5 oscillazioni e perché hai scartato i due valori estremi!
+        💡 <strong>Metodologia da descrivere nella relazione:</strong> Nel paragrafo <em>Descrizione della Prova</em> devi spiegare con parole tue esattamente perché hai cronometrato blocchi di 5 oscillazioni e perché hai scartato i due estremi!
       </div>
     `
   },
@@ -869,22 +939,22 @@ const STEPS = [
     rule: "Prova il calcolatore didattico interattivo: visualizza le 12 misure per m1 e m2, lo scarto automatico degli estremi e il calcolo del valore più attendibile con semidispersione.",
     render: () => `
       <!-- Selettore Massa Tab -->
-      <div style="display:flex; justify-content:center; gap:0.8rem; margin-bottom:1rem;">
-        <button class="nav-btn ${currentMassTab === 'm1' ? 'btn-next' : 'btn-prev'}" style="padding:0.5rem 1rem; font-size:0.6rem;" onclick="switchPendoloMass('m1')">
+      <div style="display:flex; justify-content:center; gap:1rem; margin-bottom:1.2rem;">
+        <button class="nav-btn ${currentMassTab === 'm1' ? 'btn-next' : 'btn-prev'}" style="padding:0.65rem 1.4rem; font-size:0.92rem;" onclick="switchPendoloMass('m1')">
           🟢 MASSA m₁ (Minore: 25.4 g)
         </button>
-        <button class="nav-btn ${currentMassTab === 'm2' ? 'btn-next' : 'btn-prev'}" style="padding:0.5rem 1rem; font-size:0.6rem;" onclick="switchPendoloMass('m2')">
+        <button class="nav-btn ${currentMassTab === 'm2' ? 'btn-next' : 'btn-prev'}" style="padding:0.65rem 1.4rem; font-size:0.92rem;" onclick="switchPendoloMass('m2')">
           🟡 MASSA m₂ (Maggiore: 88.7 g)
         </button>
       </div>
 
-      <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1.2rem; align-items:start;">
+      <div style="display:grid; grid-template-columns: 1.25fr 1fr; gap:1.4rem; align-items:start;">
         <!-- Tabella Misure -->
-        <div style="overflow-x:auto;">
+        <div style="overflow-x:auto; background:#ffffff; padding:0.5rem; border-radius:10px; border:2px solid #cbd5e1;">
           <table class="calc-table" id="pendoloLiveTable">
             <thead>
               <tr>
-                <th style="width:35px;">#</th>
+                <th style="width:40px;">#</th>
                 <th>Tempo 5 osc. [s]</th>
                 <th>Periodo T [s] (/5)</th>
                 <th>Stato Misura</th>
@@ -897,34 +967,34 @@ const STEPS = [
         </div>
 
         <!-- Box Risultati Elaborati -->
-        <div style="background:var(--card-inner); border:1px solid var(--border-cyan); border-radius:8px; padding:1.2rem; display:flex; flex-direction:column; gap:0.8rem;">
-          <div style="font-family:var(--font-pixel); font-size:0.62rem; color:var(--cyan); border-bottom:1px solid rgba(0,245,255,0.25); padding-bottom:0.4rem;" id="calcBoxHeader">
+        <div style="background:#ffffff; border:2px solid var(--primary-border); border-radius:12px; padding:1.5rem; display:flex; flex-direction:column; gap:1rem; box-shadow:0 4px 15px rgba(0,0,0,0.04);">
+          <div style="font-weight:800; font-size:0.95rem; color:var(--primary); border-bottom:2px solid var(--primary-border); padding-bottom:0.5rem; text-transform:uppercase;" id="calcBoxHeader">
             RISULTATO ELABORATO — MASSA m₁
           </div>
 
-          <div style="font-size:0.82rem; line-height:1.6;">
-            <div>• <strong>Valore MAX scartato:</strong> <span style="color:var(--red); font-weight:bold;" id="calcMaxVal">--</span></div>
-            <div>• <strong>Valore MIN scartato:</strong> <span style="color:var(--red); font-weight:bold;" id="calcMinVal">--</span></div>
-            <div>• <strong>Misure valide considerate:</strong> <span style="color:var(--green); font-weight:bold;">10 su 12</span></div>
-            <div>• <strong>Media aritmetica (valore attendibile):</strong> <span style="color:var(--yellow); font-weight:bold;" id="calcMeanVal">--</span></div>
-            <div>• <strong>Semidispersione massima:</strong> <span style="color:var(--cyan);" id="calcErrVal">--</span></div>
+          <div style="font-size:1.02rem; line-height:1.75; color:#1e293b;">
+            <div>• <strong>Valore MAX scartato:</strong> <span style="color:var(--red); font-weight:800;" id="calcMaxVal">--</span></div>
+            <div>• <strong>Valore MIN scartato:</strong> <span style="color:var(--red); font-weight:800;" id="calcMinVal">--</span></div>
+            <div>• <strong>Misure valide centrali:</strong> <span style="color:var(--green); font-weight:800;">10 su 12</span></div>
+            <div>• <strong>Media aritmetica:</strong> <span style="color:var(--primary); font-weight:800;" id="calcMeanVal">--</span></div>
+            <div>• <strong>Semidispersione massima:</strong> <span style="color:#0f172a; font-weight:700;" id="calcErrVal">--</span></div>
           </div>
 
-          <div style="background:rgba(57,255,20,0.08); border:1px solid var(--green); border-radius:6px; padding:0.75rem; text-align:center;">
-            <div style="font-size:0.6rem; color:var(--cyan); font-family:var(--font-pixel); margin-bottom:4px;">SCRITTURA SCIENTIFICA FINALE:</div>
-            <div style="font-family:var(--font-title); font-size:1.25rem; color:var(--green);" id="calcFinalStr">
+          <div style="background:var(--green-bg); border:2.5px solid var(--green); border-radius:10px; padding:1.1rem; text-align:center;">
+            <div style="font-size:0.82rem; color:var(--green-text); font-weight:800; text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">SCRITTURA SCIENTIFICA FINALE:</div>
+            <div style="font-family:var(--font-mono); font-size:1.7rem; font-weight:800; color:var(--green-text);" id="calcFinalStr">
               t₁ = (1.42 ± 0.02) s
             </div>
           </div>
 
-          <div class="why-box why-box-good" style="margin:0; font-size:0.78rem;">
-            📌 <strong>Come organizzare Fogli Google:</strong> La traccia richiede due tabelle distinte per m₁ e m₂. In Fogli Google puoi usare la formula <code>=MEDIA(...)</code> escludendo le due celle degli estremi!
+          <div class="why-box why-box-good" style="margin:0; font-size:0.95rem;">
+            📌 <strong>Come organizzare Fogli Google:</strong> La prova richiede due tabelle distinte per m₁ e m₂. In Fogli Google puoi usare la formula <code>=MEDIA(...)</code> escludendo le due celle con il massimo e il minimo!
           </div>
         </div>
       </div>
 
       <div class="focus-feedback">
-        🧮 <strong>Regola delle cifre significative:</strong> L'incertezza assoluta (semidispersione) si arrotonda a <strong>1 sola cifra significativa</strong> (es. ± 0.02 s). Il valor medio si tronca alla stessa posizione decimale!
+        🧮 <strong>Regola delle cifre significative:</strong> L'incertezza assoluta (semidispersione) si arrotonda sempre a <strong>1 sola cifra significativa</strong> (es. ± 0.02 s). Il valor medio si tronca alla stessa posizione decimale!
       </div>
     `
   },
@@ -935,60 +1005,60 @@ const STEPS = [
     title: "LE 3 MODALITÀ PER RIPORTARE I CALCOLI",
     rule: "La traccia della prova indica espressamente tre modalità ammesse per documentare i calcoli nella relazione. Ecco come eseguirle senza perdere punti.",
     render: () => `
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; margin-bottom:1.2rem;">
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1.2rem; margin-bottom:1.3rem;">
         <!-- Modalità 1 -->
-        <div style="background:rgba(0, 245, 255, 0.03); border:1.5px solid var(--border-cyan); border-radius:8px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="background:#ffffff; border:2px solid var(--primary-border); border-radius:12px; padding:1.3rem; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.03);">
           <div>
-            <div style="font-family:var(--font-pixel); font-size:0.62rem; color:var(--cyan); margin-bottom:0.6rem;">
-              📸 MODALITÀ 1: FOTO DEL QUADERNO
+            <div style="font-weight:800; font-size:0.92rem; color:var(--primary); margin-bottom:0.6rem; text-transform:uppercase;">
+              📸 1. FOTO DEL QUADERNO
             </div>
-            <p style="font-size:0.82rem; line-height:1.55; color:var(--text-dim); margin-bottom:0.6rem;">
+            <p style="font-size:0.98rem; line-height:1.6; color:#334155; margin-bottom:0.75rem;">
               Svolgi tutti i calcoli a mano a penna sul quaderno in modo ordinato e inserisci una fotografia nitida nel documento digitale.
             </p>
-            <div style="background:rgba(0,0,0,0.3); border-left:3px solid var(--yellow); padding:0.4rem 0.6rem; font-size:0.75rem; color:#ffe680;">
+            <div style="background:var(--yellow-bg); border-left:4px solid var(--yellow); padding:0.6rem 0.8rem; font-size:0.9rem; color:var(--yellow-text); font-weight:600; border-radius:0 6px 6px 0;">
               ⚠️ <strong>Regola scolastica:</strong> L'uso dello smartphone per fotografare il quaderno deve essere <strong>preventivamente autorizzato</strong> dal docente durante il laboratorio!
             </div>
           </div>
-          <div style="margin-top:0.8rem; font-size:0.75rem; color:var(--green);">
-            ✔️ Ideale per chi preferisce scrivere a mano libera.
+          <div style="margin-top:1rem; font-size:0.92rem; font-weight:700; color:var(--green);">
+            ✔️ Ideale per chi scrive a mano libera.
           </div>
         </div>
 
         <!-- Modalità 2 -->
-        <div style="background:rgba(57, 255, 20, 0.03); border:1.5px solid var(--border); border-radius:8px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="background:#ffffff; border:2px solid var(--green-border); border-radius:12px; padding:1.3rem; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.03);">
           <div>
-            <div style="font-family:var(--font-pixel); font-size:0.62rem; color:var(--green); margin-bottom:0.6rem;">
-              ⌨️ MODALITÀ 2: TESTO DIGITATO
+            <div style="font-weight:800; font-size:0.92rem; color:var(--green); margin-bottom:0.6rem; text-transform:uppercase;">
+              ⌨️ 2. TESTO DIGITATO
             </div>
-            <p style="font-size:0.82rem; line-height:1.55; color:var(--text-dim); margin-bottom:0.6rem;">
-              Scrivi i calcoli direttamente nella sezione del documento digitando formule e numeri passo per passo con la tastiera:
+            <p style="font-size:0.98rem; line-height:1.6; color:#334155; margin-bottom:0.75rem;">
+              Scrivi i calcoli direttamente nella sezione del documento digitando formule e passaggi numerici passo per passo con la tastiera:
             </p>
-            <div style="background:rgba(0,0,0,0.4); padding:0.5rem 0.6rem; font-family:var(--font-mono); font-size:0.75rem; color:var(--green); border-radius:4px;">
+            <div style="background:#f1f5f9; padding:0.75rem 0.85rem; font-family:var(--font-mono); font-size:0.92rem; color:#0f172a; border-radius:8px; border:1px solid #cbd5e1; font-weight:600; line-height:1.5;">
               t₁_medio = (somma 10 tempi) / 10<br>
               = 14.214 s / 10 = 1.42 s<br>
               Δt₁ = (1.43 - 1.41) / 2 = 0.01 s
             </div>
           </div>
-          <div style="margin-top:0.8rem; font-size:0.75rem; color:var(--green);">
-            ✔️ Veloce, chiaro e ordinato per chiunque.
+          <div style="margin-top:1rem; font-size:0.92rem; font-weight:700; color:var(--green);">
+            ✔️ Veloce, chiaro e comodissimo per tutti.
           </div>
         </div>
 
         <!-- Modalità 3 -->
-        <div style="background:rgba(255, 238, 0, 0.03); border:1.5px solid rgba(255,238,0,0.35); border-radius:8px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="background:#ffffff; border:2px solid var(--yellow-border); border-radius:12px; padding:1.3rem; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.03);">
           <div>
-            <div style="font-family:var(--font-pixel); font-size:0.62rem; color:var(--yellow); margin-bottom:0.6rem;">
-              ∑ MODALITÀ 3: EDITOR EQUAZIONI
+            <div style="font-weight:800; font-size:0.92rem; color:var(--yellow-text); margin-bottom:0.6rem; text-transform:uppercase;">
+              ∑ 3. EDITOR EQUAZIONI
             </div>
-            <p style="font-size:0.82rem; line-height:1.55; color:var(--text-dim); margin-bottom:0.6rem;">
-              Usa l'editor integrato (su Google Documenti: <em>Inserisci ➔ Equazione</em>) per visualizzare frazioni, pedici e simboli greci:
+            <p style="font-size:0.98rem; line-height:1.6; color:#334155; margin-bottom:0.75rem;">
+              Usa l'editor integrato (su Google Documenti: <em>Inserisci ➔ Equazione</em>) per visualizzare frazioni, pedici e simboli matematici:
             </p>
-            <div style="background:rgba(0,0,0,0.4); padding:0.5rem 0.6rem; font-family:serif; font-size:0.95rem; color:#fff; text-align:center; border-radius:4px;">
-              <i>t̄</i><sub>1</sub> = <span style="display:inline-block; vertical-align:middle; text-align:center;"><span style="border-bottom:1px solid #fff; display:block;">∑ <i>t</i><sub>i</sub></span><span>10</span></span> = 1.42 s
+            <div style="background:#f8fafc; padding:0.75rem 0.85rem; font-family:serif; font-size:1.15rem; color:#0f172a; text-align:center; border-radius:8px; border:1px solid #cbd5e1; font-weight:700;">
+              <i>t̄</i><sub>1</sub> = <span style="display:inline-block; vertical-align:middle; text-align:center;"><span style="border-bottom:1.5px solid #0f172a; display:block; padding-bottom:1px;">∑ <i>t</i><sub>i</sub></span><span>10</span></span> = 1.42 s
             </div>
           </div>
-          <div style="margin-top:0.8rem; font-size:0.75rem; color:var(--yellow);">
-            ⭐ Aspetto editoriale professionale da 10 e lode.
+          <div style="margin-top:1rem; font-size:0.92rem; font-weight:700; color:var(--yellow-text);">
+            ⭐ Aspetto editoriale impeccabile da 10 e lode.
           </div>
         </div>
       </div>
@@ -1009,10 +1079,10 @@ const STEPS = [
         <!-- Colonna Errata -->
         <div class="col-bad">
           <div class="col-bad-header">
-            <span>❌</span> CONCLUSIONE SUPERFICIALE
+            <span>❌</span> CONCLUSIONE SUPERFICIALE BOCCIATA
           </div>
-          <div style="font-size: 0.88rem; color: #ff99aa; line-height: 1.6; margin-bottom: 0.8rem;">
-            <em>"Abbiamo trovato t₁ = 1.42 s e t₂ = 1.43 s. Poiché 1.43 è diverso da 1.42, secondo noi la pallina pesante ci mette un pelino di più. Ci siamo divertiti molto."</em>
+          <div style="font-size: 1.05rem; color: #991b1b; line-height: 1.6; margin-bottom: 0.8rem; font-weight: 500;">
+            <em>"Abbiamo trovato t₁ = 1.42 s e t₂ = 1.43 s. Poiché 1.43 è un po' più grande di 1.42, secondo noi la pallina pesante ci mette un pelino di più. Comunque l'esperimento è riuscito e ci siamo divertiti."</em>
           </div>
           <div class="why-box why-box-bad">
             <strong>Errore concettuale gravissimo:</strong><br>
@@ -1025,7 +1095,7 @@ const STEPS = [
           <div class="col-good-header">
             <span>✔️</span> CONCLUSIONE SCIENTIFICA RIGOROSA
           </div>
-          <div style="font-size: 0.84rem; color: #bbffaa; line-height: 1.6; margin-bottom: 0.8rem;">
+          <div style="font-size: 1.02rem; color: #166534; line-height: 1.65; margin-bottom: 0.8rem; font-weight: 600;">
             <em>"<strong>1. Confronto tra t₁ e t₂:</strong><br>
             • t₁ = (1.42 ± 0.02) s ➔ Intervallo: [1.40, 1.44] s<br>
             • t₂ = (1.42 ± 0.02) s ➔ Intervallo: [1.40, 1.44] s<br>
@@ -1033,7 +1103,7 @@ const STEPS = [
             <strong>2. Risposta alla domanda:</strong><br>
             Il periodo di oscillazione del pendolo <strong>NON DIPENDE dalla massa appesa</strong>.<br><br>
             <strong>3. Inquadramento teorico:</strong><br>
-            Il risultato conferma la celebre <strong>legge dell'isocronismo del pendolo</strong> scoperta da Galileo Galilei. Il periodo dipende solo dalla lunghezza L del filo (e dalla gravità g), poiché la massa si elide tra forza peso e inerzia."</em>
+            Il risultato convalida la celebre <strong>legge dell'isocronismo del pendolo</strong> enunciata da Galileo Galilei. Il periodo dipende unicamente dalla lunghezza L del filo (e dall'accelerazione di gravità g), poiché la massa si elide tra forza peso e inerzia."</em>
           </div>
           <div class="why-box why-box-good">
             <strong>Punti di forza:</strong> Confronto rigoroso degli intervalli di compatibilità sperimentale, risposta esplicita alla domanda della traccia e collegamento alla fisica teorica.
@@ -1042,7 +1112,7 @@ const STEPS = [
       </div>
 
       <div class="focus-feedback">
-        🏆 <strong>Il valore dello spirito critico:</strong> Nella fisica di laboratorio non si dice mai "è venuto uguale per fortuna", ma si dimostra che la sovrapposizione degli intervalli di incertezza convalida l'ipotesi!
+        🏆 <strong>Il valore dello spirito critico:</strong> Nella fisica di laboratorio non si dice mai "è venuto uguale per caso", ma si dimostra che la sovrapposizione degli intervalli di incertezza convalida l'ipotesi fisica!
       </div>
     `
   },
@@ -1054,19 +1124,19 @@ const STEPS = [
     rule: "Ecco il testo integrale e lo schema ufficiale della prova da compilare e consegnare, formattato secondo tutte le linee guida ministeriali.",
     render: () => `
       <div class="hw-box">
-        <div style="border-bottom: 2px solid rgba(255,238,0,0.3); padding-bottom:0.6rem; margin-bottom:0.8rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <div style="border-bottom: 2px solid #cbd5e1; padding-bottom:0.8rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.6rem;">
           <div>
             <div class="hw-badge">LABORATORIO DI FISICA — PROVA NUMERO 2 (CLASSI PRIME)</div>
-            <h3 style="font-family:var(--font-title); color:var(--green); font-size:1.15rem;">
+            <h3 style="color:var(--text-main); font-size:1.4rem; font-weight:800;">
               IL PERIODO DI OSCILLAZIONE DEL PENDOLO
             </h3>
           </div>
-          <button class="nav-btn btn-next" style="padding:0.45rem 0.85rem; font-size:0.6rem;" onclick="window.print()">
+          <button class="nav-btn btn-next" style="padding:0.6rem 1.2rem; font-size:0.88rem;" onclick="window.print()">
             🖨️ STAMPA SCHEDA IN PDF
           </button>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem; font-size:0.82rem; margin-bottom:0.8rem; background:rgba(0,0,0,0.3); padding:0.6rem 0.8rem; border-radius:4px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; font-size:0.98rem; margin-bottom:1.1rem; background:#f1f5f9; padding:0.85rem 1.1rem; border-radius:8px; border:1px solid #cbd5e1;">
           <div><strong>Studente:</strong> ________________________</div>
           <div><strong>Classe:</strong> 1ª ___ &nbsp;|&nbsp; <strong>Data:</strong> ___/___/2026</div>
           <div style="grid-column: 1 / -1;"><strong>Componenti del gruppo:</strong> _________________________________________________</div>
@@ -1100,7 +1170,7 @@ const STEPS = [
         </div>
       </div>
 
-      <div class="focus-feedback" style="border-left-color: var(--green); margin-top:1rem;">
+      <div class="focus-feedback" style="border-left-color: var(--green); margin-top:1.2rem;">
         🎉 <strong>TUTTO PRONTO!</strong> Hai a disposizione tutti gli strumenti metodologici per redigere una relazione impeccabile, scientificamente solida e pronta per la massima valutazione!
       </div>
     `
@@ -1204,11 +1274,11 @@ function renderPendoloTableAndCalc() {
 
     html += `
       <tr class="${isScartato ? 'table-scartata-row' : ''}">
-        <td style="font-weight:bold; color:var(--text-dim);">${i + 1}</td>
+        <td style="font-weight:800; color:#475569;">${i + 1}</td>
         <td>
           <input type="number" step="0.01" value="${t.toFixed(2)}" onchange="onPendoloInputChanged(${i}, this.value)">
         </td>
-        <td style="font-family:var(--font-mono); font-weight:bold; color:${isScartato ? 'var(--red)' : 'var(--cyan)'};">
+        <td style="font-family:var(--font-mono); font-weight:800; font-size:1.05rem; color:${isScartato ? 'var(--red)' : 'var(--primary)'};">
           ${p.toFixed(3)}
         </td>
         <td>${badge}</td>
