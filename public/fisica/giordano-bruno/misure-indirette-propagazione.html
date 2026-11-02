@@ -1,1472 +1,1489 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>03A. Misure Indirette e Propagazione: Aree e Volumi (SC 1.1.4) — ISS Giordano Bruno</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<style>
-/* ═══════════════════════════════════════════════════════════════════
-   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
-   Istituto Tecnico Industriale Statale "Giordano Bruno"
-   03A: Misure Indirette e Propagazione Aree e Volumi (SC 1.1.4)
-   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
-   ═══════════════════════════════════════════════════════════════════ */
-:root {
-  --argon-primary: #5e72e4;
-  --argon-primary-hover: #455fe0;
-  --argon-primary-light: rgba(94, 114, 228, 0.12);
-  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
-  
-  --argon-secondary: #f4f5f7;
-  --argon-info: #11cdef;
-  --argon-info-light: rgba(17, 205, 239, 0.12);
-  
-  --argon-success: #2dce89;
-  --argon-success-hover: #26af74;
-  --argon-success-light: rgba(45, 206, 137, 0.12);
-  
-  --argon-danger: #f5365c;
-  --argon-danger-light: rgba(245, 54, 92, 0.12);
-  
-  --argon-warning: #fb6340;
-  --argon-warning-light: rgba(251, 99, 64, 0.14);
-  
-  --argon-dark: #172b4d;
-  --argon-darker: #0f1c30;
-  
-  --argon-text-main: #32325d;
-  --argon-text-muted: #525f7f;
-  --argon-text-light: #8898aa;
-  
-  --argon-bg: #f8f9fe;
-  --argon-card-bg: #ffffff;
-  --argon-border: #e9ecef;
-  
-  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-  --argon-shadow-lg: 0 20px 45px rgba(50, 50, 93, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
-
-  --lim-zoom: 1;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  user-select: none;
-}
-
-body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--argon-bg);
-  color: var(--argon-text-main);
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  zoom: var(--lim-zoom);
-}
-
-/* ══════════════════════════════════════════════
-   TOP APP BAR (Argon Navbar per LIM)
-   ══════════════════════════════════════════════ */
-.argon-topbar {
-  height: 60px;
-  background: #ffffff;
-  border-bottom: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  z-index: 100;
-  flex-shrink: 0;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.school-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--argon-dark);
-}
-
-.school-badge-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--argon-primary-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.3);
-}
-
-.school-badge-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.school-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  color: var(--argon-dark);
-}
-
-.school-sub {
-  font-size: 0.73rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--argon-primary);
-  letter-spacing: 0.5px;
-}
-
-.topbar-center {
-  flex: 1;
-  max-width: 680px;
-  margin: 0 20px;
-}
-
-/* Argon Steps Navigation Indicator */
-.steps-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.steps-indicator::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  right: 20px;
-  height: 3px;
-  background: #e9ecef;
-  transform: translateY(-50%);
-  z-index: 1;
-}
-
-.step-node {
-  position: relative;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 2px solid #dee2e6;
-  color: #adb5bd;
-  font-size: 0.78rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.step-node:hover {
-  border-color: var(--argon-primary);
-  color: var(--argon-primary);
-  transform: scale(1.1);
-}
-
-.step-node.active {
-  background: var(--argon-primary);
-  border-color: var(--argon-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.45);
-  transform: scale(1.15);
-}
-
-.step-node.completed {
-  background: var(--argon-success);
-  border-color: var(--argon-success);
-  color: #ffffff;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.lim-pill-badge {
-  background: var(--argon-primary-light);
-  color: var(--argon-primary);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.3px;
-}
-
-.lim-btn {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  color: var(--argon-text-muted);
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: var(--argon-shadow-sm);
-  transition: all 0.2s;
-}
-
-.lim-btn:hover {
-  background: var(--argon-secondary);
-  color: var(--argon-primary);
-  border-color: #cbd5e1;
-}
-
-/* ══════════════════════════════════════════════
-   VIEWPORT SLIDES (100vh no scroll)
-   ══════════════════════════════════════════════ */
-.slides-viewport {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  padding: 16px 24px;
-  display: flex;
-}
-
-.slide-card {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 24px;
-  right: 24px;
-  background: var(--argon-card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow);
-  display: flex;
-  flex-direction: column;
-  padding: 20px 28px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(12px) scale(0.99);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.slide-card.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-  z-index: 5;
-}
-
-/* Slide Header */
-.slide-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f1f3f9;
-  flex-shrink: 0;
-}
-
-.slide-title-group h1 {
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: var(--argon-dark);
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.slide-subtitle {
-  font-size: 0.88rem;
-  color: var(--argon-text-muted);
-  margin-top: 3px;
-  font-weight: 500;
-}
-
-.slide-badges {
-  display: flex;
-  gap: 8px;
-}
-
-.pill-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
-.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
-.pill-badge.warning { background: var(--argon-warning-light); color: #c4411d; }
-.pill-badge.info { background: var(--argon-info-light); color: #0b93ab; }
-.pill-badge.dark { background: #e9ecef; color: var(--argon-dark); }
-
-/* Slide Body: Flex layout che si adatta a 100vh */
-.slide-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Callout Box Argon */
-.callout-box {
-  border-radius: 12px;
-  padding: 12px 18px;
-  font-size: 0.92rem;
-  line-height: 1.45;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.callout-box.primary {
-  background: #f4f6fd;
-  border-left: 5px solid var(--argon-primary);
-  color: var(--argon-dark);
-}
-.callout-box.success {
-  background: #f0fbf6;
-  border-left: 5px solid var(--argon-success);
-  color: #1a6b47;
-}
-.callout-box.warning {
-  background: #fff8f5;
-  border-left: 5px solid var(--argon-warning);
-  color: #9c3015;
-}
-.callout-box.danger {
-  background: #fdf2f4;
-  border-left: 5px solid var(--argon-danger);
-  color: #a71d37;
-}
-
-/* Griglie responsive */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  flex: 1;
-  min-height: 0;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-  flex: 1;
-  min-height: 0;
-}
-
-.argon-card {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  box-shadow: var(--argon-shadow-sm);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Bottom Bar / Navigazione LIM */
-.argon-bottombar {
-  height: 64px;
-  background: #ffffff;
-  border-top: 1px solid var(--argon-border);
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  z-index: 100;
-  flex-shrink: 0;
-}
-
-.nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-.nav-btn.prev {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  color: var(--argon-text-muted);
-}
-.nav-btn.prev:hover:not(:disabled) {
-  background: var(--argon-secondary);
-  color: var(--argon-dark);
-}
-.nav-btn.next {
-  background: var(--argon-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
-}
-.nav-btn.next:hover:not(:disabled) {
-  background: var(--argon-primary-hover);
-  transform: translateY(-1px);
-}
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Pulsanti Tab */
-.interactive-tab-btn {
-  background: #ffffff;
-  border: 2px solid var(--argon-border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: var(--argon-text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-.interactive-tab-btn.active {
-  background: var(--argon-primary-light);
-  border-color: var(--argon-primary);
-  color: var(--argon-primary);
-  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.15);
-}
-
-/* Toast */
-.argon-toast {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--argon-darker);
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: var(--argon-shadow-lg);
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-}
-.argon-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-</style>
-</head>
-<body>
-
-  <!-- TOP BAR -->
-  <header class="argon-topbar">
-    <div class="topbar-left">
-      <a href="/index.html" class="school-badge" title="Torna alla Home">
-        <div class="school-badge-icon">📐</div>
-        <div class="school-badge-text">
-          <span class="school-title">ITIS Giordano Bruno</span>
-          <span class="school-sub">Fisica • SC 1.1.4 Misure Indirette</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="topbar-center">
-      <div class="steps-indicator" id="steps-indicator">
-        <div class="step-node active" data-step="1" title="1. Misure Dirette vs Indirette">1</div>
-        <div class="step-node" data-step="2" title="2. Somma e Differenza">2</div>
-        <div class="step-node" data-step="3" title="3. Il Prodotto e l'Area">3</div>
-        <div class="step-node" data-step="4" title="4. Volume Parallelepipedo">4</div>
-        <div class="step-node" data-step="5" title="5. Volume Cilindro">5</div>
-        <div class="step-node" data-step="6" title="6. Conversione mm³ e m³">6</div>
-        <div class="step-node" data-step="7" title="7. Laboratorio 3D Live">7</div>
-        <div class="step-node" data-step="8" title="8. Sfida Finale LIM">8</div>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <div class="lim-pill-badge" id="slide-name-badge">
-        <span>PASSO 1 DI 8</span>
-      </div>
-      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
-      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
-      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
-    </div>
-  </header>
-
-  <!-- VIEWPORT SLIDES -->
-  <main class="slides-viewport">
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 1: DIRETTE VS INDIRETTE
-         ────────────────────────────────────────── -->
-    <article class="slide-card active" data-step="1" data-name="DIRETTE VS INDIRETTE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>📦 Esiste il "Verniciometro"? Misure Dirette vs Indirette</h1>
-          <p class="slide-subtitle">Come si misura quanta vernice serve per dipingere un muro o il volume di un cilindro di metallo?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">TEORIA METROLOGICA</span>
-          <span class="pill-badge dark">SC 1.1.4</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        <div class="callout-box primary">
-          🤔 <strong>LA SFIDA DEL GIORNO:</strong> Con il metro misuriamo la lunghezza. Con la bilancia la massa. Ma come facciamo a misurare l'<strong>Area</strong> di un banco o il <strong>Volume</strong> di un bullone se non esiste uno strumento con cui appoggiarsi e leggere direttamente il risultato?
-        </div>
-
-        <div class="grid-2">
-          <!-- Misura Diretta -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
-            <div style="font-size: 2.2rem; margin-bottom: 4px;">📏</div>
-            <strong style="color: var(--argon-primary); font-size: 1.1rem; margin-bottom: 4px;">1. Misura Diretta</strong>
-            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 10px;">
-              Si ottiene <strong>confrontando direttamente</strong> la grandezza con lo strumento tarato (es. lunghezza con riga o calibro, tempo col cronometro).
-            </p>
-            <div style="background: #f4f6fd; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
-              Base: <strong style="color: var(--argon-primary);">b = (12.40 ± 0.05) mm</strong><br>
-              Altezza: <strong style="color: var(--argon-primary);">h = (28.60 ± 0.05) mm</strong>
-            </div>
-            <div class="callout-box info" style="margin-top: 10px; padding: 8px 12px; font-size: 0.78rem;">
-              L'errore dipende unicamente dalla sensibilità dello strumento!
-            </div>
-          </div>
-
-          <!-- Misura Indiretta -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafdfc;">
-            <div style="font-size: 2.2rem; margin-bottom: 4px;">🧮</div>
-            <strong style="color: var(--argon-success); font-size: 1.1rem; margin-bottom: 4px;">2. Misura Indiretta</strong>
-            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 10px;">
-              Si ottiene applicando una <strong>formula matematica</strong> a partire da due o più misure dirette (es. Area = b × h, Volume = a × b × c).
-            </p>
-            <div style="background: #f0fbf6; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
-              Area = b × h = 12.40 × 28.60 = <strong>354.64 mm²</strong><br>
-              Ma qual è la sua incertezza? <strong style="color: var(--argon-danger);">± quanti mm²?</strong>
-            </div>
-            <div class="callout-box warning" style="margin-top: 10px; padding: 8px 12px; font-size: 0.78rem;">
-              ⚠️ <strong>Il "Contagio" dell'Incertezza:</strong> Gli errori delle misure di partenza si propagano nel risultato finale!
-            </div>
-          </div>
-        </div>
-
-        <div class="callout-box success" style="margin: 0;">
-          💡 <strong>Obiettivo di oggi:</strong> Imparare le 2 semplici regole universali per calcolare l'errore finale senza impazzire con i calcoli!
-        </div>
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 2: SOMMA E DIFFERENZA
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="2" data-name="SOMMA E DIFFERENZA">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🚂 Somma e Differenza: L'Analogia dei Vagoni Sfocati</h1>
-          <p class="slide-subtitle">Cosa succede quando uniamo due assi di legno o calcoliamo il perimetro di una stanza?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">REGOLA 1</span>
-          <span class="pill-badge success">SOMMA ERRORI ASSOLUTI</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          <!-- Spiegazione concettuale -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Regola d'Oro per Somma e Differenza:</strong>
-              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Immagina due bastoni di legno: ciascuno ha un'estremità un po' "sfocata" o incerta (± 1 mm). Quando li metti in fila uno dopo l'altro, la sfocatura totale è la <strong>somma delle due sfocature</strong>!
-              </p>
-            </div>
-
-            <!-- Formule con HTML semantico pulito -->
-            <div style="background: #f4f6fd; border: 2px solid #dce4ec; border-radius: 12px; padding: 14px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-              <div style="font-size: 1.1rem; color: var(--argon-primary); font-weight: 700; margin-bottom: 6px;">
-                Se Z = X + Y oppure Z = X − Y
-              </div>
-              <div style="font-size: 1.45rem; color: var(--argon-danger); font-weight: 800;">
-                ΔZ = ΔX + ΔY
-              </div>
-              <div style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 6px;">
-                (Si sommano SEMPRE gli errori assoluti, anche se fai una sottrazione!)
-              </div>
-            </div>
-
-            <div class="callout-box warning" style="padding: 8px 14px; margin: 0; font-size: 0.8rem;">
-              ⚠️ <strong>ATTENZIONE AL TRABOCCHETTO:</strong> Nella differenza <em>Z = X − Y</em>, i valori medi si sottraggono, ma le incertezze <strong>SI SOMMANO SEMPRE</strong>! L'ignoranza sul risultato non diminuisce mai sottraendo!
-            </div>
-          </div>
-
-          <!-- Animazione interattiva vagoni sfocati -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
-            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore Interattivo Somma di Aste:</strong>
-            
-            <svg width="100%" height="160" viewBox="0 0 320 160">
-              <!-- Asta 1: x = 20, larghezza 100 -->
-              <rect x="20" y="30" width="110" height="24" fill="#60a5fa" rx="3"/>
-              <!-- Fascia incertezza asta 1 -->
-              <rect x="120" y="30" width="20" height="24" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
-              <text x="75" y="46" font-size="9" fill="white" font-weight="700" text-anchor="middle">Asta A: (12 ± 1) cm</text>
-
-              <!-- Asta 2: x = 140, larghezza 120 -->
-              <rect x="140" y="30" width="120" height="24" fill="#34d399" rx="3"/>
-              <!-- Fascia incertezza asta 2 -->
-              <rect x="250" y="30" width="20" height="24" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
-              <text x="200" y="46" font-size="9" fill="white" font-weight="700" text-anchor="middle">Asta B: (15 ± 1) cm</text>
-
-              <!-- Unione risultante in basso -->
-              <line x1="20" y1="85" x2="300" y2="85" stroke="#cbd5e1" stroke-width="1.5"/>
-              
-              <!-- Asta totale unita -->
-              <rect x="20" y="100" width="230" height="28" fill="#818cf8" rx="3"/>
-              <!-- Fascia incertezza totale raddoppiata (somma di 1+1 = 2 cm) -->
-              <rect x="230" y="100" width="40" height="28" fill="rgba(239, 68, 68, 0.6)" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,3"/>
-              <text x="135" y="118" font-size="10" fill="white" font-weight="800" text-anchor="middle">Asta Totale = (27 ± 2) cm</text>
-            </svg>
-
-            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #166534;">
-              Lunghezza media: 12 + 15 = <strong>27 cm</strong><br>
-              Incertezza totale: 1 cm + 1 cm = <strong>2 cm</strong>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 3: IL PRODOTTO E L'AREA (CORNICE FANTASMA)
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="3" data-name="PRODOTTO E AREA">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🔲 Il Prodotto e l'Area: La "Cornice Fantasma"</h1>
-          <p class="slide-subtitle">Perché moltiplicando base per altezza non possiamo sommare i millimetri ma sommiamo le percentuali?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge warning">REGOLA 2: PRODOTTI</span>
-          <span class="pill-badge info">SOMMA ERRORI RELATIVI</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Box Concettuale & Analogia della Cornice -->
-          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">L'Analogia dell'Evidenziatore Spesso:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Se disegni un rettangolo con un pennarello a punta grossa, il contorno non è una linea sottile, ma una <strong>cornice spessa</strong>! L'area reale può variare tra il rettangolo interno e quello esterno:
-              </p>
-            </div>
-
-            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; text-align: center;">
-              <div style="font-size: 1.05rem; color: #c2410c; font-weight: 700; margin-bottom: 4px;">
-                Se Z = X × Y oppure Z = X / Y
-              </div>
-              <div style="font-size: 1.35rem; color: var(--argon-primary); font-weight: 800;">
-                e_r(Z) = e_r(X) + e_r(Y)
-              </div>
-              <div style="font-size: 0.85rem; color: #7c2d12; margin-top: 4px;">
-                Oppure in percentuale: <strong>e_%(Z) = e_%(X) + e_%(Y)</strong>
-              </div>
-            </div>
-
-            <div class="callout-box primary" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              🎯 <strong>Passo Finale:</strong> Una volta trovato l'errore relativo <em>e_r</em>, l'errore assoluto sull'area si ottiene moltiplicando per l'area media: <strong>ΔA = e_r(A) × Area_media</strong>!
-            </div>
-          </div>
-
-          <!-- Disegno SVG Rettangolo che respira -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">La "Cornice d'Incertezza" Geometrica</strong>
-              <span class="pill-badge primary">RETTANGOLO (b × h)</span>
-            </div>
-
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
-              <svg width="260" height="150" viewBox="0 0 260 150">
-                <!-- Rettangolo medio solido -->
-                <rect x="30" y="30" width="160" height="80" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2" rx="2"/>
-                <text x="110" y="75" font-size="11" fill="white" font-weight="800" text-anchor="middle">AREA MEDIA (b × h)</text>
-                
-                <!-- Fascia incertezza destra (h · Δb) -->
-                <rect x="190" y="30" width="30" height="80" fill="rgba(245, 158, 11, 0.35)" stroke="#f59e0b" stroke-dasharray="2,2"/>
-                <text x="205" y="75" font-size="8" fill="#b45309" font-weight="700" text-anchor="middle">h · Δb</text>
-
-                <!-- Fascia incertezza alta (b · Δh) -->
-                <rect x="30" y="10" width="160" height="20" fill="rgba(245, 158, 11, 0.35)" stroke="#f59e0b" stroke-dasharray="2,2"/>
-                <text x="110" y="24" font-size="8" fill="#b45309" font-weight="700" text-anchor="middle">b · Δh</text>
-
-                <!-- Angolino trascurabile (Δb · Δh) -->
-                <rect x="190" y="10" width="30" height="20" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
-                <text x="205" y="22" font-size="7" fill="#b91c1c" font-weight="800" text-anchor="middle">Puff!</text>
-              </svg>
-            </div>
-
-            <div style="background: #fafbfe; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 0.78rem; color: #475569;">
-              💡 <strong>Perché l'angolino rosso fa "Puff"?</strong> Perché moltiplicare un'incertezza millimetrica per un'altra incertezza millimetrica dà un valore microscopico che in fisica si trascura!
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 4: VOLUME PARALLELEPIPEDO (3 DIMENSIONI)
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="4" data-name="VOLUME PARALLELEPIPEDO">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>📦 Il Volume del Parallelepipedo: 3 Dimensioni a Catena</h1>
-          <p class="slide-subtitle">Solido 1 del laboratorio: come si combinano lunghezza, larghezza e altezza con il calibro?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">SOLIDO 1</span>
-          <span class="pill-badge success">3 QUOTE CON CALIBRO</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Spiegazione teorica e formule -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Formula del Volume e dell'Errore:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Per un blocchetto a parallelepipedo rettangolo misuri con il calibro a corsoio (S = 0.05 mm) le tre quote <strong>a</strong> (lunghezza), <strong>b</strong> (larghezza) e <strong>c</strong> (altezza):
-              </p>
-            </div>
-
-            <div style="background: #f8fafd; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;">
-              1. Volume Medio:<br>
-              <strong style="color: var(--argon-primary); font-size: 1.15rem;">V = a × b × c</strong> [mm³]<br><br>
-              2. Errore Relativo Totale:<br>
-              <strong style="color: #c2410c; font-size: 1.05rem;">e_r(V) = e_r(a) + e_r(b) + e_r(c)</strong><br><br>
-              3. Incertezza Assoluta Finale:<br>
-              <strong style="color: var(--argon-success); font-size: 1.15rem;">ΔV = e_r(V) × V</strong> [mm³]
-            </div>
-
-            <div class="callout-box info" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              Barra dell'Errore: I tre contributi percentuali si <strong>sommano come mattoncini</strong> uno sopra l'altro!
-            </div>
-          </div>
-
-          <!-- Esempio Numerico Reale di Laboratorio -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Esempio Reale al Banco</strong>
-              <span class="pill-badge success">CALIBRO ± 0.05 mm</span>
-            </div>
-
-            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6;">
-              • a = (40.00 ± 0.05) mm ➔ e_r(a) = 0.05 / 40.00 = <strong>0.125%</strong><br>
-              • b = (25.00 ± 0.05) mm ➔ e_r(b) = 0.05 / 25.00 = <strong>0.200%</strong><br>
-              • c = (15.00 ± 0.05) mm ➔ e_r(c) = 0.05 / 15.00 = <strong>0.333%</strong><br>
-              <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 6px 0;">
-              • Volume = 40.00 × 25.00 × 15.00 = <strong>15000 mm³</strong><br>
-              • e_r(V) = 0.125% + 0.200% + 0.333% = <strong>0.658%</strong><br>
-              • ΔV = 0.00658 × 15000 = <strong>98.7 mm³</strong>
-            </div>
-
-            <!-- Scrittura ufficiale -->
-            <div style="background: #ecfdf5; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-              <span style="font-size: 0.78rem; color: #15803d; font-weight: 700;">RISULTATO FINALE ARROTONDATO:</span><br>
-              <strong style="font-size: 1.25rem; color: #166534;">V = (15000 ± 100) mm³</strong>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 5: VOLUME CILINDRO & IL FATTORE 2
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="5" data-name="VOLUME CILINDRO">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🧪 Il Cilindro e la Trappola del "Raggio al Quadrato"</h1>
-          <p class="slide-subtitle">Perché nella formula del cilindro l'errore del diametro conta DOPPIO?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">SOLIDO 2</span>
-          <span class="pill-badge warning">DOPPIO DANNO: 2 × e_r(d)</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Teoria e spiegazione della potenza -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Formula del Cilindro Retto:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Nel cilindro misuri il diametro <strong>d</strong> e l'altezza <strong>h</strong>. Il volume è dato dall'area di base per l'altezza:
-              </p>
-            </div>
-
-            <div style="background: #f8fafd; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;">
-              V = π × r² × h = π × (d / 2)² × h<br><br>
-              Poiché c'è <strong>d² = d × d</strong>, l'errore relativo del diametro compare DUE VOLTE!<br><br>
-              <strong style="color: var(--argon-danger); font-size: 1.15rem;">e_r(V) = 2 × e_r(d) + e_r(h)</strong>
-            </div>
-
-            <div class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              💥 <strong>Regola delle Potenze:</strong> Se una grandezza è elevata al quadrato, la sua percentuale di incertezza <strong>si moltiplica per 2</strong>! Se fosse al cubo (es. sfera r³), varrebbe triplo (3 volte)!
-            </div>
-          </div>
-
-          <!-- Lattina 3D con guscio d'incertezza -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">L'Analogia del Guscio della Lattina</strong>
-              <span class="pill-badge warning">RADIALE + ALTEZZA</span>
-            </div>
-
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
-              <svg width="220" height="150" viewBox="0 0 220 150">
-                <!-- Cilindro medio solido -->
-                <!-- Base inferiore -->
-                <ellipse cx="110" cy="115" rx="55" ry="18" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
-                <!-- Corpo -->
-                <rect x="55" y="45" width="110" height="70" fill="#38bdf8"/>
-                <line x1="55" y1="45" x2="55" y2="115" stroke="#0369a1" stroke-width="2"/>
-                <line x1="165" y1="45" x2="165" y2="115" stroke="#0369a1" stroke-width="2"/>
-                <!-- Base superiore -->
-                <ellipse cx="110" cy="45" rx="55" ry="18" fill="#7dd3fc" stroke="#0369a1" stroke-width="2"/>
-                <text x="110" y="85" font-size="11" fill="#0c4a6e" font-weight="800" text-anchor="middle">V = π · r² · h</text>
-
-                <!-- Alone di incertezza sul raggio (colpisce in tutte le direzioni 360°) -->
-                <ellipse cx="110" cy="45" rx="64" ry="22" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
-                <ellipse cx="110" cy="115" rx="64" ry="22" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
-                <line x1="46" y1="40" x2="46" y2="120" stroke="#f59e0b" stroke-dasharray="3,3"/>
-                <line x1="174" y1="40" x2="174" y2="120" stroke="#f59e0b" stroke-dasharray="3,3"/>
-              </svg>
-            </div>
-
-            <div style="background: #fff8f5; border: 1px solid #fed7aa; border-radius: 8px; padding: 8px 12px; font-size: 0.78rem; color: #9a3412;">
-              ⚠️ <strong>Perché conta 2 volte?</strong> Perché il raggio si espande sia in larghezza che in profondità! Quindi il suo errore pesa il doppio rispetto a quello dell'altezza.
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 6: CONVERSIONE mm³ E m³
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="6" data-name="CONVERSIONE UNITA">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🔄 Il Salto delle Dimensioni: Da mm³ a m³</h1>
-          <p class="slide-subtitle">Perché per le lunghezze si divide per 1.000 ma per i volumi si divide per 1 MILIARDO?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">SISTEMA INTERNAZIONALE</span>
-          <span class="pill-badge dark">FATTORE 10⁻⁹</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="callout-box primary" style="padding: 10px 16px;">
-          ⚖️ <strong>OBBLIGO DELLA RELAZIONE:</strong> Il calibro misura in millimetri, quindi il volume esce in <strong>mm³</strong>. Ma la fisica del Sistema Internazionale esige i risultati in <strong>m³</strong>! Come si converte senza sbagliare gli zeri?
-        </div>
-
-        <div class="grid-3" style="flex: 1;">
-          
-          <!-- 1D Lunghezza -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); text-align: center;">
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">📏</div>
-            <strong style="color: var(--argon-primary); font-size: 1rem;">1D: Lunghezza</strong>
-            <span class="pill-badge primary" style="margin: 6px auto;">1 m = 1.000 mm</span>
-            <div style="background: #f4f6fd; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
-              1 mm = 10⁻³ m<br>
-              <strong>(dividi per 1.000)</strong>
-            </div>
-          </div>
-
-          <!-- 2D Superficie -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); text-align: center;">
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">🔲</div>
-            <strong style="color: #c2410c; font-size: 1rem;">2D: Superficie</strong>
-            <span class="pill-badge warning" style="margin: 6px auto;">1 m² = 1.000.000 mm²</span>
-            <div style="background: #fff8f5; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
-              1 mm² = 10⁻⁶ m²<br>
-              <strong>(dividi per 1 Milione)</strong>
-            </div>
-          </div>
-
-          <!-- 3D Volume -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); text-align: center;">
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">🧊</div>
-            <strong style="color: var(--argon-success); font-size: 1rem;">3D: Volume</strong>
-            <span class="pill-badge success" style="margin: 6px auto;">1 m³ = 1.000.000.000 mm³</span>
-            <div style="background: #f0fbf6; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
-              1 mm³ = 10⁻⁹ m³<br>
-              <strong>(dividi per 1 Miliardo!)</strong>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Convertitore live rapido -->
-        <div style="background: #ffffff; border: 2px solid var(--argon-border); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="font-size: 0.85rem; font-weight: 700; color: var(--argon-dark);">
-            Esempio: Volume del cilindro di laboratorio = <strong>24500 mm³</strong>
-          </div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: var(--argon-primary);">
-            ➔ 24500 × 10⁻⁹ m³ = <strong>2.45 × 10⁻⁵ m³</strong>
-          </div>
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 7: LABORATORIO 3D LIVE CON CALCOLATORE
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="7" data-name="SIMULATORE 3D LIVE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🎮 Laboratorio 3D: Calcola Volume e Propagazione al Volo!</h1>
-          <p class="slide-subtitle">Scegli il solido, muovi gli slider delle quote e osserva la propagazione dell'incertezza in tempo reale</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">SIMULATORE LIVE</span>
-          <span class="pill-badge success">PROPAGAZIONE STEP-BY-STEP</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <!-- Scelta Solido -->
-        <div style="display: flex; gap: 10px; margin-bottom: 4px;">
-          <button class="interactive-tab-btn active" id="tab-box" onclick="setSimSolid('box')">📦 Parallelepipedo (a × b × c)</button>
-          <button class="interactive-tab-btn" id="tab-cyl" onclick="setSimSolid('cyl')">🧪 Cilindro Retto (π × r² × h)</button>
-        </div>
-
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Box Controlli Slider -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Controlli Quote (Calibro ± 0.05 mm)</strong>
-
-            <!-- Slider 1 -->
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
-                <span id="label-q1">Quota a (Lunghezza):</span>
-                <span id="disp-q1" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">40.00 mm</span>
-              </div>
-              <input type="range" id="range-q1" min="10" max="80" step="0.5" value="40" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
-            </div>
-
-            <!-- Slider 2 -->
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
-                <span id="label-q2">Quota b (Larghezza):</span>
-                <span id="disp-q2" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">25.00 mm</span>
-              </div>
-              <input type="range" id="range-q2" min="10" max="60" step="0.5" value="25" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
-            </div>
-
-            <!-- Slider 3 (per parallelepipedo) -->
-            <div id="group-q3">
-              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
-                <span id="label-q3">Quota c (Altezza):</span>
-                <span id="disp-q3" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">15.00 mm</span>
-              </div>
-              <input type="range" id="range-q3" min="5" max="40" step="0.5" value="15" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
-            </div>
-
-            <div style="background: #f4f6fd; border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; color: #4338ca;">
-              Sensibilità fissata del calibro: <strong>Δ = 0.05 mm</strong> per tutte le quote.
-            </div>
-          </div>
-
-          <!-- Box Output Calcoli & Risultato Ufficiale -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Tabellone Risultati e Propagazione</strong>
-              <span id="sim-solid-badge" class="pill-badge success">PARALLELEPIPEDO</span>
-            </div>
-
-            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.5;">
-              <div id="sim-calc-steps">
-                • Volume Medio: <strong>15000.0 mm³</strong><br>
-                • e_r(a) = 0.125% | e_r(b) = 0.200% | e_r(c) = 0.333%<br>
-                • e_r Totale = <strong>0.658%</strong><br>
-                • Incertezza ΔV = <strong>± 98.7 mm³</strong>
-              </div>
-            </div>
-
-            <!-- Risultato Finale Formattato -->
-            <div style="background: #f0fbf6; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-              <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">SCRITTURA UFFICIALE S.I. (m³):</span><br>
-              <strong id="sim-final-si" style="font-size: 1.25rem; color: #15803d;">V = (1.50 ± 0.01) × 10⁻⁵ m³</strong>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 8: SFIDA LIM A SQUADRE (5 QUESITI SC 1.1.4)
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="8" data-name="SFIDA LIM A SQUADRE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🏆 Sfida alla LIM: I 5 Quesiti della Propagazione!</h1>
-          <p class="slide-subtitle">Verifica interattiva a squadre prima di passare all'elaborazione su Excel</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary" id="quiz-badge-step">DOMANDA 1 DI 5</span>
-          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="argon-card" style="flex: 1; border-top: 4px solid var(--argon-primary); justify-content: space-between; padding: 18px 24px;">
-          
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <span id="quiz-topic" class="pill-badge info">PROPAGAZIONE ERRORI</span>
-              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
-            </div>
-
-            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
-              Caricamento quesito...
-            </h2>
-
-            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
-          </div>
-
-          <div id="quiz-feedback-box" class="callout-box primary" style="display: none; padding: 10px 16px; margin: 0;">
-            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
-            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end;">
-            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
-              Prossimo Quesito ➜
-            </button>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-  </main>
-
-  <!-- BOTTOM BAR -->
-  <footer class="argon-bottombar">
-    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
-      ◀ Slide Precedente
-    </button>
-
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Usa le frecce ⬅️ / ➡️ o la barra spaziatrice</span>
-    </div>
-
-    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
-      Slide Successiva ▶
-    </button>
-  </footer>
-
-  <div class="argon-toast" id="argon-toast">Notifica</div>
-
-  <!-- JAVASCRIPT -->
-  <script>
-    let currentSlide = 1;
-    const totalSlides = 8;
-    let limZoom = 1;
-    let audioCtx = null;
-
-    function getAudioContext() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      return audioCtx;
-    }
-
-    function playBeep(freq, type = 'sine', duration = 0.12) {
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch(e) {}
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('argon-toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
-    }
-
-    function goToSlide(step) {
-      if (step < 1 || step > totalSlides) return;
-      currentSlide = step;
-
-      document.querySelectorAll('.slide-card').forEach(slide => {
-        const s = parseInt(slide.dataset.step);
-        slide.classList.toggle('active', s === currentSlide);
-      });
-
-      document.querySelectorAll('.step-node').forEach(node => {
-        const s = parseInt(node.dataset.step);
-        node.classList.toggle('active', s === currentSlide);
-        node.classList.toggle('completed', s < currentSlide);
-      });
-
-      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
-      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
-
-      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
-      if (activeCard) {
-        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
-        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
-      }
-
-      playBeep(440, 'triangle', 0.08);
-    }
-
-    function changeSlide(delta) {
-      goToSlide(currentSlide + delta);
-    }
-
-    document.querySelectorAll('.step-node').forEach(node => {
-      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
-      else if (e.key === 'ArrowLeft') changeSlide(-1);
-    });
-
-    document.getElementById('btn-zoom-in').addEventListener('click', () => {
-      if (limZoom < 1.35) {
-        limZoom += 0.07;
-        document.documentElement.style.setProperty('--lim-zoom', limZoom);
-        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
-      }
-    });
-
-    document.getElementById('btn-zoom-out').addEventListener('click', () => {
-      if (limZoom > 0.85) {
-        limZoom -= 0.07;
-        document.documentElement.style.setProperty('--lim-zoom', limZoom);
-        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
-      }
-    });
-
-    document.getElementById('btn-fullscreen').addEventListener('click', () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-      else document.exitFullscreen().catch(() => {});
-    });
-
-    // ── SIMULATORE 3D LIVE ──────────
-    let simMode = 'box'; // 'box' o 'cyl'
-
-    function setSimSolid(mode) {
-      simMode = mode;
-      document.getElementById('tab-box').classList.toggle('active', mode === 'box');
-      document.getElementById('tab-cyl').classList.toggle('active', mode === 'cyl');
-      document.getElementById('sim-solid-badge').textContent = mode === 'box' ? 'PARALLELEPIPEDO' : 'CILINDRO RETTO';
-
-      if (mode === 'box') {
-        document.getElementById('label-q1').textContent = 'Quota a (Lunghezza):';
-        document.getElementById('label-q2').textContent = 'Quota b (Larghezza):';
-        document.getElementById('label-q3').textContent = 'Quota c (Altezza):';
-        document.getElementById('group-q3').style.display = 'block';
-        document.getElementById('range-q1').value = 40;
-        document.getElementById('range-q2').value = 25;
-        document.getElementById('range-q3').value = 15;
-      } else {
-        document.getElementById('label-q1').textContent = 'Diametro d:';
-        document.getElementById('label-q2').textContent = 'Altezza h:';
-        document.getElementById('group-q3').style.display = 'none';
-        document.getElementById('range-q1').value = 24;
-        document.getElementById('range-q2').value = 54;
-      }
-      calcPropagation();
-      playBeep(520, 'sine', 0.1);
-    }
-
-    function calcPropagation() {
-      const deltaCal = 0.05; // mm
-      if (simMode === 'box') {
-        const a = parseFloat(document.getElementById('range-q1').value);
-        const b = parseFloat(document.getElementById('range-q2').value);
-        const c = parseFloat(document.getElementById('range-q3').value);
-
-        document.getElementById('disp-q1').textContent = a.toFixed(2) + ' mm';
-        document.getElementById('disp-q2').textContent = b.toFixed(2) + ' mm';
-        document.getElementById('disp-q3').textContent = c.toFixed(2) + ' mm';
-
-        const V = a * b * c;
-        const er_a = deltaCal / a;
-        const er_b = deltaCal / b;
-        const er_c = deltaCal / c;
-        const er_tot = er_a + er_b + er_c;
-        const deltaV = er_tot * V;
-
-        document.getElementById('sim-calc-steps').innerHTML = `
-          • Volume Medio: <strong>${V.toFixed(1)} mm³</strong><br>
-          • e_r(a) = ${(er_a*100).toFixed(3)}% | e_r(b) = ${(er_b*100).toFixed(3)}% | e_r(c) = ${(er_c*100).toFixed(3)}%<br>
-          • e_r Totale = <strong>${(er_tot*100).toFixed(3)}%</strong><br>
-          • Incertezza ΔV = <strong>± ${deltaV.toFixed(1)} mm³</strong>
-        `;
-
-        // Conversione in m³ (1 mm³ = 10^-9 m³)
-        const V_m3 = V * 1e-9;
-        const dV_m3 = deltaV * 1e-9;
-        const exp = Math.floor(Math.log10(V_m3));
-        const mantissa_V = V_m3 / Math.pow(10, exp);
-        const mantissa_dV = dV_m3 / Math.pow(10, exp);
-
-        document.getElementById('sim-final-si').textContent = 
-          `V = (${mantissa_V.toFixed(2)} ± ${mantissa_dV.toFixed(2)}) × 10${exp} m³`;
-      } else {
-        const d = parseFloat(document.getElementById('range-q1').value);
-        const h = parseFloat(document.getElementById('range-q2').value);
-
-        document.getElementById('disp-q1').textContent = d.toFixed(2) + ' mm';
-        document.getElementById('disp-q2').textContent = h.toFixed(2) + ' mm';
-
-        const r = d / 2;
-        const V = Math.PI * Math.pow(r, 2) * h;
-        const er_d = deltaCal / d;
-        const er_h = deltaCal / h;
-        const er_tot = (2 * er_d) + er_h; // il diametro conta 2 volte!
-        const deltaV = er_tot * V;
-
-        document.getElementById('sim-calc-steps').innerHTML = `
-          • Volume Cilindro: <strong>${V.toFixed(1)} mm³</strong><br>
-          • 2 × e_r(d) = 2 × ${(er_d*100).toFixed(3)}% = <strong>${(2*er_d*100).toFixed(3)}%</strong> (doppio peso!)<br>
-          • e_r(h) = ${(er_h*100).toFixed(3)}% ➔ e_r Totale = <strong>${(er_tot*100).toFixed(3)}%</strong><br>
-          • Incertezza ΔV = <strong>± ${deltaV.toFixed(1)} mm³</strong>
-        `;
-
-        const V_m3 = V * 1e-9;
-        const dV_m3 = deltaV * 1e-9;
-        const exp = Math.floor(Math.log10(V_m3));
-        const mantissa_V = V_m3 / Math.pow(10, exp);
-        const mantissa_dV = dV_m3 / Math.pow(10, exp);
-
-        document.getElementById('sim-final-si').textContent = 
-          `V = (${mantissa_V.toFixed(2)} ± ${mantissa_dV.toFixed(2)}) × 10${exp} m³`;
-      }
-    }
-
-    // ── QUIZ SLIDE 8 ──────────
-    const quizData = [
-      {
-        topic: "Somma e Differenza",
-        q: "Hai due assi di legno con incertezze Δa = ± 1 mm e Δb = ± 2 mm. Calcoli la differenza di lunghezza (a − b). Qual è l'incertezza del risultato?",
-        opts: ["Δ(a - b) = ± 1 mm (si fa 2 - 1)", "Δ(a - b) = ± 3 mm (si sommano gli errori)", "Δ(a - b) = 0 mm (gli errori si annullano)", "Δ(a - b) = ± 2 mm"],
-        correct: 1,
-        exp: "Esatto! Nelle somme e nelle differenze gli errori assoluti SI SOMMANO SEMPRE! 1 mm + 2 mm = 3 mm."
-      },
-      {
-        topic: "Formula del Prodotto",
-        q: "Per calcolare l'area di un rettangolo (A = b × h), come si combinano le incertezze delle misure di base e altezza?",
-        opts: [
-          "Si sommano gli errori assoluti in millimetri",
-          "Si sommano gli errori relativi (o percentuali): e_r(A) = e_r(b) + e_r(h)",
-          "Si moltiplicano gli errori assoluti: ΔA = Δb × Δh",
-          "L'area non ha errore se calcolata con la calcolatrice"
-        ],
-        correct: 1,
-        exp: "Perfetto! Nei prodotti si sommano sempre le percentuali di danno (gli errori relativi)!"
-      },
-      {
-        topic: "Volume del Cilindro",
-        q: "Nella formula del cilindro V = π · r² · h, perché l'errore relativo del raggio (o diametro) si moltiplica per 2?",
-        opts: [
-          "Perché il cilindro ha due basi circolari",
-          "Perché il raggio è elevato alla seconda potenza (r² = r × r)",
-          "Perché usiamo il calibro due volte",
-          "È una convenzione scelta a caso dal docente"
-        ],
-        correct: 1,
-        exp: "Bravissimi! Regola delle potenze: l'esponente 2 raddoppia l'errore relativo: e_r(r²) = 2 · e_r(r)!"
-      },
-      {
-        topic: "Conversione Unità SI",
-        q: "Quanti millimetri cubi (mm³) sono contenuti in un metro cubo (m³)?",
-        opts: ["1.000 mm³ (10³)", "1.000.000 mm³ (10⁶)", "1.000.000.000 mm³ (10⁹, 1 Miliardo!)", "100 mm³"],
-        correct: 2,
-        exp: "Esatto! 1 m = 1.000 mm. Elevando al cubo: (10³ mm)³ = 10⁹ mm³ = 1 miliardo di mm³!"
-      },
-      {
-        topic: "Cifre Significative",
-        q: "Il volume di un parallelepipedo risulta V = 12456.78 mm³ con incertezza assoluta ΔV = ± 123.4 mm³. Come si scrive il risultato corretto?",
-        opts: [
-          "V = (12456.78 ± 123.4) mm³",
-          "V = (12460 ± 120) mm³",
-          "V = (12500 ± 100) mm³",
-          "V = 12457 mm³ senza incertezza"
-        ],
-        correct: 1,
-        exp: "Ottimo! L'incertezza si arrotonda a 1 o 2 cifre significative (± 120 mm³) e il valore medio si tronca alla stessa posizione decimale (12460 mm³)!"
-      }
-    ];
-
-    let quizIndex = 0;
-    let quizScore = 0;
-
-    function loadQuiz() {
-      const q = quizData[quizIndex];
-      document.getElementById('quiz-counter').textContent = `Quesito ${quizIndex + 1} di ${quizData.length}`;
-      document.getElementById('quiz-badge-step').textContent = `DOMANDA ${quizIndex + 1} DI ${quizData.length}`;
-      document.getElementById('quiz-topic').textContent = q.topic;
-      document.getElementById('quiz-question').textContent = q.q;
-
-      const grid = document.getElementById('quiz-options-grid');
-      grid.innerHTML = '';
-      document.getElementById('quiz-feedback-box').style.display = 'none';
-      document.getElementById('quiz-next-btn').style.display = 'none';
-
-      q.opts.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'interactive-tab-btn';
-        btn.style.textAlign = 'left';
-        btn.style.padding = '12px 16px';
-        btn.style.fontSize = '0.9rem';
-        btn.innerHTML = `<strong style="color: var(--argon-primary); margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
-        btn.onclick = () => checkQuizAnswer(idx, btn);
-        grid.appendChild(btn);
-      });
-    }
-
-    function checkQuizAnswer(selectedIdx, btnEl) {
-      const q = quizData[quizIndex];
-      const buttons = document.querySelectorAll('#quiz-options-grid button');
-      buttons.forEach(b => b.disabled = true);
-
-      const fBox = document.getElementById('quiz-feedback-box');
-      const fIcon = document.getElementById('quiz-feedback-icon');
-      const fText = document.getElementById('quiz-feedback-text');
-
-      if (selectedIdx === q.correct) {
-        btnEl.style.background = '#dcfce7';
-        btnEl.style.borderColor = '#22c55e';
-        btnEl.style.color = '#15803d';
-        fBox.className = 'callout-box success';
-        fIcon.textContent = '🎉';
-        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
-        quizScore += 20;
-        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
-        playBeep(680, 'sine', 0.2);
-      } else {
-        btnEl.style.background = '#fee2e2';
-        btnEl.style.borderColor = '#ef4444';
-        btnEl.style.color = '#b91c1c';
-        buttons[q.correct].style.background = '#dcfce7';
-        buttons[q.correct].style.borderColor = '#22c55e';
-        buttons[q.correct].style.color = '#15803d';
-        fBox.className = 'callout-box warning';
-        fIcon.textContent = '💡';
-        fText.innerHTML = `<strong>NON ESATTO.</strong> ${q.exp}`;
-        playBeep(240, 'sawtooth', 0.2);
-      }
-
-      fBox.style.display = 'flex';
-      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
-    }
-
-    function nextQuizQuestion() {
-      if (quizIndex < quizData.length - 1) {
-        quizIndex++;
-        loadQuiz();
-      } else {
-        const grid = document.getElementById('quiz-options-grid');
-        grid.innerHTML = `
-          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fbf6; border: 2px solid #2dce89; border-radius: 12px;">
-            <div style="font-size: 3rem; margin-bottom: 8px;">🎓</div>
-            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! SFIDA PROPAGAZIONE SUPERATA!</h3>
-            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio di Squadra: <strong>${quizScore} / 100 PUNTI</strong></p>
-            <p style="font-size: 0.85rem; color: #166534;">Ora siete pronti per automatizzare tutti i calcoli nel laboratorio digitale con Excel!</p>
-          </div>
-        `;
-        document.getElementById('quiz-question').textContent = "Risultato della Verifica LIM";
-        document.getElementById('quiz-feedback-box').style.display = 'none';
-        document.getElementById('quiz-next-btn').style.display = 'none';
-        playBeep(880, 'triangle', 0.4);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      goToSlide(1);
-      calcPropagation();
-      loadQuiz();
-    });
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>03A. Misure Indirette e Propagazione: Aree e Volumi (SC 1.1.4) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   03A: Misure Indirette e Propagazione Aree e Volumi (SC 1.1.4)
+   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-success-hover: #26af74;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-danger: #f5365c;
+  --argon-danger-light: rgba(245, 54, 92, 0.12);
+  
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  --argon-text-light: #8898aa;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  --argon-shadow-lg: 0 20px 45px rgba(50, 50, 93, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  zoom: var(--lim-zoom);
+}
+
+/* ══════════════════════════════════════════════
+   TOP APP BAR (Argon Navbar per LIM)
+   ══════════════════════════════════════════════ */
+.argon-topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--argon-dark);
+}
+
+.school-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--argon-primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.3);
+}
+
+.school-badge-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.school-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--argon-dark);
+}
+
+.school-sub {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--argon-primary);
+  letter-spacing: 0.5px;
+}
+
+.topbar-center {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+/* Argon Steps Navigation Indicator */
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: #e9ecef;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+  color: #adb5bd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.step-node:hover {
+  border-color: var(--argon-primary);
+  color: var(--argon-primary);
+  transform: scale(1.1);
+}
+
+.step-node.active {
+  background: var(--argon-primary);
+  border-color: var(--argon-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.45);
+  transform: scale(1.15);
+}
+
+.step-node.completed {
+  background: var(--argon-success);
+  border-color: var(--argon-success);
+  color: #ffffff;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lim-pill-badge {
+  background: var(--argon-primary-light);
+  color: var(--argon-primary);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+}
+
+.lim-btn {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--argon-shadow-sm);
+  transition: all 0.2s;
+}
+
+.lim-btn:hover {
+  background: var(--argon-secondary);
+  color: var(--argon-primary);
+  border-color: #cbd5e1;
+}
+
+/* ══════════════════════════════════════════════
+   VIEWPORT SLIDES (100vh no scroll)
+   ══════════════════════════════════════════════ */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 24px;
+  display: flex;
+}
+
+.slide-card {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 24px;
+  right: 24px;
+  background: var(--argon-card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.99);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-card.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  z-index: 5;
+}
+
+/* Slide Header */
+.slide-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f3f9;
+  flex-shrink: 0;
+}
+
+.slide-title-group h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.slide-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.pill-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
+.pill-badge.warning { background: var(--argon-warning-light); color: #c4411d; }
+.pill-badge.info { background: var(--argon-info-light); color: #0b93ab; }
+.pill-badge.dark { background: #e9ecef; color: var(--argon-dark); }
+
+/* Slide Body: Flex layout che si adatta a 100vh */
+.slide-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Callout Box Argon */
+.callout-box {
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.callout-box.primary {
+  background: #f4f6fd;
+  border-left: 5px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+.callout-box.success {
+  background: #f0fbf6;
+  border-left: 5px solid var(--argon-success);
+  color: #1a6b47;
+}
+.callout-box.warning {
+  background: #fff8f5;
+  border-left: 5px solid var(--argon-warning);
+  color: #9c3015;
+}
+.callout-box.danger {
+  background: #fdf2f4;
+  border-left: 5px solid var(--argon-danger);
+  color: #a71d37;
+}
+
+/* Griglie responsive */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Bottom Bar / Navigazione LIM */
+.argon-bottombar {
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+.nav-btn.prev {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+}
+.nav-btn.prev:hover:not(:disabled) {
+  background: var(--argon-secondary);
+  color: var(--argon-dark);
+}
+.nav-btn.next {
+  background: var(--argon-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+}
+.nav-btn.next:hover:not(:disabled) {
+  background: var(--argon-primary-hover);
+  transform: translateY(-1px);
+}
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Pulsanti Tab */
+.interactive-tab-btn {
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.interactive-tab-btn.active {
+  background: var(--argon-primary-light);
+  border-color: var(--argon-primary);
+  color: var(--argon-primary);
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.15);
+}
+
+/* Toast */
+.argon-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--argon-darker);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--argon-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+.argon-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="argon-topbar">
+    <div class="topbar-left">
+      <a href="/index.html" class="school-badge" title="Torna alla Home">
+        <div class="school-badge-icon">📐</div>
+        <div class="school-badge-text">
+          <span class="school-title">ITIS Giordano Bruno</span>
+          <span class="school-sub">Fisica • SC 1.1.4 Misure Indirette</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-center">
+      <div class="steps-indicator" id="steps-indicator">
+        <div class="step-node active" data-step="1" title="1. Misure Dirette vs Indirette">1</div>
+        <div class="step-node" data-step="2" title="2. Somma e Differenza">2</div>
+        <div class="step-node" data-step="3" title="3. Il Prodotto e l'Area">3</div>
+        <div class="step-node" data-step="4" title="4. Volume Parallelepipedo">4</div>
+        <div class="step-node" data-step="5" title="5. Volume Cilindro">5</div>
+        <div class="step-node" data-step="6" title="6. Conversione mm³ e m³">6</div>
+        <div class="step-node" data-step="7" title="7. Laboratorio 3D Live">7</div>
+        <div class="step-node" data-step="8" title="8. Sfida Finale LIM">8</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="lim-pill-badge" id="slide-name-badge">
+        <span>PASSO 1 DI 8</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
+    </div>
+  </header>
+
+  <!-- VIEWPORT SLIDES -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: DIRETTE VS INDIRETTE
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="DIRETTE VS INDIRETTE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📦 Esiste il "Verniciometro"? Misure Dirette vs Indirette</h1>
+          <p class="slide-subtitle">Come si misura quanta vernice serve per dipingere un muro o il volume di un cilindro di metallo?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">TEORIA METROLOGICA</span>
+          <span class="pill-badge dark">SC 1.1.4</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box primary">
+          🤔 <strong>LA SFIDA DEL GIORNO:</strong> Con il metro misuriamo la lunghezza. Con la bilancia la massa. Ma come facciamo a misurare l'<strong>Area</strong> di un banco o il <strong>Volume</strong> di un bullone se non esiste uno strumento con cui appoggiarsi e leggere direttamente il risultato?
+        </div>
+
+        <div class="grid-2">
+          <!-- Misura Diretta -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">📏</div>
+            <strong style="color: var(--argon-primary); font-size: 1.1rem; margin-bottom: 4px;">1. Misura Diretta</strong>
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 10px;">
+              Si ottiene <strong>confrontando direttamente</strong> la grandezza con lo strumento tarato (es. lunghezza con riga o calibro, tempo col cronometro).
+            </p>
+            <div style="background: #f4f6fd; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+              Base: <strong style="color: var(--argon-primary);">b = (12.40 ± 0.05) mm</strong><br>
+              Altezza: <strong style="color: var(--argon-primary);">h = (28.60 ± 0.05) mm</strong>
+            </div>
+            <div class="callout-box info" style="margin-top: 10px; padding: 8px 12px; font-size: 0.78rem;">
+              L'errore dipende unicamente dalla sensibilità dello strumento!
+            </div>
+          </div>
+
+          <!-- Misura Indiretta -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafdfc;">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">🧮</div>
+            <strong style="color: var(--argon-success); font-size: 1.1rem; margin-bottom: 4px;">2. Misura Indiretta</strong>
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 10px;">
+              Si ottiene applicando una <strong>formula matematica</strong> a partire da due o più misure dirette (es. Area = b × h, Volume = a × b × c).
+            </p>
+            <div style="background: #f0fbf6; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+              Area = b × h = 12.40 × 28.60 = <strong>354.64 mm²</strong><br>
+              Ma qual è la sua incertezza? <strong style="color: var(--argon-danger);">± quanti mm²?</strong>
+            </div>
+            <div class="callout-box warning" style="margin-top: 10px; padding: 8px 12px; font-size: 0.78rem;">
+              ⚠️ <strong>Il "Contagio" dell'Incertezza:</strong> Gli errori delle misure di partenza si propagano nel risultato finale!
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-box success" style="margin: 0;">
+          💡 <strong>Obiettivo di oggi:</strong> Imparare le 2 semplici regole universali per calcolare l'errore finale senza impazzire con i calcoli!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: SOMMA E DIFFERENZA
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="SOMMA E DIFFERENZA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🚂 Somma e Differenza: L'Analogia dei Vagoni Sfocati</h1>
+          <p class="slide-subtitle">Cosa succede quando uniamo due assi di legno o calcoliamo il perimetro di una stanza?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">REGOLA 1</span>
+          <span class="pill-badge success">SOMMA ERRORI ASSOLUTI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          <!-- Spiegazione concettuale -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Regola d'Oro per Somma e Differenza:</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Immagina due bastoni di legno: ciascuno ha un'estremità un po' "sfocata" o incerta (± 1 mm). Quando li metti in fila uno dopo l'altro, la sfocatura totale è la <strong>somma delle due sfocature</strong>!
+              </p>
+            </div>
+
+            <!-- Formule con HTML semantico pulito e Legenda Simboli -->
+            <div style="background: #f4f6fd; border: 2px solid #dce4ec; border-radius: 12px; padding: 12px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <div style="font-size: 1.05rem; color: var(--argon-primary); font-weight: 700; margin-bottom: 4px;">
+                Se Z = X + Y oppure Z = X − Y
+              </div>
+              <div style="font-size: 1.45rem; color: var(--argon-danger); font-weight: 800;">
+                ΔZ = ΔX + ΔY
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; text-align: left; font-size: 0.74rem; color: #475569; background: #ffffff; padding: 6px 10px; border-radius: 6px;">
+                <div>• <strong>Δ (Delta maiuscolo)</strong>: Incertezza assoluta</div>
+                <div>• <strong>X, Y</strong>: Misure dirette (es. aste A e B)</div>
+                <div>• <strong>Z</strong>: Misura indiretta calcolata</div>
+                <div>• <strong>Regola</strong>: Gli errori assoluti si SOMMANO sempre!</div>
+              </div>
+            </div>
+
+            <div class="callout-box warning" style="padding: 8px 14px; margin: 0; font-size: 0.8rem;">
+              ⚠️ <strong>ATTENZIONE AL TRABOCCHETTO:</strong> Nella differenza <em>Z = X − Y</em>, i valori medi si sottraggono, ma le incertezze <strong>SI SOMMANO SEMPRE</strong>! L'ignoranza sul risultato non diminuisce mai sottraendo!
+            </div>
+          </div>
+
+          <!-- Animazione interattiva vagoni sfocati -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore Interattivo Somma di Aste:</strong>
+            
+            <svg width="100%" height="160" viewBox="0 0 320 160">
+              <!-- Asta 1: x = 20, larghezza 100 -->
+              <rect x="20" y="30" width="110" height="24" fill="#60a5fa" rx="3"/>
+              <!-- Fascia incertezza asta 1 -->
+              <rect x="120" y="30" width="20" height="24" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
+              <text x="75" y="46" font-size="9" fill="white" font-weight="700" text-anchor="middle">Asta A: (12 ± 1) cm</text>
+
+              <!-- Asta 2: x = 140, larghezza 120 -->
+              <rect x="140" y="30" width="120" height="24" fill="#34d399" rx="3"/>
+              <!-- Fascia incertezza asta 2 -->
+              <rect x="250" y="30" width="20" height="24" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
+              <text x="200" y="46" font-size="9" fill="white" font-weight="700" text-anchor="middle">Asta B: (15 ± 1) cm</text>
+
+              <!-- Unione risultante in basso -->
+              <line x1="20" y1="85" x2="300" y2="85" stroke="#cbd5e1" stroke-width="1.5"/>
+              
+              <!-- Asta totale unita -->
+              <rect x="20" y="100" width="230" height="28" fill="#818cf8" rx="3"/>
+              <!-- Fascia incertezza totale raddoppiata (somma di 1+1 = 2 cm) -->
+              <rect x="230" y="100" width="40" height="28" fill="rgba(239, 68, 68, 0.6)" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,3"/>
+              <text x="135" y="118" font-size="10" fill="white" font-weight="800" text-anchor="middle">Asta Totale = (27 ± 2) cm</text>
+            </svg>
+
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #166534;">
+              Lunghezza media: 12 + 15 = <strong>27 cm</strong><br>
+              Incertezza totale: 1 cm + 1 cm = <strong>2 cm</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: IL PRODOTTO E L'AREA (CORNICE FANTASMA)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="PRODOTTO E AREA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔲 Il Prodotto e l'Area: La "Cornice Fantasma"</h1>
+          <p class="slide-subtitle">Perché moltiplicando base per altezza non possiamo sommare i millimetri ma sommiamo le percentuali?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">REGOLA 2: PRODOTTI</span>
+          <span class="pill-badge info">SOMMA ERRORI RELATIVI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Box Concettuale & Analogia della Cornice -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">L'Analogia dell'Evidenziatore Spesso:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Se disegni un rettangolo con un pennarello a punta grossa, il contorno non è una linea sottile, ma una <strong>cornice spessa</strong>! L'area reale può variare tra il rettangolo interno e quello esterno:
+              </p>
+            </div>
+
+            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 12px; padding: 10px; font-family: 'JetBrains Mono', monospace; text-align: center;">
+              <div style="font-size: 1.05rem; color: #c2410c; font-weight: 700; margin-bottom: 3px;">
+                Se Z = X × Y oppure Z = X / Y
+              </div>
+              <div style="font-size: 1.35rem; color: var(--argon-primary); font-weight: 800;">
+                e<sub>r</sub>(Z) = e<sub>r</sub>(X) + e<sub>r</sub>(Y)
+              </div>
+              <div style="font-size: 0.85rem; color: #7c2d12; margin-top: 3px;">
+                Oppure in percentuale: <strong>e<sub>p</sub>(Z) = e<sub>p</sub>(X) + e<sub>p</sub>(Y)</strong>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; text-align: left; font-size: 0.73rem; color: #7c2d12; background: #fffbeb; padding: 6px 8px; border-radius: 6px;">
+                <div>• <strong>Indice "r" in e<sub>r</sub></strong>: Errore Relativo (ΔX / X, frazione pura)</div>
+                <div>• <strong>Indice "p" in e<sub>p</sub></strong>: Errore Percentuale (e<sub>r</sub> × 100%)</div>
+                <div>• <strong>ΔA</strong>: Incertezza Assoluta = e<sub>r</sub>(A) × Area<sub>media</sub></div>
+                <div>• <strong>Regola</strong>: Nei prodotti si sommano le percentuali!</div>
+              </div>
+            </div>
+
+            <div class="callout-box primary" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              🎯 <strong>Passo Finale:</strong> Una volta trovato l'errore relativo <em>e_r</em>, l'errore assoluto sull'area si ottiene moltiplicando per l'area media: <strong>ΔA = e_r(A) × Area_media</strong>!
+            </div>
+          </div>
+
+          <!-- Disegno SVG Rettangolo che respira -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">La "Cornice d'Incertezza" Geometrica</strong>
+              <span class="pill-badge primary">RETTANGOLO (b × h)</span>
+            </div>
+
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+              <svg width="260" height="150" viewBox="0 0 260 150">
+                <!-- Rettangolo medio solido -->
+                <rect x="30" y="30" width="160" height="80" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2" rx="2"/>
+                <text x="110" y="75" font-size="11" fill="white" font-weight="800" text-anchor="middle">AREA MEDIA (b × h)</text>
+                
+                <!-- Fascia incertezza destra (h · Δb) -->
+                <rect x="190" y="30" width="30" height="80" fill="rgba(245, 158, 11, 0.35)" stroke="#f59e0b" stroke-dasharray="2,2"/>
+                <text x="205" y="75" font-size="8" fill="#b45309" font-weight="700" text-anchor="middle">h · Δb</text>
+
+                <!-- Fascia incertezza alta (b · Δh) -->
+                <rect x="30" y="10" width="160" height="20" fill="rgba(245, 158, 11, 0.35)" stroke="#f59e0b" stroke-dasharray="2,2"/>
+                <text x="110" y="24" font-size="8" fill="#b45309" font-weight="700" text-anchor="middle">b · Δh</text>
+
+                <!-- Angolino trascurabile (Δb · Δh) -->
+                <rect x="190" y="10" width="30" height="20" fill="rgba(239, 68, 68, 0.45)" stroke="#ef4444" stroke-dasharray="2,2"/>
+                <text x="205" y="22" font-size="7" fill="#b91c1c" font-weight="800" text-anchor="middle">Puff!</text>
+              </svg>
+            </div>
+
+            <div style="background: #fafbfe; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 0.78rem; color: #475569;">
+              💡 <strong>Perché l'angolino rosso fa "Puff"?</strong> Perché moltiplicare un'incertezza millimetrica per un'altra incertezza millimetrica dà un valore microscopico che in fisica si trascura!
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: VOLUME PARALLELEPIPEDO (3 DIMENSIONI)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="VOLUME PARALLELEPIPEDO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📦 Il Volume del Parallelepipedo: 3 Dimensioni a Catena</h1>
+          <p class="slide-subtitle">Solido 1 del laboratorio: come si combinano lunghezza, larghezza e altezza con il calibro?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SOLIDO 1</span>
+          <span class="pill-badge success">3 QUOTE CON CALIBRO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Spiegazione teorica e formule -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Formula del Volume e dell'Errore:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Per un blocchetto a parallelepipedo rettangolo misuri con il calibro a corsoio (S = 0.05 mm) le tre quote <strong>a</strong> (lunghezza), <strong>b</strong> (larghezza) e <strong>c</strong> (altezza):
+              </p>
+            </div>
+
+            <div style="background: #f8fafd; border: 2px solid #cbd5e1; border-radius: 12px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.45;">
+              1. Volume Medio (a, b, c = quote del calibro):<br>
+              <strong style="color: var(--argon-primary); font-size: 1.15rem;">V = a × b × c</strong> [mm³]<br><br>
+              2. Errore Relativo Totale (Pedice "r" = Relativo):<br>
+              <strong style="color: #c2410c; font-size: 1.05rem;">e<sub>r</sub>(V) = e<sub>r</sub>(a) + e<sub>r</sub>(b) + e<sub>r</sub>(c)</strong><br>
+              <span style="font-size: 0.74rem; color: #64748b;">(Somma dei tre contributi percentuali delle quote)</span><br><br>
+              3. Incertezza Assoluta Finale:<br>
+              <strong style="color: var(--argon-success); font-size: 1.15rem;">ΔV = e<sub>r</sub>(V) × V</strong> [mm³]
+            </div>
+
+            <div class="callout-box info" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              Barra dell'Errore: I tre contributi percentuali si <strong>sommano come mattoncini</strong> uno sopra l'altro!
+            </div>
+          </div>
+
+          <!-- Esempio Numerico Reale di Laboratorio -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Esempio Reale al Banco</strong>
+              <span class="pill-badge success">CALIBRO ± 0.05 mm</span>
+            </div>
+
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6;">
+              • a = (40.00 ± 0.05) mm ➔ e_r(a) = 0.05 / 40.00 = <strong>0.125%</strong><br>
+              • b = (25.00 ± 0.05) mm ➔ e_r(b) = 0.05 / 25.00 = <strong>0.200%</strong><br>
+              • c = (15.00 ± 0.05) mm ➔ e_r(c) = 0.05 / 15.00 = <strong>0.333%</strong><br>
+              <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 6px 0;">
+              • Volume = 40.00 × 25.00 × 15.00 = <strong>15000 mm³</strong><br>
+              • e_r(V) = 0.125% + 0.200% + 0.333% = <strong>0.658%</strong><br>
+              • ΔV = 0.00658 × 15000 = <strong>98.7 mm³</strong>
+            </div>
+
+            <!-- Scrittura ufficiale -->
+            <div style="background: #ecfdf5; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.78rem; color: #15803d; font-weight: 700;">RISULTATO FINALE ARROTONDATO:</span><br>
+              <strong style="font-size: 1.25rem; color: #166534;">V = (15000 ± 100) mm³</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: VOLUME CILINDRO & IL FATTORE 2
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="VOLUME CILINDRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🧪 Il Cilindro e la Trappola del "Raggio al Quadrato"</h1>
+          <p class="slide-subtitle">Perché nella formula del cilindro l'errore del diametro conta DOPPIO?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SOLIDO 2</span>
+          <span class="pill-badge warning">DOPPIO DANNO: 2 × e_r(d)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Teoria e spiegazione della potenza -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Formula del Cilindro Retto:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Nel cilindro misuri il diametro <strong>d</strong> e l'altezza <strong>h</strong>. Il volume è dato dall'area di base per l'altezza:
+              </p>
+            </div>
+
+            <div style="background: #f8fafd; border: 2px solid #cbd5e1; border-radius: 12px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.45;">
+              <strong style="color: var(--argon-primary); font-size: 1.05rem;">V = π × r² × h = π × (d / 2)² × h</strong><br>
+              <div style="font-size: 0.74rem; color: #475569; margin: 4px 0;">
+                • <strong>d</strong>: Diametro [mm] • <strong>r</strong>: Raggio (d/2) • <strong>h</strong>: Altezza [mm] • <strong>π</strong> ≈ 3.1416
+              </div>
+              <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 5px 0;">
+              Poiché c'è <strong>d² = d × d</strong>, l'errore del diametro compare DUE VOLTE!<br>
+              <strong style="color: var(--argon-danger); font-size: 1.15rem;">e<sub>r</sub>(V) = 2 × e<sub>r</sub>(d) + e<sub>r</sub>(h)</strong>
+              <div style="font-size: 0.73rem; color: #b91c1c; margin-top: 2px;">
+                (Il pedice "r" indica errore relativo: l'esponente 2 raddoppia il contributo del diametro)
+              </div>
+            </div>
+
+            <div class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              💥 <strong>Regola delle Potenze:</strong> Se una grandezza è elevata al quadrato, la sua percentuale di incertezza <strong>si moltiplica per 2</strong>! Se fosse al cubo (es. sfera r³), varrebbe triplo (3 volte)!
+            </div>
+          </div>
+
+          <!-- Lattina 3D con guscio d'incertezza -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">L'Analogia del Guscio della Lattina</strong>
+              <span class="pill-badge warning">RADIALE + ALTEZZA</span>
+            </div>
+
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+              <svg width="220" height="150" viewBox="0 0 220 150">
+                <!-- Cilindro medio solido -->
+                <!-- Base inferiore -->
+                <ellipse cx="110" cy="115" rx="55" ry="18" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+                <!-- Corpo -->
+                <rect x="55" y="45" width="110" height="70" fill="#38bdf8"/>
+                <line x1="55" y1="45" x2="55" y2="115" stroke="#0369a1" stroke-width="2"/>
+                <line x1="165" y1="45" x2="165" y2="115" stroke="#0369a1" stroke-width="2"/>
+                <!-- Base superiore -->
+                <ellipse cx="110" cy="45" rx="55" ry="18" fill="#7dd3fc" stroke="#0369a1" stroke-width="2"/>
+                <text x="110" y="85" font-size="11" fill="#0c4a6e" font-weight="800" text-anchor="middle">V = π · r² · h</text>
+
+                <!-- Alone di incertezza sul raggio (colpisce in tutte le direzioni 360°) -->
+                <ellipse cx="110" cy="45" rx="64" ry="22" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
+                <ellipse cx="110" cy="115" rx="64" ry="22" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
+                <line x1="46" y1="40" x2="46" y2="120" stroke="#f59e0b" stroke-dasharray="3,3"/>
+                <line x1="174" y1="40" x2="174" y2="120" stroke="#f59e0b" stroke-dasharray="3,3"/>
+              </svg>
+            </div>
+
+            <div style="background: #fff8f5; border: 1px solid #fed7aa; border-radius: 8px; padding: 8px 12px; font-size: 0.78rem; color: #9a3412;">
+              ⚠️ <strong>Perché conta 2 volte?</strong> Perché il raggio si espande sia in larghezza che in profondità! Quindi il suo errore pesa il doppio rispetto a quello dell'altezza.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: CONVERSIONE mm³ E m³
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="CONVERSIONE UNITA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔄 Il Salto delle Dimensioni: Da mm³ a m³</h1>
+          <p class="slide-subtitle">Perché per le lunghezze si divide per 1.000 ma per i volumi si divide per 1 MILIARDO?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SISTEMA INTERNAZIONALE</span>
+          <span class="pill-badge dark">FATTORE 10⁻⁹</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="callout-box primary" style="padding: 10px 16px;">
+          ⚖️ <strong>OBBLIGO DELLA RELAZIONE:</strong> Il calibro misura in millimetri, quindi il volume esce in <strong>mm³</strong>. Ma la fisica del Sistema Internazionale esige i risultati in <strong>m³</strong>! Come si converte senza sbagliare gli zeri?
+        </div>
+
+        <div class="grid-3" style="flex: 1;">
+          
+          <!-- 1D Lunghezza -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 4px;">📏</div>
+            <strong style="color: var(--argon-primary); font-size: 1rem;">1D: Lunghezza</strong>
+            <span class="pill-badge primary" style="margin: 6px auto;">1 m = 1.000 mm</span>
+            <div style="background: #f4f6fd; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
+              1 mm = 10⁻³ m<br>
+              <strong>(dividi per 1.000)</strong>
+            </div>
+          </div>
+
+          <!-- 2D Superficie -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 4px;">🔲</div>
+            <strong style="color: #c2410c; font-size: 1rem;">2D: Superficie</strong>
+            <span class="pill-badge warning" style="margin: 6px auto;">1 m² = 1.000.000 mm²</span>
+            <div style="background: #fff8f5; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
+              1 mm² = 10⁻⁶ m²<br>
+              <strong>(dividi per 1 Milione)</strong>
+            </div>
+          </div>
+
+          <!-- 3D Volume -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 4px;">🧊</div>
+            <strong style="color: var(--argon-success); font-size: 1rem;">3D: Volume</strong>
+            <span class="pill-badge success" style="margin: 6px auto;">1 m³ = 1.000.000.000 mm³</span>
+            <div style="background: #f0fbf6; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-top: 8px;">
+              1 mm³ = 10⁻⁹ m³<br>
+              <strong>(dividi per 1 Miliardo!)</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Convertitore live rapido -->
+        <div style="background: #ffffff; border: 2px solid var(--argon-border); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--argon-dark);">
+            Esempio: Volume del cilindro di laboratorio = <strong>24500 mm³</strong>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: var(--argon-primary);">
+            ➔ 24500 × 10⁻⁹ m³ = <strong>2.45 × 10⁻⁵ m³</strong>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: LABORATORIO 3D LIVE CON CALCOLATORE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="SIMULATORE 3D LIVE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🎮 Laboratorio 3D: Calcola Volume e Propagazione al Volo!</h1>
+          <p class="slide-subtitle">Scegli il solido, muovi gli slider delle quote e osserva la propagazione dell'incertezza in tempo reale</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SIMULATORE LIVE</span>
+          <span class="pill-badge success">PROPAGAZIONE STEP-BY-STEP</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <!-- Scelta Solido -->
+        <div style="display: flex; gap: 10px; margin-bottom: 4px;">
+          <button class="interactive-tab-btn active" id="tab-box" onclick="setSimSolid('box')">📦 Parallelepipedo (a × b × c)</button>
+          <button class="interactive-tab-btn" id="tab-cyl" onclick="setSimSolid('cyl')">🧪 Cilindro Retto (π × r² × h)</button>
+        </div>
+
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Box Controlli Slider -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Controlli Quote (Calibro ± 0.05 mm)</strong>
+
+            <!-- Slider 1 -->
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
+                <span id="label-q1">Quota a (Lunghezza):</span>
+                <span id="disp-q1" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">40.00 mm</span>
+              </div>
+              <input type="range" id="range-q1" min="10" max="80" step="0.5" value="40" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
+            </div>
+
+            <!-- Slider 2 -->
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
+                <span id="label-q2">Quota b (Larghezza):</span>
+                <span id="disp-q2" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">25.00 mm</span>
+              </div>
+              <input type="range" id="range-q2" min="10" max="60" step="0.5" value="25" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
+            </div>
+
+            <!-- Slider 3 (per parallelepipedo) -->
+            <div id="group-q3">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700;">
+                <span id="label-q3">Quota c (Altezza):</span>
+                <span id="disp-q3" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary);">15.00 mm</span>
+              </div>
+              <input type="range" id="range-q3" min="5" max="40" step="0.5" value="15" style="width: 100%; accent-color: var(--argon-primary);" oninput="calcPropagation()">
+            </div>
+
+            <div style="background: #f4f6fd; border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; color: #4338ca;">
+              Sensibilità fissata del calibro: <strong>Δ = 0.05 mm</strong> per tutte le quote.
+            </div>
+          </div>
+
+          <!-- Box Output Calcoli & Risultato Ufficiale -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Tabellone Risultati e Propagazione</strong>
+              <span id="sim-solid-badge" class="pill-badge success">PARALLELEPIPEDO</span>
+            </div>
+
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.5;">
+              <div id="sim-calc-steps">
+                • Volume Medio: <strong>15000.0 mm³</strong><br>
+                • e_r(a) = 0.125% | e_r(b) = 0.200% | e_r(c) = 0.333%<br>
+                • e_r Totale = <strong>0.658%</strong><br>
+                • Incertezza ΔV = <strong>± 98.7 mm³</strong>
+              </div>
+            </div>
+
+            <!-- Risultato Finale Formattato -->
+            <div style="background: #f0fbf6; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">SCRITTURA UFFICIALE S.I. (m³):</span><br>
+              <strong id="sim-final-si" style="font-size: 1.25rem; color: #15803d;">V = (1.50 ± 0.01) × 10⁻⁵ m³</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA LIM A SQUADRE (5 QUESITI SC 1.1.4)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA LIM A SQUADRE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: I 5 Quesiti della Propagazione!</h1>
+          <p class="slide-subtitle">Verifica interattiva a squadre prima di passare all'elaborazione su Excel</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary" id="quiz-badge-step">DOMANDA 1 DI 5</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="argon-card" style="flex: 1; border-top: 4px solid var(--argon-primary); justify-content: space-between; padding: 18px 24px;">
+          
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span id="quiz-topic" class="pill-badge info">PROPAGAZIONE ERRORI</span>
+              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
+            </div>
+
+            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
+              Caricamento quesito...
+            </h2>
+
+            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+          </div>
+
+          <div id="quiz-feedback-box" class="callout-box primary" style="display: none; padding: 10px 16px; margin: 0;">
+            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
+            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
+              Prossimo Quesito ➜
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="argon-bottombar">
+    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
+      ◀ Slide Precedente
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Usa le frecce ⬅️ / ➡️ o la barra spaziatrice</span>
+    </div>
+
+    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
+      Slide Successiva ▶
+    </button>
+  </footer>
+
+  <div class="argon-toast" id="argon-toast">Notifica</div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    let limZoom = 1;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playBeep(freq, type = 'sine', duration = 0.12) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('argon-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function goToSlide(step) {
+      if (step < 1 || step > totalSlides) return;
+      currentSlide = step;
+
+      document.querySelectorAll('.slide-card').forEach(slide => {
+        const s = parseInt(slide.dataset.step);
+        slide.classList.toggle('active', s === currentSlide);
+      });
+
+      document.querySelectorAll('.step-node').forEach(node => {
+        const s = parseInt(node.dataset.step);
+        node.classList.toggle('active', s === currentSlide);
+        node.classList.toggle('completed', s < currentSlide);
+      });
+
+      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
+      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
+
+      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
+      if (activeCard) {
+        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
+        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
+      }
+
+      playBeep(440, 'triangle', 0.08);
+    }
+
+    function changeSlide(delta) {
+      goToSlide(currentSlide + delta);
+    }
+
+    document.querySelectorAll('.step-node').forEach(node => {
+      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      else if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      if (limZoom < 1.35) {
+        limZoom += 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      if (limZoom > 0.85) {
+        limZoom -= 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+
+    // ── SIMULATORE 3D LIVE ──────────
+    let simMode = 'box'; // 'box' o 'cyl'
+
+    function setSimSolid(mode) {
+      simMode = mode;
+      document.getElementById('tab-box').classList.toggle('active', mode === 'box');
+      document.getElementById('tab-cyl').classList.toggle('active', mode === 'cyl');
+      document.getElementById('sim-solid-badge').textContent = mode === 'box' ? 'PARALLELEPIPEDO' : 'CILINDRO RETTO';
+
+      if (mode === 'box') {
+        document.getElementById('label-q1').textContent = 'Quota a (Lunghezza):';
+        document.getElementById('label-q2').textContent = 'Quota b (Larghezza):';
+        document.getElementById('label-q3').textContent = 'Quota c (Altezza):';
+        document.getElementById('group-q3').style.display = 'block';
+        document.getElementById('range-q1').value = 40;
+        document.getElementById('range-q2').value = 25;
+        document.getElementById('range-q3').value = 15;
+      } else {
+        document.getElementById('label-q1').textContent = 'Diametro d:';
+        document.getElementById('label-q2').textContent = 'Altezza h:';
+        document.getElementById('group-q3').style.display = 'none';
+        document.getElementById('range-q1').value = 24;
+        document.getElementById('range-q2').value = 54;
+      }
+      calcPropagation();
+      playBeep(520, 'sine', 0.1);
+    }
+
+    function calcPropagation() {
+      const deltaCal = 0.05; // mm
+      if (simMode === 'box') {
+        const a = parseFloat(document.getElementById('range-q1').value);
+        const b = parseFloat(document.getElementById('range-q2').value);
+        const c = parseFloat(document.getElementById('range-q3').value);
+
+        document.getElementById('disp-q1').textContent = a.toFixed(2) + ' mm';
+        document.getElementById('disp-q2').textContent = b.toFixed(2) + ' mm';
+        document.getElementById('disp-q3').textContent = c.toFixed(2) + ' mm';
+
+        const V = a * b * c;
+        const er_a = deltaCal / a;
+        const er_b = deltaCal / b;
+        const er_c = deltaCal / c;
+        const er_tot = er_a + er_b + er_c;
+        const deltaV = er_tot * V;
+
+        document.getElementById('sim-calc-steps').innerHTML = `
+          • Volume Medio: <strong>${V.toFixed(1)} mm³</strong><br>
+          • e_r(a) = ${(er_a*100).toFixed(3)}% | e_r(b) = ${(er_b*100).toFixed(3)}% | e_r(c) = ${(er_c*100).toFixed(3)}%<br>
+          • e_r Totale = <strong>${(er_tot*100).toFixed(3)}%</strong><br>
+          • Incertezza ΔV = <strong>± ${deltaV.toFixed(1)} mm³</strong>
+        `;
+
+        // Conversione in m³ (1 mm³ = 10^-9 m³)
+        const V_m3 = V * 1e-9;
+        const dV_m3 = deltaV * 1e-9;
+        const exp = Math.floor(Math.log10(V_m3));
+        const mantissa_V = V_m3 / Math.pow(10, exp);
+        const mantissa_dV = dV_m3 / Math.pow(10, exp);
+
+        document.getElementById('sim-final-si').textContent = 
+          `V = (${mantissa_V.toFixed(2)} ± ${mantissa_dV.toFixed(2)}) × 10${exp} m³`;
+      } else {
+        const d = parseFloat(document.getElementById('range-q1').value);
+        const h = parseFloat(document.getElementById('range-q2').value);
+
+        document.getElementById('disp-q1').textContent = d.toFixed(2) + ' mm';
+        document.getElementById('disp-q2').textContent = h.toFixed(2) + ' mm';
+
+        const r = d / 2;
+        const V = Math.PI * Math.pow(r, 2) * h;
+        const er_d = deltaCal / d;
+        const er_h = deltaCal / h;
+        const er_tot = (2 * er_d) + er_h; // il diametro conta 2 volte!
+        const deltaV = er_tot * V;
+
+        document.getElementById('sim-calc-steps').innerHTML = `
+          • Volume Cilindro: <strong>${V.toFixed(1)} mm³</strong><br>
+          • 2 × e_r(d) = 2 × ${(er_d*100).toFixed(3)}% = <strong>${(2*er_d*100).toFixed(3)}%</strong> (doppio peso!)<br>
+          • e_r(h) = ${(er_h*100).toFixed(3)}% ➔ e_r Totale = <strong>${(er_tot*100).toFixed(3)}%</strong><br>
+          • Incertezza ΔV = <strong>± ${deltaV.toFixed(1)} mm³</strong>
+        `;
+
+        const V_m3 = V * 1e-9;
+        const dV_m3 = deltaV * 1e-9;
+        const exp = Math.floor(Math.log10(V_m3));
+        const mantissa_V = V_m3 / Math.pow(10, exp);
+        const mantissa_dV = dV_m3 / Math.pow(10, exp);
+
+        document.getElementById('sim-final-si').textContent = 
+          `V = (${mantissa_V.toFixed(2)} ± ${mantissa_dV.toFixed(2)}) × 10${exp} m³`;
+      }
+    }
+
+    // ── QUIZ SLIDE 8 ──────────
+    const quizData = [
+      {
+        topic: "Somma e Differenza",
+        q: "Hai due assi di legno con incertezze Δa = ± 1 mm e Δb = ± 2 mm. Calcoli la differenza di lunghezza (a − b). Qual è l'incertezza del risultato?",
+        opts: ["Δ(a - b) = ± 1 mm (si fa 2 - 1)", "Δ(a - b) = ± 3 mm (si sommano gli errori)", "Δ(a - b) = 0 mm (gli errori si annullano)", "Δ(a - b) = ± 2 mm"],
+        correct: 1,
+        exp: "Esatto! Nelle somme e nelle differenze gli errori assoluti SI SOMMANO SEMPRE! 1 mm + 2 mm = 3 mm."
+      },
+      {
+        topic: "Formula del Prodotto",
+        q: "Per calcolare l'area di un rettangolo (A = b × h), come si combinano le incertezze delle misure di base e altezza?",
+        opts: [
+          "Si sommano gli errori assoluti in millimetri",
+          "Si sommano gli errori relativi (o percentuali): e_r(A) = e_r(b) + e_r(h)",
+          "Si moltiplicano gli errori assoluti: ΔA = Δb × Δh",
+          "L'area non ha errore se calcolata con la calcolatrice"
+        ],
+        correct: 1,
+        exp: "Perfetto! Nei prodotti si sommano sempre le percentuali di danno (gli errori relativi)!"
+      },
+      {
+        topic: "Volume del Cilindro",
+        q: "Nella formula del cilindro V = π · r² · h, perché l'errore relativo del raggio (o diametro) si moltiplica per 2?",
+        opts: [
+          "Perché il cilindro ha due basi circolari",
+          "Perché il raggio è elevato alla seconda potenza (r² = r × r)",
+          "Perché usiamo il calibro due volte",
+          "È una convenzione scelta a caso dal docente"
+        ],
+        correct: 1,
+        exp: "Bravissimi! Regola delle potenze: l'esponente 2 raddoppia l'errore relativo: e_r(r²) = 2 · e_r(r)!"
+      },
+      {
+        topic: "Conversione Unità SI",
+        q: "Quanti millimetri cubi (mm³) sono contenuti in un metro cubo (m³)?",
+        opts: ["1.000 mm³ (10³)", "1.000.000 mm³ (10⁶)", "1.000.000.000 mm³ (10⁹, 1 Miliardo!)", "100 mm³"],
+        correct: 2,
+        exp: "Esatto! 1 m = 1.000 mm. Elevando al cubo: (10³ mm)³ = 10⁹ mm³ = 1 miliardo di mm³!"
+      },
+      {
+        topic: "Cifre Significative",
+        q: "Il volume di un parallelepipedo risulta V = 12456.78 mm³ con incertezza assoluta ΔV = ± 123.4 mm³. Come si scrive il risultato corretto?",
+        opts: [
+          "V = (12456.78 ± 123.4) mm³",
+          "V = (12460 ± 120) mm³",
+          "V = (12500 ± 100) mm³",
+          "V = 12457 mm³ senza incertezza"
+        ],
+        correct: 1,
+        exp: "Ottimo! L'incertezza si arrotonda a 1 o 2 cifre significative (± 120 mm³) e il valore medio si tronca alla stessa posizione decimale (12460 mm³)!"
+      }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function loadQuiz() {
+      const q = quizData[quizIndex];
+      document.getElementById('quiz-counter').textContent = `Quesito ${quizIndex + 1} di ${quizData.length}`;
+      document.getElementById('quiz-badge-step').textContent = `DOMANDA ${quizIndex + 1} DI ${quizData.length}`;
+      document.getElementById('quiz-topic').textContent = q.topic;
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const grid = document.getElementById('quiz-options-grid');
+      grid.innerHTML = '';
+      document.getElementById('quiz-feedback-box').style.display = 'none';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'interactive-tab-btn';
+        btn.style.textAlign = 'left';
+        btn.style.padding = '12px 16px';
+        btn.style.fontSize = '0.9rem';
+        btn.innerHTML = `<strong style="color: var(--argon-primary); margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
+        btn.onclick = () => checkQuizAnswer(idx, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function checkQuizAnswer(selectedIdx, btnEl) {
+      const q = quizData[quizIndex];
+      const buttons = document.querySelectorAll('#quiz-options-grid button');
+      buttons.forEach(b => b.disabled = true);
+
+      const fBox = document.getElementById('quiz-feedback-box');
+      const fIcon = document.getElementById('quiz-feedback-icon');
+      const fText = document.getElementById('quiz-feedback-text');
+
+      if (selectedIdx === q.correct) {
+        btnEl.style.background = '#dcfce7';
+        btnEl.style.borderColor = '#22c55e';
+        btnEl.style.color = '#15803d';
+        fBox.className = 'callout-box success';
+        fIcon.textContent = '🎉';
+        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
+        quizScore += 20;
+        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
+        playBeep(680, 'sine', 0.2);
+      } else {
+        btnEl.style.background = '#fee2e2';
+        btnEl.style.borderColor = '#ef4444';
+        btnEl.style.color = '#b91c1c';
+        buttons[q.correct].style.background = '#dcfce7';
+        buttons[q.correct].style.borderColor = '#22c55e';
+        buttons[q.correct].style.color = '#15803d';
+        fBox.className = 'callout-box warning';
+        fIcon.textContent = '💡';
+        fText.innerHTML = `<strong>NON ESATTO.</strong> ${q.exp}`;
+        playBeep(240, 'sawtooth', 0.2);
+      }
+
+      fBox.style.display = 'flex';
+      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+      if (quizIndex < quizData.length - 1) {
+        quizIndex++;
+        loadQuiz();
+      } else {
+        const grid = document.getElementById('quiz-options-grid');
+        grid.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fbf6; border: 2px solid #2dce89; border-radius: 12px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">🎓</div>
+            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! SFIDA PROPAGAZIONE SUPERATA!</h3>
+            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio di Squadra: <strong>${quizScore} / 100 PUNTI</strong></p>
+            <p style="font-size: 0.85rem; color: #166534;">Ora siete pronti per automatizzare tutti i calcoli nel laboratorio digitale con Excel!</p>
+          </div>
+        `;
+        document.getElementById('quiz-question').textContent = "Risultato della Verifica LIM";
+        document.getElementById('quiz-feedback-box').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        playBeep(880, 'triangle', 0.4);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      goToSlide(1);
+      calcPropagation();
+      loadQuiz();
+    });
+  </script>
+</body>
+</html>

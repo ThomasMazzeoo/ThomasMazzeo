@@ -1,1441 +1,1453 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>00. Sicurezza Elettrica (CEI 64-8/SELV) e Rischio Termico — ISS Giordano Bruno</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<style>
-/* ═══════════════════════════════════════════════════════════════════
-   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
-   Istituto Tecnico Industriale Statale "Giordano Bruno"
-   00: Sicurezza Elettrica (CEI 64-8/SELV) e Rischio Termico (Classi 2°)
-   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
-   ═══════════════════════════════════════════════════════════════════ */
-:root {
-  --argon-primary: #5e72e4;
-  --argon-primary-hover: #455fe0;
-  --argon-primary-light: rgba(94, 114, 228, 0.12);
-  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
-  
-  --argon-warning: #fb6340;
-  --argon-warning-light: rgba(251, 99, 64, 0.14);
-  
-  --argon-danger: #f5365c;
-  --argon-danger-light: rgba(245, 54, 92, 0.12);
-  
-  --argon-success: #2dce89;
-  --argon-success-light: rgba(45, 206, 137, 0.12);
-  
-  --argon-info: #11cdef;
-  --argon-info-light: rgba(17, 205, 239, 0.12);
-  
-  --argon-dark: #172b4d;
-  --argon-darker: #0f1c30;
-  --argon-text-main: #32325d;
-  --argon-text-muted: #525f7f;
-  
-  --argon-bg: #f8f9fe;
-  --argon-card-bg: #ffffff;
-  --argon-border: #e9ecef;
-  
-  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-
-  --lim-zoom: 1;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  user-select: none;
-}
-
-body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--argon-bg);
-  color: var(--argon-text-main);
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  zoom: var(--lim-zoom);
-}
-
-/* TOPBAR */
-.argon-topbar {
-  height: 60px;
-  background: #ffffff;
-  border-bottom: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  z-index: 100;
-  flex-shrink: 0;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.school-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--argon-dark);
-}
-
-.school-badge-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(87deg, #fb6340 0, #f5365c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 10px rgba(251, 99, 64, 0.3);
-}
-
-.school-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--argon-dark);
-}
-
-.school-sub {
-  font-size: 0.73rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #fb6340;
-  letter-spacing: 0.5px;
-}
-
-.topbar-center {
-  flex: 1;
-  max-width: 680px;
-  margin: 0 20px;
-}
-
-.steps-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.steps-indicator::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  right: 20px;
-  height: 3px;
-  background: #e9ecef;
-  transform: translateY(-50%);
-  z-index: 1;
-}
-
-.step-node {
-  position: relative;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 2px solid #dee2e6;
-  color: #adb5bd;
-  font-size: 0.78rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.step-node.active {
-  background: #fb6340;
-  border-color: #fb6340;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.45);
-  transform: scale(1.15);
-}
-
-.step-node.completed {
-  background: var(--argon-success);
-  border-color: var(--argon-success);
-  color: #ffffff;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.lim-pill-badge {
-  background: var(--argon-warning-light);
-  color: #c4411d;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.lim-btn {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  color: var(--argon-text-muted);
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-/* VIEWPORT SLIDES */
-.slides-viewport {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  padding: 16px 24px;
-  display: flex;
-}
-
-.slide-card {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 24px;
-  right: 24px;
-  background: var(--argon-card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow);
-  display: flex;
-  flex-direction: column;
-  padding: 20px 28px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(12px) scale(0.99);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.slide-card.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-  z-index: 5;
-}
-
-.slide-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f1f3f9;
-  flex-shrink: 0;
-}
-
-.slide-title-group h1 {
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: var(--argon-dark);
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.slide-subtitle {
-  font-size: 0.88rem;
-  color: var(--argon-text-muted);
-  margin-top: 3px;
-  font-weight: 500;
-}
-
-.pill-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.pill-badge.warning { background: var(--argon-warning-light); color: #c4411d; }
-.pill-badge.danger { background: var(--argon-danger-light); color: #a71d37; }
-.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
-.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
-.pill-badge.dark { background: #e9ecef; color: var(--argon-dark); }
-
-.slide-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.callout-box {
-  border-radius: 12px;
-  padding: 12px 18px;
-  font-size: 0.92rem;
-  line-height: 1.45;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.callout-box.warning {
-  background: #fff8f5;
-  border-left: 5px solid var(--argon-warning);
-  color: #9c3015;
-}
-.callout-box.danger {
-  background: #fdf2f4;
-  border-left: 5px solid var(--argon-danger);
-  color: #a71d37;
-}
-.callout-box.primary {
-  background: #f4f6fd;
-  border-left: 5px solid var(--argon-primary);
-  color: var(--argon-dark);
-}
-.callout-box.success {
-  background: #f0fbf6;
-  border-left: 5px solid var(--argon-success);
-  color: #1a6b47;
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  flex: 1;
-  min-height: 0;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-  flex: 1;
-  min-height: 0;
-}
-
-.argon-card {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  box-shadow: var(--argon-shadow-sm);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.argon-bottombar {
-  height: 64px;
-  background: #ffffff;
-  border-top: 1px solid var(--argon-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  flex-shrink: 0;
-}
-
-.nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-.nav-btn.prev {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  color: var(--argon-text-muted);
-}
-.nav-btn.next {
-  background: #fb6340;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.35);
-}
-.nav-btn.next:hover:not(:disabled) {
-  background: #e24e2d;
-}
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.interactive-tab-btn {
-  background: #ffffff;
-  border: 2px solid var(--argon-border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: var(--argon-text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.interactive-tab-btn.active {
-  background: var(--argon-warning-light);
-  border-color: #fb6340;
-  color: #c4411d;
-}
-
-.argon-toast {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--argon-darker);
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  z-index: 1000;
-}
-.argon-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-</style>
-</head>
-<body>
-
-  <!-- TOP BAR -->
-  <header class="argon-topbar">
-    <div class="topbar-left">
-      <a href="/index.html" class="school-badge" title="Torna alla Home">
-        <div class="school-badge-icon">⚡</div>
-        <div class="school-badge-text">
-          <span class="school-title">ITIS Giordano Bruno</span>
-          <span class="school-sub">Fisica • 2° Classi • Sicurezza</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="topbar-center">
-      <div class="steps-indicator" id="steps-indicator">
-        <div class="step-node active" data-step="1" title="1. Il Salto di Livello">1</div>
-        <div class="step-node" data-step="2" title="2. CEI 64-8 e Regime SELV">2</div>
-        <div class="step-node" data-step="3" title="3. Corto Circuito & Joule">3</div>
-        <div class="step-node" data-step="4" title="4. Multimetro & Fusibili">4</div>
-        <div class="step-node" data-step="5" title="5. Calore Latente & Vapore">5</div>
-        <div class="step-node" data-step="6" title="6. Sonde & Calorimetro">6</div>
-        <div class="step-node" data-step="7" title="7. I 4 Comandamenti">7</div>
-        <div class="step-node" data-step="8" title="8. Patente di Sicurezza">8</div>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <div class="lim-pill-badge" id="slide-name-badge">
-        <span>PASSO 1 DI 8</span>
-      </div>
-      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
-      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
-      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
-    </div>
-  </header>
-
-  <!-- VIEWPORT SLIDES -->
-  <main class="slides-viewport">
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 1: LE NUOVE ESPERIENZE DI 2ª
-         ────────────────────────────────────────── -->
-    <article class="slide-card active" data-step="1" data-name="BENVENUTI IN 2ª">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🚀 Benvenuti nel Laboratorio di Fisica del 2° Anno!</h1>
-          <p class="slide-subtitle">In 1ª abbiamo misurato masse e lunghezze. In 2ª sperimentiamo con acqua calda, calorimetri e circuiti elettrici!</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge warning">ACCOGLIENZA 2° ANNO</span>
-          <span class="pill-badge dark">SC 1.2 & SC 1.3.6</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        <div class="callout-box warning">
-          💡 <strong>LE NUOVE ESPERIENZE DEL BIENNIO:</strong> Rispetto al primo anno, introduciamo attività con l'<strong>acqua calda</strong> (termometria, calore specifico e dilatazione) e con i <strong>circuiti elettrici in bassa tensione</strong> (alimentatori da banco, multimetri e resistori).
-        </div>
-
-        <div class="grid-2">
-          <!-- Attenzione Termica -->
-          <div class="argon-card" style="border-top: 4px solid #fb6340; background: #fffdfc;">
-            <div style="font-size: 2.2rem; margin-bottom: 4px;">🔥</div>
-            <strong style="color: #c2410c; font-size: 1.1rem; margin-bottom: 4px;">1. Attenzione con l'Acqua Calda</strong>
-            <p style="font-size: 0.84rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 8px;">
-              • Usiamo becher con acqua calda, piastre termiche e calorimetri per misurare temperature e scambi di calore.<br>
-              • <strong>Le buone abitudini:</strong> impugnare i becher caldi con le apposite pinze o presine, non sporgersi sui vapori e muoversi con calma sul banco evitando urti.
-            </p>
-            <div class="callout-box warning" style="padding: 6px 12px; font-size: 0.78rem; margin: 0;">
-              Tenere il banco sempre asciutto: se cade acqua, si asciuga subito!
-            </div>
-          </div>
-
-          <!-- Attenzione Elettrica -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); background: #fdfefe;">
-            <div style="font-size: 2.2rem; margin-bottom: 4px;">⚡</div>
-            <strong style="color: var(--argon-primary); font-size: 1.1rem; margin-bottom: 4px;">2. Rispetto degli Strumenti Elettrici</strong>
-            <p style="font-size: 0.84rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 8px;">
-              • Lavoriamo a bassissima tensione sicura (alimentatori DC sotto i 24 V: nessun pericolo di scossa!).<br>
-              • <strong>Cosa dobbiamo proteggere:</strong> gli strumenti di misura! Evitare cortocircuiti che surriscaldano i fili e collegare correttamente i puntali del tester per non bruciare il fusibile interno.
-            </p>
-            <div class="callout-box primary" style="padding: 6px 12px; font-size: 0.78rem; margin: 0;">
-              Prima di accendere l'alimentatore, chiama sempre il docente ITP per il controllo!
-            </div>
-          </div>
-        </div>
-
-        <div class="callout-box success" style="margin: 0;">
-          🛡️ <strong>L'Obiettivo:</strong> Lavorare con ordine, avere cura degli strumenti del laboratorio e acquisire il metodo sperimentale dei futuri tecnici!
-        </div>
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 2: TENSIONE VS CORRENTE & REGIME SELV
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="2" data-name="VOLT VS AMPERE & SELV">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>⚡ Tensione (Volt) vs Corrente (Ampere): La Distinzione Fondamentale!</h1>
-          <p class="slide-subtitle">Perché un alimentatore da 12 V e 12 A (o una batteria da 600 A) NON dà la scossa al corpo umano?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge info">VOLT = LA SPINTA</span>
-          <span class="pill-badge warning">AMPERE = IL FLUSSO</span>
-          <span class="pill-badge success">SELV: V &lt; 24 V (CC)</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Spiegazione Tensione vs Corrente e Mito dei 12 A -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-primary); font-size: 1.05rem;">Non confondere Tensione (Volt) e Corrente (Ampere):</strong>
-              
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
-                <div style="background: #f0f7ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 8px;">
-                  <strong style="color: #0369a1; font-size: 0.85rem;">⚡ TENSIONE (Volt - V)</strong>
-                  <p style="font-size: 0.78rem; color: #0c4a6e; margin-top: 2px; line-height: 1.35;">
-                    È la <strong>SPINTA</strong> (dislivello o pressione). È la forza con cui gli elettroni tentano di entrare.
-                  </p>
-                </div>
-                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px;">
-                  <strong style="color: #b45309; font-size: 0.85rem;">🌊 CORRENTE (Ampere - I)</strong>
-                  <p style="font-size: 0.78rem; color: #78350f; margin-top: 2px; line-height: 1.35;">
-                    È il <strong>FLUSSO REALE</strong> (quanti elettroni passano al secondo). La decide l'ostacolo (il tuo corpo)!
-                  </p>
-                </div>
-              </div>
-
-              <!-- Il Falso Mito dei 12 A / Batteria Auto -->
-              <div style="margin-top: 8px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 9px; font-size: 0.81rem; line-height: 1.45; color: #581c87;">
-                <strong>💡 IL GRANDE DUBBIO:</strong> Sull'alimentatore c'è scritto <strong>12 V - 12 A</strong> (o sulla batteria auto <strong>600 A</strong>). Rischio di prendere 12 Ampere?<br>
-                <strong>ASSOLUTAMENTE NO!</strong> I "12 A" sono solo la corrente <em>massima erogabile a una lampada o un motore</em>. Ma nel corpo umano la corrente è decisa <strong>dalla Legge di Ohm:</strong>
-                <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-top: 4px; text-align: center; color: #6b21a8; background: #f3e8ff; padding: 4px; border-radius: 6px;">
-                  I<sub>corpo</sub> = V / R<sub>corpo</sub> = 12 V / 1500 Ω = 0.008 A = 8 mA
-                </div>
-                Con soli 12 Volt, <strong>la spinta è troppo bassa</strong> per vincere la resistenza della pelle: i 12 A restano nella sorgente e non possono entrare!
-              </div>
-            </div>
-
-            <div class="callout-box success" style="padding: 6px 12px; margin: 0; font-size: 0.78rem;">
-              🛡️ <strong>Regime SELV (CEI 64-8):</strong> Sotto i <strong>24 V CC</strong> la tensione non ha la spinta necessaria per entrare nella pelle, anche se la batteria ha 600 A di scorta!
-            </div>
-          </div>
-
-          <!-- Simulatore Interattivo Tensione vs Corrente Umana -->
-          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore: Cosa Entra Davvero nel Tuo Corpo?</strong>
-            </div>
-
-            <!-- Pulsanti Preimpostati Scenari -->
-            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-              <button class="interactive-tab-btn active" id="btn-scen-12v" onclick="setPresetShock(12, '12 A')" style="padding: 6px 10px; font-size: 0.8rem;">🔋 12 V (12 A Banco)</button>
-              <button class="interactive-tab-btn" id="btn-scen-auto" onclick="setPresetShock(12, '600 A')" style="padding: 6px 10px; font-size: 0.8rem;">🚗 12 V (600 A Auto)</button>
-              <button class="interactive-tab-btn" id="btn-scen-24v" onclick="setPresetShock(24, '10 A')" style="padding: 6px 10px; font-size: 0.8rem;">⚠️ 24 V (Limite SELV)</button>
-              <button class="interactive-tab-btn" id="btn-scen-230v" onclick="setPresetShock(230, '16 A')" style="padding: 6px 10px; font-size: 0.8rem;">🏠 230 V (Presa Casa)</button>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 2px;">
-                <span>Regola Tensione Manuale:</span>
-                <span id="volt-disp" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary); font-size: 1.05rem;">12 V (SELV)</span>
-              </div>
-              <input type="range" id="volt-slider" min="5" max="230" step="5" value="12" style="width: 100%; accent-color: var(--argon-primary);" oninput="onShockSlider()">
-            </div>
-
-            <!-- Tabellone Risultato Corrente -->
-            <div id="shock-result-card" style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-              <div style="display: flex; justify-content: space-around; font-size: 0.76rem; color: #475569; margin-bottom: 4px;">
-                <span>Capacità Sorgente: <strong id="source-amp-disp">12 A</strong></span>
-                <span>Resistenza pelle: <strong>1500 Ω</strong></span>
-              </div>
-              <span style="font-size: 0.72rem; color: #166534; font-weight: 700;">CORRENTE REALE CHE ATTRAVERSA IL CORPO:</span><br>
-              <strong id="current-disp" style="font-size: 1.5rem; color: #15803d;">8.0 mA</strong>
-              <div id="shock-desc" style="font-size: 0.78rem; color: #166534; margin-top: 3px; font-weight: 700;">
-                🟢 TOTALMENTE SICURO: La spinta di 12 V è troppo bassa. Non senti nulla!
-              </div>
-            </div>
-
-            <div style="font-size: 0.74rem; color: #64748b; line-height: 1.3;">
-              La soglia di pericolo è <strong>30 mA</strong>. A 12 V entrano solo 8 mA (anche con 600 A di sorgente!); a 230 V ne entrano 153 mA!
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 3: IL CORTO CIRCUITO & EFFETTO JOULE
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="3" data-name="CORTO CIRCUITO E JOULE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>💥 Il Corto Circuito & L'Effetto Joule: Il Rischio Termico Elettrico</h1>
-          <p class="slide-subtitle">Cosa succede se unisci il polo positivo (+) e negativo (-) direttamente senza carico?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge danger">EFFETTO JOULE: P = R · I²</span>
-          <span class="pill-badge warning">SURRISCALDAMENTO</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Teoria Legge di Ohm e Joule -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-danger); font-size: 1.05rem;">La Fisica del Corto Circuito:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                In un circuito elettrico la corrente deve sempre compiere un lavoro attraversando un <strong>carico</strong> (lampadina, resistore, motore). Se colleghi un filo da polo a polo:
-              </p>
-            </div>
-
-            <div style="background: #fdf2f4; border: 2px solid #fecdd3; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
-              1. La resistenza tende a zero: <strong>R ≈ 0.02 Ω</strong><br>
-              2. Per la Legge di Ohm, la corrente schizza a valori enormi:<br>
-              &nbsp;&nbsp;&nbsp;<strong>I = V / R = 12 V / 0.02 Ω = 600 Ampere!</strong><br>
-              3. Per la Legge di Joule, il calore generato cresce col quadrato della corrente:<br>
-              &nbsp;&nbsp;&nbsp;<strong>P = R · I²</strong> (sviluppo termico esplosivo in millisecondi!)
-            </div>
-
-            <div class="callout-box danger" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              🔥 <strong>Conseguenze:</strong> Il conduttore fonde la plastica isolante, le batterie scoppiano e l'alimentatore si guasta senza protezioni elettroniche!
-            </div>
-          </div>
-
-          <!-- Simulatore Circuito: Normale vs Corto Circuito -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore di Banco Elettrico</strong>
-              <button class="interactive-tab-btn" id="btn-toggle-short" onclick="toggleShortCircuit()">
-                ⚡ Simula Corto Circuito!
-              </button>
-            </div>
-
-            <!-- SVG Circuito Elettrico Animato -->
-            <svg width="100%" height="150" viewBox="0 0 320 150">
-              <!-- Alimentatore a sinistra -->
-              <rect x="20" y="30" width="70" height="90" fill="#1e293b" rx="6"/>
-              <circle cx="45" cy="55" r="7" fill="#ef4444"/><text x="45" y="75" font-size="8" fill="#cbd5e1" text-anchor="middle">(+)</text>
-              <circle cx="70" cy="55" r="7" fill="#0f172a"/><text x="70" y="75" font-size="8" fill="#cbd5e1" text-anchor="middle">(-)</text>
-              <text x="55" y="105" font-size="9" fill="#38bdf8" font-weight="700" text-anchor="middle">12 V DC</text>
-
-              <!-- Conduttore superiore rosso -->
-              <path id="wire-top" d="M 45,55 L 45,20 L 250,20 L 250,45" fill="none" stroke="#ef4444" stroke-width="3"/>
-              
-              <!-- Carico (Lampadina) a destra -->
-              <circle cx="250" cy="65" r="18" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
-              <text id="bulb-icon" x="250" y="70" font-size="14" text-anchor="middle">💡</text>
-
-              <!-- Conduttore inferiore nero -->
-              <path id="wire-bottom" d="M 250,85 L 250,130 L 70,130 L 70,55" fill="none" stroke="#0f172a" stroke-width="3"/>
-
-              <!-- Filo di Corto Circuito diretto (nascosto di default) -->
-              <path id="short-wire" d="M 45,55 C 100,20 100,100 70,55" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="4,4" style="opacity: 0; transition: opacity 0.2s;"/>
-              
-              <!-- Fumo o scintilla -->
-              <text id="spark-icon" x="90" y="60" font-size="20" style="opacity: 0;">💥</text>
-            </svg>
-
-            <!-- Box di Stato Alimentatore -->
-            <div id="psu-status-box" class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.82rem;">
-              <strong>Stato Circuito: NORMALE.</strong> La lampadina assorbe 0.2 A. Temperatura dei fili: 22°C (ambiente).
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 4: IL MULTIMETRO DIGITALE
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="4" data-name="MULTIMETRO E FUSIBILI">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>📟 Il Multimetro Digitale: Come NON Bruciare il Tester!</h1>
-          <p class="slide-subtitle">L'errore da matita rossa: perché inserire l'amperometro in parallelo distrugge il fusibile interno?</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge warning">USO PUNTALI</span>
-          <span class="pill-badge danger">AMPEROMETRO IN SERIE!</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Le 3 Boccole del Tester -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Mappa dei Puntali:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Sul multimetro ci sono 3 o 4 boccole. Sbagliare boccola o configurazione trasforma lo strumento in un corto circuito:
-              </p>
-            </div>
-
-            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6;">
-              1. <strong>COM (Nero):</strong> Sempre collegato qui (massa comune).<br>
-              2. <strong>V / Ω (Rosso):</strong> Per Tensione e Resistenza. Ha un'altissima impedenza interna (10 Milioni di Ω). Non farà mai danni, anche se sbagli scala!<br>
-              3. <strong>mA / 10A (Rosso):</strong> Per la Corrente. Ha una resistenza interna <strong>QUASI ZERO</strong> (è come un filo di rame puro!).
-            </div>
-
-            <div class="callout-box danger" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              ☠️ <strong>REGOLA FERREA:</strong> L'Amperometro si collega <strong>SOLO IN SERIE</strong> (aprendo il circuito)! Se colleghi i puntali dell'amperometro in parallelo alla batteria, crei un corto secco e <strong>il fusibile interno salta all'istante</strong>!
-            </div>
-          </div>
-
-          <!-- Simulatore Tester: Voltmetro vs Amperometro -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore Inserimento Tester</strong>
-              <div style="display: flex; gap: 6px;">
-                <button class="interactive-tab-btn active" id="btn-mode-volt" onclick="setMeterTest('volt')">Voltmetro (Parallelo)</button>
-                <button class="interactive-tab-btn" id="btn-mode-amp-err" onclick="setMeterTest('amp-err')">Amperometro (Parallelo ❌)</button>
-              </div>
-            </div>
-
-            <!-- Display Multimetro Digitale SVG -->
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #fafbfe; border-radius: 10px; border: 1px solid #cbd5e1; position: relative;">
-              <svg width="240" height="130" viewBox="0 0 240 130">
-                <!-- Scocca tester gialla -->
-                <rect x="20" y="10" width="200" height="110" fill="#facc15" stroke="#ca8a04" stroke-width="3" rx="10"/>
-                <!-- Display LCD verde/nero -->
-                <rect x="40" y="22" width="160" height="40" fill="#ecfccb" stroke="#65a30d" stroke-width="2" rx="4"/>
-                <text id="meter-lcd" x="120" y="50" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#14532d" text-anchor="middle">12.04 V</text>
-                
-                <!-- Manopola rotativa centrale -->
-                <circle cx="120" cy="85" r="16" fill="#1e293b"/>
-                <line x1="120" y1="85" x2="120" y2="72" stroke="white" stroke-width="2.5"/>
-
-                <!-- 3 Boccole sotto -->
-                <circle cx="70" cy="105" r="6" fill="#ef4444"/><text x="70" y="117" font-size="7" fill="#713f12" text-anchor="middle">V/Ω</text>
-                <circle cx="120" cy="105" r="6" fill="#0f172a"/><text x="120" y="117" font-size="7" fill="#713f12" text-anchor="middle">COM</text>
-                <circle cx="170" cy="105" r="6" fill="#b91c1c"/><text x="170" y="117" font-size="7" fill="#713f12" text-anchor="middle">10A</text>
-              </svg>
-            </div>
-
-            <!-- Esito Tester -->
-            <div id="meter-status-box" class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.82rem;">
-              <strong>MISURA CORRETTA:</strong> Il voltmetro è in parallelo. Resistenza interna altissima (10 MΩ), assorbe solo 0.000001 A. Misura perfetta!
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 5: ACQUA CALDA & VAPORE
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="5" data-name="ACQUA CALDA E VAPORE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🔥 Acqua Calda e Vapore: Come Lavorare in Sicurezza al Banco</h1>
-          <p class="slide-subtitle">Perché il vapore scotta più dell'acqua liquida e quali sono le regole pratiche di manipolazione</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge warning">CALORE DI CONDENSAZIONE</span>
-          <span class="pill-badge success">BUONE PRATICHE AL BANCO</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- La Fisica del Calore Ceduto -->
-          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
-            <div>
-              <strong style="color: #c2410c; font-size: 1.05rem;">Perché il Vapore Scotta di Più dell'Acqua?</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                Anche se entrambi si trovano a 100°C, quando il vapore tocca una superficie più fredda <strong>condensa istantaneamente</strong> in goccioline d'acqua, cedendo all'improvviso tutto il calore accumulato per evaporare.
-              </p>
-            </div>
-
-            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
-              • <strong>Acqua liquida a 100°C:</strong> a contatto cede solo il calore dovuto al proprio raffreddamento.<br>
-              • <strong>Vapore a 100°C:</strong> prima cede tutto il calore di cambio di stato (condensazione), e solo dopo continua a cedere calore raffreddandosi!<br><br>
-              Ecco perché anche un piccolo getto di vapore va sempre trattato con prudenza.
-            </div>
-
-            <div class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              💧 <strong>Regola Pratica:</strong> Mai avvicinare il viso o le mani sopra becher in ebollizione o uscite di vapore!
-            </div>
-          </div>
-
-          <!-- Norme Pratiche di Manipolazione -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
-            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Le 3 Regole Pratiche per i Fluidi Caldi</strong>
-
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
-                <strong style="color: #b45309; font-size: 0.88rem;">1. Maneggiare i Becher Caldi con Cura</strong>
-                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
-                  Se il becher è caldo, usa le apposite pinze per becher o presine da laboratorio. Se possibile, lascialo intiepidire prima di spostarlo.
-                </p>
-              </div>
-
-              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
-                <strong style="color: #b45309; font-size: 0.88rem;">2. Orientamento dei Becchi di Scarico</strong>
-                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
-                  Se utilizzi tubi per il vapore o becher con beccuccio, orientali verso il fondo del banco, mai verso i compagni.
-                </p>
-              </div>
-
-              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
-                <strong style="color: #b45309; font-size: 0.88rem;">3. Evitare Sbalzi Termici del Vetro</strong>
-                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
-                  Non versare acqua molto fredda direttamente dentro un becher di vetro appena tolto dalla piastra calda.
-                </p>
-              </div>
-            </div>
-
-            <div style="font-size: 0.78rem; color: #64748b;">
-              In caso di contatto accidentale con acqua calda: sciacquare subito con acqua corrente fredda e avvisare il docente ITP.
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 6: TERMOMETRO A SONDA & CALORIMETRO
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="6" data-name="SONDE E CALORIMETRO">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🌡️ Termometro Digitale a Sonda & Calorimetro delle Miscele</h1>
-          <p class="slide-subtitle">Come posizionare la sonda per misurare senza errori e come avere cura degli strumenti</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge primary">TERMOMETRIA DIGITALE</span>
-          <span class="pill-badge info">CALORIMETRIA</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Termometro a sonda digitale -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Uso Corretto del Termometro a Sonda:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                In 2ª usiamo termometri digitali con sonda a stilo metallico. Per ottenere misure precise e non rovinare lo strumento:
-              </p>
-            </div>
-
-            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
-              ❌ <strong>ERRORE CLASSICO:</strong> Appoggiare la punta della sonda sul fondo del becher a contatto con la piastra calda.<br>
-              ➔ Misurerai la temperatura del vetro caldo anziché quella reale dell'acqua!<br><br>
-              ✅ <strong>METODO CORRETTO:</strong> Mantenere la punta della sonda sospesa nel cuore del fluido, mescolando delicatamente con l'apposita bacchetta.
-            </div>
-
-            <div class="callout-box info" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              Non usare MAI la sonda termometrica come cucchiaio per mescolare: la punta del sensore potrebbe piegarsi e perdere la taratura!
-            </div>
-          </div>
-
-          <!-- Il Calorimetro delle Miscele -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
-            <div>
-              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Il Calorimetro delle Miscele:</strong>
-              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
-                È lo strumento fondamentale per determinare il calore specifico dei metalli. È progettato per limitare le dispersioni termiche con l'ambiente:
-              </p>
-            </div>
-
-            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; font-size: 0.84rem; color: #166534; line-height: 1.5;">
-              • <strong>Bicchiere termico isolato:</strong> trattiene il calore all'interno dell'acqua.<br>
-              • <strong>Coperchio forato:</strong> impedisce al calore di fuggire nell'aria della stanza.<br>
-              • <strong>Agitatore a spirale:</strong> serve per uniformare la temperatura dell'acqua prima della lettura.<br><br>
-              ⚠️ <strong>ATTENZIONE AL BANCO:</strong> Quando inserisci i campioni metallici caldi nell'acqua del calorimetro, calali lentamente con il filo: non lasciarli cadere per evitare schizzi d'acqua calda!
-            </div>
-
-            <div class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
-              Calorimetro ben chiuso = Scambio di calore solo tra acqua e metallo (misura accurata).
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 7: I 4 PUNTI CHIAVE DEL LABORATORIO
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="7" data-name="I 4 PUNTI CHIAVE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>📜 I 4 Punti Chiave del Laboratorio di 2ª</h1>
-          <p class="slide-subtitle">Quattro semplici regole di buon senso per lavorare bene, senza guasti e in piena sicurezza</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge dark">REGOLE PRATICHE</span>
-          <span class="pill-badge warning">BUON SENSO AL BANCO</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="grid-2" style="flex: 1;">
-          
-          <!-- Comandamento 1 -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="font-size: 1.5rem;">✋</span>
-              <strong style="color: var(--argon-primary); font-size: 1rem;">1. Controllo del Docente ITP Prima di Accendere</strong>
-            </div>
-            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
-              Prima di dare tensione con l'interruttore dell'alimentatore o della piastra, alza la mano: il docente ITP farà una rapida verifica visiva del circuito e dei collegamenti.
-            </p>
-          </div>
-
-          <!-- Comandamento 2 -->
-          <div class="argon-card" style="border-top: 4px solid #11cdef;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="font-size: 1.5rem;">💧</span>
-              <strong style="color: #0b93ab; font-size: 1rem;">2. Banchi Asciutti e Puliti</strong>
-            </div>
-            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
-              Tenere la zona con i becher d'acqua separata dagli alimentatori e dai cavi elettrici. Qualsiasi goccia d'acqua sul piano di lavoro va asciugata subito con carta assorbente.
-            </p>
-          </div>
-
-          <!-- Comandamento 3 -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-warning);">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="font-size: 1.5rem;">📟</span>
-              <strong style="color: #c2410c; font-size: 1rem;">3. Amperometro Rigorosamente in Serie</strong>
-            </div>
-            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
-              Per misurare la corrente con il tester si apre il circuito e si collega lo strumento in serie come un ponte. Mai posizionare i puntali dell'amperometro in parallelo ai morsetti della batteria!
-            </p>
-          </div>
-
-          <!-- Comandamento 4 -->
-          <div class="argon-card" style="border-top: 4px solid var(--argon-success);">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="font-size: 1.5rem;">🤝</span>
-              <strong style="color: #15803d; font-size: 1rem;">4. Calma, Ordine e Lavoro di Squadra</strong>
-            </div>
-            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
-              In laboratorio non si corre: zaini e cappotti sotto il banco o negli armadietti per non inciampare. Maneggiare becher e strumenti con calma condividendo i compiti con il proprio gruppo.
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-    <!-- ──────────────────────────────────────────
-         SLIDE 8: SFIDA LIM: PATENTE DI SICUREZZA 2°
-         ────────────────────────────────────────── -->
-    <article class="slide-card" data-step="8" data-name="SFIDA LIM: PATENTE">
-      <div class="slide-header">
-        <div class="slide-title-group">
-          <h1>🏆 Sfida alla LIM: Conquista la "Patente di Sicurezza del 2° Anno"!</h1>
-          <p class="slide-subtitle">5 scenari realistici di laboratorio per dimostrare la maturità tecnica della classe</p>
-        </div>
-        <div class="slide-badges">
-          <span class="pill-badge warning" id="quiz-badge-step">SCENARIO 1 DI 5</span>
-          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
-        </div>
-      </div>
-
-      <div class="slide-body">
-        
-        <div class="argon-card" style="flex: 1; border-top: 4px solid #fb6340; justify-content: space-between; padding: 18px 24px;">
-          
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <span id="quiz-topic" class="pill-badge warning">SICUREZZA ELETTRICA & TERMICA</span>
-              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
-            </div>
-
-            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
-              Caricamento quesito...
-            </h2>
-
-            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
-          </div>
-
-          <div id="quiz-feedback-box" class="callout-box warning" style="display: none; padding: 10px 16px; margin: 0;">
-            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
-            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end;">
-            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
-              Prossimo Scenario ➜
-            </button>
-          </div>
-
-        </div>
-
-      </div>
-    </article>
-
-  </main>
-
-  <!-- BOTTOM BAR -->
-  <footer class="argon-bottombar">
-    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
-      ◀ Slide Precedente
-    </button>
-
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Usa le frecce ⬅️ / ➡️ o la barra spaziatrice</span>
-    </div>
-
-    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
-      Slide Successiva ▶
-    </button>
-  </footer>
-
-  <div class="argon-toast" id="argon-toast">Notifica</div>
-
-  <!-- JAVASCRIPT LOGICA -->
-  <script>
-    let currentSlide = 1;
-    const totalSlides = 8;
-    let limZoom = 1;
-    let audioCtx = null;
-
-    function getAudioContext() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      return audioCtx;
-    }
-
-    function playBeep(freq, type = 'sine', duration = 0.12) {
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch(e) {}
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('argon-toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
-    }
-
-    function goToSlide(step) {
-      if (step < 1 || step > totalSlides) return;
-      currentSlide = step;
-
-      document.querySelectorAll('.slide-card').forEach(slide => {
-        const s = parseInt(slide.dataset.step);
-        slide.classList.toggle('active', s === currentSlide);
-      });
-
-      document.querySelectorAll('.step-node').forEach(node => {
-        const s = parseInt(node.dataset.step);
-        node.classList.toggle('active', s === currentSlide);
-        node.classList.toggle('completed', s < currentSlide);
-      });
-
-      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
-      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
-
-      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
-      if (activeCard) {
-        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
-        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
-      }
-
-      playBeep(480, 'triangle', 0.08);
-    }
-
-    function changeSlide(delta) {
-      goToSlide(currentSlide + delta);
-    }
-
-    document.querySelectorAll('.step-node').forEach(node => {
-      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
-      else if (e.key === 'ArrowLeft') changeSlide(-1);
-    });
-
-    document.getElementById('btn-zoom-in').addEventListener('click', () => {
-      if (limZoom < 1.35) {
-        limZoom += 0.07;
-        document.documentElement.style.setProperty('--lim-zoom', limZoom);
-        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
-      }
-    });
-
-    document.getElementById('btn-zoom-out').addEventListener('click', () => {
-      if (limZoom > 0.85) {
-        limZoom -= 0.07;
-        document.documentElement.style.setProperty('--lim-zoom', limZoom);
-        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
-      }
-    });
-
-    document.getElementById('btn-fullscreen').addEventListener('click', () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-      else document.exitFullscreen().catch(() => {});
-    });
-
-    // ── SLIDE 2: SIMULATORE CORRENTE SUL CORPO ──────────
-    let currentSourceCap = '12 A';
-
-    function setPresetShock(v, cap) {
-      document.querySelectorAll('#btn-scen-12v, #btn-scen-auto, #btn-scen-24v, #btn-scen-230v').forEach(b => b.classList.remove('active'));
-      if (v === 12 && cap === '12 A') document.getElementById('btn-scen-12v').classList.add('active');
-      else if (v === 12 && cap === '600 A') document.getElementById('btn-scen-auto').classList.add('active');
-      else if (v === 24) document.getElementById('btn-scen-24v').classList.add('active');
-      else if (v === 230) document.getElementById('btn-scen-230v').classList.add('active');
-
-      document.getElementById('volt-slider').value = v;
-      currentSourceCap = cap;
-      updateShockCalc(v, cap);
-      playBeep(v > 50 ? 600 : 440);
-    }
-
-    function onShockSlider() {
-      document.querySelectorAll('#btn-scen-12v, #btn-scen-auto, #btn-scen-24v, #btn-scen-230v').forEach(b => b.classList.remove('active'));
-      const v = parseFloat(document.getElementById('volt-slider').value);
-      updateShockCalc(v, '10 A');
-    }
-
-    function calcShock() {
-      onShockSlider();
-    }
-
-    function updateShockCalc(v, cap) {
-      document.getElementById('volt-disp').textContent = v + ' V' + (v <= 24 ? ' (SELV)' : ' (NON SELV)');
-      document.getElementById('source-amp-disp').textContent = cap || currentSourceCap;
-
-      const r_corpo = 1500; // Ohm
-      const i_ma = (v / r_corpo) * 1000;
-      document.getElementById('current-disp').textContent = i_ma.toFixed(1) + ' mA';
-
-      const card = document.getElementById('shock-result-card');
-      const disp = document.getElementById('current-disp');
-      const desc = document.getElementById('shock-desc');
-
-      if (i_ma < 10) {
-        card.style.background = '#f0fdf4';
-        card.style.borderColor = '#22c55e';
-        disp.style.color = '#15803d';
-        desc.style.color = '#166534';
-        desc.textContent = `🟢 TOTALMENTE SICURO: Anche con ${cap || currentSourceCap} disponibili, a ${v} V entrano solo ${i_ma.toFixed(1)} mA nel corpo!`;
-      } else if (i_ma < 30) {
-        card.style.background = '#fffbeb';
-        card.style.borderColor = '#f59e0b';
-        disp.style.color = '#b45309';
-        desc.style.color = '#92400e';
-        desc.textContent = `🟡 ZONA GIALLA: Scossa percettibile a ${v} V (${i_ma.toFixed(1)} mA), formicolio e contrazioni senza paralisi.`;
-      } else {
-        card.style.background = '#fef2f2';
-        card.style.borderColor = '#ef4444';
-        disp.style.color = '#b91c1c';
-        desc.style.color = '#991b1b';
-        desc.textContent = `🔴 PERICOLO GRAVE: La spinta di ${v} V forza ${i_ma.toFixed(1)} mA nel corpo (> 30 mA soglia salvavita)!`;
-        playBeep(240, 'sawtooth', 0.15);
-      }
-    }
-
-    // ── SLIDE 3: SIMULATORE CORTO CIRCUITO ──────────
-    let isShort = false;
-    function toggleShortCircuit() {
-      isShort = !isShort;
-      const wire = document.getElementById('short-wire');
-      const spark = document.getElementById('spark-icon');
-      const box = document.getElementById('psu-status-box');
-      const btn = document.getElementById('btn-toggle-short');
-      const bulb = document.getElementById('bulb-icon');
-
-      if (isShort) {
-        wire.style.opacity = '1';
-        spark.style.opacity = '1';
-        bulb.textContent = '⚫'; // lampadina spenta bypassata
-        btn.textContent = '🔄 Ripristina Circuito';
-        btn.classList.add('active');
-        box.className = 'callout-box danger';
-        box.innerHTML = '🚨 <strong>CORTO CIRCUITO!</strong> La corrente supera 10 A! Scatta la protezione elettronica dell\'alimentatore (Current Limit) per evitare la fusione dei cavi!';
-        playBeep(180, 'sawtooth', 0.35);
-      } else {
-        wire.style.opacity = '0';
-        spark.style.opacity = '0';
-        bulb.textContent = '💡';
-        btn.textContent = '⚡ Simula Corto Circuito!';
-        btn.classList.remove('active');
-        box.className = 'callout-box success';
-        box.innerHTML = '<strong>Stato Circuito: NORMALE.</strong> La lampadina assorbe 0.2 A. Temperatura dei fili: 22°C (ambiente).';
-        playBeep(520, 'sine', 0.15);
-      }
-    }
-
-    // ── SLIDE 4: SIMULATORE MULTIMETRO ──────────
-    function setMeterTest(mode) {
-      document.getElementById('btn-mode-volt').classList.toggle('active', mode === 'volt');
-      document.getElementById('btn-mode-amp-err').classList.toggle('active', mode === 'amp-err');
-      const lcd = document.getElementById('meter-lcd');
-      const box = document.getElementById('meter-status-box');
-
-      if (mode === 'volt') {
-        lcd.textContent = '12.04 V';
-        lcd.style.color = '#14532d';
-        box.className = 'callout-box success';
-        box.innerHTML = '<strong>MISURA CORRETTA:</strong> Il voltmetro è collegato in parallelo. La sua resistenza interna altissima (10 MΩ) impedisce il passaggio di corrente dannosa.';
-        playBeep(580);
-      } else {
-        lcd.textContent = 'FUSIBILE 💥';
-        lcd.style.color = '#b91c1c';
-        box.className = 'callout-box danger';
-        box.innerHTML = '💥 <strong>DISASTRO! FUSIBILE BRUCIATO:</strong> L\'amperometro ha resistenza quasi ZERO (0.01 Ω). Mettendolo in parallelo hai creato un corto circuito diretto tra i morsetti dell\'alimentatore! Il fusibile interno si è vaporizzato.';
-        playBeep(160, 'sawtooth', 0.4);
-      }
-    }
-
-    // ── SLIDE 8: SFIDA LIM PATENTE ──────────
-    const quizData = [
-      {
-        topic: "Tensione vs Corrente: Il Mito dei 12 A",
-        q: "Un alimentatore da banco eroga 12 V ed è in grado di fornire fino a 12 Ampere (o una batteria per automobile da 12 V e 600 A). Se tocchi con le mani i due morsetti a 12 V, cosa succede?",
-        opts: [
-          "Prendi una scossa letale da 12 Ampere",
-          "Non senti nulla, perché con soli 12 V di tensione (spinta) la corrente che riesce a entrare nella resistenza del corpo è di soli 8 mA (innocua)",
-          "L'alimentatore esplode all'istante",
-          "Tutti i 12 Ampere si scaricano nel cuore"
-        ],
-        correct: 1,
-        exp: "Bravissimi! La tensione è la 'spinta': 12 V non hanno la forza per vincere la resistenza della pelle. I 12 A dell'alimentatore andrebbero a un motore o lampadina, non al tuo corpo!"
-      },
-      {
-        topic: "Uso dell'Amperometro",
-        q: "Devi misurare l'intensità di corrente che scorre in un circuito composto da generatore e reostato. Come colleghi il multimetro?",
-        opts: [
-          "Colleghi i puntali in parallelo direttamente ai morsetti della batteria",
-          "Apri il circuito e inserisci il multimetro in SERIE con i puntali su COM e mA/10A",
-          "Tocchi con i puntali la carcassa metallica del banco",
-          "Lo colleghi senza accendere l'alimentatore"
-        ],
-        correct: 1,
-        exp: "Perfetto! La corrente si misura aprendo il ramo e facendo scorrere gli elettroni DENTRO lo strumento collegato rigorosamente in serie!"
-      },
-      {
-        topic: "Acqua Calda e Vapore",
-        q: "Perché bisogna fare particolare attenzione al vapore caldo rispetto alla semplice acqua tiepida?",
-        opts: [
-          "Perché il vapore è invisibile e scompare nel nulla",
-          "Perché quando il vapore tocca una superficie più fredda condensa rilasciando molto più calore dell'acqua liquida",
-          "Perché il vapore ha una temperatura superiore a 500°C",
-          "Perché il vapore fa diventare l'acqua salata"
-        ],
-        correct: 1,
-        exp: "Esatto! La condensazione del vapore cede all'istante il calore di cambio di stato, scaldando molto più dell'acqua liquida!"
-      },
-      {
-        topic: "Termometro a Sonda",
-        q: "Durante una prova di riscaldamento dell'acqua con piastra elettrica, dove deve essere posizionata la sonda digitale di temperatura?",
-        opts: [
-          "Schiacciata sul fondo del becher a contatto con la piastra calda",
-          "Sospesa nel cuore del liquido in agitazione, senza toccare pareti o fondo",
-          "Fuori dal liquido per misurare l'aria della stanza",
-          "Appoggiata sul bordo di plastica del banco"
-        ],
-        correct: 1,
-        exp: "Ottimo! Sul fondo del becher misureresti la temperatura della piastra a 200°C e non quella reale dell'acqua, falsando tutti i dati!"
-      },
-      {
-        topic: "Regola del Benestare ITP",
-        q: "Hai terminato di montare il circuito elettrico con reostato e lampadina sul tuo banco. Qual è la prima operazione da fare?",
-        opts: [
-          "Accendere subito l'interruttore al massimo voltaggio",
-          "Chiamare il docente ITP per la verifica a vista dei collegamenti prima di alimentare il banco",
-          "Smontare tutto per rimettere in ordine",
-          "Iniziare a prendere appunti sulla relazione"
-        ],
-        correct: 1,
-        exp: "Regola d'oro: NESSUN circuito viene alimentato senza il previo controllo e benestare del Docente Tecnico Pratico!"
-      }
-    ];
-
-    let quizIndex = 0;
-    let quizScore = 0;
-
-    function loadQuiz() {
-      const q = quizData[quizIndex];
-      document.getElementById('quiz-counter').textContent = `Scenario ${quizIndex + 1} di ${quizData.length}`;
-      document.getElementById('quiz-badge-step').textContent = `SCENARIO ${quizIndex + 1} DI ${quizData.length}`;
-      document.getElementById('quiz-topic').textContent = q.topic;
-      document.getElementById('quiz-question').textContent = q.q;
-
-      const grid = document.getElementById('quiz-options-grid');
-      grid.innerHTML = '';
-      document.getElementById('quiz-feedback-box').style.display = 'none';
-      document.getElementById('quiz-next-btn').style.display = 'none';
-
-      q.opts.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'interactive-tab-btn';
-        btn.style.textAlign = 'left';
-        btn.style.padding = '12px 16px';
-        btn.style.fontSize = '0.9rem';
-        btn.innerHTML = `<strong style="color: #fb6340; margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
-        btn.onclick = () => checkQuizAnswer(idx, btn);
-        grid.appendChild(btn);
-      });
-    }
-
-    function checkQuizAnswer(selectedIdx, btnEl) {
-      const q = quizData[quizIndex];
-      const buttons = document.querySelectorAll('#quiz-options-grid button');
-      buttons.forEach(b => b.disabled = true);
-
-      const fBox = document.getElementById('quiz-feedback-box');
-      const fIcon = document.getElementById('quiz-feedback-icon');
-      const fText = document.getElementById('quiz-feedback-text');
-
-      if (selectedIdx === q.correct) {
-        btnEl.style.background = '#dcfce7';
-        btnEl.style.borderColor = '#22c55e';
-        btnEl.style.color = '#15803d';
-        fBox.className = 'callout-box success';
-        fIcon.textContent = '🎉';
-        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
-        quizScore += 20;
-        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
-        playBeep(680, 'sine', 0.2);
-      } else {
-        btnEl.style.background = '#fee2e2';
-        btnEl.style.borderColor = '#ef4444';
-        btnEl.style.color = '#b91c1c';
-        buttons[q.correct].style.background = '#dcfce7';
-        buttons[q.correct].style.borderColor = '#22c55e';
-        buttons[q.correct].style.color = '#15803d';
-        fBox.className = 'callout-box warning';
-        fIcon.textContent = '💡';
-        fText.innerHTML = `<strong>ATTENZIONE:</strong> ${q.exp}`;
-        playBeep(240, 'sawtooth', 0.2);
-      }
-
-      fBox.style.display = 'flex';
-      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
-    }
-
-    function nextQuizQuestion() {
-      if (quizIndex < quizData.length - 1) {
-        quizIndex++;
-        loadQuiz();
-      } else {
-        const grid = document.getElementById('quiz-options-grid');
-        grid.innerHTML = `
-          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fbf6; border: 2px solid #2dce89; border-radius: 12px;">
-            <div style="font-size: 3rem; margin-bottom: 8px;">🛡️</div>
-            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! PATENTE DI SICUREZZA 2° ANNO OTTENUTA!</h3>
-            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio di Squadra: <strong>${quizScore} / 100 PUNTI</strong></p>
-            <p style="font-size: 0.85rem; color: #166534;">La classe è ufficialmente abilitata alle attività nei laboratori di termologia, termodinamica ed elettrotecnica dell'ITIS Giordano Bruno!</p>
-          </div>
-        `;
-        document.getElementById('quiz-question').textContent = "Risultato Abilitazione Laboratorio 2° Anno";
-        document.getElementById('quiz-feedback-box').style.display = 'none';
-        document.getElementById('quiz-next-btn').style.display = 'none';
-        playBeep(880, 'triangle', 0.4);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      goToSlide(1);
-      calcShock();
-      loadQuiz();
-    });
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>00. Sicurezza Elettrica (CEI 64-8/SELV) e Rischio Termico — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   00: Sicurezza Elettrica (CEI 64-8/SELV) e Rischio Termico (Classi 2°)
+   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  
+  --argon-danger: #f5365c;
+  --argon-danger-light: rgba(245, 54, 92, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  zoom: var(--lim-zoom);
+}
+
+/* TOPBAR */
+.argon-topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--argon-dark);
+}
+
+.school-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(87deg, #fb6340 0, #f5365c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(251, 99, 64, 0.3);
+}
+
+.school-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.school-sub {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fb6340;
+  letter-spacing: 0.5px;
+}
+
+.topbar-center {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: #e9ecef;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+  color: #adb5bd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.step-node.active {
+  background: #fb6340;
+  border-color: #fb6340;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.45);
+  transform: scale(1.15);
+}
+
+.step-node.completed {
+  background: var(--argon-success);
+  border-color: var(--argon-success);
+  color: #ffffff;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lim-pill-badge {
+  background: var(--argon-warning-light);
+  color: #c4411d;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.lim-btn {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* VIEWPORT SLIDES */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 24px;
+  display: flex;
+}
+
+.slide-card {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 24px;
+  right: 24px;
+  background: var(--argon-card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.99);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-card.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  z-index: 5;
+}
+
+.slide-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f3f9;
+  flex-shrink: 0;
+}
+
+.slide-title-group h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.pill-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.pill-badge.warning { background: var(--argon-warning-light); color: #c4411d; }
+.pill-badge.danger { background: var(--argon-danger-light); color: #a71d37; }
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
+.pill-badge.dark { background: #e9ecef; color: var(--argon-dark); }
+
+.slide-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.callout-box {
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.callout-box.warning {
+  background: #fff8f5;
+  border-left: 5px solid var(--argon-warning);
+  color: #9c3015;
+}
+.callout-box.danger {
+  background: #fdf2f4;
+  border-left: 5px solid var(--argon-danger);
+  color: #a71d37;
+}
+.callout-box.primary {
+  background: #f4f6fd;
+  border-left: 5px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+.callout-box.success {
+  background: #f0fbf6;
+  border-left: 5px solid var(--argon-success);
+  color: #1a6b47;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.argon-bottombar {
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.nav-btn.prev {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+}
+.nav-btn.next {
+  background: #fb6340;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(251, 99, 64, 0.35);
+}
+.nav-btn.next:hover:not(:disabled) {
+  background: #e24e2d;
+}
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.interactive-tab-btn {
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.interactive-tab-btn.active {
+  background: var(--argon-warning-light);
+  border-color: #fb6340;
+  color: #c4411d;
+}
+
+.argon-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--argon-darker);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+.argon-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="argon-topbar">
+    <div class="topbar-left">
+      <a href="/index.html" class="school-badge" title="Torna alla Home">
+        <div class="school-badge-icon">⚡</div>
+        <div class="school-badge-text">
+          <span class="school-title">ITIS Giordano Bruno</span>
+          <span class="school-sub">Fisica • 2° Classi • Sicurezza</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-center">
+      <div class="steps-indicator" id="steps-indicator">
+        <div class="step-node active" data-step="1" title="1. Il Salto di Livello">1</div>
+        <div class="step-node" data-step="2" title="2. CEI 64-8 e Regime SELV">2</div>
+        <div class="step-node" data-step="3" title="3. Corto Circuito & Joule">3</div>
+        <div class="step-node" data-step="4" title="4. Multimetro & Fusibili">4</div>
+        <div class="step-node" data-step="5" title="5. Calore Latente & Vapore">5</div>
+        <div class="step-node" data-step="6" title="6. Sonde & Calorimetro">6</div>
+        <div class="step-node" data-step="7" title="7. I 4 Comandamenti">7</div>
+        <div class="step-node" data-step="8" title="8. Patente di Sicurezza">8</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="lim-pill-badge" id="slide-name-badge">
+        <span>PASSO 1 DI 8</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="A-">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="A+">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero">⛶</button>
+    </div>
+  </header>
+
+  <!-- VIEWPORT SLIDES -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: LE NUOVE ESPERIENZE DI 2ª
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="BENVENUTI IN 2ª">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🚀 Benvenuti nel Laboratorio di Fisica del 2° Anno!</h1>
+          <p class="slide-subtitle">In 1ª abbiamo misurato masse e lunghezze. In 2ª sperimentiamo con acqua calda, calorimetri e circuiti elettrici!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">ACCOGLIENZA 2° ANNO</span>
+          <span class="pill-badge dark">SC 1.2 & SC 1.3.6</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box warning">
+          💡 <strong>LE NUOVE ESPERIENZE DEL BIENNIO:</strong> Rispetto al primo anno, introduciamo attività con l'<strong>acqua calda</strong> (termometria, calore specifico e dilatazione) e con i <strong>circuiti elettrici in bassa tensione</strong> (alimentatori da banco, multimetri e resistori).
+        </div>
+
+        <div class="grid-2">
+          <!-- Attenzione Termica -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; background: #fffdfc;">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">🔥</div>
+            <strong style="color: #c2410c; font-size: 1.1rem; margin-bottom: 4px;">1. Attenzione con l'Acqua Calda</strong>
+            <p style="font-size: 0.84rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 8px;">
+              • Usiamo becher con acqua calda, piastre termiche e calorimetri per misurare temperature e scambi di calore.<br>
+              • <strong>Le buone abitudini:</strong> impugnare i becher caldi con le apposite pinze o presine, non sporgersi sui vapori e muoversi con calma sul banco evitando urti.
+            </p>
+            <div class="callout-box warning" style="padding: 6px 12px; font-size: 0.78rem; margin: 0;">
+              Tenere il banco sempre asciutto: se cade acqua, si asciuga subito!
+            </div>
+          </div>
+
+          <!-- Attenzione Elettrica -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); background: #fdfefe;">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">⚡</div>
+            <strong style="color: var(--argon-primary); font-size: 1.1rem; margin-bottom: 4px;">2. Rispetto degli Strumenti Elettrici</strong>
+            <p style="font-size: 0.84rem; color: var(--argon-text-muted); line-height: 1.45; margin-bottom: 8px;">
+              • Lavoriamo a bassissima tensione sicura (alimentatori DC sotto i 24 V: nessun pericolo di scossa!).<br>
+              • <strong>Cosa dobbiamo proteggere:</strong> gli strumenti di misura! Evitare cortocircuiti che surriscaldano i fili e collegare correttamente i puntali del tester per non bruciare il fusibile interno.
+            </p>
+            <div class="callout-box primary" style="padding: 6px 12px; font-size: 0.78rem; margin: 0;">
+              Prima di accendere l'alimentatore, chiama sempre il docente ITP per il controllo!
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-box success" style="margin: 0;">
+          🛡️ <strong>L'Obiettivo:</strong> Lavorare con ordine, avere cura degli strumenti del laboratorio e acquisire il metodo sperimentale dei futuri tecnici!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: TENSIONE VS CORRENTE & REGIME SELV
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="VOLT VS AMPERE & SELV">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⚡ Tensione (Volt) vs Corrente (Ampere): La Distinzione Fondamentale!</h1>
+          <p class="slide-subtitle">Perché un alimentatore da 12 V e 12 A (o una batteria da 600 A) NON dà la scossa al corpo umano?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge info">VOLT = LA SPINTA</span>
+          <span class="pill-badge warning">AMPERE = IL FLUSSO</span>
+          <span class="pill-badge success">SELV: V &lt; 24 V (CC)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Spiegazione Tensione vs Corrente e Mito dei 12 A -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-primary); font-size: 1.05rem;">Non confondere Tensione (Volt) e Corrente (Ampere):</strong>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+                <div style="background: #f0f7ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 8px;">
+                  <strong style="color: #0369a1; font-size: 0.85rem;">⚡ TENSIONE (Volt - V)</strong>
+                  <p style="font-size: 0.78rem; color: #0c4a6e; margin-top: 2px; line-height: 1.35;">
+                    È la <strong>SPINTA</strong> (dislivello o pressione). È la forza con cui gli elettroni tentano di entrare.
+                  </p>
+                </div>
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px;">
+                  <strong style="color: #b45309; font-size: 0.85rem;">🌊 CORRENTE (Ampere - I)</strong>
+                  <p style="font-size: 0.78rem; color: #78350f; margin-top: 2px; line-height: 1.35;">
+                    È il <strong>FLUSSO REALE</strong> (quanti elettroni passano al secondo). La decide l'ostacolo (il tuo corpo)!
+                  </p>
+                </div>
+              </div>
+
+              <!-- Il Falso Mito dei 12 A / Batteria Auto -->
+              <div style="margin-top: 8px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 9px; font-size: 0.81rem; line-height: 1.45; color: #581c87;">
+                <strong>💡 IL GRANDE DUBBIO:</strong> Sull'alimentatore c'è scritto <strong>12 V - 12 A</strong> (o sulla batteria auto <strong>600 A</strong>). Rischio di prendere 12 Ampere?<br>
+                <strong>ASSOLUTAMENTE NO!</strong> I "12 A" sono solo la corrente <em>massima erogabile a una lampada o un motore</em>. Ma nel corpo umano la corrente è decisa <strong>dalla Legge di Ohm:</strong>
+                <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-top: 4px; text-align: center; color: #6b21a8; background: #f3e8ff; padding: 5px; border-radius: 6px;">
+                  I<sub>corpo</sub> = V / R<sub>corpo</sub> = 12 V / 1500 Ω = 0.008 A = 8 mA
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 5px; font-size: 0.73rem; color: #581c87; background: #ffffff; padding: 5px 8px; border-radius: 6px;">
+                  <div>• <strong>V</strong>: Tensione (spinta generatore in Volt)</div>
+                  <div>• <strong>I<sub>corpo</sub></strong>: Corrente nel corpo umano (Ampere)</div>
+                  <div>• <strong>R<sub>corpo</sub></strong>: Resistenza pelle/tessuti (~1500 Ω)</div>
+                  <div>• <strong>Pedice "corpo"</strong>: Specifica la grandezza sull'uomo</div>
+                </div>
+                Con soli 12 Volt, <strong>la spinta è troppo bassa</strong> per vincere la resistenza della pelle: i 12 A restano nella sorgente e non possono entrare!
+              </div>
+            </div>
+
+            <div class="callout-box success" style="padding: 6px 12px; margin: 0; font-size: 0.78rem;">
+              🛡️ <strong>Regime SELV (CEI 64-8):</strong> Sotto i <strong>24 V CC</strong> la tensione non ha la spinta necessaria per entrare nella pelle, anche se la batteria ha 600 A di scorta!
+            </div>
+          </div>
+
+          <!-- Simulatore Interattivo Tensione vs Corrente Umana -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore: Cosa Entra Davvero nel Tuo Corpo?</strong>
+            </div>
+
+            <!-- Pulsanti Preimpostati Scenari -->
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+              <button class="interactive-tab-btn active" id="btn-scen-12v" onclick="setPresetShock(12, '12 A')" style="padding: 6px 10px; font-size: 0.8rem;">🔋 12 V (12 A Banco)</button>
+              <button class="interactive-tab-btn" id="btn-scen-auto" onclick="setPresetShock(12, '600 A')" style="padding: 6px 10px; font-size: 0.8rem;">🚗 12 V (600 A Auto)</button>
+              <button class="interactive-tab-btn" id="btn-scen-24v" onclick="setPresetShock(24, '10 A')" style="padding: 6px 10px; font-size: 0.8rem;">⚠️ 24 V (Limite SELV)</button>
+              <button class="interactive-tab-btn" id="btn-scen-230v" onclick="setPresetShock(230, '16 A')" style="padding: 6px 10px; font-size: 0.8rem;">🏠 230 V (Presa Casa)</button>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 2px;">
+                <span>Regola Tensione Manuale:</span>
+                <span id="volt-disp" style="font-family: 'JetBrains Mono', monospace; color: var(--argon-primary); font-size: 1.05rem;">12 V (SELV)</span>
+              </div>
+              <input type="range" id="volt-slider" min="5" max="230" step="5" value="12" style="width: 100%; accent-color: var(--argon-primary);" oninput="onShockSlider()">
+            </div>
+
+            <!-- Tabellone Risultato Corrente -->
+            <div id="shock-result-card" style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+              <div style="display: flex; justify-content: space-around; font-size: 0.76rem; color: #475569; margin-bottom: 4px;">
+                <span>Capacità Sorgente: <strong id="source-amp-disp">12 A</strong></span>
+                <span>Resistenza pelle: <strong>1500 Ω</strong></span>
+              </div>
+              <span style="font-size: 0.72rem; color: #166534; font-weight: 700;">CORRENTE REALE CHE ATTRAVERSA IL CORPO:</span><br>
+              <strong id="current-disp" style="font-size: 1.5rem; color: #15803d;">8.0 mA</strong>
+              <div id="shock-desc" style="font-size: 0.78rem; color: #166534; margin-top: 3px; font-weight: 700;">
+                🟢 TOTALMENTE SICURO: La spinta di 12 V è troppo bassa. Non senti nulla!
+              </div>
+            </div>
+
+            <div style="font-size: 0.74rem; color: #64748b; line-height: 1.3;">
+              La soglia di pericolo è <strong>30 mA</strong>. A 12 V entrano solo 8 mA (anche con 600 A di sorgente!); a 230 V ne entrano 153 mA!
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: IL CORTO CIRCUITO & EFFETTO JOULE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="CORTO CIRCUITO E JOULE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>💥 Il Corto Circuito & L'Effetto Joule: Il Rischio Termico Elettrico</h1>
+          <p class="slide-subtitle">Cosa succede se unisci il polo positivo (+) e negativo (-) direttamente senza carico?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge danger">EFFETTO JOULE: P = R · I²</span>
+          <span class="pill-badge warning">SURRISCALDAMENTO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Teoria Legge di Ohm e Joule -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-danger); font-size: 1.05rem;">La Fisica del Corto Circuito:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                In un circuito elettrico la corrente deve sempre compiere un lavoro attraversando un <strong>carico</strong> (lampadina, resistore, motore). Se colleghi un filo da polo a polo:
+              </p>
+            </div>
+
+            <div style="background: #fdf2f4; border: 2px solid #fecdd3; border-radius: 10px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.5;">
+              1. La resistenza del filo tende a zero: <strong>R ≈ 0.02 Ω</strong><br>
+              2. Per la Legge di Ohm (I = V / R), la corrente schizza a valori enormi:<br>
+              &nbsp;&nbsp;&nbsp;<strong>I<sub>corto</sub> = 12 V / 0.02 Ω = 600 Ampere!</strong><br>
+              3. Per la Legge di Joule, la potenza termica cresce col quadrato della corrente:<br>
+              &nbsp;&nbsp;&nbsp;<strong>P = R · I²</strong> (sviluppo termico esplosivo in millisecondi!)
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 5px; font-size: 0.72rem; color: #991b1b; background: #ffffff; padding: 4px 8px; border-radius: 6px;">
+                <div>• <strong>P</strong>: Potenza termica prodotta [Watt, W]</div>
+                <div>• <strong>R</strong>: Resistenza del cortocircuito [Ω]</div>
+                <div>• <strong>I</strong>: Intensità di corrente nel filo [A]</div>
+                <div>• <strong>Esponente ²</strong>: Raddoppiando I, il calore quadruplica!</div>
+              </div>
+            </div>
+
+            <div class="callout-box danger" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              🔥 <strong>Conseguenze:</strong> Il conduttore fonde la plastica isolante, le batterie scoppiano e l'alimentatore si guasta senza protezioni elettroniche!
+            </div>
+          </div>
+
+          <!-- Simulatore Circuito: Normale vs Corto Circuito -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore di Banco Elettrico</strong>
+              <button class="interactive-tab-btn" id="btn-toggle-short" onclick="toggleShortCircuit()">
+                ⚡ Simula Corto Circuito!
+              </button>
+            </div>
+
+            <!-- SVG Circuito Elettrico Animato -->
+            <svg width="100%" height="150" viewBox="0 0 320 150">
+              <!-- Alimentatore a sinistra -->
+              <rect x="20" y="30" width="70" height="90" fill="#1e293b" rx="6"/>
+              <circle cx="45" cy="55" r="7" fill="#ef4444"/><text x="45" y="75" font-size="8" fill="#cbd5e1" text-anchor="middle">(+)</text>
+              <circle cx="70" cy="55" r="7" fill="#0f172a"/><text x="70" y="75" font-size="8" fill="#cbd5e1" text-anchor="middle">(-)</text>
+              <text x="55" y="105" font-size="9" fill="#38bdf8" font-weight="700" text-anchor="middle">12 V DC</text>
+
+              <!-- Conduttore superiore rosso -->
+              <path id="wire-top" d="M 45,55 L 45,20 L 250,20 L 250,45" fill="none" stroke="#ef4444" stroke-width="3"/>
+              
+              <!-- Carico (Lampadina) a destra -->
+              <circle cx="250" cy="65" r="18" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+              <text id="bulb-icon" x="250" y="70" font-size="14" text-anchor="middle">💡</text>
+
+              <!-- Conduttore inferiore nero -->
+              <path id="wire-bottom" d="M 250,85 L 250,130 L 70,130 L 70,55" fill="none" stroke="#0f172a" stroke-width="3"/>
+
+              <!-- Filo di Corto Circuito diretto (nascosto di default) -->
+              <path id="short-wire" d="M 45,55 C 100,20 100,100 70,55" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="4,4" style="opacity: 0; transition: opacity 0.2s;"/>
+              
+              <!-- Fumo o scintilla -->
+              <text id="spark-icon" x="90" y="60" font-size="20" style="opacity: 0;">💥</text>
+            </svg>
+
+            <!-- Box di Stato Alimentatore -->
+            <div id="psu-status-box" class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.82rem;">
+              <strong>Stato Circuito: NORMALE.</strong> La lampadina assorbe 0.2 A. Temperatura dei fili: 22°C (ambiente).
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: IL MULTIMETRO DIGITALE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="MULTIMETRO E FUSIBILI">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📟 Il Multimetro Digitale: Come NON Bruciare il Tester!</h1>
+          <p class="slide-subtitle">L'errore da matita rossa: perché inserire l'amperometro in parallelo distrugge il fusibile interno?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">USO PUNTALI</span>
+          <span class="pill-badge danger">AMPEROMETRO IN SERIE!</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Le 3 Boccole del Tester -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">La Mappa dei Puntali:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Sul multimetro ci sono 3 o 4 boccole. Sbagliare boccola o configurazione trasforma lo strumento in un corto circuito:
+              </p>
+            </div>
+
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6;">
+              1. <strong>COM (Nero):</strong> Sempre collegato qui (massa comune).<br>
+              2. <strong>V / Ω (Rosso):</strong> Per Tensione e Resistenza. Ha un'altissima impedenza interna (10 Milioni di Ω). Non farà mai danni, anche se sbagli scala!<br>
+              3. <strong>mA / 10A (Rosso):</strong> Per la Corrente. Ha una resistenza interna <strong>QUASI ZERO</strong> (è come un filo di rame puro!).
+            </div>
+
+            <div class="callout-box danger" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              ☠️ <strong>REGOLA FERREA:</strong> L'Amperometro si collega <strong>SOLO IN SERIE</strong> (aprendo il circuito)! Se colleghi i puntali dell'amperometro in parallelo alla batteria, crei un corto secco e <strong>il fusibile interno salta all'istante</strong>!
+            </div>
+          </div>
+
+          <!-- Simulatore Tester: Voltmetro vs Amperometro -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--argon-dark); font-size: 0.95rem;">Simulatore Inserimento Tester</strong>
+              <div style="display: flex; gap: 6px;">
+                <button class="interactive-tab-btn active" id="btn-mode-volt" onclick="setMeterTest('volt')">Voltmetro (Parallelo)</button>
+                <button class="interactive-tab-btn" id="btn-mode-amp-err" onclick="setMeterTest('amp-err')">Amperometro (Parallelo ❌)</button>
+              </div>
+            </div>
+
+            <!-- Display Multimetro Digitale SVG -->
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #fafbfe; border-radius: 10px; border: 1px solid #cbd5e1; position: relative;">
+              <svg width="240" height="130" viewBox="0 0 240 130">
+                <!-- Scocca tester gialla -->
+                <rect x="20" y="10" width="200" height="110" fill="#facc15" stroke="#ca8a04" stroke-width="3" rx="10"/>
+                <!-- Display LCD verde/nero -->
+                <rect x="40" y="22" width="160" height="40" fill="#ecfccb" stroke="#65a30d" stroke-width="2" rx="4"/>
+                <text id="meter-lcd" x="120" y="50" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#14532d" text-anchor="middle">12.04 V</text>
+                
+                <!-- Manopola rotativa centrale -->
+                <circle cx="120" cy="85" r="16" fill="#1e293b"/>
+                <line x1="120" y1="85" x2="120" y2="72" stroke="white" stroke-width="2.5"/>
+
+                <!-- 3 Boccole sotto -->
+                <circle cx="70" cy="105" r="6" fill="#ef4444"/><text x="70" y="117" font-size="7" fill="#713f12" text-anchor="middle">V/Ω</text>
+                <circle cx="120" cy="105" r="6" fill="#0f172a"/><text x="120" y="117" font-size="7" fill="#713f12" text-anchor="middle">COM</text>
+                <circle cx="170" cy="105" r="6" fill="#b91c1c"/><text x="170" y="117" font-size="7" fill="#713f12" text-anchor="middle">10A</text>
+              </svg>
+            </div>
+
+            <!-- Esito Tester -->
+            <div id="meter-status-box" class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.82rem;">
+              <strong>MISURA CORRETTA:</strong> Il voltmetro è in parallelo. Resistenza interna altissima (10 MΩ), assorbe solo 0.000001 A. Misura perfetta!
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: ACQUA CALDA & VAPORE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="ACQUA CALDA E VAPORE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔥 Acqua Calda e Vapore: Come Lavorare in Sicurezza al Banco</h1>
+          <p class="slide-subtitle">Perché il vapore scotta più dell'acqua liquida e quali sono le regole pratiche di manipolazione</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">CALORE DI CONDENSAZIONE</span>
+          <span class="pill-badge success">BUONE PRATICHE AL BANCO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- La Fisica del Calore Ceduto -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340; justify-content: space-between;">
+            <div>
+              <strong style="color: #c2410c; font-size: 1.05rem;">Perché il Vapore Scotta di Più dell'Acqua?</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                Anche se entrambi si trovano a 100°C, quando il vapore tocca una superficie più fredda <strong>condensa istantaneamente</strong> in goccioline d'acqua, cedendo all'improvviso tutto il calore accumulato per evaporare.
+              </p>
+            </div>
+
+            <div style="background: #fff8f5; border: 2px solid #fed7aa; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
+              • <strong>Acqua liquida a 100°C:</strong> a contatto cede solo il calore dovuto al proprio raffreddamento.<br>
+              • <strong>Vapore a 100°C:</strong> prima cede tutto il calore di cambio di stato (condensazione), e solo dopo continua a cedere calore raffreddandosi!<br><br>
+              Ecco perché anche un piccolo getto di vapore va sempre trattato con prudenza.
+            </div>
+
+            <div class="callout-box warning" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              💧 <strong>Regola Pratica:</strong> Mai avvicinare il viso o le mani sopra becher in ebollizione o uscite di vapore!
+            </div>
+          </div>
+
+          <!-- Norme Pratiche di Manipolazione -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning); justify-content: space-between;">
+            <strong style="color: var(--argon-dark); font-size: 0.95rem;">Le 3 Regole Pratiche per i Fluidi Caldi</strong>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
+                <strong style="color: #b45309; font-size: 0.88rem;">1. Maneggiare i Becher Caldi con Cura</strong>
+                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
+                  Se il becher è caldo, usa le apposite pinze per becher o presine da laboratorio. Se possibile, lascialo intiepidire prima di spostarlo.
+                </p>
+              </div>
+
+              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
+                <strong style="color: #b45309; font-size: 0.88rem;">2. Orientamento dei Becchi di Scarico</strong>
+                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
+                  Se utilizzi tubi per il vapore o becher con beccuccio, orientali verso il fondo del banco, mai verso i compagni.
+                </p>
+              </div>
+
+              <div style="background: #fffbeb; border-radius: 8px; padding: 10px; border-left: 4px solid #f59e0b;">
+                <strong style="color: #b45309; font-size: 0.88rem;">3. Evitare Sbalzi Termici del Vetro</strong>
+                <p style="font-size: 0.8rem; color: #92400e; margin-top: 2px;">
+                  Non versare acqua molto fredda direttamente dentro un becher di vetro appena tolto dalla piastra calda.
+                </p>
+              </div>
+            </div>
+
+            <div style="font-size: 0.78rem; color: #64748b;">
+              In caso di contatto accidentale con acqua calda: sciacquare subito con acqua corrente fredda e avvisare il docente ITP.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: TERMOMETRO A SONDA & CALORIMETRO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="SONDE E CALORIMETRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🌡️ Termometro Digitale a Sonda & Calorimetro delle Miscele</h1>
+          <p class="slide-subtitle">Come posizionare la sonda per misurare senza errori e come avere cura degli strumenti</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">TERMOMETRIA DIGITALE</span>
+          <span class="pill-badge info">CALORIMETRIA</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Termometro a sonda digitale -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Uso Corretto del Termometro a Sonda:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                In 2ª usiamo termometri digitali con sonda a stilo metallico. Per ottenere misure precise e non rovinare lo strumento:
+              </p>
+            </div>
+
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.6;">
+              ❌ <strong>ERRORE CLASSICO:</strong> Appoggiare la punta della sonda sul fondo del becher a contatto con la piastra calda.<br>
+              ➔ Misurerai la temperatura del vetro caldo anziché quella reale dell'acqua!<br><br>
+              ✅ <strong>METODO CORRETTO:</strong> Mantenere la punta della sonda sospesa nel cuore del fluido, mescolando delicatamente con l'apposita bacchetta.
+            </div>
+
+            <div class="callout-box info" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              Non usare MAI la sonda termometrica come cucchiaio per mescolare: la punta del sensore potrebbe piegarsi e perdere la taratura!
+            </div>
+          </div>
+
+          <!-- Il Calorimetro delle Miscele -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); justify-content: space-between;">
+            <div>
+              <strong style="color: var(--argon-dark); font-size: 1.05rem;">Il Calorimetro delle Miscele:</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 6px; line-height: 1.45;">
+                È lo strumento fondamentale per determinare il calore specifico dei metalli. È progettato per limitare le dispersioni termiche con l'ambiente:
+              </p>
+            </div>
+
+            <div style="background: #fafdfb; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; font-size: 0.84rem; color: #166534; line-height: 1.5;">
+              • <strong>Bicchiere termico isolato:</strong> trattiene il calore all'interno dell'acqua.<br>
+              • <strong>Coperchio forato:</strong> impedisce al calore di fuggire nell'aria della stanza.<br>
+              • <strong>Agitatore a spirale:</strong> serve per uniformare la temperatura dell'acqua prima della lettura.<br><br>
+              ⚠️ <strong>ATTENZIONE AL BANCO:</strong> Quando inserisci i campioni metallici caldi nell'acqua del calorimetro, calali lentamente con il filo: non lasciarli cadere per evitare schizzi d'acqua calda!
+            </div>
+
+            <div class="callout-box success" style="padding: 8px 12px; margin: 0; font-size: 0.8rem;">
+              Calorimetro ben chiuso = Scambio di calore solo tra acqua e metallo (misura accurata).
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: I 4 PUNTI CHIAVE DEL LABORATORIO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="I 4 PUNTI CHIAVE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📜 I 4 Punti Chiave del Laboratorio di 2ª</h1>
+          <p class="slide-subtitle">Quattro semplici regole di buon senso per lavorare bene, senza guasti e in piena sicurezza</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge dark">REGOLE PRATICHE</span>
+          <span class="pill-badge warning">BUON SENSO AL BANCO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="grid-2" style="flex: 1;">
+          
+          <!-- Comandamento 1 -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 1.5rem;">✋</span>
+              <strong style="color: var(--argon-primary); font-size: 1rem;">1. Controllo del Docente ITP Prima di Accendere</strong>
+            </div>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+              Prima di dare tensione con l'interruttore dell'alimentatore o della piastra, alza la mano: il docente ITP farà una rapida verifica visiva del circuito e dei collegamenti.
+            </p>
+          </div>
+
+          <!-- Comandamento 2 -->
+          <div class="argon-card" style="border-top: 4px solid #11cdef;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 1.5rem;">💧</span>
+              <strong style="color: #0b93ab; font-size: 1rem;">2. Banchi Asciutti e Puliti</strong>
+            </div>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+              Tenere la zona con i becher d'acqua separata dagli alimentatori e dai cavi elettrici. Qualsiasi goccia d'acqua sul piano di lavoro va asciugata subito con carta assorbente.
+            </p>
+          </div>
+
+          <!-- Comandamento 3 -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-warning);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 1.5rem;">📟</span>
+              <strong style="color: #c2410c; font-size: 1rem;">3. Amperometro Rigorosamente in Serie</strong>
+            </div>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+              Per misurare la corrente con il tester si apre il circuito e si collega lo strumento in serie come un ponte. Mai posizionare i puntali dell'amperometro in parallelo ai morsetti della batteria!
+            </p>
+          </div>
+
+          <!-- Comandamento 4 -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 1.5rem;">🤝</span>
+              <strong style="color: #15803d; font-size: 1rem;">4. Calma, Ordine e Lavoro di Squadra</strong>
+            </div>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+              In laboratorio non si corre: zaini e cappotti sotto il banco o negli armadietti per non inciampare. Maneggiare becher e strumenti con calma condividendo i compiti con il proprio gruppo.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA LIM: PATENTE DI SICUREZZA 2°
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA LIM: PATENTE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: Conquista la "Patente di Sicurezza del 2° Anno"!</h1>
+          <p class="slide-subtitle">5 scenari realistici di laboratorio per dimostrare la maturità tecnica della classe</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning" id="quiz-badge-step">SCENARIO 1 DI 5</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTI: 0</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        
+        <div class="argon-card" style="flex: 1; border-top: 4px solid #fb6340; justify-content: space-between; padding: 18px 24px;">
+          
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span id="quiz-topic" class="pill-badge warning">SICUREZZA ELETTRICA & TERMICA</span>
+              <span id="quiz-counter" style="font-size: 0.85rem; font-weight: 700; color: var(--argon-text-muted);">Quesito 1/5</span>
+            </div>
+
+            <h2 id="quiz-question" style="font-size: 1.25rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
+              Caricamento quesito...
+            </h2>
+
+            <div id="quiz-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+          </div>
+
+          <div id="quiz-feedback-box" class="callout-box warning" style="display: none; padding: 10px 16px; margin: 0;">
+            <span id="quiz-feedback-icon" style="font-size: 1.4rem;">💡</span>
+            <div id="quiz-feedback-text" style="font-size: 0.88rem;">Spiegazione...</div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="quiz-next-btn" class="nav-btn next" style="display: none;" onclick="nextQuizQuestion()">
+              Prossimo Scenario ➜
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="argon-bottombar">
+    <button class="nav-btn prev" id="btn-prev-slide" onclick="changeSlide(-1)">
+      ◀ Slide Precedente
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 0.85rem; color: var(--argon-text-muted); font-weight: 600;">Navigazione LIM: Usa le frecce ⬅️ / ➡️ o la barra spaziatrice</span>
+    </div>
+
+    <button class="nav-btn next" id="btn-next-slide" onclick="changeSlide(1)">
+      Slide Successiva ▶
+    </button>
+  </footer>
+
+  <div class="argon-toast" id="argon-toast">Notifica</div>
+
+  <!-- JAVASCRIPT LOGICA -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    let limZoom = 1;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playBeep(freq, type = 'sine', duration = 0.12) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('argon-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function goToSlide(step) {
+      if (step < 1 || step > totalSlides) return;
+      currentSlide = step;
+
+      document.querySelectorAll('.slide-card').forEach(slide => {
+        const s = parseInt(slide.dataset.step);
+        slide.classList.toggle('active', s === currentSlide);
+      });
+
+      document.querySelectorAll('.step-node').forEach(node => {
+        const s = parseInt(node.dataset.step);
+        node.classList.toggle('active', s === currentSlide);
+        node.classList.toggle('completed', s < currentSlide);
+      });
+
+      document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
+      document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
+
+      const activeCard = document.querySelector(`.slide-card[data-step="${currentSlide}"]`);
+      if (activeCard) {
+        const name = activeCard.dataset.name || `PASSO ${currentSlide}`;
+        document.getElementById('slide-name-badge').textContent = `PASSO ${currentSlide} DI ${totalSlides} • ${name}`;
+      }
+
+      playBeep(480, 'triangle', 0.08);
+    }
+
+    function changeSlide(delta) {
+      goToSlide(currentSlide + delta);
+    }
+
+    document.querySelectorAll('.step-node').forEach(node => {
+      node.addEventListener('click', () => goToSlide(parseInt(node.dataset.step)));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      else if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      if (limZoom < 1.35) {
+        limZoom += 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      if (limZoom > 0.85) {
+        limZoom -= 0.07;
+        document.documentElement.style.setProperty('--lim-zoom', limZoom);
+        showToast(`Zoom LIM: ${Math.round(limZoom * 100)}%`);
+      }
+    });
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+
+    // ── SLIDE 2: SIMULATORE CORRENTE SUL CORPO ──────────
+    let currentSourceCap = '12 A';
+
+    function setPresetShock(v, cap) {
+      document.querySelectorAll('#btn-scen-12v, #btn-scen-auto, #btn-scen-24v, #btn-scen-230v').forEach(b => b.classList.remove('active'));
+      if (v === 12 && cap === '12 A') document.getElementById('btn-scen-12v').classList.add('active');
+      else if (v === 12 && cap === '600 A') document.getElementById('btn-scen-auto').classList.add('active');
+      else if (v === 24) document.getElementById('btn-scen-24v').classList.add('active');
+      else if (v === 230) document.getElementById('btn-scen-230v').classList.add('active');
+
+      document.getElementById('volt-slider').value = v;
+      currentSourceCap = cap;
+      updateShockCalc(v, cap);
+      playBeep(v > 50 ? 600 : 440);
+    }
+
+    function onShockSlider() {
+      document.querySelectorAll('#btn-scen-12v, #btn-scen-auto, #btn-scen-24v, #btn-scen-230v').forEach(b => b.classList.remove('active'));
+      const v = parseFloat(document.getElementById('volt-slider').value);
+      updateShockCalc(v, '10 A');
+    }
+
+    function calcShock() {
+      onShockSlider();
+    }
+
+    function updateShockCalc(v, cap) {
+      document.getElementById('volt-disp').textContent = v + ' V' + (v <= 24 ? ' (SELV)' : ' (NON SELV)');
+      document.getElementById('source-amp-disp').textContent = cap || currentSourceCap;
+
+      const r_corpo = 1500; // Ohm
+      const i_ma = (v / r_corpo) * 1000;
+      document.getElementById('current-disp').textContent = i_ma.toFixed(1) + ' mA';
+
+      const card = document.getElementById('shock-result-card');
+      const disp = document.getElementById('current-disp');
+      const desc = document.getElementById('shock-desc');
+
+      if (i_ma < 10) {
+        card.style.background = '#f0fdf4';
+        card.style.borderColor = '#22c55e';
+        disp.style.color = '#15803d';
+        desc.style.color = '#166534';
+        desc.textContent = `🟢 TOTALMENTE SICURO: Anche con ${cap || currentSourceCap} disponibili, a ${v} V entrano solo ${i_ma.toFixed(1)} mA nel corpo!`;
+      } else if (i_ma < 30) {
+        card.style.background = '#fffbeb';
+        card.style.borderColor = '#f59e0b';
+        disp.style.color = '#b45309';
+        desc.style.color = '#92400e';
+        desc.textContent = `🟡 ZONA GIALLA: Scossa percettibile a ${v} V (${i_ma.toFixed(1)} mA), formicolio e contrazioni senza paralisi.`;
+      } else {
+        card.style.background = '#fef2f2';
+        card.style.borderColor = '#ef4444';
+        disp.style.color = '#b91c1c';
+        desc.style.color = '#991b1b';
+        desc.textContent = `🔴 PERICOLO GRAVE: La spinta di ${v} V forza ${i_ma.toFixed(1)} mA nel corpo (> 30 mA soglia salvavita)!`;
+        playBeep(240, 'sawtooth', 0.15);
+      }
+    }
+
+    // ── SLIDE 3: SIMULATORE CORTO CIRCUITO ──────────
+    let isShort = false;
+    function toggleShortCircuit() {
+      isShort = !isShort;
+      const wire = document.getElementById('short-wire');
+      const spark = document.getElementById('spark-icon');
+      const box = document.getElementById('psu-status-box');
+      const btn = document.getElementById('btn-toggle-short');
+      const bulb = document.getElementById('bulb-icon');
+
+      if (isShort) {
+        wire.style.opacity = '1';
+        spark.style.opacity = '1';
+        bulb.textContent = '⚫'; // lampadina spenta bypassata
+        btn.textContent = '🔄 Ripristina Circuito';
+        btn.classList.add('active');
+        box.className = 'callout-box danger';
+        box.innerHTML = '🚨 <strong>CORTO CIRCUITO!</strong> La corrente supera 10 A! Scatta la protezione elettronica dell\'alimentatore (Current Limit) per evitare la fusione dei cavi!';
+        playBeep(180, 'sawtooth', 0.35);
+      } else {
+        wire.style.opacity = '0';
+        spark.style.opacity = '0';
+        bulb.textContent = '💡';
+        btn.textContent = '⚡ Simula Corto Circuito!';
+        btn.classList.remove('active');
+        box.className = 'callout-box success';
+        box.innerHTML = '<strong>Stato Circuito: NORMALE.</strong> La lampadina assorbe 0.2 A. Temperatura dei fili: 22°C (ambiente).';
+        playBeep(520, 'sine', 0.15);
+      }
+    }
+
+    // ── SLIDE 4: SIMULATORE MULTIMETRO ──────────
+    function setMeterTest(mode) {
+      document.getElementById('btn-mode-volt').classList.toggle('active', mode === 'volt');
+      document.getElementById('btn-mode-amp-err').classList.toggle('active', mode === 'amp-err');
+      const lcd = document.getElementById('meter-lcd');
+      const box = document.getElementById('meter-status-box');
+
+      if (mode === 'volt') {
+        lcd.textContent = '12.04 V';
+        lcd.style.color = '#14532d';
+        box.className = 'callout-box success';
+        box.innerHTML = '<strong>MISURA CORRETTA:</strong> Il voltmetro è collegato in parallelo. La sua resistenza interna altissima (10 MΩ) impedisce il passaggio di corrente dannosa.';
+        playBeep(580);
+      } else {
+        lcd.textContent = 'FUSIBILE 💥';
+        lcd.style.color = '#b91c1c';
+        box.className = 'callout-box danger';
+        box.innerHTML = '💥 <strong>DISASTRO! FUSIBILE BRUCIATO:</strong> L\'amperometro ha resistenza quasi ZERO (0.01 Ω). Mettendolo in parallelo hai creato un corto circuito diretto tra i morsetti dell\'alimentatore! Il fusibile interno si è vaporizzato.';
+        playBeep(160, 'sawtooth', 0.4);
+      }
+    }
+
+    // ── SLIDE 8: SFIDA LIM PATENTE ──────────
+    const quizData = [
+      {
+        topic: "Tensione vs Corrente: Il Mito dei 12 A",
+        q: "Un alimentatore da banco eroga 12 V ed è in grado di fornire fino a 12 Ampere (o una batteria per automobile da 12 V e 600 A). Se tocchi con le mani i due morsetti a 12 V, cosa succede?",
+        opts: [
+          "Prendi una scossa letale da 12 Ampere",
+          "Non senti nulla, perché con soli 12 V di tensione (spinta) la corrente che riesce a entrare nella resistenza del corpo è di soli 8 mA (innocua)",
+          "L'alimentatore esplode all'istante",
+          "Tutti i 12 Ampere si scaricano nel cuore"
+        ],
+        correct: 1,
+        exp: "Bravissimi! La tensione è la 'spinta': 12 V non hanno la forza per vincere la resistenza della pelle. I 12 A dell'alimentatore andrebbero a un motore o lampadina, non al tuo corpo!"
+      },
+      {
+        topic: "Uso dell'Amperometro",
+        q: "Devi misurare l'intensità di corrente che scorre in un circuito composto da generatore e reostato. Come colleghi il multimetro?",
+        opts: [
+          "Colleghi i puntali in parallelo direttamente ai morsetti della batteria",
+          "Apri il circuito e inserisci il multimetro in SERIE con i puntali su COM e mA/10A",
+          "Tocchi con i puntali la carcassa metallica del banco",
+          "Lo colleghi senza accendere l'alimentatore"
+        ],
+        correct: 1,
+        exp: "Perfetto! La corrente si misura aprendo il ramo e facendo scorrere gli elettroni DENTRO lo strumento collegato rigorosamente in serie!"
+      },
+      {
+        topic: "Acqua Calda e Vapore",
+        q: "Perché bisogna fare particolare attenzione al vapore caldo rispetto alla semplice acqua tiepida?",
+        opts: [
+          "Perché il vapore è invisibile e scompare nel nulla",
+          "Perché quando il vapore tocca una superficie più fredda condensa rilasciando molto più calore dell'acqua liquida",
+          "Perché il vapore ha una temperatura superiore a 500°C",
+          "Perché il vapore fa diventare l'acqua salata"
+        ],
+        correct: 1,
+        exp: "Esatto! La condensazione del vapore cede all'istante il calore di cambio di stato, scaldando molto più dell'acqua liquida!"
+      },
+      {
+        topic: "Termometro a Sonda",
+        q: "Durante una prova di riscaldamento dell'acqua con piastra elettrica, dove deve essere posizionata la sonda digitale di temperatura?",
+        opts: [
+          "Schiacciata sul fondo del becher a contatto con la piastra calda",
+          "Sospesa nel cuore del liquido in agitazione, senza toccare pareti o fondo",
+          "Fuori dal liquido per misurare l'aria della stanza",
+          "Appoggiata sul bordo di plastica del banco"
+        ],
+        correct: 1,
+        exp: "Ottimo! Sul fondo del becher misureresti la temperatura della piastra a 200°C e non quella reale dell'acqua, falsando tutti i dati!"
+      },
+      {
+        topic: "Regola del Benestare ITP",
+        q: "Hai terminato di montare il circuito elettrico con reostato e lampadina sul tuo banco. Qual è la prima operazione da fare?",
+        opts: [
+          "Accendere subito l'interruttore al massimo voltaggio",
+          "Chiamare il docente ITP per la verifica a vista dei collegamenti prima di alimentare il banco",
+          "Smontare tutto per rimettere in ordine",
+          "Iniziare a prendere appunti sulla relazione"
+        ],
+        correct: 1,
+        exp: "Regola d'oro: NESSUN circuito viene alimentato senza il previo controllo e benestare del Docente Tecnico Pratico!"
+      }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function loadQuiz() {
+      const q = quizData[quizIndex];
+      document.getElementById('quiz-counter').textContent = `Scenario ${quizIndex + 1} di ${quizData.length}`;
+      document.getElementById('quiz-badge-step').textContent = `SCENARIO ${quizIndex + 1} DI ${quizData.length}`;
+      document.getElementById('quiz-topic').textContent = q.topic;
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const grid = document.getElementById('quiz-options-grid');
+      grid.innerHTML = '';
+      document.getElementById('quiz-feedback-box').style.display = 'none';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'interactive-tab-btn';
+        btn.style.textAlign = 'left';
+        btn.style.padding = '12px 16px';
+        btn.style.fontSize = '0.9rem';
+        btn.innerHTML = `<strong style="color: #fb6340; margin-right: 6px;">${String.fromCharCode(65 + idx)})</strong> ${opt}`;
+        btn.onclick = () => checkQuizAnswer(idx, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function checkQuizAnswer(selectedIdx, btnEl) {
+      const q = quizData[quizIndex];
+      const buttons = document.querySelectorAll('#quiz-options-grid button');
+      buttons.forEach(b => b.disabled = true);
+
+      const fBox = document.getElementById('quiz-feedback-box');
+      const fIcon = document.getElementById('quiz-feedback-icon');
+      const fText = document.getElementById('quiz-feedback-text');
+
+      if (selectedIdx === q.correct) {
+        btnEl.style.background = '#dcfce7';
+        btnEl.style.borderColor = '#22c55e';
+        btnEl.style.color = '#15803d';
+        fBox.className = 'callout-box success';
+        fIcon.textContent = '🎉';
+        fText.innerHTML = `<strong>CORRETTO!</strong> ${q.exp}`;
+        quizScore += 20;
+        document.getElementById('quiz-score-badge').textContent = `PUNTI: ${quizScore}`;
+        playBeep(680, 'sine', 0.2);
+      } else {
+        btnEl.style.background = '#fee2e2';
+        btnEl.style.borderColor = '#ef4444';
+        btnEl.style.color = '#b91c1c';
+        buttons[q.correct].style.background = '#dcfce7';
+        buttons[q.correct].style.borderColor = '#22c55e';
+        buttons[q.correct].style.color = '#15803d';
+        fBox.className = 'callout-box warning';
+        fIcon.textContent = '💡';
+        fText.innerHTML = `<strong>ATTENZIONE:</strong> ${q.exp}`;
+        playBeep(240, 'sawtooth', 0.2);
+      }
+
+      fBox.style.display = 'flex';
+      document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+      if (quizIndex < quizData.length - 1) {
+        quizIndex++;
+        loadQuiz();
+      } else {
+        const grid = document.getElementById('quiz-options-grid');
+        grid.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 24px; background: #f0fbf6; border: 2px solid #2dce89; border-radius: 12px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">🛡️</div>
+            <h3 style="font-size: 1.4rem; color: #166534; font-weight: 800; margin-bottom: 6px;">COMPLIMENTI! PATENTE DI SICUREZZA 2° ANNO OTTENUTA!</h3>
+            <p style="font-size: 1rem; color: #15803d; margin-bottom: 12px;">Punteggio di Squadra: <strong>${quizScore} / 100 PUNTI</strong></p>
+            <p style="font-size: 0.85rem; color: #166534;">La classe è ufficialmente abilitata alle attività nei laboratori di termologia, termodinamica ed elettrotecnica dell'ITIS Giordano Bruno!</p>
+          </div>
+        `;
+        document.getElementById('quiz-question').textContent = "Risultato Abilitazione Laboratorio 2° Anno";
+        document.getElementById('quiz-feedback-box').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        playBeep(880, 'triangle', 0.4);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      goToSlide(1);
+      calcShock();
+      loadQuiz();
+    });
+  </script>
+</body>
+</html>

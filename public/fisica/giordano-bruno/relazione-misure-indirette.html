@@ -1,844 +1,846 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>Relazione 3: Misure Indirette, Aree e Volumi — ITIS Giordano Bruno</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<!-- html2pdf.js per download diretto PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style>
-/* ═══════════════════════════════════════════════════════════════════
-   ARGON DESIGN SYSTEM — RELAZIONE 3: MISURE INDIRETTE & VOLUMI
-   Compilatore Digitale + Scheda Stampabile A4 per Laboratorio in Aula
-   ITIS "Giordano Bruno" - Dipartimento di Fisica
-   ═══════════════════════════════════════════════════════════════════ */
-:root {
-  --argon-primary: #5e72e4;
-  --argon-primary-hover: #455fe0;
-  --argon-primary-light: rgba(94, 114, 228, 0.12);
-  
-  --argon-secondary: #f4f5f7;
-  --argon-info: #11cdef;
-  --argon-success: #2dce89;
-  --argon-danger: #f5365c;
-  --argon-warning: #fb6340;
-  
-  --argon-dark: #172b4d;
-  --argon-darker: #0f1c30;
-  --argon-text-main: #32325d;
-  --argon-text-muted: #525f7f;
-  
-  --argon-bg: #f8f9fe;
-  --argon-card-bg: #ffffff;
-  --argon-border: #e9ecef;
-  
-  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--argon-bg);
-  color: var(--argon-text-main);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* TOPBAR */
-.app-topbar {
-  background: #ffffff;
-  border-bottom: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow-sm);
-  padding: 12px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.school-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: var(--argon-dark);
-}
-
-.school-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.3rem;
-  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.3);
-}
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.action-btn {
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  transition: all 0.2s;
-}
-.action-btn.primary {
-  background: var(--argon-primary);
-  color: white;
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
-}
-.action-btn.primary:hover {
-  background: var(--argon-primary-hover);
-  transform: translateY(-1px);
-}
-.action-btn.secondary {
-  background: #ffffff;
-  border: 1px solid var(--argon-border);
-  color: var(--argon-text-muted);
-}
-.action-btn.secondary:hover {
-  background: var(--argon-secondary);
-  color: var(--argon-dark);
-}
-
-/* CONTAINER PRINCIPALE */
-.main-container {
-  max-width: 960px;
-  margin: 24px auto 40px auto;
-  padding: 0 16px;
-  width: 100%;
-}
-
-/* FOGLIO A4 / DOCUMENTO DI RELAZIONE */
-.report-sheet {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid var(--argon-border);
-  box-shadow: var(--argon-shadow);
-  padding: 36px 44px;
-}
-
-/* Header Relazione Ufficiale */
-.report-header {
-  border-bottom: 2px solid var(--argon-dark);
-  padding-bottom: 16px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.header-inst {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--argon-dark);
-  letter-spacing: -0.3px;
-}
-.header-dept {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--argon-primary);
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-.header-title {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #c2410c;
-  margin-top: 6px;
-}
-
-/* Riquadro Dati Anagrafici */
-.student-data-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 12px;
-  background: #f8fafd;
-  border: 1px solid #dce4ec;
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 24px;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.input-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--argon-text-muted);
-  text-transform: uppercase;
-}
-
-.text-input {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1.5px solid #cbd5e1;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--argon-dark);
-  font-family: inherit;
-  outline: none;
-  transition: all 0.2s;
-  background: #ffffff;
-}
-.text-input:focus {
-  border-color: var(--argon-primary);
-  box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.15);
-}
-.text-input.required-error {
-  border-color: var(--argon-danger) !important;
-  background: #fff5f5 !important;
-}
-
-/* Sezioni Relazione */
-.report-section {
-  margin-bottom: 24px;
-}
-
-.section-badge-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--argon-dark);
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #f1f3f9;
-}
-
-.badge-num {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: var(--argon-primary);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-/* Tabelle Dati */
-.lab-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 10px 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.88rem;
-}
-.lab-table th {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  padding: 8px 10px;
-  color: #334155;
-  font-weight: 700;
-  text-align: center;
-}
-.lab-table td {
-  border: 1px solid #cbd5e1;
-  padding: 6px 8px;
-  text-align: center;
-  background: #ffffff;
-}
-
-.table-input {
-  width: 100%;
-  border: 1px solid transparent;
-  padding: 4px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
-  text-align: center;
-  border-radius: 4px;
-  outline: none;
-  background: #fafbfe;
-  font-weight: 600;
-}
-.table-input:focus {
-  border-color: var(--argon-primary);
-  background: #ffffff;
-}
-
-/* Riquadri Risultati Calcoli */
-.calc-result-box {
-  background: #f8fafc;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-top: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.92rem;
-  line-height: 1.6;
-}
-
-/* Rubrica Valutazione Docente */
-.rubric-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82rem;
-  margin-top: 10px;
-}
-.rubric-table th {
-  background: #e2e8f0;
-  border: 1px solid #cbd5e1;
-  padding: 6px 10px;
-  text-align: left;
-  color: #1e293b;
-  font-weight: 700;
-}
-.rubric-table td {
-  border: 1px solid #cbd5e1;
-  padding: 6px 10px;
-  background: #ffffff;
-}
-
-/* Toast */
-.argon-toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(30px);
-  background: var(--argon-darker);
-  color: #ffffff;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  z-index: 1000;
-}
-.argon-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ══════════════════════════════════════════════
-   STILE DI STAMPA A4 (PRINT CLEAN)
-   ══════════════════════════════════════════════ */
-@media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-  .app-topbar, .no-print {
-    display: none !important;
-  }
-  .main-container {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .report-sheet {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 12mm 15mm !important;
-    border-radius: 0 !important;
-  }
-  .student-data-grid {
-    background: #ffffff !important;
-    border: 1px solid #000000 !important;
-  }
-  .text-input, .table-input {
-    border: none !important;
-    background: transparent !important;
-  }
-  .lab-table th, .lab-table td, .rubric-table th, .rubric-table td {
-    border: 1px solid #000000 !important;
-    color: #000000 !important;
-  }
-  .calc-result-box {
-    border: 1px solid #000000 !important;
-    background: #ffffff !important;
-  }
-  @page {
-    size: A4 portrait;
-    margin: 8mm;
-  }
-}
-</style>
-</head>
-<body>
-
-  <!-- TOPBAR WEB -->
-  <header class="app-topbar no-print">
-    <div class="school-brand">
-      <div class="school-icon">📐</div>
-      <div>
-        <div style="font-weight: 800; font-size: 1rem; color: var(--argon-dark);">ITIS Giordano Bruno • Laboratorio di Fisica</div>
-        <div style="font-size: 0.75rem; font-weight: 700; color: var(--argon-primary);">RELAZIONE 3 IN AULA • VOTO PRATICO 3 (1ª CLASSI)</div>
-      </div>
-    </div>
-
-    <div class="topbar-actions">
-      <button class="action-btn secondary" onclick="fillTestData()" title="Compila con dati dimostrativi per spiegazione alla LIM">
-        🧪 Dati Demo LIM
-      </button>
-      <button class="action-btn secondary" onclick="window.print()" title="Stampa subito la scheda su carta per l'aula">
-        🖨️ Stampa Cartacea (A4)
-      </button>
-      <button class="action-btn primary" onclick="exportPDF()" title="Verifica anagrafica e genera il file PDF ufficiale">
-        📥 Scarica PDF Ufficiale
-      </button>
-    </div>
-  </header>
-
-  <!-- CONTENITORE RELAZIONE -->
-  <main class="main-container">
-    
-    <div class="report-sheet" id="print-area">
-      
-      <!-- INTESTAZIONE UFFICIALE -->
-      <div class="report-header">
-        <div>
-          <div class="header-inst">I.T.I.S. "GIORDANO BRUNO" — TORINO / VENARIA</div>
-          <div class="header-dept">Dipartimento di Scienze Integrate • Sezione Fisica</div>
-          <div class="header-title">RELAZIONE N° 03: MISURE INDIRETTE, AREE E VOLUMI</div>
-          <div style="font-size: 0.78rem; color: #64748b; margin-top: 2px;">
-            Competenze: <strong>SC 1.1.4</strong> (Propagazione Incertezze e Cifre Significative) e <strong>SC 1.3.5</strong> (Trattamento Dati)
-          </div>
-        </div>
-        <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
-          <div style="border: 2px solid #c2410c; border-radius: 8px; padding: 6px 12px; background: #fff8f5; color: #c2410c; font-weight: 800;">
-            PROVA PRATICA IN AULA<br>VOTO 3 (1° QUADRIMESTRE)
-          </div>
-        </div>
-      </div>
-
-      <!-- DATI ANAGRAFICI DELLO STUDENTE (OBBLIGATORI) -->
-      <div class="student-data-grid">
-        <div class="input-group">
-          <label class="input-label">Allievo / Cognome e Nome *</label>
-          <input type="text" id="student-name" class="text-input" placeholder="Es. Rossi Mario (Obbligatorio)" required>
-        </div>
-        <div class="input-group">
-          <label class="input-label">Classe *</label>
-          <input type="text" id="student-class" class="text-input" placeholder="Es. 1ª A (Obbligatorio)" required>
-        </div>
-        <div class="input-group">
-          <label class="input-label">Data e Postazione</label>
-          <input type="text" id="student-date" class="text-input" value="Novembre 2026 • Banco ___">
-        </div>
-      </div>
-
-      <!-- 1. APPARATO METROLOGICO -->
-      <section class="report-section">
-        <div class="section-badge-title">
-          <span class="badge-num">1</span>
-          <span>STRUMENTAZIONE UTILIZZATA</span>
-        </div>
-        <div style="font-size: 0.86rem; color: var(--argon-text-muted); line-height: 1.5;">
-          • <strong>Strumento principale:</strong> Calibro a corsoio ventesimale in acciaio inossidabile.<br>
-          • <strong>Portata:</strong> 150.00 mm &nbsp;|&nbsp; <strong>Sensibilità (Incertezza di lettura):</strong> <strong style="color: var(--argon-primary);">Δ = ± 0.05 mm</strong>.<br>
-          • <strong>Campioni in misura:</strong> Parallelepipedo metallico (Solido 1) e Cilindro retto (Solido 2).
-        </div>
-      </section>
-
-      <!-- 2. RACCOLTA DATI SOLIDO 1 (PARALLELEPIPEDO) -->
-      <section class="report-section">
-        <div class="section-badge-title">
-          <span class="badge-num">2</span>
-          <span>SOLIDO 1: PARALLELEPIPEDO RETTANGOLO (MISURE DIRETTE IN mm)</span>
-        </div>
-
-        <table class="lab-table">
-          <thead>
-            <tr>
-              <th>Dimensione</th>
-              <th>Misura 1 [mm]</th>
-              <th>Misura 2 [mm]</th>
-              <th>Misura 3 [mm]</th>
-              <th>Valore Medio [mm]</th>
-              <th>Incertezza Δ [mm]</th>
-              <th>Errore Relativo e_r</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Lunghezza (a)</strong></td>
-              <td><input type="number" step="0.05" id="box-a1" class="table-input" placeholder="40.00" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-a2" class="table-input" placeholder="40.05" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-a3" class="table-input" placeholder="39.95" oninput="calcBox()"></td>
-              <td id="box-a-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
-              <td>± 0.05</td>
-              <td id="box-a-er" style="color: #b45309;">-</td>
-            </tr>
-            <tr>
-              <td><strong>Larghezza (b)</strong></td>
-              <td><input type="number" step="0.05" id="box-b1" class="table-input" placeholder="25.00" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-b2" class="table-input" placeholder="24.95" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-b3" class="table-input" placeholder="25.05" oninput="calcBox()"></td>
-              <td id="box-b-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
-              <td>± 0.05</td>
-              <td id="box-b-er" style="color: #b45309;">-</td>
-            </tr>
-            <tr>
-              <td><strong>Altezza (c)</strong></td>
-              <td><input type="number" step="0.05" id="box-c1" class="table-input" placeholder="15.00" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-c2" class="table-input" placeholder="15.05" oninput="calcBox()"></td>
-              <td><input type="number" step="0.05" id="box-c3" class="table-input" placeholder="14.95" oninput="calcBox()"></td>
-              <td id="box-c-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
-              <td>± 0.05</td>
-              <td id="box-c-er" style="color: #b45309;">-</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Calcoli Parallelepipedo -->
-        <div class="calc-result-box" id="box-results">
-          • <strong>Volume Medio:</strong> V = a · b · c = <span id="res-box-v">...</span> mm³<br>
-          • <strong>Propagazione Incertezza:</strong> e_r(V) = e_r(a) + e_r(b) + e_r(c) = <span id="res-box-er">...</span> ➔ ΔV = e_r(V) · V = <span id="res-box-dv">...</span> mm³<br>
-          • <strong>Risultato Parallelepipedo in S.I. (m³):</strong> <strong id="res-box-si" style="color: #15803d; font-size: 1.05rem;">V = ( ... ± ... ) m³</strong>
-        </div>
-      </section>
-
-      <!-- 3. RACCOLTA DATI SOLIDO 2 (CILINDRO) -->
-      <section class="report-section">
-        <div class="section-badge-title">
-          <span class="badge-num">3</span>
-          <span>SOLIDO 2: CILINDRO RETTO (MISURE DIRETTE IN mm)</span>
-        </div>
-
-        <table class="lab-table">
-          <thead>
-            <tr>
-              <th>Dimensione</th>
-              <th>Misura 1 [mm]</th>
-              <th>Misura 2 [mm]</th>
-              <th>Misura 3 [mm]</th>
-              <th>Valore Medio [mm]</th>
-              <th>Incertezza Δ [mm]</th>
-              <th>Errore Relativo e_r</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Diametro (d)</strong></td>
-              <td><input type="number" step="0.05" id="cyl-d1" class="table-input" placeholder="24.50" oninput="calcCyl()"></td>
-              <td><input type="number" step="0.05" id="cyl-d2" class="table-input" placeholder="24.55" oninput="calcCyl()"></td>
-              <td><input type="number" step="0.05" id="cyl-d3" class="table-input" placeholder="24.45" oninput="calcCyl()"></td>
-              <td id="cyl-d-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
-              <td>± 0.05</td>
-              <td id="cyl-d-er" style="color: #b45309;">-</td>
-            </tr>
-            <tr>
-              <td><strong>Altezza (h)</strong></td>
-              <td><input type="number" step="0.05" id="cyl-h1" class="table-input" placeholder="54.20" oninput="calcCyl()"></td>
-              <td><input type="number" step="0.05" id="cyl-h2" class="table-input" placeholder="54.25" oninput="calcCyl()"></td>
-              <td><input type="number" step="0.05" id="cyl-h3" class="table-input" placeholder="54.15" oninput="calcCyl()"></td>
-              <td id="cyl-h-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
-              <td>± 0.05</td>
-              <td id="cyl-h-er" style="color: #b45309;">-</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Calcoli Cilindro -->
-        <div class="calc-result-box" id="cyl-results">
-          • <strong>Raggio Medio:</strong> r = d / 2 = <span id="res-cyl-r">...</span> mm<br>
-          • <strong>Volume Medio:</strong> V = π · r² · h = <span id="res-cyl-v">...</span> mm³<br>
-          • <strong>Propagazione Incertezza:</strong> e_r(V) = <strong>2 · e_r(d)</strong> + e_r(h) = <span id="res-cyl-er">...</span> ➔ ΔV = e_r(V) · V = <span id="res-cyl-dv">...</span> mm³<br>
-          • <strong>Risultato Cilindro in S.I. (m³):</strong> <strong id="res-cyl-si" style="color: #15803d; font-size: 1.05rem;">V = ( ... ± ... ) m³</strong>
-        </div>
-      </section>
-
-      <!-- 4. DOMANDA CRITICA DI LABORATORIO (CONCLUSIONI) -->
-      <section class="report-section">
-        <div class="section-badge-title">
-          <span class="badge-num">4</span>
-          <span>ANALISI CRITICA E CONCLUSIONI SCIENTIFICHE</span>
-        </div>
-        <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 6px;">
-          <strong>Quesito del Docente:</strong> Perché nel calcolo dell'errore relativo del cilindro l'incertezza sul diametro compare con il <strong>fattore 2</strong>? Quale dei due solidi presenta la precisione percentuale migliore?
-        </p>
-        <textarea id="student-conclusion" class="text-input" rows="3" style="width: 100%; resize: vertical;" placeholder="Scrivi qui la tua conclusione scientifica con linguaggio tecnico..."></textarea>
-      </section>
-
-      <!-- 5. RUBRICA DI VALUTAZIONE DOCENTE (4 CRITERI DA 2.5 PUNTI = 10 DECIMI) -->
-      <section class="report-section" style="margin-bottom: 0;">
-        <div class="section-badge-title">
-          <span class="badge-num">5</span>
-          <span>GRIGLIA DI VALUTAZIONE (A CURA DEL DOCENTE ITP)</span>
-        </div>
-
-        <table class="rubric-table">
-          <thead>
-            <tr>
-              <th>Indicatore di Competenza (ITIS Giordano Bruno)</th>
-              <th style="width: 130px; text-align: center;">Punteggio Max</th>
-              <th style="width: 130px; text-align: center;">Punti Assegnati</th>
-              <th>Note del Docente</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1. Rigore Sperimentale e Misure Dirette:</strong> Uso corretto del calibro (± 0.05 mm), cifre decimali congrue.</td>
-              <td style="text-align: center;">2.5 pt</td>
-              <td style="text-align: center;">_____ / 2.5</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>2. Calcolo dei Volumi e Formule:</strong> Applicazione corretta delle formule geometriche di rettangolo e cilindro.</td>
-              <td style="text-align: center;">2.5 pt</td>
-              <td style="text-align: center;">_____ / 2.5</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>3. Propagazione Incertezze e Unità S.I.:</strong> Somma errori relativi, fattore 2 su diametro, conversione mm³ in m³.</td>
-              <td style="text-align: center;">2.5 pt</td>
-              <td style="text-align: center;">_____ / 2.5</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>4. Completezza, Cifre Significative e Conclusioni:</strong> Forma finale (V ± ΔV), analisi critica.</td>
-              <td style="text-align: center;">2.5 pt</td>
-              <td style="text-align: center;">_____ / 2.5</td>
-              <td></td>
-            </tr>
-            <tr style="background: #f8fafc; font-weight: 800; font-size: 0.95rem;">
-              <td>VOTO COMPLESSIVO DELLA PROVA PRATICA</td>
-              <td style="text-align: center;">10.0 / 10</td>
-              <td style="text-align: center; color: #c2410c;">______ / 10</td>
-              <td>Firma Docente: __________________</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-    </div>
-
-  </main>
-
-  <div class="argon-toast" id="app-toast">Messaggio</div>
-
-  <!-- JAVASCRIPT LOGICA & EXPORT PDF -->
-  <script>
-    function showToast(msg) {
-      const t = document.getElementById('app-toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2600);
-    }
-
-    // ── CALCOLI AUTOMATICI PARALLELEPIPEDO ──────────
-    function calcBox() {
-      const a1 = parseFloat(document.getElementById('box-a1').value) || 0;
-      const a2 = parseFloat(document.getElementById('box-a2').value) || 0;
-      const a3 = parseFloat(document.getElementById('box-a3').value) || 0;
-      const b1 = parseFloat(document.getElementById('box-b1').value) || 0;
-      const b2 = parseFloat(document.getElementById('box-b2').value) || 0;
-      const b3 = parseFloat(document.getElementById('box-b3').value) || 0;
-      const c1 = parseFloat(document.getElementById('box-c1').value) || 0;
-      const c2 = parseFloat(document.getElementById('box-c2').value) || 0;
-      const c3 = parseFloat(document.getElementById('box-c3').value) || 0;
-
-      const aVals = [a1, a2, a3].filter(v => v > 0);
-      const bVals = [b1, b2, b3].filter(v => v > 0);
-      const cVals = [c1, c2, c3].filter(v => v > 0);
-
-      const aAvg = aVals.length ? aVals.reduce((x,y)=>x+y,0)/aVals.length : 0;
-      const bAvg = bVals.length ? bVals.reduce((x,y)=>x+y,0)/bVals.length : 0;
-      const cAvg = cVals.length ? cVals.reduce((x,y)=>x+y,0)/cVals.length : 0;
-
-      document.getElementById('box-a-avg').textContent = aAvg ? aAvg.toFixed(2) : '-';
-      document.getElementById('box-b-avg').textContent = bAvg ? bAvg.toFixed(2) : '-';
-      document.getElementById('box-c-avg').textContent = cAvg ? cAvg.toFixed(2) : '-';
-
-      const erA = aAvg ? 0.05 / aAvg : 0;
-      const erB = bAvg ? 0.05 / bAvg : 0;
-      const erC = cAvg ? 0.05 / cAvg : 0;
-
-      document.getElementById('box-a-er').textContent = erA ? (erA * 100).toFixed(3) + '%' : '-';
-      document.getElementById('box-b-er').textContent = erB ? (erB * 100).toFixed(3) + '%' : '-';
-      document.getElementById('box-c-er').textContent = erC ? (erC * 100).toFixed(3) + '%' : '-';
-
-      if (aAvg && bAvg && cAvg) {
-        const V = aAvg * bAvg * cAvg;
-        const erTot = erA + erB + erC;
-        const dV = erTot * V;
-
-        document.getElementById('res-box-v').textContent = V.toFixed(1);
-        document.getElementById('res-box-er').textContent = (erTot * 100).toFixed(3) + '%';
-        document.getElementById('res-box-dv').textContent = '± ' + dV.toFixed(1);
-
-        const V_m3 = V * 1e-9;
-        const dV_m3 = dV * 1e-9;
-        const exp = Math.floor(Math.log10(V_m3));
-        const mant_V = V_m3 / Math.pow(10, exp);
-        const mant_dV = dV_m3 / Math.pow(10, exp);
-
-        document.getElementById('res-box-si').textContent = 
-          `V = (${mant_V.toFixed(2)} ± ${mant_dV.toFixed(2)}) × 10${exp} m³`;
-      }
-    }
-
-    // ── CALCOLI AUTOMATICI CILINDRO ──────────
-    function calcCyl() {
-      const d1 = parseFloat(document.getElementById('cyl-d1').value) || 0;
-      const d2 = parseFloat(document.getElementById('cyl-d2').value) || 0;
-      const d3 = parseFloat(document.getElementById('cyl-d3').value) || 0;
-      const h1 = parseFloat(document.getElementById('cyl-h1').value) || 0;
-      const h2 = parseFloat(document.getElementById('cyl-h2').value) || 0;
-      const h3 = parseFloat(document.getElementById('cyl-h3').value) || 0;
-
-      const dVals = [d1, d2, d3].filter(v => v > 0);
-      const hVals = [h1, h2, h3].filter(v => v > 0);
-
-      const dAvg = dVals.length ? dVals.reduce((x,y)=>x+y,0)/dVals.length : 0;
-      const hAvg = hVals.length ? hVals.reduce((x,y)=>x+y,0)/hVals.length : 0;
-
-      document.getElementById('cyl-d-avg').textContent = dAvg ? dAvg.toFixed(2) : '-';
-      document.getElementById('cyl-h-avg').textContent = hAvg ? hAvg.toFixed(2) : '-';
-
-      const erD = dAvg ? 0.05 / dAvg : 0;
-      const erH = hAvg ? 0.05 / hAvg : 0;
-
-      document.getElementById('cyl-d-er').textContent = erD ? (erD * 100).toFixed(3) + '%' : '-';
-      document.getElementById('cyl-h-er').textContent = erH ? (erH * 100).toFixed(3) + '%' : '-';
-
-      if (dAvg && hAvg) {
-        const r = dAvg / 2;
-        const V = Math.PI * Math.pow(r, 2) * hAvg;
-        const erTot = (2 * erD) + erH; // raggio al quadrato!
-        const dV = erTot * V;
-
-        document.getElementById('res-cyl-r').textContent = r.toFixed(2);
-        document.getElementById('res-cyl-v').textContent = V.toFixed(1);
-        document.getElementById('res-cyl-er').textContent = (erTot * 100).toFixed(3) + '% (con 2 · e_r(d))';
-        document.getElementById('res-cyl-dv').textContent = '± ' + dV.toFixed(1);
-
-        const V_m3 = V * 1e-9;
-        const dV_m3 = dV * 1e-9;
-        const exp = Math.floor(Math.log10(V_m3));
-        const mant_V = V_m3 / Math.pow(10, exp);
-        const mant_dV = dV_m3 / Math.pow(10, exp);
-
-        document.getElementById('res-cyl-si').textContent = 
-          `V = (${mant_V.toFixed(2)} ± ${mant_dV.toFixed(2)}) × 10${exp} m³`;
-      }
-    }
-
-    // ── DATI DIMOSTRATIVI ──────────
-    function fillTestData() {
-      document.getElementById('student-name').value = "Rossi Mario";
-      document.getElementById('student-class').value = "1ª A Meccanica";
-      document.getElementById('student-date').value = "03/11/2026 • Banco 04";
-
-      document.getElementById('box-a1').value = "40.00";
-      document.getElementById('box-a2').value = "40.05";
-      document.getElementById('box-a3').value = "39.95";
-      document.getElementById('box-b1').value = "25.00";
-      document.getElementById('box-b2').value = "24.95";
-      document.getElementById('box-b3').value = "25.05";
-      document.getElementById('box-c1').value = "15.00";
-      document.getElementById('box-c2').value = "15.05";
-      document.getElementById('box-c3').value = "14.95";
-
-      document.getElementById('cyl-d1').value = "24.50";
-      document.getElementById('cyl-d2').value = "24.55";
-      document.getElementById('cyl-d3').value = "24.45";
-      document.getElementById('cyl-h1').value = "54.20";
-      document.getElementById('cyl-h2').value = "54.25";
-      document.getElementById('cyl-h3').value = "54.15";
-
-      document.getElementById('student-conclusion').value = 
-        "Nel cilindro l'incertezza sul diametro compare moltiplicata per 2 perché il volume dipende dal quadrato del raggio (r² = r · r), quindi la percentuale di incertezza agisce su due dimensioni radiali ortogonali. Il parallelepipedo presenta un errore percentuale totale di circa 0.66%, mentre il cilindro circa 0.50%.";
-
-      calcBox();
-      calcCyl();
-      showToast("✓ Dati demo caricati per spiegazione alla LIM");
-    }
-
-    // ── DOWNLOAD DIRETTO PDF UFFICIALE (VALIDAZIONE BLOCCANTE) ──────────
-    function exportPDF() {
-      const nameInput = document.getElementById('student-name');
-      const classInput = document.getElementById('student-class');
-
-      nameInput.classList.remove('required-error');
-      classInput.classList.remove('required-error');
-
-      const nameVal = nameInput.value.trim();
-      const classVal = classInput.value.trim();
-
-      if (!nameVal) {
-        nameInput.classList.add('required-error');
-        nameInput.focus();
-        showToast("⚠️ ATTENZIONE: Inserisci Nome e Cognome prima di scaricare il PDF!");
-        return;
-      }
-
-      if (!classVal) {
-        classInput.classList.add('required-error');
-        classInput.focus();
-        showToast("⚠️ ATTENZIONE: Inserisci la tua Classe prima di scaricare il PDF!");
-        return;
-      }
-
-      showToast("⏳ Generazione PDF in corso...");
-
-      const safeName = nameVal.replace(/[^a-zA-Z0-9]/g, '_');
-      const safeClass = classVal.replace(/[^a-zA-Z0-9]/g, '_');
-      const filename = `Relazione3_Fisica_${safeName}_${safeClass}.pdf`;
-
-      const element = document.getElementById('print-area');
-      const opt = {
-        margin: [6, 8, 6, 8],
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      if (window.html2pdf) {
-        setTimeout(() => {
-          window.html2pdf().set(opt).from(element).save().then(() => {
-            showToast("✓ PDF Ufficiale scaricato con successo!");
-          }).catch(err => {
-            console.error("Errore html2pdf:", err);
-            window.print();
-          });
-        }, 150);
-      } else {
-        window.print();
-      }
-    }
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Relazione 3: Misure Indirette, Aree e Volumi — ITIS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<!-- html2pdf.js per download diretto PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — RELAZIONE 3: MISURE INDIRETTE & VOLUMI
+   Compilatore Digitale + Scheda Stampabile A4 per Laboratorio in Aula
+   ITIS "Giordano Bruno" - Dipartimento di Fisica
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-success: #2dce89;
+  --argon-danger: #f5365c;
+  --argon-warning: #fb6340;
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPBAR */
+.app-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.school-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--argon-dark);
+}
+
+.school-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.3);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  transition: all 0.2s;
+}
+.action-btn.primary {
+  background: var(--argon-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+}
+.action-btn.primary:hover {
+  background: var(--argon-primary-hover);
+  transform: translateY(-1px);
+}
+.action-btn.secondary {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+}
+.action-btn.secondary:hover {
+  background: var(--argon-secondary);
+  color: var(--argon-dark);
+}
+
+/* CONTAINER PRINCIPALE */
+.main-container {
+  max-width: 960px;
+  margin: 24px auto 40px auto;
+  padding: 0 16px;
+  width: 100%;
+}
+
+/* FOGLIO A4 / DOCUMENTO DI RELAZIONE */
+.report-sheet {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow);
+  padding: 36px 44px;
+}
+
+/* Header Relazione Ufficiale */
+.report-header {
+  border-bottom: 2px solid var(--argon-dark);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-inst {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.3px;
+}
+.header-dept {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--argon-primary);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #c2410c;
+  margin-top: 6px;
+}
+
+/* Riquadro Dati Anagrafici */
+.student-data-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+  background: #f8fafd;
+  border: 1px solid #dce4ec;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--argon-text-muted);
+  text-transform: uppercase;
+}
+
+.text-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--argon-dark);
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+  background: #ffffff;
+}
+.text-input:focus {
+  border-color: var(--argon-primary);
+  box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.15);
+}
+.text-input.required-error {
+  border-color: var(--argon-danger) !important;
+  background: #fff5f5 !important;
+}
+
+/* Sezioni Relazione */
+.report-section {
+  margin-bottom: 24px;
+}
+
+.section-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f3f9;
+}
+
+.badge-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--argon-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+/* Tabelle Dati */
+.lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+}
+.lab-table th {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+  color: #334155;
+  font-weight: 700;
+  text-align: center;
+}
+.lab-table td {
+  border: 1px solid #cbd5e1;
+  padding: 6px 8px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.table-input {
+  width: 100%;
+  border: 1px solid transparent;
+  padding: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 4px;
+  outline: none;
+  background: #fafbfe;
+  font-weight: 600;
+}
+.table-input:focus {
+  border-color: var(--argon-primary);
+  background: #ffffff;
+}
+
+/* Riquadri Risultati Calcoli */
+.calc-result-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* Rubrica Valutazione Docente */
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 10px;
+}
+.rubric-table th {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  padding: 6px 10px;
+  text-align: left;
+  color: #1e293b;
+  font-weight: 700;
+}
+.rubric-table td {
+  border: 1px solid #cbd5e1;
+  padding: 6px 10px;
+  background: #ffffff;
+}
+
+/* Toast */
+.argon-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: var(--argon-darker);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+.argon-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ══════════════════════════════════════════════
+   STILE DI STAMPA A4 (PRINT CLEAN)
+   ══════════════════════════════════════════════ */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .app-topbar, .no-print {
+    display: none !important;
+  }
+  .main-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .report-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 12mm 15mm !important;
+    border-radius: 0 !important;
+  }
+  .student-data-grid {
+    background: #ffffff !important;
+    border: 1px solid #000000 !important;
+  }
+  .text-input, .table-input {
+    border: none !important;
+    background: transparent !important;
+  }
+  .lab-table th, .lab-table td, .rubric-table th, .rubric-table td {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+  }
+  .calc-result-box {
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+}
+</style>
+</head>
+<body>
+
+  <!-- TOPBAR WEB -->
+  <header class="app-topbar no-print">
+    <div class="school-brand">
+      <div class="school-icon">📐</div>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem; color: var(--argon-dark);">ITIS Giordano Bruno • Laboratorio di Fisica</div>
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--argon-primary);">RELAZIONE 3 IN AULA • VOTO PRATICO 3 (1ª CLASSI)</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="action-btn secondary" onclick="fillTestData()" title="Compila con dati dimostrativi per spiegazione alla LIM">
+        🧪 Dati Demo LIM
+      </button>
+      <button class="action-btn secondary" onclick="window.print()" title="Stampa subito la scheda su carta per l'aula">
+        🖨️ Stampa Cartacea (A4)
+      </button>
+      <button class="action-btn primary" onclick="exportPDF()" title="Verifica anagrafica e genera il file PDF ufficiale">
+        📥 Scarica PDF Ufficiale
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENITORE RELAZIONE -->
+  <main class="main-container">
+    
+    <div class="report-sheet" id="print-area">
+      
+      <!-- INTESTAZIONE UFFICIALE -->
+      <div class="report-header">
+        <div>
+          <div class="header-inst">I.T.I.S. "GIORDANO BRUNO" — TORINO / VENARIA</div>
+          <div class="header-dept">Dipartimento di Scienze Integrate • Sezione Fisica</div>
+          <div class="header-title">RELAZIONE N° 03: MISURE INDIRETTE, AREE E VOLUMI</div>
+          <div style="font-size: 0.78rem; color: #64748b; margin-top: 2px;">
+            Competenze: <strong>SC 1.1.4</strong> (Propagazione Incertezze e Cifre Significative) e <strong>SC 1.3.5</strong> (Trattamento Dati)
+          </div>
+        </div>
+        <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+          <div style="border: 2px solid #c2410c; border-radius: 8px; padding: 6px 12px; background: #fff8f5; color: #c2410c; font-weight: 800;">
+            PROVA PRATICA IN AULA<br>VOTO 3 (1° QUADRIMESTRE)
+          </div>
+        </div>
+      </div>
+
+      <!-- DATI ANAGRAFICI DELLO STUDENTE (OBBLIGATORI) -->
+      <div class="student-data-grid">
+        <div class="input-group">
+          <label class="input-label">Allievo / Cognome e Nome *</label>
+          <input type="text" id="student-name" class="text-input" placeholder="Es. Rossi Mario (Obbligatorio)" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Classe *</label>
+          <input type="text" id="student-class" class="text-input" placeholder="Es. 1ª A (Obbligatorio)" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Data e Postazione</label>
+          <input type="text" id="student-date" class="text-input" value="Novembre 2026 • Banco ___">
+        </div>
+      </div>
+
+      <!-- 1. APPARATO METROLOGICO -->
+      <section class="report-section">
+        <div class="section-badge-title">
+          <span class="badge-num">1</span>
+          <span>STRUMENTAZIONE UTILIZZATA</span>
+        </div>
+        <div style="font-size: 0.86rem; color: var(--argon-text-muted); line-height: 1.5;">
+          • <strong>Strumento principale:</strong> Calibro a corsoio ventesimale in acciaio inossidabile.<br>
+          • <strong>Portata:</strong> 150.00 mm &nbsp;|&nbsp; <strong>Sensibilità (Incertezza di lettura):</strong> <strong style="color: var(--argon-primary);">Δ = ± 0.05 mm</strong>.<br>
+          • <strong>Campioni in misura:</strong> Parallelepipedo metallico (Solido 1) e Cilindro retto (Solido 2).
+        </div>
+      </section>
+
+      <!-- 2. RACCOLTA DATI SOLIDO 1 (PARALLELEPIPEDO) -->
+      <section class="report-section">
+        <div class="section-badge-title">
+          <span class="badge-num">2</span>
+          <span>SOLIDO 1: PARALLELEPIPEDO RETTANGOLO (MISURE DIRETTE IN mm)</span>
+        </div>
+
+        <table class="lab-table">
+          <thead>
+            <tr>
+              <th>Dimensione</th>
+              <th>Misura 1 [mm]</th>
+              <th>Misura 2 [mm]</th>
+              <th>Misura 3 [mm]</th>
+              <th>Valore Medio [mm]</th>
+              <th>Incertezza Δ [mm]</th>
+              <th>Errore Relativo e_r</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lunghezza (a)</strong></td>
+              <td><input type="number" step="0.05" id="box-a1" class="table-input" placeholder="40.00" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-a2" class="table-input" placeholder="40.05" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-a3" class="table-input" placeholder="39.95" oninput="calcBox()"></td>
+              <td id="box-a-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
+              <td>± 0.05</td>
+              <td id="box-a-er" style="color: #b45309;">-</td>
+            </tr>
+            <tr>
+              <td><strong>Larghezza (b)</strong></td>
+              <td><input type="number" step="0.05" id="box-b1" class="table-input" placeholder="25.00" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-b2" class="table-input" placeholder="24.95" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-b3" class="table-input" placeholder="25.05" oninput="calcBox()"></td>
+              <td id="box-b-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
+              <td>± 0.05</td>
+              <td id="box-b-er" style="color: #b45309;">-</td>
+            </tr>
+            <tr>
+              <td><strong>Altezza (c)</strong></td>
+              <td><input type="number" step="0.05" id="box-c1" class="table-input" placeholder="15.00" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-c2" class="table-input" placeholder="15.05" oninput="calcBox()"></td>
+              <td><input type="number" step="0.05" id="box-c3" class="table-input" placeholder="14.95" oninput="calcBox()"></td>
+              <td id="box-c-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
+              <td>± 0.05</td>
+              <td id="box-c-er" style="color: #b45309;">-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Calcoli Parallelepipedo con Legenda Indici -->
+        <div class="calc-result-box" id="box-results">
+          • <strong>Volume Medio:</strong> V = a · b · c = <span id="res-box-v">...</span> mm³ (a, b, c = quote del calibro)<br>
+          • <strong>Propagazione Incertezza (Pedice r = Errore Relativo Δ/media):</strong><br>
+          &nbsp;&nbsp;e<sub>r</sub>(V) = e<sub>r</sub>(a) + e<sub>r</sub>(b) + e<sub>r</sub>(c) = <span id="res-box-er">...</span> ➔ ΔV = e<sub>r</sub>(V) · V = <span id="res-box-dv">...</span> mm³<br>
+          • <strong>Risultato Parallelepipedo in S.I. (m³):</strong> <strong id="res-box-si" style="color: #15803d; font-size: 1.05rem;">V = ( ... ± ... ) m³</strong>
+        </div>
+      </section>
+
+      <!-- 3. RACCOLTA DATI SOLIDO 2 (CILINDRO) -->
+      <section class="report-section">
+        <div class="section-badge-title">
+          <span class="badge-num">3</span>
+          <span>SOLIDO 2: CILINDRO RETTO (MISURE DIRETTE IN mm)</span>
+        </div>
+
+        <table class="lab-table">
+          <thead>
+            <tr>
+              <th>Dimensione</th>
+              <th>Misura 1 [mm]</th>
+              <th>Misura 2 [mm]</th>
+              <th>Misura 3 [mm]</th>
+              <th>Valore Medio [mm]</th>
+              <th>Incertezza Δ [mm]</th>
+              <th>Errore Relativo e_r</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Diametro (d)</strong></td>
+              <td><input type="number" step="0.05" id="cyl-d1" class="table-input" placeholder="24.50" oninput="calcCyl()"></td>
+              <td><input type="number" step="0.05" id="cyl-d2" class="table-input" placeholder="24.55" oninput="calcCyl()"></td>
+              <td><input type="number" step="0.05" id="cyl-d3" class="table-input" placeholder="24.45" oninput="calcCyl()"></td>
+              <td id="cyl-d-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
+              <td>± 0.05</td>
+              <td id="cyl-d-er" style="color: #b45309;">-</td>
+            </tr>
+            <tr>
+              <td><strong>Altezza (h)</strong></td>
+              <td><input type="number" step="0.05" id="cyl-h1" class="table-input" placeholder="54.20" oninput="calcCyl()"></td>
+              <td><input type="number" step="0.05" id="cyl-h2" class="table-input" placeholder="54.25" oninput="calcCyl()"></td>
+              <td><input type="number" step="0.05" id="cyl-h3" class="table-input" placeholder="54.15" oninput="calcCyl()"></td>
+              <td id="cyl-h-avg" style="font-weight: 700; color: var(--argon-primary);">-</td>
+              <td>± 0.05</td>
+              <td id="cyl-h-er" style="color: #b45309;">-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Calcoli Cilindro con Legenda Indici -->
+        <div class="calc-result-box" id="cyl-results">
+          • <strong>Raggio Medio:</strong> r = d / 2 = <span id="res-cyl-r">...</span> mm (d = diametro misurato col calibro)<br>
+          • <strong>Volume Medio:</strong> V = π · r² · h = <span id="res-cyl-v">...</span> mm³<br>
+          • <strong>Propagazione Incertezza (Pedice r = Errore Relativo, fattore 2 per raggio al quadrato):</strong><br>
+          &nbsp;&nbsp;e<sub>r</sub>(V) = <strong>2 · e<sub>r</sub>(d)</strong> + e<sub>r</sub>(h) = <span id="res-cyl-er">...</span> ➔ ΔV = e<sub>r</sub>(V) · V = <span id="res-cyl-dv">...</span> mm³<br>
+          • <strong>Risultato Cilindro in S.I. (m³):</strong> <strong id="res-cyl-si" style="color: #15803d; font-size: 1.05rem;">V = ( ... ± ... ) m³</strong>
+        </div>
+      </section>
+
+      <!-- 4. DOMANDA CRITICA DI LABORATORIO (CONCLUSIONI) -->
+      <section class="report-section">
+        <div class="section-badge-title">
+          <span class="badge-num">4</span>
+          <span>ANALISI CRITICA E CONCLUSIONI SCIENTIFICHE</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 6px;">
+          <strong>Quesito del Docente:</strong> Perché nel calcolo dell'errore relativo del cilindro l'incertezza sul diametro compare con il <strong>fattore 2</strong>? Quale dei due solidi presenta la precisione percentuale migliore?
+        </p>
+        <textarea id="student-conclusion" class="text-input" rows="3" style="width: 100%; resize: vertical;" placeholder="Scrivi qui la tua conclusione scientifica con linguaggio tecnico..."></textarea>
+      </section>
+
+      <!-- 5. RUBRICA DI VALUTAZIONE DOCENTE (4 CRITERI DA 2.5 PUNTI = 10 DECIMI) -->
+      <section class="report-section" style="margin-bottom: 0;">
+        <div class="section-badge-title">
+          <span class="badge-num">5</span>
+          <span>GRIGLIA DI VALUTAZIONE (A CURA DEL DOCENTE ITP)</span>
+        </div>
+
+        <table class="rubric-table">
+          <thead>
+            <tr>
+              <th>Indicatore di Competenza (ITIS Giordano Bruno)</th>
+              <th style="width: 130px; text-align: center;">Punteggio Max</th>
+              <th style="width: 130px; text-align: center;">Punti Assegnati</th>
+              <th>Note del Docente</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Rigore Sperimentale e Misure Dirette:</strong> Uso corretto del calibro (± 0.05 mm), cifre decimali congrue.</td>
+              <td style="text-align: center;">2.5 pt</td>
+              <td style="text-align: center;">_____ / 2.5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><strong>2. Calcolo dei Volumi e Formule:</strong> Applicazione corretta delle formule geometriche di rettangolo e cilindro.</td>
+              <td style="text-align: center;">2.5 pt</td>
+              <td style="text-align: center;">_____ / 2.5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><strong>3. Propagazione Incertezze e Unità S.I.:</strong> Somma errori relativi, fattore 2 su diametro, conversione mm³ in m³.</td>
+              <td style="text-align: center;">2.5 pt</td>
+              <td style="text-align: center;">_____ / 2.5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><strong>4. Completezza, Cifre Significative e Conclusioni:</strong> Forma finale (V ± ΔV), analisi critica.</td>
+              <td style="text-align: center;">2.5 pt</td>
+              <td style="text-align: center;">_____ / 2.5</td>
+              <td></td>
+            </tr>
+            <tr style="background: #f8fafc; font-weight: 800; font-size: 0.95rem;">
+              <td>VOTO COMPLESSIVO DELLA PROVA PRATICA</td>
+              <td style="text-align: center;">10.0 / 10</td>
+              <td style="text-align: center; color: #c2410c;">______ / 10</td>
+              <td>Firma Docente: __________________</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+  </main>
+
+  <div class="argon-toast" id="app-toast">Messaggio</div>
+
+  <!-- JAVASCRIPT LOGICA & EXPORT PDF -->
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('app-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    // ── CALCOLI AUTOMATICI PARALLELEPIPEDO ──────────
+    function calcBox() {
+      const a1 = parseFloat(document.getElementById('box-a1').value) || 0;
+      const a2 = parseFloat(document.getElementById('box-a2').value) || 0;
+      const a3 = parseFloat(document.getElementById('box-a3').value) || 0;
+      const b1 = parseFloat(document.getElementById('box-b1').value) || 0;
+      const b2 = parseFloat(document.getElementById('box-b2').value) || 0;
+      const b3 = parseFloat(document.getElementById('box-b3').value) || 0;
+      const c1 = parseFloat(document.getElementById('box-c1').value) || 0;
+      const c2 = parseFloat(document.getElementById('box-c2').value) || 0;
+      const c3 = parseFloat(document.getElementById('box-c3').value) || 0;
+
+      const aVals = [a1, a2, a3].filter(v => v > 0);
+      const bVals = [b1, b2, b3].filter(v => v > 0);
+      const cVals = [c1, c2, c3].filter(v => v > 0);
+
+      const aAvg = aVals.length ? aVals.reduce((x,y)=>x+y,0)/aVals.length : 0;
+      const bAvg = bVals.length ? bVals.reduce((x,y)=>x+y,0)/bVals.length : 0;
+      const cAvg = cVals.length ? cVals.reduce((x,y)=>x+y,0)/cVals.length : 0;
+
+      document.getElementById('box-a-avg').textContent = aAvg ? aAvg.toFixed(2) : '-';
+      document.getElementById('box-b-avg').textContent = bAvg ? bAvg.toFixed(2) : '-';
+      document.getElementById('box-c-avg').textContent = cAvg ? cAvg.toFixed(2) : '-';
+
+      const erA = aAvg ? 0.05 / aAvg : 0;
+      const erB = bAvg ? 0.05 / bAvg : 0;
+      const erC = cAvg ? 0.05 / cAvg : 0;
+
+      document.getElementById('box-a-er').textContent = erA ? (erA * 100).toFixed(3) + '%' : '-';
+      document.getElementById('box-b-er').textContent = erB ? (erB * 100).toFixed(3) + '%' : '-';
+      document.getElementById('box-c-er').textContent = erC ? (erC * 100).toFixed(3) + '%' : '-';
+
+      if (aAvg && bAvg && cAvg) {
+        const V = aAvg * bAvg * cAvg;
+        const erTot = erA + erB + erC;
+        const dV = erTot * V;
+
+        document.getElementById('res-box-v').textContent = V.toFixed(1);
+        document.getElementById('res-box-er').textContent = (erTot * 100).toFixed(3) + '%';
+        document.getElementById('res-box-dv').textContent = '± ' + dV.toFixed(1);
+
+        const V_m3 = V * 1e-9;
+        const dV_m3 = dV * 1e-9;
+        const exp = Math.floor(Math.log10(V_m3));
+        const mant_V = V_m3 / Math.pow(10, exp);
+        const mant_dV = dV_m3 / Math.pow(10, exp);
+
+        document.getElementById('res-box-si').textContent = 
+          `V = (${mant_V.toFixed(2)} ± ${mant_dV.toFixed(2)}) × 10${exp} m³`;
+      }
+    }
+
+    // ── CALCOLI AUTOMATICI CILINDRO ──────────
+    function calcCyl() {
+      const d1 = parseFloat(document.getElementById('cyl-d1').value) || 0;
+      const d2 = parseFloat(document.getElementById('cyl-d2').value) || 0;
+      const d3 = parseFloat(document.getElementById('cyl-d3').value) || 0;
+      const h1 = parseFloat(document.getElementById('cyl-h1').value) || 0;
+      const h2 = parseFloat(document.getElementById('cyl-h2').value) || 0;
+      const h3 = parseFloat(document.getElementById('cyl-h3').value) || 0;
+
+      const dVals = [d1, d2, d3].filter(v => v > 0);
+      const hVals = [h1, h2, h3].filter(v => v > 0);
+
+      const dAvg = dVals.length ? dVals.reduce((x,y)=>x+y,0)/dVals.length : 0;
+      const hAvg = hVals.length ? hVals.reduce((x,y)=>x+y,0)/hVals.length : 0;
+
+      document.getElementById('cyl-d-avg').textContent = dAvg ? dAvg.toFixed(2) : '-';
+      document.getElementById('cyl-h-avg').textContent = hAvg ? hAvg.toFixed(2) : '-';
+
+      const erD = dAvg ? 0.05 / dAvg : 0;
+      const erH = hAvg ? 0.05 / hAvg : 0;
+
+      document.getElementById('cyl-d-er').textContent = erD ? (erD * 100).toFixed(3) + '%' : '-';
+      document.getElementById('cyl-h-er').textContent = erH ? (erH * 100).toFixed(3) + '%' : '-';
+
+      if (dAvg && hAvg) {
+        const r = dAvg / 2;
+        const V = Math.PI * Math.pow(r, 2) * hAvg;
+        const erTot = (2 * erD) + erH; // raggio al quadrato!
+        const dV = erTot * V;
+
+        document.getElementById('res-cyl-r').textContent = r.toFixed(2);
+        document.getElementById('res-cyl-v').textContent = V.toFixed(1);
+        document.getElementById('res-cyl-er').textContent = (erTot * 100).toFixed(3) + '% (con 2 · e_r(d))';
+        document.getElementById('res-cyl-dv').textContent = '± ' + dV.toFixed(1);
+
+        const V_m3 = V * 1e-9;
+        const dV_m3 = dV * 1e-9;
+        const exp = Math.floor(Math.log10(V_m3));
+        const mant_V = V_m3 / Math.pow(10, exp);
+        const mant_dV = dV_m3 / Math.pow(10, exp);
+
+        document.getElementById('res-cyl-si').textContent = 
+          `V = (${mant_V.toFixed(2)} ± ${mant_dV.toFixed(2)}) × 10${exp} m³`;
+      }
+    }
+
+    // ── DATI DIMOSTRATIVI ──────────
+    function fillTestData() {
+      document.getElementById('student-name').value = "Rossi Mario";
+      document.getElementById('student-class').value = "1ª A Meccanica";
+      document.getElementById('student-date').value = "03/11/2026 • Banco 04";
+
+      document.getElementById('box-a1').value = "40.00";
+      document.getElementById('box-a2').value = "40.05";
+      document.getElementById('box-a3').value = "39.95";
+      document.getElementById('box-b1').value = "25.00";
+      document.getElementById('box-b2').value = "24.95";
+      document.getElementById('box-b3').value = "25.05";
+      document.getElementById('box-c1').value = "15.00";
+      document.getElementById('box-c2').value = "15.05";
+      document.getElementById('box-c3').value = "14.95";
+
+      document.getElementById('cyl-d1').value = "24.50";
+      document.getElementById('cyl-d2').value = "24.55";
+      document.getElementById('cyl-d3').value = "24.45";
+      document.getElementById('cyl-h1').value = "54.20";
+      document.getElementById('cyl-h2').value = "54.25";
+      document.getElementById('cyl-h3').value = "54.15";
+
+      document.getElementById('student-conclusion').value = 
+        "Nel cilindro l'incertezza sul diametro compare moltiplicata per 2 perché il volume dipende dal quadrato del raggio (r² = r · r), quindi la percentuale di incertezza agisce su due dimensioni radiali ortogonali. Il parallelepipedo presenta un errore percentuale totale di circa 0.66%, mentre il cilindro circa 0.50%.";
+
+      calcBox();
+      calcCyl();
+      showToast("✓ Dati demo caricati per spiegazione alla LIM");
+    }
+
+    // ── DOWNLOAD DIRETTO PDF UFFICIALE (VALIDAZIONE BLOCCANTE) ──────────
+    function exportPDF() {
+      const nameInput = document.getElementById('student-name');
+      const classInput = document.getElementById('student-class');
+
+      nameInput.classList.remove('required-error');
+      classInput.classList.remove('required-error');
+
+      const nameVal = nameInput.value.trim();
+      const classVal = classInput.value.trim();
+
+      if (!nameVal) {
+        nameInput.classList.add('required-error');
+        nameInput.focus();
+        showToast("⚠️ ATTENZIONE: Inserisci Nome e Cognome prima di scaricare il PDF!");
+        return;
+      }
+
+      if (!classVal) {
+        classInput.classList.add('required-error');
+        classInput.focus();
+        showToast("⚠️ ATTENZIONE: Inserisci la tua Classe prima di scaricare il PDF!");
+        return;
+      }
+
+      showToast("⏳ Generazione PDF in corso...");
+
+      const safeName = nameVal.replace(/[^a-zA-Z0-9]/g, '_');
+      const safeClass = classVal.replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `Relazione3_Fisica_${safeName}_${safeClass}.pdf`;
+
+      const element = document.getElementById('print-area');
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast("✓ PDF Ufficiale scaricato con successo!");
+          }).catch(err => {
+            console.error("Errore html2pdf:", err);
+            window.print();
+          });
+        }, 150);
+      } else {
+        window.print();
+      }
+    }
+  </script>
+</body>
+</html>
