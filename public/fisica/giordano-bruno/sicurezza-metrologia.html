@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicurezza (D.Lgs. 81/08) & Metrologia Base — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   00: Sicurezza nei Luoghi di Lavoro (D.Lgs. 81/08) & Metrologia Base
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Argon Color Palette */
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-success-hover: #26af74;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-danger: #f5365c;
+  --argon-danger-light: rgba(245, 54, 92, 0.12);
+  
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  --argon-text-light: #8898aa;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  --argon-shadow-hover: 0 18px 40px rgba(50, 50, 93, 0.16), 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  font-size: calc(15px * var(--lim-zoom));
+  line-height: 1.5;
+}
+
+/* Background Subtle Blueprint Grid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(94, 114, 228, 0.05) 0%, transparent 60%),
+    linear-gradient(to right, rgba(94, 114, 228, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(94, 114, 228, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Master 100vh Container */
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Top App Header — Argon Navigation */
+.app-header {
+  height: 64px;
+  min-height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 20;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--argon-secondary);
+  color: var(--argon-primary);
+  border: 1px solid rgba(94, 114, 228, 0.2);
+  border-radius: 30px;
+  padding: 7px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-back-course:hover {
+  background: var(--argon-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: var(--argon-shadow-sm);
+}
+
+.school-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--argon-primary-light);
+  color: var(--argon-primary);
+  border-radius: 30px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lesson-title-badge {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phase-pill {
+  background: var(--argon-dark);
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: var(--argon-text-main);
+  border: 1px solid var(--argon-border);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.lim-btn:hover {
+  background: var(--argon-secondary);
+  color: var(--argon-primary);
+  border-color: var(--argon-primary);
+}
+
+/* Main Presentation Slide Viewport (100vh - 64px - 64px = flex: 1) */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 24px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.slide-card {
+  width: 100%;
+  max-width: 1540px;
+  height: 100%;
+  background: var(--argon-card-bg);
+  border: 1px solid var(--argon-border);
+  border-radius: 16px;
+  box-shadow: var(--argon-shadow);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.slide-card.active {
+  display: flex;
+}
+
+@keyframes slideFadeIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Slide Header */
+.slide-header {
+  padding: 16px 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%);
+  border-bottom: 1px solid var(--argon-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.slide-title-group h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.slide-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill-badge {
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
+.pill-badge.warning { background: var(--argon-warning-light); color: var(--argon-warning); }
+.pill-badge.danger  { background: var(--argon-danger-light); color: var(--argon-danger); }
+.pill-badge.info    { background: var(--argon-info-light); color: var(--argon-info); }
+.pill-badge.dark    { background: rgba(23, 43, 77, 0.08); color: var(--argon-dark); }
+
+/* Slide Body — Scrollable Inner with clean scrollbar */
+.slide-body {
+  flex: 1;
+  padding: 22px 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.slide-body::-webkit-scrollbar { width: 6px; }
+.slide-body::-webkit-scrollbar-track { background: #f1f3f9; border-radius: 4px; }
+.slide-body::-webkit-scrollbar-thumb { background: #c5cee0; border-radius: 4px; }
+.slide-body::-webkit-scrollbar-thumb:hover { background: #a6b5d0; }
+
+/* Grid Layout Helpers */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* Argon Content Cards */
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: var(--argon-shadow-sm);
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.argon-card:hover {
+  box-shadow: var(--argon-shadow);
+  border-color: rgba(94, 114, 228, 0.4);
+}
+
+.argon-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--argon-border);
+}
+
+.argon-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Callouts */
+.callout-box {
+  padding: 16px 20px;
+  border-radius: 10px;
+  border-left: 5px solid;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.callout-box.primary {
+  background: var(--argon-primary-light);
+  border-color: var(--argon-primary);
+  color: var(--argon-dark);
+}
+
+.callout-box.danger {
+  background: var(--argon-danger-light);
+  border-color: var(--argon-danger);
+  color: #7f1d1d;
+}
+
+.callout-box.success {
+  background: var(--argon-success-light);
+  border-color: var(--argon-success);
+  color: #064e3b;
+}
+
+.callout-box.warning {
+  background: var(--argon-warning-light);
+  border-color: var(--argon-warning);
+  color: #7c2d12;
+}
+
+/* Interactive Safety Button Console */
+.emergency-console {
+  background: var(--argon-darker);
+  border-radius: 14px;
+  padding: 20px;
+  color: #ffffff;
+  box-shadow: var(--argon-shadow);
+}
+
+.console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voltage-meter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+}
+
+.voltage-display {
+  font-size: 1.8rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.voltage-display.online { color: #2dce89; text-shadow: 0 0 10px rgba(45, 206, 137, 0.5); }
+.voltage-display.offline { color: #f5365c; text-shadow: 0 0 10px rgba(245, 54, 92, 0.5); }
+
+/* Fungo Rosso Button */
+.fungo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.fungo-btn {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff4b72, #b50e33 70%, #70061d);
+  border: 8px solid #ffb3c1;
+  box-shadow: 0 12px 25px rgba(245, 54, 92, 0.5), inset 0 -8px 12px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  text-align: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.fungo-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 16px 30px rgba(245, 54, 92, 0.7);
+}
+
+.fungo-btn:active, .fungo-btn.pressed {
+  transform: scale(0.94);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 6px 12px rgba(0, 0, 0, 0.6);
+  border-color: #f5365c;
+}
+
+.fungo-btn span {
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+/* Interactive Roles Cards */
+.role-card {
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.role-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--argon-shadow);
+}
+
+.role-card.selected {
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+}
+
+.role-card.selected::before {
+  content: "✓ RUOLO ATTIVO";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--argon-primary);
+  background: #ffffff;
+  padding: 2px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* Interactive Units SI Periodic Cards */
+.si-unit-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.si-unit-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--argon-primary);
+  box-shadow: var(--argon-shadow-sm);
+}
+
+.si-unit-card.active {
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+  box-shadow: 0 0 0 2px var(--argon-primary);
+}
+
+.si-unit-symbol {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--argon-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.si-unit-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.si-unit-quantity {
+  font-size: 0.72rem;
+  color: var(--argon-text-light);
+  text-transform: uppercase;
+}
+
+/* Interactive Notation Machine */
+.notation-machine {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--argon-shadow-sm);
+}
+
+.machine-inputs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.machine-input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border: 2px solid var(--argon-border);
+  border-radius: 8px;
+  color: var(--argon-dark);
+  transition: all 0.2s;
+}
+
+.machine-input:focus {
+  outline: none;
+  border-color: var(--argon-primary);
+  box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.15);
+}
+
+.notation-display-box {
+  background: var(--argon-dark);
+  border-radius: 10px;
+  padding: 16px 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.notation-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notation-label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--argon-text-light);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Interactive Gauge / Meter */
+.meter-simulator {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.digital-scale {
+  width: 280px;
+  background: #f8fafc;
+  border: 3px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+.scale-pan {
+  width: 200px;
+  height: 24px;
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.scale-screen {
+  background: #1e293b;
+  border: 2px solid #0f172a;
+  border-radius: 6px;
+  width: 220px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  letter-spacing: 0.06em;
+}
+
+.scale-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.scale-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scale-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Quiz Options */
+.quiz-option-btn {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  color: var(--argon-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.quiz-option-btn:hover {
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+  transform: translateX(4px);
+}
+
+.quiz-option-btn.correct {
+  border-color: var(--argon-success) !important;
+  background: var(--argon-success-light) !important;
+  color: #064e3b !important;
+}
+
+.quiz-option-btn.wrong {
+  border-color: var(--argon-danger) !important;
+  background: var(--argon-danger-light) !important;
+  color: #7f1d1d !important;
+}
+
+/* Bottom Bar — Navigation & Stepper */
+.app-footer {
+  height: 64px;
+  min-height: 64px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 20;
+}
+
+.stepper-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--argon-secondary);
+  border: 2px solid var(--argon-border);
+  color: var(--argon-text-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-dot:hover {
+  border-color: var(--argon-primary);
+  color: var(--argon-primary);
+}
+
+.step-dot.active {
+  background: var(--argon-primary);
+  border-color: var(--argon-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.4);
+  transform: scale(1.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-nav-prev {
+  background: var(--argon-secondary);
+  color: var(--argon-text-main);
+  border: 1px solid var(--argon-border);
+}
+
+.btn-nav-prev:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateX(-2px);
+}
+
+.btn-nav-next {
+  background: var(--argon-primary-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+}
+
+.btn-nav-next:hover:not(:disabled) {
+  transform: translateX(2px);
+  box-shadow: 0 6px 16px rgba(94, 114, 228, 0.45);
+}
+
+.btn-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Modals */
+.feedback-toast {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  background: var(--argon-dark);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: var(--argon-shadow);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 100;
+  animation: slideToast 0.3s ease;
+}
+
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .stepper-dots .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ══════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <a href="/#iss-giordano-bruno" class="btn-back-course" title="Torna a ISS Giordano Bruno">
+        <span>←</span>
+        <span>LABORATORIO FISICA</span>
+      </a>
+      <span class="school-badge">🏫 ITIS Giordano Bruno</span>
+      <div class="lesson-title-badge">
+        <span>🛡️ 00: Sicurezza D.Lgs. 81/08 & Metrologia</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="phase-pill" id="phase-indicator">
+        <span id="phase-step-badge">PASSO 1 DI 8</span>
+        <span>•</span>
+        <span id="phase-name-badge">NORMATIVA 81/08</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="Rimpicciolisci testo per LIM (A-)">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="Ingrandisci testo per LIM (A+)">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero per LIM (F11)">⛶</button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       VIEWPORT SLIDES (100vh no scroll de body)
+       ══════════════════════════════════════════════ -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: INTRODUZIONE & QUADRO NORMATIVO 81/08
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="NORMATIVA 81/08">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🛡️ Il Laboratorio come Ambiente di Lavoro (D.Lgs. 81/08)</h1>
+          <p class="slide-subtitle">Accoglienza Classi Prime • Transizione da studente a operatore tecnico</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">Q1 — Settimana 1</span>
+          <span class="pill-badge dark">Art. 2 & 20 D.Lgs. 81/08</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box primary">
+          <strong>⚖️ PRINCIPIO CARDINE DI EQUIPARAZIONE (Art. 2 comma 1 lett. a):</strong><br>
+          Durante le ore in cui fanno uso di laboratori, macchine, apparecchiature elettriche, ottiche o sostanze, gli allievi degli Istituti Tecnici sono <strong>a tutti gli effetti equiparati ai lavoratori subordinati</strong>. Ciò conferisce massimi diritti di prevenzione, ma impone <strong>doveri penalmente e disciplinarmente vincolanti</strong>.
+        </div>
+
+        <div class="grid-2">
+          <!-- Colonna Sinistra: I 5 Doveri -->
+          <div class="argon-card">
+            <div class="argon-card-header">
+              <span class="argon-card-title">📜 I 5 Obblighi Inderogabili dell'Allievo (Art. 20)</span>
+              <span class="pill-badge danger">OBBLIGATORIO</span>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--argon-primary); font-weight: 800;">1.</span>
+                <span><strong>Istruzioni del Docente:</strong> Seguire scrupolosamente le direttive del docente ITP (B003) e dell'assistente tecnico.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--argon-primary); font-weight: 800;">2.</span>
+                <span><strong>Uso dei DPI & Strumenti:</strong> Utilizzare correttamente Dispositivi di Protezione Individuale e apparecchiature.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--argon-primary); font-weight: 800;">3.</span>
+                <span><strong>Segnalazione Tempestiva:</strong> Segnalare subito qualsiasi guasto, rottura di vetreria, anomalia o liquido versato.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--argon-primary); font-weight: 800;">4.</span>
+                <span><strong>Divieto di Manomissione:</strong> Non rimuovere né modificare i dispositivi di sicurezza o le protezioni dei banchi.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--argon-primary); font-weight: 800;">5.</span>
+                <span><strong>Nessuna Iniziativa Autonoma:</strong> Non alimentare circuiti, laser o bruciatori senza benestare esplicito.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Colonna Destra: Competenze & Cittadinanza -->
+          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%);">
+            <div class="argon-card-header">
+              <span class="argon-card-title">🎯 Competenze di Cittadinanza & Asse Scientifico</span>
+              <span class="pill-badge success">ITIS BRUNO</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.88rem;">
+              <div style="padding: 10px; background: #ffffff; border: 1px solid var(--argon-border); border-radius: 8px;">
+                <div style="font-weight: 700; color: var(--argon-primary);">SC 1.1 — Osservazione e Modelli</div>
+                <div style="color: var(--argon-text-muted);">Riconoscere il laboratorio come sistema complesso in cui la precisione metrologica dipende dal rispetto del protocollo.</div>
+              </div>
+              <div style="padding: 10px; background: #ffffff; border: 1px solid var(--argon-border); border-radius: 8px;">
+                <div style="font-weight: 700; color: var(--argon-success);">SC 1.3.3 — Strumentazione Responsabile</div>
+                <div style="color: var(--argon-text-muted);">Utilizzare in modo responsabile semplici strumentazioni evitando sovraccarichi (fondoscala) e danni da incuria.</div>
+              </div>
+              <div style="padding: 10px; background: #ffffff; border: 1px solid var(--argon-border); border-radius: 8px;">
+                <div style="font-weight: 700; color: var(--argon-warning);">AAR — Agire in Modo Autonomo e Responsabile</div>
+                <div style="color: var(--argon-text-muted);">Consapevolezza che l'errore di un singolo operatore può compromettere la sicurezza dell'intero gruppo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: MAPPA PRESIDI EMERGENZA & SIMULATORE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="PRESIDI EMERGENZA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🚨 Presidi di Emergenza: Console Interattiva di Banco</h1>
+          <p class="slide-subtitle">Simulazione live dello sgancio d'emergenza e classificazione degli estintori</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge danger">SICUREZZA ATTIVA</span>
+          <span class="pill-badge info">DM 388/03</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Console Interattiva Sgancio -->
+          <div class="emergency-console">
+            <div class="console-header">
+              <span style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                ⚡ BANCO DI LAVORO #01 — ALIMENTAZIONE ELETTRICA
+              </span>
+              <span class="pill-badge" id="power-badge" style="background:#2dce89; color:#fff;">ATTIVO (230V)</span>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-around; margin: 15px 0;">
+              <div class="voltage-meter">
+                <span style="font-size: 0.85rem; color: #a0aec0;">TENSIONE:</span>
+                <div class="voltage-display online" id="voltage-readout">230.4 V</div>
+              </div>
+
+              <!-- Bottone a Fungo Rosso -->
+              <div class="fungo-wrapper">
+                <button class="fungo-btn" id="btn-fungo" title="Clicca per premere il fungo rosso di emergenza!">
+                  <span>STOP</span>
+                  <span style="font-size: 0.65rem;">EMERGENZA</span>
+                </button>
+                <span style="font-size: 0.72rem; color: #cbd5e1; margin-top: 8px;">CLICCA PER INTERROMPERE</span>
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #e2e8f0; line-height: 1.4;">
+              <strong>ℹ️ Cosa fa il Fungo Rosso:</strong> Disattiva il teleruttore generale togliendo tensione istantaneamente a tutti i banchi in caso di principio d'incendio, scintille anomale o scossa elettrica.
+            </div>
+
+            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+              <button id="btn-reset-power" style="background: transparent; color: #94a3b8; border: 1px solid #475569; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">
+                🔄 Reset Docente (Chiave di Riarmo)
+              </button>
+            </div>
+          </div>
+
+          <!-- Estintori & Presidi -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
+              <div class="argon-card-header">
+                <span class="argon-card-title">🧯 Estintore ad Anidride Carbonica (CO₂)</span>
+                <span class="pill-badge info">QUADRI ELETTRICI</span>
+              </div>
+              <p style="font-size: 0.86rem; color: var(--argon-text-muted);">
+                <strong>Perché si usa:</strong> La CO₂ soffoca la fiamma abbassando l'ossigeno e raffredda bruscamente (-78 °C allo scarico). <strong>Non lascia alcun residuo chimico né conduttivo</strong>, salvando gli apparati elettronici costosi del laboratorio.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-warning);">
+              <div class="argon-card-header">
+                <span class="argon-card-title">🧯 Estintore a Polvere Polivalente (ABC)</span>
+                <span class="pill-badge warning">SOLIDI & LIQUIDI</span>
+              </div>
+              <p style="font-size: 0.86rem; color: var(--argon-text-muted);">
+                <strong>Perché si usa:</strong> Efficace su legno, carta, banchi e solventi infiammabili. Lascia polvere fine corrosiva per i circuiti elettrici: va usato prioritariamente per incendi strutturali.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <div class="argon-card-header">
+                <span class="argon-card-title">🩹 Cassetta di Primo Soccorso & Vie di Fuga</span>
+                <span class="pill-badge success">SICUREZZA</span>
+              </div>
+              <p style="font-size: 0.86rem; color: var(--argon-text-muted);">
+                Contiene bende sterili, soluzione per lavaggio oculare e ghiaccio istantaneo. <strong>Porte con maniglione antipanico:</strong> devono rimanere <strong>perennemente sgombre da zaini</strong>, sgabelli o scatoloni.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: LE REGOLE D'ORO & ASSEGNAZIONE RUOLI
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="REGOLE & RUOLI">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🤝 Organizzazione del Banco e Ruoli di Squadra</h1>
+          <p class="slide-subtitle">Metodo cooperativo: ruoli a rotazione per garantire precisione e sicurezza</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">TEAMWORK ITIS</span>
+          <span class="pill-badge success">3 OPERATORI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box warning">
+          <strong>🎒 REGOLA ZERO DEL BANCO DI FISICA:</strong><br>
+          Zaini e giacche vanno riposti esclusivamente negli armadietti o sul perimetro dell'aula. Sul banco devono esserci <strong>SOLO</strong>: penna, calcolatrice scientifica, scheda/quaderno di laboratorio e righello. Divieto assoluto di cibi e bevande.
+        </div>
+
+        <div class="grid-3" style="margin-top: 8px;">
+          <!-- Ruolo A -->
+          <div class="role-card selected" id="role-a" onclick="selectRole('A')">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">🛠️</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--argon-dark); margin-bottom: 6px;">RUOLO A: Operatore Principale</h3>
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+              • Maneggia fisicamente gli strumenti e i campioni metallici.<br>
+              • Regola viti micrometriche e manopole senza mai forzare.<br>
+              • Controlla la stabilità dell'apparato sul banco di lavoro.
+            </p>
+          </div>
+
+          <!-- Ruolo B -->
+          <div class="role-card" id="role-b" onclick="selectRole('B')">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">👁️</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--argon-dark); margin-bottom: 6px;">RUOLO B: Lettore & Sicurezza</h3>
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+              • Effettua la lettura strumentale evitando l'errore di parallasse.<br>
+              • Verifica che l'interruttore del banco sia spento prima dei cablaggi.<br>
+              • È il garante del rispetto delle norme di sicurezza al banco.
+            </p>
+          </div>
+
+          <!-- Ruolo C -->
+          <div class="role-card" id="role-c" onclick="selectRole('C')">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">📝</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--argon-dark); margin-bottom: 6px;">RUOLO C: Data Manager / Verbalizzatore</h3>
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+              • Trascrive i valori sperimentali con le relative unità di misura.<br>
+              • Calcola medie aritmetiche, semidispersione e notazione scientifica.<br>
+              • Custodisce il quaderno di laboratorio e il foglio di calcolo.
+            </p>
+          </div>
+        </div>
+
+        <div id="role-feedback-box" class="callout-box success" style="margin-top: 14px;">
+          <strong>Ruolo Attivo Selezionato:</strong> Operatore Principale (Ruolo A). Ricorda di alternare i ruoli per ogni nuova esperienza di laboratorio per sviluppare tutte le competenze!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: EPISTEMOLOGIA DELLA METROLOGIA (VIM)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="METROLOGIA & VIM">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📐 Epistemologia della Misura (Vocabolario VIM)</h1>
+          <p class="slide-subtitle">La fisica come scienza quantitativa galileiana: concetti cardine JCGM 200:2012</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge info">VIM 3ª EDIZIONE</span>
+          <span class="pill-badge dark">METODO GALILEIANO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Colonna Concetti -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <div style="font-weight: 700; color: var(--argon-primary); font-size: 0.95rem;">1. GRANDEZZA FISICA</div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 4px;">
+                Proprietà di un fenomeno, corpo o sostanza che può essere espressa quantitativamente mediante un <strong>procedimento operativo di misura</strong>, un <strong>numero</strong> e un'<strong>unità di misura</strong>.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
+              <div style="font-weight: 700; color: var(--argon-info); font-size: 0.95rem;">2. MISURANDO</div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 4px;">
+                La specifica grandezza fisica sottoposta all'atto pratico della misura (es. <em>la lunghezza del filo del pendolo #02</em>, <em>la massa del cilindro di ottone</em>).
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <div style="font-weight: 700; color: var(--argon-success); font-size: 0.95rem;">3. VALORE MISURATO</div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 4px;">
+                Il valore quantitativo ottenuto dall'indicazione dello strumento o elaborato dal sistema di calcolo come risultato dell'esperimento (es. $L = 100.2\text{ cm}$).
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-danger);">
+              <div style="font-weight: 700; color: var(--argon-danger); font-size: 0.95rem;">4. VALORE VERO (IDEALE)</div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 4px;">
+                Valore teorico ideale perfettamente congruente con la definizione della grandezza. È <strong>intrinsecamente inconoscibile in modo esatto</strong> a causa dell'invalicabile incertezza sperimentale.
+              </p>
+            </div>
+          </div>
+
+          <!-- Colonna Illustrazione Didattica -->
+          <div class="argon-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: #fafbfe;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--argon-dark); margin-bottom: 12px;">
+              🎯 L'Atto della Misura: Dal Concetto all'Intervallo
+            </div>
+            
+            <svg width="340" height="180" viewBox="0 0 340 180" style="max-width: 100%;">
+              <!-- Asse X -->
+              <line x1="20" y1="90" x2="320" y2="90" stroke="#94a3b8" stroke-width="2"/>
+              <polygon points="320,86 330,90 320,94" fill="#94a3b8"/>
+              
+              <!-- Intervallo di incertezza -->
+              <rect x="110" y="70" width="120" height="40" rx="6" fill="rgba(94, 114, 228, 0.15)" stroke="#5e72e4" stroke-width="2"/>
+              
+              <!-- Valore misurato centrale -->
+              <line x1="170" y1="60" x2="170" y2="120" stroke="#1d4ed8" stroke-width="3"/>
+              <circle cx="170" cy="90" r="5" fill="#1d4ed8"/>
+              <text x="170" y="50" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#1d4ed8" text-anchor="middle">Valore x_m</text>
+              
+              <!-- Estremi -->
+              <text x="110" y="130" font-family="JetBrains Mono" font-size="11" fill="#64748b" text-anchor="middle">x_m - Δx</text>
+              <text x="230" y="130" font-family="JetBrains Mono" font-size="11" fill="#64748b" text-anchor="middle">x_m + Δx</text>
+              
+              <!-- Freccia Incertezza -->
+              <line x1="110" y1="145" x2="230" y2="145" stroke="#f5365c" stroke-width="2"/>
+              <text x="170" y="165" font-family="Open Sans" font-size="11" font-weight="700" fill="#f5365c" text-anchor="middle">Incertezza Totale 2Δx</text>
+            </svg>
+
+            <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 10px; max-width: 380px;">
+              In fisica una misura non è mai un singolo numero perfetto, ma un <strong>intervallo di confidenza</strong>:
+              <br><strong style="font-family: var(--font-mono); color: var(--argon-primary);">Misura = (x_m ± Δx) [Unità]</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: LE 7 GRANDEZZE FONDAMENTALI S.I.
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="SISTEMA S.I.">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⚛️ Il Sistema Internazionale (SI) — Riforma 2019</h1>
+          <p class="slide-subtitle">Le 7 grandezze fondamentali ancorate a costanti fisiche universali</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">CGPM 2019</span>
+          <span class="pill-badge success">7 UNITÀ BASE</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <!-- 7 Tessere Interattive -->
+        <div class="grid-4" style="grid-template-columns: repeat(7, 1fr); gap: 10px;">
+          <div class="si-unit-card active" onclick="showSiDetail('m')">
+            <div class="si-unit-symbol">m</div>
+            <div class="si-unit-name">Metro</div>
+            <div class="si-unit-quantity">Lunghezza</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('kg')">
+            <div class="si-unit-symbol">kg</div>
+            <div class="si-unit-name">Chilogrammo</div>
+            <div class="si-unit-quantity">Massa</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('s')">
+            <div class="si-unit-symbol">s</div>
+            <div class="si-unit-name">Secondo</div>
+            <div class="si-unit-quantity">Tempo</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('A')">
+            <div class="si-unit-symbol">A</div>
+            <div class="si-unit-name">Ampere</div>
+            <div class="si-unit-quantity">Corrente</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('K')">
+            <div class="si-unit-symbol">K</div>
+            <div class="si-unit-name">Kelvin</div>
+            <div class="si-unit-quantity">Temperatura</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('mol')">
+            <div class="si-unit-symbol" style="font-size: 1.4rem;">mol</div>
+            <div class="si-unit-name">Mole</div>
+            <div class="si-unit-quantity">Sostanza</div>
+          </div>
+          <div class="si-unit-card" onclick="showSiDetail('cd')">
+            <div class="si-unit-symbol">cd</div>
+            <div class="si-unit-name">Candela</div>
+            <div class="si-unit-quantity">Luminosità</div>
+          </div>
+        </div>
+
+        <!-- Box Dettaglio Unità Selezionata -->
+        <div class="argon-card" id="si-detail-card" style="margin-top: 12px; background: #fafbfe;">
+          <div class="argon-card-header">
+            <span class="argon-card-title" id="si-detail-title">📏 METRO [m] — Lunghezza</span>
+            <span class="pill-badge primary" id="si-constant-badge">Costante c</span>
+          </div>
+          <div class="grid-2">
+            <div>
+              <p style="font-size: 0.9rem; color: var(--argon-text-muted); line-height: 1.5;" id="si-detail-desc">
+                Definizione 2019: Il metro è definito fissando il valore numerico esatto della <strong>velocità della luce nel vuoto</strong> $c = 299\,792\,458\text{ m/s}$. Non esiste più il vecchio metro campione di platino-iridio: ogni laboratorio nel mondo può riprodurre il metro esatto usando un laser e un orologio atomico.
+              </p>
+            </div>
+            <div style="background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid var(--argon-border); font-size: 0.85rem;">
+              <div style="font-weight: 700; color: var(--argon-dark); margin-bottom: 4px;">Grandezze Derivate Associate nel Biennio:</div>
+              <ul style="padding-left: 18px; color: var(--argon-text-muted);">
+                <li>Superficie: $[S] = m^2$ (prodotto di lunghezze)</li>
+                <li>Volume: $[V] = m^3$ (oppure litri: $1\text{ L} = 1\text{ dm}^3 = 10^{-3}\text{ m}^3$)</li>
+                <li>Velocità: $[v] = m/s$ | Accelerazione: $[a] = m/s^2$</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-box warning" style="margin-top: 12px; margin-bottom: 0;">
+          <strong>⚠️ ERRORE TIPICO DA EVITARE:</strong> Nel Sistema Internazionale l'unità fondamentale della massa è il <strong>CHILOGRAMMO ($kg$)</strong> e NON il grammo ($g$)!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: NOTAZIONE SCIENTIFICA & PREFISSI
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="NOTAZIONE SCIENTIFICA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔢 Notazione Scientifica & Prefissi SI Interattivi</h1>
+          <p class="slide-subtitle">Convertitore live con scomposizione mantissa a · 10^k e ordine di grandezza</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">1 ≤ a &lt; 10</span>
+          <span class="pill-badge info">CONVERTITORE LIVE</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Convertitore Live Machine -->
+          <div class="notation-machine">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--argon-dark); margin-bottom: 10px;">
+              ⚙️ Inserisci un Numero o Scegli un Esempio Didattico:
+            </div>
+
+            <div class="machine-inputs">
+              <input type="text" id="machine-num-input" class="machine-input" value="0.0045" placeholder="Es. 0.0045 oppure 1200000">
+              <button class="btn-nav btn-nav-next" style="padding: 10px 18px;" onclick="convertNotation()">Converti</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+              <button class="scale-btn" onclick="setNotationVal('0.0045')">0.0045 m</button>
+              <button class="scale-btn" onclick="setNotationVal('101325')">101325 Pa</button>
+              <button class="scale-btn" onclick="setNotationVal('0.0000000000667')">G (Gravitazione)</button>
+              <button class="scale-btn" onclick="setNotationVal('450')">450 mm</button>
+              <button class="scale-btn" onclick="setNotationVal('299792458')">c (Vel. Luce)</button>
+            </div>
+
+            <div class="notation-display-box" id="notation-output-box">
+              <div class="notation-part">
+                <span id="not-mantissa" style="color: #38bdf8;">4.5</span>
+                <span class="notation-label">Mantissa (1 ≤ a &lt; 10)</span>
+              </div>
+              <span>×</span>
+              <div class="notation-part">
+                <span id="not-power" style="color: #2dd4bf;">10<sup>-3</sup></span>
+                <span class="notation-label">Potenza di 10 (k ∈ ℤ)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabella Prefissi SI Fondamentali -->
+          <div class="argon-card">
+            <div class="argon-card-header">
+              <span class="argon-card-title">📊 Tabella Prefissi Decimali nel Biennio</span>
+              <span class="pill-badge dark">MULTIPLI & SOTTOMULTIPLI</span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--argon-border); color: var(--argon-text-light);">
+                  <th style="padding: 6px;">Prefisso</th>
+                  <th style="padding: 6px;">Simbolo</th>
+                  <th style="padding: 6px;">Fattore</th>
+                  <th style="padding: 6px;">Esempio Comune</th>
+                </tr>
+              </thead>
+              <tbody style="color: var(--argon-text-main);">
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 6px; font-weight: 700;">Mega</td>
+                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-primary);">M</td>
+                  <td style="padding: 6px; font-family: var(--font-mono);">10⁶</td>
+                  <td style="padding: 6px;">1 MW = 10⁶ W</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 6px; font-weight: 700;">Chilo</td>
+                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-primary);">k</td>
+                  <td style="padding: 6px; font-family: var(--font-mono);">10³</td>
+                  <td style="padding: 6px;">1 km = 1000 m</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 6px; font-weight: 700;">Centi</td>
+                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-warning);">c</td>
+                  <td style="padding: 6px; font-family: var(--font-mono);">10⁻²</td>
+                  <td style="padding: 6px;">1 cm = 0.01 m</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 6px; font-weight: 700;">Milli</td>
+                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-danger);">m</td>
+                  <td style="padding: 6px; font-family: var(--font-mono);">10⁻³</td>
+                  <td style="padding: 6px;">1 mm = 0.001 m</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px; font-weight: 700;">Micro</td>
+                  <td style="padding: 6px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-danger);">μ</td>
+                  <td style="padding: 6px; font-family: var(--font-mono);">10⁻⁶</td>
+                  <td style="padding: 6px;">1 μm = 10⁻⁶ m</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: CARATTERISTICHE METROLOGICHE STRUMENTI
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="CARATTERISTICHE STRUMENTI">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔬 Caratteristiche Metrologiche degli Strumenti</h1>
+          <p class="slide-subtitle">Portata (Max), Sensibilità (Risoluzione), Errore di Zero e Prontezza</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">LABORATORIO REALE</span>
+          <span class="pill-badge success">SIMULATORE BILANCIA</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Spiegazione teorica delle 4 caratteristiche -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <strong style="color: var(--argon-primary);">1. PORTATA NOMINALE (CAMPO DI MISURA):</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Il massimo valore misurabile senza subire danneggiamenti permanenti (es. snervamento della molla o rottura della cella di carico). Sulla bilancia: <em>Max = 500 g</em>.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
+              <strong style="color: var(--argon-info);">2. SENSIBILITÀ (RISOLUZIONE):</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 2px;">
+                La più piccola variazione del misurando rilevabile dallo strumento. Negli strumenti digitali coincide con la cifra meno significativa: <em>d = 0.01 g</em> (10 mg).
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-danger);">
+              <strong style="color: var(--argon-danger);">3. ERRORE DI ZERO (ZERO-ERROR):</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 2px;">
+                L'indicazione fornita quando il misurando è nullo. Può essere azzerato col tasto <strong>TARA</strong> (bilance) o con la vite meccanica di regolazione (dinamometri).
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <strong style="color: var(--argon-success);">4. PRONTEZZA (TEMPO DI RISPOSTA):</strong>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); margin-top: 2px;">
+                La velocità con cui l'indice o il display si stabilizza sul valore finale. Critica nei sensori di temperatura a immersione.
+              </p>
+            </div>
+          </div>
+
+          <!-- Simulatore Bilancia Digitale Interattiva -->
+          <div class="meter-simulator">
+            <div style="font-weight: 700; color: var(--argon-dark); font-size: 0.95rem;">
+              ⚖️ Bilancia Digitale Tecnica (Max = 500 g, d = 0.01 g)
+            </div>
+
+            <div class="digital-scale">
+              <div class="scale-pan" id="scale-pan-label">PIATTO VUOTO</div>
+              <div class="scale-screen" id="scale-screen-val">0.00 g</div>
+              <div style="display: flex; justify-content: space-between; width: 100%; font-size: 0.68rem; color: #64748b; margin-top: 4px;">
+                <span>STABLE</span>
+                <span>Max: 500g d=0.01g</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+              <button class="scale-btn" onclick="placeSample(25.34, 'CILINDRO OTTONE')">+ Cilindro (25.34 g)</button>
+              <button class="scale-btn" onclick="placeSample(142.80, 'BLOCCO ALLUMINIO')">+ Blocco (142.80 g)</button>
+              <button class="scale-btn" onclick="placeSample(550.00, 'SOVRACCARICO')">+ Peso 550 g (Eccesso!)</button>
+              <button class="scale-btn" onclick="tareScale()" style="background: var(--argon-primary); color: #fff; border-color: var(--argon-primary);">TARA (Azzera)</button>
+              <button class="scale-btn" onclick="resetScale()">Rimuovi Tutto</button>
+            </div>
+
+            <div id="scale-status-feedback" style="font-size: 0.82rem; color: var(--argon-text-muted); text-align: center;">
+              Clicca su un campione per posizionarlo sul piatto della bilancia.
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA FINALE LIM (5 QUESITI)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA LIM INTERATTIVA">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: I 5 Quesiti del Metrologo</h1>
+          <p class="slide-subtitle">Verifica interattiva a squadre basata sui quesiti ufficiali di fine modulo</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">VERIFICA FORMATIVA</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTEGGIO: 0/5</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Box Domanda Corrente -->
+          <div class="argon-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title" id="quiz-question-num">DOMANDA 1 DI 5</span>
+                <span class="pill-badge primary" id="quiz-topic-tag">D.Lgs. 81/08</span>
+              </div>
+              <h2 id="quiz-question-text" style="font-size: 1.15rem; font-weight: 700; color: var(--argon-dark); line-height: 1.4; margin-bottom: 16px;">
+                Per quale motivo giuridico e operativo uno studente dell'ITIS è equiparato a un lavoratore subordinato?
+              </h2>
+
+              <div id="quiz-options-container">
+                <!-- Generato Dinamicamente da JS -->
+              </div>
+            </div>
+
+            <div id="quiz-explanation-box" class="callout-box info" style="display: none; margin-top: 12px; margin-bottom: 0;">
+              <!-- Spiegazione -->
+            </div>
+          </div>
+
+          <!-- Tabellone Risultati & Valutazione -->
+          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;" id="quiz-trophy-icon">🎯</div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--argon-dark);" id="quiz-final-title">Modulo di Accoglienza I°</h3>
+            <p style="font-size: 0.88rem; color: var(--argon-text-muted); max-width: 380px; margin-top: 6px;" id="quiz-final-desc">
+              Rispondi alle 5 domande cliccando sulla LIM. Il punteggio di squadra certificherà l'abilitazione all'accesso ai banchi di misura!
+            </p>
+
+            <div style="margin-top: 20px; width: 100%; max-width: 320px;">
+              <button class="btn-nav btn-nav-next" style="width: 100%; justify-content: center;" onclick="nextQuizQuestion()" id="btn-next-question">
+                Prossima Domanda →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER NAVIGATION & STEPPER
+       ══════════════════════════════════════════════ -->
+  <footer class="app-footer">
+    <div class="stepper-dots" id="stepper-container">
+      <button class="step-dot active" onclick="goToStep(1)">1</button>
+      <button class="step-dot" onclick="goToStep(2)">2</button>
+      <button class="step-dot" onclick="goToStep(3)">3</button>
+      <button class="step-dot" onclick="goToStep(4)">4</button>
+      <button class="step-dot" onclick="goToStep(5)">5</button>
+      <button class="step-dot" onclick="goToStep(6)">6</button>
+      <button class="step-dot" onclick="goToStep(7)">7</button>
+      <button class="step-dot" onclick="goToStep(8)">8</button>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-nav btn-nav-prev" id="btn-prev" onclick="changeStep(-1)" disabled>
+        <span>◄</span>
+        <span>Precedente</span>
+      </button>
+      <button class="btn-nav btn-nav-next" id="btn-next" onclick="changeStep(1)">
+        <span>Successiva</span>
+        <span>►</span>
+      </button>
+    </div>
+  </footer>
+
+  <div class="feedback-toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LOGICA INTERATTIVA PRESENTAZIONE LIM — ARGON SYSTEM
+   ═══════════════════════════════════════════════════════════════════ */
+
+let currentStep = 1;
+const totalSteps = 8;
+let limZoomLevel = 1.0;
+
+// Elementi DOM
+const slides = document.querySelectorAll('.slide-card');
+const dots = document.querySelectorAll('.step-dot');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const phaseStepBadge = document.getElementById('phase-step-badge');
+const phaseNameBadge = document.getElementById('phase-name-badge');
+
+function goToStep(step) {
+  if (step < 1 || step > totalSteps) return;
+  currentStep = step;
+
+  slides.forEach(slide => {
+    slide.classList.remove('active');
+    if (parseInt(slide.getAttribute('data-step')) === currentStep) {
+      slide.classList.add('active');
+      const stepName = slide.getAttribute('data-name');
+      phaseStepBadge.textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+      phaseNameBadge.textContent = stepName;
+    }
+  });
+
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx + 1 === currentStep);
+  });
+
+  btnPrev.disabled = (currentStep === 1);
+  btnNext.disabled = (currentStep === totalSteps);
+  btnNext.innerHTML = (currentStep === totalSteps) ? '<span>Fine Lezione</span> <span>✓</span>' : '<span>Successiva</span> <span>►</span>';
+}
+
+function changeStep(delta) {
+  goToStep(currentStep + delta);
+}
+
+// Navigazione da tastiera per docente alla LIM
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+    if (currentStep < totalSteps) changeStep(1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    if (currentStep > 1) changeStep(-1);
+  }
+});
+
+// Zoom LIM
+document.getElementById('btn-zoom-in').addEventListener('click', () => {
+  if (limZoomLevel < 1.4) {
+    limZoomLevel += 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+document.getElementById('btn-zoom-out').addEventListener('click', () => {
+  if (limZoomLevel > 0.85) {
+    limZoomLevel -= 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+// Fullscreen
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 2200);
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 2: LOGICA FUNGO ROSSO & ALIMENTAZIONE
+   ────────────────────────────────────────── */
+let isPowerOn = true;
+const btnFungo = document.getElementById('btn-fungo');
+const voltageReadout = document.getElementById('voltage-readout');
+const powerBadge = document.getElementById('power-badge');
+const btnResetPower = document.getElementById('btn-reset-power');
+
+btnFungo.addEventListener('click', () => {
+  if (!isPowerOn) return;
+  isPowerOn = false;
+  btnFungo.classList.add('pressed');
+  voltageReadout.textContent = "0.0 V";
+  voltageReadout.classList.remove('online');
+  voltageReadout.classList.add('offline');
+  powerBadge.textContent = "SGANCIO ESEGUITO (0V)";
+  powerBadge.style.background = "#f5365c";
+  playAudioBeep(220, 0.4);
+  showToast("⚡ ALIMENTAZIONE BANCO DISATTIVATA CON SUCCESSO!");
+});
+
+btnResetPower.addEventListener('click', () => {
+  isPowerOn = true;
+  btnFungo.classList.remove('pressed');
+  voltageReadout.textContent = "230.4 V";
+  voltageReadout.classList.add('online');
+  voltageReadout.classList.remove('offline');
+  powerBadge.textContent = "ATTIVO (230V)";
+  powerBadge.style.background = "#2dce89";
+  playAudioBeep(660, 0.2);
+  showToast("✓ Tensione ripristinata dal docente ITP");
+});
+
+/* ──────────────────────────────────────────
+   SLIDE 3: SELEZIONE RUOLO
+   ────────────────────────────────────────── */
+function selectRole(roleLetter) {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById(`role-${roleLetter.toLowerCase()}`);
+  if (card) card.classList.add('selected');
+
+  const fb = document.getElementById('role-feedback-box');
+  if (roleLetter === 'A') {
+    fb.innerHTML = "<strong>Ruolo Selezionato: Operatore Principale (A)</strong> — Maneggia gli apparati e regola le viti micrometriche con entrambe le mani.";
+  } else if (roleLetter === 'B') {
+    fb.innerHTML = "<strong>Ruolo Selezionato: Lettore & Sicurezza (B)</strong> — Effettua la stima visiva sulla scala strumentale e vigila che nessuno colleghi cavi senza permesso.";
+  } else if (roleLetter === 'C') {
+    fb.innerHTML = "<strong>Ruolo Selezionato: Data Manager (C)</strong> — Registra le misure in tabella, applica la formula della semidispersione e calcola le medie.";
+  }
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 5: DETTAGLI UNITA SI
+   ────────────────────────────────────────── */
+const siData = {
+  m: {
+    title: "📏 METRO [m] — Lunghezza",
+    badge: "Costante c",
+    desc: "Definito fissando il valore numerico esatto della velocità della luce nel vuoto c = 299 792 458 m/s. Nel laboratorio di fisica del biennio si misura con righelli millimetrati (S=1 mm), aste metriche, metri a nastro e calibri a corsoio ventesimali (S=0.05 mm)."
+  },
+  kg: {
+    title: "⚖️ CHILOGRAMMO [kg] — Massa",
+    badge: "Costante h",
+    desc: "Definito fissando la costante di Planck h = 6.626 070 15 × 10⁻³⁴ J·s. Nel laboratorio industriale si utilizzano bilance elettroniche con piatto protetto da paravento per determinare la massa di campioni solidi o masse sospese."
+  },
+  s: {
+    title: "⏱️ SECONDO [s] — Tempo",
+    badge: "Costante Δν_Cs",
+    desc: "Definito fissando la frequenza di transizione dell'atomo di Cesio 133 Δν_Cs = 9 192 631 770 Hz. In laboratorio si usa il cronometro digitale (sensibilità tipica 0.01 s) o fotocellule laser a traguardo ottico con risoluzione al microsecondo."
+  },
+  A: {
+    title: "⚡ AMPERE [A] — Corrente Elettrica",
+    badge: "Carica e",
+    desc: "Definito fissando la carica elementare e = 1.602 176 634 × 10⁻¹⁹ Coulomb. Rappresenta il flusso di carica attraverso una sezione di conduttore. Si misura con multimetri digitali in serie al circuito."
+  },
+  K: {
+    title: "🌡️ KELVIN [K] — Temperatura Termodinamica",
+    badge: "Costante k_B",
+    desc: "Definito fissando la costante di Boltzmann k_B = 1.380 649 × 10⁻²³ J/K. Lo zero assoluto (0 K) corrisponde a -273.15 °C. La conversione è: T(K) = t(°C) + 273.15."
+  },
+  mol: {
+    title: "🧪 MOLE [mol] — Quantità di Sostanza",
+    badge: "Costante N_A",
+    desc: "Definito fissando la costante di Avogadro N_A = 6.022 140 76 × 10²³ entità elementari. Unifica la fisica microscopica delle particelle con le proprietà termodinamiche macroscopiche dei gas ideali."
+  },
+  cd: {
+    title: "💡 CANDELA [cd] — Intensità Luminosa",
+    badge: "Costante K_cd",
+    desc: "Definito fissando l'efficacia luminosa di una radiazione monocromatica a frequenza 540 × 10¹² Hz pari a K_cd = 683 lumen/Watt. Rilevante nelle misure ottiche e nei sensori fotometrici."
+  }
+};
+
+function showSiDetail(unitKey) {
+  document.querySelectorAll('.si-unit-card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const u = siData[unitKey];
+  if (!u) return;
+  document.getElementById('si-detail-title').textContent = u.title;
+  document.getElementById('si-constant-badge').textContent = u.badge;
+  document.getElementById('si-detail-desc').innerHTML = u.desc;
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 6: CONVERTITORE NOTAZIONE SCIENTIFICA
+   ────────────────────────────────────────── */
+function setNotationVal(val) {
+  document.getElementById('machine-num-input').value = val;
+  convertNotation();
+}
+
+function convertNotation() {
+  const raw = document.getElementById('machine-num-input').value.trim();
+  const num = parseFloat(raw);
+  if (isNaN(num) || num === 0) {
+    showToast("Inserisci un numero valido diverso da zero!");
+    return;
+  }
+
+  // Conversione scientifica
+  const expStr = num.toExponential();
+  const [mantissa, exponent] = expStr.split('e');
+  const roundedMantissa = parseFloat(mantissa).toFixed(3).replace(/\.?0+$/, '');
+  const expInt = parseInt(exponent);
+
+  document.getElementById('not-mantissa').textContent = roundedMantissa;
+  document.getElementById('not-power').innerHTML = `10<sup>${expInt}</sup>`;
+  showToast(`Convertito: ${roundedMantissa} × 10^${expInt}`);
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 7: SIMULATORE BILANCIA DIGITALE
+   ────────────────────────────────────────── */
+let currentMass = 0;
+let tareOffset = 0;
+
+function placeSample(massVal, sampleName) {
+  currentMass = massVal;
+  document.getElementById('scale-pan-label').textContent = sampleName;
+  updateScaleDisplay();
+}
+
+function tareScale() {
+  tareOffset = currentMass;
+  updateScaleDisplay();
+  showToast("✓ Tara memorizzata: display azzerato");
+}
+
+function resetScale() {
+  currentMass = 0;
+  tareOffset = 0;
+  document.getElementById('scale-pan-label').textContent = "PIATTO VUOTO";
+  updateScaleDisplay();
+}
+
+function updateScaleDisplay() {
+  const screen = document.getElementById('scale-screen-val');
+  const fb = document.getElementById('scale-status-feedback');
+
+  if (currentMass > 500) {
+    screen.textContent = "E E E E";
+    screen.style.color = "#f5365c";
+    fb.innerHTML = "<strong style='color:#f5365c;'>⚠️ SOVRACCARICO ECCESSIVO!</strong> Il carico supera la portata massima P = 500 g. Rischio di snervamento permanente della cella di carico.";
+    playAudioBeep(180, 0.4);
+    return;
+  }
+
+  screen.style.color = "#38bdf8";
+  const netMass = currentMass - tareOffset;
+  screen.textContent = netMass.toFixed(2) + " g";
+
+  if (currentMass === 0) {
+    fb.textContent = "Piatto vuoto. Lettura a riposo stabile a 0.00 g.";
+  } else {
+    fb.innerHTML = `Massa sul piatto: <strong>${currentMass.toFixed(2)} g</strong> | Tara: ${tareOffset.toFixed(2)} g | Risoluzione minima: <strong>0.01 g</strong>.`;
+  }
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 8: SFIDA LIM INTERATTIVA (5 QUESITI)
+   ────────────────────────────────────────── */
+const quizQuestions = [
+  {
+    topic: "D.Lgs. 81/08",
+    q: "Per quale motivo giuridico uno studente dell'ITIS è equiparato a un lavoratore subordinato?",
+    options: [
+      "Perché riceve una retribuzione mensile durante le ore di tirocinio.",
+      "Perché fa uso pratico di laboratori, attrezzature elettriche o sostanze fisiche/chimiche (Art. 2 D.Lgs. 81/08).",
+      "Solo se frequenta le classi quinte e svolge stage all'esterno della scuola.",
+      "Soltanto su delega scritta del Dirigente Scolastico."
+    ],
+    correct: 1,
+    exp: "Esatto! Ai sensi dell'Art. 2 comma 1 lett. a) del D.Lgs. 81/08, chiunque operi in laboratori con macchine e apparati tecnologici è equiparato al lavoratore a fini di prevenzione e responsabilità."
+  },
+  {
+    topic: "Presidi di Emergenza",
+    q: "Quale estintore è tassativo utilizzare sui quadri elettrici in tensione del laboratorio di fisica?",
+    options: [
+      "Estintore ad acqua nebulizzata ad alta pressione.",
+      "Estintore a sabbia umida non compressa.",
+      "Estintore ad Anidride Carbonica (CO₂), perché non lascia residui conduttivi né danneggia i circuiti.",
+      "Qualsiasi secchio d'acqua presente sul banco."
+    ],
+    correct: 2,
+    exp: "Esatto! La CO₂ soffoca la fiamma gassosa e non lascia polveri o sostanze chimiche residue che potrebbero causare cortocircuiti successivi."
+  },
+  {
+    topic: "Sistema SI",
+    q: "Qual è l'unità fondamentale di misura della MASSA nel Sistema Internazionale (SI)?",
+    options: [
+      "Il grammo (g).",
+      "Il chilogrammo (kg).",
+      "Il milligrammo (mg).",
+      "La tonnellata metrica (t)."
+    ],
+    correct: 1,
+    exp: "Esatto! L'unica unità di base del Sistema Internazionale che contiene già un prefisso (chilo) nella sua definizione fondamentale è il chilogrammo (kg)!"
+  },
+  {
+    topic: "Caratteristiche Strumenti",
+    q: "Sulla targhetta di una bilancia tecnica leggiamo: Max = 500 g, d = 0.01 g. Cosa significano questi valori?",
+    options: [
+      "Portata nominale P = 500 g e sensibilità (risoluzione) S = 0.01 g.",
+      "Peso tara T = 500 g e scarto quadratico medio 0.01 g.",
+      "Portata minima 0.01 g e sensibilità 500 g.",
+      "Risoluzione 500 g e tolleranza massima 0.01%."
+    ],
+    correct: 0,
+    exp: "Esatto! 'Max' indica la portata massima misurabile, mentre 'd' (divisione) rappresenta la sensibilità / risoluzione dello strumento."
+  },
+  {
+    topic: "Errore di Zero",
+    q: "Un dinamometro a molla, scarico e appeso in verticale, segna +0.2 N a vuoto. Come deve procedere lo studente?",
+    options: [
+      "Ignorare il valore perché è molto piccolo rispetto a 10 N.",
+      "Azzerarlo meccanicamente oppure sottrarre algebricamente 0.2 N da tutte le misurazioni successive.",
+      "Aggiungere 0.2 N a tutti i pesi misurati.",
+      "Sostituire la molla con un filo elastico."
+    ],
+    correct: 1,
+    exp: "Esatto! L'errore di zero è un errore sistematico che sballa tutte le letture per eccesso: va azzerato con la ghiera di taratura o compensato sottraendo l'offset costante."
+  }
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let answeredCurrent = false;
+
+function loadQuizQuestion(index) {
+  answeredCurrent = false;
+  const q = quizQuestions[index];
+  document.getElementById('quiz-question-num').textContent = `DOMANDA ${index + 1} DI ${quizQuestions.length}`;
+  document.getElementById('quiz-topic-tag').textContent = q.topic;
+  document.getElementById('quiz-question-text').textContent = q.q;
+
+  const container = document.getElementById('quiz-options-container');
+  container.innerHTML = '';
+
+  const expBox = document.getElementById('quiz-explanation-box');
+  expBox.style.display = 'none';
+
+  q.options.forEach((optText, optIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option-btn';
+    btn.innerHTML = `<span style="width:24px; height:24px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+    btn.onclick = () => handleAnswer(optIdx, btn);
+    container.appendChild(btn);
+  });
+
+  const nextBtn = document.getElementById('btn-next-question');
+  nextBtn.textContent = (index === quizQuestions.length - 1) ? "Mostra Risultato Finale 🏁" : "Prossima Domanda →";
+}
+
+function handleAnswer(selectedIndex, clickedBtn) {
+  if (answeredCurrent) return;
+  answeredCurrent = true;
+
+  const q = quizQuestions[quizIndex];
+  const allBtns = document.querySelectorAll('.quiz-option-btn');
+  const expBox = document.getElementById('quiz-explanation-box');
+
+  if (selectedIndex === q.correct) {
+    quizScore++;
+    clickedBtn.classList.add('correct');
+    playAudioBeep(587, 0.2);
+    expBox.className = 'callout-box success';
+    expBox.innerHTML = `<strong>✓ RISPOSTA ESATTA!</strong> ${q.exp}`;
+  } else {
+    clickedBtn.classList.add('wrong');
+    allBtns[q.correct].classList.add('correct');
+    playAudioBeep(200, 0.35);
+    expBox.className = 'callout-box danger';
+    expBox.innerHTML = `<strong>✗ RISPOSTA ERRATA!</strong> ${q.exp}`;
+  }
+
+  expBox.style.display = 'block';
+  document.getElementById('quiz-score-badge').textContent = `PUNTEGGIO: ${quizScore}/${quizQuestions.length}`;
+}
+
+function nextQuizQuestion() {
+  if (quizIndex < quizQuestions.length - 1) {
+    quizIndex++;
+    loadQuizQuestion(quizIndex);
+  } else {
+    // Schermata Finale Risultato
+    document.getElementById('quiz-trophy-icon').textContent = (quizScore >= 4) ? "🏅" : "📚";
+    document.getElementById('quiz-final-title').textContent = (quizScore >= 4) ? "CLASSE ABILITATA AL LABORATORIO!" : "REVISIONE PROTOCOLLO RICHIESTA";
+    document.getElementById('quiz-final-desc').innerHTML = `La classe ha totalizzato un punteggio finale di <strong>${quizScore} su ${quizQuestions.length}</strong>.<br>` +
+      (quizScore >= 4 ? "Ottimo lavoro! Siete pronti ad accedere ai banchi di misura per l'Unità 01." : "Rivedete con il docente ITP i punti su estintori e correzione dell'errore di zero.");
+    showToast(`Punteggio Finale: ${quizScore}/5`);
+  }
+}
+
+// Sintetizzatore Web Audio per feedback sonoro alla LIM
+function playAudioBeep(freq, duration) {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+// Inizializzazione al caricamento
+document.addEventListener('DOMContentLoaded', () => {
+  goToStep(1);
+  loadQuizQuestion(0);
+});
+</script>
+
+</body>
+</html>

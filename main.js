@@ -370,6 +370,16 @@ const MATERIE = [
             desc: "Attività sperimentali, misure e protocolli di laboratorio per le classi prime.",
             chapters: [
               {
+                title: "🛡️ 0. Sicurezza (D.Lgs. 81/08) & Metrologia Base",
+                topics: [
+                  {
+                    title: "Lezione Interattiva LIM: Sicurezza D.Lgs. 81/08 & Metrologia Base (1h)",
+                    desc: "Presentazione animata per LIM con design Argon: diritti e doveri (Art. 20), fungo rosso interattivo, VIM, le 7 unità SI 2019, convertitore scientifico e simulatore bilancia.",
+                    url: "/fisica/giordano-bruno/sicurezza-metrologia.html"
+                  }
+                ]
+              },
+              {
                 title: "🧪 Laboratorio & Metodo Scientifico",
                 topics: [
                   {
