@@ -459,6 +459,11 @@ const MATERIE = [
                     title: "🌡️ Lezione Interattiva LIM: Calore Specifico & Calorimetro delle Miscele",
                     desc: "Presentazione animata 100vh per LIM: calore vs temperatura, calore specifico dell'acqua (4186 J/(kg·K)) vs metalli, simulatore live del calorimetro delle miscele (equivalente in acqua me = 15 g), bilancio termico Qced = Qass, identificazione automatica del metallo e sfida LIM.",
                     url: "/fisica/giordano-bruno/calorimetria-calore-specifico.html"
+                  },
+                  {
+                    title: "📄 Relazione 2 Compilabile in Aula (PDF & Scheda A4)",
+                    desc: "Web App compilabile da smartphone/PC o stampabile su foglio A4 per la consegna entro fine ora: raccolta dati sperimentali (m₁, T₁, m₂, T₂, Te), calcolo guidato di cx, identificazione del metallo, 3 quesiti concettuali e griglia di valutazione docente ITP.",
+                    url: "/fisica/giordano-bruno/relazione-calorimetria.html"
                   }
                 ]
               }

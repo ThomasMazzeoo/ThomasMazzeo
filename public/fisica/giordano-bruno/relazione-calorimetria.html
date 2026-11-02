@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Relazione 2: Calore Specifico con Calorimetro — ITIS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<!-- html2pdf.js per download diretto PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — RELAZIONE 2: CALORIMETRIA DEI METALLI
+   Compilatore Digitale + Scheda Stampabile A4 per Consegna entro Fine Ora
+   ITIS "Giordano Bruno" - Dipartimento di Fisica
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-success: #2dce89;
+  --argon-danger: #f5365c;
+  --argon-warning: #fb6340;
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP TOOLBAR (NON STAMPABILE) */
+.action-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(87deg, #fb6340 0, #f5365c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.brand-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.brand-sub {
+  font-size: 0.8rem;
+  color: var(--argon-text-muted);
+}
+
+.toolbar-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.86rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--argon-primary);
+  color: white;
+  box-shadow: 0 4px 6px rgba(94, 114, 228, 0.28);
+}
+.btn-primary:hover {
+  background: var(--argon-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--argon-dark);
+  border: 1px solid var(--argon-border);
+}
+.btn-secondary:hover {
+  background: var(--argon-secondary);
+}
+
+.btn-danger {
+  background: #fff5f5;
+  color: var(--argon-danger);
+  border: 1px solid #fed7d7;
+}
+
+/* CONTENITORE FOGLIO A4 */
+.document-container {
+  max-width: 900px;
+  margin: 24px auto 40px auto;
+  background: #ffffff;
+  padding: 36px 44px;
+  border-radius: 12px;
+  box-shadow: var(--argon-shadow);
+  border: 1px solid var(--argon-border);
+}
+
+/* HEADER DOCUMENTO */
+.doc-header {
+  border-bottom: 2px solid var(--argon-dark);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.school-info h2 {
+  font-size: 1.15rem;
+  color: var(--argon-dark);
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+}
+.school-info p {
+  font-size: 0.82rem;
+  color: var(--argon-text-muted);
+  margin-top: 2px;
+}
+
+.report-badge {
+  background: #fff8f5;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+/* SCHEDA DATI STUDENTE */
+.student-data-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+}
+
+.input-field label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--argon-text-muted);
+  margin-bottom: 4px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--argon-dark);
+  background: #ffffff;
+}
+
+.input-field input:focus {
+  outline: none;
+  border-color: var(--argon-primary);
+  box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.15);
+}
+
+.input-field input.required-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+/* SEZIONI RELAZIONE */
+.section-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  margin-top: 18px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theory-callout {
+  background: #f0f7ff;
+  border-left: 4px solid var(--argon-primary);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+}
+
+/* TABELLE DATI */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin-bottom: 14px;
+}
+
+.data-table th, .data-table td {
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.data-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.data-table td.label-cell {
+  text-align: left;
+  font-weight: 600;
+}
+
+.data-table input {
+  width: 90px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.data-table input:focus {
+  outline: none;
+  border-color: var(--argon-primary);
+}
+
+/* BOX FORMULA RISOLUTIVA */
+.formula-banner {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0 18px 0;
+}
+
+.formula-banner-text {
+  font-size: 0.82rem;
+  color: #166534;
+}
+
+.formula-math {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #15803d;
+}
+
+/* SCHEDA RISULTATO FINALE E METALLO */
+.result-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.metric-box {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.metric-box.highlight {
+  border-color: var(--argon-success);
+  background: #f0fdf4;
+}
+
+.metric-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--argon-text-muted);
+}
+
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #15803d;
+  margin: 4px 0;
+}
+
+.metric-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* DOMANDE APERTE */
+.question-block {
+  margin-bottom: 12px;
+}
+
+.question-text {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+  margin-bottom: 4px;
+}
+
+.answer-textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--argon-dark);
+  resize: vertical;
+}
+
+.answer-textarea:focus {
+  outline: none;
+  border-color: var(--argon-primary);
+}
+
+/* TABELLA DI VALUTAZIONE DOCENTE (A4) */
+.rubric-box {
+  border: 1.5px solid #94a3b8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 20px;
+  background: #fafafa;
+}
+
+.rubric-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.rubric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 1.2fr;
+  gap: 8px;
+  font-size: 0.74rem;
+}
+
+.rubric-col {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.rubric-col strong {
+  display: block;
+  color: var(--argon-dark);
+  margin-bottom: 2px;
+}
+
+/* TOAST */
+.argon-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--argon-darker);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   STILI DI STAMPA (@media print) — OTTIMIZZATO PER FOGLIO A4
+   ═══════════════════════════════════════════════════════════════════ */
+@media print {
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+  .action-toolbar, .argon-toast {
+    display: none !important;
+  }
+  .document-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm 12mm !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .answer-textarea {
+    border: 1px solid #000000;
+    min-height: 48px;
+  }
+  .data-table th, .data-table td {
+    border-color: #000000;
+  }
+  .formula-banner {
+    border-color: #000000;
+    background: none;
+  }
+}
+</style>
+</head>
+<body>
+
+  <!-- BARRA AZIONI DOCENTE / STUDENTE (NON STAMPABILE) -->
+  <aside class="action-toolbar">
+    <div class="brand-section">
+      <div class="brand-badge">🧪</div>
+      <div>
+        <div class="brand-title">Relazione 2: Calorimetria delle Mescolanze</div>
+        <div class="brand-sub">Compilabile in aula o stampabile in A4 • Consegna entro fine ora</div>
+      </div>
+    </div>
+    <div class="toolbar-buttons">
+      <button class="btn btn-secondary" onclick="loadSampleData()">
+        📋 Carica Dati Prova LIM
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        🖨️ Stampa Scheda A4
+      </button>
+      <button class="btn btn-primary" onclick="exportPDF()">
+        📥 Scarica Relazione PDF
+      </button>
+      <button class="btn btn-danger" onclick="resetForm()">
+        ↺ Azzera
+      </button>
+    </div>
+  </aside>
+
+  <!-- FOGLIO DI LAVORO UFFICIALE A4 -->
+  <main class="document-container" id="print-area">
+    
+    <!-- INTESTAZIONE SCUOLA -->
+    <header class="doc-header">
+      <div class="school-info">
+        <h2>I.T.I.S. "Giordano Bruno" — Laboratorio di Fisica</h2>
+        <p>Scienze Integrate • Secondo Anno del Biennio • UDP 02: Termologia e Calorimetria</p>
+      </div>
+      <div class="report-badge">
+        RELAZIONE N° 02<br>
+        <span style="font-size: 0.72rem; font-weight: normal; color: #7c2d12;">Valutazione 1° Quadrimestre</span>
+      </div>
+    </header>
+
+    <!-- DATI STUDENTE -->
+    <section class="student-data-grid">
+      <div class="input-field">
+        <label for="student-name">Cognome e Nome Allievo *</label>
+        <input type="text" id="student-name" placeholder="Es. Rossi Mario" required>
+      </div>
+      <div class="input-field">
+        <label for="student-class">Classe *</label>
+        <input type="text" id="student-class" placeholder="Es. 2ª A IT" required>
+      </div>
+      <div class="input-field">
+        <label for="student-date">Data</label>
+        <input type="date" id="student-date">
+      </div>
+      <div class="input-field">
+        <label for="student-bench">Postazione Banco</label>
+        <input type="text" id="student-bench" placeholder="Es. Banco 3">
+      </div>
+    </section>
+
+    <!-- 1. SCOPO E FONDAMENTI TEORICI -->
+    <h3 class="section-title">1. Scopo dell'Esperienza & Principio Fisico</h3>
+    <div class="theory-callout">
+      <strong>Scopo:</strong> Determinare sperimentalmente il calore specifico <strong>c<sub>x</sub></strong> di un campione metallico mediante il metodo delle mescolanze in un calorimetro adiabatico ad acqua.<br>
+      <strong>Principio Fisico:</strong> Nel calorimetro (sistema isolato), l'energia termica ceduta dal metallo caldo è uguale all'energia termica assorbita dall'acqua fredda e dal vasetto interno del calorimetro: <strong>Q<sub>ceduto</sub> = Q<sub>assorbito</sub></strong>.
+    </div>
+
+    <!-- 2. APPARATO STRUMENTALE -->
+    <h3 class="section-title">2. Strumenti Utilizzati & Dati di Taratura</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Strumento / Parametro</th>
+          <th>Modello / Tipo</th>
+          <th>Sensibilità / Valore Fisso</th>
+          <th>Unità di Misura</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-cell">Bilancia Tecnica Elettronica</td>
+          <td>Digitale con piattello inox</td>
+          <td>&plusmn; 0.1</td>
+          <td>g</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Termometro a Sonda Elettronica</td>
+          <td>Digitale a immersione PT100</td>
+          <td>&plusmn; 0.1</td>
+          <td>°C</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Calore Specifico dell'Acqua (c<sub>H2O</sub>)</td>
+          <td>Costante tabulata di riferimento</td>
+          <td>4186</td>
+          <td>J / (kg · K)</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Equivalente in Acqua del Calorimetro (m<sub>e</sub>)</td>
+          <td>Dato di taratura dell'apparato</td>
+          <td>15.0</td>
+          <td>g (= 0.015 kg)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 3. RACCOLTA DATI SPERIMENTALI -->
+    <h3 class="section-title">3. Raccolta Dati Sperimentali al Banco</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Grandezza Misurata</th>
+          <th>Simbolo</th>
+          <th>Valore Letto [g o °C]</th>
+          <th>Valore nel Sistema S.I. [kg o °C]</th>
+          <th>Incertezza Strumento (&plusmn;)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-cell">Massa dell'acqua fredda nel calorimetro</td>
+          <td><strong>m₁</strong></td>
+          <td><input type="number" id="raw-m1" value="150.0" step="0.1" oninput="runCalculations()"> g</td>
+          <td><span id="si-m1" style="font-family:'JetBrains Mono'; font-weight:700;">0.1500</span> kg</td>
+          <td>&plusmn; 0.1 g</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Temperatura iniziale dell'acqua fredda</td>
+          <td><strong>T₁</strong></td>
+          <td><input type="number" id="raw-t1" value="20.0" step="0.1" oninput="runCalculations()"> °C</td>
+          <td><span id="si-t1" style="font-family:'JetBrains Mono'; font-weight:700;">20.0</span> °C</td>
+          <td>&plusmn; 0.1 °C</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Massa del cilindretto metallico</td>
+          <td><strong>m₂</strong></td>
+          <td><input type="number" id="raw-m2" value="60.0" step="0.1" oninput="runCalculations()"> g</td>
+          <td><span id="si-m2" style="font-family:'JetBrains Mono'; font-weight:700;">0.0600</span> kg</td>
+          <td>&plusmn; 0.1 g</td>
+        </tr>
+        <tr>
+          <td class="label-cell">Temperatura iniziale metallo (bagnomaria)</td>
+          <td><strong>T₂</strong></td>
+          <td><input type="number" id="raw-t2" value="98.0" step="0.5" oninput="runCalculations()"> °C</td>
+          <td><span id="si-t2" style="font-family:'JetBrains Mono'; font-weight:700;">98.0</span> °C</td>
+          <td>&plusmn; 0.5 °C</td>
+        </tr>
+        <tr style="background: #fff8f5;">
+          <td class="label-cell" style="color: #c2410c;">Temperatura finale di EQUILIBRIO raggiunta</td>
+          <td><strong>T<sub>e</sub></strong></td>
+          <td><input type="number" id="raw-te" value="25.4" step="0.1" style="border-color:#fb6340; font-weight:700; color:#c2410c;" oninput="runCalculations()"> °C</td>
+          <td><span id="si-te" style="font-family:'JetBrains Mono'; font-weight:800; color:#c2410c;">25.4</span> °C</td>
+          <td>&plusmn; 0.1 °C</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 4. ELABORAZIONE DATI E FORMULA -->
+    <h3 class="section-title">4. Elaborazione Dati & Calcolo del Calore Specifico (c<sub>x</sub>)</h3>
+    
+    <div class="formula-banner">
+      <div class="formula-banner-text">
+        <strong>Formula Inversa di Bilancio:</strong><br>
+        c<sub>x</sub> = [ (m₁ + m<sub>e</sub>) · c<sub>H2O</sub> · (T<sub>e</sub> - T₁) ] / [ m₂ · (T₂ - T<sub>e</sub>) ]
+      </div>
+      <div class="formula-math">
+        c<sub>x</sub> = <span id="math-cx-preview">856</span> J / (kg · K)
+      </div>
+    </div>
+
+    <!-- Salti termici e Risultato -->
+    <div class="result-card-grid">
+      <div class="metric-box">
+        <div class="metric-title">Salti Termici Rilevati</div>
+        <div style="font-family:'JetBrains Mono'; font-size:1rem; font-weight:700; margin:6px 0; color:#1e293b;">
+          ΔT<sub>acqua</sub> = <span id="res-dt-w">+5.4</span> °C<br>
+          ΔT<sub>metallo</sub> = <span id="res-dt-m">-72.6</span> °C
+        </div>
+        <div class="metric-sub">L'acqua varia di pochi gradi; il metallo si raffredda di oltre 70°C.</div>
+      </div>
+
+      <div class="metric-box highlight">
+        <div class="metric-title">Metallo Incognito Identificato</div>
+        <div class="metric-value" id="res-metal-name">⚪ ALLUMINIO</div>
+        <div class="metric-sub" id="res-metal-sub">Valore teorico: 896 J/(kg·K) | Scostamento: -4.5%</div>
+      </div>
+    </div>
+
+    <!-- Valori di Confronto Tabulati -->
+    <table class="data-table" style="font-size: 0.78rem;">
+      <thead>
+        <tr>
+          <th>Metallo di Riferimento</th>
+          <th>Alluminio</th>
+          <th>Ferro / Acciaio</th>
+          <th>Rame</th>
+          <th>Ottone</th>
+          <th>Piombo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-cell">c<sub>teorico</sub> [J / (kg · K)]</td>
+          <td>896</td>
+          <td>450</td>
+          <td>385</td>
+          <td>380</td>
+          <td>129</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 5. QUESITI CONCETTUALI DI VERIFICA (VALUTAZIONE RAPIDA) -->
+    <h3 class="section-title">5. Domande di Comprensione Fisica (Compilazione Obbligatoria)</h3>
+
+    <div class="question-block">
+      <div class="question-text">
+        Q1. Perché la temperatura di equilibrio finale (T<sub>e</sub> ≈ 25°C) è molto più vicina alla temperatura dell'acqua (20°C) che a quella del metallo caldo (98°C)?
+      </div>
+      <textarea class="answer-textarea" id="ans-q1" placeholder="Scrivi la motivazione basata sul calore specifico dell'acqua rispetto a quello dei metalli..."></textarea>
+    </div>
+
+    <div class="question-block">
+      <div class="question-text">
+        Q2. Se nei calcoli dimenticassimo di aggiungere l'equivalente in acqua del calorimetro (m<sub>e</sub> = 15 g), il calore specifico calcolato c<sub>x</sub> risulterebbe sottostimato o sovrastimato? Perché?
+      </div>
+      <textarea class="answer-textarea" id="ans-q2" placeholder="Spiega se al numeratore mancherebbe parte del calore assorbito dal vasetto..."></textarea>
+    </div>
+
+    <div class="question-block">
+      <div class="question-text">
+        Q3. Perché durante il passaggio del cilindretto dal becher caldo al calorimetro è fondamentale essere rapidi ed evitare schizzi?
+      </div>
+      <textarea class="answer-textarea" id="ans-q3" placeholder="Indica quali dispersioni termiche in aria o perdite di massa d'acqua falserebbero la misura..."></textarea>
+    </div>
+
+    <!-- 6. GRIGLIA DI VALUTAZIONE DOCENTE ITP -->
+    <div class="rubric-box">
+      <div class="rubric-title">
+        <span>Griglia di Valutazione Docente ITP (Voto in Decimi)</span>
+        <span>Firma Docente: _______________________</span>
+      </div>
+      <div class="rubric-grid">
+        <div class="rubric-col">
+          <strong>1. Misure & Unità</strong>
+          Conv. kg, cifre sign.<br>
+          <em>(max 2.5 pt)</em>
+        </div>
+        <div class="rubric-col">
+          <strong>2. Calcolo c<sub>x</sub></strong>
+          Formule, m<sub>e</sub>, ΔT<br>
+          <em>(max 3.5 pt)</em>
+        </div>
+        <div class="rubric-col">
+          <strong>3. Riconoscimento</strong>
+          Confronto e errore %<br>
+          <em>(max 1.5 pt)</em>
+        </div>
+        <div class="rubric-col">
+          <strong>4. Quesiti Fisici</strong>
+          Comprensione concettuale<br>
+          <em>(max 2.5 pt)</em>
+        </div>
+        <div class="rubric-col" style="background:#f1f5f9; font-weight:800; font-size:0.85rem; color:#1e293b;">
+          VOTO FINALE<br>
+          <span style="font-size:1.15rem; color:#15803d;">___ / 10</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="argon-toast" id="argon-toast">Notifica</div>
+
+  <!-- JAVASCRIPT LOGICA DI CALCOLO E EXPORT -->
+  <script>
+    // Inizializza data odierna
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('student-date').value = today;
+      runCalculations();
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('argon-toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    // Calcolo in tempo reale
+    function runCalculations() {
+      const m1_g = parseFloat(document.getElementById('raw-m1').value) || 0;
+      const t1 = parseFloat(document.getElementById('raw-t1').value) || 0;
+      const m2_g = parseFloat(document.getElementById('raw-m2').value) || 0;
+      const t2 = parseFloat(document.getElementById('raw-t2').value) || 0;
+      const te = parseFloat(document.getElementById('raw-te').value) || 0;
+
+      // Conversione SI
+      const m1_kg = m1_g / 1000.0;
+      const m2_kg = m2_g / 1000.0;
+      const me_kg = 0.015; // 15 g
+      const cw = 4186; // J/(kg K)
+
+      document.getElementById('si-m1').textContent = m1_kg.toFixed(4);
+      document.getElementById('si-t1').textContent = t1.toFixed(1);
+      document.getElementById('si-m2').textContent = m2_kg.toFixed(4);
+      document.getElementById('si-t2').textContent = t2.toFixed(1);
+      document.getElementById('si-te').textContent = te.toFixed(1);
+
+      const dt_w = te - t1;
+      const dt_m = t2 - te;
+
+      document.getElementById('res-dt-w').textContent = (dt_w >= 0 ? '+' : '') + dt_w.toFixed(1);
+      document.getElementById('res-dt-m').textContent = (dt_m >= 0 ? '-' : '+') + dt_m.toFixed(1);
+
+      if (dt_m <= 0 || dt_w <= 0 || m2_kg <= 0) {
+        document.getElementById('math-cx-preview').textContent = "---";
+        document.getElementById('res-metal-name').textContent = "DATI INCOMPLETI";
+        document.getElementById('res-metal-sub').textContent = "Verifica le temperature inserite (T2 > Te > T1).";
+        return;
+      }
+
+      // Formula cx:
+      // cx = ((m1_kg + me_kg) * cw * dt_w) / (m2_kg * dt_m)
+      const num = (m1_kg + me_kg) * cw * dt_w;
+      const den = m2_kg * dt_m;
+      const cx = num / den;
+
+      document.getElementById('math-cx-preview').textContent = Math.round(cx);
+
+      // Metalli noti
+      const metals = [
+        { name: '⚪ ALLUMINIO', c: 896, color: '#0284c7' },
+        { name: '🔩 FERRO / ACCIAIO', c: 450, color: '#d97706' },
+        { name: '🥉 RAME', c: 385, color: '#dc2626' },
+        { name: '🟡 OTTONE', c: 380, color: '#ca8a04' },
+        { name: '🌑 PIOMBO', c: 129, color: '#475569' }
+      ];
+
+      let bestMatch = metals[0];
+      let minDiff = Math.abs(cx - metals[0].c);
+
+      metals.forEach(m => {
+        const diff = Math.abs(cx - m.c);
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestMatch = m;
+        }
+      });
+
+      const errPct = ((cx - bestMatch.c) / bestMatch.c) * 100;
+      const errSign = errPct >= 0 ? '+' : '';
+
+      document.getElementById('res-metal-name').textContent = bestMatch.name;
+      document.getElementById('res-metal-name').style.color = bestMatch.color;
+      document.getElementById('res-metal-sub').textContent = 
+        `c_sperimentale = ${Math.round(cx)} J/(kg·K) | Valore teorico: ${bestMatch.c} J/(kg·K) | Scostamento: ${errSign}${errPct.toFixed(1)}%`;
+    }
+
+    // Carica Dati Esempio LIM
+    function loadSampleData() {
+      document.getElementById('student-name').value = "Rossi Leonardo";
+      document.getElementById('student-class').value = "2ª B IT";
+      document.getElementById('student-bench').value = "Banco 4";
+      document.getElementById('raw-m1').value = "150.0";
+      document.getElementById('raw-t1').value = "20.2";
+      document.getElementById('raw-m2').value = "62.4";
+      document.getElementById('raw-t2').value = "98.5";
+      document.getElementById('raw-te').value = "25.8";
+
+      document.getElementById('ans-q1').value = 
+        "L'acqua ha un calore specifico enorme (c = 4186 J/(kg·K)), circa 5 volte superiore a quello dell'alluminio e 10 volte a quello del rame. Per questo, a parità di calore scambiato, la variazione di temperatura dell'acqua è piccolissima mentre il metallo subisce un salto termico grandissimo.";
+
+      document.getElementById('ans-q2').value = 
+        "Se dimenticassimo me = 15 g, al numeratore calcoleremmo meno calore assorbito di quello effettivo (mancando il calore assorbito dal vasetto di alluminio). Di conseguenza il valore di cx risulterebbe SOTTOSTIMATO rispetto alla realtà.";
+
+      document.getElementById('ans-q3').value = 
+        "La rapidità è cruciale per evitare dispersioni di calore verso l'aria circostante durante il trasporto. Se il cilindro perde calore prima di entrare nel calorimetro, la sua temperatura reale all'immersione sarà inferiore a T2, falsando il calcolo di cx.";
+
+      runCalculations();
+      showToast("📋 Dati demo caricati con successo!");
+    }
+
+    // Azzera scheda
+    function resetForm() {
+      if (confirm("Vuoi azzerare tutti i campi della scheda di relazione?")) {
+        document.getElementById('student-name').value = "";
+        document.getElementById('student-class').value = "";
+        document.getElementById('student-bench').value = "";
+        document.getElementById('raw-m1').value = "150.0";
+        document.getElementById('raw-t1').value = "20.0";
+        document.getElementById('raw-m2').value = "60.0";
+        document.getElementById('raw-t2').value = "98.0";
+        document.getElementById('raw-te').value = "25.4";
+        document.getElementById('ans-q1').value = "";
+        document.getElementById('ans-q2').value = "";
+        document.getElementById('ans-q3').value = "";
+        runCalculations();
+        showToast("↺ Scheda azzerata");
+      }
+    }
+
+    // Download PDF Ufficiale con Validazione Bloccante
+    function exportPDF() {
+      const nameInput = document.getElementById('student-name');
+      const classInput = document.getElementById('student-class');
+
+      nameInput.classList.remove('required-error');
+      classInput.classList.remove('required-error');
+
+      const nameVal = nameInput.value.trim();
+      const classVal = classInput.value.trim();
+
+      if (!nameVal) {
+        nameInput.classList.add('required-error');
+        nameInput.focus();
+        showToast("⚠️ ATTENZIONE: Inserisci Cognome e Nome prima di scaricare il PDF!");
+        return;
+      }
+
+      if (!classVal) {
+        classInput.classList.add('required-error');
+        classInput.focus();
+        showToast("⚠️ ATTENZIONE: Inserisci la tua Classe prima di scaricare il PDF!");
+        return;
+      }
+
+      showToast("⏳ Generazione PDF in corso...");
+
+      const safeName = nameVal.replace(/[^a-zA-Z0-9]/g, '_');
+      const safeClass = classVal.replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `Relazione2_Calorimetria_${safeName}_${safeClass}.pdf`;
+
+      const element = document.getElementById('print-area');
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast("✅ PDF Relazione 2 scaricato con successo!");
+          }).catch(err => {
+            console.error("Errore html2pdf:", err);
+            window.print();
+          });
+        }, 150);
+      } else {
+        window.print();
+      }
+    }
+  </script>
+</body>
+</html>
