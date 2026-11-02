@@ -388,6 +388,16 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
+              },
+              {
+                title: "📏 01. Misure Lineari Dirette: Metro, Calibro, Micrometro",
+                topics: [
+                  {
+                    title: "Lezione Interattiva LIM: Metro, Calibro e Micrometro (1h)",
+                    desc: "Presentazione animata per LIM: confronto metrologico, simulatore interattivo del calibro con nonio ventesimale (0.05 mm), simulatore del micrometro Palmer (0.01 mm), calcolo errore percentuale e sfida finale a quiz.",
+                    url: "/fisica/giordano-bruno/misure-lineari.html"
+                  }
+                ]
               }
             ]
           },

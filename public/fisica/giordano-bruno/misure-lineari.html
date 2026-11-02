@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>01. Misure Lineari Dirette: Metro, Calibro, Micrometro — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   01: Misure Lineari Dirette (Metro, Calibro Ventesimale, Micrometro)
+   Progettata per LIM • 100vh no-scroll • Stile fresco, rigoroso e dinamico
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-success-hover: #26af74;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-danger: #f5365c;
+  --argon-danger-light: rgba(245, 54, 92, 0.12);
+  
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  --argon-text-light: #8898aa;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  --argon-shadow-hover: 0 18px 40px rgba(50, 50, 93, 0.16), 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  font-size: calc(14.5px * var(--lim-zoom));
+  line-height: 1.45;
+}
+
+/* Background Blueprint Grid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(94, 114, 228, 0.06) 0%, transparent 60%),
+    linear-gradient(to right, rgba(94, 114, 228, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(94, 114, 228, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════ */
+.app-header {
+  height: 60px;
+  min-height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 20;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid var(--argon-border);
+  color: var(--argon-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 7px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.btn-back-course:hover {
+  background: var(--argon-primary-light);
+  border-color: var(--argon-primary);
+  transform: translateX(-2px);
+}
+
+.school-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--argon-secondary);
+  border: 1px solid var(--argon-border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.lesson-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: var(--argon-primary);
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phase-pill {
+  background: var(--argon-primary-light);
+  border: 1px solid rgba(94, 114, 228, 0.25);
+  color: var(--argon-primary);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 5px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lim-btn {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lim-btn:hover {
+  color: var(--argon-primary);
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+}
+
+/* ══════════════════════════════════════════════
+   VIEWPORT SLIDES (100vh no-scroll)
+   ══════════════════════════════════════════════ */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 28px 12px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-card {
+  position: absolute;
+  inset: 16px 28px 12px 28px;
+  background: var(--argon-card-bg);
+  border: 1px solid var(--argon-border);
+  border-radius: 16px;
+  box-shadow: var(--argon-shadow);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.995);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  padding: 20px 28px;
+}
+
+.slide-card.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  z-index: 5;
+}
+
+/* Slide Header */
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--argon-border);
+  padding-bottom: 10px;
+}
+
+.slide-title-group h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.slide-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
+.pill-badge.danger { background: var(--argon-danger-light); color: var(--argon-danger); }
+.pill-badge.warning { background: var(--argon-warning-light); color: var(--argon-warning); }
+.pill-badge.info { background: var(--argon-info-light); color: #0891b2; }
+.pill-badge.dark { background: rgba(23, 43, 77, 0.1); color: var(--argon-dark); }
+
+/* Slide Body */
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 5px rgba(50, 50, 93, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.argon-card:hover {
+  border-color: rgba(94, 114, 228, 0.4);
+  box-shadow: 0 4px 12px rgba(50, 50, 93, 0.08);
+}
+
+.argon-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.argon-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--argon-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Callout Box */
+.callout-box {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+.callout-box.primary {
+  background: rgba(94, 114, 228, 0.08);
+  border-left: 4px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+
+.callout-box.success {
+  background: rgba(45, 206, 137, 0.1);
+  border-left: 4px solid var(--argon-success);
+  color: #065f46;
+}
+
+.callout-box.warning {
+  background: rgba(251, 99, 64, 0.1);
+  border-left: 4px solid var(--argon-warning);
+  color: #9a3412;
+}
+
+.callout-box.danger {
+  background: rgba(245, 54, 92, 0.1);
+  border-left: 4px solid var(--argon-danger);
+  color: #991b1b;
+}
+
+/* ══════════════════════════════════════════════
+   SIMULATORE CALIBRO & MICROMETRO
+   ══════════════════════════════════════════════ */
+.interactive-bench {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 14px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.caliper-display-container {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quick-sample-btn {
+  background: #1e293b;
+  border: 1.5px solid #475569;
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-sample-btn:hover {
+  background: #334155;
+  border-color: #94a3b8;
+}
+
+.quick-sample-btn.active {
+  background: var(--argon-primary);
+  border-color: var(--argon-primary);
+  color: #ffffff;
+}
+
+/* Quiz Option Button */
+.quiz-option-btn {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+  color: var(--argon-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.quiz-option-btn:hover {
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+  transform: translateX(4px);
+}
+
+.quiz-option-btn.correct {
+  border-color: var(--argon-success) !important;
+  background: var(--argon-success-light) !important;
+  color: #064e3b !important;
+}
+
+.quiz-option-btn.wrong {
+  border-color: var(--argon-danger) !important;
+  background: var(--argon-danger-light) !important;
+  color: #7f1d1d !important;
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER NAVIGATION & STEPPER
+   ══════════════════════════════════════════════ */
+.app-footer {
+  height: 60px;
+  min-height: 60px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 20;
+}
+
+.stepper-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--argon-secondary);
+  border: 2px solid var(--argon-border);
+  color: var(--argon-text-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-dot:hover {
+  border-color: var(--argon-primary);
+  color: var(--argon-primary);
+}
+
+.step-dot.active {
+  background: var(--argon-primary);
+  border-color: var(--argon-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.4);
+  transform: scale(1.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-nav-prev {
+  background: var(--argon-secondary);
+  color: var(--argon-text-main);
+  border: 1px solid var(--argon-border);
+}
+
+.btn-nav-prev:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateX(-2px);
+}
+
+.btn-nav-next {
+  background: var(--argon-primary-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+}
+
+.btn-nav-next:hover:not(:disabled) {
+  transform: translateX(2px);
+  box-shadow: 0 6px 16px rgba(94, 114, 228, 0.45);
+}
+
+.btn-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.feedback-toast {
+  position: fixed;
+  bottom: 74px;
+  right: 24px;
+  background: var(--argon-dark);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: var(--argon-shadow);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 100;
+  animation: slideToast 0.3s ease;
+}
+
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .stepper-dots .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ══════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <a href="/#giordano-bruno-prime" class="btn-back-course" title="Torna a Classi Prime">
+        <span>←</span>
+        <span>LABORATORIO FISICA</span>
+      </a>
+      <span class="school-badge">🏫 ITIS Giordano Bruno</span>
+      <div class="lesson-title-badge">
+        <span>📏 01: Misure Lineari Dirette (Metro, Calibro, Micrometro)</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="phase-pill" id="phase-indicator">
+        <span id="phase-step-badge">PASSO 1 DI 8</span>
+        <span>•</span>
+        <span id="phase-name-badge">LA SFIDA DEI MILLESIMI</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="Rimpicciolisci testo per LIM (A-)">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="Ingrandisci testo per LIM (A+)">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero per LIM (F11)">⛶</button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       VIEWPORT SLIDES (100vh no scroll)
+       ══════════════════════════════════════════════ -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: QUANDO IL RIGHELLO NON BASTA
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="LA SFIDA DEI MILLESIMI">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📏 La Sfida dei Millesimi: Quando il Righello non Basta Più!</h1>
+          <p class="slide-subtitle">Dalla riga da disegno agli strumenti di officina e Formula 1: perché i decimi di millimetro contano</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">METROLOGIA MECCANICA</span>
+          <span class="pill-badge dark">SC 1.1.3 & SC 1.1.4</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box primary">
+          <strong>🤔 PROVA A MISURARE LO SPESSORE DI UNA MONETA CON UN RIGHELLO SCOLASTICO:</strong><br>
+          Cosa leggi? Forse "circa 2 millimetri". Ma è 2.1 mm? 2.25 mm? 2.18 mm? In ingegneria o nella costruzione di uno smartphone un errore di 0.2 mm farebbe ballare i componenti interni o romperebbe lo schermo!
+        </div>
+
+        <div class="grid-3" style="margin-top: 4px;">
+          <!-- Livello 1: Riga -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">📐</div>
+            <strong style="color: var(--argon-primary); font-size: 1.05rem;">1. Riga Millimetrata</strong>
+            <span class="pill-badge primary" style="align-self: flex-start; margin: 4px 0 8px 0;">Sensibilità: 1 mm</span>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.4;">
+              • Ideale per oggetti grandi: quaderni, banchi, aste.<br>
+              • Portata: fino a 300 mm (o 1000 mm con l'asta metrica).<br>
+              • Limite: sotto il millimetro devi "tirare a indovinare"!
+            </p>
+          </div>
+
+          <!-- Livello 2: Calibro -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafbfe;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">🛠️</div>
+            <strong style="color: var(--argon-success); font-size: 1.05rem;">2. Calibro a Corsoio</strong>
+            <span class="pill-badge success" style="align-self: flex-start; margin: 4px 0 8px 0;">Sensibilità: 0.05 mm</span>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.4;">
+              • Il re dell'officina meccanica e del laboratorio.<br>
+              • Divide il millimetro in <strong>20 parti uguali</strong> (1/20 mm).<br>
+              • Misura esterni, fori interni e profondità!
+            </p>
+          </div>
+
+          <!-- Livello 3: Micrometro -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">🔬</div>
+            <strong style="color: #fb6340; font-size: 1.05rem;">3. Micrometro Palmer</strong>
+            <span class="pill-badge warning" style="align-self: flex-start; margin: 4px 0 8px 0;">Sensibilità: 0.01 mm</span>
+            <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.4;">
+              • Precisione chirurgica: scende al <strong>centesimo di mm</strong>!<br>
+              • Misura fili sottilissimi, lamette, capelli e monete.<br>
+              • Dotato di frizione a scatto per non schiacciare il pezzo.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout-box success" style="margin-top: 10px; margin-bottom: 0;">
+          <strong>🎯 La Regola del Metrologo:</strong> Non esiste lo strumento "migliore in assoluto", esiste lo strumento <strong>adatto alle dimensioni del pezzo</strong>! Oggi impareremo a usarli tutti e tre.
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: ANATOMIA DEL CALIBRO A CORSOIO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="ANATOMIA DEL CALIBRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🛠️ Il Calibro a Corsoio: 3 Strumenti in Uno!</h1>
+          <p class="slide-subtitle">Un solo apparato in acciaio inossidabile per misurare spessori esterni, fori interni e profondità</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge success">NONIO VENTESIMALE</span>
+          <span class="pill-badge dark">ACCIAIO INOX</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Colonna Sinistra: Le 3 modalità -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <strong style="color: var(--argon-primary); font-size: 0.92rem;">1. Becchi Principali Inferiori (Misure Esterne):</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                I due becchi grandi a pinza. Si chiudono sul pezzo per misurare spessori, larghezze di blocchetti o diametri esterni di cilindri e bulloni.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
+              <strong style="color: var(--argon-info); font-size: 0.92rem;">2. Becchi a Becco d'Uccello Superiori (Misure Interne):</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Due punte incrociate che si infilano all'interno di tubi, boccole o fori e si allargano fino a toccare le pareti interne.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid #fb6340;">
+              <strong style="color: #fb6340; font-size: 0.92rem;">3. Asta Scorrevole Posteriore (Profondità):</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Una sottile linguetta d'acciaio che fuoriesce dalla coda del calibro. Si appoggia la testa sul bordo e si fa scendere l'asta sul fondo di fori ciechi.
+              </p>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: La Vite di Bloccaggio -->
+          <div class="argon-card" style="background: #fafbfe; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">🔒 La Vite di Fissaggio (Il "Freno a Mano")</span>
+                <span class="pill-badge danger">IMPORTANTE</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+                In alto sul corsoio mobile c'è una piccola vite zigrinata:
+                <br><br>
+                • <strong>A cosa serve:</strong> Quando hai chiuso i becchi sul pezzo, stringi delicatamente la vite. La misura si <strong>congela</strong>! Puoi sfilare il calibro e leggerlo comodamente davanti agli occhi senza rischiare di muovere il corsoio.
+                <br><br>
+                • <strong>Attenzione al controllo di zero:</strong> Quando chiudi completamente i becchi a vuoto, lo zero del nonio deve coincidere perfettamente con lo zero della scala fissa!
+              </p>
+            </div>
+
+            <div class="callout-box warning" style="margin-bottom: 0;">
+              <strong>⚠️ REGOLA D'ORO DEL LABORATORIO:</strong> Mai forzare i becchi sul pezzo metallico! Il calibro va accostato con tocco leggero per non piegare le punte di precisione.
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: IL TRUCCO DEL NONIO VENTESIMALE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="COME SI LEGGE IL NONIO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>👁️ Il Trucco del Nonio: Come si Leggono i Ventesimi?</h1>
+          <p class="slide-subtitle">Un'invenzione ottica geniale: 20 divisioni per misurare frazioni invisibili</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">NONIO VENTESIMALE</span>
+          <span class="pill-badge success">S = 1/20 mm = 0.05 mm</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- I 2 Passi di Lettura -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="callout-box success">
+              <strong>📖 COME SI LEGGE UN CALIBRO IN 2 SEMPLICI PASSI:</strong>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <strong style="color: var(--argon-primary); font-size: 0.95rem;">PASSO 1: I MILLIMETRI INTERI</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 4px;">
+                Guarda la scala fissa in alto. Cerca dove si trova lo <strong>ZERO del nonio</strong> (la prima tacca della scala mobile in basso).
+                <br>
+                Se lo zero ha superato la tacca dei 18 mm ma non è ancora arrivato a 19 mm, la misura parte da:
+                <br>
+                <strong style="font-family: var(--font-mono); color: var(--argon-primary); font-size: 1.05rem;">Parte Intera = 18 mm</strong>
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <strong style="color: var(--argon-success); font-size: 0.95rem;">PASSO 2: I DECIMALI (LA TACCA ALLINEATA)</strong>
+              <p style="font-size: 0.84rem; color: var(--argon-text-muted); margin-top: 4px;">
+                Scorri con gli occhi le 20 tacche del nonio in basso. Trova <strong>l'UNICA tacca</strong> che si allinea perfettamente con una tacca della scala superiore creando una riga dritta continua!
+                <br>
+                Se si allinea la tacca numero 7:
+                <br>
+                <strong style="font-family: var(--font-mono); color: var(--argon-success); font-size: 1.05rem;">Decimali = 7 × 0.05 mm = 0.35 mm</strong>
+              </p>
+            </div>
+          </div>
+
+          <!-- Esempio Numerico e Formula Finale -->
+          <div class="argon-card" style="background: #fafbfe; align-items: center; justify-content: space-around; text-align: center;">
+            <div style="font-weight: 800; font-size: 1.05rem; color: var(--argon-dark);">
+              🎯 Esempio Completo di Lettura:
+            </div>
+
+            <div style="background: #ffffff; border: 2px solid var(--argon-primary); border-radius: 12px; padding: 16px 20px; width: 100%; max-width: 340px; box-shadow: 0 4px 12px rgba(94,114,228,0.15);">
+              <div style="font-size: 0.8rem; color: #64748b; text-transform: uppercase; font-weight: 700;">Somma dei due passi:</div>
+              <div style="font-family: var(--font-mono); font-size: 1.7rem; font-weight: 800; color: var(--argon-primary); margin: 6px 0;">
+                18 + 0.35 = 18.35 mm
+              </div>
+              <div style="font-size: 0.8rem; color: #2dce89; font-weight: 700;">
+                Risultato con Incertezza: (18.35 ± 0.05) mm
+              </div>
+            </div>
+
+            <div class="callout-box primary" style="margin-bottom: 0;">
+              <strong>💡 Perché 0.05 mm?</strong> Perché 1 millimetro diviso in 20 parti fa esattamente: 1 / 20 = <strong>0.05 mm</strong>!
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: IL MICROMETRO PALMER (0.01 mm)
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="IL MICROMETRO PALMER">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔬 Il Micrometro Palmer: Scendere al Centesimo (0.01 mm)</h1>
+          <p class="slide-subtitle">Una vite micrometrica ad altissima precisione per misurare fili sottili, monete e lamine</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">CENTESIMALE: 0.01 mm</span>
+          <span class="pill-badge dark">PORTATA: 0 - 25 mm</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Componenti Micrometro -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <strong style="color: var(--argon-primary); font-size: 0.9rem;">1. Arco a C in Ghisa Pesante:</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Un telaio rigido e massiccio che non si flette mai, progettato per isolare lo strumento dal calore delle dita che potrebbe dilatare il metallo!
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-info);">
+              <strong style="color: var(--argon-info); font-size: 0.9rem;">2. Vite Micrometrica a Passo 0.5 mm:</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                All'interno c'è una vite di precisione assoluta: un giro completo del tamburo (360°) sposta l'asta di appena <strong>mezzo millimetro (0.5 mm)</strong>!
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <strong style="color: var(--argon-success); font-size: 0.9rem;">3. Tamburo Rotante a 50 Tacche:</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Il tamburo divide il mezzo millimetro in 50 tacche: ogni tacchetta corrisponde a 0.5 / 50 = <strong>0.01 mm</strong> (un centesimo di millimetro!).
+              </p>
+            </div>
+          </div>
+
+          <!-- La Frizione a Cricchetto -->
+          <div class="argon-card" style="background: #fafbfe; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">⚙️ La Frizione a Cricchetto (Il "TRR-TRR" Salva-Pezzo)</span>
+                <span class="pill-badge warning">CRUCIALE</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+                In fondo al tamburo c'è una ghiera sottile: è la <strong>frizione a cricchetto</strong>.
+                <br><br>
+                • <strong>Come si usa:</strong> Quando l'asta si avvicina al pezzo, <strong>NON stringere dal tamburo grande</strong>! Gira esclusivamente la frizione.
+                <br><br>
+                • <strong>Appena fa 3 scatti ("trr-trr-trr")</strong>, fermati: la pressione di contatto è calibrata perfettamente a norma internazionale! Evita di deformare pezzi sottili (come un filo di rame) e non rovina la filettatura interna della vite.
+              </p>
+            </div>
+
+            <div class="callout-box success" style="margin-bottom: 0;">
+              <strong>Portata Tipica di Laboratorio:</strong> Da <strong>0 a 25 mm</strong>. Per oggetti più grandi esistono micrometri speciali da 25-50 mm o 50-75 mm.
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: SIMULATORE INTERATTIVO DEL CALIBRO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="SIMULATORE CALIBRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🎮 Simulatore Live: Fai Scorrere il Calibro e Leggi la Quota!</h1>
+          <p class="slide-subtitle">Trascina lo slider per aprire i becchi o scegli un campione reale del nostro laboratorio</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SIMULATORE NONIO</span>
+          <span class="pill-badge success">PASSO 0.05 mm</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Console Calibro Interattivo -->
+          <div class="interactive-bench">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-weight: 800; font-size: 0.95rem; color: #f8fafc;">APERTURA BECCHI DEL CALIBRO:</span>
+                <span class="pill-badge" id="caliper-obj-badge" style="background:#2dce89; color:#fff;">MISURA LIBERA</span>
+              </div>
+
+              <!-- Campioni Rapidi -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                <button class="quick-sample-btn" onclick="setCaliperValue(2.20, '🪙 Moneta 2 Euro')">🪙 Moneta (2.20 mm)</button>
+                <button class="quick-sample-btn" onclick="setCaliperValue(5.95, '🔩 Bullone M6')">🔩 Vite M6 (5.95 mm)</button>
+                <button class="quick-sample-btn" onclick="setCaliperValue(18.45, '🧱 Blocco Alluminio')">🧱 Blocchetto (18.45 mm)</button>
+                <button class="quick-sample-btn" onclick="setCaliperValue(12.10, '🧪 Foro Boccola')">🧪 Foro Interno (12.10 mm)</button>
+              </div>
+
+              <!-- Slider Apertura -->
+              <div style="background: rgba(255,255,255,0.06); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                  <span>Trascina per aprire i becchi:</span>
+                  <strong style="color: #38bdf8; font-family: var(--font-mono); font-size: 1.15rem;" id="caliper-live-val">18.45 mm</strong>
+                </div>
+                <input type="range" min="0" max="40" step="0.05" value="18.45" style="width: 100%; accent-color: #5e72e4; cursor: pointer;" id="caliper-slider" oninput="updateCaliperFromSlider()">
+              </div>
+            </div>
+
+            <!-- Box di Scomposizione Didattica -->
+            <div style="background: #1e293b; border-radius: 8px; padding: 12px; border: 1px solid #475569;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">Come si compone la lettura:</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 4px;">
+                <span>1. Tacca millimetri superata (Scala Fissa):</span>
+                <strong style="color: #38bdf8; font-family: var(--font-mono);" id="caliper-int-part">18 mm</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.88rem;">
+                <span>2. Tacca allineata del nonio (× 0.05):</span>
+                <strong style="color: #2dd4bf; font-family: var(--font-mono);" id="caliper-frac-part">Tacca 9 = +0.45 mm</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grafica Vettoriale SVG del Calibro -->
+          <div class="argon-card" style="align-items: center; justify-content: center; text-align: center; background: #fafbfe;">
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--argon-dark); margin-bottom: 10px;">
+              🔍 Ingrandimento della Scala e del Nonio Ventesimale
+            </div>
+
+            <svg width="340" height="150" viewBox="0 0 340 150" style="max-width: 100%; background: #ffffff; border: 1.5px solid var(--argon-border); border-radius: 10px; padding: 6px;">
+              <!-- Scala Fissa Superiore (in mm) -->
+              <rect x="10" y="20" width="320" height="40" fill="#f1f5f9" stroke="#cbd5e1"/>
+              <!-- Tacche mm scala fissa -->
+              <g id="svg-fixed-scale">
+                <!-- Generato via script per nitidezza -->
+              </g>
+              <text x="20" y="35" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#475569">0</text>
+              <text x="120" y="35" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#475569">10 mm</text>
+              <text x="220" y="35" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#475569">20 mm</text>
+              <text x="310" y="35" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#475569">30</text>
+
+              <!-- Scala Mobile del Nonio (in basso) -->
+              <g id="svg-vernier-group" transform="translate(184.5, 60)">
+                <rect x="0" y="0" width="160" height="45" fill="rgba(94, 114, 228, 0.15)" stroke="#5e72e4" stroke-width="1.5" rx="4"/>
+                <line x1="0" y1="0" x2="0" y2="25" stroke="#ef4444" stroke-width="2.5"/>
+                <text x="3" y="16" font-family="JetBrains Mono" font-size="9" font-weight="800" fill="#ef4444">0</text>
+                <text x="75" y="40" font-family="Open Sans" font-size="9" font-weight="700" fill="#5e72e4" text-anchor="middle">NONIO (0.05 mm)</text>
+              </g>
+            </svg>
+
+            <div style="background: #ffffff; border: 1.5px solid var(--argon-success); padding: 8px 16px; border-radius: 8px; margin-top: 10px;">
+              <span style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 800; color: #065f46;" id="caliper-result-pill">
+                Misura = (18.45 ± 0.05) mm
+              </span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 4px;">
+              Equivale in metri a: <strong>0.01845 m</strong> (in notazione scientifica: 1.845 × 10⁻² m).
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: SIMULATORE INTERATTIVO DEL MICROMETRO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="SIMULATORE MICROMETRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🔬 Simulatore del Micrometro: La Lettura del Tamburo</h1>
+          <p class="slide-subtitle">Combina la linea di fede della bussola fissa con i 50 centesimi del tamburo girevole</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">CENTESIMALE (0.01 mm)</span>
+          <span class="pill-badge info">FRIZIONE A SCATTO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Console Micrometro -->
+          <div class="interactive-bench">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-weight: 800; font-size: 0.95rem; color: #f8fafc;">MISURA MICROMETRICA (0 - 25 mm):</span>
+                <span class="pill-badge" id="micro-badge" style="background:#fb6340; color:#fff;">CENTESIMALE</span>
+              </div>
+
+              <!-- Campioni Sottili -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                <button class="quick-sample-btn" onclick="setMicroValue(0.38, '🧵 Filo di Rame')">🧵 Filo Rame (0.38 mm)</button>
+                <button class="quick-sample-btn" onclick="setMicroValue(2.22, '🪙 Spessore Moneta 2€')">🪙 Moneta (2.22 mm)</button>
+                <button class="quick-sample-btn" onclick="setMicroValue(0.09, '📄 Foglio di Quaderno')">📄 Foglio Carta (0.09 mm)</button>
+                <button class="quick-sample-btn" onclick="setMicroValue(1.15, '🪒 Lametta')">🪒 Lametta (1.15 mm)</button>
+              </div>
+
+              <!-- Slider Valore Micrometro -->
+              <div style="background: rgba(255,255,255,0.06); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                  <span>Regola apertura tamburo:</span>
+                  <strong style="color: #fb923c; font-family: var(--font-mono); font-size: 1.15rem;" id="micro-live-val">2.22 mm</strong>
+                </div>
+                <input type="range" min="0" max="10" step="0.01" value="2.22" style="width: 100%; accent-color: #fb6340; cursor: pointer;" id="micro-slider" oninput="updateMicroFromSlider()">
+              </div>
+            </div>
+
+            <!-- Tasto Frizione Meccanica Sound -->
+            <button class="btn-nav btn-nav-next" style="width: 100%; justify-content: center; padding: 10px; background: linear-gradient(87deg, #fb6340 0%, #fbb140 100%);" onclick="playClutchSound()">
+              ⚙️ Prova Frizione a Scatto ("TRR-TRR")
+            </button>
+          </div>
+
+          <!-- Scomposizione Didattica e Grafica del Tamburo -->
+          <div class="argon-card" style="align-items: center; justify-content: space-around; text-align: center; background: #fafbfe;">
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--argon-dark);">
+              🔍 Come Leggere la Bussola Fissa e il Tamburo:
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid var(--argon-border); border-radius: 10px; padding: 12px; width: 100%; text-align: left; font-size: 0.84rem;">
+              <div style="margin-bottom: 6px;">
+                <strong>1. Scala fissa superiore (Millimetri interi):</strong>
+                <span style="font-family: var(--font-mono); color: var(--argon-primary); font-weight: 700;" id="micro-part-mm">2.0 mm</span>
+              </div>
+              <div style="margin-bottom: 6px;">
+                <strong>2. Scala fissa inferiore (Mezzi millimetri):</strong>
+                <span style="font-family: var(--font-mono); color: #fb6340; font-weight: 700;" id="micro-part-half">0.0 mm (non visibile)</span>
+              </div>
+              <div>
+                <strong>3. Tacca del tamburo rotante (Centesimi):</strong>
+                <span style="font-family: var(--font-mono); color: var(--argon-success); font-weight: 700;" id="micro-part-thimble">+ 0.22 mm (tacca 22)</span>
+              </div>
+            </div>
+
+            <div style="background: #ffffff; border: 2px solid #fb6340; padding: 8px 18px; border-radius: 8px; width: 100%; max-width: 320px;">
+              <span style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: #ea580c;" id="micro-result-pill">
+                Spessore = (2.22 ± 0.01) mm
+              </span>
+            </div>
+
+            <p style="font-size: 0.78rem; color: var(--argon-text-muted);">
+              Sensibilità sbalorditiva: <strong>0.01 mm = 0.00001 metri</strong> (1 × 10⁻⁵ m)!
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: IL TEOREMA DELL'ERRORE PERCENTUALE
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="CONFRONTO METROLOGICO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📊 Perché lo Strumento Giusto Cambia Tutto: L'Errore Relativo</h1>
+          <p class="slide-subtitle">Dimostrazione quantitativa: misuriamo lo stesso spessore sottile (1.5 mm) con i 3 strumenti</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SC 1.1.4</span>
+          <span class="pill-badge warning">e_p = (S / Misura) × 100%</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3" style="gap: 12px;">
+          <!-- Caso 1: Riga -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">1. Con la Riga</span>
+                <span class="pill-badge danger">INACCETTABILE</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 10px;">
+                Sensibilità: <strong>S = 1 mm</strong><br>
+                Misura: <strong>1.5 mm</strong>
+              </p>
+              <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; text-align: center;">
+                <div style="font-size: 0.75rem; color: #991b1b; font-weight: 700;">Errore Percentuale e_p:</div>
+                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: #dc2626; margin: 4px 0;">
+                  66.7 %
+                </div>
+                <span style="font-size: 0.72rem; color: #7f1d1d;">L'incertezza è enorme: il dato non serve a nulla!</span>
+              </div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 6px;">
+              Misura: <strong>(1.5 ± 1.0) mm</strong>
+            </div>
+          </div>
+
+          <!-- Caso 2: Calibro -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary); justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">2. Con il Calibro</span>
+                <span class="pill-badge primary">BUONO</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 10px;">
+                Sensibilità: <strong>S = 0.05 mm</strong><br>
+                Misura: <strong>1.50 mm</strong>
+              </p>
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; text-align: center;">
+                <div style="font-size: 0.75rem; color: #1e40af; font-weight: 700;">Errore Percentuale e_p:</div>
+                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: #2563eb; margin: 4px 0;">
+                  3.3 %
+                </div>
+                <span style="font-size: 0.72rem; color: #1e3a8a;">Accettabile per la maggior parte dei pezzi d'officina.</span>
+              </div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 6px;">
+              Misura: <strong>(1.50 ± 0.05) mm</strong>
+            </div>
+          </div>
+
+          <!-- Caso 3: Micrometro -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafbfe; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">3. Con il Micrometro</span>
+                <span class="pill-badge success">PERFETTO</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-bottom: 10px;">
+                Sensibilità: <strong>S = 0.01 mm</strong><br>
+                Misura: <strong>1.50 mm</strong>
+              </p>
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; text-align: center;">
+                <div style="font-size: 0.75rem; color: #166534; font-weight: 700;">Errore Percentuale e_p:</div>
+                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: #16a34a; margin: 4px 0;">
+                  0.67 %
+                </div>
+                <span style="font-size: 0.72rem; color: #14532d;">Errore inferiore all'1%! Risultato scientifico eccellente.</span>
+              </div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--argon-text-muted); margin-top: 6px;">
+              Misura: <strong>(1.50 ± 0.01) mm</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-box warning" style="margin-top: 10px; margin-bottom: 0;">
+          <strong>🎯 CONCLUSIONE PER LA RELAZIONE DI LABORATORIO:</strong><br>
+          Più un oggetto è sottile (o una quota è piccola), più sei obbligato a scegliere uno strumento con sensibilità alta (calibro o micrometro), altrimenti l'errore percentuale distrugge la credibilità del tuo esperimento!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA FINALE LIM
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA LIM: IL METROLOGO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: I 5 Quesiti del Maestro delle Misure!</h1>
+          <p class="slide-subtitle">Verifica interattiva a squadre: dimostrate di saper usare calibro e micrometro al banco!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">SFIDA A SQUADRE</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTEGGIO: 0/5</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Box Domanda Corrente -->
+          <div class="argon-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title" id="quiz-question-num">DOMANDA 1 DI 5</span>
+                <span class="pill-badge primary" id="quiz-topic-tag">Calibro Ventesimale</span>
+              </div>
+              <h2 id="quiz-question-text" style="font-size: 1.05rem; font-weight: 700; color: var(--argon-dark); line-height: 1.35; margin-bottom: 12px;">
+                Qual è la sensibilità di un calibro a corsoio dotato di nonio ventesimale (diviso in 20 parti)?
+              </h2>
+
+              <div id="quiz-options-container">
+                <!-- Generato da JS -->
+              </div>
+            </div>
+
+            <div id="quiz-explanation-box" class="callout-box info" style="display: none; margin-top: 8px; margin-bottom: 0;">
+              <!-- Spiegazione -->
+            </div>
+          </div>
+
+          <!-- Tabellone Risultati Finale -->
+          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
+            <div style="font-size: 3.2rem; margin-bottom: 6px;" id="quiz-trophy-icon">🎯</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--argon-dark);" id="quiz-final-title">Pronti per la Sfida?</h3>
+            <p style="font-size: 0.86rem; color: var(--argon-text-muted); max-width: 360px; margin-top: 4px;" id="quiz-final-desc">
+              Toccate la risposta corretta sullo schermo della LIM. Chi ottiene almeno 4 punti su 5 è abilitato al prelievo degli strumenti nell'armadio didattico!
+            </p>
+
+            <div style="margin-top: 16px; width: 100%; max-width: 280px;">
+              <button class="btn-nav btn-nav-next" style="width: 100%; justify-content: center;" onclick="nextQuizQuestion()" id="btn-next-question">
+                Prossima Domanda →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER NAVIGATION & STEPPER
+       ══════════════════════════════════════════════ -->
+  <footer class="app-footer">
+    <div class="stepper-dots" id="stepper-container">
+      <button class="step-dot active" onclick="goToStep(1)" title="1. La Sfida">1</button>
+      <button class="step-dot" onclick="goToStep(2)" title="2. Anatomia Calibro">2</button>
+      <button class="step-dot" onclick="goToStep(3)" title="3. Il Nonio">3</button>
+      <button class="step-dot" onclick="goToStep(4)" title="4. Micrometro">4</button>
+      <button class="step-dot" onclick="goToStep(5)" title="5. Sim. Calibro">5</button>
+      <button class="step-dot" onclick="goToStep(6)" title="6. Sim. Micrometro">6</button>
+      <button class="step-dot" onclick="goToStep(7)" title="7. Errore Percentuale">7</button>
+      <button class="step-dot" onclick="goToStep(8)" title="8. Sfida LIM">8</button>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-nav btn-nav-prev" id="btn-prev" onclick="changeStep(-1)" disabled>
+        <span>◄</span>
+        <span>Precedente</span>
+      </button>
+      <button class="btn-nav btn-nav-next" id="btn-next" onclick="changeStep(1)">
+        <span>Successiva</span>
+        <span>►</span>
+      </button>
+    </div>
+  </footer>
+
+  <div class="feedback-toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LOGICA PRESENTAZIONE & SIMULATORI (CALIBRO + MICROMETRO)
+   ═══════════════════════════════════════════════════════════════════ */
+
+let currentStep = 1;
+const totalSteps = 8;
+let limZoomLevel = 1.0;
+
+const slides = document.querySelectorAll('.slide-card');
+const dots = document.querySelectorAll('.step-dot');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const phaseStepBadge = document.getElementById('phase-step-badge');
+const phaseNameBadge = document.getElementById('phase-name-badge');
+
+function goToStep(step) {
+  if (step < 1 || step > totalSteps) return;
+  currentStep = step;
+
+  slides.forEach(slide => {
+    slide.classList.remove('active');
+    if (parseInt(slide.getAttribute('data-step')) === currentStep) {
+      slide.classList.add('active');
+      const stepName = slide.getAttribute('data-name');
+      phaseStepBadge.textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+      phaseNameBadge.textContent = stepName;
+    }
+  });
+
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx + 1 === currentStep);
+  });
+
+  btnPrev.disabled = (currentStep === 1);
+  btnNext.disabled = (currentStep === totalSteps);
+  btnNext.innerHTML = (currentStep === totalSteps) ? '<span>Fine Lezione</span> <span>✓</span>' : '<span>Successiva</span> <span>►</span>';
+}
+
+function changeStep(delta) {
+  goToStep(currentStep + delta);
+}
+
+// Navigazione tastiera LIM
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+    if (currentStep < totalSteps) changeStep(1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    if (currentStep > 1) changeStep(-1);
+  }
+});
+
+// Zoom LIM
+document.getElementById('btn-zoom-in').addEventListener('click', () => {
+  if (limZoomLevel < 1.35) {
+    limZoomLevel += 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+document.getElementById('btn-zoom-out').addEventListener('click', () => {
+  if (limZoomLevel > 0.85) {
+    limZoomLevel -= 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+// Fullscreen
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 2200);
+}
+
+/* ──────────────────────────────────────────
+   LOGICA SIMULATORE CALIBRO (PASSO 5)
+   ────────────────────────────────────────── */
+function setCaliperValue(val, objName) {
+  document.getElementById('caliper-slider').value = val;
+  document.getElementById('caliper-obj-badge').textContent = objName;
+  updateCaliperDisplay(val);
+  playAudioBeep(480, 0.08);
+}
+
+function updateCaliperFromSlider() {
+  const val = parseFloat(document.getElementById('caliper-slider').value);
+  document.getElementById('caliper-obj-badge').textContent = "MISURA MANUALE";
+  updateCaliperDisplay(val);
+}
+
+function updateCaliperDisplay(val) {
+  document.getElementById('caliper-live-val').textContent = val.toFixed(2) + " mm";
+  
+  const intPart = Math.floor(val);
+  const fracPart = Math.round((val - intPart) * 100) / 100;
+  const vernierIndex = Math.round(fracPart / 0.05);
+
+  document.getElementById('caliper-int-part').textContent = `${intPart} mm`;
+  document.getElementById('caliper-frac-part').textContent = `Tacca ${vernierIndex} = +${(vernierIndex * 0.05).toFixed(2)} mm`;
+  document.getElementById('caliper-result-pill').textContent = `Misura = (${val.toFixed(2)} ± 0.05) mm`;
+
+  // Spostamento grafico del nonio SVG
+  const vernierGroup = document.getElementById('svg-vernier-group');
+  if (vernierGroup) {
+    // 1 mm corrisponde a 10px nello spazio SVG
+    const shiftX = Math.min(220, val * 10);
+    vernierGroup.setAttribute('transform', `translate(${shiftX}, 60)`);
+  }
+}
+
+// Disegna tacche scala fissa calibro in SVG
+function renderFixedScaleSVG() {
+  const container = document.getElementById('svg-fixed-scale');
+  if (!container) return;
+  let html = '';
+  for (let i = 0; i <= 32; i++) {
+    const x = i * 10;
+    const isMajor = (i % 10 === 0);
+    const isMedium = (i % 5 === 0);
+    const h = isMajor ? 20 : (isMedium ? 14 : 9);
+    html += `<line x1="${x}" y1="60" x2="${x}" y2="${60 - h}" stroke="${isMajor ? '#0f172a' : '#64748b'}" stroke-width="${isMajor ? 1.5 : 1}"/>`;
+  }
+  container.innerHTML = html;
+}
+
+/* ──────────────────────────────────────────
+   LOGICA SIMULATORE MICROMETRO (PASSO 6)
+   ────────────────────────────────────────── */
+function setMicroValue(val, objName) {
+  document.getElementById('micro-slider').value = val;
+  document.getElementById('micro-badge').textContent = objName;
+  updateMicroDisplay(val);
+  playAudioBeep(520, 0.08);
+}
+
+function updateMicroFromSlider() {
+  const val = parseFloat(document.getElementById('micro-slider').value);
+  document.getElementById('micro-badge').textContent = "MANUALE (0.01 mm)";
+  updateMicroDisplay(val);
+}
+
+function updateMicroDisplay(val) {
+  document.getElementById('micro-live-val').textContent = val.toFixed(2) + " mm";
+  document.getElementById('micro-result-pill').textContent = `Spessore = (${val.toFixed(2)} ± 0.01) mm`;
+
+  const intMm = Math.floor(val);
+  const remaining = val - intMm;
+  const hasHalfMm = (remaining >= 0.50);
+  const thimbleHundredths = hasHalfMm ? Math.round((remaining - 0.50) * 100) : Math.round(remaining * 100);
+
+  document.getElementById('micro-part-mm').textContent = `${intMm}.0 mm`;
+  document.getElementById('micro-part-half').textContent = hasHalfMm ? "+ 0.50 mm (visibile sotto)" : "0.0 mm (non visibile)";
+  document.getElementById('micro-part-thimble').textContent = `+ 0.${thimbleHundredths < 10 ? '0' : ''}${thimbleHundredths} mm (tacca ${thimbleHundredths})`;
+}
+
+function playClutchSound() {
+  playAudioBeep(700, 0.04);
+  setTimeout(() => playAudioBeep(750, 0.04), 60);
+  setTimeout(() => playAudioBeep(800, 0.05), 120);
+  showToast("⚙️ TRR-TRR! Pressione di contatto calibrata!");
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 8: SFIDA LIM INTERATTIVA (5 QUESITI)
+   ────────────────────────────────────────── */
+const quizQuestions = [
+  {
+    topic: "Calibro Ventesimale",
+    q: "Qual è la sensibilità di un calibro a corsoio dotato di nonio ventesimale (diviso in 20 parti uguali)?",
+    options: [
+      "0.1 millimetri (un decimo).",
+      "0.05 millimetri (un ventesimo di millimetro: 1/20 mm).",
+      "0.01 millimetri.",
+      "1 millimetro intero."
+    ],
+    correct: 1,
+    exp: "Esatto! Il nonio divide 1 millimetro in 20 parti: ciascuna tacca vale esattamente 1 / 20 mm = 0.05 mm!"
+  },
+  {
+    topic: "Lettura del Calibro",
+    q: "Sul calibro lo zero del nonio ha superato la tacca dei 14 mm e la 6ª tacca del nonio è perfettamente allineata. Qual è la misura?",
+    options: [
+      "14.06 millimetri.",
+      "14.60 millimetri.",
+      "14.30 millimetri (14 mm + 6 × 0.05 mm).",
+      "20.00 millimetri."
+    ],
+    correct: 2,
+    exp: "Grandioso! La parte intera è 14 mm. La sesta tacca del nonio vale 6 × 0.05 mm = 0.30 mm. Quindi: 14 + 0.30 = 14.30 mm!"
+  },
+  {
+    topic: "Micrometro Palmer",
+    q: "A che cosa serve la frizione a cricchetto all'estremità del tamburo del micrometro Palmer?",
+    options: [
+      "A evitare che l'olio lubrificante fuoriesca.",
+      "Ad applicare una pressione costante senza deformare il pezzo né rovinare la vite interna.",
+      "A fare rumore per svegliare la classe.",
+      "A bloccare l'asta in modo permanente."
+    ],
+    correct: 1,
+    exp: "Perfetto! La frizione scatta ('trr-trr') quando la pressione è ottimale: protegge la filettatura e non schiaccia i campioni sottili."
+  },
+  {
+    topic: "Misure Interne",
+    q: "Devi misurare il diametro INTERNO di una boccola metallica o di una provetta. Quale parte del calibro utilizzi?",
+    options: [
+      "I becchi inferiori grandi per esterni.",
+      "I becchi superiori a becco d'uccello (a croce).",
+      "L'asta posteriore di profondità.",
+      "Il righello di plastica."
+    ],
+    correct: 1,
+    exp: "Centro! I becchi superiori sono affilati e sagomati appositamente per aprirsi a contatto con le pareti interne dei fori!"
+  },
+  {
+    topic: "Metodo Sperimentale",
+    q: "Devi misurare lo spessore di un singolo foglio di quaderno (circa 0.08 mm) ma non hai un micrometro. Quale trucco usi con un semplice calibro?",
+    options: [
+      "Tiro a indovinare guardando contro luce.",
+      "Misuro un pacco compatto di 100 fogli e poi divido lo spessore totale per 100!",
+      "È impossibile: rinuncio all'esperimento.",
+      "Uso una lente d'ingrandimento sopra il righello."
+    ],
+    correct: 1,
+    exp: "Geniale! È il trucco delle misure cumulative: 100 fogli fanno circa 8 mm, una quota misurabilissima con grande precisione dal calibro. Dividendo per 100 si abbatte drasticamente l'incertezza!"
+  }
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let answeredCurrent = false;
+
+function loadQuizQuestion(index) {
+  answeredCurrent = false;
+  const q = quizQuestions[index];
+  document.getElementById('quiz-question-num').textContent = `DOMANDA ${index + 1} DI ${quizQuestions.length}`;
+  document.getElementById('quiz-topic-tag').textContent = q.topic;
+  document.getElementById('quiz-question-text').textContent = q.q;
+
+  const container = document.getElementById('quiz-options-container');
+  container.innerHTML = '';
+
+  const expBox = document.getElementById('quiz-explanation-box');
+  expBox.style.display = 'none';
+
+  q.options.forEach((optText, optIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option-btn';
+    btn.innerHTML = `<span style="width:24px; height:24px; min-width:24px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; color:var(--argon-dark);">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+    btn.onclick = () => handleAnswer(optIdx, btn);
+    container.appendChild(btn);
+  });
+
+  const nextBtn = document.getElementById('btn-next-question');
+  nextBtn.textContent = (index === quizQuestions.length - 1) ? "Mostra Risultato & Abilitazione 🏁" : "Prossima Domanda →";
+}
+
+function handleAnswer(selectedIndex, clickedBtn) {
+  if (answeredCurrent) return;
+  answeredCurrent = true;
+
+  const q = quizQuestions[quizIndex];
+  const allBtns = document.querySelectorAll('.quiz-option-btn');
+  const expBox = document.getElementById('quiz-explanation-box');
+
+  if (selectedIndex === q.correct) {
+    quizScore++;
+    clickedBtn.classList.add('correct');
+    playAudioBeep(587, 0.2);
+    expBox.className = 'callout-box success';
+    expBox.innerHTML = `<strong>✓ RISPOSTA ESATTA!</strong> ${q.exp}`;
+  } else {
+    clickedBtn.classList.add('wrong');
+    allBtns[q.correct].classList.add('correct');
+    playAudioBeep(200, 0.35);
+    expBox.className = 'callout-box danger';
+    expBox.innerHTML = `<strong>✗ RISPOSTA SBAGLIATA!</strong> ${q.exp}`;
+  }
+
+  expBox.style.display = 'block';
+  document.getElementById('quiz-score-badge').textContent = `PUNTEGGIO: ${quizScore}/${quizQuestions.length}`;
+}
+
+function nextQuizQuestion() {
+  if (quizIndex < quizQuestions.length - 1) {
+    quizIndex++;
+    loadQuizQuestion(quizIndex);
+  } else {
+    const isPassed = quizScore >= 4;
+    document.getElementById('quiz-trophy-icon').textContent = isPassed ? "🏅" : "📚";
+    document.getElementById('quiz-final-title').textContent = isPassed ? "CLASSE ABILITATA ALL'USO DEI CALIBRI!" : "REVISIONE RAPIDA SUL NONIO";
+    document.getElementById('quiz-final-desc').innerHTML = `Punteggio ottenuto: <strong>${quizScore} su ${quizQuestions.length}</strong>.<br>` +
+      (isPassed ? 
+        "<span style='color:#2dce89; font-weight:700;'>🎉 COMPLIMENTI!</span> Avete conquistato il titolo di <strong>Maestro delle Misure Lineari</strong>. Siete ufficialmente abilitati a prelevare calibri e micrometri dall'armadio didattico!" : 
+        "Rivedete con il prof come si contano le tacche del nonio ventesimale e provate di nuovo la sfida!");
+    
+    if (isPassed) {
+      playAudioBeep(523, 0.15);
+      setTimeout(() => playAudioBeep(659, 0.15), 160);
+      setTimeout(() => playAudioBeep(784, 0.3), 320);
+    }
+    showToast(`Sfida Completata: ${quizScore}/${quizQuestions.length} punti!`);
+  }
+}
+
+function playAudioBeep(freq, duration) {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  goToStep(1);
+  loadQuizQuestion(0);
+  renderFixedScaleSVG();
+  updateCaliperDisplay(18.45);
+  updateMicroDisplay(2.22);
+});
+</script>
+
+</body>
+</html>
