@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 3: Privacy Inspector — Caccia all'App Spia & Audit Permessi | ISS Giordano Bruno</title>
+  <meta name="description" content="Laboratorio operativo di sicurezza per smartphone: Filtro a 3 Passi su App Store (Blue Team), ingegneria dell'app esca (Red Team), economia dei Data Broker e bonifica delle impostazioni del telefono (Chirurgo dei Permessi).">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thomas Mazzeo — Didattica">
+  <meta property="og:title" content="Laboratorio 3: Privacy Inspector — Caccia all'App Spia">
+  <meta property="og:description" content="Laboratorio operativo di sicurezza per smartphone: App Store Audit, ingegneria sociale Red Team, Data Broker e bonifica permessi.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- html2pdf.js per esportazione PDF diretta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* ============================================================
+       RESET & BASE THEME (HIGH READABILITY, CLEAN WHITE/SLATE)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --border-focus: #0284c7;
+      --text-dark: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      
+      --blueteam: #1d4ed8;
+      --blueteam-dark: #1e40af;
+      --blueteam-light: #eff6ff;
+      --blueteam-border: #93c5fd;
+      
+      --redteam: #dc2626;
+      --redteam-dark: #991b1b;
+      --redteam-light: #fef2f2;
+      --redteam-border: #fca5a5;
+      
+      --purple: #7c3aed;
+      --purple-dark: #5b21b6;
+      --purple-light: #faf5ff;
+      --purple-border: #d8b4fe;
+      
+      --green: #059669;
+      --green-dark: #065f46;
+      --green-light: #ecfdf5;
+      --green-border: #86efac;
+      
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 3.5rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Griglia millimetrata stile quaderno */
+    body::before {
+      content: "";
+      display: block;
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(#e2e8f0 1px, transparent 1px),
+        linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.55;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       TOP HEADER (STICKY, ACTIONS & PROGRESS)
+       ============================================================ */
+    .top-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid var(--border);
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+    }
+
+    .top-header__left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--primary-dark);
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 1.5px solid var(--primary-border);
+      padding: 4px 10px;
+      background: var(--primary-light);
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .header-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .header-tag .badge-class {
+      background: var(--blueteam);
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .top-header__center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+    .progress-bar-wrap {
+      width: 90px;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--blueteam), var(--green));
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+    }
+
+    .top-header__right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 6px;
+      border: 1.5px solid;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-action--print {
+      background: #ffffff;
+      color: var(--text-dark);
+      border-color: var(--border);
+    }
+    .btn-action--print:hover {
+      background: #f1f5f9;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-action--download {
+      background: var(--blueteam);
+      color: #ffffff;
+      border-color: var(--blueteam);
+    }
+    .btn-action--download:hover {
+      background: var(--blueteam-dark);
+      border-color: var(--blueteam-dark);
+    }
+
+    /* ============================================================
+       CONTAINER & SECTIONS
+       ============================================================ */
+    .lab-container {
+      max-width: 1060px;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Cover Hero */
+    .cover-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.8rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+    }
+    .cover-badge-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .badge-hero {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-hero--lab { background: #dbeafe; color: var(--blueteam); border: 1px solid var(--blueteam-border); }
+    .badge-hero--role { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+    .cover-title {
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+    .cover-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Student Info Box */
+    .student-card {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-group label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .field-group input, .field-group select {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      padding: 6px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.15s;
+    }
+    .field-group input:focus, .field-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Mission Cards */
+    .mission-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+    .mission-card:hover {
+      border-color: #94a3b8;
+    }
+
+    .mission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+    }
+    .mission-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .mission-pill {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .mission-pill--blue { background: var(--blueteam-light); color: var(--blueteam); border: 1.5px solid var(--blueteam-border); }
+    .mission-pill--red { background: var(--redteam-light); color: var(--redteam); border: 1.5px solid var(--redteam-border); }
+    .mission-pill--purple { background: var(--purple-light); color: var(--purple); border: 1.5px solid var(--purple-border); }
+    .mission-pill--green { background: var(--green-light); color: var(--green); border: 1.5px solid var(--green-border); }
+
+    .mission-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .mission-status-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mission-status-badge.completed {
+      background: var(--green-light);
+      color: var(--green-dark);
+      border-color: var(--green-border);
+    }
+
+    .scenario-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      padding: 0.85rem 1.1rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #1e293b;
+    }
+
+    /* ═══════════════════════════════════════════
+       MISSIONE 1: APP STORE AUDIT CARDS
+       ═══════════════════════════════════════════ */
+    .app-audit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .app-box {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .app-box-top {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .app-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .app-meta {
+      flex: 1;
+    }
+    .app-meta h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .app-meta span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .perm-list {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .perm-chip {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 2px;
+    }
+    .perm-chip--req { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+
+    .verdict-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+    .btn-verdict {
+      flex: 1;
+      padding: 7px 5px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      background: #ffffff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .btn-verdict:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+    .btn-verdict.selected-approve {
+      background: var(--green-light);
+      border-color: var(--green);
+      color: var(--green-dark);
+    }
+    .btn-verdict.selected-reject {
+      background: var(--redteam-light);
+      border-color: var(--redteam);
+      color: var(--redteam-dark);
+    }
+
+    .input-textarea {
+      width: 100%;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      padding: 7px 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text-dark);
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+    }
+    .input-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* ═══════════════════════════════════════════
+       MISSIONE 2: EVIL DEVELOPER & PHONE SIMULATOR
+       ═══════════════════════════════════════════ */
+    .evil-builder-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 1.4rem;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .evil-builder-grid { grid-template-columns: 1fr; }
+    }
+
+    .phone-mockup {
+      background: #0f172a;
+      border: 4px solid #334155;
+      border-radius: 28px;
+      padding: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+    .phone-notch {
+      width: 90px;
+      height: 14px;
+      background: #1e293b;
+      border-radius: 8px;
+      margin: 0 auto 4px;
+    }
+    .phone-screen {
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 16px 14px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-dialog {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .phone-dialog h5 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+    .phone-dialog p {
+      font-size: 0.8rem;
+      color: #475569;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .phone-dialog-btns {
+      display: flex;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 4px;
+    }
+    .phone-dialog-btn {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #0284c7;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .phone-dialog-btn:first-child {
+      border-right: 1px solid #e2e8f0;
+      color: #dc2626;
+    }
+
+    /* ═══════════════════════════════════════════
+       MISSIONE 3: DATA BROKER PROFIT CALCULATOR
+       ═══════════════════════════════════════════ */
+    .broker-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 1.3rem;
+      align-items: stretch;
+    }
+    @media (max-width: 860px) {
+      .broker-grid { grid-template-columns: 1fr; }
+    }
+    .broker-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .broker-item {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .broker-item:hover {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .broker-item.active {
+      border-color: var(--purple);
+      background: #f5f3ff;
+    }
+    .broker-item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .broker-item-left input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      accent-color: var(--purple);
+    }
+    .broker-item-info strong {
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      display: block;
+    }
+    .broker-item-info span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .broker-item-val {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--purple-dark);
+      background: #ede9fe;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .broker-calc-box {
+      background: var(--purple-light);
+      border: 2px solid var(--purple-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .broker-score-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--purple-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .broker-val-display {
+      font-family: var(--font-mono);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--purple-dark);
+      line-height: 1;
+    }
+    .broker-tier {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: #ede9fe;
+      color: var(--purple-dark);
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════════
+       MISSIONE 4: IL CHIRURGO DELLE IMPOSTAZIONI
+       ═══════════════════════════════════════════ */
+    .sanitizer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .sanitizer-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .sanitizer-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .sanitizer-icon {
+      font-size: 1.5rem;
+    }
+    .sanitizer-title h5 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .sanitizer-title span {
+      font-size: 0.78rem;
+      color: var(--redteam);
+      font-weight: 700;
+    }
+    .sanitizer-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .radio-label {
+      font-size: 0.82rem;
+      color: var(--text-body);
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .radio-label:hover {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .radio-label input[type="radio"]:checked + span {
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+
+    /* ═══════════════════════════════════════════
+       CHECKLIST FINALE & FOOTER
+       ═══════════════════════════════════════════ */
+    .checklist-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .checklist-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chk-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.92rem;
+      color: var(--text-body);
+      padding: 4px 0;
+    }
+    .chk-item.done {
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+    .chk-icon {
+      font-size: 1.1rem;
+    }
+
+    .glossary-box {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+    }
+    .glossary-box h4 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .glossary-item dt {
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+    .glossary-item dd {
+      color: var(--text-muted);
+      margin-left: 0;
+      line-height: 1.4;
+    }
+
+    /* ═══════════════════════════════════════════
+       PRINT LAYOUT (A4 CLEAN PAPER REPORT)
+       ═══════════════════════════════════════════ */
+    #printReportWrapper {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+        padding: 0 !important;
+      }
+      body::before { display: none !important; }
+      .top-header, .lab-container { display: none !important; }
+      
+      #printReportWrapper {
+        display: block !important;
+        padding: 1.5cm;
+        background: #ffffff;
+      }
+      .print-header {
+        border-bottom: 2px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .print-header h1 {
+        font-size: 16pt;
+        font-weight: 800;
+        margin-bottom: 3px;
+      }
+      .print-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid #ccc;
+        padding: 8px;
+        gap: 6px;
+        font-size: 10pt;
+        margin-bottom: 14px;
+      }
+      .print-section {
+        margin-bottom: 14px;
+        page-break-inside: avoid;
+      }
+      .print-section h3 {
+        font-size: 11pt;
+        border-bottom: 1.5px solid #000;
+        padding-bottom: 2px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9.5pt;
+        margin-bottom: 8px;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #000;
+        padding: 4px 6px;
+        text-align: left;
+      }
+      .print-table th { background: #f0f0f0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── TOP HEADER (STICKY) ── -->
+  <header class="top-header">
+    <div class="top-header__left">
+      <a href="/#corsi-informatica" class="back-btn">
+        <span>◄</span> CORSI INFORMATICA
+      </a>
+      <div class="header-tag">
+        <span>LABORATORIO 3</span>
+        <span class="badge-class" id="topClassBadge">3L / 2H / 2G</span>
+      </div>
+    </div>
+
+    <div class="top-header__center">
+      <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted);">PROGRESSO:</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-text" id="progressText">0%</span>
+    </div>
+
+    <div class="top-header__right">
+      <button class="btn-action btn-action--print" onclick="window.print()" title="Stampa o Salva PDF">
+        🖨️ STAMPA / SALVA PDF
+      </button>
+      <button class="btn-action btn-action--download" onclick="exportTxtAudit()" title="Scarica file TXT">
+        💾 SCARICA AUDIT TXT
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MAIN LAB CONTAINER ── -->
+  <main class="lab-container">
+
+    <!-- COVER HERO -->
+    <section class="cover-card">
+      <div class="cover-top">
+        <div class="cover-badge-row">
+          <span class="badge-hero badge-hero--lab">LABORATORIO OPERATIVO #03</span>
+          <span class="badge-hero badge-hero--role">APP STORE AUDIT &amp; PRIVACY INSPECTOR</span>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">
+          DURATA: 30 MINUTI
+        </div>
+      </div>
+
+      <div>
+        <h1 class="cover-title">Privacy Inspector: Caccia all'App Spia</h1>
+        <p class="cover-subtitle">
+          Analisi delle vulnerabilità nei permessi dello smartphone, ingegneria dell'app esca (Red Team), economia invisibile dei Data Broker e bonifica delle impostazioni di sistema.
+        </p>
+      </div>
+
+      <!-- DATI STUDENTE -->
+      <div class="student-card">
+        <div class="field-group">
+          <label>Nome Studente</label>
+          <input type="text" id="studNome" placeholder="es. Mario" oninput="updateProgress()">
+        </div>
+        <div class="field-group">
+          <label>Cognome Studente</label>
+          <input type="text" id="studCognome" placeholder="es. Rossi" oninput="updateProgress()">
+        </div>
+        <div class="field-group">
+          <label>Classe</label>
+          <select id="studClasse" onchange="onClassChanged()">
+            <option value="3L">Classe 3ª L (Informatica)</option>
+            <option value="2H">Classe 2ª H (Informatica)</option>
+            <option value="2G">Classe 2ª G (Informatica)</option>
+            <option value="Altro">Altra Classe</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Data Laboratorio</label>
+          <input type="date" id="studData">
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         MISSIONE 1 – BLUE TEAM: IL FILTRO IN 3 PASSI
+         ═══════════════════════════════════════════ -->
+    <section class="mission-card" id="cardM1">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <span class="mission-pill mission-pill--blue">🔵 MISSIONE 1</span>
+          <h2 class="mission-title">Blue Team: App Store Security Audit (Il Filtro in 3 Passi)</h2>
+        </div>
+        <span class="mission-status-badge" id="m1Badge">In attesa di revisione</span>
+      </div>
+
+      <div class="scenario-box">
+        <strong>📋 Scenario Operativo:</strong> Tre nuove applicazioni hanno fatto richiesta di pubblicazione ufficiale sullo store aziendale. In qualità di <em>Security Auditor</em>, applica il <strong>Filtro in 3 Passi</strong>:
+        <ol style="margin-left:1.4rem; margin-top:4px;">
+          <li>Qual è la funzione principale dichiarata dell'app?</li>
+          <li>Ogni permesso richiesto è strettamente indispensabile al suo funzionamento?</li>
+          <li>Se un permesso non ha una giustificazione logica evidente, è una violazione del <em>Minimo Privilegio</em> e va bocciata!</li>
+        </ol>
+      </div>
+
+      <div class="app-audit-grid">
+        <!-- App 1: Sveglia -->
+        <div class="app-box">
+          <div>
+            <div class="app-box-top">
+              <div class="app-icon" style="background:#fff7ed; border:1px solid #fed7aa;">⏰</div>
+              <div class="app-meta">
+                <h4>Sveglia Ultra-Smart</h4>
+                <span>Utility &bull; v2.1.0</span>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; color:#475569; margin:8px 0;">
+              <strong>Funzione:</strong> Suonerie personalizzabili, widget meteo e monitoraggio dei risvegli al mattino.
+            </p>
+            <div class="perm-list">
+              <strong>Permessi Richiesti:</strong><br>
+              <span class="perm-chip perm-chip--req">Accesso a Internet</span>
+              <span class="perm-chip perm-chip--req" style="color:#b91c1c; background:#fee2e2; border-color:#fca5a5;">Microfono</span>
+              <span class="perm-chip perm-chip--req" style="color:#b91c1c; background:#fee2e2; border-color:#fca5a5;">Posizione GPS Esatta</span>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Verdetto Revisore:</label>
+            <div class="verdict-actions">
+              <button type="button" class="btn-verdict" id="v1_app" onclick="setVerdict(1, 'APPROVA')">✔️ APPROVA</button>
+              <button type="button" class="btn-verdict" id="v1_rej" onclick="setVerdict(1, 'BOCCIA')">❌ BOCCIA</button>
+            </div>
+            <textarea class="input-textarea" id="m1_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+
+        <!-- App 2: Filtri Foto Anime -->
+        <div class="app-box">
+          <div>
+            <div class="app-box-top">
+              <div class="app-icon" style="background:#fdf4ff; border:1px solid #f0abfc;">🎨</div>
+              <div class="app-meta">
+                <h4>Filtri Foto Anime</h4>
+                <span>Foto &bull; v1.4.2</span>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; color:#475569; margin:8px 0;">
+              <strong>Funzione:</strong> Applica filtri grafici manga e trasforma i selfie in avatar anime stilizzati.
+            </p>
+            <div class="perm-list">
+              <strong>Permessi Richiesti:</strong><br>
+              <span class="perm-chip perm-chip--req">Fotocamera</span>
+              <span class="perm-chip perm-chip--req">Memoria / File</span>
+              <span class="perm-chip perm-chip--req" style="color:#b91c1c; background:#fee2e2; border-color:#fca5a5;">Rubrica Contatti</span>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Verdetto Revisore:</label>
+            <div class="verdict-actions">
+              <button type="button" class="btn-verdict" id="v2_app" onclick="setVerdict(2, 'APPROVA')">✔️ APPROVA</button>
+              <button type="button" class="btn-verdict" id="v2_rej" onclick="setVerdict(2, 'BOCCIA')">❌ BOCCIA</button>
+            </div>
+            <textarea class="input-textarea" id="m2_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+
+        <!-- App 3: Mappe Trekking Offline -->
+        <div class="app-box">
+          <div>
+            <div class="app-box-top">
+              <div class="app-icon" style="background:#ecfdf5; border:1px solid #a7f3d0;">🧭</div>
+              <div class="app-meta">
+                <h4>Mappa Sentieri Offline</h4>
+                <span>Viaggi &bull; v3.0.1</span>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; color:#475569; margin:8px 0;">
+              <strong>Funzione:</strong> Mappe topografiche e sentieri montani consultabili offline senza rete cellulare.
+            </p>
+            <div class="perm-list">
+              <strong>Permessi Richiesti:</strong><br>
+              <span class="perm-chip perm-chip--req">Posizione GPS</span>
+              <span class="perm-chip perm-chip--req">Memoria (Salvataggio Mappe)</span>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Verdetto Revisore:</label>
+            <div class="verdict-actions">
+              <button type="button" class="btn-verdict" id="v3_app" onclick="setVerdict(3, 'APPROVA')">✔️ APPROVA</button>
+              <button type="button" class="btn-verdict" id="v3_rej" onclick="setVerdict(3, 'BOCCIA')">❌ BOCCIA</button>
+            </div>
+            <textarea class="input-textarea" id="m3_note" style="margin-top:6px;" placeholder="Motivazione: i permessi sono coerenti con lo scopo?" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         MISSIONE 2 – RED TEAM: L'APP ESCA
+         ═══════════════════════════════════════════ -->
+    <section class="mission-card" id="cardM2">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <span class="mission-pill mission-pill--red">🔴 MISSIONE 2</span>
+          <h2 class="mission-title">Red Team: Ingegneria Sociale — L'App Esca (Evil Developer)</h2>
+        </div>
+        <span class="mission-status-badge" id="m2Badge">In attesa di esca</span>
+      </div>
+
+      <div class="scenario-box" style="border-left-color:var(--redteam);">
+        <strong>🎭 Il Lato Oscuro dello Sviluppo:</strong> Per difendersi, bisogna capire le leve psicologiche dei malintenzionati. Vuoi raccogliere illegalmente sia la <strong>Posizione GPS</strong> che le registrazioni del <strong>Microfono</strong>. Crea un'app che sembri innocua, utile e irresistibile per un ragazzo della tua età, giustificando entrambi i permessi critici.
+      </div>
+
+      <div class="evil-builder-grid">
+        <!-- Form Campi -->
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <div class="field-group">
+            <label>A) Nome dell'App Esca</label>
+            <input type="text" id="evilName" placeholder="es. BeatRunner: DJ Vocale & Percorsi" oninput="onEvilInputChange()">
+          </div>
+
+          <div class="field-group">
+            <label>B) Funzione Dichiarata (La scusa ufficiale visibile sullo store)</label>
+            <textarea class="input-textarea" id="evilFunc" placeholder="Descrivi cosa dice di fare l'app in modo apparentemente legittimo..." oninput="onEvilInputChange()"></textarea>
+          </div>
+
+          <div class="field-group">
+            <label>C) Il Testo Esca del Prompt (Cosa leggerà l'utente sullo schermo per fare tap su Consenti)</label>
+            <textarea class="input-textarea" id="evilBait" placeholder="«Per offrirti la migliore esperienza, [Nome App] ha bisogno di accedere al Microfono per... e al GPS per...»" oninput="onEvilInputChange()"></textarea>
+          </div>
+
+          <div class="field-group">
+            <label>D) Smascherati: Perché un auditor esperto dovrebbe bocciarla?</label>
+            <textarea class="input-textarea" id="evilUnmask" placeholder="Spiega l'inganno tecnico: perché quei permessi non sono veramente necessari o potevano essere evitati..." oninput="onEvilInputChange()"></textarea>
+          </div>
+        </div>
+
+        <!-- Phone Mockup Preview Live -->
+        <div>
+          <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px; text-align:center;">
+            📱 ANTEPRIMA SMARTPHONE IN TEMPO REALE
+          </div>
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-dialog">
+                <div style="font-size:1.8rem; margin-bottom:4px;" id="phoneAppIcon">🎙️</div>
+                <h5 id="phoneDialogTitle">Consenti a [Nome App]?</h5>
+                <p id="phoneDialogText">
+                  «Per offrirti la migliore esperienza, l\'app richiede l\'accesso a Microfono e Posizione GPS.»
+                </p>
+                <div class="phone-dialog-btns">
+                  <button class="phone-dialog-btn" type="button">Non consentire</button>
+                  <button class="phone-dialog-btn" type="button" style="font-weight:800;">Consenti</button>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center; font-size:0.7rem; color:#94a3b8; font-family:var(--font-mono);">
+              PROMPT DI SISTEMA OPERATIVO
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         MISSIONE 3 – L'ECONOMIA DEI DATA BROKER (SLIDE 2, 3, 7)
+         ═══════════════════════════════════════════ -->
+    <section class="mission-card" id="cardM3">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <span class="mission-pill mission-pill--purple">🟣 MISSIONE 3</span>
+          <h2 class="mission-title">L'Economia Invisibile: Quanto Valgono i Tuoi Dati ai Data Broker?</h2>
+        </div>
+        <span class="mission-status-badge" id="m3Badge">In attesa di audit</span>
+      </div>
+
+      <div class="scenario-box" style="border-left-color:var(--purple);">
+        <strong>💸 «Se il servizio è gratis, il prodotto venduto sei tu»:</strong> Come spiegato nelle Slide 2 e 3, le app apparentemente gratuite monetizzano vendendo pacchetti di telemetria alle società di <strong>Data Broker</strong>. Configura il simulatore per calcolare la quotazione annua del tuo profilo digitale sul mercato dei dati.
+      </div>
+
+      <div class="broker-grid">
+        <!-- Checklist Dati Esfiltrati -->
+        <div class="broker-list">
+          <label class="broker-item" onclick="toggleBrokerItem('b1')">
+            <div class="broker-item-left">
+              <input type="checkbox" id="b1" onchange="calcBrokerValue()">
+              <div class="broker-item-info">
+                <strong>📍 Tracciamento GPS continuo (24/7)</strong>
+                <span>Registra tragitti casa-scuola, negozi frequentati, tempi di sosta.</span>
+              </div>
+            </div>
+            <div class="broker-item-val">+45 €/anno</div>
+          </label>
+
+          <label class="broker-item" onclick="toggleBrokerItem('b2')">
+            <div class="broker-item-left">
+              <input type="checkbox" id="b2" onchange="calcBrokerValue()">
+              <div class="broker-item-info">
+                <strong>👥 Rubrica &amp; Rete di Contatti completa</strong>
+                <span>Mappatura di parenti, amici, numeri di telefono ed email per telemarketing.</span>
+              </div>
+            </div>
+            <div class="broker-item-val">+35 €/anno</div>
+          </label>
+
+          <label class="broker-item" onclick="toggleBrokerItem('b3')">
+            <div class="broker-item-left">
+              <input type="checkbox" id="b3" onchange="calcBrokerValue()">
+              <div class="broker-item-info">
+                <strong>🎙️ Microfono &amp; Ascolto Parole Chiave</strong>
+                <span>Campionamento audio ambientale per rilevare marchi e desideri d'acquisto.</span>
+              </div>
+            </div>
+            <div class="broker-item-val">+60 €/anno</div>
+          </label>
+
+          <label class="broker-item" onclick="toggleBrokerItem('b4')">
+            <div class="broker-item-left">
+              <input type="checkbox" id="b4" onchange="calcBrokerValue()">
+              <div class="broker-item-info">
+                <strong>🆔 ID Dispositivo Univoco (GAID / IDFA)</strong>
+                <span>Permette a centinaia di app di unire i dati della stessa persona.</span>
+              </div>
+            </div>
+            <div class="broker-item-val">+25 €/anno</div>
+          </label>
+
+          <label class="broker-item" onclick="toggleBrokerItem('b5')">
+            <div class="broker-item-left">
+              <input type="checkbox" id="b5" onchange="calcBrokerValue()">
+              <div class="broker-item-info">
+                <strong>📡 Scansione Reti Wi-Fi &amp; Bluetooth circostanti</strong>
+                <span>Localizzazione indoor all'interno dei centri commerciali anche a GPS disattivato.</span>
+              </div>
+            </div>
+            <div class="broker-item-val">+30 €/anno</div>
+          </label>
+        </div>
+
+        <!-- Box Calcolatore -->
+        <div class="broker-calc-box">
+          <div>
+            <div class="broker-score-title">VALORE ECONOMICO ANNUO DEL PROFILO:</div>
+            <div class="broker-val-display" id="brokerValDisplay">0,00 €</div>
+            <div class="broker-tier" id="brokerTierBadge">PROFILO PROTETTO</div>
+          </div>
+
+          <div style="font-size:0.85rem; line-height:1.45; color:#4c1d95;">
+            <strong>Chi compra questi dati?</strong>
+            <ul style="padding-left:1.2rem; margin-top:4px;">
+              <li><strong>Inserzionisti:</strong> per pubblicità mirata al millimetro.</li>
+              <li><strong>Compagnie assicurative:</strong> per valutare lo stile di vita e aumentare le tariffe.</li>
+              <li><strong>Data Aggregator:</strong> per rivendere il pacchetto a terzi senza consenso.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group" style="margin-top:0.5rem;">
+        <label>Domanda Analitica: Perché una comune app di giochi gratuiti ha un incentivo enorme a richiedere il GPS anche quando non si sta giocando?</label>
+        <textarea class="input-textarea" id="brokerReason" placeholder="Spiega il modello economico dei Data Broker basato sulla vendita dei dati di geolocalizzazione..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         MISSIONE 4 – IL CHIRURGO DELLE IMPOSTAZIONI (SLIDE 12-14)
+         ═══════════════════════════════════════════ -->
+    <section class="mission-card" id="cardM4">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <span class="mission-pill mission-pill--green">🟢 MISSIONE 4</span>
+          <h2 class="mission-title">Blue Team: Il Chirurgo delle Impostazioni (Protocollo di Bonifica)</h2>
+        </div>
+        <span class="mission-status-badge" id="m4Badge">In attesa di bonifica</span>
+      </div>
+
+      <div class="scenario-box" style="border-left-color:var(--green);">
+        <strong>🔧 Applicazione del Principio del Minimo Privilegio (Slide 12-14):</strong> All'auditor viene consegnato uno smartphone aziendale su cui sono presenti 4 app con permessi anomali. Configura per ciascuna app il livello di autorizzazione corretto per neutralizzare l'esfiltrazione dati senza impedirne la reale funzionalità.
+      </div>
+
+      <div class="sanitizer-grid">
+        <!-- App 1: Torcia SOS -->
+        <div class="sanitizer-card">
+          <div class="sanitizer-card-header">
+            <span class="sanitizer-icon">🔦</span>
+            <div class="sanitizer-title">
+              <h5>Torcia SOS Flashlight</h5>
+              <span>Permesso anomalo: Microfono</span>
+            </div>
+          </div>
+          <div class="sanitizer-options">
+            <label class="radio-label">
+              <input type="radio" name="opt_torcia" value="invariato" onchange="updateProgress()">
+              <span>Lascia Microfono attivo</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="opt_torcia" value="revoca" onchange="updateProgress()">
+              <span>Rifiuta / Revoca Microfono</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- App 2: Gioco Runner -->
+        <div class="sanitizer-card">
+          <div class="sanitizer-card-header">
+            <span class="sanitizer-icon">🏃</span>
+            <div class="sanitizer-title">
+              <h5>Endless Runner 3D</h5>
+              <span>Permesso anomalo: GPS Sempre</span>
+            </div>
+          </div>
+          <div class="sanitizer-options">
+            <label class="radio-label">
+              <input type="radio" name="opt_runner" value="sempre" onchange="updateProgress()">
+              <span>Consenti sempre in background</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="opt_runner" value="rifiuta" onchange="updateProgress()">
+              <span>Rifiuta / Nega Posizione GPS</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- App 3: Navigatore Mappe -->
+        <div class="sanitizer-card">
+          <div class="sanitizer-card-header">
+            <span class="sanitizer-icon">🗺️</span>
+            <div class="sanitizer-title">
+              <h5>Navigatore Urbano Live</h5>
+              <span>Impostazione attuale: GPS 24/7</span>
+            </div>
+          </div>
+          <div class="sanitizer-options">
+            <label class="radio-label">
+              <input type="radio" name="opt_nav" value="sempre" onchange="updateProgress()">
+              <span>Consenti sempre (anche ad app chiusa)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="opt_nav" value="in_uso" onchange="updateProgress()">
+              <span>Consenti solo mentre l'app è in uso</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- App 4: Social Photo -->
+        <div class="sanitizer-card">
+          <div class="sanitizer-card-header">
+            <span class="sanitizer-icon">📸</span>
+            <div class="sanitizer-title">
+              <h5>Social Photo Filter</h5>
+              <span>Accesso attuale: Tutta la Galleria</span>
+            </div>
+          </div>
+          <div class="sanitizer-options">
+            <label class="radio-label">
+              <input type="radio" name="opt_photo" value="tutte" onchange="updateProgress()">
+              <span>Consenti accesso all'intera galleria</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="opt_photo" value="selezionate" onchange="updateProgress()">
+              <span>Limita alle sole foto selezionate</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group" style="margin-top:0.5rem;">
+        <label>Regola Tecnica: Qual è la differenza fondamentale di sicurezza tra "Consenti sempre" e "Solo mentre usi l'app"?</label>
+        <textarea class="input-textarea" id="sanitizerRuleNote" placeholder="Spiega perché consentire l'accesso continuo in background azzera la privacy e drena la batteria..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         CHECKLIST DI CONSEGNA & GLOSSARIO
+         ═══════════════════════════════════════════ -->
+    <section class="checklist-card">
+      <div class="checklist-title">
+        <span>✅</span> Checklist di Validazione dell'Audit
+      </div>
+      <div id="checklistItems">
+        <div class="chk-item" id="chkInfo"><span class="chk-icon">⬜</span> Intestazione Studente completa (Nome, Cognome, Classe)</div>
+        <div class="chk-item" id="chkM1"><span class="chk-icon">⬜</span> Missione 1: Tutte le 3 app valutate con verdetto e motivazione</div>
+        <div class="chk-item" id="chkM2"><span class="chk-icon">⬜</span> Missione 2: App esca completata con nome, funzione, testo e auto-smascheramento</div>
+        <div class="chk-item" id="chkM3"><span class="chk-icon">⬜</span> Missione 3: Simulatore Data Broker utilizzato e risposta compilata</div>
+        <div class="chk-item" id="chkM4"><span class="chk-icon">⬜</span> Missione 4: Bonifica smartphone completata con principio del minimo privilegio</div>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+        <button class="btn-action btn-action--print" style="padding:8px 16px; font-size:0.9rem;" onclick="window.print()">
+          🖨️ GENERA REPORT IN PDF A4
+        </button>
+        <button class="btn-action btn-action--download" style="padding:8px 16px; font-size:0.9rem;" onclick="exportTxtAudit()">
+          💾 SCARICA FILE DI AUDIT (.TXT)
+        </button>
+      </div>
+    </section>
+
+    <!-- GLOSSARIO OPERATIVO -->
+    <section class="glossary-box">
+      <h4>📖 Glossario Operativo di Sicurezza</h4>
+      <div class="glossary-grid">
+        <div class="glossary-item">
+          <dt>Principio del Minimo Privilegio</dt>
+          <dd>Un'applicazione deve possedere unicamente le autorizzazioni strettamente necessarie alla funzione dichiarata, e nulla più.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Data Broker</dt>
+          <dd>Aziende che raccolgono, aggregano e incrociano dati personali da molteplici app per profilare commercialmente gli individui.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>App Spia (Spyware)</dt>
+          <dd>App apparentemente innocua che sottrae coordinate GPS, registrazioni ambientali o contatti per fini commerciali o illeciti.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Identificatore Pubblicitario (GAID / IDFA)</dt>
+          <dd>Codice alfanumerico univoco del dispositivo usato dai network di annunci per seguire l'utente attraverso app differenti.</dd>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       PRINT REPORT TEMPLATE (SOLO STAMPA / PDF)
+       ═══════════════════════════════════════════ -->
+  <div id="printReportWrapper">
+    <div class="print-header">
+      <div>
+        <div style="font-size:9pt; font-weight:800; color:#555; text-transform:uppercase;">ISS GIORDANO BRUNO &bull; LABORATORIO DI INFORMATICA</div>
+        <h1>AUDIT DI SICUREZZA: PRIVACY INSPECTOR</h1>
+        <div style="font-size:10pt; color:#333;">Report di Revisione App, Ingegneria Sociale e Bonifica dei Permessi Smartphone</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:9pt; font-weight:bold;">PROTOCOLLO AUDIT #03</div>
+        <div style="font-size:9pt;" id="repPrintDate">Data: --/--/----</div>
+      </div>
+    </div>
+
+    <div class="print-meta-grid">
+      <div><strong>Revisore:</strong> <span id="repPrintNome">--</span></div>
+      <div><strong>Classe:</strong> <span id="repPrintClasse">--</span></div>
+      <div><strong>Stato Audit:</strong> COMPLETO</div>
+      <div><strong>Punteggio Profilo Data Broker:</strong> <span id="repPrintBroker">--</span></div>
+    </div>
+
+    <!-- Sezione 1 Stampa -->
+    <div class="print-section">
+      <h3>SEZIONE 1 — BLUE TEAM: AUDIT APP STORE (FILTRO A 3 PASSI)</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th style="width:25%;">Applicazione</th>
+            <th style="width:20%;">Verdetto</th>
+            <th>Motivazione Tecnica del Revisore</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sveglia Ultra-Smart</strong><br><small>Internet, Microfono, GPS</small></td>
+            <td id="repV1">--</td>
+            <td id="repM1">--</td>
+          </tr>
+          <tr>
+            <td><strong>Filtri Foto Anime</strong><br><small>Camera, Memoria, Rubrica</small></td>
+            <td id="repV2">--</td>
+            <td id="repM2">--</td>
+          </tr>
+          <tr>
+            <td><strong>Mappa Sentieri</strong><br><small>GPS, Memoria Offline</small></td>
+            <td id="repV3">--</td>
+            <td id="repM3">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sezione 2 Stampa -->
+    <div class="print-section">
+      <h3>SEZIONE 2 — RED TEAM: INGEGNERIA DELL'APP ESCA (EVIL DEVELOPER)</h3>
+      <table class="print-table">
+        <tr>
+          <td style="width:25%; font-weight:bold;">Nome App Esca</td>
+          <td id="repEvilName">--</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Funzione Dichiarata</td>
+          <td id="repEvilFunc">--</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Testo Prompt Esca</td>
+          <td id="repEvilBait">--</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Auto-Smascheramento</td>
+          <td id="repEvilUnmask">--</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Sezione 3 Stampa -->
+    <div class="print-section">
+      <h3>SEZIONE 3 — L'ECONOMIA DEI DATA BROKER</h3>
+      <p style="font-size:9.5pt; margin-bottom:4px;">
+        <strong>Quotazione del profilo:</strong> <span id="repBrokerVal">--</span> &bull; 
+        <strong>Valutazione modello economico:</strong>
+      </p>
+      <div style="font-size:9pt; font-style:italic; border:1px solid #ddd; padding:6px;" id="repBrokerReason">--</div>
+    </div>
+
+    <!-- Sezione 4 Stampa -->
+    <div class="print-section">
+      <h3>SEZIONE 4 — IL CHIRURGO DELLE IMPOSTAZIONI (MINIMO PRIVILEGIO)</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>App Analizzata</th>
+            <th>Azione di Bonifica Selezionata</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Torcia SOS Flashlight</td><td id="repSanTorcia">--</td></tr>
+          <tr><td>Endless Runner 3D</td><td id="repSanRunner">--</td></tr>
+          <tr><td>Navigatore Urbano Live</td><td id="repSanNav">--</td></tr>
+          <tr><td>Social Photo Filter</td><td id="repSanPhoto">--</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:9.5pt; margin-top:6px;">
+        <strong>Regola fondamentale:</strong> <span id="repSanRule">--</span>
+      </p>
+    </div>
+
+    <div style="margin-top:14px; text-align:center; font-size:8pt; color:#666; border-top:1px solid #ccc; padding-top:6px;">
+      Privacy Inspector Lab &bull; Corso di Informatica &bull; Firmato digitalmente dall'auditor
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       JAVASCRIPT: LOGICA OPERATIVA & GAMIFICATION
+       ═══════════════════════════════════════════ -->
+  <script>
+    const VERDICTS = { 1: '', 2: '', 3: '' };
+
+    // Inizializzazione Classe da URL ?classe=...
+    window.addEventListener('DOMContentLoaded', () => {
+      // Imposta data odierna
+      const today = new Date().toISOString().split('T')[0];
+      const dataInput = document.getElementById('studData');
+      if (dataInput) dataInput.value = today;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const c = (urlParams.get('classe') || '').toUpperCase();
+      const select = document.getElementById('studClasse');
+      const badge = document.getElementById('topClassBadge');
+
+      if (c === '3L' || c === '2H' || c === '2G') {
+        select.value = c;
+        badge.textContent = `CLASSE ${c}`;
+      } else {
+        badge.textContent = select.value;
+      }
+
+      calcBrokerValue();
+      updateProgress();
+    });
+
+    function onClassChanged() {
+      const select = document.getElementById('studClasse');
+      const badge = document.getElementById('topClassBadge');
+      badge.textContent = select.value;
+      updateProgress();
+    }
+
+    function setVerdict(appNum, choice) {
+      VERDICTS[appNum] = choice;
+      const btnApp = document.getElementById(`v${appNum}_app`);
+      const btnRej = document.getElementById(`v${appNum}_rej`);
+
+      btnApp.classList.remove('selected-approve');
+      btnRej.classList.remove('selected-reject');
+
+      if (choice === 'APPROVA') {
+        btnApp.classList.add('selected-approve');
+      } else if (choice === 'BOCCIA') {
+        btnRej.classList.add('selected-reject');
+      }
+      updateProgress();
+    }
+
+    function onEvilInputChange() {
+      const name = document.getElementById('evilName').value.trim() || '[Nome App]';
+      const bait = document.getElementById('evilBait').value.trim() || '«Per offrirti la migliore esperienza, l\'app richiede l\'accesso a Microfono e Posizione GPS.»';
+
+      document.getElementById('phoneDialogTitle').textContent = `Consenti a ${name}?`;
+      document.getElementById('phoneDialogText').textContent = bait;
+      updateProgress();
+    }
+
+    function toggleBrokerItem(id) {
+      // checkbox handles it
+    }
+
+    function calcBrokerValue() {
+      let total = 0;
+      const b1 = document.getElementById('b1').checked;
+      const b2 = document.getElementById('b2').checked;
+      const b3 = document.getElementById('b3').checked;
+      const b4 = document.getElementById('b4').checked;
+      const b5 = document.getElementById('b5').checked;
+
+      if (b1) total += 45;
+      if (b2) total += 35;
+      if (b3) total += 60;
+      if (b4) total += 25;
+      if (b5) total += 30;
+
+      const display = document.getElementById('brokerValDisplay');
+      const tier = document.getElementById('brokerTierBadge');
+
+      display.textContent = `${total.toFixed(2).replace('.', ',')} €`;
+
+      if (total === 0) {
+        tier.textContent = 'PROFILO PROTETTO (0 €)';
+        tier.style.background = '#dcfce7';
+        tier.style.color = '#166534';
+      } else if (total <= 60) {
+        tier.textContent = 'PROFILO A RISCHIO MEDIO';
+        tier.style.background = '#fef3c7';
+        tier.style.color = '#92400e';
+      } else {
+        tier.textContent = 'PROFILO AD ALTO PROFITTO CRITICO';
+        tier.style.background = '#fee2e2';
+        tier.style.color = '#991b1b';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const nome = document.getElementById('studNome').value.trim();
+      const cognome = document.getElementById('studCognome').value.trim();
+
+      // Info Studente
+      const isInfoOk = (nome.length > 1 && cognome.length > 1);
+      setCheckItem('chkInfo', isInfoOk);
+
+      // Missione 1
+      const isM1Ok = (VERDICTS[1] && VERDICTS[2] && VERDICTS[3] &&
+                      document.getElementById('m1_note').value.trim().length >= 10 &&
+                      document.getElementById('m2_note').value.trim().length >= 10 &&
+                      document.getElementById('m3_note').value.trim().length >= 10);
+      setCheckItem('chkM1', isM1Ok);
+      const bM1 = document.getElementById('m1Badge');
+      if (isM1Ok) {
+        bM1.textContent = '✓ Audit Completato';
+        bM1.className = 'mission-status-badge completed';
+      } else {
+        bM1.textContent = 'In attesa di revisione';
+        bM1.className = 'mission-status-badge';
+      }
+
+      // Missione 2
+      const evilName = document.getElementById('evilName').value.trim();
+      const evilFunc = document.getElementById('evilFunc').value.trim();
+      const evilBait = document.getElementById('evilBait').value.trim();
+      const evilUnmask = document.getElementById('evilUnmask').value.trim();
+      const isM2Ok = (evilName.length >= 2 && evilFunc.length >= 10 && evilBait.length >= 15 && evilUnmask.length >= 10);
+      setCheckItem('chkM2', isM2Ok);
+      const bM2 = document.getElementById('m2Badge');
+      if (isM2Ok) {
+        bM2.textContent = '✓ Esca Smascherata';
+        bM2.className = 'mission-status-badge completed';
+      } else {
+        bM2.textContent = 'In attesa di esca';
+        bM2.className = 'mission-status-badge';
+      }
+
+      // Missione 3
+      const brokerReason = document.getElementById('brokerReason').value.trim();
+      const anyCheck = document.getElementById('b1').checked || document.getElementById('b2').checked ||
+                       document.getElementById('b3').checked || document.getElementById('b4').checked ||
+                       document.getElementById('b5').checked;
+      const isM3Ok = (anyCheck && brokerReason.length >= 15);
+      setCheckItem('chkM3', isM3Ok);
+      const bM3 = document.getElementById('m3Badge');
+      if (isM3Ok) {
+        bM3.textContent = '✓ Mercato Analizzato';
+        bM3.className = 'mission-status-badge completed';
+      } else {
+        bM3.textContent = 'In attesa di audit';
+        bM3.className = 'mission-status-badge';
+      }
+
+      // Missione 4
+      const torcia = getRadioValue('opt_torcia');
+      const runner = getRadioValue('opt_runner');
+      const nav = getRadioValue('opt_nav');
+      const photo = getRadioValue('opt_photo');
+      const sanRule = document.getElementById('sanitizerRuleNote').value.trim();
+      const isM4Ok = (torcia && runner && nav && photo && sanRule.length >= 15);
+      setCheckItem('chkM4', isM4Ok);
+      const bM4 = document.getElementById('m4Badge');
+      if (isM4Ok) {
+        bM4.textContent = '✓ Bonifica Conclusa';
+        bM4.className = 'mission-status-badge completed';
+      } else {
+        bM4.textContent = 'In attesa di bonifica';
+        bM4.className = 'mission-status-badge';
+      }
+
+      // Calcola percentuale
+      let totalSteps = 5;
+      let doneSteps = (isInfoOk ? 1 : 0) + (isM1Ok ? 1 : 0) + (isM2Ok ? 1 : 0) + (isM3Ok ? 1 : 0) + (isM4Ok ? 1 : 0);
+      let pct = Math.round((doneSteps / totalSteps) * 100);
+
+      document.getElementById('progressBarFill').style.width = `${pct}%`;
+      document.getElementById('progressText').textContent = `${pct}%`;
+
+      // Sincronizza report di stampa
+      syncPrintReport();
+    }
+
+    function setCheckItem(id, done) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('done', done);
+      const icon = el.querySelector('.chk-icon');
+      if (icon) icon.textContent = done ? '✅' : '⬜';
+    }
+
+    function getRadioValue(name) {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : '';
+    }
+
+    function syncPrintReport() {
+      const nome = document.getElementById('studNome').value.trim() || '(Non inserito)';
+      const cognome = document.getElementById('studCognome').value.trim() || '';
+      const classe = document.getElementById('studClasse').value;
+      const data = document.getElementById('studData').value || '--/--/----';
+
+      document.getElementById('repPrintNome').textContent = `${nome} ${cognome}`;
+      document.getElementById('repPrintClasse').textContent = classe;
+      document.getElementById('repPrintDate').textContent = `Data: ${data}`;
+
+      // Sezione 1
+      document.getElementById('repV1').textContent = VERDICTS[1] || 'Non valutata';
+      document.getElementById('repM1').textContent = document.getElementById('m1_note').value.trim() || 'Nessuna nota inserita';
+      document.getElementById('repV2').textContent = VERDICTS[2] || 'Non valutata';
+      document.getElementById('repM2').textContent = document.getElementById('m2_note').value.trim() || 'Nessuna nota inserita';
+      document.getElementById('repV3').textContent = VERDICTS[3] || 'Non valutata';
+      document.getElementById('repM3').textContent = document.getElementById('m3_note').value.trim() || 'Nessuna nota inserita';
+
+      // Sezione 2
+      document.getElementById('repEvilName').textContent = document.getElementById('evilName').value.trim() || '(Non inserito)';
+      document.getElementById('repEvilFunc').textContent = document.getElementById('evilFunc').value.trim() || '(Non inserita)';
+      document.getElementById('repEvilBait').textContent = document.getElementById('evilBait').value.trim() || '(Non inserito)';
+      document.getElementById('repEvilUnmask').textContent = document.getElementById('evilUnmask').value.trim() || '(Non inserito)';
+
+      // Sezione 3
+      document.getElementById('repPrintBroker').textContent = document.getElementById('brokerValDisplay').textContent;
+      document.getElementById('repBrokerVal').textContent = document.getElementById('brokerValDisplay').textContent;
+      document.getElementById('repBrokerReason').textContent = document.getElementById('brokerReason').value.trim() || '(Non motivato)';
+
+      // Sezione 4
+      const mapTorcia = { 'revoca': 'Revocato Microfono (Corretto)', 'invariato': 'Invariato (A rischio)' };
+      const mapRunner = { 'rifiuta': 'Rifiutato GPS (Corretto)', 'sempre': 'Sempre attivo (A rischio)' };
+      const mapNav = { 'in_uso': 'Solo mentre in uso (Minimo Privilegio)', 'sempre': 'Sempre attivo (Eccessivo)' };
+      const mapPhoto = { 'selezionate': 'Solo foto selezionate (Corretto)', 'tutte': 'Galleria intera (A rischio)' };
+
+      document.getElementById('repSanTorcia').textContent = mapTorcia[getRadioValue('opt_torcia')] || 'Non selezionato';
+      document.getElementById('repSanRunner').textContent = mapRunner[getRadioValue('opt_runner')] || 'Non selezionato';
+      document.getElementById('repSanNav').textContent = mapNav[getRadioValue('opt_nav')] || 'Non selezionato';
+      document.getElementById('repSanPhoto').textContent = mapPhoto[getRadioValue('opt_photo')] || 'Non selezionato';
+      document.getElementById('repSanRule').textContent = document.getElementById('sanitizerRuleNote').value.trim() || '(Nessuna spiegazione)';
+    }
+
+    function exportTxtAudit() {
+      syncPrintReport();
+
+      const nome = document.getElementById('studNome').value.trim() || 'Studente';
+      const cognome = document.getElementById('studCognome').value.trim() || 'Anonimo';
+      const classe = document.getElementById('studClasse').value;
+      const data = document.getElementById('studData').value || '--/--/----';
+
+      const sep = '═'.repeat(64);
+      const line = '─'.repeat(64);
+      const nl = String.fromCharCode(10);
+
+      let txt = '';
+      txt += sep + nl;
+      txt += '   AUDIT DI SICUREZZA – PRIVACY INSPECTOR' + nl;
+      txt += "   «Caccia all'App Spia & Protocollo Bonifica Permessi»" + nl;
+      txt += sep + nl + nl;
+
+      txt += `  REVISORE : ${nome} ${cognome}` + nl;
+      txt += `  CLASSE   : ${classe}` + nl;
+      txt += `  DATA     : ${data}` + nl;
+      txt += `  VALORE PROFILO DATA BROKER : ${document.getElementById('brokerValDisplay').textContent}` + nl + nl;
+
+      txt += sep + nl;
+      txt += '  MISSIONE 1 – BLUE TEAM: AUDIT APP STORE (FILTRO A 3 PASSI)' + nl;
+      txt += line + nl + nl;
+
+      txt += `  APP #001 ▸ Sveglia Ultra-Smart` + nl;
+      txt += `  Permessi: Rete Internet | Microfono | Posizione GPS` + nl;
+      txt += `  VERDETTO: ${VERDICTS[1] || 'Non valutata'}` + nl;
+      txt += `  MOTIVAZIONE: ${document.getElementById('m1_note').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += `  APP #002 ▸ Filtri Foto Anime` + nl;
+      txt += `  Permessi: Fotocamera | Memoria | Rubrica Contatti` + nl;
+      txt += `  VERDETTO: ${VERDICTS[2] || 'Non valutata'}` + nl;
+      txt += `  MOTIVAZIONE: ${document.getElementById('m2_note').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += `  APP #003 ▸ Mappa Sentieri Offline` + nl;
+      txt += `  Permessi: Posizione GPS | Memoria (Mappe Offline)` + nl;
+      txt += `  VERDETTO: ${VERDICTS[3] || 'Non valutata'}` + nl;
+      txt += `  MOTIVAZIONE: ${document.getElementById('m3_note').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += sep + nl;
+      txt += "  MISSIONE 2 – RED TEAM: L'APP ESCA (EVIL DEVELOPER)" + nl;
+      txt += line + nl + nl;
+      txt += `  A) NOME APP ESCA: ${document.getElementById('evilName').value.trim() || 'N/A'}` + nl;
+      txt += `  B) FUNZIONE DICHIARATA: ${document.getElementById('evilFunc').value.trim() || 'N/A'}` + nl;
+      txt += `  C) TESTO PROMPT ESCA: ${document.getElementById('evilBait').value.trim() || 'N/A'}` + nl;
+      txt += `  D) AUTO-SMASCHERAMENTO: ${document.getElementById('evilUnmask').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += sep + nl;
+      txt += "  MISSIONE 3 – L'ECONOMIA DEI DATA BROKER" + nl;
+      txt += line + nl + nl;
+      txt += `  VALORE ANNUO STIMATO: ${document.getElementById('brokerValDisplay').textContent}` + nl;
+      txt += `  MODELLO ECONOMICO: ${document.getElementById('brokerReason').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += sep + nl;
+      txt += '  MISSIONE 4 – BLUE TEAM: IL CHIRURGO DELLE IMPOSTAZIONI' + nl;
+      txt += line + nl + nl;
+      txt += `  Torcia SOS Flashlight   : ${document.getElementById('repSanTorcia').textContent}` + nl;
+      txt += `  Endless Runner 3D       : ${document.getElementById('repSanRunner').textContent}` + nl;
+      txt += `  Navigatore Urbano Live  : ${document.getElementById('repSanNav').textContent}` + nl;
+      txt += `  Social Photo Filter     : ${document.getElementById('repSanPhoto').textContent}` + nl;
+      txt += `  SPIEGAZIONE MINIMO PRIVILEGIO: ${document.getElementById('sanitizerRuleNote').value.trim() || 'N/A'}` + nl + nl;
+
+      txt += sep + nl;
+      txt += '  Laboratorio Privacy Inspector &bull; ISS Giordano Bruno' + nl;
+      txt += sep + nl;
+
+      const filename = `Audit_${nome.replace(/\\s+/g, '')}_${cognome.replace(/\\s+/g, '')}.txt`;
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>

@@ -106,6 +106,12 @@ const MATERIE = [
               },
 
               {
+                title: "📱 Laboratorio 3: Privacy Inspector — Caccia all'App Spia",
+                desc: "Laboratorio operativo per analisti della privacy in 4 missioni: App Store Audit (Filtro 3 Passi), ingegneria dell'app esca (Red Team), economia invisibile dei Data Broker e bonifica dello smartphone con il principio del minimo privilegio; con report A4 e TXT.",
+                url: "/informatica/sicurezza/laboratorio-privacy-inspector.html?classe=3l"
+              },
+
+              {
 
                 title: "Slide 4: Navigazione Invisibile e Reti Pubbliche",
 
@@ -199,6 +205,12 @@ const MATERIE = [
               },
 
               {
+                title: "📱 Laboratorio 3: Privacy Inspector — Caccia all'App Spia",
+                desc: "Laboratorio operativo per analisti della privacy in 4 missioni: App Store Audit (Filtro 3 Passi), ingegneria dell'app esca (Red Team), economia invisibile dei Data Broker e bonifica dello smartphone con il principio del minimo privilegio; con report A4 e TXT.",
+                url: "/informatica/sicurezza/laboratorio-privacy-inspector.html?classe=2h"
+              },
+
+              {
 
                 title: "Slide 4: Navigazione Invisibile e Reti Pubbliche",
 
@@ -289,6 +301,12 @@ const MATERIE = [
 
                 url: "/informatica/sicurezza/sicurezza-informatica-3.html?classe=2g"
 
+              },
+
+              {
+                title: "📱 Laboratorio 3: Privacy Inspector — Caccia all'App Spia",
+                desc: "Laboratorio operativo per analisti della privacy in 4 missioni: App Store Audit (Filtro 3 Passi), ingegneria dell'app esca (Red Team), economia invisibile dei Data Broker e bonifica dello smartphone con il principio del minimo privilegio; con report A4 e TXT.",
+                url: "/informatica/sicurezza/laboratorio-privacy-inspector.html?classe=2g"
               },
 
               {
