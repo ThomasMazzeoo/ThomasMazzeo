@@ -361,8 +361,8 @@ const MATERIE = [
                 title: "🧪 Laboratorio & Metodo Scientifico",
                 topics: [
                   {
-                    title: "Lezione Interattiva & Laboratorio Pratico (1h)",
-                    desc: "Workshop pratico per studenti: caccia agli errori, i 6 pilastri scientifici, simulatore live con calcolo incertezze e generatore di relazione in PDF.",
+                    title: "Guida Relazione & Prova 2: Periodo del Pendolo (1h)",
+                    desc: "Metodologia sperimentale completa: tempi di reazione, blocco di 5 oscillazioni, 12 misure con scarto max/min, tabelle m1/m2, confronto isocronismo e generatore PDF.",
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
