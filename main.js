@@ -451,6 +451,16 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/dilatazione-termica.html"
                   }
                 ]
+              },
+              {
+                title: "🧪 02. Calorimetria delle Mescolanze e Calore Specifico",
+                topics: [
+                  {
+                    title: "🌡️ Lezione Interattiva LIM: Calore Specifico & Calorimetro delle Miscele",
+                    desc: "Presentazione animata 100vh per LIM: calore vs temperatura, calore specifico dell'acqua (4186 J/(kg·K)) vs metalli, simulatore live del calorimetro delle miscele (equivalente in acqua me = 15 g), bilancio termico Qced = Qass, identificazione automatica del metallo e sfida LIM.",
+                    url: "/fisica/giordano-bruno/calorimetria-calore-specifico.html"
+                  }
+                ]
               }
             ]
           }
