@@ -943,6 +943,168 @@
       transform: translateY(0);
     }
 
+
+    /* ============================================================
+       MODALE REPORT A4 (ANTEPRIMA E AREA DI STAMPA PDF DIRETTO)
+       ============================================================ */
+    #report-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+    #report-modal.active { display: block; }
+
+    .modal-dialog {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 12px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      padding: 1.8rem;
+      position: relative;
+    }
+
+    .modal-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 2px solid #e2e8f0;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Print Paper Styles */
+    .print-paper {
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 11px;
+      line-height: 1.4;
+      font-family: var(--font-sans);
+    }
+
+    .print-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .print-school {
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+      color: #475569;
+      text-transform: uppercase;
+    }
+    .print-doc-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-top: 1px;
+    }
+
+    .print-meta-grid {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 0.75rem;
+      font-size: 10.5px;
+    }
+    .print-meta-item span {
+      display: block;
+      color: #64748b;
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .print-meta-item strong {
+      color: #0f172a;
+      font-size: 11.5px;
+    }
+
+    .print-section {
+      margin-bottom: 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .print-section-title {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .print-section-body {
+      padding: 8px 10px;
+      background: #ffffff;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+    .print-table th, .print-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .print-table th {
+      background: #f1f5f9;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #report-modal {
+        position: static;
+        padding: 0;
+        background: transparent;
+      }
+      .modal-dialog {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .modal-controls, .top-header, .lab-container, #toastNotice {
+        display: none !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -1461,6 +1623,190 @@
 
   </main>
 
+  <!-- ============================================================
+       MODALE REPORT A4 (ANTEPRIMA E AREA DI STAMPA PDF)
+       ============================================================ -->
+  <div id="report-modal">
+    <div class="modal-dialog">
+      <!-- Barra di controllo modale -->
+      <div class="modal-controls">
+        <div style="font-weight:800; color:#0f172a; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+          <span>📄</span> Anteprima Report di Sicurezza (A4)
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-action btn-action--print" onclick="closeReportPreview()">Chiudi</button>
+          <button type="button" class="btn-action btn-action--download" onclick="downloadDirectPDF()">📥 Scarica PDF Diretto</button>
+        </div>
+      </div>
+
+      <!-- AREA EFFETTIVA DI STAMPA REPORT (A4) -->
+      <div id="print-area" class="print-paper">
+        <!-- HEADER SCUOLA & LAB -->
+        <div class="print-header">
+          <div>
+            <div class="print-school">ISTITUTO STATALE D'ISTRUZIONE SUPERIORE — LABORATORIO DI INFORMATICA</div>
+            <div class="print-doc-title">AUDIT DI SICUREZZA: PRIVACY INSPECTOR</div>
+            <div style="font-size:10px; color:#475569; font-weight:700;">APP STORE REVISION &bull; RED TEAM EMULATION &bull; DATA BROKER &bull; MINIMO PRIVILEGIO</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:8.5px; color:#64748b; font-weight:800;">PROTOCOLLO AUDIT</div>
+            <div style="font-family:var(--font-mono); font-size:11px; font-weight:800; color:#0f172a;">AUDIT-2026-APP03</div>
+          </div>
+        </div>
+
+        <!-- META GRID INTESTAZIONE STUDENTE -->
+        <div class="print-meta-grid">
+          <div class="print-meta-item">
+            <span>Revisore / Studente</span>
+            <strong id="repPrintNome">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>Classe</span>
+            <strong id="repPrintClasse">--</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>Data Sessione</span>
+            <strong id="repPrintDate">--/--/----</strong>
+          </div>
+          <div class="print-meta-item">
+            <span>Valutazione Profilo Broker</span>
+            <strong id="repPrintBroker" style="color:#7c3aed;">0,00 €/anno</strong>
+          </div>
+        </div>
+
+        <!-- SEZIONE 1: BLUE TEAM APP STORE AUDIT -->
+        <div class="print-section">
+          <div class="print-section-title">
+            <span>MISSIONE 1 — Blue Team: App Store Security Audit (Il Filtro in 3 Passi)</span>
+            <span style="font-size:9px; font-family:var(--font-mono);">APP TRIAGE LOG</span>
+          </div>
+          <div class="print-section-body">
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th style="width:28%;">Applicazione Candidata</th>
+                  <th style="width:18%;">Verdetto Revisore</th>
+                  <th>Motivazione Tecnica &amp; Analisi Permessi Abusivi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sveglia Ultra-Smart</strong><br><small style="color:#64748b;">Internet, Microfono, GPS Esatto</small></td>
+                  <td id="repV1" style="font-weight:bold;">--</td>
+                  <td id="repM1">--</td>
+                </tr>
+                <tr>
+                  <td><strong>Filtri Foto Anime</strong><br><small style="color:#64748b;">Camera, Memoria, Rubrica Contatti</small></td>
+                  <td id="repV2" style="font-weight:bold;">--</td>
+                  <td id="repM2">--</td>
+                </tr>
+                <tr>
+                  <td><strong>Mappa Sentieri Offline</strong><br><small style="color:#64748b;">Posizione GPS, Memoria File</small></td>
+                  <td id="repV3" style="font-weight:bold;">--</td>
+                  <td id="repM3">--</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEZIONE 2: RED TEAM L'APP ESCA -->
+        <div class="print-section">
+          <div class="print-section-title" style="background:#991b1b;">
+            <span>MISSIONE 2 — Red Team: Ingegneria Sociale — L'App Esca (Evil Developer)</span>
+            <span style="font-size:9px; font-family:var(--font-mono);">THREAT EMULATION</span>
+          </div>
+          <div class="print-section-body">
+            <table class="print-table">
+              <tr>
+                <td style="width:28%; font-weight:bold; background:#f8fafc;">A) Nome App Esca</td>
+                <td id="repEvilName" style="font-weight:bold;">--</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; background:#f8fafc;">B) Funzione Dichiarata (Scusa)</td>
+                <td id="repEvilFunc">--</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; background:#f8fafc;">C) Testo Prompt Esca (Microfono + GPS)</td>
+                <td id="repEvilBait" style="font-style:italic; color:#0f172a;">--</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold; background:#f8fafc;">D) Smascheramento Tecnico</td>
+                <td id="repEvilUnmask">--</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEZIONE 3: L'ECONOMIA DEI DATA BROKER -->
+        <div class="print-section">
+          <div class="print-section-title" style="background:#5b21b6;">
+            <span>MISSIONE 3 — L'Economia dei Data Broker &amp; Quotazione dei Dati Personali</span>
+            <span style="font-size:9px; font-family:var(--font-mono);">MARKET PROFILE ANALYSIS</span>
+          </div>
+          <div class="print-section-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; background:#faf5ff; border:1px solid #d8b4fe; padding:5px 8px; border-radius:4px;">
+              <span><strong>Valore Economico Annuo Stimato:</strong> <span id="repBrokerVal" style="font-weight:bold; color:#5b21b6;">--</span></span>
+              <span><strong>Formula:</strong> Telemetria GPS + Audio + Rubrica + IDFA</span>
+            </div>
+            <div style="font-size:10px; line-height:1.45;">
+              <strong>Analisi del Modello di Business («Se è gratis, il prodotto sei tu»):</strong>
+              <div id="repBrokerReason" style="font-style:italic; margin-top:2px; color:#334155; padding-left:4px; border-left:2px solid #7c3aed;">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4: IL CHIRURGO DELLE IMPOSTAZIONI -->
+        <div class="print-section">
+          <div class="print-section-title" style="background:#065f46;">
+            <span>MISSIONE 4 — Blue Team: Il Chirurgo delle Impostazioni (Protocollo Minimo Privilegio)</span>
+            <span style="font-size:9px; font-family:var(--font-mono);">SYSTEM HARDENING</span>
+          </div>
+          <div class="print-section-body">
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th>App Bonificata</th>
+                  <th>Azione di Mitigazione Adottata</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Torcia SOS Flashlight</strong></td>
+                  <td id="repSanTorcia">--</td>
+                </tr>
+                <tr>
+                  <td><strong>Endless Runner 3D</strong></td>
+                  <td id="repSanRunner">--</td>
+                </tr>
+                <tr>
+                  <td><strong>Navigatore Urbano Live</strong></td>
+                  <td id="repSanNav">--</td>
+                </tr>
+                <tr>
+                  <td><strong>Social Photo Filter</strong></td>
+                  <td id="repSanPhoto">--</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="font-size:10px; margin-top:5px; line-height:1.4;">
+              <strong>Principio del Minimo Privilegio:</strong>
+              <span id="repSanRule" style="font-style:italic; color:#334155;">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER A4 FIRMA -->
+        <div style="margin-top:12px; padding-top:6px; border-top:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center; font-size:9px; color:#64748b;">
+          <div>Privacy Inspector Lab &bull; Corso di Sicurezza Informatica &bull; ISS Giordano Bruno</div>
+          <div>Firma Revisore: ___________________________</div>
+        </div>
+
+      </div><!-- /#print-area -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /#report-modal -->
+
+
   <!-- ═══════════════════════════════════════════
        PRINT REPORT TEMPLATE (SOLO STAMPA / PDF)
        ═══════════════════════════════════════════ -->
@@ -1828,7 +2174,8 @@
       el.style.boxShadow = '';
     }
 
-    function downloadDirectPDF() {
+    
+    function openReportPreview() {
       const nomeInput = document.getElementById('studNome');
       const cognomeInput = document.getElementById('studCognome');
       const classeInput = document.getElementById('studClasse');
@@ -1837,7 +2184,34 @@
       const cognome = cognomeInput.value.trim();
       const classe = classeInput.value.trim();
 
-      // VALIDAZIONE OBBLIGATORIA DI NOME, COGNOME E CLASSE
+      if (!nome || !cognome || !classe) {
+        alert('⚠️ Attenzione: Devi inserire obbligatoriamente NOME, COGNOME e CLASSE prima di poter visualizzare o scaricare il Report PDF!');
+        const target = !nome ? nomeInput : (!cognome ? cognomeInput : classeInput);
+        target.focus();
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.borderColor = '#dc2626';
+        target.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.25)';
+        return;
+      }
+
+      syncPrintReport();
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportPreview() {
+      document.getElementById('report-modal').classList.remove('active');
+    }
+
+        function downloadDirectPDF() {
+      const nomeInput = document.getElementById('studNome');
+      const cognomeInput = document.getElementById('studCognome');
+      const classeInput = document.getElementById('studClasse');
+
+      const nome = nomeInput.value.trim();
+      const cognome = cognomeInput.value.trim();
+      const classe = classeInput.value.trim();
+
+      // VALIDAZIONE RIGOROSA DI NOME, COGNOME E CLASSE
       if (!nome || !cognome || !classe) {
         alert('⚠️ Attenzione: Devi inserire obbligatoriamente NOME, COGNOME e CLASSE prima di poter scaricare il Report PDF!');
         const target = !nome ? nomeInput : (!cognome ? cognomeInput : classeInput);
@@ -1850,27 +2224,22 @@
 
       syncPrintReport();
 
-      showToast('Generazione PDF in corso...');
+      const modal = document.getElementById('report-modal');
+      const wasOpen = modal && modal.classList.contains('active');
+      if (!wasOpen && modal) {
+        modal.classList.add('active');
+      }
+
+      showToast('Generazione PDF A4 in corso...');
 
       const cleanNome = nome.replace(/[^a-zA-Z0-9_-]/g, '_');
       const cleanCognome = cognome.replace(/[^a-zA-Z0-9_-]/g, '_');
       const cleanClasse = classe.replace(/[^a-zA-Z0-9_-]/g, '_');
       const filename = `Report_Audit_Privacy_${cleanNome}_${cleanCognome}_${cleanClasse}.pdf`;
 
-      const printEl = document.getElementById('printReportWrapper');
-
-      // Visualizza temporaneamente l'elemento di stampa per consentire a html2pdf di renderizzarlo
-      printEl.style.display = 'block';
-      printEl.style.position = 'fixed';
-      printEl.style.left = '0';
-      printEl.style.top = '0';
-      printEl.style.width = '210mm';
-      printEl.style.background = '#ffffff';
-      printEl.style.color = '#000000';
-      printEl.style.zIndex = '999999';
-
+      const element = document.getElementById('print-area');
       const opt = {
-        margin: [8, 10, 8, 10],
+        margin: [6, 8, 6, 8],
         filename: filename,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
@@ -1879,22 +2248,18 @@
 
       if (window.html2pdf) {
         setTimeout(() => {
-          window.html2pdf().set(opt).from(printEl).save().then(() => {
-            printEl.style.display = 'none';
-            printEl.style.position = '';
-            printEl.style.left = '';
-            printEl.style.top = '';
-            printEl.style.width = '';
-            printEl.style.zIndex = '';
-            showToast('✓ PDF scaricato automaticamente!');
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast('✓ PDF scaricato con successo!');
+            if (!wasOpen && modal) {
+              modal.classList.remove('active');
+            }
           }).catch(err => {
-            console.error('Errore durante la generazione html2pdf, ripiego su window.print():', err);
-            printEl.style.display = 'none';
+            console.error('Errore html2pdf, ripiego su window.print:', err);
+            if (!wasOpen && modal) modal.classList.remove('active');
             window.print();
           });
-        }, 120);
+        }, 250);
       } else {
-        printEl.style.display = 'none';
         window.print();
       }
     }
