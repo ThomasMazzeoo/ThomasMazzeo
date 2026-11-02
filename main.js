@@ -416,6 +416,11 @@ const MATERIE = [
                     title: "Laboratorio Digitale LIM (SC 1.3.5): Trattamento Dati con Excel & Fogli",
                     desc: "Slide animate per LIM 100vh: la catena di montaggio di Excel, l'incantesimo dell'uguale '=', formule statistiche e di propagazione, autofill magico col quadratino verde, simulatore foglio interattivo con visione a Raggi X e guida tabella Relazione 3.",
                     url: "/fisica/giordano-bruno/excel-laboratorio-fisica.html"
+                  },
+                  {
+                    title: "Compilatore Relazione 3 in Aula & Scheda Stampabile (Voto 3)",
+                    desc: "Modulo pratico per la prova valutata in aula (50 min): acquisizione quote al calibro, calcolo volume e propagazione per parallelepipedo e cilindro, analisi critica, rubrica docente e download automatico del PDF ufficiale.",
+                    url: "/fisica/giordano-bruno/relazione-misure-indirette.html"
                   }
                 ]
               }
