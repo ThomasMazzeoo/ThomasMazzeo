@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>02. Misure Ripetute e Statistica degli Errori (Pendolo) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   ARGON DESIGN SYSTEM — LEZIONE INTERATTIVA LIM
+   Istituto Tecnico Industriale Statale "Giordano Bruno"
+   02: Misure Ripetute e Statistica degli Errori (Esperienza del Pendolo)
+   Progettata per LIM • 100vh no-scroll • Dinamica, fresca e rigorosa
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --argon-primary: #5e72e4;
+  --argon-primary-hover: #455fe0;
+  --argon-primary-light: rgba(94, 114, 228, 0.12);
+  --argon-primary-gradient: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  
+  --argon-secondary: #f4f5f7;
+  --argon-info: #11cdef;
+  --argon-info-light: rgba(17, 205, 239, 0.12);
+  
+  --argon-success: #2dce89;
+  --argon-success-hover: #26af74;
+  --argon-success-light: rgba(45, 206, 137, 0.12);
+  
+  --argon-danger: #f5365c;
+  --argon-danger-light: rgba(245, 54, 92, 0.12);
+  
+  --argon-warning: #fb6340;
+  --argon-warning-light: rgba(251, 99, 64, 0.14);
+  
+  --argon-dark: #172b4d;
+  --argon-darker: #0f1c30;
+  
+  --argon-text-main: #32325d;
+  --argon-text-muted: #525f7f;
+  --argon-text-light: #8898aa;
+  
+  --argon-bg: #f8f9fe;
+  --argon-card-bg: #ffffff;
+  --argon-border: #e9ecef;
+  
+  --argon-shadow-sm: 0 4px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --argon-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  --argon-shadow-hover: 0 18px 40px rgba(50, 50, 93, 0.16), 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --lim-zoom: 1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: var(--argon-bg);
+  color: var(--argon-text-main);
+  font-size: calc(14.5px * var(--lim-zoom));
+  line-height: 1.45;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(94, 114, 228, 0.06) 0%, transparent 60%),
+    linear-gradient(to right, rgba(94, 114, 228, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(94, 114, 228, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════ */
+.app-header {
+  height: 60px;
+  min-height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--argon-border);
+  box-shadow: var(--argon-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 20;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid var(--argon-border);
+  color: var(--argon-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 7px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.btn-back-course:hover {
+  background: var(--argon-primary-light);
+  border-color: var(--argon-primary);
+  transform: translateX(-2px);
+}
+
+.school-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--argon-secondary);
+  border: 1px solid var(--argon-border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--argon-dark);
+}
+
+.lesson-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: var(--argon-primary);
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phase-pill {
+  background: var(--argon-primary-light);
+  border: 1px solid rgba(94, 114, 228, 0.25);
+  color: var(--argon-primary);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 5px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lim-btn {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  color: var(--argon-text-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lim-btn:hover {
+  color: var(--argon-primary);
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+}
+
+/* ══════════════════════════════════════════════
+   VIEWPORT SLIDES (100vh no-scroll)
+   ══════════════════════════════════════════════ */
+.slides-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 28px 12px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-card {
+  position: absolute;
+  inset: 16px 28px 12px 28px;
+  background: var(--argon-card-bg);
+  border: 1px solid var(--argon-border);
+  border-radius: 16px;
+  box-shadow: var(--argon-shadow);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.995);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  padding: 20px 28px;
+}
+
+.slide-card.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  z-index: 5;
+}
+
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--argon-border);
+  padding-bottom: 10px;
+}
+
+.slide-title-group h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--argon-dark);
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--argon-text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.slide-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+
+.pill-badge.primary { background: var(--argon-primary-light); color: var(--argon-primary); }
+.pill-badge.success { background: var(--argon-success-light); color: var(--argon-success); }
+.pill-badge.danger { background: var(--argon-danger-light); color: var(--argon-danger); }
+.pill-badge.warning { background: var(--argon-warning-light); color: var(--argon-warning); }
+.pill-badge.info { background: var(--argon-info-light); color: #0891b2; }
+.pill-badge.dark { background: rgba(23, 43, 77, 0.1); color: var(--argon-dark); }
+
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.argon-card {
+  background: #ffffff;
+  border: 1px solid var(--argon-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 5px rgba(50, 50, 93, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.argon-card:hover {
+  border-color: rgba(94, 114, 228, 0.4);
+  box-shadow: 0 4px 12px rgba(50, 50, 93, 0.08);
+}
+
+.argon-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.argon-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--argon-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Callout Box */
+.callout-box {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+.callout-box.primary {
+  background: rgba(94, 114, 228, 0.08);
+  border-left: 4px solid var(--argon-primary);
+  color: var(--argon-dark);
+}
+
+.callout-box.success {
+  background: rgba(45, 206, 137, 0.1);
+  border-left: 4px solid var(--argon-success);
+  color: #065f46;
+}
+
+.callout-box.warning {
+  background: rgba(251, 99, 64, 0.1);
+  border-left: 4px solid var(--argon-warning);
+  color: #9a3412;
+}
+
+.callout-box.danger {
+  background: rgba(245, 54, 92, 0.1);
+  border-left: 4px solid var(--argon-danger);
+  color: #991b1b;
+}
+
+/* ══════════════════════════════════════════════
+   SIMULATORE PENDOLO & CRONOMETRO
+   ══════════════════════════════════════════════ */
+.pendulum-bench {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 14px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pendulum-canvas-wrap {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 10px;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cronometro Digitale */
+.stopwatch-screen {
+  background: #000000;
+  border: 2px solid #475569;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #22c55e;
+  text-align: center;
+  letter-spacing: 2px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.stopwatch-screen.running {
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+/* Reaction Reflex Box */
+.reflex-box {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.reflex-box.waiting {
+  background: #f5365c;
+}
+
+.reflex-box.ready {
+  background: #2dce89;
+  animation: pulseGreen 0.4s infinite alternate;
+}
+
+@keyframes pulseGreen {
+  from { transform: scale(1); }
+  to { transform: scale(1.02); }
+}
+
+/* Quiz Option Button */
+.quiz-option-btn {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 2px solid var(--argon-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+  color: var(--argon-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.quiz-option-btn:hover {
+  border-color: var(--argon-primary);
+  background: var(--argon-primary-light);
+  transform: translateX(4px);
+}
+
+.quiz-option-btn.correct {
+  border-color: var(--argon-success) !important;
+  background: var(--argon-success-light) !important;
+  color: #064e3b !important;
+}
+
+.quiz-option-btn.wrong {
+  border-color: var(--argon-danger) !important;
+  background: var(--argon-danger-light) !important;
+  color: #7f1d1d !important;
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER NAVIGATION & STEPPER
+   ══════════════════════════════════════════════ */
+.app-footer {
+  height: 60px;
+  min-height: 60px;
+  background: #ffffff;
+  border-top: 1px solid var(--argon-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 20;
+}
+
+.stepper-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--argon-secondary);
+  border: 2px solid var(--argon-border);
+  color: var(--argon-text-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-dot:hover {
+  border-color: var(--argon-primary);
+  color: var(--argon-primary);
+}
+
+.step-dot.active {
+  background: var(--argon-primary);
+  border-color: var(--argon-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(94, 114, 228, 0.4);
+  transform: scale(1.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-nav-prev {
+  background: var(--argon-secondary);
+  color: var(--argon-text-main);
+  border: 1px solid var(--argon-border);
+}
+
+.btn-nav-prev:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateX(-2px);
+}
+
+.btn-nav-next {
+  background: var(--argon-primary-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.35);
+}
+
+.btn-nav-next:hover:not(:disabled) {
+  transform: translateX(2px);
+  box-shadow: 0 6px 16px rgba(94, 114, 228, 0.45);
+}
+
+.btn-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.feedback-toast {
+  position: fixed;
+  bottom: 74px;
+  right: 24px;
+  background: var(--argon-dark);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: var(--argon-shadow);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 100;
+  animation: slideToast 0.3s ease;
+}
+
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .stepper-dots .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ══════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <a href="/#giordano-bruno-prime" class="btn-back-course" title="Torna a Classi Prime">
+        <span>←</span>
+        <span>LABORATORIO FISICA</span>
+      </a>
+      <span class="school-badge">🏫 ITIS Giordano Bruno</span>
+      <div class="lesson-title-badge">
+        <span>⏱️ 02: Misure Ripetute & Statistica degli Errori (Pendolo)</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="phase-pill" id="phase-indicator">
+        <span id="phase-step-badge">PASSO 1 DI 8</span>
+        <span>•</span>
+        <span id="phase-name-badge">IL MISTERO DEL CRONOMETRO</span>
+      </div>
+      <button class="lim-btn" id="btn-zoom-out" title="Rimpicciolisci testo per LIM (A-)">A-</button>
+      <button class="lim-btn" id="btn-zoom-in" title="Ingrandisci testo per LIM (A+)">A+</button>
+      <button class="lim-btn" id="btn-fullscreen" title="Schermo Intero per LIM (F11)">⛶</button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       VIEWPORT SLIDES (100vh no scroll)
+       ══════════════════════════════════════════════ -->
+  <main class="slides-viewport">
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 1: IL MISTERO DEL CRONOMETRO
+         ────────────────────────────────────────── -->
+    <article class="slide-card active" data-step="1" data-name="IL MISTERO DEL CRONOMETRO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⏱️ Il Mistero del Cronometro: Perché Nessun Numero è Uguale?</h1>
+          <p class="slide-subtitle">10 studenti cronometrano lo stesso pendolo e ottengono 10 risultati diversi: chi ha ragione?</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">STATISTICA ERRORI</span>
+          <span class="pill-badge dark">SC 1.1.4</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="callout-box primary">
+          <strong>🤔 IMMAGINA QUESTA SCENA IN CLASSE:</strong><br>
+          Un pendolo oscilla. Il prof dice: <em>"Al mio tre, prendete tutti il tempo di una singola oscillazione!"</em>. Uno scrive 2.05 s, un altro 1.94 s, un altro 2.12 s. Qualcuno ha barato? Il cronometro è rotto? <strong>Assolutamente NO!</strong>
+        </div>
+
+        <div class="grid-2">
+          <!-- Colonna Sinistra: I due tipi di errore -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-warning);">
+              <strong style="color: #fb6340; font-size: 0.92rem;">1. Errori Sistematici (Il Difetto Costante):</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Se il cronometro corre troppo piano, o se la bilancia segna +0.2 g a vuoto, l'errore avviene <strong>sempre nella stessa direzione</strong>. Si può scoprire e correggere calibrando lo strumento.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-danger);">
+              <strong style="color: var(--argon-danger); font-size: 0.92rem;">2. Errori Casuali (L'Imprevedibilità Umana):</strong>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Il battito del nostro cuore, una folata d'aria, la vibrazione del dito: a volte premi il pulsante 1 decimo di secondo prima, a volte 1 decimo dopo. È impossibile eliminarli del tutto!
+              </p>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: La Soluzione Scientifica -->
+          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">🎯 L'Arma Segreta della Fisica: La Statistica!</span>
+                <span class="pill-badge success">RELAZIONE 2</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--argon-text-muted); line-height: 1.45;">
+                Invece di fidarci di una sola misura presa a caso, la fisica usa un trucco potentissimo: <strong>ripetere la prova tante volte (N = 10)</strong>.
+                <br><br>
+                Gli errori in eccesso compensano gli errori in difetto: attraverso la <strong>media matematica</strong> e la <strong>semidispersione</strong> scopriamo la misura più vicina alla verità!
+              </p>
+            </div>
+
+            <div class="callout-box success" style="margin-bottom: 0;">
+              <strong>Obiettivo di Oggi:</strong> Calcolare il periodo del pendolo, domare l'errore casuale e scoprire come abbattere l'incertezza del 90%!
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 2: IL TEMPO DI REAZIONE UMANO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="2" data-name="TEMPO DI REAZIONE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⚡ Il Tempo di Reazione Umano: I Limiti del Nostro Cervello</h1>
+          <p class="slide-subtitle">Tra quando l'occhio vede il pendolo e quando il dito schiaccia il tasto passano 0.2 secondi!</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">TEST INTERATTIVO</span>
+          <span class="pill-badge info">CIRCA 0.2 SECONDI</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Colonna Sinistra: La Catena Biologica -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="callout-box primary">
+              <strong>🧠 PERCHÉ NESSUN ESSERE UMANO È ISTANTANEO?</strong><br>
+              Non siamo robot di titanio: per far muovere il dito, il segnale bioelettrico deve compiere un viaggio completo dentro il nostro corpo!
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <strong style="color: var(--argon-primary); font-size: 0.9rem;">1. L'Occhio Vede (50 millisecondi):</strong>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                La luce riflessa dal pendolo colpisce la retina. I fotorecettori trasformano l'immagine in impulsi nervosi lungo il nervo ottico.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid #0891b2;">
+              <strong style="color: #0891b2; font-size: 0.9rem;">2. Il Cervello Decide (100 millisecondi):</strong>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                La corteccia cerebrale riconosce che il pendolo ha raggiunto l'estremo dell'oscillazione e lancia l'ordine: <em>"Dito, premi ORA!"</em>.
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid #ea580c;">
+              <strong style="color: #ea580c; font-size: 0.9rem;">3. Il Muscolo si Contrae (50 millisecondi):</strong>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Il comando viaggia lungo il braccio e i tendini della mano comprimono fisicamente il tasto del cronometro.
+              </p>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Test Riflessi Interattivo -->
+          <div class="argon-card" style="align-items: center; justify-content: space-between; text-align: center; background: #fafbfe;">
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--argon-dark); margin-bottom: 4px;">
+                🎮 Metti alla Prova i Tuoi Riflessi alla LIM!
+              </div>
+              <p style="font-size: 0.8rem; color: var(--argon-text-muted);">
+                Clicca sul riquadro per avviare il test. Appena diventa <strong>VERDE</strong>, clicca il più velocemente possibile!
+              </p>
+            </div>
+
+            <!-- Pulsante Test -->
+            <div class="reflex-box waiting" id="reflex-test-btn" onclick="handleReflexClick()">
+              <span id="reflex-main-text">CLICCA PER INIZIARE</span>
+              <span id="reflex-sub-text" style="font-size: 0.75rem; font-weight: 600; margin-top: 4px;">Attendi il colore verde...</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1.5px solid var(--argon-border); border-radius: 8px; padding: 8px 16px; width: 100%;">
+              <span style="font-size: 0.8rem; color: #64748b;">Ultimo tempo registrato:</span>
+              <strong style="color: var(--argon-primary); font-family: var(--font-mono); font-size: 1.2rem; display: block;" id="reflex-score-val">-- ms</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 3: LE FORMULE DELLA STATISTICA
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="3" data-name="LE FORMULE CHIAVE">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📊 Le Formule Magiche: Valor Medio e Semidispersione</h1>
+          <p class="slide-subtitle">Come trasformare 10 misure disordinate in un unico risultato scientifico rigoroso</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">VALOR MEDIO</span>
+          <span class="pill-badge success">SEMIDISPERSIONE</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Colonna Sinistra: Le Formule -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Formula 1: Media -->
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--argon-primary); font-size: 0.92rem;">1. IL VALOR MEDIO ARITMETICO (t̄):</strong>
+                <span class="pill-badge primary">BARICENTRO</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Sommi tutte le misure e dividi per il numero di prove (N = 10).
+              </p>
+              <div style="background: #fafbfe; border: 1px solid var(--argon-border); padding: 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 1.05rem; font-weight: 800; color: var(--argon-dark); text-align: center; margin-top: 4px;">
+                t̄ = (t₁ + t₂ + ... + t₁₀) / 10
+              </div>
+            </div>
+
+            <!-- Formula 2: Semidispersione -->
+            <div class="argon-card" style="border-left: 4px solid #fb6340;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: #fb6340; font-size: 0.92rem;">2. LA SEMIDISPERSIONE MASSIMA (e_a):</strong>
+                <span class="pill-badge warning">INCERTEZZA</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                La metà della distanza tra il valore più grande e quello più piccolo.
+              </p>
+              <div style="background: #fafbfe; border: 1px solid var(--argon-border); padding: 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 1.05rem; font-weight: 800; color: #ea580c; text-align: center; margin-top: 4px;">
+                e_a = (t_max - t_min) / 2
+              </div>
+            </div>
+
+            <!-- Formula 3: Errore Assoluto Finale -->
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success);">
+              <strong style="color: var(--argon-success); font-size: 0.92rem;">3. L'Incertezza Finale (Δt):</strong>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                Si prende il valore maggiore tra la semidispersione e la sensibilità dello strumento (0.01 s):
+                <strong>Δt = max(e_a, 0.01 s)</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Esempio Reale Guidato -->
+          <div class="argon-card" style="background: #fafbfe; align-items: center; justify-content: space-around; text-align: center;">
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--argon-dark);">
+              📝 Come si Scrive il Risultato Finale:
+            </div>
+
+            <div style="background: #ffffff; border: 2px solid var(--argon-primary); border-radius: 12px; padding: 16px 20px; width: 100%; max-width: 340px; box-shadow: 0 4px 12px rgba(94,114,228,0.15);">
+              <div style="font-size: 0.78rem; color: #64748b; text-transform: uppercase; font-weight: 700;">Formula Ufficiale di Laboratorio:</div>
+              <div style="font-family: var(--font-mono); font-size: 1.6rem; font-weight: 800; color: var(--argon-primary); margin: 6px 0;">
+                T = (t̄ ± Δt) s
+              </div>
+              <div style="font-size: 0.82rem; color: #16a34a; font-weight: 700;">
+                Esempio: T = (2.02 ± 0.08) s
+              </div>
+            </div>
+
+            <div class="callout-box primary" style="margin-bottom: 0;">
+              <strong>🔍 Cosa significa per chi legge?</strong> Il tempo vero dell'oscillazione sta con grandissima probabilità tra <strong>1.94 s</strong> e <strong>2.10 s</strong>!
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 4: IL TRUCCO DELLE 10 OSCILLAZIONI
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="4" data-name="IL TRUCCO DEI 10 GIRI">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>💡 Il Colpo di Genio: Perché Cronometrare 10 Giri?</h1>
+          <p class="slide-subtitle">Il segreto matematico per abbattere l'errore del cronometro di un fattore 10</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge success">METROLOGIA AVANZATA</span>
+          <span class="pill-badge primary">DIVISIONE PER 10</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Confronto Serie A vs Serie B -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-danger); justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">⚠️ SERIE A: 1 Singola Oscillazione</span>
+                <span class="pill-badge danger">ERRORE PESANTE</span>
+              </div>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+                Misuri un giro solo: il pendolo dura circa <strong>2.0 secondi</strong>.
+                <br><br>
+                Il tuo tempo di reazione umano (circa <strong>0.20 secondi</strong>) pesa tantissimo su un tempo così breve!
+              </p>
+              <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; margin-top: 10px; text-align: center;">
+                <span style="font-size: 0.75rem; color: #991b1b; font-weight: 700;">Errore Percentuale e_p:</span>
+                <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: #dc2626; margin: 4px 0;">
+                  e_p = (0.2 s / 2.0 s) × 100% = 10%
+                </div>
+                <span style="font-size: 0.75rem; color: #7f1d1d;">Un'incertezza del 10% è considerata alta in fisica.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafbfe; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">✨ SERIE B: Blocco di 10 Oscillazioni</span>
+                <span class="pill-badge success">PRECISIONE ×10</span>
+              </div>
+              <p style="font-size: 0.83rem; color: var(--argon-text-muted); line-height: 1.45;">
+                Lasci oscillare il pendolo e conti <strong>10 giri completi</strong> prima di schiacciare STOP!
+                <br><br>
+                Il tempo totale misurato diventa circa <strong>20.0 secondi</strong>. Ma l'errore del dito lo fai solo alla partenza e all'arrivo!
+              </p>
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px; text-align: center;">
+                <span style="font-size: 0.75rem; color: #166534; font-weight: 700;">Errore Percentuale e_p:</span>
+                <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: #16a34a; margin: 4px 0;">
+                  e_p = (0.2 s / 20.0 s) × 100% = 1%
+                </div>
+                <span style="font-size: 0.75rem; color: #14532d;">L'errore percentuale è crollato dall'10% all'1%!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-box success" style="margin-top: 10px; margin-bottom: 0;">
+          <strong>🎯 Come si calcola poi il singolo periodo T?</strong> Basta dividere per 10:
+          <span style="font-family: var(--font-mono); font-weight: 800; margin-left: 8px;">T = t₁₀ / 10</span> e
+          <span style="font-family: var(--font-mono); font-weight: 800; margin-left: 8px;">ΔT = Δt₁₀ / 10</span>!
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 5: SIMULATORE INTERATTIVO DEL PENDOLO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="5" data-name="SIMULATORE PENDOLO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🎮 Simulatore Live: Fai Oscillare il Pendolo e Cronometra!</h1>
+          <p class="slide-subtitle">Avvia il pendolo armonico, schiaccia il cronometro al passaggio per il centro e compila la tabella</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">SIMULAZIONE ARMONICA</span>
+          <span class="pill-badge success">L = 1.00 m</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Console Pendolo & Cronometro -->
+          <div class="pendulum-bench">
+            <!-- Canvas o SVG Pendolo Animato -->
+            <div class="pendulum-canvas-wrap">
+              <svg width="280" height="170" viewBox="0 0 280 170" id="pendulum-svg">
+                <!-- Supporto stativo -->
+                <line x1="60" y1="15" x2="220" y2="15" stroke="#94a3b8" stroke-width="4"/>
+                <circle cx="140" cy="15" r="5" fill="#f8fafc"/>
+                
+                <!-- Filo e Massa oscillante -->
+                <g id="pendulum-rod" style="transform-origin: 140px 15px; transform: rotate(0deg);">
+                  <line x1="140" y1="15" x2="140" y2="135" stroke="#cbd5e1" stroke-width="2"/>
+                  <circle cx="140" cy="135" r="14" fill="#fb6340" stroke="#ea580c" stroke-width="2"/>
+                </g>
+
+                <!-- Linea del centro di equilibrio -->
+                <line x1="140" y1="15" x2="140" y2="160" stroke="#475569" stroke-width="1" stroke-dasharray="3,3"/>
+              </svg>
+            </div>
+
+            <!-- Display Cronometro -->
+            <div>
+              <div class="stopwatch-screen" id="sw-display">0.00 s</div>
+
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button class="btn-nav btn-nav-next" style="flex:1; justify-content: center;" id="sw-btn-toggle" onclick="toggleStopwatch()">
+                  ▶️ AVVIA
+                </button>
+                <button class="btn-nav btn-nav-prev" style="justify-content: center;" onclick="resetStopwatch()">
+                  🔄 RESET
+                </button>
+                <button class="btn-nav btn-nav-next" style="background:#2dce89; justify-content: center;" onclick="recordCurrentTime()">
+                  📥 Registra
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabella Live Misure Raccolte -->
+          <div class="argon-card" style="justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title">📋 Misure Registrate al Banco</span>
+                <span class="pill-badge primary" id="sw-count-badge">0 / 5 PROVE</span>
+              </div>
+
+              <div style="max-height: 140px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                  <thead>
+                    <tr style="border-bottom: 2px solid var(--argon-border); color: #64748b;">
+                      <th style="padding: 4px;">Prova</th>
+                      <th style="padding: 4px;">Tempo Letto</th>
+                      <th style="padding: 4px;">Stato</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sw-table-body" style="color: var(--argon-text-main);">
+                    <tr><td colspan="3" style="padding: 10px; text-align: center; color: #94a3b8;">Nessuna misura registrata. Fai partire il cronometro!</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Statistiche Live Calcolate -->
+            <div style="background: #fafbfe; border: 1.5px solid var(--argon-border); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                <span>Valor Medio (t̄):</span>
+                <strong style="color: var(--argon-primary); font-family: var(--font-mono);" id="sw-stat-mean">-- s</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Semidispersione (e_a):</span>
+                <strong style="color: #fb6340; font-family: var(--font-mono);" id="sw-stat-ea">-- s</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 6: L'ISOCRONISMO DEL PENDOLO
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="6" data-name="L'ISOCRONISMO DI GALILEO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>⛪ L'Isocronismo di Galileo: Cosa NON Influenza il Periodo?</h1>
+          <p class="slide-subtitle">La leggenda di Galileo Galilei che osservava il lampadario del Duomo contando i battiti del polso</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge info">GALILEO 1583</span>
+          <span class="pill-badge success">T = 2π√(L/g)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3" style="gap: 12px;">
+          <!-- Scoperta 1: La Massa non conta -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-primary);">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">⚖️</div>
+            <strong style="color: var(--argon-primary); font-size: 0.95rem;">1. La Massa NON Conta!</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 4px; line-height: 1.4;">
+              Che tu appenda una sfera di piombo da <strong>500 grammi</strong> o una pallina di legno da <strong>20 grammi</strong>, il tempo di oscillazione resta <strong>identico</strong>!
+              <br><br>
+              Tutti i corpi cadono con la stessa accelerazione di gravità g indipendentemente dal loro peso.
+            </p>
+          </div>
+
+          <!-- Scoperta 2: L'ampiezza -->
+          <div class="argon-card" style="border-top: 4px solid var(--argon-success); background: #fafbfe;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">📐</div>
+            <strong style="color: var(--argon-success); font-size: 0.95rem;">2. Piccoli Angoli (< 10°)</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 4px; line-height: 1.4;">
+              Se sposti il pendolo di 4° o di 8°, il periodo non cambia: è la celebre legge dell'<strong>ISOCRONISMO</strong>.
+              <br><br>
+              Facendo una traiettoria più lunga, il pendolo accelera di più e impiega esattamente lo stesso tempo per tornare al punto di partenza!
+            </p>
+          </div>
+
+          <!-- Scoperta 3: Solo la Lunghezza conta -->
+          <div class="argon-card" style="border-top: 4px solid #fb6340;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">📏</div>
+            <strong style="color: #fb6340; font-size: 0.95rem;">3. Conta SOLO la Lunghezza L!</strong>
+            <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 4px; line-height: 1.4;">
+              L'unico modo per far oscillare il pendolo più lentamente è <strong>allungare il filo</strong>!
+              <br><br>
+              Se vuoi raddoppiare il periodo (da 1 secondo a 2 secondi), devi quadruplicare la lunghezza del filo (da 25 cm a 100 cm)!
+            </p>
+          </div>
+        </div>
+
+        <div class="callout-box primary" style="margin-top: 10px; margin-bottom: 0;">
+          <strong>💡 Regola per il Laboratorio:</strong> Quando rilasci il peso, NON spingerlo mai! Sollevalo con un piccolo angolo e lascialo cadere con delicatezza.
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 7: COME SI COMPILA LA RELAZIONE 2
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="7" data-name="CALCOLO RELAZIONE 2">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>📝 Dati al Banco: Come si Compila la Relazione n° 2</h1>
+          <p class="slide-subtitle">Dalla tabella delle 10 prove al confronto dell'errore percentuale tra le due serie</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge primary">RELAZIONE 2</span>
+          <span class="pill-badge success">VOTO 2 DI LABORATORIO</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Tabella Misure Gruppo Reale -->
+          <div class="argon-card">
+            <div class="argon-card-header">
+              <span class="argon-card-title">📊 I Dati Reali Raccolti al Banco (L = 1.00 m)</span>
+              <span class="pill-badge primary">N = 10 PROVE</span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--argon-border); color: #64748b;">
+                  <th style="padding: 5px;">Grandezza Statistica</th>
+                  <th style="padding: 5px;">Serie A (1 Giro)</th>
+                  <th style="padding: 5px;">Serie B (10 Giri)</th>
+                </tr>
+              </thead>
+              <tbody style="color: var(--argon-text-main);">
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 5px;">Valore Minimo</td>
+                  <td style="padding: 5px; font-family: var(--font-mono);">1.89 s</td>
+                  <td style="padding: 5px; font-family: var(--font-mono);">19.92 s</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 5px;">Valore Massimo</td>
+                  <td style="padding: 5px; font-family: var(--font-mono);">2.13 s</td>
+                  <td style="padding: 5px; font-family: var(--font-mono);">20.24 s</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 5px; font-weight: 700;">Valor Medio Aritmetico</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-primary);">2.01 s</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700; color: #fb6340;">20.08 s</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 5px; font-weight: 700;">Semidispersione (e_a)</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700;">0.12 s</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700;">0.16 s</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--argon-border);">
+                  <td style="padding: 5px; font-weight: 700; color: #16a34a;">Periodo Calcolato T</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700; color: #16a34a;">2.01 ± 0.12 s</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 700; color: #16a34a;">2.01 ± 0.02 s</td>
+                </tr>
+                <tr>
+                  <td style="padding: 5px; font-weight: 800;">Errore Percentuale e_p</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 800; color: #dc2626;">6.0 %</td>
+                  <td style="padding: 5px; font-family: var(--font-mono); font-weight: 800; color: #16a34a;">0.8 %</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Conclusioni per il Voto -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="argon-card" style="border-left: 4px solid var(--argon-success); background: #f0fdf4;">
+              <span style="font-weight: 800; color: #166534; font-size: 0.95rem;">🏆 CONCLUSIONE PERFETTA DELLA RELAZIONE:</span>
+              <p style="font-size: 0.83rem; color: #14532d; margin-top: 6px; line-height: 1.45;">
+                <em>"Confrontando i dati sperimentali, il periodo medio calcolato nelle due serie coincide (T = 2.01 s). Tuttavia, la misura a blocchi di 10 oscillazioni ha permesso di abbattere l'errore percentuale dal 6.0% a meno dell'1%, riducendo l'impatto del tempo di reazione umano."</em>
+              </p>
+            </div>
+
+            <div class="argon-card" style="border-left: 4px solid var(--argon-primary);">
+              <span style="font-weight: 700; color: var(--argon-primary); font-size: 0.88rem;">📌 RICORDA LE CIFRE SIGNIFICATIVE:</span>
+              <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
+                L'incertezza ΔT = 0.016 s si arrotonda a <strong>1 sola cifra significativa</strong> (ΔT = 0.02 s) e il valor medio va scritto con lo stesso numero di decimali: <strong>(2.01 ± 0.02) s</strong>!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ──────────────────────────────────────────
+         SLIDE 8: SFIDA FINALE LIM
+         ────────────────────────────────────────── -->
+    <article class="slide-card" data-step="8" data-name="SFIDA LIM: IL METROLOGO">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>🏆 Sfida alla LIM: I 5 Quesiti del Maestro della Statistica!</h1>
+          <p class="slide-subtitle">Rispondete a squadre per sbloccare l'abilitazione alla stesura della Relazione 2</p>
+        </div>
+        <div class="slide-badges">
+          <span class="pill-badge warning">SFIDA A SQUADRE</span>
+          <span class="pill-badge success" id="quiz-score-badge">PUNTEGGIO: 0/5</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Box Domanda Corrente -->
+          <div class="argon-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="argon-card-header">
+                <span class="argon-card-title" id="quiz-question-num">DOMANDA 1 DI 5</span>
+                <span class="pill-badge primary" id="quiz-topic-tag">Errore Casuale</span>
+              </div>
+              <h2 id="quiz-question-text" style="font-size: 1.05rem; font-weight: 700; color: var(--argon-dark); line-height: 1.35; margin-bottom: 12px;">
+                Che cos'è l'errore casuale rispetto all'errore sistematico?
+              </h2>
+
+              <div id="quiz-options-container">
+                <!-- Generato da JS -->
+              </div>
+            </div>
+
+            <div id="quiz-explanation-box" class="callout-box info" style="display: none; margin-top: 8px; margin-bottom: 0;">
+              <!-- Spiegazione -->
+            </div>
+          </div>
+
+          <!-- Tabellone Risultati Finale -->
+          <div class="argon-card" style="background: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
+            <div style="font-size: 3.2rem; margin-bottom: 6px;" id="quiz-trophy-icon">🎯</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--argon-dark);" id="quiz-final-title">Pronti per la Sfida?</h3>
+            <p style="font-size: 0.86rem; color: var(--argon-text-muted); max-width: 360px; margin-top: 4px;" id="quiz-final-desc">
+              Toccate la risposta corretta sullo schermo della LIM. Chi ottiene almeno 4 punti su 5 è abilitato al massimo dei voti nella Relazione 2!
+            </p>
+
+            <div style="margin-top: 16px; width: 100%; max-width: 280px;">
+              <button class="btn-nav btn-nav-next" style="width: 100%; justify-content: center;" onclick="nextQuizQuestion()" id="btn-next-question">
+                Prossima Domanda →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER NAVIGATION & STEPPER
+       ══════════════════════════════════════════════ -->
+  <footer class="app-footer">
+    <div class="stepper-dots" id="stepper-container">
+      <button class="step-dot active" onclick="goToStep(1)" title="1. Il Mistero">1</button>
+      <button class="step-dot" onclick="goToStep(2)" title="2. Tempo di Reazione">2</button>
+      <button class="step-dot" onclick="goToStep(3)" title="3. Formule Statistica">3</button>
+      <button class="step-dot" onclick="goToStep(4)" title="4. Il Trucco dei 10 Giri">4</button>
+      <button class="step-dot" onclick="goToStep(5)" title="5. Simulatore Pendolo">5</button>
+      <button class="step-dot" onclick="goToStep(6)" title="6. Isocronismo">6</button>
+      <button class="step-dot" onclick="goToStep(7)" title="7. Calcolo Relazione">7</button>
+      <button class="step-dot" onclick="goToStep(8)" title="8. Sfida LIM">8</button>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-nav btn-nav-prev" id="btn-prev" onclick="changeStep(-1)" disabled>
+        <span>◄</span>
+        <span>Precedente</span>
+      </button>
+      <button class="btn-nav btn-nav-next" id="btn-next" onclick="changeStep(1)">
+        <span>Successiva</span>
+        <span>►</span>
+      </button>
+    </div>
+  </footer>
+
+  <div class="feedback-toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LOGICA PRESENTAZIONE & SIMULATORI (PENDOLO + RIFLESSI)
+   ═══════════════════════════════════════════════════════════════════ */
+
+let currentStep = 1;
+const totalSteps = 8;
+let limZoomLevel = 1.0;
+
+const slides = document.querySelectorAll('.slide-card');
+const dots = document.querySelectorAll('.step-dot');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const phaseStepBadge = document.getElementById('phase-step-badge');
+const phaseNameBadge = document.getElementById('phase-name-badge');
+
+function goToStep(step) {
+  if (step < 1 || step > totalSteps) return;
+  currentStep = step;
+
+  slides.forEach(slide => {
+    slide.classList.remove('active');
+    if (parseInt(slide.getAttribute('data-step')) === currentStep) {
+      slide.classList.add('active');
+      const stepName = slide.getAttribute('data-name');
+      phaseStepBadge.textContent = `PASSO ${currentStep} DI ${totalSteps}`;
+      phaseNameBadge.textContent = stepName;
+    }
+  });
+
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx + 1 === currentStep);
+  });
+
+  btnPrev.disabled = (currentStep === 1);
+  btnNext.disabled = (currentStep === totalSteps);
+  btnNext.innerHTML = (currentStep === totalSteps) ? '<span>Fine Lezione</span> <span>✓</span>' : '<span>Successiva</span> <span>►</span>';
+}
+
+function changeStep(delta) {
+  goToStep(currentStep + delta);
+}
+
+// Navigazione tastiera LIM
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+    if (currentStep < totalSteps) changeStep(1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    if (currentStep > 1) changeStep(-1);
+  }
+});
+
+// Zoom LIM
+document.getElementById('btn-zoom-in').addEventListener('click', () => {
+  if (limZoomLevel < 1.35) {
+    limZoomLevel += 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+document.getElementById('btn-zoom-out').addEventListener('click', () => {
+  if (limZoomLevel > 0.85) {
+    limZoomLevel -= 0.08;
+    document.documentElement.style.setProperty('--lim-zoom', limZoomLevel);
+    showToast(`Zoom LIM: ${Math.round(limZoomLevel * 100)}%`);
+  }
+});
+
+// Fullscreen
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 2200);
+}
+
+/* ──────────────────────────────────────────
+   TEST DEI RIFLESSI UMANI (PASSO 2)
+   ────────────────────────────────────────── */
+let reflexState = 'idle'; // 'idle', 'waiting', 'ready'
+let reflexStartTime = 0;
+let reflexTimerTimeout = null;
+
+function handleReflexClick() {
+  const box = document.getElementById('reflex-test-btn');
+  const mainText = document.getElementById('reflex-main-text');
+  const subText = document.getElementById('reflex-sub-text');
+
+  if (reflexState === 'idle') {
+    reflexState = 'waiting';
+    box.className = 'reflex-box waiting';
+    mainText.textContent = "ATTENDI...";
+    subText.textContent = "Preparati: appena diventa verde clicca!";
+    
+    // Attesa casuale tra 1.5 e 4 secondi
+    const delay = 1500 + Math.random() * 2500;
+    reflexTimerTimeout = setTimeout(() => {
+      reflexState = 'ready';
+      reflexStartTime = performance.now();
+      box.className = 'reflex-box ready';
+      mainText.textContent = "CLICCA ORA!";
+      subText.textContent = "Premi più veloce che puoi!";
+      playAudioBeep(880, 0.1);
+    }, delay);
+
+  } else if (reflexState === 'waiting') {
+    // Ha cliccato troppo presto!
+    clearTimeout(reflexTimerTimeout);
+    reflexState = 'idle';
+    box.className = 'reflex-box waiting';
+    mainText.textContent = "ANTICIPO!";
+    subText.textContent = "Hai cliccato prima del verde! Riprova.";
+    playAudioBeep(200, 0.25);
+
+  } else if (reflexState === 'ready') {
+    // Cliccato sul verde!
+    const reactionMs = Math.round(performance.now() - reflexStartTime);
+    reflexState = 'idle';
+    box.className = 'reflex-box waiting';
+    mainText.textContent = `${reactionMs} ms`;
+    subText.textContent = "Ottimo riflesso! Clicca per riprovare.";
+    document.getElementById('reflex-score-val').textContent = `${reactionMs} ms (${(reactionMs / 1000).toFixed(3)} s)`;
+    playAudioBeep(660, 0.15);
+    showToast(`Tempo di reazione: ${reactionMs} millisecondi!`);
+  }
+}
+
+/* ──────────────────────────────────────────
+   SIMULATORE PENDOLO & CRONOMETRO (PASSO 5)
+   ────────────────────────────────────────── */
+let swRunning = false;
+let swStartTime = 0;
+let swElapsed = 0;
+let swTimerInterval = null;
+let recordedTimes = [];
+
+// Animazione fisica continua del pendolo armonico
+let pendulumAngle = 0;
+let pendulumSpeed = 0.05;
+function animatePendulum() {
+  pendulumAngle += pendulumSpeed;
+  const maxTheta = 12; // 12 gradi
+  const currentTheta = maxTheta * Math.sin(pendulumAngle);
+  const rod = document.getElementById('pendulum-rod');
+  if (rod) {
+    rod.style.transform = `rotate(${currentTheta.toFixed(2)}deg)`;
+  }
+  requestAnimationFrame(animatePendulum);
+}
+
+function toggleStopwatch() {
+  const btn = document.getElementById('sw-btn-toggle');
+  const screen = document.getElementById('sw-display');
+
+  if (!swRunning) {
+    swRunning = true;
+    swStartTime = performance.now() - swElapsed;
+    btn.innerHTML = "⏸️ STOP";
+    btn.style.background = "#f5365c";
+    screen.classList.add('running');
+    playAudioBeep(600, 0.08);
+
+    swTimerInterval = setInterval(() => {
+      swElapsed = performance.now() - swStartTime;
+      const s = (swElapsed / 1000).toFixed(2);
+      screen.textContent = s + " s";
+    }, 20);
+  } else {
+    swRunning = false;
+    clearInterval(swTimerInterval);
+    btn.innerHTML = "▶️ AVVIA";
+    btn.style.background = "var(--argon-primary-gradient)";
+    screen.classList.remove('running');
+    playAudioBeep(400, 0.08);
+  }
+}
+
+function resetStopwatch() {
+  if (swRunning) toggleStopwatch();
+  swElapsed = 0;
+  document.getElementById('sw-display').textContent = "0.00 s";
+  playAudioBeep(300, 0.06);
+}
+
+function recordCurrentTime() {
+  const val = (swElapsed / 1000);
+  if (val < 0.2) {
+    showToast("Avvia prima il cronometro!");
+    return;
+  }
+  recordedTimes.push(parseFloat(val.toFixed(2)));
+  if (recordedTimes.length > 5) recordedTimes.shift();
+
+  updateRecordedTable();
+  playAudioBeep(520, 0.1);
+  showToast(`Registrato: ${val.toFixed(2)} s`);
+}
+
+function updateRecordedTable() {
+  const tbody = document.getElementById('sw-table-body');
+  const countBadge = document.getElementById('sw-count-badge');
+  countBadge.textContent = `${recordedTimes.length} / 5 PROVE`;
+
+  if (recordedTimes.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" style="padding: 10px; text-align: center; color: #94a3b8;">Nessuna misura registrata. Fai partire il cronometro!</td></tr>';
+    document.getElementById('sw-stat-mean').textContent = "-- s";
+    document.getElementById('sw-stat-ea').textContent = "-- s";
+    return;
+  }
+
+  let html = '';
+  let sum = 0;
+  let min = recordedTimes[0];
+  let max = recordedTimes[0];
+
+  recordedTimes.forEach((t, idx) => {
+    sum += t;
+    if (t < min) min = t;
+    if (t > max) max = t;
+    html += `<tr style="border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 4px; font-weight: 700;">Prova #${idx + 1}</td>
+      <td style="padding: 4px; font-family: var(--font-mono); font-weight: 700; color: var(--argon-primary);">${t.toFixed(2)} s</td>
+      <td style="padding: 4px; color: #16a34a; font-weight: 600;">✓ Acquisito</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+
+  const mean = sum / recordedTimes.length;
+  const ea = (max - min) / 2;
+  document.getElementById('sw-stat-mean').textContent = `${mean.toFixed(2)} s`;
+  document.getElementById('sw-stat-ea').textContent = `± ${Math.max(ea, 0.01).toFixed(2)} s`;
+}
+
+/* ──────────────────────────────────────────
+   SLIDE 8: SFIDA LIM INTERATTIVA (5 QUESITI)
+   ────────────────────────────────────────── */
+const quizQuestions = [
+  {
+    topic: "Errore Casuale",
+    q: "Che cos'è l'errore casuale rispetto all'errore sistematico?",
+    options: [
+      "È un errore commesso apposta dallo studente disattento.",
+      "È un'incertezza imprevedibile dovuta ai riflessi umani o all'ambiente, che a volte altera per eccesso e a volte per difetto.",
+      "È un errore che sposta la misura sempre esattamente della stessa quantità.",
+      "È un errore che si verifica solo sui cronometri rotti."
+    ],
+    correct: 1,
+    exp: "Esatto! L'errore casuale varia continuamente e imprevedibilmente attorno al valore vero: per questo il valor medio aritmetico riesce a compensarlo!"
+  },
+  {
+    topic: "Calcolo della Semidispersione",
+    q: "In 5 misure del tempo ottieni: [2.00 s, 2.08 s, 1.96 s, 2.04 s, 2.02 s]. Quanto vale la semidispersione massima e_a?",
+    options: [
+      "0.12 s",
+      "0.06 s  (cioè (2.08 - 1.96) / 2 = 0.12 / 2)",
+      "2.02 s",
+      "0.01 s"
+    ],
+    correct: 1,
+    exp: "Bravissimi! Valore massimo = 2.08 s, Valore minimo = 1.96 s. La differenza è 0.12 s; divisa per 2 dà esattamente e_a = 0.06 s!"
+  },
+  {
+    topic: "Il Trucco dei 10 Giri",
+    q: "Perché cronometrare 10 oscillazioni consecutive abbatte l'errore percentuale rispetto a cronometrarne una sola?",
+    options: [
+      "Perché il pendolo diventa più veloce al decimo giro.",
+      "Perché il ritardo del riflesso umano (circa 0.2 s) viene diluito su un tempo totale 10 volte più lungo (20 s invece di 2 s).",
+      "Perché il cronometro diventa più sensibile dopo 10 secondi.",
+      "Perché Galileo ha stabilito che si deve fare così per tradizione."
+    ],
+    correct: 1,
+    exp: "Grandioso! L'errore di reazione del dito lo fai solo alla partenza e all'arresto: distribuendolo su 20 secondi, l'incertezza percentuale crolla dal 10% all'1%!"
+  },
+  {
+    topic: "Isocronismo di Galileo",
+    q: "Se lasci invariata la lunghezza del filo (L = 1 metro) e raddoppi la massa appesa da 50 grammi a 100 grammi, cosa succede al periodo T?",
+    options: [
+      "Il periodo raddoppia perché il peso è doppio.",
+      "Il periodo si dimezza perché la sfera più pesante cade più in fretta.",
+      "Il periodo T rimane identico: la massa non influenza il tempo di oscillazione!",
+      "Il pendolo smette di oscillare."
+    ],
+    correct: 2,
+    exp: "Centro perfetto! È la prima legge del pendolo semplice: il periodo T dipende esclusivamente dalla lunghezza del filo L e dall'accelerazione di gravità g, NON dalla massa!"
+  },
+  {
+    topic: "Cifre Significative",
+    q: "Un calcolo fornisce t̄ = 2.0134 s e un'incertezza Δt = 0.024 s. Come deve essere scritto il risultato finale secondo le norme formali di fisica?",
+    options: [
+      "(2.0134 ± 0.024) s",
+      "(2.01 ± 0.02) s  (l'incertezza a 1 cifra significativa e la media arrotondata allo stesso decimale)",
+      "(2 ± 0) s",
+      "(2.013 ± 0.02) s"
+    ],
+    correct: 1,
+    exp: "Impeccabile! L'incertezza assoluta si esprime ad una sola cifra significativa (0.02 s) e la misura media viene troncata allo stesso ordine di grandezza (due decimali: 2.01 s)!"
+  }
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let answeredCurrent = false;
+
+function loadQuizQuestion(index) {
+  answeredCurrent = false;
+  const q = quizQuestions[index];
+  document.getElementById('quiz-question-num').textContent = `DOMANDA ${index + 1} DI ${quizQuestions.length}`;
+  document.getElementById('quiz-topic-tag').textContent = q.topic;
+  document.getElementById('quiz-question-text').textContent = q.q;
+
+  const container = document.getElementById('quiz-options-container');
+  container.innerHTML = '';
+
+  const expBox = document.getElementById('quiz-explanation-box');
+  expBox.style.display = 'none';
+
+  q.options.forEach((optText, optIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option-btn';
+    btn.innerHTML = `<span style="width:24px; height:24px; min-width:24px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; color:var(--argon-dark);">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+    btn.onclick = () => handleAnswer(optIdx, btn);
+    container.appendChild(btn);
+  });
+
+  const nextBtn = document.getElementById('btn-next-question');
+  nextBtn.textContent = (index === quizQuestions.length - 1) ? "Mostra Risultato & Abilitazione 🏁" : "Prossima Domanda →";
+}
+
+function handleAnswer(selectedIndex, clickedBtn) {
+  if (answeredCurrent) return;
+  answeredCurrent = true;
+
+  const q = quizQuestions[quizIndex];
+  const allBtns = document.querySelectorAll('.quiz-option-btn');
+  const expBox = document.getElementById('quiz-explanation-box');
+
+  if (selectedIndex === q.correct) {
+    quizScore++;
+    clickedBtn.classList.add('correct');
+    playAudioBeep(587, 0.2);
+    expBox.className = 'callout-box success';
+    expBox.innerHTML = `<strong>✓ RISPOSTA ESATTA!</strong> ${q.exp}`;
+  } else {
+    clickedBtn.classList.add('wrong');
+    allBtns[q.correct].classList.add('correct');
+    playAudioBeep(200, 0.35);
+    expBox.className = 'callout-box danger';
+    expBox.innerHTML = `<strong>✗ RISPOSTA SBAGLIATA!</strong> ${q.exp}`;
+  }
+
+  expBox.style.display = 'block';
+  document.getElementById('quiz-score-badge').textContent = `PUNTEGGIO: ${quizScore}/${quizQuestions.length}`;
+}
+
+function nextQuizQuestion() {
+  if (quizIndex < quizQuestions.length - 1) {
+    quizIndex++;
+    loadQuizQuestion(quizIndex);
+  } else {
+    const isPassed = quizScore >= 4;
+    document.getElementById('quiz-trophy-icon').textContent = isPassed ? "🏅" : "📚";
+    document.getElementById('quiz-final-title').textContent = isPassed ? "CLASSE ABILITATA AL VOTO 2 DI LABORATORIO!" : "REVISIONE RAPIDA STATISTICA";
+    document.getElementById('quiz-final-desc').innerHTML = `Punteggio ottenuto: <strong>${quizScore} su ${quizQuestions.length}</strong>.<br>` +
+      (isPassed ? 
+        "<span style='color:#2dce89; font-weight:700;'>🎉 COMPLIMENTI!</span> Avete dominato il trattamento statistico e la legge del pendolo. Siete pronti per redigere la <strong>Relazione n° 2</strong> al massimo dei voti!" : 
+        "Rivedete con il prof il calcolo della semidispersione e l'isocronismo prima di consegnare la relazione.");
+    
+    if (isPassed) {
+      playAudioBeep(523, 0.15);
+      setTimeout(() => playAudioBeep(659, 0.15), 160);
+      setTimeout(() => playAudioBeep(784, 0.3), 320);
+    }
+    showToast(`Sfida Completata: ${quizScore}/${quizQuestions.length} punti!`);
+  }
+}
+
+function playAudioBeep(freq, duration) {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  goToStep(1);
+  loadQuizQuestion(0);
+  animatePendulum();
+});
+</script>
+
+</body>
+</html>

@@ -370,22 +370,12 @@ const MATERIE = [
             desc: "Attività sperimentali, misure e protocolli di laboratorio per le classi prime.",
             chapters: [
               {
-                title: "🛡️ 0. Sicurezza (D.Lgs. 81/08) & Metrologia Base",
+                title: "🛡️ 00. Sicurezza (D.Lgs. 81/08) & Metrologia Base",
                 topics: [
                   {
                     title: "Lezione Interattiva LIM: Sicurezza D.Lgs. 81/08 & Metrologia Base (1h)",
                     desc: "Presentazione animata per LIM con design Argon: diritti e doveri (Art. 20), fungo rosso interattivo, VIM, le 7 unità SI 2019, convertitore scientifico e simulatore bilancia.",
                     url: "/fisica/giordano-bruno/sicurezza-metrologia.html"
-                  }
-                ]
-              },
-              {
-                title: "🧪 Laboratorio & Metodo Scientifico",
-                topics: [
-                  {
-                    title: "Guida Relazione & Prova 2: Periodo del Pendolo (1h)",
-                    desc: "Metodologia sperimentale completa: tempi di reazione, blocco di 5 oscillazioni, 12 misure con scarto max/min, tabelle m1/m2, confronto isocronismo e generatore PDF.",
-                    url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
               },
@@ -396,6 +386,21 @@ const MATERIE = [
                     title: "Lezione Interattiva LIM: Metro, Calibro e Micrometro (1h)",
                     desc: "Presentazione animata per LIM: confronto metrologico, simulatore interattivo del calibro con nonio ventesimale (0.05 mm), simulatore del micrometro Palmer (0.01 mm), calcolo errore percentuale e sfida finale a quiz.",
                     url: "/fisica/giordano-bruno/misure-lineari.html"
+                  }
+                ]
+              },
+              {
+                title: "⏱️ 02. Misure Ripetute e Statistica degli Errori (Pendolo)",
+                topics: [
+                  {
+                    title: "Lezione Interattiva LIM: Statistica degli Errori & Pendolo Semplice (Slide Deck)",
+                    desc: "Presentazione animata per LIM: tempo di reazione umano (test riflessi live in ms), formule statistiche (media e semidispersione), trucco delle 10 oscillazioni, simulatore live del pendolo armonico, isocronismo di Galileo e sfida finale.",
+                    url: "/fisica/giordano-bruno/statistica-pendolo.html"
+                  },
+                  {
+                    title: "Protocollo Sperimentale & Generatore Relazione 2 (Voto 2)",
+                    desc: "Metodologia sperimentale completa: 12 misure con scarto max/min, tabelle m1/m2, verifica isocronismo e compilatore guidato con export PDF.",
+                    url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
               }
@@ -409,7 +414,7 @@ const MATERIE = [
             chapters: [
               {
                 title: "🔥 01. Dilatazione Termica Lineare con Comparatore",
-                resources: [
+                topics: [
                   {
                     title: "🚀 Lezione Interattiva LIM: Dilatazione Lineare & Comparatore",
                     desc: "Presentazione animata 100vh per LIM: formula ΔL = λ·L₀·ΔT, simulatore del comparatore centesimale (0.01 mm), vapore, dilatazione di alluminio, rame e ferro, calcolo di λ e sfida finale a squadre.",
