@@ -446,11 +446,14 @@ body {
     </div>
 
     <div class="topbar-center">
+      <button class="lim-btn" id="btn-toggle-index" onclick="toggleIndexDrawer()" style="background: var(--argon-primary-light); color: var(--argon-primary); border-color: var(--argon-primary); font-weight: 700;">
+        📑 Indice delle Slide
+      </button>
       <div class="steps-indicator" id="steps-indicator">
         <div class="step-node active" data-step="1" title="1. Calore vs Temperatura">1</div>
         <div class="step-node" data-step="2" title="2. Il Calore Specifico">2</div>
         <div class="step-node" data-step="3" title="3. La Legge Fondamentale">3</div>
-        <div class="step-node" data-step="4" title="4. Il Calorimetro delle Miscele">4</div>
+        <div class="step-node" data-step="4" title="4. Il Calorimetro e Isolamento">4</div>
         <div class="step-node" data-step="5" title="5. Esperimento Live">5</div>
         <div class="step-node" data-step="6" title="6. Il Bilancio Termico">6</div>
         <div class="step-node" data-step="7" title="7. Laboratorio Dati & Relazione 2">7</div>
@@ -1024,16 +1027,56 @@ body {
         </div>
 
         <!-- Formula Risolutiva Inversa -->
-        <div class="argon-card" style="border-top: 4px solid var(--argon-success); padding: 10px 16px;">
+        <div class="argon-card" style="border-top: 4px solid var(--argon-success); padding: 8px 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <strong style="color: #15803d; font-size: 0.95rem;">🎯 La Formula della Relazione 2 (Ricavo di c<sub>x</sub>):</strong>
-              <p style="font-size: 0.8rem; color: var(--argon-text-muted);">
+              <strong style="color: #15803d; font-size: 0.92rem;">🎯 La Formula Risolutiva della Relazione 2 (Ricavo di c<sub>x</sub>):</strong>
+              <p style="font-size: 0.78rem; color: var(--argon-text-muted);">
                 Uguagliando Q<sub>ceduto</sub> = Q<sub>assorbito</sub> e isolando il calore specifico incognito c<sub>x</sub>:
               </p>
             </div>
-            <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 8px 18px; font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 800; color: #15803d;">
+            <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 8px; padding: 6px 16px; font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 800; color: #15803d;">
               c<sub>x</sub> = [ (m₁ + m<sub>e</sub>) · c<sub>H2O</sub> · (T<sub>e</sub> - T₁) ] / [ m₂ · (T₂ - T<sub>e</sub>) ]
+            </div>
+          </div>
+        </div>
+
+        <!-- Legenda Dettagliata di Tutti gli Elementi e degli Indici -->
+        <div class="argon-card" style="border-top: 3px solid var(--argon-primary); padding: 8px 12px; margin-top: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <strong style="color: var(--argon-dark); font-size: 0.84rem; display: flex; align-items: center; gap: 6px;">
+              <span>📖</span> Legenda Completa di Tutti gli Elementi e degli Indici della Formula:
+            </strong>
+            <span style="font-size: 0.72rem; color: var(--argon-primary); font-weight: 700;">Indice 1 = Acqua • Indice 2 = Metallo • Indice e = Equilibrio</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; line-height: 1.35;">
+            <!-- Indice 1: Acqua -->
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 5px 8px;">
+              <div style="color: #1d4ed8; font-weight: 700; margin-bottom: 2px;">🔵 INDICE 1 (Acqua Fredda):</div>
+              • <strong>m₁</strong>: Massa acqua fredda [kg]<br>
+              • <strong>T₁</strong>: Temp. iniziale acqua [°C]
+            </div>
+
+            <!-- Indice 2: Metallo -->
+            <div style="background: #fef2f2; border: 1px solid #fecdd3; border-radius: 6px; padding: 5px 8px;">
+              <div style="color: #b91c1c; font-weight: 700; margin-bottom: 2px;">🔴 INDICE 2 (Metallo Caldo):</div>
+              • <strong>m₂</strong>: Massa solido metallico [kg]<br>
+              • <strong>T₂</strong>: Temp. iniziale metallo [°C]
+            </div>
+
+            <!-- Indice e & x -->
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 5px 8px;">
+              <div style="color: #15803d; font-weight: 700; margin-bottom: 2px;">🟢 INDICI e & x:</div>
+              • <strong>T<sub>e</sub></strong>: Temp. EQUILIBRIO finale [°C]<br>
+              • <strong>c<sub>x</sub></strong>: Calore specifico incognito
+            </div>
+
+            <!-- Calorimetro & Costanti -->
+            <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 6px; padding: 5px 8px;">
+              <div style="color: #7e22ce; font-weight: 700; margin-bottom: 2px;">🟣 INDICI me & H2O:</div>
+              • <strong>m<sub>e</sub></strong>: Equivalente calorimetro [kg]<br>
+              • <strong>c<sub>H2O</sub></strong>: Calore acqua (4186 J/kg·K)
             </div>
           </div>
         </div>
@@ -1178,6 +1221,84 @@ body {
       </div>
     </article>
 
+    <!-- PANNELLO INDICE COMPLETO SLIDE (OVERLAY LIM) -->
+  <div id="index-drawer-modal" style="display: none; position: fixed; top: 58px; left: 0; right: 0; bottom: 52px; background: rgba(15, 28, 48, 0.7); backdrop-filter: blur(4px); z-index: 999; justify-content: center; align-items: center;">
+    <div style="background: #ffffff; border-radius: 14px; width: 90%; max-width: 820px; padding: 22px; box-shadow: 0 15px 35px rgba(0,0,0,0.25); border: 1px solid #cbd5e1;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+        <div>
+          <strong style="font-size: 1.15rem; color: var(--argon-dark);">📑 Indice Completo della Lezione (Tutti gli 8 Elementi)</strong>
+          <p style="font-size: 0.8rem; color: var(--argon-text-muted); margin-top: 2px;">Tocca una sezione per saltare direttamente alla slide desiderata</p>
+        </div>
+        <button class="lim-btn" onclick="toggleIndexDrawer()" style="font-size: 1rem; padding: 4px 10px;">✕ Chiudi</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(1)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">🌡️</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">1. Calore vs Temperatura</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">La differenza tra stato termico e flusso di energia (Tè vs Piscina)</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(2)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">🧪</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">2. Il Calore Specifico (c)</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Inerzia termica, il superpotere dell'acqua e gara dei 1000 J</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(3)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">📐</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">3. La Legge Fondamentale</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">La formula Q = m · c · ΔT con calcolatore interattivo LIM</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(4)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">🏺</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">4. Il Calorimetro & Isolamento</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Principio del sistema adiabatico e l'equivalente in acqua m_e</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(5)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">🔬</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">5. Esperimento Live al Banco</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Immersione cilindretto caldo nell'acqua fredda e curva Te</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(6)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">⚖️</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">6. Il Bilancio Termico (Q_ced = Q_ass)</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Conservazione dell'energia e legenda di TUTTI gli indici</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(7)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">📊</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">7. Laboratorio Dati & Relazione 2</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Inserimento misure, calcolo cx e identificazione metallo</p>
+          </div>
+        </div>
+
+        <div class="interactive-tab-btn" onclick="goToSlideAndClose(8)" style="padding: 10px 14px; justify-content: flex-start;">
+          <span style="font-size: 1.3rem;">🏆</span>
+          <div>
+            <strong style="color: var(--argon-dark); font-size: 0.88rem;">8. Sfida Finale LIM</strong>
+            <p style="font-size: 0.76rem; color: var(--argon-text-muted);">Quiz interattivo a squadre per testare l'intuito termico</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   </main>
 
   <!-- BOTTOM BAR -->
@@ -1242,6 +1363,19 @@ body {
     // ── GESTIONE NAVIGAZIONE SLIDES ───────────────────────────
     let currentSlide = 1;
     const totalSlides = 8;
+
+        // ── GESTIONE DRAWER INDICE DELLE SLIDE ────────────────────
+    function toggleIndexDrawer() {
+      const modal = document.getElementById('index-drawer-modal');
+      const isVisible = (modal.style.display === 'flex');
+      modal.style.display = isVisible ? 'none' : 'flex';
+      playBeep(isVisible ? 400 : 540);
+    }
+
+    function goToSlideAndClose(n) {
+      goToSlide(n);
+      document.getElementById('index-drawer-modal').style.display = 'none';
+    }
 
     function goToSlide(n) {
       if (n < 1 || n > totalSlides) return;
