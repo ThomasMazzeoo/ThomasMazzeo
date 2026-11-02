@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>00. Sicurezza (D.Lgs. 81/08) & Metrologia Base — ISS Giordano Bruno</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1188,7 +1191,7 @@ body::before {
             <div class="argon-card" style="border-left: 4px solid var(--argon-danger);">
               <strong style="color: var(--argon-danger); font-size: 0.9rem;">3. L'INCERTEZZA (L'ONESTÀ DELLO SCIENZIATO):</strong>
               <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Nessuno strumento è infinito. L'incertezza $\pm \Delta x$ dice a chi legge: <em>"Il valore vero sta sicuramente dentro questa forchetta!"</em>
+                Nessuno strumento è infinito. L'incertezza <strong>&plusmn;&Delta;x</strong> dice a chi legge: <em>"Il valore vero sta sicuramente dentro questa forchetta!"</em>
               </p>
             </div>
           </div>
@@ -1252,37 +1255,37 @@ body::before {
       <div class="slide-body">
         <!-- 7 Tessere Interattive -->
         <div class="grid-4" style="grid-template-columns: repeat(7, 1fr); gap: 8px;">
-          <div class="si-unit-card active" onclick="showSiDetail('m')">
+          <div class="si-unit-card active" data-unit="m" onclick="showSiDetail('m', this)">
             <div class="si-unit-symbol">m</div>
             <div class="si-unit-name">Metro</div>
             <div class="si-unit-quantity">Lunghezza</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('kg')">
+          <div class="si-unit-card" data-unit="kg" onclick="showSiDetail('kg', this)">
             <div class="si-unit-symbol">kg</div>
             <div class="si-unit-name">Chilogrammo</div>
             <div class="si-unit-quantity">Massa</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('s')">
+          <div class="si-unit-card" data-unit="s" onclick="showSiDetail('s', this)">
             <div class="si-unit-symbol">s</div>
             <div class="si-unit-name">Secondo</div>
             <div class="si-unit-quantity">Tempo</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('A')">
+          <div class="si-unit-card" data-unit="A" onclick="showSiDetail('A', this)">
             <div class="si-unit-symbol">A</div>
             <div class="si-unit-name">Ampere</div>
             <div class="si-unit-quantity">Corrente</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('K')">
+          <div class="si-unit-card" data-unit="K" onclick="showSiDetail('K', this)">
             <div class="si-unit-symbol">K</div>
             <div class="si-unit-name">Kelvin</div>
             <div class="si-unit-quantity">Temperatura</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('mol')">
+          <div class="si-unit-card" data-unit="mol" onclick="showSiDetail('mol', this)">
             <div class="si-unit-symbol" style="font-size: 1.35rem;">mol</div>
             <div class="si-unit-name">Mole</div>
             <div class="si-unit-quantity">Sostanza</div>
           </div>
-          <div class="si-unit-card" onclick="showSiDetail('cd')">
+          <div class="si-unit-card" data-unit="cd" onclick="showSiDetail('cd', this)">
             <div class="si-unit-symbol">cd</div>
             <div class="si-unit-name">Candela</div>
             <div class="si-unit-quantity">Luce</div>
@@ -1298,15 +1301,15 @@ body::before {
           <div class="grid-2">
             <div>
               <p style="font-size: 0.88rem; color: var(--argon-text-muted); line-height: 1.45;" id="si-detail-desc">
-                Un tempo era una sbarra di platino conservata a Parigi sotto tre campane di vetro. Oggi è definito sulla velocità della luce nel vuoto ($c = 299\,792\,458\text{ m/s}$)! A scuola usiamo righelli millimetrati, metri a nastro e il calibro a corsoio.
+                Un tempo era una sbarra di platino conservata a Parigi sotto tre campane di vetro. Oggi è definito sulla velocità della luce nel vuoto (<strong>c = 299 792 458 m/s</strong>)! A scuola usiamo righelli millimetrati, metri a nastro e il calibro a corsoio.
               </p>
             </div>
-            <div style="background: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid var(--argon-border); font-size: 0.82rem;">
-              <div style="font-weight: 700; color: var(--argon-dark); margin-bottom: 4px;">Cosa ci costruisci combinando i metri?</div>
-              <ul style="padding-left: 18px; color: var(--argon-text-muted);">
-                <li>Superficie di un'aula: $[Area] = m \times m = m^2$</li>
-                <li>Volume di una bottiglia: $[Volume] = m^3$ (o litri!)</li>
-                <li>Velocità di uno scooter: $[v] = m / s$ (metri al secondo)</li>
+            <div style="background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--argon-border); font-size: 0.82rem;">
+              <div style="font-weight: 700; color: var(--argon-dark); margin-bottom: 6px;" id="si-derived-title">Cosa ci costruisci combinando i Metri?</div>
+              <ul style="padding-left: 18px; color: var(--argon-text-muted); display: flex; flex-direction: column; gap: 4px;" id="si-derived-list">
+                <li>Superficie: <strong>Area = m × m = m²</strong></li>
+                <li>Volume: <strong>V = m³</strong> (oppure litri: 1 L = 1 dm³ = 0.001 m³)</li>
+                <li>Velocità: <strong>v = m/s</strong> (metri al secondo)</li>
               </ul>
             </div>
           </div>
@@ -1314,7 +1317,7 @@ body::before {
 
         <div class="callout-box warning" style="margin-top: 8px; margin-bottom: 0;">
           <strong>🚨 TRUCCO DA MEMORIZZARE (ERRORE TIPICO DA 4 IN PAGELLA):</strong><br>
-          L'unità fondamentale SI della massa è il <strong>CHILOGRAMMO ($kg$)</strong>, NON il grammo ($g$)! È l'unica unità che ha già la parola "chilo" nella sua definizione base.
+          L'unità fondamentale SI della massa è il <strong>CHILOGRAMMO (kg)</strong>, NON il grammo (g)! È l'unica unità che ha già la parola "chilo" nella sua definizione base.
         </div>
       </div>
     </article>
@@ -1463,7 +1466,7 @@ body::before {
             <div class="argon-card" style="border-left: 4px solid var(--argon-warning);">
               <strong style="color: var(--argon-warning); font-size: 0.9rem;">3. ERRORE DI ZERO (IL TRUCCO):</strong>
               <p style="font-size: 0.82rem; color: var(--argon-text-muted); margin-top: 2px;">
-                Se la bilancia segna $+0.15\text{ g}$ quando il piatto è vuoto, tutte le tue misure saranno truccate per eccesso! Bisogna azzerarla.
+                Se la bilancia segna +0.15 g quando il piatto è vuoto, tutte le tue misure saranno truccate per eccesso! Bisogna azzerarla.
               </p>
             </div>
 
@@ -1739,49 +1742,107 @@ const siData = {
   m: {
     title: "📏 METRO [m] — Per misurare lo Spazio",
     badge: "Velocità della Luce",
-    desc: "Un tempo era una sbarra metallica conservata a Parigi. Oggi è calcolato sulla velocità della luce ($c = 299\\,792\\,458\\text{ m/s}$)! A scuola usiamo righelli millimetrati, aste graduate e calibri ventesimali."
+    desc: "Un tempo era una sbarra di platino conservata a Parigi sotto tre campane di vetro. Oggi è calcolato con precisione assoluta sulla velocità della luce nel vuoto (<strong>c = 299 792 458 m/s</strong>)! A scuola usiamo righelli millimetrati, aste metriche e il calibro a corsoio.",
+    derivedTitle: "Cosa ci costruisci combinando i Metri?",
+    derivedList: [
+      "Superficie: <strong>Area = m × m = m²</strong> (es. i metri quadri della tua stanza)",
+      "Volume: <strong>V = m³</strong> (oppure litri: 1 L = 1 dm³ = 0.001 m³)",
+      "Velocità: <strong>v = m/s</strong> (metri al secondo: 50 km/h ≈ 13.9 m/s)"
+    ]
   },
   kg: {
     title: "⚖️ CHILOGRAMMO [kg] — Per misurare la Massa",
-    badge: "Costante di Planck",
-    desc: "La quantità di materia di un corpo! Attenzione: non confondere la massa (in kg) col peso (che è una forza e si misura in Newton). In laboratorio usiamo bilance elettroniche al centesimo di grammo."
+    badge: "Massa ≠ Peso",
+    desc: "È la quantità di materia contenuta in un corpo! Attenzione al trucco da non sbagliare: la <strong>massa</strong> si misura in kg e non cambia mai (neanche sulla Luna). Il <strong>peso</strong> invece è una forza di attrazione e si misura in Newton. In laboratorio usiamo bilance elettroniche al centesimo di grammo.",
+    derivedTitle: "Cosa ci costruisci con il Chilogrammo?",
+    derivedList: [
+      "Forza Peso: <strong>Newton [N] = kg · m/s²</strong> (la spinta verso il suolo per gravità)",
+      "Densità: <strong>d = massa / volume [kg/m³]</strong> (perché il sasso affonda e il legno galleggia)",
+      "Pressione: <strong>Pascal [Pa] = N/m²</strong> (la forza distribuita su una superficie)"
+    ]
   },
   s: {
     title: "⏱️ SECONDO [s] — Per misurare il Tempo",
-    badge: "Atomo di Cesio",
-    desc: "Il battito dell'universo! Misura la durata dei fenomeni. Nei nostri esperimenti usiamo cronometri digitali che sentono fino al centesimo di secondo ($0.01\\text{ s}$) o fotocellule laser intelligenti."
+    badge: "Orologio Atomico al Cesio",
+    desc: "Il battito dell'universo! Misura la durata e l'evoluzione di qualsiasi fenomeno. Nei nostri esperimenti usiamo cronometri digitali con sensibilità di un centesimo di secondo (<strong>0.01 s</strong>) o traguardi ottici a fotocellule laser.",
+    derivedTitle: "Cosa ci costruisci con il Secondo?",
+    derivedList: [
+      "Frequenza: <strong>Hertz [Hz] = 1 / s</strong> (quanti giri, battiti o onde al secondo)",
+      "Velocità: <strong>v = spazio / tempo [m/s]</strong> (rapporto tra metri e secondi)",
+      "Accelerazione: <strong>a = Δv / Δt [m/s²]</strong> (quanto rapido scatti da 0 a 100)"
+    ]
   },
   A: {
     title: "⚡ AMPERE [A] — Per la Corrente Elettrica",
-    badge: "Carica dell'Elettrone",
-    desc: "Quanti miliardi di elettroni corrono in un secondo dentro i fili di rame! Serve per far funzionare motori, luci e per caricare la batteria dello smartphone. Si misura con il multimetro (amperometro)."
+    badge: "Miliardi di Elettroni al Secondo",
+    desc: "Misura quanti miliardi di miliardi di elettroni corrono in un secondo dentro un filo di rame! Serve per accendere lampadine, far girare motori e ricaricare il tuo smartphone. Si misura con il multimetro digitale (amperometro).",
+    derivedTitle: "Cosa ci costruisci con l'Ampere?",
+    derivedList: [
+      "Carica Elettrica: <strong>Coulomb [C] = A · s</strong> (la quantità di carica totale)",
+      "Tensione: <strong>Volt [V]</strong> (la spinta della batteria nei circuiti)",
+      "Potenza: <strong>Watt [W] = Volt × Ampere</strong> (la potenza del caricabatterie dello smartphone)"
+    ]
   },
   K: {
     title: "🌡️ KELVIN [K] — Per la Temperatura Assoluta",
-    badge: "Zero Assoluto",
-    desc: "La temperatura vera dell'universo! A 0 Kelvin (cioè -273.15 °C) c'è lo zero assoluto: gli atomi smettono completamente di muoversi. Per passare da gradi Celsius a Kelvin basta aggiungere 273!"
+    badge: "Zero Assoluto (-273.15 °C)",
+    desc: "È la temperatura vera dell'universo! A <strong>0 Kelvin</strong> c'è lo 'Zero Assoluto': il freddo estremo in cui gli atomi si bloccano completamente. Per passare dai gradi Celsius ai Kelvin basta sommare 273: ad esempio 0 °C (ghiaccio) = 273.15 K, e 100 °C (acqua che bolle) = 373.15 K.",
+    derivedTitle: "Cosa ci colleghi con i Kelvin?",
+    derivedList: [
+      "Zero Assoluto: <strong>0 K = -273.15 °C</strong> (il limite fisico invalicabile del freddo)",
+      "Calore ed Energia: <strong>Joule [J]</strong> (l'energia termica delle particelle)",
+      "Dilatazione Termica: <strong>ΔL = λ · L₀ · ΔT</strong> (perché i binari si allungano col caldo)"
+    ]
   },
   mol: {
-    title: "🧪 MOLE [mol] — Il Pacchetto di Particelle",
-    badge: "Costante di Avogadro",
-    desc: "Gli atomi sono invisibili e minuscoli. Una 'mole' è un pacchetto enorme che contiene sempre lo stesso numero gigante di particelle: 602 mila miliardi di miliardi!"
+    title: "🧪 MOLE [mol] — Il Super-Pacco di Particelle",
+    badge: "602 Mila Miliardi di Miliardi",
+    desc: "Gli atomi sono microscopici e invisibili: non puoi contarli a mano. Una mole è una confezione gigante convenzionale che contiene sempre lo stesso numero fisso di particelle (il numero di Avogadro: <strong>6.022 × 10²³</strong>). È come dire 'una dozzina', ma per gli atomi!",
+    derivedTitle: "Cosa ci colleghi con la Mole?",
+    derivedList: [
+      "Numero di Avogadro: <strong>N = 6.022 × 10²³ particelle</strong> per ogni mole",
+      "Massa Molare: <strong>M = g / mol</strong> (quanto pesa un pacco di atomi o molecole)",
+      "Legge dei Gas: <strong>P · V = n · R · T</strong> (la pressione e il volume dell'aria)"
+    ]
   },
   cd: {
     title: "💡 CANDELA [cd] — Per l'Intensità della Luce",
-    badge: "Luminosità Ottica",
-    desc: "Misura quanta luce emette una sorgente nella direzione dei nostri occhi. Una candela di cera normale accesa a 1 metro di distanza emette circa 1 Candela!"
+    badge: "Luce per l'Occhio",
+    desc: "Misura quanta luce emette una sorgente nella direzione dello sguardo. Prende il nome proprio da una candela comune di cera: a 1 metro di distanza una normale candela emette circa <strong>1 Candela</strong> di intensità luminosa!",
+    derivedTitle: "Cosa ci colleghi con la Candela?",
+    derivedList: [
+      "Flusso Luminoso: <strong>Lumen [lm]</strong> (quanta luce totale spara una lampadina LED)",
+      "Illuminamento: <strong>Lux [lx] = Lumen / m²</strong> (quanta luce colpisce il banco)",
+      "Sensibilità Visiva: il nostro occhio vede al meglio la luce giallo-verde (555 nm)"
+    ]
   }
 };
 
-function showSiDetail(unitKey) {
+function showSiDetail(unitKey, element) {
   document.querySelectorAll('.si-unit-card').forEach(c => c.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (element) {
+    element.classList.add('active');
+  } else {
+    const target = document.querySelector(`.si-unit-card[data-unit="${unitKey}"]`);
+    if (target) target.classList.add('active');
+  }
 
   const u = siData[unitKey];
   if (!u) return;
-  document.getElementById('si-detail-title').textContent = u.title;
-  document.getElementById('si-constant-badge').textContent = u.badge;
-  document.getElementById('si-detail-desc').innerHTML = u.desc;
+
+  const titleEl = document.getElementById('si-detail-title');
+  const badgeEl = document.getElementById('si-constant-badge');
+  const descEl = document.getElementById('si-detail-desc');
+  const derivedTitleEl = document.getElementById('si-derived-title');
+  const derivedListEl = document.getElementById('si-derived-list');
+
+  if (titleEl) titleEl.innerHTML = u.title;
+  if (badgeEl) badgeEl.textContent = u.badge;
+  if (descEl) descEl.innerHTML = u.desc;
+  if (derivedTitleEl) derivedTitleEl.textContent = u.derivedTitle;
+  if (derivedListEl) {
+    derivedListEl.innerHTML = u.derivedList.map(item => `<li>${item}</li>`).join('');
+  }
 }
 
 /* ──────────────────────────────────────────
@@ -2022,6 +2083,7 @@ function playAudioBeep(freq, duration) {
 document.addEventListener('DOMContentLoaded', () => {
   goToStep(1);
   loadQuizQuestion(0);
+  showSiDetail('m');
 });
 </script>
 
