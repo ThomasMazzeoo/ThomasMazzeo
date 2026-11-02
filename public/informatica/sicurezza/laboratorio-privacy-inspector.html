@@ -916,7 +916,34 @@
       }
       .print-table th { background: #f0f0f0; }
     }
-  </style>
+  
+    /* Toast feedback */
+    #toastNotice {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      z-index: 100000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #toastNotice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+</style>
 </head>
 <body>
 
@@ -941,11 +968,8 @@
     </div>
 
     <div class="top-header__right">
-      <button class="btn-action btn-action--print" onclick="window.print()" title="Stampa o Salva PDF">
-        🖨️ STAMPA / SALVA PDF
-      </button>
-      <button class="btn-action btn-action--download" onclick="exportTxtAudit()" title="Scarica file TXT">
-        💾 SCARICA AUDIT TXT
+      <button class="btn-action btn-action--download" onclick="downloadDirectPDF()" title="Scarica automaticamente il Report PDF">
+        📥 SALVA / SCARICA PDF
       </button>
     </div>
   </header>
@@ -975,15 +999,15 @@
       <!-- DATI STUDENTE -->
       <div class="student-card">
         <div class="field-group">
-          <label>Nome Studente</label>
-          <input type="text" id="studNome" placeholder="es. Mario" oninput="updateProgress()">
+          <label>Nome Studente <span style="color:#dc2626; font-weight:800;">* (Obbligatorio)</span></label>
+          <input type="text" id="studNome" placeholder="es. Mario" oninput="resetInputError(this); updateProgress()">
         </div>
         <div class="field-group">
-          <label>Cognome Studente</label>
-          <input type="text" id="studCognome" placeholder="es. Rossi" oninput="updateProgress()">
+          <label>Cognome Studente <span style="color:#dc2626; font-weight:800;">* (Obbligatorio)</span></label>
+          <input type="text" id="studCognome" placeholder="es. Rossi" oninput="resetInputError(this); updateProgress()">
         </div>
         <div class="field-group">
-          <label>Classe</label>
+          <label>Classe <span style="color:#dc2626; font-weight:800;">* (Obbligatorio)</span></label>
           <select id="studClasse" onchange="onClassChanged()">
             <option value="3L">Classe 3ª L (Informatica)</option>
             <option value="2H">Classe 2ª H (Informatica)</option>
@@ -1047,7 +1071,7 @@
               <button type="button" class="btn-verdict" id="v1_app" onclick="setVerdict(1, 'APPROVA')">✔️ APPROVA</button>
               <button type="button" class="btn-verdict" id="v1_rej" onclick="setVerdict(1, 'BOCCIA')">❌ BOCCIA</button>
             </div>
-            <textarea class="input-textarea" id="m1_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="updateProgress()"></textarea>
+            <textarea class="input-textarea" id="m1_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="resetInputError(this); updateProgress()"></textarea>
           </div>
         </div>
 
@@ -1078,7 +1102,7 @@
               <button type="button" class="btn-verdict" id="v2_app" onclick="setVerdict(2, 'APPROVA')">✔️ APPROVA</button>
               <button type="button" class="btn-verdict" id="v2_rej" onclick="setVerdict(2, 'BOCCIA')">❌ BOCCIA</button>
             </div>
-            <textarea class="input-textarea" id="m2_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="updateProgress()"></textarea>
+            <textarea class="input-textarea" id="m2_note" style="margin-top:6px;" placeholder="Motivazione: quale permesso è abusivo e perché?" oninput="resetInputError(this); updateProgress()"></textarea>
           </div>
         </div>
 
@@ -1108,7 +1132,7 @@
               <button type="button" class="btn-verdict" id="v3_app" onclick="setVerdict(3, 'APPROVA')">✔️ APPROVA</button>
               <button type="button" class="btn-verdict" id="v3_rej" onclick="setVerdict(3, 'BOCCIA')">❌ BOCCIA</button>
             </div>
-            <textarea class="input-textarea" id="m3_note" style="margin-top:6px;" placeholder="Motivazione: i permessi sono coerenti con lo scopo?" oninput="updateProgress()"></textarea>
+            <textarea class="input-textarea" id="m3_note" style="margin-top:6px;" placeholder="Motivazione: i permessi sono coerenti con lo scopo?" oninput="resetInputError(this); updateProgress()"></textarea>
           </div>
         </div>
       </div>
@@ -1278,7 +1302,7 @@
 
       <div class="field-group" style="margin-top:0.5rem;">
         <label>Domanda Analitica: Perché una comune app di giochi gratuiti ha un incentivo enorme a richiedere il GPS anche quando non si sta giocando?</label>
-        <textarea class="input-textarea" id="brokerReason" placeholder="Spiega il modello economico dei Data Broker basato sulla vendita dei dati di geolocalizzazione..." oninput="updateProgress()"></textarea>
+        <textarea class="input-textarea" id="brokerReason" placeholder="Spiega il modello economico dei Data Broker basato sulla vendita dei dati di geolocalizzazione..." oninput="resetInputError(this); updateProgress()"></textarea>
       </div>
     </section>
 
@@ -1386,7 +1410,7 @@
 
       <div class="field-group" style="margin-top:0.5rem;">
         <label>Regola Tecnica: Qual è la differenza fondamentale di sicurezza tra "Consenti sempre" e "Solo mentre usi l'app"?</label>
-        <textarea class="input-textarea" id="sanitizerRuleNote" placeholder="Spiega perché consentire l'accesso continuo in background azzera la privacy e drena la batteria..." oninput="updateProgress()"></textarea>
+        <textarea class="input-textarea" id="sanitizerRuleNote" placeholder="Spiega perché consentire l'accesso continuo in background azzera la privacy e drena la batteria..." oninput="resetInputError(this); updateProgress()"></textarea>
       </div>
     </section>
 
@@ -1405,12 +1429,9 @@
         <div class="chk-item" id="chkM4"><span class="chk-icon">⬜</span> Missione 4: Bonifica smartphone completata con principio del minimo privilegio</div>
       </div>
 
-      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
-        <button class="btn-action btn-action--print" style="padding:8px 16px; font-size:0.9rem;" onclick="window.print()">
-          🖨️ GENERA REPORT IN PDF A4
-        </button>
-        <button class="btn-action btn-action--download" style="padding:8px 16px; font-size:0.9rem;" onclick="exportTxtAudit()">
-          💾 SCARICA FILE DI AUDIT (.TXT)
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.6rem;">
+        <button class="btn-action btn-action--download" style="padding:10px 22px; font-size:1rem;" onclick="downloadDirectPDF()">
+          📥 SALVA / SCARICA REPORT PDF (A4)
         </button>
       </div>
     </section>
@@ -1793,84 +1814,91 @@
       document.getElementById('repSanRule').textContent = document.getElementById('sanitizerRuleNote').value.trim() || '(Nessuna spiegazione)';
     }
 
-    function exportTxtAudit() {
+    
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotice');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    function resetInputError(el) {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    }
+
+    function downloadDirectPDF() {
+      const nomeInput = document.getElementById('studNome');
+      const cognomeInput = document.getElementById('studCognome');
+      const classeInput = document.getElementById('studClasse');
+
+      const nome = nomeInput.value.trim();
+      const cognome = cognomeInput.value.trim();
+      const classe = classeInput.value.trim();
+
+      // VALIDAZIONE OBBLIGATORIA DI NOME, COGNOME E CLASSE
+      if (!nome || !cognome || !classe) {
+        alert('⚠️ Attenzione: Devi inserire obbligatoriamente NOME, COGNOME e CLASSE prima di poter scaricare il Report PDF!');
+        const target = !nome ? nomeInput : (!cognome ? cognomeInput : classeInput);
+        target.focus();
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.borderColor = '#dc2626';
+        target.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.25)';
+        return;
+      }
+
       syncPrintReport();
 
-      const nome = document.getElementById('studNome').value.trim() || 'Studente';
-      const cognome = document.getElementById('studCognome').value.trim() || 'Anonimo';
-      const classe = document.getElementById('studClasse').value;
-      const data = document.getElementById('studData').value || '--/--/----';
+      showToast('Generazione PDF in corso...');
 
-      const sep = '═'.repeat(64);
-      const line = '─'.repeat(64);
-      const nl = String.fromCharCode(10);
+      const cleanNome = nome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanCognome = cognome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanClasse = classe.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = `Report_Audit_Privacy_${cleanNome}_${cleanCognome}_${cleanClasse}.pdf`;
 
-      let txt = '';
-      txt += sep + nl;
-      txt += '   AUDIT DI SICUREZZA – PRIVACY INSPECTOR' + nl;
-      txt += "   «Caccia all'App Spia & Protocollo Bonifica Permessi»" + nl;
-      txt += sep + nl + nl;
+      const printEl = document.getElementById('printReportWrapper');
 
-      txt += `  REVISORE : ${nome} ${cognome}` + nl;
-      txt += `  CLASSE   : ${classe}` + nl;
-      txt += `  DATA     : ${data}` + nl;
-      txt += `  VALORE PROFILO DATA BROKER : ${document.getElementById('brokerValDisplay').textContent}` + nl + nl;
+      // Visualizza temporaneamente l'elemento di stampa per consentire a html2pdf di renderizzarlo
+      printEl.style.display = 'block';
+      printEl.style.position = 'fixed';
+      printEl.style.left = '0';
+      printEl.style.top = '0';
+      printEl.style.width = '210mm';
+      printEl.style.background = '#ffffff';
+      printEl.style.color = '#000000';
+      printEl.style.zIndex = '999999';
 
-      txt += sep + nl;
-      txt += '  MISSIONE 1 – BLUE TEAM: AUDIT APP STORE (FILTRO A 3 PASSI)' + nl;
-      txt += line + nl + nl;
+      const opt = {
+        margin: [8, 10, 8, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
 
-      txt += `  APP #001 ▸ Sveglia Ultra-Smart` + nl;
-      txt += `  Permessi: Rete Internet | Microfono | Posizione GPS` + nl;
-      txt += `  VERDETTO: ${VERDICTS[1] || 'Non valutata'}` + nl;
-      txt += `  MOTIVAZIONE: ${document.getElementById('m1_note').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += `  APP #002 ▸ Filtri Foto Anime` + nl;
-      txt += `  Permessi: Fotocamera | Memoria | Rubrica Contatti` + nl;
-      txt += `  VERDETTO: ${VERDICTS[2] || 'Non valutata'}` + nl;
-      txt += `  MOTIVAZIONE: ${document.getElementById('m2_note').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += `  APP #003 ▸ Mappa Sentieri Offline` + nl;
-      txt += `  Permessi: Posizione GPS | Memoria (Mappe Offline)` + nl;
-      txt += `  VERDETTO: ${VERDICTS[3] || 'Non valutata'}` + nl;
-      txt += `  MOTIVAZIONE: ${document.getElementById('m3_note').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += sep + nl;
-      txt += "  MISSIONE 2 – RED TEAM: L'APP ESCA (EVIL DEVELOPER)" + nl;
-      txt += line + nl + nl;
-      txt += `  A) NOME APP ESCA: ${document.getElementById('evilName').value.trim() || 'N/A'}` + nl;
-      txt += `  B) FUNZIONE DICHIARATA: ${document.getElementById('evilFunc').value.trim() || 'N/A'}` + nl;
-      txt += `  C) TESTO PROMPT ESCA: ${document.getElementById('evilBait').value.trim() || 'N/A'}` + nl;
-      txt += `  D) AUTO-SMASCHERAMENTO: ${document.getElementById('evilUnmask').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += sep + nl;
-      txt += "  MISSIONE 3 – L'ECONOMIA DEI DATA BROKER" + nl;
-      txt += line + nl + nl;
-      txt += `  VALORE ANNUO STIMATO: ${document.getElementById('brokerValDisplay').textContent}` + nl;
-      txt += `  MODELLO ECONOMICO: ${document.getElementById('brokerReason').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += sep + nl;
-      txt += '  MISSIONE 4 – BLUE TEAM: IL CHIRURGO DELLE IMPOSTAZIONI' + nl;
-      txt += line + nl + nl;
-      txt += `  Torcia SOS Flashlight   : ${document.getElementById('repSanTorcia').textContent}` + nl;
-      txt += `  Endless Runner 3D       : ${document.getElementById('repSanRunner').textContent}` + nl;
-      txt += `  Navigatore Urbano Live  : ${document.getElementById('repSanNav').textContent}` + nl;
-      txt += `  Social Photo Filter     : ${document.getElementById('repSanPhoto').textContent}` + nl;
-      txt += `  SPIEGAZIONE MINIMO PRIVILEGIO: ${document.getElementById('sanitizerRuleNote').value.trim() || 'N/A'}` + nl + nl;
-
-      txt += sep + nl;
-      txt += '  Laboratorio Privacy Inspector &bull; ISS Giordano Bruno' + nl;
-      txt += sep + nl;
-
-      const filename = `Audit_${nome.replace(/\\s+/g, '')}_${cognome.replace(/\\s+/g, '')}.txt`;
-      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      if (window.html2pdf) {
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(printEl).save().then(() => {
+            printEl.style.display = 'none';
+            printEl.style.position = '';
+            printEl.style.left = '';
+            printEl.style.top = '';
+            printEl.style.width = '';
+            printEl.style.zIndex = '';
+            showToast('✓ PDF scaricato automaticamente!');
+          }).catch(err => {
+            console.error('Errore durante la generazione html2pdf, ripiego su window.print():', err);
+            printEl.style.display = 'none';
+            window.print();
+          });
+        }, 120);
+      } else {
+        printEl.style.display = 'none';
+        window.print();
+      }
     }
   </script>
+  <div id="toastNotice"></div>
 </body>
 </html>
