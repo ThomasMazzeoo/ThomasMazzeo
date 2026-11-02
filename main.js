@@ -433,6 +433,16 @@ const MATERIE = [
             desc: "Attività sperimentali, termologia e simulazioni avanzate per le classi seconde.",
             chapters: [
               {
+                title: "🛡️ 00. Sicurezza Elettrica (CEI 64-8/SELV) & Rischio Termico",
+                topics: [
+                  {
+                    title: "Lezione Interattiva LIM: Sicurezza Elettrica e Rischio Termico (Accoglienza 2°)",
+                    desc: "Presentazione animata 100vh per LIM: norma CEI 64-8 e regime SELV (V < 24 V), simulatore scossa elettrica, corto circuito ed effetto Joule, uso corretto del multimetro (evitare la bruciatura del fusibile), calore latente del vapore a 100°C e i 4 comandamenti.",
+                    url: "/fisica/giordano-bruno/sicurezza-elettrica-termica.html"
+                  }
+                ]
+              },
+              {
                 title: "🔥 01. Dilatazione Termica Lineare con Comparatore",
                 topics: [
                   {
