@@ -358,22 +358,16 @@ const MATERIE = [
     sections: [
 
       {
-
         id: "iss-giordano-bruno",
-
         title: "ISS Giordano Bruno",
-
         icon: "🏫",
-
         desc: "Attività sperimentali, protocolli di laboratorio e relazioni scientifiche.",
-
         subsections: [
-
           {
             id: "giordano-bruno-prime",
             title: "1° classi",
             icon: "🧪",
-            desc: "Attività sperimentali, misure, vettori e protocolli di laboratorio per le classi prime.",
+            desc: "Attività sperimentali, misure e protocolli di laboratorio per le classi prime.",
             chapters: [
               {
                 title: "🧪 Laboratorio & Metodo Scientifico",
@@ -384,7 +378,30 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/relazione-laboratorio.html"
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            id: "giordano-bruno-seconde",
+            title: "2° classi",
+            icon: "📐",
+            desc: "Attività sperimentali e simulazioni avanzate per le classi seconde.",
+            chapters: []
+          }
+        ]
+      },
+      {
+        id: "esercizi-teoria",
+        title: "Esercizi Teoria",
+        icon: "📚",
+        desc: "Esercizi guidati LIM, verifiche e quesiti teorici di fisica per le classi prime e seconde.",
+        subsections: [
+          {
+            id: "esercizi-teoria-prime",
+            title: "1° classi",
+            icon: "🧪",
+            desc: "Grandezze scalari, vettori, metodi grafici, componenti cartesiane, forze ed equilibrio.",
+            chapters: [
               {
                 title: "🧭 1. Grandezze Scalari e Vettoriali (Distanza vs Spostamento)",
                 topics: [
@@ -553,15 +570,10 @@ const MATERIE = [
             ]
           },
           {
-
-            id: "giordano-bruno-seconde",
-
+            id: "esercizi-teoria-seconde",
             title: "2° classi",
-
             icon: "📐",
-
-            desc: "Attività sperimentali e simulazioni avanzate per le classi seconde.",
-
+            desc: "Lavoro ed energia, potenza, energia cinetica, conservazione e dissipazione.",
             chapters: [
               {
                 title: "⚡ Lavoro ed Energia (Test Pag. 362 - 363)",
@@ -714,13 +726,9 @@ const MATERIE = [
                 ]
               }
             ]
-
           }
-
         ]
-
       },
-
       {
 
         id: "iss-archimede",
