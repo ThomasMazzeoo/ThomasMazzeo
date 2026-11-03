@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 4: NetGuard — Navigazione e Reti | ISS Giordano Bruno</title>
+  <meta name="description" content="Laboratorio operativo di sicurezza delle reti: traffico in chiaro vs cifrato, HTTP vs HTTPS, attacchi Man-in-the-Middle (Evil Twin e Packet Sniffing), VPN e caso forense di studio.">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thomas Mazzeo — Didattica">
+  <meta property="og:title" content="Laboratorio 4: NetGuard — Navigazione e Reti">
+  <meta property="og:description" content="Laboratorio operativo: Wi-Fi pubblico, crittografia in transito, Man-in-the-Middle, VPN e difesa delle comunicazioni.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- html2pdf.js per esportazione PDF diretta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* ============================================================
+       RESET & BASE THEME (HIGH READABILITY, CLEAN WHITE/SLATE)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --border-focus: #0284c7;
+      --text-dark: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      
+      --blueteam: #1d4ed8;
+      --blueteam-dark: #1e40af;
+      --blueteam-light: #eff6ff;
+      --blueteam-border: #93c5fd;
+      
+      --redteam: #dc2626;
+      --redteam-dark: #991b1b;
+      --redteam-light: #fef2f2;
+      --redteam-border: #fca5a5;
+      
+      --purple: #7c3aed;
+      --purple-dark: #5b21b6;
+      --purple-light: #faf5ff;
+      --purple-border: #d8b4fe;
+      
+      --green: #059669;
+      --green-dark: #065f46;
+      --green-light: #ecfdf5;
+      --green-border: #86efac;
+      
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      padding-top: 68px; /* Spazio per la header fissa */
+    }
+
+    /* ============================================================
+       TOP HEADER (BARRA FISSA CON PROGRESSO & AZIONI)
+       ============================================================ */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .top-header__left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .header-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+    }
+
+    .badge-class {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid var(--primary-border);
+      text-transform: uppercase;
+    }
+
+    .top-header__center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 440px;
+      margin: 0 24px;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--green) 100%);
+      transition: width 0.3s ease;
+      border-radius: 999px;
+    }
+    .progress-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      min-width: 45px;
+    }
+
+    .top-header__right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-action--outline {
+      background: #ffffff;
+      border-color: var(--border);
+      color: var(--text-dark);
+    }
+    .btn-action--outline:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .btn-action--primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+    .btn-action--primary:hover {
+      background: var(--primary-dark);
+    }
+    .btn-action--green {
+      background: var(--green);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+    }
+    .btn-action--green:hover {
+      background: var(--green-dark);
+    }
+
+    /* ============================================================
+       MAIN CONTAINER & LAYOUT
+       ============================================================ */
+    .lab-container {
+      max-width: 1080px;
+      margin: 24px auto 80px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    /* ============================================================
+       STUDENT IDENTITY BAR (ANAGRAFICA & STATO CONSEGNA)
+       ============================================================ */
+    .student-bar {
+      border-top: 4px solid var(--primary);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      background: #ffffff;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .form-control {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      background: #fdfdfd;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      background: #ffffff;
+    }
+    .form-control::placeholder {
+      color: #94a3b8;
+    }
+
+    /* ============================================================
+       HERO / BRIEFING SECTION
+       ============================================================ */
+    .hero-banner {
+      background: linear-gradient(135deg, #0a1223 0%, #1e293b 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 28px 32px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+    .hero-banner::after {
+      content: "NETGUARD";
+      position: absolute;
+      right: -20px;
+      bottom: -25px;
+      font-size: 5.5rem;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.03);
+      font-family: var(--font-mono);
+      pointer-events: none;
+    }
+    .hero-tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(2, 132, 199, 0.2);
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      color: #38bdf8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      max-width: 820px;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .hero-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-pill__icon {
+      font-size: 1.3rem;
+    }
+    .hero-pill__text strong {
+      display: block;
+      color: #ffffff;
+      font-size: 0.85rem;
+    }
+    .hero-pill__text span {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* ============================================================
+       SECTION HEADERS & THEMATIC BANNERS
+       ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .section-header__title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .section-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--text-dark);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+    .section-num.blue { background: var(--blueteam); }
+    .section-num.green { background: var(--green); }
+    .section-num.red { background: var(--redteam); }
+    .section-num.amber { background: var(--amber); }
+    .section-num.purple { background: var(--purple); }
+
+    .callout {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout--info {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      color: #0369a1;
+    }
+    .callout--warn {
+      background: var(--amber-light);
+      border-left: 4px solid var(--amber);
+      color: #92400e;
+    }
+    .callout--danger {
+      background: var(--redteam-light);
+      border-left: 4px solid var(--redteam);
+      color: #991b1b;
+    }
+    .callout--success {
+      background: var(--green-light);
+      border-left: 4px solid var(--green);
+      color: #065f46;
+    }
+    .callout--purple {
+      background: var(--purple-light);
+      border-left: 4px solid var(--purple);
+      color: #5b21b6;
+    }
+
+    /* ============================================================
+       INTERACTIVE TOOL: LIVE PACKET SNIFFER (WIRESHARK SIMULATOR)
+       ============================================================ */
+    .terminal-window {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 16px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      font-family: var(--font-mono);
+    }
+    .terminal-topbar {
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .terminal-dot.r { background: #ef4444; }
+    .terminal-dot.y { background: #f59e0b; }
+    .terminal-dot.g { background: #10b981; }
+
+    .terminal-controls {
+      display: flex;
+      gap: 8px;
+    }
+    .term-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .term-btn:hover {
+      background: #374151;
+      color: #ffffff;
+    }
+    .term-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .terminal-body {
+      padding: 14px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      max-height: 220px;
+      overflow-y: auto;
+      color: #a7f3d0;
+    }
+    .pkt-row {
+      display: flex;
+      gap: 12px;
+      padding: 3px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+    .pkt-num { color: #64748b; width: 45px; flex-shrink: 0; }
+    .pkt-proto { width: 65px; font-weight: 700; flex-shrink: 0; }
+    .pkt-proto.http { color: #f87171; }
+    .pkt-proto.tls { color: #60a5fa; }
+    .pkt-proto.vpn { color: #a78bfa; }
+    .pkt-data { color: #e2e8f0; flex: 1; word-break: break-all; }
+    .pkt-alert {
+      color: #ef4444;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.15);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* ============================================================
+       COMPARE TABLES & MATRICES
+       ============================================================ */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: #f1f5f9;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      color: var(--text-dark);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      vertical-align: top;
+    }
+    .compare-table tr:nth-child(even) td {
+      background: #fdfdfd;
+    }
+    .compare-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* ============================================================
+       QUESTION & ANSWER BOXES
+       ============================================================ */
+    .answer-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 14px;
+    }
+    .answer-box__label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .answer-box__label .q-num {
+      background: var(--text-dark);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .answer-box__textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background: #f8fafc;
+      resize: vertical;
+      transition: all 0.2s;
+    }
+    .answer-box__textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      background: #ffffff;
+    }
+
+    /* ============================================================
+       SCENARIOS GRID (LAURA VS MARCO, SARA)
+       ============================================================ */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 14px 0;
+    }
+    @media (max-width: 768px) {
+      .scenario-grid { grid-template-columns: 1fr; }
+    }
+    .scenario-card {
+      border: 2px solid;
+      border-radius: 10px;
+      padding: 16px;
+      background: #ffffff;
+    }
+    .scenario-card--safe {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+    .scenario-card--unsafe {
+      border-color: #fca5a5;
+      background: #fef2f2;
+    }
+    .scenario-card__header {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .scenario-card--safe .scenario-card__header { color: #166534; }
+    .scenario-card--unsafe .scenario-card__header { color: #991b1b; }
+    .scenario-card__body {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text-body);
+    }
+
+    /* ============================================================
+       DIAGRAMMA INTERATTIVO MAN-IN-THE-MIDDLE
+       ============================================================ */
+    .mitm-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .mitm-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .mitm-node {
+      width: 140px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+    }
+    .mitm-node.victim {
+      border-color: #38bdf8;
+      background: #f0f9ff;
+    }
+    .mitm-node.hacker {
+      border-color: #f87171;
+      background: #fef2f2;
+    }
+    .mitm-node.server {
+      border-color: #4ade80;
+      background: #f0fdf4;
+    }
+    .mitm-node__icon { font-size: 2rem; }
+    .mitm-node__title { font-size: 0.85rem; font-weight: 800; }
+    .mitm-node__sub { font-size: 0.72rem; color: var(--text-muted); }
+
+    .mitm-pipe {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .mitm-pipe__line {
+      width: 60px;
+      height: 4px;
+      background: #cbd5e1;
+      position: relative;
+    }
+    .mitm-pipe.danger .mitm-pipe__line { background: #ef4444; }
+    .mitm-pipe.safe .mitm-pipe__line { background: #10b981; }
+
+    /* ============================================================
+       EVIL TWIN RADAR SCANNER
+       ============================================================ */
+    .radar-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .radar-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+    }
+    .radar-card.active {
+      border-color: var(--redteam);
+      background: #fff5f5;
+    }
+    .radar-ssid {
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .radar-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .badge-sec {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .badge-sec.open { background: #fee2e2; color: #dc2626; }
+    .badge-sec.wpa2 { background: #dbeafe; color: #1e40af; }
+    .badge-sec.wpa3 { background: #dcfce7; color: #15803d; }
+
+    /* ============================================================
+       QUIZ CARDS (PARTE C2)
+       ============================================================ */
+    .quiz-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 14px;
+    }
+    .quiz-card__scenario {
+      background: #f8fafc;
+      border-left: 3px solid var(--primary);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .quiz-card__question {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .quiz-option:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+    .quiz-option input[type="radio"] {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ============================================================
+       WI-FI PLACES GRID & RULES
+       ============================================================ */
+    .wifi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .wifi-cell {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .wifi-cell__badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #dc2626;
+      background: #fee2e2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .wifi-cell__icon { font-size: 1.8rem; }
+    .wifi-cell__name { font-weight: 800; font-size: 0.85rem; color: var(--text-dark); }
+    .wifi-cell__desc { font-size: 0.72rem; color: var(--text-muted); }
+
+    .rule-box {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+    .rule-box.danger {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      color: #9b2c2c;
+    }
+    .rule-box.success {
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      color: #22543d;
+    }
+    .rule-box__icon { font-size: 1.2rem; flex-shrink: 0; }
+    .rule-box__content strong { display: block; font-size: 0.88rem; margin-bottom: 2px; }
+
+    /* ============================================================
+       INTERACTIVE MATCHER TOOL (PARTE D1)
+       ============================================================ */
+    .matcher-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 14px 0;
+    }
+    @media (max-width: 768px) {
+      .matcher-grid { grid-template-columns: 1fr; }
+    }
+    .matcher-row {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .matcher-term {
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .matcher-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+    .matcher-select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      background: #f8fafc;
+    }
+    .matcher-select.correct { border-color: var(--green); background: #ecfdf5; color: var(--green); }
+    .matcher-select.wrong { border-color: var(--redteam); background: #fef2f2; color: var(--redteam); }
+
+    .matcher-defs {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .def-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .def-letter {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: var(--green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       AUTOEVALUATION GRID
+       ============================================================ */
+    .eval-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.85rem;
+    }
+    .eval-table th {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .eval-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .eval-table td:nth-child(2) {
+      text-align: left;
+    }
+
+    /* ============================================================
+       GLOSSARY ACCORDION / GRID
+       ============================================================ */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .glossary-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .glossary-card__term {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+    }
+    .glossary-card__def {
+      font-size: 0.8rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ============================================================
+       REPORT PREVIEW MODAL
+       ============================================================ */
+    .report-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .report-modal.active { display: flex; }
+    .report-modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .report-modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .report-modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .report-modal-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .report-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      background: #f1f5f9;
+    }
+    .report-modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* ============================================================
+       PRINT REPORT SHEET (A4 FORMAL FORMATTING)
+       ============================================================ */
+    .print-sheet {
+      background: #ffffff;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      font-size: 13px;
+      line-height: 1.5;
+      color: #0f172a;
+    }
+    .print-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .print-school {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+    .print-sub {
+      font-size: 0.8rem;
+      color: #475569;
+    }
+    .print-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      text-align: center;
+      margin: 12px 0 16px 0;
+    }
+    .print-info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .print-info-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    .print-info-table td.lbl {
+      background: #f8fafc;
+      font-weight: 700;
+      width: 25%;
+      color: #475569;
+    }
+    .print-section-title {
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      padding: 6px 10px;
+      font-weight: 800;
+      font-size: 13px;
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+    }
+    .print-qa {
+      margin-bottom: 10px;
+    }
+    .print-q {
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 12px;
+    }
+    .print-a {
+      background: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-top: 3px;
+      font-size: 12px;
+      color: #0f172a;
+      white-space: pre-wrap;
+      min-height: 28px;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 3000;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .toast-msg.show { display: flex; align-items: center; gap: 8px; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER FISSA -->
+  <header class="top-header">
+    <div class="top-header__left">
+      <a href="/#corsi-informatica" class="back-btn" title="Torna all'indice dei corsi">
+        <span>◄</span> CORSI INFORMATICA
+      </a>
+      <div class="header-tag">
+        <span>LABORATORIO 4</span>
+        <span class="badge-class" id="topClassBadge">3L / 2H / 2G</span>
+      </div>
+    </div>
+
+    <div class="top-header__center">
+      <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted);">PROGRESSO:</span>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">0%</span>
+    </div>
+
+    <div class="top-header__right">
+      <button class="btn-action btn-action--outline" onclick="openReportPreview()" title="Vedi anteprima relazione A4">
+        👁️ Anteprima Relazione
+      </button>
+      <button class="btn-action btn-action--green" onclick="downloadDirectPDF()" title="Genera ed esporta PDF A4">
+        📄 Scarica PDF
+      </button>
+      <button class="btn-action btn-action--primary" onclick="downloadTxtReport()" title="Scarica versione TXT">
+        💾 Salva TXT
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENITORE CENTRALE -->
+  <main class="lab-container">
+
+    <!-- ANAGRAFICA STUDENTE -->
+    <section class="card student-bar">
+      <div class="form-group">
+        <label for="studNome">Nome *</label>
+        <input type="text" id="studNome" class="form-control" placeholder="es. Mario" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studCognome">Cognome *</label>
+        <input type="text" id="studCognome" class="form-control" placeholder="es. Rossi" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studClasse">Classe *</label>
+        <select id="studClasse" class="form-control" onchange="onClassChanged(); updateProgress()">
+          <option value="3L RIM">3°L Relazioni Internazionali (RIM)</option>
+          <option value="2H AFM">2H Amministrazione Finanza Marketing</option>
+          <option value="2G AFM">2G Amministrazione Finanza Marketing</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="studPostazione">Postazione PC</label>
+        <input type="text" id="studPostazione" class="form-control" placeholder="es. Postazione 07" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studData">Data Attività</label>
+        <input type="date" id="studData" class="form-control" oninput="updateProgress()">
+      </div>
+    </section>
+
+    <!-- HERO BRIEFING -->
+    <section class="hero-banner">
+      <div class="hero-tagline">
+        <span>🛡️ Security Operations • Modulo 4</span>
+      </div>
+      <h1 class="hero-title">NetGuard: Navigazione Sicura, Wi-Fi Defense & Attacchi MitM</h1>
+      <p class="hero-subtitle">
+        Indagine operativa sulle vulnerabilità delle comunicazioni wireless: dal pericolo del traffico in chiaro su Wi-Fi pubblico all'anatomia dei certificati HTTPS, simulazione di attacchi Man-in-the-Middle ed Evil Twin, fino all'implementazione di tunnel VPN e protocolli difensivi aziendali.
+      </p>
+
+      <div class="hero-grid">
+        <div class="hero-pill">
+          <div class="hero-pill__icon">🔓</div>
+          <div class="hero-pill__text">
+            <strong>Traffico in Chiaro</strong>
+            <span>Sniffing pacchetti plaintext</span>
+          </div>
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill__icon">🔒</div>
+          <div class="hero-pill__text">
+            <strong>HTTP vs HTTPS</strong>
+            <span>Crittografia TLS & Lucchetto</span>
+          </div>
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill__icon">👤</div>
+          <div class="hero-pill__text">
+            <strong>Attacco MitM & Evil Twin</strong>
+            <span>Intercettazione in tempo reale</span>
+          </div>
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill__icon">🛡️</div>
+          <div class="hero-pill__text">
+            <strong>Difesa & VPN Tunnel</strong>
+            <span>Reti cellulari e cifratura totale</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBIETTIVI DIDATTICI -->
+    <section class="card" style="border-left: 4px solid var(--primary);">
+      <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin-bottom:8px;">
+        🎯 Obiettivi Didattici & Competenze del Laboratorio
+      </h3>
+      <ul style="padding-left:20px; font-size:0.88rem; line-height:1.7; color:var(--text-body);">
+        <li>Distinguere con precisione tecnica il <strong>traffico in chiaro (plaintext)</strong> dal <strong>traffico crittografato (ciphertext)</strong>.</li>
+        <li>Spiegare la differenza sostanziale tra <strong>HTTP</strong> ed <strong>HTTPS</strong> e decifrare esattamente cosa garantisce (e cosa non garantisce) il <strong>lucchetto 🔒</strong> nel browser.</li>
+        <li>Descrivere l'architettura e le dinamiche di un attacco <strong>Man-in-the-Middle (MitM)</strong> e le tecniche di falsificazione <strong>Evil Twin</strong>.</li>
+        <li>Mappare i <strong>rischi reali</strong> delle reti Wi-Fi aperte e applicare le contromisure ottimali (Hotspot personale 4G/5G, tunnel VPN, verifica dei certificati X.509).</li>
+        <li>Condurre l'analisi forense di un caso studio reale (Caso Sara) e redigere un rapporto tecnico formale d'incidente.</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================
+         PARTE A — TRAFFICO IN CHIARO VS CRITTOGRAFATO
+         ============================================================ -->
+    <section class="card" id="secA">
+      <div class="section-header">
+        <div class="section-header__title">
+          <div class="section-num blue">A</div>
+          <span>Parte A — Traffico in Chiaro vs. Traffico Crittografato</span>
+        </div>
+        <span class="badge-class">FONDAMENTI RETI</span>
+      </div>
+
+      <div class="callout callout--info">
+        <div style="font-size:1.4rem;">ℹ️</div>
+        <div>
+          <strong>Nota Concettuale Chiave:</strong> Quando le informazioni viaggiano su un cavo Ethernet o via radio (Wi-Fi), possono trovarsi in due stati fondamentali:
+          <ul style="margin-top:6px; padding-left:18px;">
+            <li><strong>Traffico in chiaro (Plaintext):</strong> i dati sono leggibili da chiunque si trovi sulla tratta. È come spedire una <em>cartolina postale</em>: il postino, chiunque passi davanti alla cassetta o condivida il furgone può leggerne il testo.</li>
+            <li><strong>Traffico crittografato (Ciphertext):</strong> i dati vengono cifrati con algoritmi crittografici prima di lasciare la scheda di rete. Solo chi possiede la chiave crittografica legittima può decifrarli. È come spedire un documento dentro una <em>busta blindata con lucchetto a combinazione</em>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TERMINALE INTERATTIVO PACKET SNIFFER -->
+      <div class="terminal-window">
+        <div class="terminal-topbar">
+          <div class="terminal-dots">
+            <div class="terminal-dot r"></div>
+            <div class="terminal-dot y"></div>
+            <div class="terminal-dot g"></div>
+          </div>
+          <span style="color:#94a3b8; font-size:0.75rem; font-weight:700;">WIRESHARK PACKET CAPTURE SIMULATOR (wlan0)</span>
+          <div class="terminal-controls">
+            <button class="term-btn active" id="btnFilterHttp" onclick="setSnifferFilter('http')">🔓 Wi-Fi Aperto (HTTP)</button>
+            <button class="term-btn" id="btnFilterHttps" onclick="setSnifferFilter('https')">🔒 Wi-Fi WPA3 (HTTPS)</button>
+            <button class="term-btn" id="btnFilterVpn" onclick="setSnifferFilter('vpn')">🛡️ Tunnel VPN Cifrato</button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminalLog">
+          <!-- Popolato dinamicamente via JS -->
+        </div>
+      </div>
+
+      <!-- DOMANDE ATTIVITÀ A1 -->
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">A1.1</span>
+          <span>Con parole tue, spiega la differenza tra traffico in chiaro e traffico crittografato. Usa l'analogia della cartolina postale e della busta con lucchetto per chiarire il concetto a un utente non tecnico.</span>
+        </div>
+        <textarea id="ansA1" class="answer-box__textarea" placeholder="Spiega l'analogia della cartolina (in chiaro) e della busta con lucchetto (crittografia)..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">A1.2</span>
+          <span>Se sei connesso a una rete Wi-Fi pubblica non protetta e invii una password in chiaro, chi potrebbe intercettarla e leggerla? Fai almeno due esempi concreti di 'soggetti' che possono catturare il pacchetto.</span>
+        </div>
+        <textarea id="ansA2" class="answer-box__textarea" placeholder="Indica almeno due soggetti (es. chi gestisce l'access point, chi usa software di sniffing sulla stessa rete...)" oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE B — HTTP VS HTTPS & IL LUCCHETTO
+         ============================================================ -->
+    <section class="card" id="secB">
+      <div class="section-header">
+        <div class="section-header__title">
+          <div class="section-num green">B</div>
+          <span>Parte B — HTTP vs. HTTPS & Anatomia del Lucchetto</span>
+        </div>
+        <span class="badge-class">SICUREZZA APPLICATIVA</span>
+      </div>
+
+      <div class="callout callout--success">
+        <div style="font-size:1.4rem;">🔒</div>
+        <div>
+          <strong>Cosa garantisce davvero il protocollo HTTPS?</strong>
+          <strong>HTTPS</strong> (HyperText Transfer Protocol Secure) combina il protocollo HTTP con la crittografia <strong>TLS</strong> (Transport Layer Security) e assicura 3 pilastri inviolabili:
+          <ol style="margin-top:6px; padding-left:18px;">
+            <li><strong>Confidenzialità / Privacy:</strong> nessun intermediario tra te e il server può leggere il contenuto della trasmissione.</li>
+            <li><strong>Integrità dei Dati:</strong> se un hacker tenta di alterare anche un solo byte durante il viaggio, la firma crittografica fallisce e la connessione si interrompe immediatamente.</li>
+            <li><strong>Autenticazione del Server:</strong> un Certificato Digitale X.509 firmato da una Certification Authority riconosciuta certifica che il sito a cui ti colleghi è autentico.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TABELLA COMPARATIVA -->
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Caratteristica di Sicurezza</th>
+            <th style="color:#dc2626;">❌ HTTP (Non Sicuro)</th>
+            <th style="color:#16a34a;">✅ HTTPS (Sicuro con TLS)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Dati in transito</strong></td>
+            <td>In chiaro, leggibili da chiunque</td>
+            <td>Crittografati simmetricamente con AES-256 / ChaCha20</td>
+          </tr>
+          <tr>
+            <td><strong>Password & Credenziali</strong></td>
+            <td>Inviate in chiaro, visibili con packet sniffer</td>
+            <td>Cifrate end-to-end fino al server web</td>
+          </tr>
+          <tr>
+            <td><strong>Verifica dell'Identità</strong></td>
+            <td>Nessuna verifica (facile impersonificazione)</td>
+            <td>Certificato digitale firmato da CA attendibile</td>
+          </tr>
+          <tr>
+            <td><strong>Integrità dei pacchetti</strong></td>
+            <td>Modificabili in volo (iniezione codice malevolo)</td>
+            <td>Garantita da algoritmi di hashing (SHA-256)</td>
+          </tr>
+          <tr>
+            <td><strong>Indicatore visivo browser</strong></td>
+            <td>Segnalato come 'Non sicuro' / triangolo rosso ⚠️</td>
+            <td>Icona del lucchetto 🔒 nella barra URL</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SCENARI LAURA VS MARCO -->
+      <div style="margin-top:18px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark); margin-bottom:8px;">
+          🔎 Analisi degli Scenari Operativi
+        </h4>
+        <div class="scenario-grid">
+          <div class="scenario-card scenario-card--safe">
+            <div class="scenario-card__header">
+              <span>🟢</span> SCENARIO 1 — LAURA A CASA
+            </div>
+            <div class="scenario-card__body">
+              Laura apre il browser sul suo smartphone, digita l'URL ufficiale della sua banca e verifica la presenza del <strong>lucchetto 🔒</strong> nella barra degli indirizzi. È connessa alla propria rete Wi-Fi domestica protetta da WPA3 con password robusta.
+            </div>
+          </div>
+
+          <div class="scenario-card scenario-card--unsafe">
+            <div class="scenario-card__header">
+              <span>🔴</span> SCENARIO 2 — MARCO IN STAZIONE
+            </div>
+            <div class="scenario-card__body">
+              Marco è in stazione ferroviaria in attesa del treno. Si connette alla rete Wi-Fi pubblica gratuita <code>"StazioneFreeWifi"</code> (senza password) e accede al portale web della sua banca, il cui indirizzo inizia con <code>http://</code> (senza la lettera 's').
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOMANDE ATTIVITÀ B1 -->
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">B1.3</span>
+          <span>Scenario 1 — Spiega perché la situazione di Laura è considerata sicura. Cosa garantisce esattamente la combinazione tra HTTPS e la rete Wi-Fi domestica?</span>
+        </div>
+        <textarea id="ansB3" class="answer-box__textarea" placeholder="Analizza la cifratura TLS del canale e la protezione della rete domestica..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">B1.4</span>
+          <span>Scenario 2 — Identifica TUTTI i fattori critici di rischio nella situazione di Marco (almeno due fattori distinti). Cosa potrebbe accadere ai suoi dati di accesso bancari?</span>
+        </div>
+        <textarea id="ansB4" class="answer-box__textarea" placeholder="Evidenzia la rete pubblica non protetta e il protocollo HTTP in chiaro privo di TLS..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">B1.5</span>
+          <span>Un sito che mostra il lucchetto 🔒 nella barra degli indirizzi è automaticamente un sito 'onesto', 'buono' e affidabile al 100%? Spiega dettagliatamente perché SÌ o perché NO (suggerimento: pensa ai siti di phishing con certificati gratuiti).</span>
+        </div>
+        <textarea id="ansB5" class="answer-box__textarea" placeholder="Spiega che il lucchetto certifica la cifratura della connessione, ma anche i criminali possono creare siti phishing con certificati HTTPS validi..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE C — ATTACCHI MAN-IN-THE-MIDDLE & EVIL TWIN
+         ============================================================ -->
+    <section class="card" id="secC">
+      <div class="section-header">
+        <div class="section-header__title">
+          <div class="section-num red">C</div>
+          <span>Parte C — Attacco Man-in-the-Middle (MitM) & Evil Twin</span>
+        </div>
+        <span class="badge-class" style="background:#fee2e2; color:#dc2626; border-color:#fca5a5;">RED TEAM AUDIT</span>
+      </div>
+
+      <div class="callout callout--danger">
+        <div style="font-size:1.4rem;">💀</div>
+        <div>
+          <strong>Anatomia di un attacco Man-in-the-Middle (MitM):</strong>
+          In un attacco MitM, l'hacker si inserisce furtivamente <em>nel mezzo</em> della comunicazione tra il tuo dispositivo e il server di destinazione. Il tuo smartphone crede di comunicare direttamente con il router legittimo, e il server crede di ricevere richieste dirette da te. In realtà, <strong>ogni singolo pacchetto transita prima sul dispositivo dell'attaccante</strong>, che può intercettarlo, duplicarlo o modificarlo prima di inoltrarlo.
+        </div>
+      </div>
+
+      <!-- SCHEMA INTERATTIVO MitM -->
+      <div class="mitm-container">
+        <div style="font-size:0.85rem; font-weight:800; color:var(--text-dark); margin-bottom:8px;">
+          📊 Diagramma di Flusso delle Comunicazioni in una Rete Compromessa
+        </div>
+
+        <div class="mitm-flow">
+          <div class="mitm-node victim">
+            <div class="mitm-node__icon">📱</div>
+            <div class="mitm-node__title">Tuo Smartphone</div>
+            <div class="mitm-node__sub">IP: 192.168.1.45</div>
+          </div>
+
+          <div class="mitm-pipe danger">
+            <span style="color:#dc2626;">Pacchetto HTTP</span>
+            <div class="mitm-pipe__line"></div>
+            <span>►</span>
+          </div>
+
+          <div class="mitm-node hacker">
+            <div class="mitm-node__icon">😈</div>
+            <div class="mitm-node__title">Hacker MitM</div>
+            <div class="mitm-node__sub">Evil Twin / ARP Spoofing</div>
+          </div>
+
+          <div class="mitm-pipe danger">
+            <span style="color:#dc2626;">Dati Intercettati</span>
+            <div class="mitm-pipe__line"></div>
+            <span>►</span>
+          </div>
+
+          <div class="mitm-node server">
+            <div class="mitm-node__icon">🌐</div>
+            <div class="mitm-node__title">Server Destinazione</div>
+            <div class="mitm-node__sub">Sito Web / Banca</div>
+          </div>
+        </div>
+
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          ⚠️ Su Wi-Fi pubblico aperto o con protocollo HTTP, l'hacker ha visibilità completa su sessioni, credenziali e token.
+        </p>
+      </div>
+
+      <!-- RADAR SCANNER EVIL TWIN -->
+      <div style="margin-top:18px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark); margin-bottom:8px;">
+          📡 Scanner Reti Wireless: Caccia all'Evil Twin (Gemello Malvagio)
+        </h4>
+        <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+          Clicca sulle reti rilevate per esaminare i parametri radio beacon e individuare l'Access Point canaglia (Rogue AP):
+        </p>
+
+        <div class="radar-card" onclick="inspectSsid('official')">
+          <div>
+            <div class="radar-ssid">
+              <span>📶</span> Aeroporto_WiFi_Official
+            </div>
+            <div class="radar-meta">BSSID: 00:25:9C:12:34:50 • Canale: 1 • Frequenza: 5 GHz</div>
+          </div>
+          <div>
+            <span class="badge-sec wpa2">WPA2-Enterprise (Autenticata)</span>
+          </div>
+        </div>
+
+        <div class="radar-card" onclick="inspectSsid('rogue')">
+          <div>
+            <div class="radar-ssid" style="color:#dc2626;">
+              <span>⚠️</span> Airport_Free_WiFi (Sospetta!)
+            </div>
+            <div class="radar-meta">BSSID: 02:00:00:AA:BB:CC • Canale: 6 • Frequenza: 2.4 GHz (Segnale: 99%)</div>
+          </div>
+          <div>
+            <span class="badge-sec open">APERTA / NESSUNA CIFRATURA</span>
+          </div>
+        </div>
+
+        <div id="ssidInspectBox" class="callout callout--warn" style="display:none;">
+          <div id="ssidInspectText"></div>
+        </div>
+      </div>
+
+      <!-- DOMANDE ATTIVITÀ C1 -->
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">C1.6</span>
+          <span>Descrivi con parole tue come funziona concretamente un attacco Man-in-the-Middle e la tecnica dell'Evil Twin. Perché la vittima tipicamente non si accorge minimamente di essere sotto attacco?</span>
+        </div>
+        <textarea id="ansC6" class="answer-box__textarea" placeholder="Spiega l'hotspot falso con nome identico a quello legittimo e l'inoltro trasparente del traffico..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">C1.7</span>
+          <span>Perché la crittografia HTTPS rende enormemente più complesso (ma non impossibile) un attacco Man-in-the-Middle? Cosa dovrebbe forzare l'attaccante per riuscire a leggere il traffico cifrato (es. avvisi di certificato non valido)?</span>
+        </div>
+        <textarea id="ansC7" class="answer-box__textarea" placeholder="Descrivi il ruolo dei certificati crittografici e l'errore del browser se l'hacker tenta di sostituirli..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <!-- QUIZ MULTIPLE CHOICE C2 -->
+      <div style="margin-top:20px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark); margin-bottom:10px;">
+          🎯 Attività C2 — Quiz a Scelta Multipla con Analisi dello Scenario
+        </h4>
+
+        <!-- QUIZ 1 -->
+        <div class="quiz-card">
+          <div class="quiz-card__scenario">
+            ☕ SCENARIO 1: Sei al bar. Ti connetti al Wi-Fi gratuito aperto "BarCentrale_Free" e apri l'app di Instagram per controllare i messaggi diretti.
+          </div>
+          <div class="quiz-card__question">Quale delle seguenti affermazioni è tecnicamente CORRETTA?</div>
+          <label class="quiz-option">
+            <input type="radio" name="qc1" value="A" onchange="updateProgress()">
+            <span><strong>A.</strong> Sei al 100% al sicuro perché Instagram impiega HTTPS nativo con certificate pinning.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc1" value="B" onchange="updateProgress()">
+            <span><strong>B.</strong> Sei totalmente spacciato perché chiunque sul Wi-Fi aperto leggerà le tue password in chiaro.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc1" value="C" onchange="updateProgress()">
+            <span><strong>C.</strong> Il rischio dipende: se il Wi-Fi non ha password E l'app non usa HTTPS il rischio è totale; con HTTPS il traffico è cifrato ma rimangono esposti i metadati DNS e l'IP di destinazione.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc1" value="D" onchange="updateProgress()">
+            <span><strong>D.</strong> Il Wi-Fi gratuito del bar è sempre garantito perché il gestore controlla i computer collegati.</span>
+          </label>
+        </div>
+
+        <!-- QUIZ 2 -->
+        <div class="quiz-card">
+          <div class="quiz-card__scenario">
+            🏧 SCENARIO 2: Devi effettuare un bonifico bancario urgente. Sei in un centro commerciale: hai a disposizione il 4G/5G della tua SIM ma vedi anche un Wi-Fi pubblico aperto ad alta velocità.
+          </div>
+          <div class="quiz-card__question">Quale comportamento garantisce il massimo livello di sicurezza operativa?</div>
+          <label class="quiz-option">
+            <input type="radio" name="qc2" value="A" onchange="updateProgress()">
+            <span><strong>A.</strong> Usare il Wi-Fi aperto perché ha più tacche ed è più veloce della rete cellulare.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc2" value="B" onchange="updateProgress()">
+            <span><strong>B.</strong> Connettersi al Wi-Fi aperto controllando solo che nella barra compaia il lucchetto.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc2" value="C" onchange="updateProgress()">
+            <span><strong>C.</strong> Disattivare il Wi-Fi e usare la rete cellulare 4G/5G, che stabilisce una connessione radio privata, autenticata e cifrata punto-punto con la cella dell'operatore telefonico.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc2" value="D" onchange="updateProgress()">
+            <span><strong>D.</strong> È assolutamente indifferente: le banche proteggono qualsiasi rete automaticamente.</span>
+          </label>
+        </div>
+
+        <!-- QUIZ 3 -->
+        <div class="quiz-card">
+          <div class="quiz-card__scenario">
+            ✈️ SCENARIO 3: In aeroporto trovi due reti: "AeroportoWiFi" (con password indicata sui monitor) e "Airport_Free" (aperta, senza password).
+          </div>
+          <div class="quiz-card__question">Quale rete presenta un'architettura più robusta e perché?</div>
+          <label class="quiz-option">
+            <input type="radio" name="qc3" value="A" onchange="updateProgress()">
+            <span><strong>A.</strong> "Airport_Free" perché senza password non ci sono file di configurazione da scaricare.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc3" value="B" onchange="updateProgress()">
+            <span><strong>B.</strong> "AeroportoWiFi" perché avere una chiave di sicurezza (WPA2/WPA3) attiva la cifratura a livello 2 (Data Link) tra il tuo dispositivo e l'Access Point, impedendo lo sniffing locale passivo.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc3" value="C" onchange="updateProgress()">
+            <span><strong>C.</strong> Sono esattamente identiche: la password serve solo a limitare il numero di utenti connessi contemporaneamente.</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="qc3" value="D" onchange="updateProgress()">
+            <span><strong>D.</strong> Le reti senza password sono preferibili perché non soffrono di vulnerabilità crittografiche.</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE D — I RISCHI REALI DEL WI-FI & PROTOCOLLI DI DIFESA
+         ============================================================ -->
+    <section class="card" id="secD">
+      <div class="section-header">
+        <div class="section-header__title">
+          <div class="section-num amber">D</div>
+          <span>Parte D — I Rischi Reali del Wi-Fi Pubblico & Protocolli di Difesa</span>
+        </div>
+        <span class="badge-class">CYBER DEFENSE</span>
+      </div>
+
+      <div class="callout callout--warn">
+        <div style="font-size:1.4rem;">📍</div>
+        <div>
+          <strong>I Luoghi a Massimo Rischio per l'Intercettazione Dati:</strong>
+          Nei luoghi pubblici ad alta densità di passaggio e anonimato, gli hacker possono posizionare sniffer o hotspot malevoli senza essere notati.
+        </div>
+      </div>
+
+      <!-- GRIGLIA LUOGHI A RISCHIO -->
+      <div class="wifi-grid">
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">ALTO RISCHIO</span>
+          <span class="wifi-cell__icon">🚉</span>
+          <span class="wifi-cell__name">Stazioni</span>
+          <span class="wifi-cell__desc">Folla anonima, sniffer passivi</span>
+        </div>
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">ALTO RISCHIO</span>
+          <span class="wifi-cell__icon">☕</span>
+          <span class="wifi-cell__name">Bar & Caffè</span>
+          <span class="wifi-cell__desc">Rete condivisa non isolata</span>
+        </div>
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">BERSAGLIO CRITICO</span>
+          <span class="wifi-cell__icon">✈️</span>
+          <span class="wifi-cell__name">Aeroporti</span>
+          <span class="wifi-cell__desc">Viaggiatori con carte e credenziali</span>
+        </div>
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">ALTO RISCHIO</span>
+          <span class="wifi-cell__icon">🛍️</span>
+          <span class="wifi-cell__name">Centri Commerciali</span>
+          <span class="wifi-cell__desc">Evil Twin e captive portal clonate</span>
+        </div>
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">ALTO RISCHIO</span>
+          <span class="wifi-cell__icon">🏥</span>
+          <span class="wifi-cell__name">Ospedali</span>
+          <span class="wifi-cell__desc">Reti guest prive di segmentazione</span>
+        </div>
+        <div class="wifi-cell">
+          <span class="wifi-cell__badge">ALTO RISCHIO</span>
+          <span class="wifi-cell__icon">🏨</span>
+          <span class="wifi-cell__name">Hotel & B&B</span>
+          <span class="wifi-cell__desc">Centinaia di utenti su stessa subnet</span>
+        </div>
+      </div>
+
+      <!-- I 7 COMANDAMENTI DELLA DIFESA DIGITALE -->
+      <div style="margin-top:18px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark); margin-bottom:10px;">
+          📋 I 7 Comandamenti di Sicurezza per la Navigazione Mobile
+        </h4>
+        
+        <div class="rule-box danger">
+          <span class="rule-box__icon">🚫</span>
+          <div class="rule-box__content">
+            <strong>1. MAI effettuare login su portali non crittografati</strong>
+            <span>Banca, posta, registro elettronico: se il sito è in HTTP, username e password transitano in chiaro sulla rete locale.</span>
+          </div>
+        </div>
+
+        <div class="rule-box danger">
+          <span class="rule-box__icon">🚫</span>
+          <div class="rule-box__content">
+            <strong>2. MAI fare acquisti online o digitare codici CVV di carte di credito</strong>
+            <span>I numeri delle carte di credito e i codici di sicurezza sono bersagli prioritari per i software di packet sniffing.</span>
+          </div>
+        </div>
+
+        <div class="rule-box danger">
+          <span class="rule-box__icon">🚫</span>
+          <div class="rule-box__content">
+            <strong>3. MAI collegarsi a reti 'Free' prive di autenticazione ufficiale</strong>
+            <span>Potrebbe trattarsi di una rete Evil Twin creata da un laptop o un modulo Raspberry Pi nelle vicinanze.</span>
+          </div>
+        </div>
+
+        <div class="rule-box success">
+          <span class="rule-box__icon">✅</span>
+          <div class="rule-box__content">
+            <strong>4. USA la rete dati 4G/5G per tutte le operazioni sensibili</strong>
+            <span>La connessione mobile cellulare è cifrata in aria tra il tuo smartphone e l'antenna radiobase (BTS) dell'operatore telefonico.</span>
+          </div>
+        </div>
+
+        <div class="rule-box success">
+          <span class="rule-box__icon">✅</span>
+          <div class="rule-box__content">
+            <strong>5. USA sempre una VPN affidabile se devi necessariamente usare Wi-Fi pubblici</strong>
+            <span>La VPN incapsula e cifra tutto il traffico uscente prima che tocchi il router locale, rendendo sterile qualsiasi intercettazione.</span>
+          </div>
+        </div>
+
+        <div class="rule-box success">
+          <span class="rule-box__icon">✅</span>
+          <div class="rule-box__content">
+            <strong>6. Ispeziona meticolosamente l'URL e la presenza del lucchetto 🔒</strong>
+            <span>Prima di inviare dati sensibili, controlla sempre che il dominio sia esatto (es. <code>bancanazionale.it</code> e non <code>banca-nazi0nale.it</code>).</span>
+          </div>
+        </div>
+
+        <div class="rule-box success">
+          <span class="rule-box__icon">✅</span>
+          <div class="rule-box__content">
+            <strong>7. Disattiva sempre la 'Connessione Automatica' alle reti Wi-Fi aperte</strong>
+            <span>Impedisce allo smartphone di connettersi autonomamente a reti ingannevoli che simulano SSID memorizzati in precedenza.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROFONDIMENTO VPN -->
+      <div class="callout callout--purple" style="margin-top:18px;">
+        <div style="font-size:1.5rem;">🔍</div>
+        <div>
+          <strong>Approfondimento Tecnico: Come Funziona il Tunnel VPN (Virtual Private Network)?</strong>
+          <p style="margin-top:4px; font-size:0.85rem; line-height:1.5;">
+            Senza VPN, i tuoi dati escono dal telefono e attraversano il router locale senza protezioni aggiuntive (visibili a chi gestisce la rete).<br>
+            <strong>Con una VPN attiva</strong>, il software sul tuo dispositivo crea un <strong>tunnel crittografato</strong> (IPsec, WireGuard o OpenVPN) verso un server remoto. Qualsiasi intercettatore sul Wi-Fi locale vedrà esclusivamente un flusso cifrato e incomprensibile: non potrà risalire né ai siti che visiti, né ai contenuti trasmessi.
+          </p>
+        </div>
+      </div>
+
+      <!-- ESERCIZIO ABBINAMENTO TERMINI (D1) -->
+      <div style="margin-top:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark);">
+            ✏️ Attività D1 — Matcher Interattivo dei Termini di Rete
+          </h4>
+          <button class="btn-action btn-action--outline" style="padding:4px 10px; font-size:0.75rem;" onclick="checkMatching()">
+            🔍 Verifica Risposte
+          </button>
+        </div>
+        <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+          Abbina ogni termine della colonna di sinistra (1–6) alla definizione corretta della colonna di destra (A–F) selezionando la lettera corrispondente:
+        </p>
+
+        <div class="matcher-grid">
+          <!-- Colonna Termini -->
+          <div>
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">1</span> <span>HTTPS</span></div>
+              <select id="match1" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">2</span> <span>Attacco MitM</span></div>
+              <select id="match2" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">3</span> <span>Evil Twin</span></div>
+              <select id="match3" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">4</span> <span>VPN</span></div>
+              <select id="match4" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">5</span> <span>Traffico in Chiaro</span></div>
+              <select id="match5" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+
+            <div class="matcher-row">
+              <div class="matcher-term"><span class="matcher-num">6</span> <span>TLS</span></div>
+              <select id="match6" class="matcher-select" onchange="updateProgress()">
+                <option value="">— Seleziona —</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Colonna Definizioni -->
+          <div class="matcher-defs">
+            <div class="def-item"><span class="def-letter">A</span> <span>Rete Wi-Fi fasulla creata da un hacker per impersonare un Access Point legittimo e ingannare le vittime.</span></div>
+            <div class="def-item"><span class="def-letter">B</span> <span>Protocollo applicativo che cifra la comunicazione web garantendo privacy, integrità e autenticazione.</span></div>
+            <div class="def-item"><span class="def-letter">C</span> <span>Tecnologia che crea un tunnel cifrato end-to-end per tutti i pacchetti generati dal dispositivo.</span></div>
+            <div class="def-item"><span class="def-letter">D</span> <span>Protocollo crittografico alla base di HTTPS (evoluzione moderna di SSL) per la negoziazione delle chiavi.</span></div>
+            <div class="def-item"><span class="def-letter">E</span> <span>Dati trasmessi senza alcuna cifratura, leggibili integralmente da chiunque intercetti il segnale di rete.</span></div>
+            <div class="def-item"><span class="def-letter">F</span> <span>Attacco in cui un soggetto terzo si interpone furtivamente tra client e server intercettando la sessione.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOMANDE ATTIVITÀ D2 -->
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">D2.8</span>
+          <span>Caso Pratico 1 — Sei in aeroporto: il tuo bagaglio è stato smarrito e devi accedere urgentemente al sito della compagnia aerea per aprire la pratica di reclamo. Il sito usa HTTPS. Hai a disposizione sia il Wi-Fi dell'aeroporto sia la connessione dati 4G/5G della tua SIM. Descrivi dettagliatamente la sequenza di azioni che esegui, passo dopo passo, per garantire la massima sicurezza.</span>
+        </div>
+        <textarea id="ansD8" class="answer-box__textarea" placeholder="Descrivi i passaggi: disattivare Wi-Fi, abilitare connessione dati cellulare 4G/5G, aprire browser, controllare URL e lucchetto..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">D2.9</span>
+          <span>Caso Pratico 2 — Un tuo amico afferma: «Io mi collego sempre al Wi-Fi del fast food e non mi è mai capitato nulla di strano, quindi è sicuro!». Come gli risponderesti per fargli comprendere i rischi reali? Utilizza nella tua risposta almeno 3 concetti tecnici affrontati in questo laboratorio (es. sniffing passivo, attacchi invisibili, raccolta dati).</span>
+        </div>
+        <textarea id="ansD9" class="answer-box__textarea" placeholder="Argomenta: l'assenza di sintomi evidenti non equivale a sicurezza, lo sniffing è un attacco passivo silenzioso, Evil Twin..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE E — SCENARIO INTEGRATO AVANZATO: CASO SARA
+         ============================================================ -->
+    <section class="card" id="secE">
+      <div class="section-header">
+        <div class="section-header__title">
+          <div class="section-num purple">E</div>
+          <span>Parte E — Scenario Integrato Avanzato: L'Incidente di Sara</span>
+        </div>
+        <span class="badge-class" style="background:#faf5ff; color:#7c3aed; border-color:#d8b4fe;">ANALISI FORENSE</span>
+      </div>
+
+      <div class="callout callout--danger">
+        <div style="font-size:1.4rem;">🔍</div>
+        <div>
+          <strong>Lo Scenario di Studio:</strong>
+          Sara, 17 anni, si trova nell'area ristoro di un affollato centro commerciale. Si connette alla rete Wi-Fi gratuita <code>"CentroMall_Free"</code> (rete aperta, senza password).
+          Apre il browser dello smartphone e naviga su <code>http://negozio-scarpe-trend.it</code> (protocollo HTTP non cifrato, contrassegnato con 'Non sicuro' dal browser) per acquistare delle scarpe in promozione. Compila il form d'ordine inserendo nome, cognome, indirizzo di spedizione e <strong>numero completo della carta di credito con data di scadenza e codice CVV</strong>.
+          A pochi tavoli di distanza, un criminale informatico ha un laptop aperto con un software di packet sniffing in ascolto sulla stessa rete. Tre ore più tardi, Sara riceve una notifica dalla banca: transazione sospetta di <strong>450,00 €</strong> eseguita su una piattaforma estera mai utilizzata prima.
+        </div>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-box__label">
+          <span class="q-num">E.1</span>
+          <span>Relazione Forense di Incidente: Redigi un rapporto strutturato che analizzi l'accaduto sviluppando obbligatoriamente tutti i seguenti 5 punti:</span>
+        </div>
+        <div style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px; line-height:1.5;">
+          1. <strong>Gli errori di Sara:</strong> elenca almeno 3 errori critici di comportamento commessi da Sara.<br>
+          2. <strong>Il vettore d'attacco:</strong> spiega tecnicamente come il packet sniffer ha potuto catturare i dati della carta.<br>
+          3. <strong>Lo sfruttamento dei dati:</strong> cosa ha fatto l'attaccante una volta ottenute le credenziali?<br>
+          4. <strong>Protocollo di risposta all'incidente:</strong> quali sono le 3 azioni immediate ed urgenti che Sara deve compiere adesso?<br>
+          5. <strong>Prevenzione futura:</strong> cosa avrebbe dovuto fare Sara per effettuare l'acquisto in totale sicurezza?
+        </div>
+        <textarea id="ansRelazione" class="answer-box__textarea" style="min-height:180px;" placeholder="Struttura la relazione affrontando ordinatamente i punti 1, 2, 3, 4 e 5..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <!-- AUTOVALUTAZIONE DELLO STUDENTE -->
+      <div style="margin-top:20px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-dark); margin-bottom:10px;">
+          📋 Griglia di Autovalutazione dello Studente
+        </h4>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:8px;">
+          Verifica con onestà intellettuale la qualità del lavoro svolto prima di generare la relazione:
+        </p>
+
+        <table class="eval-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th>Criterio di Valutazione</th>
+              <th style="width:70px;">SÌ</th>
+              <th style="width:70px;">NO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Ho spiegato chiaramente la differenza tra traffico in chiaro e crittografato usando l'analogia richiesta.</td>
+              <td><input type="radio" name="ev1" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev1" value="No" onchange="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Ho analizzato accuratamente entrambi gli scenari (Laura e Marco) individuando tutti i fattori di rischio.</td>
+              <td><input type="radio" name="ev2" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev2" value="No" onchange="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Ho descritto il funzionamento dell'attacco Man-in-the-Middle e la tecnica dell'Evil Twin.</td>
+              <td><input type="radio" name="ev3" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev3" value="No" onchange="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Ho completato il quiz a scelta multipla motivando le scelte operate.</td>
+              <td><input type="radio" name="ev4" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev4" value="No" onchange="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Ho svolto l'esercizio di abbinamento termini/definizioni verificando la correttezza tecnica.</td>
+              <td><input type="radio" name="ev5" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev5" value="No" onchange="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>La relazione finale sul Caso Sara affronta in maniera dettagliata tutti e 5 i punti richiesti.</td>
+              <td><input type="radio" name="ev6" value="Sì" onchange="updateProgress()"></td>
+              <td><input type="radio" name="ev6" value="No" onchange="updateProgress()"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         GLOSSARIO OPERATIVO DELLE RETI
+         ============================================================ -->
+    <section class="card">
+      <div class="section-header">
+        <div class="section-header__title">
+          <span>📖</span>
+          <span>Glossario Operativo di Cybersecurity per le Reti</span>
+        </div>
+        <span class="badge-class">RIFERIMENTO RAPIDO</span>
+      </div>
+
+      <div class="glossary-grid">
+        <div class="glossary-card">
+          <div class="glossary-card__term">HTTP</div>
+          <div class="glossary-card__def">HyperText Transfer Protocol. Protocollo applicativo stateless di base del Web. Trasmette dati e risorse interamente in chiaro senza alcuna cifratura nativa.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">HTTPS</div>
+          <div class="glossary-card__def">HTTP Secure. Versione protetta di HTTP che incapsula la comunicazione in un canale crittografato TLS. Assicura privacy, integrità e autenticazione.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">TLS</div>
+          <div class="glossary-card__def">Transport Layer Security. Protocollo crittografico alla base di HTTPS (evoluzione di SSL). Utilizza crittografia asimmetrica per l'handshake e simmetrica (AES) per i dati.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Traffico in Chiaro</div>
+          <div class="glossary-card__def">Dati trasmessi in plaintext senza algoritmo di cifratura. Chiunque abbia accesso al mezzo trasmissivo può leggerli immediatamente con un analizzatore di pacchetti.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Man-in-the-Middle (MitM)</div>
+          <div class="glossary-card__def">Attacco informatico in cui un cybercriminale si posiziona silenziosamente tra due interlocutori, potendo intercettare, alterare o iniettare dati nel flusso.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Evil Twin</div>
+          <div class="glossary-card__def">Access Point Wi-Fi contraffatto che trasmette un SSID identico o molto simile a quello di una rete pubblica legittima per indurre le vittime a connettersi.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Packet Sniffing</div>
+          <div class="glossary-card__def">Intercettazione passiva o attiva dei pacchetti di rete che attraversano un segmento LAN/WLAN mediante software dedicati (es. Wireshark, tcpdump).</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">VPN (Virtual Private Network)</div>
+          <div class="glossary-card__def">Rete privata virtuale che crea un tunnel cifrato end-to-end tra il computer e un server gateway, proteggendo il traffico anche su reti non fidate.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Certificato Digitale X.509</div>
+          <div class="glossary-card__def">Documento elettronico che associa una chiave pubblica all'identità verificata di un'azienda o dominio, emesso e firmato da una Certification Authority (CA).</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">WPA2 / WPA3</div>
+          <div class="glossary-card__def">Standard di sicurezza per reti Wi-Fi. WPA3 offre crittografia robusta anche su reti aperte (tramite OWE) e protezione contro attacchi dizionario offline (SAE).</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">4G / 5G Cellular Data</div>
+          <div class="glossary-card__def">Connessioni radio cellulari mobili che implementano nativamente autenticazione mutua basata su SIM e canali cifrati dedicati con le stazioni radio base dell'operatore.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-card__term">Certificate Pinning</div>
+          <div class="glossary-card__def">Tecnica di hardening che vincola un'applicazione mobile a fidarsi esclusivamente di uno specifico certificato, bloccando attacchi MitM anche con CA contraffatte.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL ANTEPRIMA RELAZIONE & AREA STAMPA A4
+       ============================================================ -->
+  <div class="report-modal" id="reportModal">
+    <div class="report-modal-content">
+      <div class="report-modal-header">
+        <div class="report-modal-title">
+          <span>📄 Anteprima Relazione Formale di Laboratorio (Formato A4)</span>
+        </div>
+        <button class="report-modal-close" onclick="closeReportPreview()">&times;</button>
+      </div>
+
+      <div class="report-modal-body">
+        
+        <!-- DOCUMENTO A4 UFFICIALE -->
+        <div class="print-sheet" id="printReportArea">
+          
+          <div class="print-header">
+            <div>
+              <div class="print-school">ITIS Giordano Bruno — Dipartimento di Informatica</div>
+              <div class="print-sub">Corso di Sicurezza Informatica • Modulo 4: Navigazione e Reti</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-family:var(--font-mono); font-size:11px; font-weight:700; color:#0284c7; background:#e0f2fe; padding:3px 8px; border-radius:4px;">
+                NETGUARD LAB 4
+              </span>
+            </div>
+          </div>
+
+          <div class="print-title">
+            RELAZIONE OPERATIVA: NAVIGAZIONE SICURA & WI-FI DEFENSE
+          </div>
+
+          <!-- TABELLA DATI STUDENTE -->
+          <table class="print-info-table">
+            <tr>
+              <td class="lbl">STUDENTE / OPERATORE:</td>
+              <td id="repPrintNomeCognome" style="font-weight:700;">—</td>
+              <td class="lbl">CLASSE:</td>
+              <td id="repPrintClasse" style="font-weight:700;">—</td>
+            </tr>
+            <tr>
+              <td class="lbl">POSTAZIONE PC:</td>
+              <td id="repPrintPostazione">—</td>
+              <td class="lbl">DATA SVOLGIMENTO:</td>
+              <td id="repPrintData">—</td>
+            </tr>
+          </table>
+
+          <!-- SEZIONE A -->
+          <div class="print-section-title">SEZIONE A — TRAFFICO IN CHIARO VS. CRITTOGRAFATO</div>
+          <div class="print-qa">
+            <div class="print-q">1. Differenza tra traffico in chiaro e crittografato (analogia cartolina/busta):</div>
+            <div class="print-a" id="repPrintA1">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">2. Soggetti che possono intercettare password in chiaro su Wi-Fi aperto:</div>
+            <div class="print-a" id="repPrintA2">—</div>
+          </div>
+
+          <!-- SEZIONE B -->
+          <div class="print-section-title">SEZIONE B — HTTP VS. HTTPS & VERIFICA DEL LUCCHETTO</div>
+          <div class="print-qa">
+            <div class="print-q">3. Scenario 1 (Laura a casa) — Garanzie di sicurezza:</div>
+            <div class="print-a" id="repPrintB3">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">4. Scenario 2 (Marco in stazione) — Fattori di rischio e conseguenze:</div>
+            <div class="print-a" id="repPrintB4">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">5. Affidabilità del lucchetto 🔒 e rischio siti phishing con certificato:</div>
+            <div class="print-a" id="repPrintB5">—</div>
+          </div>
+
+          <!-- SEZIONE C -->
+          <div class="print-section-title">SEZIONE C — ATTACCHI MAN-IN-THE-MIDDLE & EVIL TWIN</div>
+          <div class="print-qa">
+            <div class="print-q">6. Funzionamento dell'attacco MitM ed Evil Twin:</div>
+            <div class="print-a" id="repPrintC6">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">7. Ruolo di HTTPS nel contrasto al MitM:</div>
+            <div class="print-a" id="repPrintC7">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">Esito Quiz a Scelta Multipla:</div>
+            <div class="print-a" id="repPrintQuiz">—</div>
+          </div>
+
+          <!-- SEZIONE D -->
+          <div class="print-section-title">SEZIONE D — RISCHI WI-FI PUBBLICO & PROTOCOLLI DI DIFESA</div>
+          <div class="print-qa">
+            <div class="print-q">Esito Abbinamento Termini/Definizioni di Rete:</div>
+            <div class="print-a" id="repPrintMatcher">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">8. Procedura sicura per reclamo valigia smarrita in aeroporto:</div>
+            <div class="print-a" id="repPrintD8">—</div>
+          </div>
+          <div class="print-qa">
+            <div class="print-q">9. Argomentazione tecnica per l'amico al fast food:</div>
+            <div class="print-a" id="repPrintD9">—</div>
+          </div>
+
+          <!-- SEZIONE E -->
+          <div class="print-section-title">SEZIONE E — SCENARIO INTEGRATO FORENSE (CASO SARA)</div>
+          <div class="print-qa">
+            <div class="print-q">Rapporto Formale di Incidente (Punti 1, 2, 3, 4 e 5):</div>
+            <div class="print-a" id="repPrintRelazione">—</div>
+          </div>
+
+          <!-- GRIGLIA VALUTAZIONE DOCENTE -->
+          <div class="print-section-title">RUBRICA DI VALUTAZIONE DOCENTE (100 PUNTI COMPLESSIVI)</div>
+          <table class="print-info-table" style="margin-top:6px;">
+            <tr style="background:#f8fafc; font-weight:700;">
+              <td>Sezione / Indicatore</td>
+              <td style="text-align:center;">Max</td>
+              <td style="text-align:center;">Punti Assegnati</td>
+              <td>Note del Docente</td>
+            </tr>
+            <tr>
+              <td>Sezione A — Padronanza concetti crittografia in transito</td>
+              <td style="text-align:center;">15</td>
+              <td style="text-align:center;">/15</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Sezione B — Comprensione HTTP/HTTPS e limiti del lucchetto</td>
+              <td style="text-align:center;">20</td>
+              <td style="text-align:center;">/20</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Sezione C — Analisi MitM, Evil Twin e Quiz Tecnico</td>
+              <td style="text-align:center;">20</td>
+              <td style="text-align:center;">/20</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Sezione D — Applicazione contromisure, VPN e matcher</td>
+              <td style="text-align:center;">20</td>
+              <td style="text-align:center;">/20</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Sezione E — Rigore dell'analisi forense sul Caso Sara</td>
+              <td style="text-align:center;">25</td>
+              <td style="text-align:center;">/25</td>
+              <td></td>
+            </tr>
+            <tr style="font-weight:800; background:#f1f5f9;">
+              <td>VOTO COMPLESSIVO FINALE:</td>
+              <td style="text-align:center;">100</td>
+              <td style="text-align:center;">/100</td>
+              <td>Giudizio:</td>
+            </tr>
+          </table>
+
+          <div style="display:flex; justify-content:space-between; margin-top:24px; padding-top:10px; border-top:1px dashed #cbd5e1; font-size:11px;">
+            <div>Firma dello Studente: ____________________________</div>
+            <div>Firma del Docente: ____________________________</div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="report-modal-footer">
+        <button class="btn-action btn-action--outline" onclick="closeReportPreview()">Chiudi</button>
+        <button class="btn-action btn-action--green" onclick="downloadDirectPDF()">📄 Scarica PDF Ufficiale</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div class="toast-msg" id="toastMsg">
+    <span id="toastIcon">ℹ️</span>
+    <span id="toastText">Operazione completata con successo!</span>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // 1. INIZIALIZZAZIONE CLASSE DA URL ?classe=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramClasse = (urlParams.get('classe') || '').toLowerCase();
+    const selectClasse = document.getElementById('studClasse');
+    const topBadge = document.getElementById('topClassBadge');
+
+    if (paramClasse === '3l') {
+      selectClasse.value = '3L RIM';
+      topBadge.textContent = '3°L RIM';
+    } else if (paramClasse === '2h') {
+      selectClasse.value = '2H AFM';
+      topBadge.textContent = '2H AFM';
+    } else if (paramClasse === '2g') {
+      selectClasse.value = '2G AFM';
+      topBadge.textContent = '2G AFM';
+    }
+
+    // Data odierna di default
+    document.getElementById('studData').valueAsDate = new Date();
+
+    function onClassChanged() {
+      topBadge.textContent = selectClasse.value;
+    }
+
+    // 2. SIMULATORE WIRESHARK PACKET SNIFFER
+    const terminalLog = document.getElementById('terminalLog');
+    const snifferData = {
+      http: [
+        { num: '001', proto: 'HTTP', text: 'GET /login.php HTTP/1.1 (Host: negozio-scarpe.it)' },
+        { num: '002', proto: 'HTTP', text: 'POST /auth.php HTTP/1.1 [PLAIN TEXT PAYLOAD]' },
+        { num: '003', proto: 'HTTP', text: 'user=mario&amp;pass=<span class="pkt-alert">calcio1999</span>&amp;card=<span class="pkt-alert">4532-1100-2200-1234</span>&amp;cvv=<span class="pkt-alert">842</span>' },
+        { num: '004', proto: 'HTTP', text: 'HTTP/1.1 200 OK (Set-Cookie: session_id=abc123plaintext)' },
+        { num: '005', proto: 'HTTP', text: '⚠️ [SNIFFER ALERT] Credenziali e numeri carta catturati in chiaro!' }
+      ],
+      https: [
+        { num: '101', proto: 'TCP', text: 'SYN 192.168.1.45:54320 -> 104.22.4.15:443 [SYN]' },
+        { num: '102', proto: 'TLS', text: 'Client Hello (TLSv1.3, ALPN: h2, CipherSuite: TLS_AES_256_GCM_SHA384)' },
+        { num: '103', proto: 'TLS', text: 'Server Hello, Change Cipher Spec, Encrypted Extensions, Certificate' },
+        { num: '104', proto: 'TLS', text: 'Encrypted Application Data: <span style="color:#60a5fa;">7f 3a 9c b1 04 d8 e2 90 11 44 ac 99 fe</span>' },
+        { num: '105', proto: 'TLS', text: 'Encrypted Application Data: <span style="color:#60a5fa;">b4 12 ee 55 fa 09 81 d2 cc 33 00 78 ab</span>' },
+        { num: '106', proto: 'TLS', text: '🔒 [PAYLOAD PROTECTED] Nessun dato in chiaro visibile allo sniffer.' }
+      ],
+      vpn: [
+        { num: '201', proto: 'UDP', text: 'WireGuard Handshake Initiation (Port 51820 -> Gateway 185.220.101.5)' },
+        { num: '202', proto: 'UDP', text: 'WireGuard Handshake Response (Tunnel cifrato ChaCha20-Poly1305 attivo)' },
+        { num: '203', proto: 'VPN', text: 'ESP Encapsulated Payload: <span style="color:#c084fc;">99 a1 c4 ff 21 00 de ad be ef 77 12</span>' },
+        { num: '204', proto: 'VPN', text: 'ESP Encapsulated Payload: <span style="color:#c084fc;">34 e0 19 ba c8 71 52 aa 03 66 f1 89</span>' },
+        { num: '205', proto: 'VPN', text: '🛡️ [TUNNEL ATTIVO] Tutto il traffico del router è occultato.' }
+      ]
+    };
+
+    function renderTerminal(mode) {
+      const rows = snifferData[mode] || snifferData.http;
+      let html = '';
+      rows.forEach(r => {
+        const protoClass = r.proto.toLowerCase();
+        html += `<div class="pkt-row">
+          <span class="pkt-num">${r.num}</span>
+          <span class="pkt-proto ${protoClass}">${r.proto}</span>
+          <span class="pkt-data">${r.text}</span>
+        </div>`;
+      });
+      terminalLog.innerHTML = html;
+    }
+
+    function setSnifferFilter(mode) {
+      document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
+      if (mode === 'http') document.getElementById('btnFilterHttp').classList.add('active');
+      if (mode === 'https') document.getElementById('btnFilterHttps').classList.add('active');
+      if (mode === 'vpn') document.getElementById('btnFilterVpn').classList.add('active');
+      renderTerminal(mode);
+    }
+
+    renderTerminal('http');
+
+    // 3. RADAR SCANNER EVIL TWIN
+    function inspectSsid(type) {
+      const box = document.getElementById('ssidInspectBox');
+      const text = document.getElementById('ssidInspectText');
+      box.style.display = 'flex';
+
+      if (type === 'official') {
+        box.className = 'callout callout--success';
+        text.innerHTML = '<strong>✅ ACCESS POINT LEGITTIMO:</strong> La rete "AeroportoWiFi_Official" è gestita dall'aeroporto, trasmette su frequenza 5 GHz con canale non affollato ed impiega crittografia WPA2-Enterprise con autenticazione 802.1X.';
+      } else {
+        box.className = 'callout callout--danger';
+        text.innerHTML = '<strong>💀 ALLARME EVIL TWIN (ROGUE AP):</strong> La rete "Airport_Free_WiFi" è un clone malevolo! Nota il segnale anomalo al 99% (il rogue AP è vicinissimo a te), il BSSID contraffatto e l'assenza totale di password (rete aperta). Se ti connetti, l'attaccante controllerà il tuo gateway DNS e web!';
+      }
+    }
+
+    // 4. CHECK MATCHING INTERATTIVO
+    const matchSolutions = {
+      match1: 'B', // HTTPS -> Protocollo applicativo che cifra la comunicazione web
+      match2: 'F', // Attacco MitM -> Si interpone furtivamente tra client e server
+      match3: 'A', // Evil Twin -> Rete Wi-Fi fasulla creata per impersonare AP
+      match4: 'C', // VPN -> Crea un tunnel cifrato end-to-end
+      match5: 'E', // Traffico in chiaro -> Dati trasmessi senza cifratura
+      match6: 'D'  // TLS -> Protocollo crittografico alla base di HTTPS
+    };
+
+    function checkMatching() {
+      let correct = 0;
+      for (let i = 1; i <= 6; i++) {
+        const sel = document.getElementById(`match${i}`);
+        const val = sel.value;
+        sel.classList.remove('correct', 'wrong');
+        if (val === matchSolutions[`match${i}`]) {
+          sel.classList.add('correct');
+          correct++;
+        } else if (val !== '') {
+          sel.classList.add('wrong');
+        }
+      }
+      showToast(`🔍 Risultato Verifica: ${correct}/6 abbinamenti corretti!`, correct === 6 ? 'success' : 'warn');
+      updateProgress();
+    }
+
+    // 5. PROGRESS CALCULATION
+    function updateProgress() {
+      let score = 0;
+      let total = 0;
+
+      // Dati anagrafici (3)
+      ['studNome', 'studCognome', 'studClasse'].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim()) score++;
+      });
+
+      // Risposte aperte (8)
+      ['ansA1', 'ansA2', 'ansB3', 'ansB4', 'ansB5', 'ansC6', 'ansC7', 'ansD8', 'ansD9', 'ansRelazione'].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim().length > 15) score++;
+      });
+
+      // Quiz C2 (3)
+      ['qc1', 'qc2', 'qc3'].forEach(name => {
+        total++;
+        if (document.querySelector(`input[name="${name}"]:checked`)) score++;
+      });
+
+      // Matcher D1 (6)
+      for (let i = 1; i <= 6; i++) {
+        total++;
+        if (document.getElementById(`match${i}`).value) score++;
+      }
+
+      // Autovalutazione E (6)
+      for (let i = 1; i <= 6; i++) {
+        total++;
+        if (document.querySelector(`input[name="ev${i}"]:checked`)) score++;
+      }
+
+      const pct = Math.round((score / total) * 100);
+      document.getElementById('progressBarFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = pct + '%';
+    }
+
+    // 6. ANTEPRIMA RELAZIONE
+    function syncPrintReport() {
+      const nome = document.getElementById('studNome').value.trim() || '—';
+      const cognome = document.getElementById('studCognome').value.trim() || '—';
+      const classe = document.getElementById('studClasse').value;
+      const postazione = document.getElementById('studPostazione').value.trim() || 'Standard';
+      const data = document.getElementById('studData').value || new Date().toISOString().split('T')[0];
+
+      document.getElementById('repPrintNomeCognome').textContent = `${cognome} ${nome}`;
+      document.getElementById('repPrintClasse').textContent = classe;
+      document.getElementById('repPrintPostazione').textContent = postazione;
+      document.getElementById('repPrintData').textContent = data;
+
+      document.getElementById('repPrintA1').textContent = document.getElementById('ansA1').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintA2').textContent = document.getElementById('ansA2').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintB3').textContent = document.getElementById('ansB3').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintB4').textContent = document.getElementById('ansB4').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintB5').textContent = document.getElementById('ansB5').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintC6').textContent = document.getElementById('ansC6').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintC7').textContent = document.getElementById('ansC7').value.trim() || '[Nessuna risposta fornita]';
+
+      // Quiz choices
+      const q1 = document.querySelector('input[name="qc1"]:checked');
+      const q2 = document.querySelector('input[name="qc2"]:checked');
+      const q3 = document.querySelector('input[name="qc3"]:checked');
+      document.getElementById('repPrintQuiz').textContent = `Q1 (Bar Instagram): ${q1 ? q1.value : '—'} | Q2 (Bonifico Urgente): ${q2 ? q2.value : '—'} | Q3 (Wi-Fi Aeroporto): ${q3 ? q3.value : '—'}`;
+
+      // Matcher choices
+      const mArr = [];
+      for (let i = 1; i <= 6; i++) {
+        mArr.push(`${i}->${document.getElementById('match' + i).value || '—'}`);
+      }
+      document.getElementById('repPrintMatcher').textContent = mArr.join(' | ');
+
+      document.getElementById('repPrintD8').textContent = document.getElementById('ansD8').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintD9').textContent = document.getElementById('ansD9').value.trim() || '[Nessuna risposta fornita]';
+      document.getElementById('repPrintRelazione').textContent = document.getElementById('ansRelazione').value.trim() || '[Nessuna relazione fornita]';
+    }
+
+    function openReportPreview() {
+      syncPrintReport();
+      document.getElementById('reportModal').classList.add('active');
+    }
+
+    function closeReportPreview() {
+      document.getElementById('reportModal').classList.remove('active');
+    }
+
+    // 7. DIRECT PDF DOWNLOAD CON html2pdf
+    function downloadDirectPDF() {
+      const nomeInput = document.getElementById('studNome');
+      const cognomeInput = document.getElementById('studCognome');
+      const classeInput = document.getElementById('studClasse');
+
+      const nome = nomeInput.value.trim();
+      const cognome = cognomeInput.value.trim();
+      const classe = classeInput.value.trim();
+
+      if (!nome || !cognome || !classe) {
+        alert('⚠️ Attenzione: Devi inserire obbligatoriamente NOME, COGNOME e CLASSE prima di poter scaricare la Relazione PDF!');
+        const target = !nome ? nomeInput : (!cognome ? cognomeInput : classeInput);
+        target.focus();
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.borderColor = '#dc2626';
+        return;
+      }
+
+      syncPrintReport();
+      showToast('📄 Generazione PDF A4 in corso...', 'info');
+
+      const element = document.getElementById('printReportArea');
+      const cleanNome = nome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanCognome = cognome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanClasse = classe.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: `Relazione_Lab4_NetGuard_${cleanCognome}_${cleanNome}_${cleanClasse}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        showToast('✅ PDF scaricato con successo!', 'success');
+      }).catch(err => {
+        console.error(err);
+        showToast('⚠️ Errore nel salvataggio PDF. Prova a salvare in TXT.', 'warn');
+      });
+    }
+
+    // 8. SALVA SCHEDA TXT PER CLASSROOM
+    function downloadTxtReport() {
+      const nome = document.getElementById('studNome').value.trim() || 'Non Specificato';
+      const cognome = document.getElementById('studCognome').value.trim() || 'Non Specificato';
+      const classe = document.getElementById('studClasse').value;
+      const postazione = document.getElementById('studPostazione').value.trim() || 'Standard';
+      const data = document.getElementById('studData').value || new Date().toISOString().split('T')[0];
+
+      let txt = `======================================================================
+ITIS GIORDANO BRUNO — DIPARTIMENTO DI INFORMATICA
+RELAZIONE DI LABORATORIO: NETGUARD (NAVIGAZIONE E RETI)
+======================================================================
+STUDENTE:    ${cognome} ${nome}
+CLASSE:      ${classe}
+POSTAZIONE:  ${postazione}
+DATA:        ${data}
+MODULO:      Sicurezza Informatica 4 — Wi-Fi, Crittografia & Attacchi MitM
+======================================================================
+
+--- SEZIONE A: TRAFFICO IN CHIARO VS CRITTOGRAFATO ---
+Domanda 1 (Analogia cartolina vs busta con lucchetto):
+${document.getElementById('ansA1').value.trim()}
+
+Domanda 2 (Chi può intercettare su Wi-Fi aperto):
+${document.getElementById('ansA2').value.trim()}
+
+--- SEZIONE B: HTTP VS HTTPS & IL LUCCHETTO NEL BROWSER ---
+Domanda 3 (Analisi Scenario 1 - Laura a casa su HTTPS):
+${document.getElementById('ansB3').value.trim()}
+
+Domanda 4 (Analisi Scenario 2 - Marco in stazione su HTTP):
+${document.getElementById('ansB4').value.trim()}
+
+Domanda 5 (Il lucchetto garantisce affidabilità al 100%?):
+${document.getElementById('ansB5').value.trim()}
+
+--- SEZIONE C: ATTACCHI MAN-IN-THE-MIDDLE & EVIL TWIN ---
+Domanda 6 (Funzionamento MitM ed Evil Twin):
+${document.getElementById('ansC6').value.trim()}
+
+Domanda 7 (Come HTTPS contrasta il MitM):
+${document.getElementById('ansC7').value.trim()}
+
+Quiz C2 a scelta multipla:
+- Quiz 1 (Bar Instagram): ${document.querySelector('input[name="qc1"]:checked')?.value || 'Non risposto'}
+- Quiz 2 (Bonifico Bancario Urgente): ${document.querySelector('input[name="qc2"]:checked')?.value || 'Non risposto'}
+- Quiz 3 (Wi-Fi Aeroporto WPA2 vs Libero): ${document.querySelector('input[name="qc3"]:checked')?.value || 'Non risposto'}
+
+--- SEZIONE D: RISCHI WI-FI PUBBLICO & PROTOCOLLI DI DIFESA ---
+Abbinamento Termini/Definizioni (1-6):
+1. HTTPS -> ${document.getElementById('match1').value || '—'}
+2. MitM -> ${document.getElementById('match2').value || '—'}
+3. Evil Twin -> ${document.getElementById('match3').value || '—'}
+4. VPN -> ${document.getElementById('match4').value || '—'}
+5. Traffico in chiaro -> ${document.getElementById('match5').value || '—'}
+6. TLS -> ${document.getElementById('match6').value || '—'}
+
+Domanda 8 (Caso pratico valigia persa in aeroporto - procedura):
+${document.getElementById('ansD8').value.trim()}
+
+Domanda 9 (Argomentazione tecnica amico al McDonald's):
+${document.getElementById('ansD9').value.trim()}
+
+--- SEZIONE E: RAPPORTO DI INCIDENTE FORENSE (CASO SARA) ---
+${document.getElementById('ansRelazione').value.trim()}
+
+======================================================================
+FINE RELAZIONE NETGUARD — ITIS GIORDANO BRUNO
+`;
+
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      const cleanNome = nome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanCognome = cognome.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanClasse = classe.replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.download = `Relazione_Lab4_NetGuard_${cleanCognome}_${cleanNome}_${cleanClasse}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('💾 Scheda TXT salvata con successo!', 'success');
+    }
+
+    // 9. TOAST
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastMsg');
+      const icon = document.getElementById('toastIcon');
+      const text = document.getElementById('toastText');
+      text.textContent = msg;
+      icon.textContent = type === 'success' ? '✅' : (type === 'warn' ? '⚠️' : 'ℹ️');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+</html>
