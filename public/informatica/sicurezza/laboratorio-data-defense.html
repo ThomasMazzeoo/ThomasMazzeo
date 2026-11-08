@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 5: Data Defense — Sincronizzazione, Backup 3-2-1 & Zero-Day | IIS Archimede</title>
+  <meta name="description" content="Laboratorio operativo sulla sicurezza dei dati e incident response: Sincronizzazione vs Backup, simulatore Regola 3-2-1, ciclo Zero-Day e caso studio Ransomware con report PDF A4.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thomas Mazzeo — Didattica">
+  <meta property="og:title" content="Laboratorio 5: Data Defense — Sincronizzazione, Backup 3-2-1 & Zero-Day">
+  <meta property="og:description" content="Laboratorio operativo: trappola del sync, backup immutabile, regola 3-2-1, ciclo di vita Zero-Day e caso studio forense ransomware.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- html2pdf.js per esportazione PDF diretta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* ============================================================
+       RESET & THEME VARIABLES (HIGH READABILITY, SLATE / CLEAN)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --border-focus: #0284c7;
+      --text-dark: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+
+      --blueteam: #1d4ed8;
+      --blueteam-dark: #1e40af;
+      --blueteam-light: #eff6ff;
+      --blueteam-border: #93c5fd;
+
+      --redteam: #dc2626;
+      --redteam-dark: #991b1b;
+      --redteam-light: #fef2f2;
+      --redteam-border: #fca5a5;
+
+      --purple: #7c3aed;
+      --purple-dark: #5b21b6;
+      --purple-light: #faf5ff;
+      --purple-border: #d8b4fe;
+
+      --green: #059669;
+      --green-dark: #065f46;
+      --green-light: #ecfdf5;
+      --green-border: #86efac;
+
+      --amber: #d97706;
+      --amber-dark: #b45309;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      padding-top: 68px;
+    }
+
+    /* ============================================================
+       TOP HEADER (BARRA FISSA CON PROGRESSO & AZIONI)
+       ============================================================ */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .top-header__left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .header-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .badge-class {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid var(--primary-border);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .top-header__center {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      max-width: 380px;
+      margin: 0 16px;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--green) 100%);
+      transition: width 0.3s ease;
+      border-radius: 999px;
+    }
+    .progress-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      min-width: 40px;
+    }
+
+    .top-header__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-action--outline {
+      background: #ffffff;
+      border-color: var(--border);
+      color: var(--text-dark);
+    }
+    .btn-action--outline:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .btn-action--green {
+      background: var(--green);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+    }
+    .btn-action--green:hover {
+      background: var(--green-dark);
+    }
+
+    /* ============================================================
+       MAIN CONTAINER & LAYOUT
+       ============================================================ */
+    .lab-container {
+      max-width: 1080px;
+      margin: 20px auto 80px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    /* ============================================================
+       STUDENT IDENTITY BAR (ANAGRAFICA & CLASSE)
+       ============================================================ */
+    .student-bar {
+      border-top: 4px solid var(--primary);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      background: #ffffff;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .form-control {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* ============================================================
+       COVER HERO BANNER
+       ============================================================ */
+    .hero-banner {
+      background: linear-gradient(135deg, #070e1b 0%, #0c182c 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cover-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .badge-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .badge-hero--lab { background: #dbeafe; color: var(--blueteam); border: 1px solid var(--blueteam-border); }
+    .badge-hero--role { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+    .cover-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .cover-subtitle {
+      color: #94a3b8;
+      font-size: 0.96rem;
+      max-width: 820px;
+      line-height: 1.55;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 18px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .hero-pill:hover {
+      background: rgba(2, 132, 199, 0.25);
+      border-color: var(--primary);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       SECTION HEADERS & MISSION BLOCKS
+       ============================================================ */
+    .mission-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .mission-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mission-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .mission-badge--blue { background: var(--primary); box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3); }
+    .mission-badge--green { background: var(--green); box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3); }
+    .mission-badge--amber { background: var(--amber); box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3); }
+    .mission-badge--red { background: var(--redteam); box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3); }
+    .mission-badge--purple { background: var(--purple); box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3); }
+
+    .mission-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.3;
+    }
+    .mission-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       CALLOUT BOXES (INFO, WARNING, DANGER, SUCCESS)
+       ============================================================ */
+    .callout {
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 14px 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      border: 1px solid transparent;
+    }
+    .callout--info {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #14532d;
+    }
+    .callout--warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #78350f;
+    }
+    .callout--danger {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #7f1d1d;
+    }
+    .callout--primary {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+      color: #0369a1;
+    }
+    .callout-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ============================================================
+       INTERACTIVE SIMULATOR 1: CLOUD SYNC TRAP
+       ============================================================ */
+    .sim-container {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #1e293b;
+    }
+    .sim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #1e293b;
+      margin-bottom: 16px;
+    }
+    .sim-title {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sim-modes {
+      display: flex;
+      gap: 6px;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .btn-sim-mode {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .btn-sim-mode.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .btn-sim-mode.active-backup {
+      background: var(--green);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .sync-devices-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0;
+      position: relative;
+    }
+    @media (max-width: 768px) {
+      .sync-devices-grid { grid-template-columns: 1fr; }
+    }
+    .sync-device-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .sync-device-card.deleted {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.12);
+    }
+    .sync-device-card.protected {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.12);
+    }
+    .device-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    .device-name {
+      font-weight: 800;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+      color: #f1f5f9;
+    }
+    .device-status {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .status-synced { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .status-deleted { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .status-protected { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+
+    .file-list {
+      background: #090d16;
+      border-radius: 6px;
+      padding: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-align: left;
+      min-height: 90px;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    .file-item:last-child { border-bottom: none; }
+    .file-item.deleted-file {
+      color: #ef4444;
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .file-item.safe-file {
+      color: #4ade80;
+    }
+
+    .sim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #1e293b;
+    }
+    .btn-sim-action {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .btn-sim-action--danger {
+      background: #ef4444;
+      color: #ffffff;
+    }
+    .btn-sim-action--danger:hover { background: #dc2626; }
+    .btn-sim-action--primary {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-sim-action--primary:hover { background: #0369a1; }
+    .btn-sim-action--outline {
+      background: transparent;
+      border-color: #475569;
+      color: #cbd5e1;
+    }
+    .btn-sim-action--outline:hover {
+      background: #1e293b;
+      color: #ffffff;
+    }
+
+    .sim-log-box {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: #070a11;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      border-left: 3px solid #38bdf8;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       INTERACTIVE SIMULATOR 2: 3-2-1 DISASTER ARCHITECT
+       ============================================================ */
+    .arch-321-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0;
+    }
+    @media (max-width: 768px) {
+      .arch-321-grid { grid-template-columns: 1fr; }
+    }
+    .arch-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .arch-card--c1 { border-color: var(--primary-border); }
+    .arch-card--c2 { border-color: var(--amber-border); }
+    .arch-card--c3 { border-color: var(--green-border); }
+
+    .arch-num {
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .arch-card--c1 .arch-num { color: var(--primary); }
+    .arch-card--c2 .arch-num { color: var(--amber); }
+    .arch-card--c3 .arch-num { color: var(--green); }
+
+    .arch-label {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+    .arch-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .arch-select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: #f8fafc;
+      outline: none;
+      cursor: pointer;
+    }
+    .arch-select:focus {
+      border-color: var(--primary);
+    }
+
+    .disaster-test-panel {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .disaster-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .disaster-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .btn-disaster {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-disaster:hover {
+      border-color: var(--redteam);
+      background: var(--redteam-light);
+      color: var(--redteam-dark);
+    }
+    .disaster-result-box {
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      font-size: 0.85rem;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ============================================================
+       TABLES & FORM GRIDS
+       ============================================================ */
+    .backup-plan-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.88rem;
+    }
+    .backup-plan-table th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .backup-plan-table th:first-child { text-align: center; width: 60px; }
+    .backup-plan-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      vertical-align: middle;
+    }
+    .backup-plan-table tr:hover td {
+      background: #f8fafc;
+    }
+    .backup-plan-table td:first-child {
+      font-weight: 800;
+      color: var(--primary);
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+    .tbl-input-field {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .tbl-input-field:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    /* TWO COL GRID PER ATTIVITA A2 */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 14px 0;
+    }
+    @media (max-width: 768px) {
+      .two-col-grid { grid-template-columns: 1fr; }
+    }
+    .col-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 16px;
+      border: 1.5px solid var(--border);
+    }
+    .col-card--green { border-color: var(--green-border); }
+    .col-card--red { border-color: var(--redteam-border); }
+    .col-card-title {
+      font-weight: 800;
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .col-card--green .col-card-title { color: var(--green-dark); }
+    .col-card--red .col-card-title { color: var(--redteam-dark); }
+    .col-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .col-list-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .col-list-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--text-dark);
+    }
+
+    /* ============================================================
+       INTERACTIVE TIMELINE: ZERO-DAY LIFECYCLE
+       ============================================================ */
+    .timeline-interactive-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 20px 0;
+      padding: 20px 14px;
+      background: #0f172a;
+      border-radius: 12px;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+    }
+    .tl-node-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 150px;
+      text-align: center;
+    }
+    .tl-badge-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+    .tl-node-1 .tl-badge-num { background: var(--primary); }
+    .tl-node-2 .tl-badge-num { background: var(--redteam); }
+    .tl-node-3 .tl-badge-num { background: var(--amber); }
+    .tl-node-4 .tl-badge-num { background: var(--green); }
+    .tl-node-5 .tl-badge-num { background: #475569; }
+
+    .tl-select {
+      width: 100%;
+      padding: 7px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #1e293b;
+      color: #ffffff;
+      border: 1.5px solid #334155;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tl-select.correct {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.2);
+    }
+    .tl-select.wrong {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.2);
+    }
+    .tl-connector {
+      color: #64748b;
+      font-size: 1.6rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       QUESTIONS & ANSWER AREAS
+       ============================================================ */
+    .question-block {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 14px 0;
+    }
+    .question-label {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .question-label .q-num {
+      color: var(--primary);
+      font-family: var(--font-mono);
+    }
+    .question-textarea {
+      width: 100%;
+      min-height: 85px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: #ffffff;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+      transition: all 0.2s;
+    }
+    .question-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .question-textarea--large {
+      min-height: 240px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* CHECKLISTS & RADIO GROUPS */
+    .checklist-container {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin: 10px 0;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .check-row:last-child { border-bottom: none; }
+    .check-row-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .radio-choices {
+      display: flex;
+      gap: 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .radio-choices label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       AUTOVALUTAZIONE TABLE
+       ============================================================ */
+    .autoeval-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.88rem;
+    }
+    .autoeval-table th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 12px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+    .autoeval-table th:first-child { text-align: left; }
+    .autoeval-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      background: #ffffff;
+    }
+    .autoeval-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .autoeval-table input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       GLOSSARIO ACCORDION / GRID
+       ============================================================ */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .glossary-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      transition: all 0.2s;
+    }
+    .glossary-card:hover {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .glossary-term {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .glossary-def {
+      font-size: 0.82rem;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       MODAL ANTEPRIMA RELAZIONE (A4 PREVIEW)
+       ============================================================ */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-dialog {
+      background: #ffffff;
+      border-radius: 14px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .modal-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      background: #f1f5f9;
+    }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #f8fafc;
+    }
+
+    /* STILE FOGLIO A4 PER ANTEPRIMA E STAMPA */
+    .a4-sheet {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 32px 36px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #0f172a;
+    }
+    .a4-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .a4-school {
+      font-weight: 800;
+      font-size: 14pt;
+      color: #0284c7;
+      letter-spacing: -0.5px;
+    }
+    .a4-course {
+      font-size: 9.5pt;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .a4-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      font-size: 9pt;
+    }
+    .a4-meta-item strong {
+      display: block;
+      color: #475569;
+      font-size: 8pt;
+      text-transform: uppercase;
+    }
+    .a4-section-title {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .a4-q-box {
+      margin-bottom: 12px;
+    }
+    .a4-q-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 3px;
+    }
+    .a4-ans-text {
+      font-size: 9.5pt;
+      background: #fafbfd;
+      border-left: 2.5px solid #0284c7;
+      padding: 5px 10px;
+      color: #334155;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+      min-height: 24px;
+    }
+
+    /* TOAST NOTIFICATIONS */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ============================================================
+       PRINT MEDIA QUERY (PULIZIA ASSOLUTA PER STAMPA A4)
+       ============================================================ */
+    @media print {
+      body { padding: 0; background: #ffffff; }
+      .top-header, .hero-pills, .sim-controls, .btn-action, .modal-header, .modal-footer, .toast {
+        display: none !important;
+      }
+      .lab-container { display: none !important; }
+      .modal-backdrop {
+        display: block !important;
+        position: static !important;
+        background: none !important;
+        padding: 0 !important;
+      }
+      .modal-dialog {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .modal-body { padding: 0 !important; background: #ffffff !important; }
+      .a4-sheet {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP HEADER FISSA
+       ============================================================ -->
+  <header class="top-header">
+    <div class="top-header__left">
+      <a href="/#informatica" class="back-btn" title="Torna all'elenco dei corsi">
+        <span>←</span> CORSI INFORMATICA
+      </a>
+      <div class="header-tag">
+        <span>LABORATORIO 5</span>
+        <span class="badge-class" id="topBadgeClass">2H / 3L / 2G</span>
+      </div>
+    </div>
+
+    <div class="top-header__center">
+      <div class="progress-bar-container" title="Progresso completamento scheda">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">0%</span>
+    </div>
+
+    <div class="top-header__right">
+      <button type="button" class="btn-action btn-action--outline" onclick="openReportPreview()" title="Visualizza anteprima del report formale">
+        👁️ Anteprima Relazione
+      </button>
+      <button type="button" class="btn-action btn-action--green" onclick="downloadDirectPDF()" title="Genera ed esporta la relazione in PDF A4">
+        📥 Scarica Relazione PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CONTENITORE PRINCIPALE
+       ============================================================ -->
+  <main class="lab-container">
+
+    <!-- ANAGRAFICA STUDENTE -->
+    <section class="card student-bar">
+      <div class="form-group">
+        <label for="studNome">Nome *</label>
+        <input type="text" id="studNome" class="form-control" placeholder="es. Mario" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studCognome">Cognome *</label>
+        <input type="text" id="studCognome" class="form-control" placeholder="es. Rossi" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studClasse">Classe *</label>
+        <select id="studClasse" class="form-control" onchange="onClassChanged(); updateProgress()">
+          <option value="3L RIM">3ªL Relazioni Internazionali (RIM)</option>
+          <option value="2H AFM">2H Amministrazione Finanza Marketing</option>
+          <option value="2G AFM">2G Amministrazione Finanza Marketing</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="studPostazione">Postazione PC</label>
+        <input type="text" id="studPostazione" class="form-control" placeholder="es. Postazione 07" oninput="updateProgress()">
+      </div>
+      <div class="form-group">
+        <label for="studData">Data Attività</label>
+        <input type="date" id="studData" class="form-control" oninput="updateProgress()">
+      </div>
+    </section>
+
+    <!-- HERO BANNER -->
+    <section class="hero-banner">
+      <div class="cover-badge-row">
+        <span class="badge-hero badge-hero--lab">DATA DEFENSE &amp; RESILIENCE • MODULO 5</span>
+        <span class="badge-hero badge-hero--role">IIS ARCHIMEDE • A.S. 2024/2025</span>
+      </div>
+      <h1 class="cover-title">Data Defense: Sincronizzazione, Backup 3-2-1 &amp; Zero-Day Patching</h1>
+      <p class="cover-subtitle">
+        Indagine pratica sulla resilienza dei dati digitali: scopri perché la sincronizzazione cloud non protegge dalla cancellazione accidentale, progetta un piano di salvataggio a prova di disastro con la regola aurea 3-2-1, analizza la timeline di una vulnerabilità Zero-Day e risolvi il caso studio dell'attacco ransomware da 800.000 €.
+      </p>
+      <div class="hero-pills">
+        <a class="hero-pill" onclick="scrollToSection('secParteA')">🔄 Parte A: Sync vs Backup</a>
+        <a class="hero-pill" onclick="scrollToSection('secParteB')">🛡️ Parte B: Regola 3-2-1</a>
+        <a class="hero-pill" onclick="scrollToSection('secParteC')">⚡ Parte C: Zero-Day &amp; Patch</a>
+        <a class="hero-pill" onclick="scrollToSection('secParteD')">🏢 Parte D: Caso Studio Ransomware</a>
+        <a class="hero-pill" onclick="scrollToSection('secParteE')">⭐ Griglia &amp; Glossario</a>
+      </div>
+    </section>
+
+    <!-- OBIETTIVI OPERATIVI -->
+    <section class="card" style="border-left: 5px solid var(--primary);">
+      <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 8px;">
+        🎯 Obiettivi Operativi della Sessione
+      </h3>
+      <ul style="padding-left: 20px; line-height: 1.8; font-size: 0.92rem;">
+        <li><strong>Distinzione Operativa:</strong> comprendere perché il cloud mirroring (iCloud, Drive, OneDrive) propaga istantaneamente le cancellazioni distruttive a tutti i nodi collegati, a differenza di uno snapshot congelato nel tempo (Backup).</li>
+        <li><strong>Architettura 3-2-1:</strong> pianificare un'infrastruttura resiliente per proteggere 15 GB di file critici su almeno 2 supporti differenti, con almeno 1 copia de-localizzata fuori sede (offsite/cloud cifrato).</li>
+        <li><strong>Threat Analysis:</strong> mappare la finestra di esposizione tra scoperta di una vulnerabilità Zero-Day, comparsa dell'exploit e rilascio/deployment della patch correttiva.</li>
+        <li><strong>Incident Response Aziendale:</strong> analizzare l'impatto economico e operativo di un attacco ransomware reale e redigere una relazione strategica con protocolli difensivi preventivi.</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================
+         PARTE A: SINCRONIZZAZIONE VS BACKUP
+         ============================================================ -->
+    <section class="card" id="secParteA">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <div class="mission-badge mission-badge--blue">A</div>
+          <div>
+            <div class="mission-title">Parte A — Sincronizzazione vs. Backup</div>
+            <div class="mission-subtitle">La trappola del Cloud Mirroring e la natura immutabile dello Snapshot</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-title">ℹ️ Regola Fondamentale di Archiviazione</div>
+        <p>• La <strong>Sincronizzazione</strong> (es. iCloud, Google Drive, Microsoft OneDrive) è un <em>processo di replica bidirezionale continuo</em>: qualunque aggiunta, modifica o <strong>cancellazione</strong> effettuata su un nodo si riflette all'istante su ogni altro dispositivo associato.</p>
+        <p>• Il <strong>Backup</strong> è invece una <em>fotografia temporale immutabile (Snapshot)</em>: una copia congelata e separata, che non risente affatto di ciò che accade in seguito sul dispositivo d'origine.</p>
+      </div>
+
+      <div class="callout callout--danger">
+        <div class="callout-title">💀 Scenario Critico Reale — La Disavventura di Marco</div>
+        <p>Marco è convinto che attivando iCloud le sue preziose foto delle vacanze estive (oltre 100 scatti) siano «al sicuro per sempre». Per liberare memoria sul suo smartphone, seleziona l'album e clicca su <em>"Elimina tutte le foto"</em>.</p>
+        <p><strong>Cosa accade:</strong> Il demone di sincronizzazione interpreta l'azione come una modifica voluta: in pochi secondi invia il comando di eliminazione al cloud e da lì al suo laptop. Le foto spariscono da tutti i dispositivi contemporaneamente.</p>
+      </div>
+
+      <!-- SIMULATORE 1: CLOUD SYNC TRAP -->
+      <div class="sim-container">
+        <div class="sim-header">
+          <div class="sim-title">
+            <span>🧪 SIMULATORE INTERATTIVO: The Cloud Sync Trap</span>
+          </div>
+          <div class="sim-modes">
+            <button type="button" class="btn-sim-mode active" id="btnModeSync" onclick="setSimMode('sync')">Modalità: Sincronizzazione Attiva (iCloud / Drive)</button>
+            <button type="button" class="btn-sim-mode" id="btnModeBackup" onclick="setSimMode('backup')">Modalità: Backup Immutabile (Snapshot Locale/Vault)</button>
+          </div>
+        </div>
+
+        <div class="sync-devices-grid">
+          <!-- Dispositivo 1: Smartphone -->
+          <div class="sync-device-card" id="cardDevPhone">
+            <span class="device-icon">📱</span>
+            <div class="device-name">Smartphone di Marco</div>
+            <span class="device-status status-synced" id="statusPhone">COLLEGATO</span>
+            <div class="file-list" id="filesPhone">
+              <div class="file-item"><span>📷 Foto_Vacanze_2026.zip</span><span>4.2 GB</span></div>
+              <div class="file-item"><span>📄 Tesi_Economia.docx</span><span>18 MB</span></div>
+              <div class="file-item"><span>📑 Progetto_Grafica.psd</span><span>420 MB</span></div>
+            </div>
+          </div>
+
+          <!-- Dispositivo 2: Cloud Storage -->
+          <div class="sync-device-card" id="cardDevCloud">
+            <span class="device-icon">☁️</span>
+            <div class="device-name">Server Cloud (Mirroring)</div>
+            <span class="device-status status-synced" id="statusCloud">SINCRONIZZATO</span>
+            <div class="file-list" id="filesCloud">
+              <div class="file-item"><span>📷 Foto_Vacanze_2026.zip</span><span>4.2 GB</span></div>
+              <div class="file-item"><span>📄 Tesi_Economia.docx</span><span>18 MB</span></div>
+              <div class="file-item"><span>📑 Progetto_Grafica.psd</span><span>420 MB</span></div>
+            </div>
+          </div>
+
+          <!-- Dispositivo 3: Laptop Casa -->
+          <div class="sync-device-card" id="cardDevLaptop">
+            <span class="device-icon">💻</span>
+            <div class="device-name">Laptop Studio</div>
+            <span class="device-status status-synced" id="statusLaptop">ALLINEATO</span>
+            <div class="file-list" id="filesLaptop">
+              <div class="file-item"><span>📷 Foto_Vacanze_2026.zip</span><span>4.2 GB</span></div>
+              <div class="file-item"><span>📄 Tesi_Economia.docx</span><span>18 MB</span></div>
+              <div class="file-item"><span>📑 Progetto_Grafica.psd</span><span>420 MB</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-controls">
+          <button type="button" class="btn-sim-action btn-sim-action--danger" onclick="simDeletePhoneFiles()">
+            🗑️ Simula: Marco elimina accidentalmente le foto dal Telefono
+          </button>
+          <button type="button" class="btn-sim-action btn-sim-action--primary" onclick="simCreateNewSnapshot()">
+            📸 Simula: Scatta Snapshot Immutabile (Backup)
+          </button>
+          <button type="button" class="btn-sim-action btn-sim-action--outline" onclick="resetSimState()">
+            🔄 Ripristina Stato Iniziale
+          </button>
+        </div>
+
+        <div class="sim-log-box" id="simLogConsole">
+          [STATO INIZIALE]: Connessione stabilita. 3 dispositivi allineati in tempo reale tramite protocollo di sincronizzazione cloud.
+        </div>
+      </div>
+
+      <!-- DOMANDE PARTE A -->
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Domanda A1.</span>
+          <span>Analisi Tecnica: Nello scenario di Marco, la sincronizzazione iCloud ha funzionato in modo anomalo o perfettamente corretto? Perché allora Marco ha perso i suoi file? Spiega la differenza con un backup locale.</span>
+        </div>
+        <textarea id="ansA1" class="question-textarea" placeholder="Argomenta la risposta spiegando il concetto di sincronizzazione bidirezionale e perché non equivale a una copia di sicurezza..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Attività A2.</span>
+          <span>Casi d'Uso: Compila tre scenari in cui la sincronizzazione cloud è estremamente vantaggiosa e tre scenari in cui rappresenta un pericolo gravissimo.</span>
+        </div>
+        <div class="two-col-grid">
+          <div class="col-card col-card--green">
+            <div class="col-card-title">
+              <span>👍 Sincronizzazione Vantaggiosa &amp; Consigliata</span>
+            </div>
+            <div class="col-list">
+              <div class="col-list-item">
+                <span class="col-list-num">1</span>
+                <input type="text" id="ansSyncU1" class="tbl-input-field" placeholder="es. Collaborare su un documento condiviso con compagni..." oninput="updateProgress()">
+              </div>
+              <div class="col-list-item">
+                <span class="col-list-num">2</span>
+                <input type="text" id="ansSyncU2" class="tbl-input-field" placeholder="es. Avere la rubrica e gli appuntamenti aggiornati su smartphone e PC..." oninput="updateProgress()">
+              </div>
+              <div class="col-list-item">
+                <span class="col-list-num">3</span>
+                <input type="text" id="ansSyncU3" class="tbl-input-field" placeholder="es. Modificare una presentazione a scuola e ritrovarla finita a casa..." oninput="updateProgress()">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-card col-card--red">
+            <div class="col-card-title">
+              <span>👎 Sincronizzazione Pericolosa o Dannosa</span>
+            </div>
+            <div class="col-list">
+              <div class="col-list-item">
+                <span class="col-list-num">1</span>
+                <input type="text" id="ansSyncP1" class="tbl-input-field" placeholder="es. Infezione da Ransomware che cifra i file e propaga il danno sul cloud..." oninput="updateProgress()">
+              </div>
+              <div class="col-list-item">
+                <span class="col-list-num">2</span>
+                <input type="text" id="ansSyncP2" class="tbl-input-field" placeholder="es. Cancellazione accidentale di una cartella per liberare spazio su smartphone..." oninput="updateProgress()">
+              </div>
+              <div class="col-list-item">
+                <span class="col-list-num">3</span>
+                <input type="text" id="ansSyncP3" class="tbl-input-field" placeholder="es. Danneggiamento o corruzione di un file salvato automaticamente su tutti i nodi..." oninput="updateProgress()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE B: LA REGOLA AUREA 3-2-1
+         ============================================================ -->
+    <section class="card" id="secParteB">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <div class="mission-badge mission-badge--green">B</div>
+          <div>
+            <div class="mission-title">Parte B — La Regola 3-2-1</div>
+            <div class="mission-subtitle">Lo standard d'oro industriale per la conservazione e l'integrità dei dati</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISUALIZZAZIONE SCHEMATICA 3-2-1 -->
+      <div class="arch-321-grid">
+        <div class="arch-card arch-card--c1">
+          <div class="arch-num">3</div>
+          <div class="arch-label">Copie Totali</div>
+          <div class="arch-sub">1 originale operativo + almeno 2 copie di backup</div>
+          <select id="selectArchCopy1" class="arch-select" onchange="runDisasterSim(); updateProgress()">
+            <option value="ssd_pc">SSD Principale del Computer (Dati di lavoro)</option>
+            <option value="cloud_only">Solo Cartella Sincronizzata Cloud</option>
+          </select>
+        </div>
+
+        <div class="arch-card arch-card--c2">
+          <div class="arch-num">2</div>
+          <div class="arch-label">Supporti Differenti</div>
+          <div class="arch-sub">Supporti con tecnologie e fisicità indipendenti</div>
+          <select id="selectArchCopy2" class="arch-select" onchange="runDisasterSim(); updateProgress()">
+            <option value="ext_hdd">Hard Disk USB Esterno Meccanico</option>
+            <option value="nas_lan">NAS di Rete Locale (Synology/Qnap)</option>
+            <option value="internal_partition">Stesso Disco SSD (Altra Partizione D:)</option>
+            <option value="usb_stick">Pendrive USB tascabile</option>
+          </select>
+        </div>
+
+        <div class="arch-card arch-card--c3">
+          <div class="arch-num">1</div>
+          <div class="arch-label">Copia Fuori Sede</div>
+          <div class="arch-sub">Almeno 1 copia geograficamente distante (Offsite/Cloud)</div>
+          <select id="selectArchCopy3" class="arch-select" onchange="runDisasterSim(); updateProgress()">
+            <option value="cloud_encrypted">Cloud Cifrato Immutabile (Server UE)</option>
+            <option value="ext_disk_relatives">Hard Disk fisico custodito a casa di parenti</option>
+            <option value="none_desk">Nessuna copia fuori sede (Tutto sulla stessa scrivania)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DISASTER TEST PANEL INTERATTIVO -->
+      <div class="disaster-test-panel">
+        <div class="disaster-title">
+          <span>⚡ COLLAUDO DI RESILIENZA: Metti alla prova la tua architettura</span>
+        </div>
+        <div class="disaster-buttons">
+          <button type="button" class="btn-disaster" onclick="triggerDisaster('ssd_crash')">💥 Guasto Improvviso SSD Primario</button>
+          <button type="button" class="btn-disaster" onclick="triggerDisaster('fire_flood')">🔥 Incendio o Allagamento dell'Abitazione</button>
+          <button type="button" class="btn-disaster" onclick="triggerDisaster('ransomware_lan')">🦠 Infezione Ransomware su Rete Locale</button>
+          <button type="button" class="btn-disaster" onclick="triggerDisaster('theft_backpack')">🎒 Furto di Laptop e Zaino di Studio</button>
+        </div>
+        <div class="disaster-result-box" id="disasterResultText">
+          👉 Seleziona un disastro per verificare se la configurazione attuale salva o distrugge definitivamente i tuoi file!
+        </div>
+      </div>
+
+      <!-- ATTIVITA B1: PROGETTAZIONE DEL PIANO DI BACKUP -->
+      <div class="callout callout--warning" style="margin-top: 20px;">
+        <div class="callout-title">📋 Consegna Operativa Caso Studente (15 GB)</div>
+        <p>«Hai una cartella di 15 GB contenente tutti i tuoi elaborati scolastici del triennio, le fotografie di eventi familiari irripetibili e i codici sorgente dei tuoi progetti creativi. Come proteggeresti questi dati applicando rigorosamente la regola 3-2-1?»</p>
+        <p>Compila la tabella dettagliando per ciascuna delle 3 copie il <strong>supporto/luogo fisico</strong>, il <strong>software/strumento</strong> impiegato, la <strong>frequenza temporale</strong> e l'attributo <strong>Fuori Sede</strong>.</p>
+      </div>
+
+      <table class="backup-plan-table">
+        <thead>
+          <tr>
+            <th>Copia</th>
+            <th>Supporto / Luogo Fisico</th>
+            <th>Software / Strumento Utilizzato</th>
+            <th>Frequenza di Esecuzione</th>
+            <th>Fuori Sede? (Sì/No)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#1</td>
+            <td><input type="text" id="b1_sup1" class="tbl-input-field" placeholder="es. SSD Interno PC + Hard Disk Esterno dedicato USB 3.0" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_str1" class="tbl-input-field" placeholder="es. Cronologia File Windows / Apple Time Machine" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_frq1" class="tbl-input-field" placeholder="es. Giornaliera / Continua a ogni modifica" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_out1" class="tbl-input-field" placeholder="No (Locale)" oninput="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>#2</td>
+            <td><input type="text" id="b1_sup2" class="tbl-input-field" placeholder="es. NAS domestico con dischi in RAID mirrorato o Pendrive" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_str2" class="tbl-input-field" placeholder="es. FreeFileSync / Script rsync pianificato" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_frq2" class="tbl-input-field" placeholder="es. Settimanale (ogni domenica sera)" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_out2" class="tbl-input-field" placeholder="No (Locale)" oninput="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>#3</td>
+            <td><input type="text" id="b1_sup3" class="tbl-input-field" placeholder="es. Cloud Storage criptato (Borg, Proton Drive, Wasabi S3)" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_str3" class="tbl-input-field" placeholder="es. Backup automatico con crittografia end-to-end client-side" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_frq3" class="tbl-input-field" placeholder="es. Settimanale o bisettimanale" oninput="updateProgress()"></td>
+            <td><input type="text" id="b1_out3" class="tbl-input-field" placeholder="Sì (Offsite geografico)" oninput="updateProgress()"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CHECKLIST DI CONFERMA E RISCHIO RESIDUO -->
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Verifica 3-2-1.</span>
+          <span>Checklist di Conformità agli Standard Industriali:</span>
+        </div>
+        <div class="checklist-container">
+          <div class="check-row">
+            <span class="check-row-label">1. Mantengo almeno 3 copie totali dei dati fondamentali</span>
+            <div class="radio-choices">
+              <label><input type="radio" name="chk321_1" value="Si" onchange="updateProgress()"> Sì</label>
+              <label><input type="radio" name="chk321_1" value="No" onchange="updateProgress()"> No</label>
+            </div>
+          </div>
+          <div class="check-row">
+            <span class="check-row-label">2. Utilizzo almeno 2 tipologie di supporti fisicamente e tecnologicamente distinte</span>
+            <div class="radio-choices">
+              <label><input type="radio" name="chk321_2" value="Si" onchange="updateProgress()"> Sì</label>
+              <label><input type="radio" name="chk321_2" value="No" onchange="updateProgress()"> No</label>
+            </div>
+          </div>
+          <div class="check-row">
+            <span class="check-row-label">3. Almeno 1 copia è conservata fisicamente fuori sede (offsite / cloud dislocato)</span>
+            <div class="radio-choices">
+              <label><input type="radio" name="chk321_3" value="Si" onchange="updateProgress()"> Sì</label>
+              <label><input type="radio" name="chk321_3" value="No" onchange="updateProgress()"> No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Domanda B4.</span>
+          <span>Analisi del Rischio Residuo: Anche con un piano 3-2-1 ben impostato, cosa potrebbe ancora andare storto? (es. mancato test di ripristino, password di cifratura dimenticata, supporto esterno collegato durante l'attacco ransomware...).</span>
+        </div>
+        <textarea id="ansB4" class="question-textarea" placeholder="Individua e descrivi almeno due fattori di rischio residuo e come mitigarli (es. disaster recovery drill periodico)..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE C: VULNERABILITÀ ZERO-DAY E PATCH MANAGEMENT
+         ============================================================ -->
+    <section class="card" id="secParteC">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <div class="mission-badge mission-badge--amber">C</div>
+          <div>
+            <div class="mission-title">Parte C — Vulnerabilità Zero-Day &amp; Patch</div>
+            <div class="mission-subtitle">La corsa contro il tempo tra criminali informatici, sviluppatori e amministratori di sistema</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-title">⚡ Che cos'è una Zero-Day e perché è devastante?</div>
+        <p>• Una <strong>vulnerabilità Zero-Day</strong> è una falla software ignota al produttore (oppure appena scoperta, per cui non esiste ancora alcuna correzione ufficiale). Gli sviluppatori hanno <em>zero giorni</em> di tempo per prepararsi prima che gli attacchi abbiano inizio.</p>
+        <p>• Una <strong>Patch</strong> ("toppa") è l'aggiornamento correttivo rilasciato dalla software house per sigillare la falla. L'intervallo temporale che intercorre tra la scoperta/exploit e l'effettiva installazione della patch su tutti i sistemi rappresenta la pericolosissima <em>finestra di esposizione</em>.</p>
+      </div>
+
+      <!-- INTERACTIVE TIMELINE SELECTOR -->
+      <div class="callout callout--primary">
+        <div class="callout-title">🧩 Attività C1 — Ordina il Ciclo di Vita della Vulnerabilità</div>
+        <p>Assegna a ciascuna delle quattro fasi numerate il corretto evento cronologico, selezionandolo dal menu a tendina. Clicca poi sul pulsante di verifica per testare la correttezza della sequenza.</p>
+      </div>
+
+      <div class="timeline-interactive-wrap">
+        <div class="tl-node-col tl-node-1">
+          <div class="tl-badge-num">1</div>
+          <select id="tl1" class="tl-select" onchange="updateProgress()">
+            <option value="">— Seleziona Fase 1 —</option>
+            <option value="scoperta">Scoperta della falla (ricercatori o hacker)</option>
+            <option value="exploit">Attacchi attivi ed Exploit in the wild</option>
+            <option value="patch">Rilascio della patch ufficiale dal produttore</option>
+            <option value="update">Aggiornamento e installazione da parte degli utenti</option>
+          </select>
+        </div>
+
+        <div class="tl-connector">→</div>
+
+        <div class="tl-node-col tl-node-2">
+          <div class="tl-badge-num">2</div>
+          <select id="tl2" class="tl-select" onchange="updateProgress()">
+            <option value="">— Seleziona Fase 2 —</option>
+            <option value="scoperta">Scoperta della falla (ricercatori o hacker)</option>
+            <option value="exploit">Attacchi attivi ed Exploit in the wild</option>
+            <option value="patch">Rilascio della patch ufficiale dal produttore</option>
+            <option value="update">Aggiornamento e installazione da parte degli utenti</option>
+          </select>
+        </div>
+
+        <div class="tl-connector">→</div>
+
+        <div class="tl-node-col tl-node-3">
+          <div class="tl-badge-num">3</div>
+          <select id="tl3" class="tl-select" onchange="updateProgress()">
+            <option value="">— Seleziona Fase 3 —</option>
+            <option value="scoperta">Scoperta della falla (ricercatori o hacker)</option>
+            <option value="exploit">Attacchi attivi ed Exploit in the wild</option>
+            <option value="patch">Rilascio della patch ufficiale dal produttore</option>
+            <option value="update">Aggiornamento e installazione da parte degli utenti</option>
+          </select>
+        </div>
+
+        <div class="tl-connector">→</div>
+
+        <div class="tl-node-col tl-node-4">
+          <div class="tl-badge-num">4</div>
+          <select id="tl4" class="tl-select" onchange="updateProgress()">
+            <option value="">— Seleziona Fase 4 —</option>
+            <option value="scoperta">Scoperta della falla (ricercatori o hacker)</option>
+            <option value="exploit">Attacchi attivi ed Exploit in the wild</option>
+            <option value="patch">Rilascio della patch ufficiale dal produttore</option>
+            <option value="update">Aggiornamento e installazione da parte degli utenti</option>
+          </select>
+        </div>
+
+        <div class="tl-connector">→</div>
+
+        <div class="tl-node-col tl-node-5">
+          <div class="tl-badge-num">✓</div>
+          <div style="color: #94a3b8; font-size: 0.8rem; font-weight: 700; margin-top: 4px;">
+            Sistema Bonificato &amp; Protetto
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 12px 0 18px 0;">
+        <button type="button" class="btn-action btn-action--outline" style="border-color: var(--primary); color: var(--primary);" onclick="checkTimelineSequence()">
+          🔍 Verifica Sequenza Temporale
+        </button>
+      </div>
+
+      <!-- DOMANDE PARTE C -->
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Domanda C5.</span>
+          <span>Etimologia della Minaccia: Perché si chiama letteralmente "Zero-Day"? Spiega il significato del termine con parole tue.</span>
+        </div>
+        <textarea id="ansC5" class="question-textarea" placeholder="Spiega a cosa fa riferimento il numero zero e quale svantaggio strategico comporta per gli sviluppatori..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Domanda C6.</span>
+          <span>Comportamento Utente: Molti utenti evitano o ritardano costantemente gli aggiornamenti perché «il computer funziona già benissimo così e riavviare fa perdere tempo». Quali rischi gravissimi corrono? Argomenta in termini di vulnerabilità note (N-Day).</span>
+        </div>
+        <textarea id="ansC6" class="question-textarea" placeholder="Argomenta perché quando una patch viene pubblicata, la vulnerabilità diventa nota a tutti e i criminali possono analizzarla per colpire chi non aggiorna..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">
+          <span class="q-num">Domanda C7.</span>
+          <span>Dilemma Etico &amp; Responsible Disclosure: Un'azienda o un ricercatore scopre una falla Zero-Day critica in un software diffusissimo. Ha due strade: annunciarla pubblicamente sul web all'istante oppure comunicarla privatamente al fornitore concordando una data di rilascio congiunta della patch. Qual è la scelta eticamente e professionalmente più corretta? Perché?</span>
+        </div>
+        <textarea id="ansC7" class="question-textarea" placeholder="Discuti il principio della Responsible Disclosure (divulgazione responsabile) e i rischi di un annuncio pubblico immediato senza patch..." oninput="updateProgress()"></textarea>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE D: CASO STUDIO AZIENDALE — RANSOMWARE DA 800.000 €
+         ============================================================ -->
+    <section class="card" id="secParteD">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <div class="mission-badge mission-badge--red">D</div>
+          <div>
+            <div class="mission-title">Parte D — Scenario Integrato &amp; Caso Studio Forense</div>
+            <div class="mission-subtitle">Ransomware aziendale, collasso dei backup sincronizzati e Disaster Recovery</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout--danger">
+        <div class="callout-title">💀 Il Caso Reale di Studio — Aprile 2021</div>
+        <p><strong>Azienda manifatturiera meccanica (Emilia-Romagna, 120 dipendenti):</strong></p>
+        <p>1. Lunedì ore 08:30: un operatore amministrativo apre un allegato malevolo (finta fattura PDF/EXE). Il malware sfrutta una <em>vulnerabilità Zero-Day</em> su un protocollo di condivisione di Windows non ancora patchata.</p>
+        <p>2. Il ransomware ottiene privilegi di amministratore e comincia a cifrare l'intero database gestionale (SAP), i disegni CAD e la contabilità.</p>
+        <p>3. <strong>Il disastro dei backup:</strong> L'azienda disponeva di un NAS di backup collegato in rete locale H24 e di una cartella sincronizzata in tempo reale su cloud. Nel giro di 3 ore, i file cifrati dal malware hanno sovrascritto sia il NAS che il cloud, distruggendo ogni punto di ripristino.</p>
+        <p>4. <strong>Impatto:</strong> Fabbrica completamente paralizzata per 12 giorni, macchine a controllo numerico ferme, impossibilità di fatturare o spedire. Richiesta di riscatto in Bitcoin: <strong>800.000 €</strong>.</p>
+      </div>
+
+      <div class="callout callout--primary">
+        <div class="callout-title">📝 Consegna della Relazione Finale (15–20 righe)</div>
+        <p>In veste di consulente di Cyber-Security per la Direzione Aziendale, redigi una relazione tecnica e gestionale che risponda obbligatoriamente a questi <strong>quattro punti cardinali</strong>:</p>
+        <ol style="padding-left: 20px; line-height: 1.8; margin-top: 6px;">
+          <li><strong>Errori Strutturali:</strong> Quali gravissimi errori ha commesso l'azienda nella progettazione e gestione dei propri backup?</li>
+          <li><strong>Efficacia della Regola 3-2-1:</strong> In che modo l'adozione puntuale della regola 3-2-1 (in particolare la copia fuori sede disconnessa/air-gapped o cloud con retention immutabile) avrebbe azzerato il potere del riscatto?</li>
+          <li><strong>Gestione Zero-Day e Patching:</strong> Quale ruolo ha giocato la falla Zero-Day e quali protocolli di <em>Patch Management</em> e <em>Least Privilege</em> l'azienda avrebbe dovuto applicare sulle postazioni client?</li>
+          <li><strong>Strategia di Resilienza Futura:</strong> Proponi un piano d'azione integrato su tre livelli (Tecnologia di backup + Policy di aggiornamento + Formazione del personale contro il phishing) per rendere l'azienda immune a simili disastri.</li>
+        </ol>
+      </div>
+
+      <div class="question-block" style="background: #ffffff;">
+        <div class="question-label">
+          <span class="q-num">Relazione Tecnica Finale.</span>
+          <span>Scrivi qui il tuo elaborato (almeno 15 righe argomentate):</span>
+        </div>
+        <textarea id="ansRelazione" class="question-textarea question-textarea--large" placeholder="Inizia la relazione con l'analisi dei punti deboli emersi, per poi descrivere la strategia correttiva basata sulla regola 3-2-1, il piano di patch management e le best practice difensive..." oninput="updateProgress(); updateCharCount();"></textarea>
+        <div class="char-counter" id="charCountLabel">Caratteri: 0 | Righe stimate: 0 / 15-20</div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PARTE E: GRIGLIA AUTOVALUTAZIONE, CHECKLIST & GLOSSARIO
+         ============================================================ -->
+    <section class="card" id="secParteE">
+      <div class="mission-header">
+        <div class="mission-title-group">
+          <div class="mission-badge mission-badge--purple">E</div>
+          <div>
+            <div class="mission-title">Parte E — Autovalutazione &amp; Glossario Operativo</div>
+            <div class="mission-subtitle">Verifica finale di conformità e consolidamento dei termini tecnici</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
+        Prima di generare la relazione in formato PDF, esegui una rigorosa autovalutazione del lavoro svolto:
+      </p>
+
+      <table class="autoeval-table">
+        <thead>
+          <tr>
+            <th>Criterio di Valutazione Operativa</th>
+            <th style="width: 80px;">Sì (Pieno)</th>
+            <th style="width: 110px;">Parzialmente</th>
+            <th style="width: 80px;">No (Scarso)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Ho distinto con precisione tecnica la sincronizzazione cloud (mirror) dal backup immutabile (snapshot).</td>
+            <td><input type="radio" name="ev1" value="Si" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev1" value="Parzialmente" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev1" value="No" onchange="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>2. So strutturare e dimensionare un piano di salvataggio conforme alla regola aurea 3-2-1 su supporti differenti.</td>
+            <td><input type="radio" name="ev2" value="Si" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev2" value="Parzialmente" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev2" value="No" onchange="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>3. Conosco il significato di vulnerabilità Zero-Day, finestra di esposizione e ciclo di rilascio delle patch.</td>
+            <td><input type="radio" name="ev3" value="Si" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev3" value="Parzialmente" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev3" value="No" onchange="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>4. Ho completato l'analisi del caso studio Ransomware rispondendo a tutti e 4 i quesiti strategici.</td>
+            <td><input type="radio" name="ev4" value="Si" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev4" value="Parzialmente" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev4" value="No" onchange="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td>5. Ho risposto a tutte le domande aperte con terminologia tecnica appropriata e frasi complete.</td>
+            <td><input type="radio" name="ev5" value="Si" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev5" value="Parzialmente" onchange="updateProgress()"></td>
+            <td><input type="radio" name="ev5" value="No" onchange="updateProgress()"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CHECKLIST DI VERIFICA PRE-CONSEGNA -->
+      <div class="callout callout--warning" style="margin-top: 20px;">
+        <div class="callout-title">⚠️ Checklist Obbligatoria Pre-Consegna</div>
+        <ul style="padding-left: 20px; line-height: 1.8; font-size: 0.9rem;">
+          <li>Verifica che <strong>Nome</strong>, <strong>Cognome</strong> e <strong>Classe</strong> siano compilati nell'intestazione in alto.</li>
+          <li>Controlla che tutte le tabelle (casi A2, tabella B1, checklist 3-2-1) siano state compilate.</li>
+          <li>Accertati che la linea temporale Zero-Day (Parte C) sia stata ordinata e validata.</li>
+          <li>Rileggi la relazione finale di Parte D per assicurarti che contenga tutti e 4 i punti richiesti.</li>
+          <li>Clicca su <strong>"👁️ Anteprima Relazione"</strong> per visualizzare il report A4 impaginato o <strong>"📥 Scarica Relazione PDF"</strong> per salvare il file ufficiale.</li>
+        </ul>
+      </div>
+
+      <!-- GLOSSARIO OPERATIVO INTERATTIVO -->
+      <div style="margin-top: 24px;">
+        <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">
+          📖 Glossario Tecnico Operativo
+        </h4>
+        <div class="glossary-grid">
+          <div class="glossary-card">
+            <div class="glossary-term">🔄 Sincronizzazione (Mirroring)</div>
+            <div class="glossary-def">Allineamento continuo bidirezionale delle modifiche tra più dispositivi. Se un file viene corrotto o eliminato, la modifica viene replicata all'istante ovunque.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">💾 Backup (Snapshot)</div>
+            <div class="glossary-def">Copia statica, isolata e inalterabile dello stato dei dati in un preciso istante. Non risente delle alterazioni o cancellazioni successive.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">🛡️ Regola 3-2-1</div>
+            <div class="glossary-def">Standard di resilienza: 3 copie totali, su almeno 2 tipologie di supporto differenti, di cui almeno 1 conservata fuori sede (offsite/cloud cifrato).</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">⚡ Vulnerabilità Zero-Day</div>
+            <div class="glossary-def">Falla di sicurezza appena scoperta e priva di correzione ufficiale. Gli sviluppatori hanno 0 giorni di preavviso prima che i criminali possano sfruttarla.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">🩹 Patch (Toppa Software)</div>
+            <div class="glossary-def">Aggiornamento di codice distribuito dal fornitore per sigillare una specifica vulnerabilità prima o dopo la comparsa degli exploit.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">🦠 Ransomware</div>
+            <div class="glossary-def">Malware ricattatorio che cifra i documenti dell'utente e distrugge le copie sincronizzate, pretendendo un riscatto in criptovalute per la decifrazione.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">🔌 Air-Gap (Isolamento Fisico)</div>
+            <div class="glossary-def">Dispositivo di backup (es. hard disk esterno scollegato o cartuccia nastro) fisicamente disconnesso da ogni rete per impedire la propagazione di ransomware.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">⏳ Finestra di Esposizione</div>
+            <div class="glossary-def">Intervallo di tempo critico tra la scoperta/attacco di una falla Zero-Day e la completa installazione delle patch di sicurezza su tutti i client aziendali.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANNER SALVATAGGIO PDF FINALE -->
+    <section class="card" style="text-align: center; background: linear-gradient(135deg, #070e1b 0%, #0f172a 100%); color: #ffffff; border: 1px solid #1e293b;">
+      <h3 style="font-size: 1.25rem; font-weight: 800; color: #38bdf8; margin-bottom: 8px;">
+        💾 Consegna della Scheda Operativa di Laboratorio
+      </h3>
+      <p style="color: #94a3b8; font-size: 0.9rem; max-width: 650px; margin: 0 auto 18px auto;">
+        Al termine della compilazione, esporta il tuo documento ufficiale in formato PDF A4 per la consegna su Google Classroom o registro elettronico.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn-action btn-action--outline" style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #ffffff;" onclick="openReportPreview()">
+          👁️ Anteprima Documento Formale
+        </button>
+        <button type="button" class="btn-action btn-action--green" style="font-size: 0.95rem; padding: 10px 20px;" onclick="downloadDirectPDF()">
+          📥 SCARICA RELAZIONE PDF (A4)
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL DI ANTEPRIMA RELAZIONE (A4 VIEW)
+       ============================================================ -->
+  <div class="modal-backdrop" id="reportModal" onclick="if(event.target === this) closeReportPreview()">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📄 Anteprima Documento Formale — IIS Archimede</span>
+        </div>
+        <button type="button" class="btn-action btn-action--outline" onclick="closeReportPreview()" style="padding: 4px 10px;">
+          ✕ Chiudi
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- FOGLIO A4 STAMPABILE CON ID #printReportArea -->
+        <div class="a4-sheet" id="printReportArea">
+
+          <!-- INTESTAZIONE SCUOLA -->
+          <div class="a4-header">
+            <div>
+              <div class="a4-school">IIS ARCHIMEDE</div>
+              <div class="a4-course">Dipartimento di Informatica — Laboratorio Operativo di Cybersecurity</div>
+              <div style="font-size: 8.5pt; color: #64748b; font-weight: 600;">Docente: Prof. Thomas Mazzeo • A.S. 2024/2025</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="display: inline-block; padding: 4px 10px; border-radius: 4px; background: #0284c7; color: #ffffff; font-weight: 800; font-size: 8.5pt;">
+                LABORATORIO 5
+              </span>
+              <div style="font-size: 8pt; color: #64748b; margin-top: 4px;">Data Defense &amp; Resilience</div>
+            </div>
+          </div>
+
+          <h2 style="font-size: 13pt; font-weight: 900; color: #0f172a; margin-bottom: 12px; text-align: center; text-transform: uppercase;">
+            Relazione Operativa: Sincronizzazione, Backup 3-2-1 e Vulnerabilità Zero-Day
+          </h2>
+
+          <!-- DATI STUDENTE -->
+          <div class="a4-meta-grid">
+            <div class="a4-meta-item">
+              <strong>Studente</strong>
+              <span id="repPrintNomeCognome">—</span>
+            </div>
+            <div class="a4-meta-item">
+              <strong>Classe</strong>
+              <span id="repPrintClasse">—</span>
+            </div>
+            <div class="a4-meta-item">
+              <strong>Postazione PC</strong>
+              <span id="repPrintPostazione">—</span>
+            </div>
+            <div class="a4-meta-item">
+              <strong>Data Sessione</strong>
+              <span id="repPrintData">—</span>
+            </div>
+          </div>
+
+          <!-- PARTE A NEL REPORT -->
+          <div class="a4-section-title">Parte A — Sincronizzazione vs. Backup</div>
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q1. Analisi del comportamento di Marco e del cloud mirroring:</div>
+            <div class="a4-ans-text" id="repPrintA1">[Nessuna risposta fornita]</div>
+          </div>
+
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q2. Scenari d'uso (3 Sincronizzazioni Utili vs 3 Pericolose):</div>
+            <div class="a4-ans-text" id="repPrintA2">[Nessuna risposta fornita]</div>
+          </div>
+
+          <!-- PARTE B NEL REPORT -->
+          <div class="a4-section-title">Parte B — La Regola 3-2-1 e Progettazione del Piano</div>
+          <div class="a4-q-box">
+            <div class="a4-q-title">Piano di Salvataggio per Elaborati e Foto (15 GB):</div>
+            <div class="a4-ans-text" id="repPrintPlan321">[Tabella 3-2-1 non compilata]</div>
+          </div>
+
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q3. Conformità 3-2-1 &amp; Q4. Rischio Residuo identificato:</div>
+            <div class="a4-ans-text" id="repPrintB4">[Nessuna risposta fornita]</div>
+          </div>
+
+          <div class="page-break"></div>
+
+          <!-- PARTE C NEL REPORT -->
+          <div class="a4-section-title" style="margin-top: 10px;">Parte C — Ciclo di Vita Zero-Day &amp; Patch Management</div>
+          <div class="a4-q-box">
+            <div class="a4-q-title">Sequenza Temporale Validata:</div>
+            <div class="a4-ans-text" id="repPrintTimeline">[Nessuna sequenza compilata]</div>
+          </div>
+
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q5. Origine del termine "Zero-Day":</div>
+            <div class="a4-ans-text" id="repPrintC5">[Nessuna risposta fornita]</div>
+          </div>
+
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q6. Pericoli del procrastinare gli aggiornamenti di sistema:</div>
+            <div class="a4-ans-text" id="repPrintC6">[Nessuna risposta fornita]</div>
+          </div>
+
+          <div class="a4-q-box">
+            <div class="a4-q-title">Q7. Valutazione etica sulla Responsible Disclosure:</div>
+            <div class="a4-ans-text" id="repPrintC7">[Nessuna risposta fornita]</div>
+          </div>
+
+          <!-- PARTE D NEL REPORT -->
+          <div class="a4-section-title">Parte D — Relazione Finale: Caso Studio Ransomware (800.000 €)</div>
+          <div class="a4-q-box">
+            <div class="a4-q-title">Relazione Strategica di Cyber-Security &amp; Disaster Recovery:</div>
+            <div class="a4-ans-text" id="repPrintRelazione" style="min-height: 120px;">[Nessuna relazione fornita]</div>
+          </div>
+
+          <!-- PARTE E NEL REPORT -->
+          <div class="a4-section-title">Parte E — Griglia di Autovalutazione</div>
+          <div class="a4-q-box">
+            <div class="a4-ans-text" id="repPrintAutoeval" style="margin-bottom: 24px;">[Autovalutazione non completata]</div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 36px; padding-top: 12px; border-top: 1px solid #cbd5e1; font-size: 8.5pt; color: #64748b;">
+            <span>Firma dello Studente: ___________________________</span>
+            <span>Visto del Docente: ___________________________</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-action btn-action--outline" onclick="closeReportPreview()">
+          Chiudi
+        </button>
+        <button type="button" class="btn-action btn-action--green" onclick="downloadDirectPDF()">
+          📥 Scarica PDF Ufficiale
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toastMsg">
+    <span id="toastIcon">ℹ️</span>
+    <span id="toastText">Messaggio di sistema</span>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT APPLICATIVO
+       ============================================================ -->
+  <script>
+    // 1. INIZIALIZZAZIONE CLASSE DA URL & DEFAULT
+    const selectClasse = document.getElementById("studClasse");
+    const topBadge = document.getElementById("topBadgeClass");
+
+    function initClassFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cls = urlParams.get("classe");
+      if (cls) {
+        const cLower = cls.toLowerCase();
+        if (cLower === "3l" || cLower === "3l rim") {
+          selectClasse.value = "3L RIM";
+        } else if (cLower === "2h" || cLower === "2h afm") {
+          selectClasse.value = "2H AFM";
+        } else if (cLower === "2g" || cLower === "2g afm") {
+          selectClasse.value = "2G AFM";
+        }
+      }
+      onClassChanged();
+    }
+
+    function onClassChanged() {
+      topBadge.textContent = selectClasse.value;
+      const url = new URL(window.location);
+      const val = selectClasse.value.toLowerCase();
+      if (val.includes("3l")) url.searchParams.set("classe", "3l");
+      else if (val.includes("2h")) url.searchParams.set("classe", "2h");
+      else if (val.includes("2g")) url.searchParams.set("classe", "2g");
+      window.history.replaceState({}, "", url);
+    }
+
+    // Imposta data odierna
+    document.getElementById("studData").valueAsDate = new Date();
+
+    // 2. SIMULATORE 1: CLOUD SYNC TRAP
+    let simMode = "sync"; // 'sync' | 'backup'
+    let simFilesState = {
+      phone: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+      cloud: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+      laptop: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+      vaultBackup: []
+    };
+
+    function setSimMode(mode) {
+      simMode = mode;
+      const btnSync = document.getElementById("btnModeSync");
+      const btnBkp = document.getElementById("btnModeBackup");
+      const log = document.getElementById("simLogConsole");
+
+      if (mode === "sync") {
+        btnSync.className = "btn-sim-mode active";
+        btnBkp.className = "btn-sim-mode";
+        log.textContent = "[MODALITÀ SINCRONIZZAZIONE]: Daemon attivo. Ogni operazione di modifica o cancellazione locale viene replicata in tempo reale sul Cloud e su tutti i dispositivi associati.";
+      } else {
+        btnSync.className = "btn-sim-mode";
+        btnBkp.className = "btn-sim-mode active-backup";
+        log.textContent = "[MODALITÀ BACKUP IMMUTABILE]: Vault abilitato. I salvataggi creano copie congelate e indipendenti (Snapshot Point-in-Time) protette da qualsiasi cancellazione successiva sul client.";
+      }
+      renderSimDevices();
+    }
+
+    function simDeletePhoneFiles() {
+      const log = document.getElementById("simLogConsole");
+      if (simMode === "sync") {
+        simFilesState.phone = [];
+        simFilesState.cloud = [];
+        simFilesState.laptop = [];
+        log.innerHTML = "⚠️ <strong style='color:#ef4444'>DISASTRO CLOUD SYNC CONFERMATO:</strong> Marco ha cancellato le foto dal telefono. Il demone ha interpretato la rimozione come modifica intenzionale e ha <strong>cancellato istantaneamente i file dal Cloud e dal Laptop!</strong> Tutti i dati sono perduti!";
+        showToast("💥 File cancellati su tutti i dispositivi sincronizzati!", "warn");
+      } else {
+        simFilesState.phone = [];
+        log.innerHTML = "🛡️ <strong style='color:#4ade80'>PROTEZIONE BACKUP EFFICACE:</strong> Le foto sono state rimosse dalla memoria del telefono, MA lo <strong>Snapshot nel Vault di Backup è rimasto intatto e protetto!</strong> I dati possono essere ripristinati in qualsiasi momento.";
+        showToast("🛡️ Backup sicuro: il vault non è stato intaccato!", "success");
+      }
+      renderSimDevices();
+      updateProgress();
+    }
+
+    function simCreateNewSnapshot() {
+      simFilesState.vaultBackup = ["📷 Foto_Vacanze_2026.zip", "📄 Tesi_Economia.docx", "📑 Progetto_Grafica.psd"];
+      setSimMode("backup");
+      const log = document.getElementById("simLogConsole");
+      log.innerHTML = "✅ <strong>SNAPSHOT IMMUTABILE CREATO:</strong> I dati attuali sono stati memorizzati in un archivio cifrato e disconnesso (Point-in-Time Backup).";
+      showToast("📸 Snapshot salvato con successo!", "success");
+    }
+
+    function resetSimState() {
+      simFilesState = {
+        phone: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+        cloud: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+        laptop: ["📷 Foto_Vacanze_2026.zip (4.2 GB)", "📄 Tesi_Economia.docx (18 MB)", "📑 Progetto_Grafica.psd (420 MB)"],
+        vaultBackup: []
+      };
+      setSimMode("sync");
+      document.getElementById("simLogConsole").textContent = "[RESET]: Ripristinato ambiente con file originali e sincronizzazione standard attiva.";
+      showToast("🔄 Simulatore ripristinato", "info");
+    }
+
+    function renderSimDevices() {
+      const cardP = document.getElementById("cardDevPhone");
+      const cardC = document.getElementById("cardDevCloud");
+      const cardL = document.getElementById("cardDevLaptop");
+
+      const listP = document.getElementById("filesPhone");
+      const listC = document.getElementById("filesCloud");
+      const listL = document.getElementById("filesLaptop");
+
+      const statusP = document.getElementById("statusPhone");
+      const statusC = document.getElementById("statusCloud");
+      const statusL = document.getElementById("statusLaptop");
+
+      function formatList(arr, isSafeVault = false) {
+        if (!arr || arr.length === 0) {
+          return "<div class='file-item deleted-file'><span>[NESSUN FILE PRESENTE]</span><span>0 KB</span></div>";
+        }
+        return arr.map(f => `<div class='file-item ${isSafeVault ? "safe-file" : ""}'><span>${f}</span><span>OK</span></div>`).join("");
+      }
+
+      listP.innerHTML = formatList(simFilesState.phone);
+      listC.innerHTML = formatList(simFilesState.cloud, simMode === "backup" && simFilesState.vaultBackup.length > 0);
+      listL.innerHTML = formatList(simFilesState.laptop);
+
+      if (simFilesState.phone.length === 0) {
+        cardP.className = "sync-device-card deleted";
+        statusP.className = "device-status status-deleted";
+        statusP.textContent = "DATI ELIMINATI";
+      } else {
+        cardP.className = "sync-device-card";
+        statusP.className = "device-status status-synced";
+        statusP.textContent = "COLLEGATO";
+      }
+
+      if (simFilesState.cloud.length === 0) {
+        cardC.className = "sync-device-card deleted";
+        statusC.className = "device-status status-deleted";
+        statusC.textContent = "SVUOTATO DA SYNC";
+      } else if (simMode === "backup") {
+        cardC.className = "sync-device-card protected";
+        statusC.className = "device-status status-protected";
+        statusC.textContent = "VAULT SICURO";
+      } else {
+        cardC.className = "sync-device-card";
+        statusC.className = "device-status status-synced";
+        statusC.textContent = "SINCRONIZZATO";
+      }
+
+      if (simFilesState.laptop.length === 0) {
+        cardL.className = "sync-device-card deleted";
+        statusL.className = "device-status status-deleted";
+        statusL.textContent = "DATI ELIMINATI";
+      } else {
+        cardL.className = "sync-device-card";
+        statusL.className = "device-status status-synced";
+        statusL.textContent = "ALLINEATO";
+      }
+    }
+
+    // 3. SIMULATORE 2: 3-2-1 DISASTER ARCHITECT
+    function triggerDisaster(type) {
+      const c2 = document.getElementById("selectArchCopy2").value;
+      const c3 = document.getElementById("selectArchCopy3").value;
+      const res = document.getElementById("disasterResultText");
+
+      if (type === "ssd_crash") {
+        if (c2 === "internal_partition") {
+          res.innerHTML = "❌ <strong style='color:#ef4444'>PERDITA DATI GRAVISSIMA:</strong> Avendo impostato la Copia #2 sulla stessa unità SSD (altra partizione), la rottura fisica del disco ha distrutto contemporaneamente sia l'originale che la Copia #2! Solo la Copia #3 fuori sede (se presente) ha salvato i file.";
+        } else {
+          res.innerHTML = "✅ <strong style='color:#22c55e'>DATI SALVI:</strong> Il disco principale è rotto, ma hai la Copia #2 su un supporto fisico separato e indipendente (" + c2 + ") e la Copia #3 fuori sede. Ripristino completato in 15 minuti!";
+        }
+      } else if (type === "fire_flood") {
+        if (c3 === "none_desk") {
+          res.innerHTML = "❌ <strong style='color:#ef4444'>DISASTRO TOTALE (100% DATI PERSI):</strong> Incendio e allagamento hanno distrutto computer e dischi sulla scrivania. Non avendo ALCUNA COPIA FUORI SEDE (Regola 1 violata), tutti gli elaborati e le foto sono persi per sempre!";
+        } else {
+          res.innerHTML = "✅ <strong style='color:#22c55e'>TRIONFO DELLA REGOLA 3-2-1:</strong> La casa è inagibile, MA la Copia #3 era salvata fuori sede (" + c3 + "). Scarichi i file su un nuovo computer e non hai perso neanche un byte!";
+        }
+      } else if (type === "ransomware_lan") {
+        if (c2 === "nas_lan" && c3 === "none_desk") {
+          res.innerHTML = "❌ <strong style='color:#ef4444'>ATTACCO RIUSCITO DAL MALWARE:</strong> Il ransomware si è diffuso nella rete locale e ha cifrato anche il NAS connesso H24. Non avendo copie air-gapped o cloud immutabile, sei sotto scacco.";
+        } else {
+          res.innerHTML = "✅ <strong style='color:#22c55e'>RESILIENZA DA RANSOMWARE:</strong> Il malware ha cifrato il PC, ma la copia fuori sede (" + c3 + ") è immutabile e non raggiungibile dalla LAN. Si bonifica il PC e si ripristina lo snapshot!";
+        }
+      } else if (type === "theft_backpack") {
+        if (c2 === "usb_stick" && c3 === "none_desk") {
+          res.innerHTML = "⚠️ <strong style='color:#d97706'>ATTENZIONE:</strong> Se tenevi la pendrive nello stesso zaino del portatile, il ladro ha rubato sia il PC che il backup! Questo dimostra perché la Copia #3 DEVE risiedere fuori sede!";
+        } else {
+          res.innerHTML = "✅ <strong style='color:#22c55e'>SALVATAGGIO RIUSCITO:</strong> Anche se lo zaino è stato rubato, i tuoi dati preziosi sono al sicuro nella copia fuori sede (" + c3 + ").";
+        }
+      }
+      updateProgress();
+    }
+
+    function runDisasterSim() {
+      triggerDisaster("ssd_crash");
+    }
+
+    // 4. TIMELINE ZERO-DAY CHECKER
+    const correctTimeline = {
+      tl1: "scoperta",
+      tl2: "exploit",
+      tl3: "patch",
+      tl4: "update"
+    };
+
+    function checkTimelineSequence() {
+      let correct = 0;
+      for (let i = 1; i <= 4; i++) {
+        const sel = document.getElementById("tl" + i);
+        sel.classList.remove("correct", "wrong");
+        if (sel.value === correctTimeline["tl" + i]) {
+          sel.classList.add("correct");
+          correct++;
+        } else if (sel.value !== "") {
+          sel.classList.add("wrong");
+        }
+      }
+      if (correct === 4) {
+        showToast("🌟 Perfetto! Linea temporale Zero-Day ordinata correttamente (4/4)!", "success");
+      } else {
+        showToast(`⚠️ Sequenza temporale: ${correct}/4 fasi corrette. Ricontrolla i nodi evidenziati in rosso!`, "warn");
+      }
+      updateProgress();
+    }
+
+    // 5. CALCOLO DINAMICO DEL PROGRESSO
+    function updateProgress() {
+      let score = 0;
+      let total = 0;
+
+      // Anagrafica (3)
+      ["studNome", "studCognome", "studClasse"].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim()) score++;
+      });
+
+      // Risposte aperte (6)
+      ["ansA1", "ansB4", "ansC5", "ansC6", "ansC7", "ansRelazione"].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim().length > 15) score++;
+      });
+
+      // Tabella Attività A2 (6 campi)
+      ["ansSyncU1", "ansSyncU2", "ansSyncU3", "ansSyncP1", "ansSyncP2", "ansSyncP3"].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim().length > 5) score++;
+      });
+
+      // Tabella Backup B1 (12 campi)
+      ["b1_sup1", "b1_str1", "b1_frq1", "b1_out1", "b1_sup2", "b1_str2", "b1_frq2", "b1_out2", "b1_sup3", "b1_str3", "b1_frq3", "b1_out3"].forEach(id => {
+        total++;
+        if (document.getElementById(id).value.trim().length > 2) score++;
+      });
+
+      // Checklist 3-2-1 (3)
+      ["chk321_1", "chk321_2", "chk321_3"].forEach(name => {
+        total++;
+        if (document.querySelector(`input[name="${name}"]:checked`)) score++;
+      });
+
+      // Timeline (4)
+      for (let i = 1; i <= 4; i++) {
+        total++;
+        if (document.getElementById("tl" + i).value) score++;
+      }
+
+      // Autovalutazione E (5)
+      for (let i = 1; i <= 5; i++) {
+        total++;
+        if (document.querySelector(`input[name="ev${i}"]:checked`)) score++;
+      }
+
+      const pct = Math.round((score / total) * 100);
+      document.getElementById("progressBarFill").style.width = pct + "%";
+      document.getElementById("progressLabel").textContent = pct + "%";
+
+      autoSave();
+    }
+
+    // 6. CONTATORE CARATTERI RELAZIONE
+    function updateCharCount() {
+      const val = document.getElementById("ansRelazione").value;
+      const chars = val.length;
+      const lines = val.split("\n").filter(l => l.trim().length > 0).length;
+      document.getElementById("charCountLabel").textContent = `Caratteri: ${chars} | Righe stimate: ${lines} / 15-20 righe minime`;
+    }
+
+    // 7. ANTEPRIMA RELAZIONE FORMALE A4
+    function syncPrintReport() {
+      const nome = document.getElementById("studNome").value.trim() || "—";
+      const cognome = document.getElementById("studCognome").value.trim() || "—";
+      const classe = document.getElementById("studClasse").value;
+      const postazione = document.getElementById("studPostazione").value.trim() || "Postazione standard";
+      const data = document.getElementById("studData").value || new Date().toISOString().split("T")[0];
+
+      document.getElementById("repPrintNomeCognome").textContent = `${cognome} ${nome}`;
+      document.getElementById("repPrintClasse").textContent = classe;
+      document.getElementById("repPrintPostazione").textContent = postazione;
+      document.getElementById("repPrintData").textContent = data;
+
+      document.getElementById("repPrintA1").textContent = document.getElementById("ansA1").value.trim() || "[Nessuna risposta fornita]";
+
+      const u1 = document.getElementById("ansSyncU1").value.trim() || "—";
+      const u2 = document.getElementById("ansSyncU2").value.trim() || "—";
+      const u3 = document.getElementById("ansSyncU3").value.trim() || "—";
+      const p1 = document.getElementById("ansSyncP1").value.trim() || "—";
+      const p2 = document.getElementById("ansSyncP2").value.trim() || "—";
+      const p3 = document.getElementById("ansSyncP3").value.trim() || "—";
+
+      document.getElementById("repPrintA2").textContent =
+        `UTILE: 1) ${u1} | 2) ${u2} | 3) ${u3}\nPERICOLOSA: 1) ${p1} | 2) ${p2} | 3) ${p3}`;
+
+      const s1 = document.getElementById("b1_sup1").value.trim() || "—";
+      const st1 = document.getElementById("b1_str1").value.trim() || "—";
+      const f1 = document.getElementById("b1_frq1").value.trim() || "—";
+      const o1 = document.getElementById("b1_out1").value.trim() || "No";
+
+      const s2 = document.getElementById("b1_sup2").value.trim() || "—";
+      const st2 = document.getElementById("b1_str2").value.trim() || "—";
+      const f2 = document.getElementById("b1_frq2").value.trim() || "—";
+      const o2 = document.getElementById("b1_out2").value.trim() || "No";
+
+      const s3 = document.getElementById("b1_sup3").value.trim() || "—";
+      const st3 = document.getElementById("b1_str3").value.trim() || "—";
+      const f3 = document.getElementById("b1_frq3").value.trim() || "—";
+      const o3 = document.getElementById("b1_out3").value.trim() || "Sì";
+
+      document.getElementById("repPrintPlan321").textContent =
+        `COPIA #1: ${s1} | Strumento: ${st1} | Frequenza: ${f1} | Fuori Sede: ${o1}\n` +
+        `COPIA #2: ${s2} | Strumento: ${st2} | Frequenza: ${f2} | Fuori Sede: ${o2}\n` +
+        `COPIA #3: ${s3} | Strumento: ${st3} | Frequenza: ${f3} | Fuori Sede: ${o3}`;
+
+      const c1 = document.querySelector('input[name="chk321_1"]:checked');
+      const c2 = document.querySelector('input[name="chk321_2"]:checked');
+      const c3 = document.querySelector('input[name="chk321_3"]:checked');
+      const b4 = document.getElementById("ansB4").value.trim() || "[Nessuna analisi rischio residuo]";
+
+      document.getElementById("repPrintB4").textContent =
+        `Conformità 3-2-1: [3 Copie: ${c1 ? c1.value : "—"}] [2 Supporti Diversi: ${c2 ? c2.value : "—"}] [1 Fuori Sede: ${c3 ? c3.value : "—"}]\n` +
+        `Rischio Residuo identificato: ${b4}`;
+
+      const tl1Val = document.getElementById("tl1").options[document.getElementById("tl1").selectedIndex]?.text || "—";
+      const tl2Val = document.getElementById("tl2").options[document.getElementById("tl2").selectedIndex]?.text || "—";
+      const tl3Val = document.getElementById("tl3").options[document.getElementById("tl3").selectedIndex]?.text || "—";
+      const tl4Val = document.getElementById("tl4").options[document.getElementById("tl4").selectedIndex]?.text || "—";
+
+      document.getElementById("repPrintTimeline").textContent =
+        `1) ${tl1Val} → 2) ${tl2Val} → 3) ${tl3Val} → 4) ${tl4Val} → [5: Sistema Protetto]`;
+
+      document.getElementById("repPrintC5").textContent = document.getElementById("ansC5").value.trim() || "[Nessuna risposta fornita]";
+      document.getElementById("repPrintC6").textContent = document.getElementById("ansC6").value.trim() || "[Nessuna risposta fornita]";
+      document.getElementById("repPrintC7").textContent = document.getElementById("ansC7").value.trim() || "[Nessuna risposta fornita]";
+
+      document.getElementById("repPrintRelazione").textContent = document.getElementById("ansRelazione").value.trim() || "[Nessuna relazione fornita]";
+
+      const evs = [];
+      for (let i = 1; i <= 5; i++) {
+        const rad = document.querySelector(`input[name="ev${i}"]:checked`);
+        evs.push(`Criterio ${i}: ${rad ? rad.value : "Non selezionato"}`);
+      }
+      document.getElementById("repPrintAutoeval").textContent = evs.join(" | ");
+    }
+
+    function openReportPreview() {
+      syncPrintReport();
+      document.getElementById("reportModal").classList.add("active");
+    }
+
+    function closeReportPreview() {
+      document.getElementById("reportModal").classList.remove("active");
+    }
+
+    // 8. EXPORT DIRETTO IN FORMATO PDF (A4)
+    function downloadDirectPDF() {
+      const nomeInput = document.getElementById("studNome");
+      const cognomeInput = document.getElementById("studCognome");
+      const classeInput = document.getElementById("studClasse");
+
+      const nome = nomeInput.value.trim();
+      const cognome = cognomeInput.value.trim();
+      const classe = classeInput.value.trim();
+
+      if (!nome || !cognome || !classe) {
+        alert("⚠️ Attenzione: Devi inserire obbligatoriamente NOME, COGNOME e CLASSE prima di poter scaricare la Relazione PDF!");
+        const target = !nome ? nomeInput : (!cognome ? cognomeInput : classeInput);
+        target.focus();
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.style.borderColor = "#dc2626";
+        target.style.boxShadow = "0 0 0 3px rgba(220, 38, 38, 0.25)";
+        return;
+      }
+
+      syncPrintReport();
+
+      const modal = document.getElementById("reportModal");
+      const wasOpen = modal && modal.classList.contains("active");
+      if (!wasOpen && modal) {
+        modal.classList.add("active");
+      }
+
+      showToast("📄 Generazione PDF A4 in corso...", "info");
+
+      const cleanNome = nome.replace(/[^a-zA-Z0-9_-]/g, "_");
+      const cleanCognome = cognome.replace(/[^a-zA-Z0-9_-]/g, "_");
+      const cleanClasse = classe.replace(/[^a-zA-Z0-9_-]/g, "_");
+      const filename = `Relazione_Lab5_DataDefense_${cleanCognome}_${cleanNome}_${cleanClasse}.pdf`;
+
+      const element = document.getElementById("printReportArea");
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: filename,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      if (window.html2pdf) {
+        setTimeout(() => {
+          window.html2pdf().set(opt).from(element).save().then(() => {
+            showToast("✅ PDF scaricato con successo!", "success");
+            if (!wasOpen && modal) {
+              modal.classList.remove("active");
+            }
+          }).catch(err => {
+            console.error("Errore html2pdf, ripiego su window.print:", err);
+            if (!wasOpen && modal) modal.classList.remove("active");
+            window.print();
+          });
+        }, 250);
+      } else {
+        window.print();
+      }
+    }
+
+    // 9. LOCALSTORAGE PERSISTENCE
+    const STORAGE_KEY = "lab5_data_defense_state";
+
+    function autoSave() {
+      const data = {
+        nome: document.getElementById("studNome").value,
+        cognome: document.getElementById("studCognome").value,
+        classe: document.getElementById("studClasse").value,
+        postazione: document.getElementById("studPostazione").value,
+        data: document.getElementById("studData").value,
+
+        ansA1: document.getElementById("ansA1").value,
+        ansSyncU1: document.getElementById("ansSyncU1").value,
+        ansSyncU2: document.getElementById("ansSyncU2").value,
+        ansSyncU3: document.getElementById("ansSyncU3").value,
+        ansSyncP1: document.getElementById("ansSyncP1").value,
+        ansSyncP2: document.getElementById("ansSyncP2").value,
+        ansSyncP3: document.getElementById("ansSyncP3").value,
+
+        b1_sup1: document.getElementById("b1_sup1").value,
+        b1_str1: document.getElementById("b1_str1").value,
+        b1_frq1: document.getElementById("b1_frq1").value,
+        b1_out1: document.getElementById("b1_out1").value,
+        b1_sup2: document.getElementById("b1_sup2").value,
+        b1_str2: document.getElementById("b1_str2").value,
+        b1_frq2: document.getElementById("b1_frq2").value,
+        b1_out2: document.getElementById("b1_out2").value,
+        b1_sup3: document.getElementById("b1_sup3").value,
+        b1_str3: document.getElementById("b1_str3").value,
+        b1_frq3: document.getElementById("b1_frq3").value,
+        b1_out3: document.getElementById("b1_out3").value,
+
+        chk321_1: document.querySelector('input[name="chk321_1"]:checked')?.value || "",
+        chk321_2: document.querySelector('input[name="chk321_2"]:checked')?.value || "",
+        chk321_3: document.querySelector('input[name="chk321_3"]:checked')?.value || "",
+        ansB4: document.getElementById("ansB4").value,
+
+        tl1: document.getElementById("tl1").value,
+        tl2: document.getElementById("tl2").value,
+        tl3: document.getElementById("tl3").value,
+        tl4: document.getElementById("tl4").value,
+
+        ansC5: document.getElementById("ansC5").value,
+        ansC6: document.getElementById("ansC6").value,
+        ansC7: document.getElementById("ansC7").value,
+
+        ansRelazione: document.getElementById("ansRelazione").value,
+
+        ev1: document.querySelector('input[name="ev1"]:checked')?.value || "",
+        ev2: document.querySelector('input[name="ev2"]:checked')?.value || "",
+        ev3: document.querySelector('input[name="ev3"]:checked')?.value || "",
+        ev4: document.querySelector('input[name="ev4"]:checked')?.value || "",
+        ev5: document.querySelector('input[name="ev5"]:checked')?.value || ""
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {}
+    }
+
+    function loadSavedData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+
+        if (d.nome) document.getElementById("studNome").value = d.nome;
+        if (d.cognome) document.getElementById("studCognome").value = d.cognome;
+        if (d.classe) document.getElementById("studClasse").value = d.classe;
+        if (d.postazione) document.getElementById("studPostazione").value = d.postazione;
+        if (d.data) document.getElementById("studData").value = d.data;
+
+        if (d.ansA1) document.getElementById("ansA1").value = d.ansA1;
+        if (d.ansSyncU1) document.getElementById("ansSyncU1").value = d.ansSyncU1;
+        if (d.ansSyncU2) document.getElementById("ansSyncU2").value = d.ansSyncU2;
+        if (d.ansSyncU3) document.getElementById("ansSyncU3").value = d.ansSyncU3;
+        if (d.ansSyncP1) document.getElementById("ansSyncP1").value = d.ansSyncP1;
+        if (d.ansSyncP2) document.getElementById("ansSyncP2").value = d.ansSyncP2;
+        if (d.ansSyncP3) document.getElementById("ansSyncP3").value = d.ansSyncP3;
+
+        if (d.b1_sup1) document.getElementById("b1_sup1").value = d.b1_sup1;
+        if (d.b1_str1) document.getElementById("b1_str1").value = d.b1_str1;
+        if (d.b1_frq1) document.getElementById("b1_frq1").value = d.b1_frq1;
+        if (d.b1_out1) document.getElementById("b1_out1").value = d.b1_out1;
+        if (d.b1_sup2) document.getElementById("b1_sup2").value = d.b1_sup2;
+        if (d.b1_str2) document.getElementById("b1_str2").value = d.b1_str2;
+        if (d.b1_frq2) document.getElementById("b1_frq2").value = d.b1_frq2;
+        if (d.b1_out2) document.getElementById("b1_out2").value = d.b1_out2;
+        if (d.b1_sup3) document.getElementById("b1_sup3").value = d.b1_sup3;
+        if (d.b1_str3) document.getElementById("b1_str3").value = d.b1_str3;
+        if (d.b1_frq3) document.getElementById("b1_frq3").value = d.b1_frq3;
+        if (d.b1_out3) document.getElementById("b1_out3").value = d.b1_out3;
+
+        if (d.chk321_1) {
+          const r = document.querySelector(`input[name="chk321_1"][value="${d.chk321_1}"]`);
+          if (r) r.checked = true;
+        }
+        if (d.chk321_2) {
+          const r = document.querySelector(`input[name="chk321_2"][value="${d.chk321_2}"]`);
+          if (r) r.checked = true;
+        }
+        if (d.chk321_3) {
+          const r = document.querySelector(`input[name="chk321_3"][value="${d.chk321_3}"]`);
+          if (r) r.checked = true;
+        }
+        if (d.ansB4) document.getElementById("ansB4").value = d.ansB4;
+
+        if (d.tl1) document.getElementById("tl1").value = d.tl1;
+        if (d.tl2) document.getElementById("tl2").value = d.tl2;
+        if (d.tl3) document.getElementById("tl3").value = d.tl3;
+        if (d.tl4) document.getElementById("tl4").value = d.tl4;
+
+        if (d.ansC5) document.getElementById("ansC5").value = d.ansC5;
+        if (d.ansC6) document.getElementById("ansC6").value = d.ansC6;
+        if (d.ansC7) document.getElementById("ansC7").value = d.ansC7;
+
+        if (d.ansRelazione) document.getElementById("ansRelazione").value = d.ansRelazione;
+
+        for (let i = 1; i <= 5; i++) {
+          if (d["ev" + i]) {
+            const rad = document.querySelector(`input[name="ev${i}"][value="${d["ev" + i]}"]`);
+            if (rad) rad.checked = true;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 10. SCROLL TO SECTION
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    // 11. TOAST HELPER
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById("toastMsg");
+      const icon = document.getElementById("toastIcon");
+      const text = document.getElementById("toastText");
+      text.textContent = msg;
+      icon.textContent = type === "success" ? "✅" : (type === "warn" ? "⚠️" : "ℹ️");
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3500);
+    }
+
+    // AVVIO
+    window.addEventListener("DOMContentLoaded", () => {
+      initClassFromUrl();
+      loadSavedData();
+      renderSimDevices();
+      updateProgress();
+      updateCharCount();
+    });
+  </script>
+</body>
+</html>

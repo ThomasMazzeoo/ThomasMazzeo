@@ -280,6 +280,26 @@ const MATERIE = [
 
 
 
+              },
+
+
+
+              {
+
+
+
+                title: "💾 Laboratorio 5: Data Defense — Sincronizzazione, Backup 3-2-1 & Zero-Day",
+
+
+
+                desc: "Laboratorio operativo sulla resilienza dei dati e incident response: trappola del sync, backup immutabile, simulatore interattivo Regola 3-2-1, sequenza Zero-Day e caso studio Ransomware da 800.000 €; con report operativo in PDF A4.",
+
+
+
+                url: "/informatica/sicurezza/laboratorio-data-defense.html?classe=3l"
+
+
+
               }
 
 
@@ -498,6 +518,26 @@ const MATERIE = [
 
 
 
+              },
+
+
+
+              {
+
+
+
+                title: "💾 Laboratorio 5: Data Defense — Sincronizzazione, Backup 3-2-1 & Zero-Day",
+
+
+
+                desc: "Laboratorio operativo sulla resilienza dei dati e incident response: trappola del sync, backup immutabile, simulatore interattivo Regola 3-2-1, sequenza Zero-Day e caso studio Ransomware da 800.000 €; con report operativo in PDF A4.",
+
+
+
+                url: "/informatica/sicurezza/laboratorio-data-defense.html?classe=2h"
+
+
+
               }
 
 
@@ -713,6 +753,26 @@ const MATERIE = [
 
 
                 url: "/informatica/sicurezza/sicurezza-informatica-5.html?classe=2g"
+
+
+
+              },
+
+
+
+              {
+
+
+
+                title: "💾 Laboratorio 5: Data Defense — Sincronizzazione, Backup 3-2-1 & Zero-Day",
+
+
+
+                desc: "Laboratorio operativo sulla resilienza dei dati e incident response: trappola del sync, backup immutabile, simulatore interattivo Regola 3-2-1, sequenza Zero-Day e caso studio Ransomware da 800.000 €; con report operativo in PDF A4.",
+
+
+
+                url: "/informatica/sicurezza/laboratorio-data-defense.html?classe=2g"
 
 
 
