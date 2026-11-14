@@ -1765,9 +1765,16 @@ const MATERIE = [
 
 
         chapters: [
-
-
-
+          {
+            title: "Classi Prime — Metrologia e Misure",
+            topics: [
+              {
+                title: "Come Leggere il Nonio 1/20 mm (FIMEC METRICA) — Presentazione Interattiva LIM",
+                desc: "Presentazione interattiva per LIM a 9 slide con simulatore 60 FPS del calibro FIMEC METRICA INOX 20°C: principio 19 mm/20 div (0,05 mm), analisi passo-passo della misura reale 27,15 mm con lente 4x, errori di parallasse, laboratorio virtuale touch e quiz.",
+                url: "/fisica/archimede/prime/calibro-nonio.html"
+              }
+            ]
+          },
           {
 
 
