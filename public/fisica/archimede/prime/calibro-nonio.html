@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Come Leggere il Nonio 1/20 mm (FIMEC METRICA) — ISS Archimede Classi Prime</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
@@ -33,18 +33,18 @@
     background: radial-gradient(circle at 50% 0%, #162444 0%, var(--bg-deep) 75%);
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: clamp(15px, 1.12vw, 20px);
-    line-height: 1.38;
+    font-size: clamp(14px, 1.05vw, 19px);
+    line-height: 1.35;
   }
 
   /* Puntatore Laser LIM */
   #laser-dot {
     position: fixed;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: radial-gradient(circle, #fff 14%, #ff1744 48%, rgba(255,23,68,0) 72%);
-    box-shadow: 0 0 26px 8px rgba(255, 23, 68, 0.8);
+    box-shadow: 0 0 24px 8px rgba(255, 23, 68, 0.8);
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
@@ -53,9 +53,98 @@
   body.laser-on { cursor: crosshair; }
   body.laser-on #laser-dot { display: block; }
 
+  /* =========================================================================
+     MODALITÀ LIM: CANVAS DI DISEGNO OVERLAY & TOOLBAR FLUTTUANTE
+     ========================================================================= */
+  #limCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2500;
+    pointer-events: none;
+    display: none;
+    touch-action: none;
+  }
+  #limCanvas.active {
+    display: block;
+    pointer-events: auto;
+    cursor: crosshair;
+  }
+  #limCanvas.pass-through {
+    pointer-events: none !important;
+  }
+
+  .lim-toolbar {
+    position: fixed;
+    bottom: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 19, 38, 0.96);
+    border: 2px solid var(--amber);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 20px rgba(251,191,36,0.25);
+    border-radius: 18px;
+    padding: 8px 14px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 3000;
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+    max-width: 96vw;
+  }
+  .lim-toolbar.show { display: flex; }
+  .lim-drag-handle {
+    cursor: grab;
+    color: var(--amber);
+    padding: 2px 6px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    user-select: none;
+  }
+  .lim-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 0.84rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .lim-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
+  .lim-btn.active {
+    background: rgba(251, 191, 36, 0.25);
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
+  }
+  .lim-color-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.4);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .lim-color-dot:hover { transform: scale(1.15); }
+  .lim-color-dot.active {
+    border-color: #fff;
+    transform: scale(1.22);
+    box-shadow: 0 0 10px currentColor;
+  }
+
   .app { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
 
-  .progress-wrap { height: 5px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
+  .progress-wrap { height: 4px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
   .progress-bar {
     height: 100%;
     width: 11.1%;
@@ -68,14 +157,14 @@
   .slide {
     position: absolute;
     inset: 0;
-    padding: clamp(12px, 1.6vh, 24px) clamp(16px, 2.2vw, 40px);
+    padding: clamp(10px, 1.4vh, 20px) clamp(14px, 2vw, 36px);
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 1.2vh, 16px);
+    gap: clamp(6px, 1.1vh, 14px);
     opacity: 0;
     pointer-events: none;
-    transform: translateX(36px) scale(0.985);
-    transition: opacity 0.34s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateX(30px) scale(0.99);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     overflow-y: auto;
   }
   .slide.active {
@@ -89,10 +178,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     flex-shrink: 0;
   }
 
@@ -102,9 +191,9 @@
     gap: 6px;
     padding: 3px 12px;
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     background: rgba(56, 189, 248, 0.16);
     color: var(--cyan);
@@ -114,43 +203,43 @@
   .badge.emerald { background: rgba(16, 185, 129, 0.16); color: var(--green-bright); border-color: rgba(16, 185, 129, 0.45); }
   .badge.rose { background: rgba(251, 113, 133, 0.16); color: var(--rose); border-color: rgba(251, 113, 133, 0.45); }
 
-  h2.title { font-size: clamp(1.25rem, 2vw, 2.05rem); font-weight: 850; color: #fff; letter-spacing: -0.02em; }
+  h2.title { font-size: clamp(1.15rem, 1.8vw, 1.95rem); font-weight: 850; color: #fff; letter-spacing: -0.02em; }
   .hl-amber { color: var(--amber); }
   .hl-cyan { color: var(--cyan); }
   .hl-emerald { color: var(--green-bright); }
   .hl-rose { color: var(--rose); }
 
   .panel {
-    background: rgba(16, 25, 45, 0.9);
+    background: rgba(16, 25, 45, 0.92);
     border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: clamp(10px, 1.3vw, 18px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+    border-radius: 14px;
+    padding: clamp(8px, 1.1vw, 15px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.4vw, 20px); flex: 1; min-height: 0; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.2vw, 16px); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.2vw, 16px); flex: 1; min-height: 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1vw, 14px); }
 
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
-    min-height: 44px;
-    padding: 7px 16px;
-    border-radius: 11px;
+    min-height: 40px;
+    padding: 6px 15px;
+    border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.18);
     background: var(--bg-card);
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     font-weight: 750;
     cursor: pointer;
     transition: all 0.15s ease;
   }
   .btn:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.38); transform: translateY(-1px); }
   .btn:active { transform: translateY(1px); }
-  .btn-sm { min-height: 36px; padding: 5px 12px; font-size: 0.83rem; border-radius: 9px; }
+  .btn-sm { min-height: 34px; padding: 4px 11px; font-size: 0.82rem; border-radius: 8px; }
   .btn-primary { background: linear-gradient(135deg, #0284c7, #0ea5e9); border-color: var(--cyan); color: #fff; }
   .btn-amber { background: linear-gradient(135deg, #d97706, #fbbf24); border-color: #fde68a; color: #090e1a; }
   .btn-emerald { background: linear-gradient(135deg, #059669, #10b981); border-color: var(--green-bright); color: #fff; }
@@ -165,7 +254,7 @@
     width: 100%;
     background: radial-gradient(ellipse at center, #162340 0%, #090f1d 100%);
     border: 1.5px solid rgba(148, 163, 184, 0.26);
-    border-radius: 15px;
+    border-radius: 14px;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -174,43 +263,43 @@
   }
   .stage svg { width: 100%; height: 100%; display: block; }
 
-  /* HUD Equazione Lettura (Slide 6) */
+  /* HUD Formula Lettura */
   .hud {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1.15fr;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: rgba(9, 14, 28, 0.95);
     border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 8px 16px;
+    border-radius: 12px;
+    padding: 6px 14px;
     flex-shrink: 0;
   }
   .hud-box {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 4px 10px;
-    border-radius: 10px;
+    padding: 3px 8px;
+    border-radius: 9px;
     border: 1.5px solid transparent;
     background: rgba(255,255,255,0.03);
     transition: all 0.28s ease;
   }
-  .hud-box.glow-cyan { background: rgba(56,189,248,0.15); border-color: var(--cyan); box-shadow: 0 0 18px rgba(56,189,248,0.28); }
-  .hud-box.glow-emerald { background: rgba(16,185,129,0.16); border-color: var(--green-bright); box-shadow: 0 0 18px rgba(16,185,129,0.28); }
-  .hud-box.glow-amber { background: rgba(251,191,36,0.18); border-color: var(--amber); box-shadow: 0 0 22px rgba(251,191,36,0.34); }
-  .hud-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); font-weight: 800; }
-  .hud-val { font-family: var(--font-mono); font-size: clamp(1.25rem, 2.05vw, 2.1rem); font-weight: 900; }
-  .hud-op { font-size: 1.7rem; font-weight: 900; color: var(--dim); }
+  .hud-box.glow-cyan { background: rgba(56,189,248,0.15); border-color: var(--cyan); box-shadow: 0 0 16px rgba(56,189,248,0.28); }
+  .hud-box.glow-emerald { background: rgba(16,185,129,0.16); border-color: var(--green-bright); box-shadow: 0 0 16px rgba(16,185,129,0.28); }
+  .hud-box.glow-amber { background: rgba(251,191,36,0.18); border-color: var(--amber); box-shadow: 0 0 20px rgba(251,191,36,0.34); }
+  .hud-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--dim); font-weight: 800; }
+  .hud-val { font-family: var(--font-mono); font-size: clamp(1.15rem, 1.8vw, 1.95rem); font-weight: 900; }
+  .hud-op { font-size: 1.5rem; font-weight: 900; color: var(--dim); }
 
-  .stepper { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px; flex-shrink: 0; }
+  .stepper { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; flex-shrink: 0; }
   .step-btn {
-    padding: 7px 8px;
-    border-radius: 10px;
+    padding: 6px 7px;
+    border-radius: 9px;
     background: rgba(255,255,255,0.04);
     border: 1.5px solid rgba(148,163,184,0.2);
     color: var(--dim);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 750;
     cursor: pointer;
     text-align: center;
@@ -223,13 +312,13 @@
   .banner {
     background: linear-gradient(90deg, rgba(14,165,233,0.15), rgba(16,185,129,0.1));
     border-left: 5px solid var(--amber);
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-size: clamp(0.95rem, 1.2vw, 1.22rem);
+    border-radius: 11px;
+    padding: 8px 14px;
+    font-size: clamp(0.9rem, 1.1vw, 1.15rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 12px;
     flex-shrink: 0;
   }
   .banner strong { color: var(--amber); }
@@ -239,11 +328,11 @@
     position: absolute;
     top: 10px;
     right: 12px;
-    width: clamp(175px, 18vw, 255px);
-    height: clamp(175px, 18vw, 255px);
+    width: clamp(165px, 17vw, 245px);
+    height: clamp(165px, 17vw, 245px);
     border-radius: 50%;
     border: 4px solid var(--amber);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.8), 0 0 22px rgba(251,191,36,0.35);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.8), 0 0 20px rgba(251,191,36,0.35);
     background: #0b1324;
     overflow: hidden;
     pointer-events: none;
@@ -255,7 +344,7 @@
   .loupe.show { opacity: 1; transform: scale(1); }
   .loupe-tag {
     position: absolute;
-    bottom: 7px;
+    bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(8, 13, 26, 0.92);
@@ -263,20 +352,20 @@
     border: 1px solid rgba(251,191,36,0.55);
     border-radius: 999px;
     padding: 2px 10px;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 800;
     white-space: nowrap;
   }
 
   /* Hotspot Anatomia */
-  .hotspots { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 7px; flex-shrink: 0; }
+  .hotspots { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; flex-shrink: 0; }
   .hs-btn {
-    padding: 8px 11px;
-    border-radius: 10px;
+    padding: 7px 10px;
+    border-radius: 9px;
     background: rgba(255,255,255,0.04);
     border: 1.5px solid var(--border);
     color: var(--muted);
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 750;
     cursor: pointer;
     display: flex;
@@ -286,19 +375,19 @@
   }
   .hs-btn.active { background: rgba(251,191,36,0.18); border-color: var(--amber); color: #fff; }
   .hs-num {
-    width: 24px; height: 24px; border-radius: 50%;
+    width: 22px; height: 22px; border-radius: 50%;
     background: var(--amber); color: #090e1a; font-weight: 900;
     display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
 
   /* Tastierino Touch Quiz */
-  .numpad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .numpad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .nkey {
-    min-height: 48px;
-    font-size: 1.25rem;
+    min-height: 44px;
+    font-size: 1.2rem;
     font-family: var(--font-mono);
     font-weight: 900;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #1e293b;
     border: 1.5px solid var(--border);
     color: #fff;
@@ -306,297 +395,359 @@
   }
   .nkey:hover { background: #334155; border-color: var(--cyan); }
 
-  /* Barra Inferiore LIM */
+  /* Barra Inferiore Dock LIM */
   .dock {
-    height: 60px;
+    height: 56px;
     background: rgba(7, 11, 22, 0.96);
     border-top: 1px solid var(--border);
-    padding: 0 18px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
     z-index: 40;
   }
-  .dots { display: flex; gap: 5px; overflow-x: auto; }
+  .dots { display: flex; gap: 4px; overflow-x: auto; }
   .dot {
-    min-width: 34px; height: 34px; padding: 0 9px;
-    border-radius: 8px; border: 1px solid var(--border);
+    min-width: 32px; height: 32px; padding: 0 8px;
+    border-radius: 7px; border: 1px solid var(--border);
     background: rgba(255,255,255,0.04); color: var(--dim);
-    font-weight: 800; font-size: 0.8rem; cursor: pointer;
+    font-weight: 800; font-size: 0.78rem; cursor: pointer;
   }
   .dot.active { background: var(--amber); color: #090e1a; border-color: var(--amber); }
 
   /* Modale Foto */
   .modal-bg {
     position: fixed; inset: 0; background: rgba(4, 8, 18, 0.88);
-    backdrop-filter: blur(6px); z-index: 500;
-    display: none; align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(6px); z-index: 4000;
+    display: none; align-items: center; justify-content: center; padding: 18px;
   }
   .modal-bg.open { display: flex; }
   .modal-box {
-    width: min(1220px, 95vw); max-height: 90vh;
+    width: min(1200px, 95vw); max-height: 90vh;
     background: #0f172a; border: 1.5px solid var(--amber);
-    border-radius: 18px; padding: 20px;
-    display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+    border-radius: 16px; padding: 18px;
+    display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
   }
   .photo-slot {
-    height: 300px; background: #070c18; border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;
+    height: 290px;
+    background: #020617; border: 1px dashed rgba(255,255,255,0.22);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
   }
-  .photo-slot img { max-height: 94vw; max-width: 280px; transform: rotate(-90deg); border-radius: 8px; }
-  .photo-slot img.no-rot { transform: none; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .photo-slot img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-  @keyframes blinkSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .pulse { animation: blinkSoft 1.15s infinite ease-in-out; }
-
-  @media (max-width: 980px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .stepper { grid-template-columns: repeat(3, 1fr); }
+  /* Hero Stage Slide 0 */
+  .hero-stage-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 230px;
   }
+
+  @media (max-height: 800px) {
+    .slide { padding: 8px 16px; gap: 6px; }
+    .dock { height: 48px; }
+    .btn { min-height: 36px; padding: 4px 12px; font-size: 0.82rem; }
+    .btn-sm { min-height: 30px; padding: 3px 9px; font-size: 0.78rem; }
+    .banner { padding: 6px 10px; font-size: 0.85rem; }
+    .hud { padding: 4px 10px; }
+    .hud-val { font-size: 1.4rem; }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { filter: drop-shadow(0 0 4px #fbbf24); }
+    50% { filter: drop-shadow(0 0 14px #f59e0b); }
+  }
+  .pulse { animation: pulseGlow 1.8s infinite ease-in-out; }
 </style>
 </head>
 <body>
 
 <div id="laser-dot"></div>
 
+<!-- CANVAS SCRITTURA LIM OVERLAY -->
+<canvas id="limCanvas"></canvas>
+
+<!-- FLOATING TOOLBAR MODALITÀ LIM -->
+<div class="lim-toolbar" id="limToolbar">
+  <span class="lim-drag-handle" title="Trascina la barra dove vuoi sulla LIM">✥ Sposta</span>
+  
+  <div style="display:flex; gap:5px;">
+    <button class="lim-btn active" id="btnLimPen" onclick="setLimTool('pen')">🖊️ Penna</button>
+    <button class="lim-btn" id="btnLimHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
+    <button class="lim-btn" id="btnLimEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
+  </div>
+
+  <div style="height:24px; width:1px; background:rgba(255,255,255,0.2);"></div>
+
+  <div style="display:flex; gap:6px; align-items:center;">
+    <div class="lim-color-dot active" style="background:#fde047; color:#fde047;" onclick="setLimColor('#fde047', this)" title="Giallo Fluo"></div>
+    <div class="lim-color-dot" style="background:#4ade80; color:#4ade80;" onclick="setLimColor('#4ade80', this)" title="Verde Lime"></div>
+    <div class="lim-color-dot" style="background:#38bdf8; color:#38bdf8;" onclick="setLimColor('#38bdf8', this)" title="Ciano Celeste"></div>
+    <div class="lim-color-dot" style="background:#fb7185; color:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosso Brillante"></div>
+    <div class="lim-color-dot" style="background:#ffffff; color:#ffffff;" onclick="setLimColor('#ffffff', this)" title="Bianco Gesso"></div>
+  </div>
+
+  <div style="height:24px; width:1px; background:rgba(255,255,255,0.2);"></div>
+
+  <div style="display:flex; gap:4px;">
+    <button class="lim-btn" style="padding:0 8px;" onclick="setLimSize(3)">S</button>
+    <button class="lim-btn active" style="padding:0 8px;" id="btnLimSizeMed" onclick="setLimSize(6)">M</button>
+    <button class="lim-btn" style="padding:0 8px;" onclick="setLimSize(12)">L</button>
+  </div>
+
+  <div style="height:24px; width:1px; background:rgba(255,255,255,0.2);"></div>
+
+  <div style="display:flex; gap:5px;">
+    <button class="lim-btn" onclick="undoLimStroke()" title="Annulla ultimo tratto">↩️ Annulla</button>
+    <button class="lim-btn" onclick="clearLimCanvas()" title="Cancella tutto">🗑️ Pulisci</button>
+    <button class="lim-btn" id="btnLimPass" onclick="toggleLimPassThrough()" title="Interagisci col calibro sotto senza perdere i disegni">👆 Interagisci</button>
+    <button class="lim-btn" style="background:rgba(239,68,68,0.25); border-color:#ef4444; color:#fca5a5;" onclick="toggleLimMode()">✖ Chiudi</button>
+  </div>
+</div>
+
 <div class="app">
   <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
 
-  <main class="deck">
+  <main class="deck" id="deck">
 
-    <!-- SLIDE 1: COPERTINA -->
+    <!-- SLIDE 1: COPERTINA & ANIMAZIONE LENTA PASSO-PASSO -->
     <section class="slide active" data-idx="0">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <a href="/#iss-archimede" class="btn btn-sm" style="text-decoration:none; color:var(--cyan); border-color:rgba(56,189,248,0.4);">← Torna all'Archivio</a>
-          <span class="badge amber">ISS Archimede • Laboratorio di Fisica e Tecnologia • Classi Prime</span>
+          <a href="/#iss-archimede" class="btn btn-sm" style="text-decoration:none; color:var(--cyan); border-color:rgba(56,189,248,0.4); margin-left:2px;">← Torna all'Archivio</a>
+          <span class="badge amber">ISS Archimede • Fisica &amp; Tecnologia • Classi Prime</span>
         </div>
-        <button class="btn btn-sm" onclick="openPhotoModal()">📷 Confronta / Carica le 2 Foto Reali (27,15 mm)</button>
+        <div style="display:flex; gap:7px; flex-wrap:wrap;">
+          <button class="btn btn-sm btn-amber" onclick="toggleLimMode()">🖍️ Scrivi sulla LIM</button>
+          <button class="btn btn-sm" onclick="openPhotoModal()">📷 Foto Reali (27,15 mm)</button>
+        </div>
       </div>
 
-      <div class="grid-2" style="align-items:center;">
-        <div style="display:flex; flex-direction:column; gap:14px;">
-          <h1 style="font-size:clamp(1.9rem, 3.4vw, 3.35rem); font-weight:900; line-height:1.08; letter-spacing:-0.03em;">
-            Come Leggere il <span class="hl-amber">Calibro a Corsoio</span> passo dopo passo
-          </h1>
-          <p style="font-size:clamp(1rem, 1.32vw, 1.3rem); color:var(--muted);">
-            Presentazione interattiva per LIM costruita esattamente sul calibro reale:
-            <strong>FIMEC METRICA INOX TEMP 20°C</strong> con nonio ventesimale (<strong class="hl-cyan">1/20 mm = 0,05 mm</strong>).
-          </p>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <h1 style="font-size:clamp(1.6rem, 2.7vw, 2.7rem); font-weight:900; line-height:1.1; letter-spacing:-0.03em;">
+          Come Leggere il <span class="hl-amber">Calibro a Corsoio</span> Ventesimale
+        </h1>
+        <p style="font-size:clamp(0.88rem, 1.15vw, 1.18rem); color:var(--muted);">
+          Guida visiva per LIM basata sul calibro del nostro laboratorio:
+          <strong>FIMEC METRICA INOX TEMP 20°C</strong> (<strong class="hl-cyan">1/20 mm = 0,05 mm</strong>, 19 mm divisi in 20 parti).
+        </p>
+      </div>
 
-          <div class="grid-3">
-            <div class="panel" style="border-color:rgba(56,189,248,0.4);">
-              <div class="hud-lbl">Approssimazione</div>
-              <div style="font-size:1.45rem; font-weight:900; color:var(--cyan); font-family:var(--font-mono);">0,05 mm</div>
-              <div style="font-size:0.78rem; color:var(--dim);">Incisa: <strong>1/20 mm</strong></div>
-            </div>
-            <div class="panel" style="border-color:rgba(251,191,36,0.4);">
-              <div class="hud-lbl">Scala &amp; Nonio</div>
-              <div style="font-size:1.45rem; font-weight:900; color:var(--amber); font-family:var(--font-mono);">18 cm</div>
-              <div style="font-size:0.78rem; color:var(--dim);">19 mm ÷ 20 div.</div>
-            </div>
-            <div class="panel" style="border-color:rgba(16,185,129,0.4);">
-              <div class="hud-lbl">Misura nelle Foto</div>
-              <div style="font-size:1.45rem; font-weight:900; color:var(--green-bright); font-family:var(--font-mono);">27,15 mm</div>
-              <div style="font-size:0.78rem; color:var(--dim);">Spiegata al microscopio</div>
-            </div>
+      <!-- HERO CALIBRO: SPAZIOSO, BEN PROPORZIONATO E VISIBILE -->
+      <div class="hero-stage-box">
+        <div class="stage" id="coverStage" style="flex:1; min-height:200px;"></div>
+
+        <!-- STATO DIDATTICO ANIMAZIONE LENTA & CONTROLLI -->
+        <div class="panel" style="padding:8px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; border-color:rgba(251,191,36,0.35);">
+          <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:280px;">
+            <span class="badge emerald" id="coverStatusBadge">Animazione Didattica</span>
+            <span id="coverNarration" style="font-size:0.92rem; font-weight:700; color:#fff;">
+              Misura in corso...
+            </span>
           </div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-            <button class="btn btn-amber" style="font-size:1.04rem; padding:11px 22px;" onclick="goToSlide(5)">
-              ⭐ Vai subito all'Animazione Passo-Passo (27,15 mm)
-            </button>
-            <button class="btn btn-primary" style="font-size:1.04rem; padding:11px 20px;" onclick="nextSlide()">
-              Inizia dall'inizio ▶
-            </button>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button class="btn btn-sm" id="btnCoverPlay" onclick="toggleCoverPlay()">⏸️ Pausa</button>
+            <button class="lim-btn" id="btnCoverSlow" style="height:34px; padding:0 10px;" onclick="toggleCoverSlow()">🐢 Rallenta</button>
+            <button class="btn btn-sm" onclick="restartCoverAnim()">🔄 Riavvia</button>
+            <button class="btn btn-sm btn-primary" onclick="jumpCoverTo2715()">📸 Salta a 27,15 mm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATI CHIAVE & PULSANTI DI AVVIO LEZIONE -->
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px;">
+        <div class="grid-3" style="flex:1; max-width:760px;">
+          <div class="panel" style="border-color:rgba(56,189,248,0.35); padding:6px 12px;">
+            <div class="hud-lbl">Approssimazione</div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--cyan); font-family:var(--font-mono);">0,05 mm</div>
+            <div style="font-size:0.74rem; color:var(--dim);">Incisa: <strong>1/20 mm</strong></div>
+          </div>
+          <div class="panel" style="border-color:rgba(251,191,36,0.35); padding:6px 12px;">
+            <div class="hud-lbl">Scala &amp; Nonio</div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--amber); font-family:var(--font-mono);">18 cm</div>
+            <div style="font-size:0.74rem; color:var(--dim);">19 mm ÷ 20 divisioni</div>
+          </div>
+          <div class="panel" style="border-color:rgba(16,185,129,0.35); padding:6px 12px;">
+            <div class="hud-lbl">Misura Nelle Foto</div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--green-bright); font-family:var(--font-mono);">27,15 mm</div>
+            <div style="font-size:0.74rem; color:var(--dim);">Spiegata passo-passo</div>
           </div>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:8px; height:100%; min-height:260px;">
-          <div class="stage" id="coverStage" style="flex:1;"></div>
-          <div style="text-align:center; font-size:0.84rem; color:var(--dim);">
-            ▲ Riproduzione vettoriale 1:1 del calibro <strong>FIMEC METRICA</strong> in movimento automatico
-          </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-amber" style="font-size:0.95rem; padding:10px 18px;" onclick="goToSlide(5)">
+            ⭐ Vai al Metodo di Lettura (27,15 mm)
+          </button>
+          <button class="btn btn-primary" style="font-size:0.95rem; padding:10px 18px;" onclick="nextSlide()">
+            Inizia la Lezione ▶
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 2: PERCHÉ SERVE IL NONIO -->
+    <!-- SLIDE 2: PERCHÉ IL RIGHELLO NON BASTA -->
     <section class="slide" data-idx="1">
       <div class="slide-head">
         <div>
-          <span class="badge">1 • Il Problema Pratico</span>
-          <h2 class="title">Perché un <span class="hl-rose">righello normale</span> non basta per misurare al centesimo?</h2>
+          <span class="badge cyan">1 • La Necessità del Nonio</span>
+          <h2 class="title">Perché un normale righello non basta per misurare i decimi o centesimi?</h2>
         </div>
-        <button class="btn btn-sm btn-primary" id="btnRulerZoom" onclick="toggleRulerZoom()">🔍 Ingrandisci il dettaglio a 27,15 mm</button>
+        <button class="btn btn-sm btn-amber" id="btnRulerZoom" onclick="toggleRulerZoom()">🔍 Ingrandisci a 27,15 mm</button>
       </div>
 
       <div class="grid-2">
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px; border-color:rgba(251,113,133,0.4);">
-          <div>
-            <span class="badge rose">❌ Con un Righello Millimetrato (1 mm)</span>
-            <h3 style="font-size:1.25rem; margin-top:8px;">Tra 27 mm e 28 mm l'occhio tira a indovinare!</h3>
-            <p style="color:var(--muted); margin-top:5px;">
-              Se il pezzo finisce <em>poco dopo</em> la tacca <strong>27 mm</strong>, ad occhio nudo è impossibile sapere se misura <code>27,10</code>, <code>27,15</code> oppure <code>27,25 mm</code>.
-            </p>
+        <div class="panel" style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="badge rose">Normale Riga Millimetrata (Sensibilità: 1 mm)</span>
+            <span style="font-family:var(--font-mono); font-size:0.86rem; color:var(--dim);">Occhio umano: "tra 27 e 28 mm"</span>
           </div>
-          <div class="stage" id="s2RulerStage" style="height:195px;"></div>
-          <div style="background:rgba(251,113,133,0.12); padding:9px 13px; border-radius:10px; font-size:0.9rem;">
-            ⚠️ In meccanica sbagliare di <strong>0,2 mm</strong> significa realizzare un bullone o un albero che non entra nel cuscinetto!
+          <div class="stage" id="s2RulerStage" style="flex:1; min-height:160px;"></div>
+          <div style="font-size:0.88rem; color:var(--muted); line-height:1.4;">
+            Con una normale riga scolastica possiamo essere certi solo che il pezzo misura <strong>più di 27 mm</strong> e <strong>meno di 28 mm</strong>. La frazione decimale è solo una stima a occhio incerta!
           </div>
         </div>
 
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px; border-color:rgba(16,185,129,0.45);">
-          <div>
-            <span class="badge emerald">✅ L'invenzione del Nonio (Pierre Vernier)</span>
-            <h3 style="font-size:1.25rem; margin-top:8px;">Non stimiamo uno spazio: cerchiamo <span class="hl-amber">due tacche allineate!</span></h3>
-            <p style="color:var(--muted); margin-top:5px;">
-              L'occhio umano fatica a stimare frazioni minuscole, ma è <strong>precisissimo</strong> nel riconoscere quando <strong>due linee diventano un'unica linea dritta continua</strong>!
-            </p>
+        <div class="panel" style="display:flex; flex-direction:column; gap:10px; border-color:rgba(16,185,129,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="badge emerald">Calibro con Nonio FIMEC (Sensibilità: 0,05 mm)</span>
+            <span style="font-family:var(--font-mono); font-size:0.86rem; color:var(--green-bright); font-weight:800;">27,15 mm ESATTI</span>
           </div>
-          <div class="stage" id="s2VernierStage" style="height:195px;"></div>
-          <div style="background:rgba(16,185,129,0.13); padding:9px 13px; border-radius:10px; font-size:0.9rem;">
-            💡 <strong>1/20 mm = 0,05 mm:</strong> dividiamo 1 singolo millimetro in <strong>20 parti uguali</strong> (spessore di un capello umano!).
+          <div class="stage" id="s2VernierStage" style="flex:1; min-height:160px;"></div>
+          <div style="font-size:0.88rem; color:var(--muted); line-height:1.4;">
+            Grazie al <strong>nonio</strong>, non dobbiamo più tirare a indovinare: cerchiamo quale delle 20 tacche inferiori forma una linea continua con la scala fissa. Qui è la <strong>3ª tacca (+0,15 mm)</strong>!
           </div>
         </div>
       </div>
+
+      <div class="banner">
+        <div>💡 <strong>Il segreto dell'ingegneria:</strong> Il nonio trasforma una stima incerta di frazione in un <strong>controllo visivo di allineamento netto</strong> tra due tacche!</div>
+        <button class="btn btn-sm btn-primary" onclick="nextSlide()">Scopri come funziona ▶</button>
+      </div>
     </section>
 
-    <!-- SLIDE 3: ANATOMIA DEL CALIBRO DELLE FOTO -->
+    <!-- SLIDE 3: ANATOMIA DEL CALIBRO FIMEC -->
     <section class="slide" data-idx="2">
       <div class="slide-head">
         <div>
-          <span class="badge amber">2 • Conosciamo ogni parte dello strumento</span>
+          <span class="badge amber">2 • Le Parti dello Strumento</span>
           <h2 class="title">Anatomia del calibro <span class="hl-amber">FIMEC METRICA INOX 20°C</span></h2>
         </div>
-        <button class="btn btn-sm btn-amber" onclick="openPhotoModal()">📷 Confronta con le Foto</button>
+        <button class="btn btn-sm btn-amber" onclick="openPhotoModal()">📷 Foto Reali del Laboratorio</button>
       </div>
 
       <div class="stage" id="anatomyStage" style="flex:1; min-height:220px;"></div>
 
       <div class="panel" style="border-left:5px solid var(--amber); padding:10px 16px;">
         <div id="hsTitle" style="font-size:1.15rem; font-weight:900; color:var(--amber);">Tocca uno dei 7 punti numerati per esplorare il calibro</div>
-        <div id="hsDesc" style="color:var(--muted); margin-top:3px; font-size:0.98rem;">
-          Non diamo nulla per scontato: scopriamo a cosa servono le due scale, i becchi, l'asta e la leva a molla.
+        <div id="hsDesc" style="color:var(--muted); margin-top:3px; font-size:0.95rem;">
+          Tocca i numeri per scoprire i becchi per esterni, i becchi per interni, l'asta di profondità, il nonio e la leva a molla.
         </div>
       </div>
 
       <div class="hotspots" id="hsButtons"></div>
     </section>
 
-    <!-- SLIDE 4: COME FUNZIONA IL SEGRETO 19 mm / 20 DIVISIONI -->
+    <!-- SLIDE 4: IL PRINCIPIO DEL NONIO (19 mm / 20) -->
     <section class="slide" data-idx="3">
       <div class="slide-head">
         <div>
-          <span class="badge">3 • Il Principio Meccanico Animato</span>
-          <h2 class="title">Come fa il nonio a misurare <span class="hl-amber">0,05 mm</span>? (<span class="hl-cyan">19 mm ÷ 20 parti</span>)</h2>
+          <span class="badge cyan">3 • Il Principio Matematico</span>
+          <h2 class="title">Come fa il nonio a misurare 0,05 mm? <span class="hl-cyan">(19 mm ÷ 20 divisioni)</span></h2>
         </div>
-        <div style="display:flex; gap:7px; flex-wrap:wrap;">
-          <button class="btn btn-sm" onclick="setPrincipleStep(0)">⏮ Chiuso (0,00)</button>
-          <button class="btn btn-sm" onclick="stepPrinciple(-1)">◀ -0,05 mm</button>
-          <button class="btn btn-sm btn-amber" onclick="stepPrinciple(1)">Sposta di +0,05 mm ▶</button>
-          <button class="btn btn-sm btn-primary" id="btnPrinAuto" onclick="togglePrincipleAuto()">▶ Auto-Scatti</button>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-sm" id="btnPrincipleAuto" onclick="togglePrincipleAuto()">▶ Avvio Auto</button>
+          <button class="btn btn-sm btn-primary" onclick="stepPrinciple(1)">Passo Succ. ▶</button>
         </div>
       </div>
 
-      <div class="grid-2" style="grid-template-columns: 1.38fr 0.62fr;">
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="stage" id="principleStage" style="flex:1; min-height:250px;"></div>
-          <div class="banner" id="principleBanner">
-            <div>Apertura attuale: <strong>0,00 mm</strong> — Clicca <strong>"Sposta di +0,05 mm ▶"</strong> per vedere il salto della coincidenza!</div>
-          </div>
-        </div>
+      <div class="grid-2">
+        <div class="stage" id="principleStage" style="min-height:260px;"></div>
 
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
-          <div>
-            <h3 style="color:var(--cyan); font-size:1.15rem;">La matematica resa semplicissima:</h3>
-            <ol style="margin-top:8px; padding-left:20px; display:flex; flex-direction:column; gap:8px; color:var(--muted); font-size:0.93rem;">
-              <li>Prendiamo <strong>19 mm</strong> dell'asta fissa e dividiamoli sul nonio in <strong>20 tacche uguali</strong>.</li>
-              <li>Ogni divisione del nonio misura quindi:
-                <div style="background:#091020; border:1px solid rgba(56,189,248,0.4); border-radius:9px; padding:6px; margin-top:4px; text-align:center; font-family:var(--font-mono); color:#fff;">
-                  19 mm ÷ 20 = <strong class="hl-cyan">0,95 mm</strong>
-                </div>
-              </li>
-              <li>La differenza tra 1 mm fisso e 1 tacca del nonio è l'<strong>approssimazione</strong>:
-                <div style="background:#091020; border:1px solid rgba(251,191,36,0.45); border-radius:9px; padding:6px; margin-top:4px; text-align:center; font-family:var(--font-mono); color:#fff;">
-                  1,00 − 0,95 = <strong class="hl-amber">0,05 mm</strong> (1/20)
-                </div>
-              </li>
-            </ol>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="panel" style="border-left:5px solid var(--cyan);">
+            <div style="font-size:1.15rem; font-weight:900; color:var(--cyan);" id="pStepTitle">Passo 1: A calibro chiuso (0,00 mm)</div>
+            <div style="font-size:0.94rem; color:var(--muted); margin-top:6px; line-height:1.45;" id="pStepDesc">
+              A calibro chiuso, le 20 tacche del nonio coprono una lunghezza totale di <strong>19 mm</strong>. Ciascuna divisione del nonio misura quindi <strong>19 ÷ 20 = 0,95 mm</strong>.
+            </div>
           </div>
-          <div style="background:rgba(16,185,129,0.13); border:1px solid rgba(16,185,129,0.35); border-radius:10px; padding:9px 12px; font-size:0.9rem;">
-            🚀 <strong>Effetto Lente 20×:</strong> Aprendo il calibro di appena <code>0,05 mm</code>, la 1ª tacca (distante <code>0,05 mm</code> da <code>1 mm</code>) si allinea esattamente con <code>1 mm</code>! Aprendo di <code>0,15 mm</code> si allinea la <strong>3ª tacca</strong>!
+
+          <div class="panel" style="background:#091024; border-color:rgba(56,189,248,0.3);">
+            <div class="hud-lbl">La Magia Matematica</div>
+            <div style="font-family:var(--font-mono); font-size:1.1rem; margin-top:4px; line-height:1.5;">
+              1 divisione scala fissa = <span class="hl-cyan">1,00 mm</span><br>
+              1 divisione sul nonio = <span class="hl-amber">0,95 mm</span><br>
+              <strong style="color:var(--green-bright); font-size:1.2rem;">Differenza (&Delta;) = 1,00 - 0,95 = 0,05 mm</strong>
+            </div>
+            <div style="font-size:0.8rem; color:var(--dim); margin-top:6px;">
+              Ogni volta che il corsoio avanza di appena <strong>0,05 mm</strong>, la tacca successiva si allinea con precisione assoluta!
+            </div>
+          </div>
+
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn btn-sm active-pill" id="pTab0" onclick="setPrincipleStep(0)">0,00 mm (Chiuso)</button>
+            <button class="btn btn-sm" id="pTab1" onclick="setPrincipleStep(1)">+0,05 mm (1ª tacca)</button>
+            <button class="btn btn-sm" id="pTab2" onclick="setPrincipleStep(2)">+0,10 mm (2ª tacca)</button>
+            <button class="btn btn-sm" id="pTab3" onclick="setPrincipleStep(3)">+0,15 mm (3ª tacca)</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 5: DECODIFICA DELLE 21 TACCHE DEL NONIO FIMEC -->
+    <!-- SLIDE 5: MAPPA VISIVA DEI 20 CENTESIMI -->
     <section class="slide" data-idx="4">
       <div class="slide-head">
         <div>
-          <span class="badge amber">4 • Zero Dubbi sulle Tacche del Nonio</span>
-          <h2 class="title">Perché sul nostro calibro ci sono scritti solo <span class="hl-amber">0  2  4  6  8  10</span>?</h2>
+          <span class="badge amber">4 • La Mappa dei Valori</span>
+          <h2 class="title">Perché sul nostro calibro ci sono scritti solo <span class="hl-amber">0 &nbsp;2 &nbsp;4 &nbsp;6 &nbsp;8 &nbsp;10</span>?</h2>
         </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <button class="btn btn-sm active-pill" id="mf-all" onclick="setMapFilter('all')">Tutte le 21 tacche</button>
-          <button class="btn btn-sm" id="mf-even" onclick="setMapFilter('even')">Pari scritti (,20 ,40...)</button>
-          <button class="btn btn-sm" id="mf-odd10" onclick="setMapFilter('odd10')">Dispari non scritti (,10 ,30 ,50...)</button>
-          <button class="btn btn-sm" id="mf-half" onclick="setMapFilter('half')">Tacche corte (,05 ,15 ,25...)</button>
+        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+          <button class="btn btn-sm active-pill" id="mfAll" onclick="setMapFilter('all')">Tutti i 20 valori</button>
+          <button class="btn btn-sm" id="mfEven" onclick="setMapFilter('even')">Solo i numeri scritti</button>
+          <button class="btn btn-sm" id="mfOdd" onclick="setMapFilter('odd10')">Tacche dispari (,05 ,15...)</button>
+          <button class="btn btn-sm" id="mfQuarters" onclick="setMapFilter('quarters')">I quarti (,25 ,50 ,75)</button>
         </div>
       </div>
 
-      <div class="stage" id="mapStage" style="flex:1; min-height:235px;"></div>
-
-      <div class="grid-3">
-        <div class="panel" style="border-color:var(--amber); background:rgba(251,191,36,0.09);">
-          <div class="hud-lbl" style="color:var(--amber);">👆 Tocca qualsiasi tacca qui sopra!</div>
-          <div id="mapVal" style="font-size:1.65rem; font-weight:900; font-family:var(--font-mono); color:#fff; margin-top:2px;">+ 0,15 mm</div>
-          <div id="mapDesc" style="font-size:0.88rem; color:var(--muted); margin-top:2px;">
-            <strong>3ª tacca dopo lo 0:</strong> tacca corta posta esattamente tra 1 decimo (<code>,10</code>) e 2 decimi (<code>,20</code>).
-          </div>
+      <div class="panel" style="padding:10px 14px;">
+        <div style="font-size:0.92rem; color:var(--muted); line-height:1.4;">
+          Sul metallo dello smusso non c'era spazio per scrivere venti numeri a due cifre! Perciò il costruttore scrive solo i decimi:
+          <strong>0</strong> (= ,00), <strong>2</strong> (= ,20), <strong>4</strong> (= ,40), <strong>6</strong> (= ,60), <strong>8</strong> (= ,80), <strong>10</strong> (= 1,00 mm).
+          Le tacche intermedie valgono <strong>+0,05 mm</strong>! Tocca qualsiasi tacca per vedere il valore esatto.
         </div>
+      </div>
 
-        <div class="panel" style="border-color:rgba(56,189,248,0.38);">
-          <div class="hud-lbl" style="color:var(--cyan);">Osserva le 3 Lunghezze sul Nonio FIMEC</div>
-          <ul style="margin-top:5px; padding-left:17px; font-size:0.87rem; color:var(--muted); display:flex; flex-direction:column; gap:3px;">
-            <li><strong class="hl-amber">Lunghissime (fino al bordo):</strong> solo <code>0</code>, <code>,50</code> (5 decimi!) e <code>10</code>.</li>
-            <li><strong class="hl-cyan">Medie:</strong> tutti i decimi interi (<code>,10 ,20 ,30 ,40 ,60 ,70 ,80 ,90</code>).</li>
-            <li><strong class="hl-emerald">Corte:</strong> tutti i mezzi decimi (<code>,05 ,15 ,25 ... ,95</code>).</li>
-          </ul>
-        </div>
+      <div class="stage" id="mapStage" style="flex:1; min-height:170px;"></div>
 
-        <div class="panel" style="border-color:rgba(251,113,133,0.45); background:rgba(251,113,133,0.09);">
-          <div class="hud-lbl" style="color:var(--rose);">⚠️ Attenzione: "2" NON vuol dire 0,02!</div>
-          <div style="font-size:0.96rem; margin-top:5px; color:#fff;">
-            Sul nonio <code>2</code> significa <strong>2 decimi</strong> = <strong class="hl-emerald" style="font-family:var(--font-mono);">0,20 mm</strong>!
-          </div>
-          <div style="font-size:0.84rem; color:var(--muted); margin-top:3px;">
-            Per non sbagliare mai: leggi <code>2, 4, 6, 8</code> come <strong><code>,20  ,40  ,60  ,80</code></strong>!
-          </div>
+      <div class="panel" style="background:#091024; border-color:var(--amber); padding:8px 14px;">
+        <div id="mapDesc" style="font-size:1.05rem; font-weight:800; color:#fff;">
+          Tocca una tacca sulla mappa per visualizzarne il valore centesimale!
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 6: ⭐ FOCUS CENTRALE — ANIMAZIONE PASSO-PASSO (27,15 mm) -->
+    <!-- SLIDE 6: FOCUS CENTRALE - METODO INFALLIBILE (27,15 mm) -->
     <section class="slide" data-idx="5">
-      <div class="slide-head" style="padding-bottom:6px;">
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <span class="badge amber">⭐ Focus Centrale • Animazione Guidata Passo-Passo</span>
-          <h2 class="title" style="font-size:clamp(1.15rem, 1.7vw, 1.75rem);">Metodo Infallibile di Lettura</h2>
+      <div class="slide-head" style="padding-bottom:5px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span class="badge amber">⭐ Focus • Animazione Passo-Passo</span>
+          <h2 class="title" style="font-size:clamp(1.1rem, 1.6vw, 1.65rem);">Metodo Infallibile di Lettura</h2>
         </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;" id="presetBar">
-          <button class="btn btn-sm active-pill" onclick="loadStepPreset(27.15, this)">📸 27,15 mm (Foto Calibro)</button>
-          <button class="btn btn-sm" onclick="loadStepPreset(14.00, this)">🎯 14,00 mm (Intera)</button>
-          <button class="btn btn-sm" onclick="loadStepPreset(32.50, this)">⚖️ 32,50 mm (Tacca ,50)</button>
-          <button class="btn btn-sm" onclick="loadStepPreset(8.65, this)">🔍 8,65 mm (&lt; 1 cm)</button>
-          <button class="btn btn-sm" onclick="loadStepPreset(40.80, this)">✨ 40,80 mm (Vicino al 4)</button>
+        <div style="display:flex; gap:5px; flex-wrap:wrap;" id="presetBar">
+          <button class="btn btn-sm active-pill" onclick="loadStepPreset(27.15, this)">📸 27,15 mm (Calibro Reale)</button>
+          <button class="btn btn-sm" onclick="loadStepPreset(14.00, this)">🎯 14,00 mm</button>
+          <button class="btn btn-sm" onclick="loadStepPreset(32.50, this)">⚖️ 32,50 mm</button>
+          <button class="btn btn-sm" onclick="loadStepPreset(8.65, this)">🔍 8,65 mm</button>
+          <button class="btn btn-sm" onclick="loadStepPreset(40.80, this)">✨ 40,80 mm</button>
         </div>
       </div>
 
-      <!-- Display Formula Gigante -->
+      <!-- Formula di Lettura HUD -->
       <div class="hud">
         <div class="hud-box" id="hudIntBox">
           <span class="hud-lbl">1° Passo: mm interi prima dello 0</span>
@@ -614,115 +765,110 @@
         </div>
       </div>
 
-      <!-- Selettore dei 6 Stati dell'Animazione -->
+      <!-- Barra dei 6 Stati -->
       <div class="stepper" id="stepperBar">
         <button class="step-btn active" onclick="goToAnimStep(0)">0. Panoramica</button>
         <button class="step-btn" onclick="goToAnimStep(1)">1. Cerca lo ZERO</button>
         <button class="step-btn" onclick="goToAnimStep(2)">2. Conta mm Interi</button>
-        <button class="step-btn" onclick="goToAnimStep(3)">3. Scanner Coincidenza</button>
+        <button class="step-btn" onclick="goToAnimStep(3)">3. Scanner Allineamento</button>
         <button class="step-btn" onclick="goToAnimStep(4)">4. Valore Tacca</button>
         <button class="step-btn" onclick="goToAnimStep(5)">5. Somma Finale ✅</button>
       </div>
 
-      <!-- Palcoscenico Animato + Lente 4x -->
-      <div class="stage" style="flex:1; min-height:215px;">
+      <!-- Palcoscenico Animato con Lente 4x -->
+      <div class="stage" style="flex:1; min-height:200px;">
         <div id="stepMainMount" style="width:100%; height:100%;"></div>
         <div class="loupe" id="stepLoupe">
           <div id="stepLoupeMount" style="width:100%; height:100%;"></div>
-          <div class="loupe-tag" id="stepLoupeTag">LENTE 4× • Coincidenza</div>
+          <div class="loupe-tag" id="stepLoupeTag">Lente 4×</div>
         </div>
       </div>
 
-      <!-- Barra Narrativa + Controlli -->
-      <div class="banner">
-        <div id="stepNarration" style="flex:1;">Pronto per l'animazione passo-passo.</div>
-        <div style="display:flex; gap:7px; flex-shrink:0;">
-          <button class="btn btn-sm" onclick="prevAnimStep()">◀ Passo Prec.</button>
-          <button class="btn btn-sm btn-amber" onclick="nextAnimStep()">Passo Succ. ▶</button>
-          <button class="btn btn-sm btn-emerald" id="btnAutoSteps" onclick="toggleAutoPlaySteps()">▶ Riproduci Tutto</button>
+      <!-- Scheda di Narrazione Passo-Passo -->
+      <div class="panel" style="padding:8px 14px; display:flex; justify-content:space-between; align-items:center; gap:10px; border-left:5px solid var(--amber);">
+        <div id="stepNarration" style="font-size:0.95rem; line-height:1.45; color:#fff; flex:1;">
+          Stato 0: Premi "Passo Succ." per iniziare la lettura guidata!
+        </div>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+          <button class="btn btn-sm" onclick="prevAnimStep()">◀ Prec.</button>
+          <button class="btn btn-sm btn-primary" onclick="nextAnimStep()">Passo Succ. ▶</button>
+          <button class="btn btn-sm btn-amber" id="btnAutoPlaySteps" onclick="toggleAutoPlaySteps()">▶ Auto</button>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 7: I 4 ERRORI CLASSICI + SIMULATORE DI PARALLASSE -->
+    <!-- SLIDE 7: TRAPPOLE DEGLI STUDENTI & ERRORE DI PARALLASSE -->
     <section class="slide" data-idx="6">
       <div class="slide-head">
         <div>
-          <span class="badge rose">5 • Errori da Evitare in Laboratorio</span>
-          <h2 class="title">Le <span class="hl-rose">4 Trappole Tipiche</span> degli studenti (e l'Errore di Parallasse)</h2>
+          <span class="badge rose">5 • Errori Comuni da Evitare</span>
+          <h2 class="title">Le 4 Trappole Tipiche degli studenti (e l'Errore di Parallasse)</h2>
         </div>
       </div>
 
       <div class="grid-2">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div class="panel" style="border-top:4px solid var(--rose);">
-            <h3 style="font-size:1.02rem; color:var(--rose);">1. Leggere il bordo metallico</h3>
-            <p style="font-size:0.87rem; color:var(--muted); margin-top:5px;">
-              A <code>27,15 mm</code> lo spigolo sinistro del corsoio si trova su <code>13,6 mm</code>! <strong>Non guardarlo mai:</strong> conta sempre fino alla <strong>tacca incisa dello <code>0</code></strong>.
-            </p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="panel" style="border-left:4px solid var(--rose); padding:8px 12px;">
+            <div style="font-weight:900; color:var(--rose);">❌ Trappola 1: Guardare il bordo sinistro del metallo</div>
+            <div style="font-size:0.86rem; color:var(--muted); margin-top:2px;">
+              Il bordo del corsoio si trova 9,25 mm prima dello zero! Punta sempre gli occhi <strong>solo sulla prima tacca incisa (0)</strong>.
+            </div>
           </div>
-          <div class="panel" style="border-top:4px solid var(--amber);">
-            <h3 style="font-size:1.02rem; color:var(--amber);">2. Il numero cm scritto a sinistra</h3>
-            <p style="font-size:0.87rem; color:var(--muted); margin-top:5px;">
-              Sul calibro <strong>FIMEC</strong>, il numero <code>3</code> è inciso a sinistra della propria tacca lunga <code>30 mm</code>. Conta sempre partendo da <code>20</code> → <code>25</code> → <code>26</code> → <code>27</code>!
-            </p>
+          <div class="panel" style="border-left:4px solid var(--amber); padding:8px 12px;">
+            <div style="font-weight:900; color:var(--amber);">❌ Trappola 2: Confondere il numero col millimetro</div>
+            <div style="font-size:0.86rem; color:var(--muted); margin-top:2px;">
+              Se si allinea la tacca 3, non sono 3 millimetri! Sono 3 divisioni da 0,05 mm = <strong>0,15 mm</strong>.
+            </div>
           </div>
-          <div class="panel" style="border-top:4px solid var(--cyan);">
-            <h3 style="font-size:1.02rem; color:var(--cyan);">3. Scrivere cifre impossibili</h3>
-            <p style="font-size:0.87rem; color:var(--muted); margin-top:5px;">
-              Con risoluzione <code>0,05 mm</code> la seconda cifra decimale può essere <strong>SOLO <code>0</code> oppure <code>5</code></strong> (es. <code>27,15</code> o <code>27,20</code>, mai <code>27,13</code>!).
-            </p>
+          <div class="panel" style="border-left:4px solid var(--cyan); padding:8px 12px;">
+            <div style="font-weight:900; color:var(--cyan);">❌ Trappola 3: Dimenticare lo zero nei primi centesimi</div>
+            <div style="font-size:0.86rem; color:var(--muted); margin-top:2px;">
+              La prima tacca vale <strong>0,05 mm</strong>, NON 0,5 mm (0,5 mm è la tacca lunga a metà, dopo il 4).
+            </div>
           </div>
-          <div class="panel" style="border-top:4px solid var(--green-bright);">
-            <h3 style="font-size:1.02rem; color:var(--green-bright);">4. Uso della leva a molla</h3>
-            <p style="font-size:0.87rem; color:var(--muted); margin-top:5px;">
-              Premi la leva inferiore col pollice per muovere il corsoio; quando i becchi toccano il pezzo, <strong>rilascia il pollice</strong> così la misura resta bloccata!
-            </p>
+          <div class="panel" style="border-left:4px solid var(--green-bright); padding:8px 12px;">
+            <div style="font-weight:900; color:var(--green-bright);">⚠️ Trappola 4: L'Errore di Parallasse</div>
+            <div style="font-size:0.86rem; color:var(--muted); margin-top:2px;">
+              Guardare il calibro di sbieco fa sembrare allineata una tacca sbagliata! Mettiti sempre <strong>perfettamente perpendicolare</strong>.
+            </div>
           </div>
         </div>
 
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px; border-color:rgba(56,189,248,0.4);">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="badge">Esperimento Interattivo</span>
-              <span id="parBadge" style="font-family:var(--font-mono); font-weight:900; color:var(--green-bright);">Angolo vista: 0° (Perpendicolare ✅)</span>
-            </div>
-            <h3 style="font-size:1.15rem; margin-top:6px;">Simulatore <span class="hl-cyan">Errore di Parallasse</span></h3>
-            <p style="font-size:0.88rem; color:var(--muted); margin-top:3px;">
-              Lo smusso del nonio è leggermente rialzato rispetto all'asta fissa: se guardi di sbieco, la coincidenza sembra cambiare! Muovi lo slider:
-            </p>
+        <div class="panel" style="display:flex; flex-direction:column; gap:8px; border-color:rgba(56,189,248,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="badge cyan">Simulatore Errore di Parallasse LIM</span>
+            <span id="parAngleLabel" style="font-family:var(--font-mono); font-weight:800; color:var(--cyan);">Angolo: 0° (Occhio Perpendicolare)</span>
           </div>
-          <div class="stage" id="parallaxStage" style="height:170px;"></div>
-          <div>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:0.8rem; color:var(--rose); font-weight:700;">Sbieco SX (-30°)</span>
-              <input type="range" id="parSlider" min="-30" max="30" value="0" style="flex:1; accent-color:var(--amber); cursor:pointer;" oninput="updateParallax(this.value)">
-              <span style="font-size:0.8rem; color:var(--rose); font-weight:700;">Sbieco DX (+30°)</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-              <span id="parText" style="font-size:0.92rem; font-weight:800; color:var(--green-bright);">Lettura percepita: 27,15 mm (Corretta!)</span>
-              <button class="btn btn-sm" onclick="document.getElementById('parSlider').value=0; updateParallax(0);">Vista Dritta 0°</button>
-            </div>
+          <div class="stage" id="parallaxStage" style="flex:1; min-height:170px;"></div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:0.82rem; color:var(--dim); white-space:nowrap;">-20° (Sinistra)</span>
+            <input type="range" id="rngParallax" min="-20" max="20" value="0" step="1" style="flex:1; accent-color:var(--cyan);" oninput="updateParallax(this.value)">
+            <span style="font-size:0.82rem; color:var(--dim); white-space:nowrap;">+20° (Destra)</span>
+          </div>
+          <div style="text-align:center;">
+            <button class="btn btn-sm btn-primary" onclick="updateParallax(0); document.getElementById('rngParallax').value=0;">
+              🎯 Rimetti l'Occhio al Centro (0°)
+            </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 8: LABORATORIO VIRTUALE LIBERO PER LIM -->
+    <!-- SLIDE 8: LABORATORIO VIRTUALE LIM (TRASCINA COL DITO) -->
     <section class="slide" data-idx="7">
       <div class="slide-head">
         <div>
-          <span class="badge emerald">6 • Simulatore Interattivo LIM</span>
+          <span class="badge emerald">6 • Simulatore Touch LIM</span>
           <h2 class="title">Laboratorio Virtuale: <span class="hl-emerald">Trascina il Corsoio</span> col dito sulla LIM!</h2>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <button class="btn btn-sm" id="btnLabHide" onclick="toggleLabMystery()">👁 Nascondi Misura (Interroga la classe)</button>
           <button class="btn btn-sm btn-amber" onclick="sendLabToExplainer()">✨ Spiega questa misura Passo-Passo!</button>
         </div>
       </div>
 
-      <div class="panel" style="padding:8px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-        <div style="display:flex; gap:7px; flex-wrap:wrap;">
+      <div class="panel" style="padding:6px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <button class="btn btn-sm" onclick="nudgeLab(-20)">-1,00 mm</button>
           <button class="btn btn-sm" onclick="nudgeLab(-1)">-0,05 mm</button>
           <button class="btn btn-sm btn-primary" onclick="nudgeLab(1)">+0,05 mm</button>
@@ -731,16 +877,17 @@
           <button class="btn btn-sm" onclick="setLabSteps(543)">📸 27,15 mm</button>
         </div>
 
-        <div style="display:flex; align-items:center; gap:12px; background:#080d1a; padding:5px 16px; border-radius:11px; border:1.5px solid var(--amber);">
+        <div style="display:flex; align-items:center; gap:10px; background:#080d1a; padding:4px 14px; border-radius:10px; border:1.5px solid var(--amber);">
           <span class="hud-lbl">Misura:</span>
-          <span id="labVal" style="font-family:var(--font-mono); font-size:1.65rem; font-weight:900; color:var(--amber);">27,15 mm</span>
-          <span id="labSub" style="font-family:var(--font-mono); font-size:0.9rem; color:var(--cyan);">(27 + 0,15)</span>
+          <span id="labVal" style="font-family:var(--font-mono); font-size:1.5rem; font-weight:900; color:var(--amber);">27,15 mm</span>
+          <span id="labSub" style="font-family:var(--font-mono); font-size:0.86rem; color:var(--cyan);">(27 + 0,15)</span>
         </div>
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:9px; flex:1; min-height:0;">
-        <div class="stage" id="labFullStage" style="flex:0.9; min-height:135px; cursor:ew-resize;" title="Trascina a destra e sinistra!"></div>
-        <div class="stage" id="labZoomStage" style="flex:1.25; min-height:175px;"></div>
+      <!-- I DUE CALIBRI: PANORAMICA SOPRA, ZOOM SPAZIOSO SOTTO SENZA TAGLI -->
+      <div style="display:flex; flex-direction:column; gap:8px; flex:1; min-height:0;">
+        <div class="stage" id="labFullStage" style="flex:0.85; min-height:120px; cursor:ew-resize;" title="Trascina a destra e a sinistra!"></div>
+        <div class="stage" id="labZoomStage" style="flex:1.35; min-height:185px;"></div>
       </div>
     </section>
 
@@ -748,101 +895,84 @@
     <section class="slide" data-idx="8">
       <div class="slide-head">
         <div>
-          <span class="badge amber">7 • Sfida Interattiva di Classe</span>
+          <span class="badge amber">7 • Sfida di Classe sulla LIM</span>
           <h2 class="title">Mettiamoci alla prova sulla LIM: <span class="hl-amber">Quanto misura?</span></h2>
         </div>
-        <div style="display:flex; gap:12px; align-items:center;">
-          <div style="background:rgba(16,185,129,0.16); border:1px solid var(--green-bright); padding:5px 14px; border-radius:9px; font-weight:800;">
-            Punteggio: <span id="quizScore" style="font-family:var(--font-mono); color:var(--green-bright);">0 / 0</span>
-          </div>
-          <button class="btn btn-sm btn-primary" onclick="newQuiz()">🔄 Nuova Misura</button>
-        </div>
+        <button class="btn btn-sm btn-emerald" onclick="newQuiz()">🎲 Prossima Misura</button>
       </div>
 
-      <div class="grid-2" style="grid-template-columns: 1.45fr 0.55fr;">
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="stage" id="quizStage" style="flex:1; min-height:250px;"></div>
-          <div class="banner" id="quizBanner">
-            <div id="quizMsg">🧐 Leggi prima i millimetri interi prima dello <strong>0</strong>, poi la tacca allineata del nonio!</div>
-            <button class="btn btn-sm" onclick="toggleQuizHint()">💡 Aiuto</button>
-          </div>
-        </div>
+      <div class="grid-2">
+        <div class="stage" id="quizStage" style="min-height:260px;"></div>
 
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:9px;">
+        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
           <div>
-            <div class="hud-lbl">Scrivi la misura in mm</div>
-            <div id="quizDisplay" style="margin-top:5px; background:#070c18; border:2px solid var(--cyan); border-radius:11px; padding:8px 14px; font-family:var(--font-mono); font-size:1.85rem; font-weight:900; text-align:right; min-height:54px;">
-              <span style="color:var(--dim);">__,__</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="hud-lbl">La Tua Risposta:</span>
+              <button class="btn btn-sm" onclick="toggleQuizHint()">💡 Suggerimento</button>
             </div>
+            <div id="quizDisplay" style="font-family:var(--font-mono); font-size:2.4rem; font-weight:900; text-align:center; padding:10px; background:#080d1a; border-radius:12px; border:2px solid var(--border); color:var(--amber); margin-top:6px;">
+              --,-- mm
+            </div>
+            <div id="quizHintBox" style="display:none; font-size:0.88rem; color:var(--cyan); background:rgba(56,189,248,0.12); padding:8px 12px; border-radius:8px; margin-top:8px;"></div>
           </div>
 
+          <!-- Tastierino Touch per la LIM -->
           <div class="numpad">
             <button class="nkey" onclick="quizKey('7')">7</button>
             <button class="nkey" onclick="quizKey('8')">8</button>
             <button class="nkey" onclick="quizKey('9')">9</button>
-            <button class="nkey" style="background:#4c1d2f; color:#fda4af;" onclick="quizKey('DEL')">⌫</button>
+            <button class="nkey" style="background:#7f1d1d;" onclick="quizKey('C')">C</button>
             <button class="nkey" onclick="quizKey('4')">4</button>
             <button class="nkey" onclick="quizKey('5')">5</button>
             <button class="nkey" onclick="quizKey('6')">6</button>
-            <button class="nkey" style="background:#1e3a5f; color:var(--cyan);" onclick="quizKey('CLR')">C</button>
+            <button class="nkey" style="background:#92400e;" onclick="quizKey('BK')">⌫</button>
             <button class="nkey" onclick="quizKey('1')">1</button>
             <button class="nkey" onclick="quizKey('2')">2</button>
             <button class="nkey" onclick="quizKey('3')">3</button>
-            <button class="nkey" style="background:#3b2f13; color:var(--amber);" onclick="quizKey(',')">,</button>
-            <button class="nkey" style="grid-column:span 2;" onclick="quizKey('0')">0</button>
-            <button class="nkey" onclick="quizKey(',00')">,00</button>
-            <button class="nkey" onclick="quizKey(',50')">,50</button>
+            <button class="nkey" style="background:var(--emerald); color:#090e1a;" onclick="checkQuiz()">VERIFICA</button>
+            <button class="nkey" onclick="quizKey('0')">0</button>
+            <button class="nkey" onclick="quizKey(',')">,</button>
+            <button class="nkey" onclick="quizKey('5')">5</button>
+            <button class="nkey" style="background:#0284c7;" onclick="sendQuizToExplainer()">Spiega</button>
           </div>
 
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-emerald" style="flex:1;" onclick="checkQuiz()">✅ Verifica</button>
-            <button class="btn btn-amber" onclick="sendQuizToExplainer()" title="Apri nell'animazione passo-passo">🔍 Spiega</button>
-          </div>
+          <div id="quizFeedback" style="font-size:0.95rem; font-weight:800; text-align:center; min-height:24px;"></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- BARRA DOCENTE LIM -->
+  <!-- BARRA INFERIORE DOCK LIM -->
   <footer class="dock">
-    <div style="display:flex; gap:8px; align-items:center;">
-      <a href="/#iss-archimede" class="btn btn-sm" style="text-decoration:none; color:var(--cyan); border-color:rgba(56,189,248,0.4);" title="Torna all'Archivio">🏠 Home</a>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <a href="/#iss-archimede" class="btn btn-sm" style="text-decoration:none; color:var(--cyan);" title="Torna all'Archivio">🏠 Home</a>
       <button class="btn btn-sm" onclick="prevSlide()">◀ Indietro</button>
       <button class="btn btn-sm btn-primary" onclick="nextSlide()">Avanti ▶</button>
     </div>
 
-    <div class="dots" id="dockDots">
-      <button class="dot active" onclick="goToSlide(0)">1</button>
-      <button class="dot" onclick="goToSlide(1)">2</button>
-      <button class="dot" onclick="goToSlide(2)">3</button>
-      <button class="dot" onclick="goToSlide(3)">4</button>
-      <button class="dot" onclick="goToSlide(4)">5</button>
-      <button class="dot" onclick="goToSlide(5)">6 ⭐</button>
-      <button class="dot" onclick="goToSlide(6)">7</button>
-      <button class="dot" onclick="goToSlide(7)">8</button>
-      <button class="dot" onclick="goToSlide(8)">9</button>
-    </div>
+    <div class="dots" id="dockDots"></div>
 
-    <div style="display:flex; gap:8px;">
-      <button class="btn btn-sm" id="btnLaser" onclick="toggleLaser()">🔴 Laser</button>
-      <button class="btn btn-sm" onclick="openPhotoModal()">📷 Foto Reali</button>
-      <button class="btn btn-sm" onclick="toggleFullScreen()">⛶ Schermo Intero</button>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button class="btn btn-sm btn-amber" onclick="toggleLimMode()" title="Disegna o scrivi direttamente sulla schermata LIM">🖍️ Lavagna LIM</button>
+      <button class="btn btn-sm" id="btnLaser" onclick="toggleLaser()" title="Puntatore Laser LIM">🔴 Laser</button>
+      <button class="btn btn-sm" onclick="openPhotoModal()" title="Guarda le foto reali del laboratorio">📷 Foto Reali</button>
+      <button class="btn btn-sm" onclick="toggleFullScreen()" title="Schermo Intero F11">⛶ Schermo Intero</button>
     </div>
   </footer>
 </div>
 
-<!-- MODALE CONFRONTO / CARICAMENTO FOTO REALI (ZERO ERR_FILE_NOT_FOUND!) -->
+<!-- MODALE FOTO REALI CON LE 2 FOTO PRECARICATE -->
 <div class="modal-bg" id="photoModal" onclick="if(event.target===this) closePhotoModal()">
   <div class="modal-box">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
       <div>
         <span class="badge amber">Confronto Diretto col Calibro Reale</span>
-        <h3 style="font-size:1.35rem; margin-top:4px;">Dettaglio Foto Allegata: <span class="hl-amber" style="font-family:var(--font-mono);">FIMEC METRICA @ 27,15 mm</span></h3>
+        <h3 style="font-size:1.35rem; margin-top:4px;">Dettaglio Foto Laboratorio: <span class="hl-amber" style="font-family:var(--font-mono);">FIMEC METRICA @ 27,15 mm</span></h3>
       </div>
       <div style="display:flex; gap:8px;">
         <label class="btn btn-sm btn-primary" style="cursor:pointer;">
-          📂 Carica le 2 Foto JPEG dal PC
+          📂 Carica Altre Foto
           <input type="file" accept="image/*" multiple style="display:none;" onchange="loadLocalPhotos(this.files)">
         </label>
         <button class="btn btn-sm" onclick="closePhotoModal()">✖ Chiudi</button>
@@ -851,18 +981,22 @@
 
     <div class="grid-2">
       <div class="panel" style="display:flex; flex-direction:column; gap:8px;">
-        <div style="font-weight:800; color:var(--cyan);">Vista 1 — Macro sul Nonio 1/20 mm (27,15 mm)</div>
-        <div class="photo-slot" id="photoSlot0"></div>
+        <div style="font-weight:800; color:var(--cyan);">Foto 1 — Vista Macro sul Nonio (27,15 mm)</div>
+        <div class="photo-slot" id="photoSlot0">
+          <img src="/fisica/archimede/prime/foto-calibro-1.jpg" alt="Foto Reale Calibro 1" title="Foto reale dal laboratorio" onerror="this.src='foto-calibro-1.jpg'">
+        </div>
         <div style="font-size:0.84rem; color:var(--muted);">
-          Lo <strong>0</strong> ha appena superato <strong>27 mm</strong>, e la <strong>3ª tacca del nonio (,15 mm)</strong> è in linea perfetta con la tacca lunga del <strong>3 (30 mm)</strong>.
+          Lo <strong>0</strong> supera di pochissimo <strong>27 mm</strong>, e la <strong>3ª tacca del nonio (,15 mm)</strong> è allineata con la tacca lunga del <strong>3 (30 mm)</strong>.
         </div>
       </div>
 
       <div class="panel" style="display:flex; flex-direction:column; gap:8px;">
-        <div style="font-weight:800; color:var(--amber);">Vista 2 — Calibro Completo FIMEC METRICA 0–18 cm</div>
-        <div class="photo-slot" id="photoSlot1"></div>
+        <div style="font-weight:800; color:var(--amber);">Foto 2 — Vista Generale del Calibro e Becchi</div>
+        <div class="photo-slot" id="photoSlot1">
+          <img src="/fisica/archimede/prime/foto-calibro-2.jpg" alt="Foto Reale Calibro 2" title="Foto reale dal laboratorio" onerror="this.src='foto-calibro-2.jpg'">
+        </div>
         <div style="font-size:0.84rem; color:var(--muted);">
-          Seleziona i file <code>input_file_0.jpeg</code> e <code>input_file_1.jpeg</code> col pulsante blu sopra per visualizzare qui le foto originali già raddrizzate in orizzontale!
+          La marcatura originale <strong>FIMEC METRICA INOX TEMP 20°C</strong> con scala a 18 cm e nonio a 20 divisioni (19 mm totali).
         </div>
       </div>
     </div>
@@ -871,13 +1005,13 @@
 
 <script>
 /* =========================================================================
-   1. MOTORE VETTORIALE FEDELE AL CALIBRO "FIMEC METRICA INOX TEMP 20°C"
+   1. GEOMETRIA, MOTORE SVG DEL CALIBRO FIMEC & FISICA DELLE SCALE
    ========================================================================= */
-const PX = 20;           // 20 unità SVG = 1 mm
+const PX = 20;           // 20 px SVG = 1 mm
 const X0 = 290;          // Posizione X dello 0 mm sulla scala fissa
-const XJAW = 105;        // Battuta becco fisso
-const YTOP = 150;        // Bordo superiore asta
-const YSPLIT = 250;      // Linea di contatto scala fissa / smusso nonio
+const XJAW = 105;        // Battuta fissa (faccia interna del becco fisso)
+const YTOP = 150;        // Bordo superiore asta fissa
+const YSPLIT = 250;      // Linea di contatto tra asta fissa e smusso del nonio
 
 function fmtMM(mm) {
   const st = Math.round(mm * 20);
@@ -909,8 +1043,11 @@ function renderFimecSVG(opts = {}) {
   const wholeMm = Math.floor(steps / 20);
   const alignedIdx = steps % 20; // 0..19
   const dx = mm * PX;
-  // Effetto parallasse ottico sullo smusso rialzato (solo se attivo su Slide 7)
   const parShift = parallaxDeg * 0.28;
+
+  // Coordinate Corsoio e Nonio coerenti
+  const sxLeft = XJAW + dx;       // Faccia di misura del becco mobile
+  const xZeroVern = X0 + dx + parShift; // Tacca 0 del nonio mobile
 
   // Costruzione tacche scala fissa metrica (inferiore)
   let mainTicks = '';
@@ -918,11 +1055,10 @@ function renderFimecSVG(opts = {}) {
   for (let m = 0; m <= limitMm; m++) {
     const x = X0 + m * PX;
     let h = 18, sw = 1.7, col = '#231c14';
-    if (m === 0) { h = 68; sw = 2.3; }
+    if (m === 0) { h = 68; sw = 2.4; }
     else if (m % 10 === 0) { h = 38; sw = 2.3; }
     else if (m % 5 === 0) { h = 28; sw = 1.9; }
 
-    // Evidenziazione conteggio mm interi (Passo 2)
     if (countWhole && m <= wholeMm && m >= Math.max(0, Math.floor(wholeMm / 10) * 10)) {
       col = (m === wholeMm) ? '#38bdf8' : '#0284c7';
       sw = (m === wholeMm) ? 3.4 : 2.5;
@@ -933,7 +1069,6 @@ function renderFimecSVG(opts = {}) {
     if (m === 0) {
       mainTicks += `<text x="${x}" y="${YSPLIT - 73}" text-anchor="middle" font-size="20" font-weight="800" fill="#231c14" font-family="Consolas,monospace">0</text>`;
     } else if (m % 10 === 0) {
-      // Fedele al calibro FIMEC delle foto: il numero del cm è inciso A SINISTRA della propria tacca lunga!
       const cm = m / 10;
       mainTicks += `<text x="${x - 11}" y="${YSPLIT - 23}" text-anchor="end" font-size="21" font-weight="800" fill="#231c14" font-family="Consolas,monospace">${cm}</text>`;
       if (cm === 18) {
@@ -942,7 +1077,7 @@ function renderFimecSVG(opts = {}) {
     }
   }
 
-  // Costruzione tacche scala fissa in pollici (superiore: 1/16 inch fino a 7 inch)
+  // Costruzione tacche scala fissa in pollici (superiore: 1/16")
   let inchTicks = '';
   const maxSixteenths = Math.floor((limitMm / 25.4) * 16);
   for (let s = 0; s <= Math.min(112, maxSixteenths); s++) {
@@ -961,11 +1096,10 @@ function renderFimecSVG(opts = {}) {
     }
   }
 
-  // Costruzione Nonio Metrico 1/20 mm (20 divisioni su 19 mm = 0,95 mm ciascuna)
+  // Costruzione Nonio Metrico 1/20 mm (20 divisioni su 19 mm = 0,95 mm ciascuna = 19 px)
   let vernierTicks = '';
   for (let i = 0; i <= 20; i++) {
-    const vx = X0 + dx + i * 0.95 * PX + parShift;
-    // 3 lunghezze reali sul nonio FIMEC: 0, 10 (,50) e 20 (10) lunghe fino a fine smusso (30px); pari medie (21px); dispari corte (13px)
+    const vx = xZeroVern + i * 0.95 * PX;
     let vh = 13, vsw = 1.75, vcol = '#1e1810';
     if (i === 0 || i === 10 || i === 20) { vh = 30; vsw = 2.2; }
     else if (i % 2 === 0) { vh = 22; vsw = 1.95; }
@@ -978,14 +1112,13 @@ function renderFimecSVG(opts = {}) {
 
     vernierTicks += `<line x1="${vx}" y1="${YSPLIT}" x2="${vx}" y2="${YSPLIT + vh}" stroke="${vcol}" stroke-width="${vsw}" />`;
 
-    // Numeri stampati sul FIMEC: SOLO 0  2  4  6  8  10 + "1/20 mm"
     if (i % 4 === 0) {
-      const lbl = i / 2; // 0, 2, 4, 6, 8, 10
+      const lbl = i / 2;
       const lblCol = isWinner ? '#34d399' : '#f1ebd9';
       vernierTicks += `<text x="${vx}" y="${YSPLIT + 50}" text-anchor="middle" font-size="20" font-weight="800" fill="${lblCol}" font-family="Consolas,monospace">${lbl}</text>`;
     }
     if (i === 20) {
-      vernierTicks += `<text x="${vx + 32}" y="${YSPLIT + 50}" font-size="17" font-weight="700" fill="#e5dec9" font-family="Consolas,monospace">1/20 mm</text>`;
+      vernierTicks += `<text x="${vx + 34}" y="${YSPLIT + 50}" font-size="17" font-weight="700" fill="#e5dec9" font-family="Consolas,monospace">1/20 mm</text>`;
     }
   }
 
@@ -999,42 +1132,43 @@ function renderFimecSVG(opts = {}) {
       topVernierTicks += `<text x="${tvx}" y="${YTOP - 29}" text-anchor="middle" font-size="14" font-weight="700" fill="#e5dec9" font-family="Consolas,monospace">${j}</text>`;
     }
   }
-  topVernierTicks += `<text x="${X0 + dx + 195}" y="${YTOP - 29}" font-size="13" font-weight="700" fill="#e5dec9" font-family="Consolas,monospace">1/128 inch</text>`;
+  topVernierTicks += `<text x="${X0 + dx + 265}" y="${YTOP - 29}" font-size="13" font-weight="700" fill="#e5dec9" font-family="Consolas,monospace">1/128 inch</text>`;
 
-  // Asta di profondità che esce a destra di esattamente dx
+  // Asta di profondità a destra
   const beamEnd = X0 + limitMm * PX + 110;
   const depthRodSvg = (!rulerOnly) ? `
     <rect x="${beamEnd - 20}" y="193" width="${dx + 35}" height="14" fill="url(#steelGrad_${uid})" stroke="#5c4f3d" stroke-width="1.5" />
   ` : '';
 
-  // Pezzo meccanico tra i becchi esterni
-  const pieceSvg = (showPiece && mm > 1) ? `
+  // Pezzo meccanico serrato tra i becchi
+  const pieceSvg = (showPiece && mm > 0.5) ? `
     <g>
-      <rect x="${XJAW + 1}" y="318" width="${dx - 2}" height="96" rx="6" fill="url(#pieceGrad_${uid})" stroke="#38bdf8" stroke-width="2" />
+      <rect x="${XJAW}" y="318" width="${dx}" height="96" rx="5" fill="url(#pieceGrad_${uid})" stroke="#38bdf8" stroke-width="2" />
       <text x="${XJAW + dx / 2}" y="372" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" font-family="Consolas,monospace">${fmtMM(mm)} mm</text>
     </g>
   ` : '';
 
-  // Annotazioni didattiche sovrapposte (Passo 1..5)
+  // Annotazioni didattiche sovrapposte
   let overlays = '';
-  const xZeroVern = X0 + dx + parShift;
-  const sliderLeftEdge = X0 + dx - 272; // ~13,6 mm a sinistra dello 0
-
   if (warnEdge) {
     overlays += `
       <g>
-        <line x1="${sliderLeftEdge}" y1="215" x2="${sliderLeftEdge}" y2="315" stroke="#fb7185" stroke-width="3.5" stroke-dasharray="6,4" />
-        <rect x="${sliderLeftEdge - 105}" y="86" width="210" height="34" rx="8" fill="#881337" stroke="#fb7185" stroke-width="2" />
-        <text x="${sliderLeftEdge}" y="108" text-anchor="middle" font-size="15" font-weight="800" fill="#ffe4e6">❌ NON il bordo metallo!</text>
+        <line x1="${sxLeft}" y1="215" x2="${sxLeft}" y2="315" stroke="#fb7185" stroke-width="3" stroke-dasharray="6,4" />
+        <rect x="${sxLeft - 105}" y="86" width="210" height="34" rx="8" fill="#881337" stroke="#fb7185" stroke-width="2" />
+        <text x="${sxLeft}" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#ffe4e6">❌ NON il bordo metallo!</text>
       </g>`;
   }
 
   if (hlZero) {
     overlays += `
       <g>
-        <line x1="${xZeroVern}" y1="128" x2="${xZeroVern}" y2="${YSPLIT + 60}" stroke="#fbbf24" stroke-width="3.5" stroke-dasharray="7,4" class="pulse" />
-        <rect x="${xZeroVern - 110}" y="84" width="220" height="36" rx="9" fill="#78350f" stroke="#fbbf24" stroke-width="2.2" />
-        <text x="${xZeroVern}" y="107" text-anchor="middle" font-size="16" font-weight="900" fill="#fef3c7">👇 GUARDA LO ZERO (0)!</text>
+        <line x1="${xZeroVern}" y1="135" x2="${xZeroVern}" y2="${YSPLIT + 60}" stroke="#fbbf24" stroke-width="3" stroke-dasharray="7,4" class="pulse" />
+        ${!hlAligned ? `
+          <rect x="${xZeroVern - 105}" y="84" width="210" height="36" rx="9" fill="#78350f" stroke="#fbbf24" stroke-width="2.2" />
+          <text x="${xZeroVern}" y="107" text-anchor="middle" font-size="15" font-weight="900" fill="#fef3c7">👇 GUARDA LO ZERO (0)!</text>
+        ` : `
+          <circle cx="${xZeroVern}" cy="${YSPLIT + 50}" r="15" fill="none" stroke="#fbbf24" stroke-width="2.5" class="pulse" />
+        `}
       </g>`;
   }
 
@@ -1044,30 +1178,30 @@ function renderFimecSVG(opts = {}) {
       <g>
         <rect x="${xWhole - 48}" y="${YSPLIT - 88}" width="96" height="34" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="2.4" />
         <text x="${xWhole}" y="${YSPLIT - 66}" text-anchor="middle" font-size="18" font-weight="900" fill="#e0f2fe" font-family="Consolas,monospace">${wholeMm} mm</text>
-        <circle cx="${xWhole}" cy="${YSPLIT}" r="6" fill="#38bdf8" />
+        <line x1="${xWhole}" y1="${YSPLIT - 52}" x2="${xWhole}" y2="${YSPLIT - 10}" stroke="#38bdf8" stroke-width="3" />
       </g>`;
   }
 
   if (scanIdx !== null) {
-    const sx = X0 + dx + scanIdx * 0.95 * PX;
+    const sx = xZeroVern + scanIdx * 0.95 * PX;
     overlays += `
       <g>
         <line x1="${sx}" y1="165" x2="${sx}" y2="320" stroke="#fbbf24" stroke-width="3" />
         <rect x="${sx - 68}" y="125" width="136" height="32" rx="8" fill="#78350f" stroke="#fbbf24" stroke-width="2" />
-        <text x="${sx}" y="146" text-anchor="middle" font-size="15" font-weight="800" fill="#fef3c7" font-family="Consolas,monospace">Test +0,${String(scanIdx * 5).padStart(2, '0')}</text>
+        <text x="${sx}" y="146" text-anchor="middle" font-size="14.5" font-weight="800" fill="#fef3c7" font-family="Consolas,monospace">Test +0,${String(scanIdx * 5).padStart(2, '0')}</text>
       </g>`;
   }
 
   if (hlAligned) {
-    const winX = X0 + dx + alignedIdx * 0.95 * PX + parShift;
+    const winX = xZeroVern + alignedIdx * 0.95 * PX;
     const mainMatchMm = wholeMm + alignedIdx;
     overlays += `
       <g>
         <rect x="${winX - 7}" y="${YSPLIT - 44}" width="14" height="84" rx="5" fill="rgba(16,185,129,0.26)" stroke="#10b981" stroke-width="2" />
         <line x1="${winX}" y1="${YSPLIT - 54}" x2="${winX}" y2="${YSPLIT + 46}" stroke="#34d399" stroke-width="3.2" />
         <rect x="${winX - 105}" y="90" width="210" height="36" rx="9" fill="#064e3b" stroke="#34d399" stroke-width="2.2" />
-        <text x="${winX}" y="113" text-anchor="middle" font-size="15.5" font-weight="900" fill="#d1fae5">✅ ALLINEATA! (+0,${String(alignedIdx * 5).padStart(2, '0')})</text>
-        <text x="${winX}" y="${YSPLIT - 62}" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6ee7b7">(coincide col ${mainMatchMm} mm)</text>
+        <text x="${winX}" y="113" text-anchor="middle" font-size="15" font-weight="900" fill="#d1fae5">✅ ALLINEATA! (+0,${String(alignedIdx * 5).padStart(2, '0')})</text>
+        <text x="${winX}" y="${YSPLIT - 60}" text-anchor="middle" font-size="13" font-weight="700" fill="#6ee7b7">(coincide col ${mainMatchMm} mm)</text>
       </g>`;
   }
 
@@ -1075,14 +1209,14 @@ function renderFimecSVG(opts = {}) {
     const startI = Math.max(0, alignedIdx - 2);
     const endI = Math.min(20, alignedIdx + 2);
     for (let k = startI; k <= endI; k++) {
-      const kx = X0 + dx + k * 0.95 * PX;
+      const kx = xZeroVern + k * 0.95 * PX;
       const isWin = (k === alignedIdx);
       const yLbl = (k % 2 === 0) ? (YSPLIT + 84) : (YSPLIT + 108);
       overlays += `
         <g>
           <line x1="${kx}" y1="${YSPLIT + 28}" x2="${kx}" y2="${yLbl - 14}" stroke="${isWin ? '#34d399' : '#94a3b8'}" stroke-width="1.3" stroke-dasharray="3,2" />
           <rect x="${kx - 24}" y="${yLbl - 15}" width="48" height="21" rx="5" fill="${isWin ? '#065f46' : '#1e293b'}" stroke="${isWin ? '#34d399' : '#64748b'}" />
-          <text x="${kx}" y="${yLbl}" text-anchor="middle" font-size="13" font-weight="800" fill="${isWin ? '#ecfdf5' : '#e2e8f0'}" font-family="Consolas,monospace">,${String(k * 5).padStart(2, '0')}</text>
+          <text x="${kx}" y="${yLbl}" text-anchor="middle" font-size="12.5" font-weight="800" fill="${isWin ? '#ecfdf5' : '#e2e8f0'}" font-family="Consolas,monospace">,${String(k * 5).padStart(2, '0')}</text>
         </g>`;
     }
   }
@@ -1095,8 +1229,8 @@ function renderFimecSVG(opts = {}) {
       { id: 2, x: XJAW + dx / 2, y: 82 },
       { id: 3, x: beamEnd + dx / 2, y: 200 },
       { id: 4, x: X0 + 95 * PX, y: 222 },
-      { id: 5, x: X0 + dx + 190, y: 282 },
-      { id: 6, x: X0 + dx + 260, y: 348 },
+      { id: 5, x: xZeroVern + 190, y: 282 },
+      { id: 6, x: xZeroVern + 260, y: 348 },
       { id: 7, x: X0 + dx + 140, y: 125 }
     ];
     pts.forEach(p => {
@@ -1109,25 +1243,25 @@ function renderFimecSVG(opts = {}) {
     });
   }
 
-  // Corpo fisso + Becco fisso + Corsoio mobile FIMEC
+  // 1. CORPO FISSO CALIBRO (Asta fissa + Becchi fissi)
   const fixedBody = `
     <!-- Becco Interno Superiore Fisso -->
-    <path d="M ${XJAW} 150 L ${XJAW} 52 L ${XJAW + 12} 58 L ${XJAW + 36} 118 L ${XJAW + 36} 150 Z" fill="url(#steelGrad_${uid})" stroke="#5c4f3d" stroke-width="2" />
-    <!-- Testa Fissa + Becco Esterno Fisso + Asta Fissa -->
-    <path d="M 32 150 L ${beamEnd} 150 L ${beamEnd} 250 L 122 250 L 122 435 L ${XJAW} 435 L ${XJAW} 395 L 88 380 L 38 250 L 32 250 Z" fill="url(#steelGrad_${uid})" stroke="#5c4f3d" stroke-width="2.2" />
-    <!-- Smusso Lucido Becco Fisso -->
-    <polygon points="${XJAW},395 ${XJAW + 16},395 ${XJAW + 16},435 ${XJAW},435" fill="#efe6d5" stroke="#6e5f49" stroke-width="1" />
+    <path d="M ${XJAW} 150 L ${XJAW} 52 L ${XJAW - 12} 58 L ${XJAW - 36} 118 L ${XJAW - 36} 150 Z" fill="url(#steelGrad_${uid})" stroke="#5c4f3d" stroke-width="2" />
+    <!-- Testa Fissa + Becco Esterno Fisso (battuta a XJAW) + Asta Fissa -->
+    <path d="M 32 150 L ${beamEnd} 150 L ${beamEnd} 250 L ${XJAW} 250 L ${XJAW} 435 L 88 435 L 75 380 L 32 250 Z" fill="url(#steelGrad_${uid})" stroke="#5c4f3d" stroke-width="2.2" />
+    <!-- Smusso Lucido Punta Becco Fisso -->
+    <polygon points="88,395 ${XJAW},395 ${XJAW},435 88,435" fill="#efe6d5" stroke="#6e5f49" stroke-width="1" />
     <!-- Incisioni Reali FIMEC METRICA INOX TEMP 20°C -->
-    <rect x="48" y="182" width="76" height="24" rx="2" fill="none" stroke="#3b3024" stroke-width="1.8" />
-    <text x="86" y="199" text-anchor="middle" font-size="15" font-weight="900" letter-spacing="1.5" fill="#2e241a" font-family="Consolas,monospace">FIMEC</text>
-    <text x="86" y="218" text-anchor="middle" font-size="10.5" font-weight="800" letter-spacing="0.8" fill="#3b3024" font-family="Consolas,monospace">METRICA</text>
-    <text x="195" y="196" text-anchor="middle" font-size="11.5" font-weight="800" fill="#3b3024" font-family="Consolas,monospace">INOX TEMP</text>
-    <text x="195" y="213" text-anchor="middle" font-size="12.5" font-weight="800" fill="#3b3024" font-family="Consolas,monospace">20°C</text>
+    <rect x="42" y="182" width="76" height="24" rx="2" fill="none" stroke="#3b3024" stroke-width="1.8" />
+    <text x="80" y="199" text-anchor="middle" font-size="15" font-weight="900" letter-spacing="1.5" fill="#2e241a" font-family="Consolas,monospace">FIMEC</text>
+    <text x="80" y="218" text-anchor="middle" font-size="10" font-weight="800" letter-spacing="0.8" fill="#3b3024" font-family="Consolas,monospace">METRICA</text>
+    <text x="188" y="196" text-anchor="middle" font-size="11.5" font-weight="800" fill="#3b3024" font-family="Consolas,monospace">INOX TEMP</text>
+    <text x="188" y="213" text-anchor="middle" font-size="12.5" font-weight="800" fill="#3b3024" font-family="Consolas,monospace">20°C</text>
     <circle cx="${beamEnd - 32}" cy="224" r="6" fill="#2a241c" />
   `;
 
-  // Corsoio Mobile
-  const sxLeft = XJAW + dx;
+  // 2. CORSOIO MOBILE (Completamente coerente: nessuna sporgenza a sinistra del becco)
+  const plateWidth = 635; // Dal becco sxLeft fino oltre la tacca 10
   const sliderBody = rulerOnly ? `
     <line x1="${X0 + dx}" y1="145" x2="${X0 + dx}" y2="320" stroke="#fb7185" stroke-width="3.5" stroke-dasharray="7,4" />
     <rect x="${X0}" y="254" width="${dx}" height="52" rx="4" fill="url(#pieceGrad_${uid})" stroke="#fb7185" stroke-width="2" />
@@ -1135,28 +1269,29 @@ function renderFimecSVG(opts = {}) {
   ` : `
     <g>
       <!-- Becco Interno Mobile a Coltello -->
-      <path d="M ${sxLeft} 150 L ${sxLeft} 52 L ${sxLeft - 12} 58 L ${sxLeft - 34} 118 L ${sxLeft - 34} 126 L ${X0 + dx - 110} 126 L ${X0 + dx - 110} 150 Z" fill="url(#sliderGrad_${uid})" stroke="#544838" stroke-width="2" />
+      <path d="M ${sxLeft} 150 L ${sxLeft} 52 L ${sxLeft + 12} 58 L ${sxLeft + 36} 118 L ${sxLeft + 36} 126 L ${sxLeft + 180} 126 L ${sxLeft + 180} 150 Z" fill="url(#sliderGrad_${uid})" stroke="#544838" stroke-width="2" />
       <!-- Piastrina Nonio Pollici Superiore -->
-      <rect x="${X0 + dx - 110}" y="102" width="590" height="48" rx="2" fill="url(#darkPlate_${uid})" stroke="#4d4132" stroke-width="1.8" />
-      <rect x="${X0 + dx - 110}" y="126" width="590" height="24" fill="#c9ba9e" />
+      <rect x="${sxLeft + 75}" y="102" width="560" height="48" rx="2" fill="url(#darkPlate_${uid})" stroke="#4d4132" stroke-width="1.8" />
+      <rect x="${sxLeft + 75}" y="126" width="560" height="24" fill="#c9ba9e" />
       ${topVernierTicks}
 
-      <!-- Becco Esterno Mobile -->
-      <path d="M ${sxLeft} 250 L ${X0 + dx - 95} 250 L ${X0 + dx - 140} 325 L ${sxLeft + 26} 435 L ${sxLeft} 435 Z" fill="url(#sliderGrad_${uid})" stroke="#544838" stroke-width="2.2" />
-      <polygon points="${sxLeft},395 ${sxLeft + 16},395 ${sxLeft + 16},435 ${sxLeft},435" fill="#efe6d5" stroke="#6e5f49" stroke-width="1" />
+      <!-- Becco Esterno Mobile: la faccia sinistra a sxLeft tocca la battuta XJAW a zero -->
+      <path d="M ${sxLeft} 250 L ${sxLeft} 435 L ${sxLeft + 18} 435 L ${sxLeft + 65} 330 L ${sxLeft + 110} 285 L ${sxLeft + 110} 250 Z" fill="url(#sliderGrad_${uid})" stroke="#544838" stroke-width="2.2" />
+      <polygon points="${sxLeft},395 ${sxLeft + 18},395 ${sxLeft + 18},435 ${sxLeft},435" fill="#efe6d5" stroke="#6e5f49" stroke-width="1" />
 
-      <!-- Smusso Dorato/Ottone Satinato del Nonio Metrico -->
-      <rect x="${sliderLeftEdge}" y="${YSPLIT}" width="835" height="31" fill="url(#bevelBrass_${uid})" stroke="#574936" stroke-width="1.6" />
-      <!-- Fascia Bruna Numeri 0 2 4 6 8 10  1/20 mm -->
-      <rect x="${sliderLeftEdge}" y="${YSPLIT + 31}" width="835" height="34" fill="url(#darkPlate_${uid})" stroke="#4a3e2e" stroke-width="1.8" />
+      <!-- Placca del Nonio Metrico: Inizia a filo col becco sxLeft e scorre verso destra -->
+      <!-- Smusso Satinato del Nonio -->
+      <rect x="${sxLeft}" y="${YSPLIT}" width="${plateWidth}" height="31" fill="url(#bevelBrass_${uid})" stroke="#574936" stroke-width="1.6" />
+      <!-- Fascia Bruna per i Numeri 0 2 4 6 8 10 -->
+      <rect x="${sxLeft}" y="${YSPLIT + 31}" width="${plateWidth}" height="34" fill="url(#darkPlate_${uid})" stroke="#4a3e2e" stroke-width="1.8" />
 
-      <!-- Leva Inferiore di Sblocco a Molla con Perno -->
-      <path d="M ${X0 + dx + 85} ${YSPLIT + 65} L ${X0 + dx + 555} ${YSPLIT + 65} L ${X0 + dx + 555} ${YSPLIT + 115}
-               Q ${X0 + dx + 455} ${YSPLIT + 148} ${X0 + dx + 365} ${YSPLIT + 106}
-               Q ${X0 + dx + 275} ${YSPLIT + 82} ${X0 + dx + 195} ${YSPLIT + 108}
-               Q ${X0 + dx + 110} ${YSPLIT + 116} ${X0 + dx + 85} ${YSPLIT + 65} Z"
+      <!-- Leva di Sblocco a Molla Inferiore con Perno zigrinato -->
+      <path d="M ${sxLeft + 110} ${YSPLIT + 65} L ${sxLeft + 540} ${YSPLIT + 65} L ${sxLeft + 540} ${YSPLIT + 115}
+               Q ${sxLeft + 440} ${YSPLIT + 148} ${sxLeft + 350} ${YSPLIT + 106}
+               Q ${sxLeft + 260} ${YSPLIT + 82} ${sxLeft + 180} ${YSPLIT + 108}
+               Q ${sxLeft + 125} ${YSPLIT + 116} ${sxLeft + 110} ${YSPLIT + 65} Z"
             fill="url(#darkPlate_${uid})" stroke="#45392b" stroke-width="2" />
-      <circle cx="${X0 + dx + 145}" cy="${YSPLIT + 84}" r="9" fill="#2b2218" stroke="#cbbba0" stroke-width="2" />
+      <circle cx="${sxLeft + 180}" cy="${YSPLIT + 84}" r="9" fill="#2b2218" stroke="#cbbba0" stroke-width="2" />
 
       ${vernierTicks}
     </g>
@@ -1175,34 +1310,50 @@ function renderFimecSVG(opts = {}) {
         <stop offset="100%" stop-color="#b9a686" />
       </linearGradient>
       <linearGradient id="bevelBrass_${uid}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#e7cf96" />
-        <stop offset="100%" stop-color="#c9ad6e" />
+        <stop offset="0%" stop-color="#ede3cf" />
+        <stop offset="60%" stop-color="#d6c5a5" />
+        <stop offset="100%" stop-color="#b8a684" />
       </linearGradient>
       <linearGradient id="darkPlate_${uid}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#8b7963" />
-        <stop offset="100%" stop-color="#6c5c48" />
+        <stop offset="0%" stop-color="#6e5d48" />
+        <stop offset="100%" stop-color="#4d4031" />
       </linearGradient>
-      <linearGradient id="pieceGrad_${uid}" x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id="pieceGrad_${uid}" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#0284c7" />
-        <stop offset="100%" stop-color="#1e3a8a" />
+        <stop offset="100%" stop-color="#0369a1" />
       </linearGradient>
     </defs>
+
     ${depthRodSvg}
-    ${pieceSvg}
     ${fixedBody}
-    ${inchTicks}
+    ${pieceSvg}
     ${mainTicks}
+    ${inchTicks}
     ${sliderBody}
     ${overlays}
     ${hotspotsSvg}
-  </svg>`;
+  </svg>
+  `;
 }
 
 /* =========================================================================
-   2. NAVIGAZIONE SLIDE, PUNTATORE LASER E MODAL FOTO
+   2. GESTIONE PRESENTAZIONE A SLIDE, DOCK & PUNTATORE LASER
    ========================================================================= */
-let currentSlide = 0;
 const totalSlides = 9;
+let currentSlide = 0;
+
+function initDeck() {
+  const dotsContainer = document.getElementById('dockDots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < totalSlides; i++) {
+    const b = document.createElement('button');
+    b.className = `dot ${i === 0 ? 'active' : ''}`;
+    b.textContent = (i === 5) ? '6 ⭐' : (i + 1);
+    b.title = `Vai alla Slide ${i + 1}`;
+    b.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(b);
+  }
+}
 
 function goToSlide(idx) {
   if (idx < 0 || idx >= totalSlides) return;
@@ -1214,7 +1365,16 @@ function goToSlide(idx) {
     d.classList.toggle('active', i === idx);
   });
   document.getElementById('progressBar').style.width = `${((idx + 1) / totalSlides) * 100}%`;
+
+  if (idx === 0) renderCoverFrame();
+  if (idx === 1) renderSlide2();
+  if (idx === 2) initAnatomy();
+  if (idx === 3) setPrincipleStep(0);
+  if (idx === 4) setMapFilter('all');
   if (idx === 5) renderCurrentAnimStep(true);
+  if (idx === 6) updateParallax(0);
+  if (idx === 7) setLabSteps(labSteps);
+  if (idx === 8) newQuiz();
 }
 
 function nextSlide() { goToSlide(currentSlide + 1); }
@@ -1244,26 +1404,27 @@ window.addEventListener('keydown', e => {
     if (e.key === 'Escape') closePhotoModal();
     return;
   }
+  if (e.key === 'w' || e.key === 'W' || e.key === 'd' || e.key === 'D') {
+    toggleLimMode();
+    return;
+  }
   if (e.key === 'ArrowRight' || e.key === 'PageDown') {
     if (currentSlide === 5 && animStep < 5) nextAnimStep();
     else nextSlide();
   } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
     if (currentSlide === 5 && animStep > 0) prevAnimStep();
     else prevSlide();
-  } else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
-  else if (e.key === 'l' || e.key === 'L') toggleLaser();
+  } else if (e.key === 'Home') {
+    goToSlide(0);
+  } else if (e.key === 'End') {
+    goToSlide(totalSlides - 1);
+  } else if (e.key === 'l' || e.key === 'L') {
+    toggleLaser();
+  }
 });
 
 function openPhotoModal() {
   document.getElementById('photoModal').classList.add('open');
-  const s0 = document.getElementById('photoSlot0');
-  const s1 = document.getElementById('photoSlot1');
-  if (!s0.dataset.custom) {
-    s0.innerHTML = renderFimecSVG({ mm: 27.15, viewBox: "760 165 560 175", maxMm: 65, hlAligned: true });
-  }
-  if (!s1.dataset.custom) {
-    s1.innerHTML = renderFimecSVG({ mm: 27.15, viewBox: "20 40 4050 420", maxMm: 180 });
-  }
 }
 function closePhotoModal() { document.getElementById('photoModal').classList.remove('open'); }
 
@@ -1273,141 +1434,217 @@ function loadLocalPhotos(files) {
     const url = URL.createObjectURL(file);
     const slot = document.getElementById('photoSlot' + idx);
     if (slot) {
-      slot.dataset.custom = "1";
       slot.innerHTML = `<img src="${url}" alt="Foto caricata" title="Clicca per ruotare di 90°" style="cursor:pointer" onclick="this.classList.toggle('no-rot')">`;
     }
   });
 }
 
 /* =========================================================================
-   3. SLIDE 1 (DEMO COPERTINA) & SLIDE 2 (RIGHELLO VS NONIO)
+   3. ANIMAZIONE LENTA, CHIARA E PEDAGOGICA DELLA COPERTINA (SLIDE 1)
    ========================================================================= */
+let coverPlaying = true;
+let coverSlow = false;
+let coverPhase = 0; // 0: Chiuso, 1: Apertura, 2: Bloccato a 27.15, 3: Chiusura
 let coverT = 0;
-function animateCover() {
-  if (currentSlide === 0) {
-    coverT += 0.015;
-    const demoMm = 27.15 + Math.sin(coverT) * 14;
-    const snapped = Math.round(demoMm * 20) / 20;
-    document.getElementById('coverStage').innerHTML = renderFimecSVG({
-      mm: snapped, viewBox: "25 45 1550 410", maxMm: 85, showPiece: true, hlAligned: true
-    });
-  }
-  requestAnimationFrame(animateCover);
+let lastCoverTime = performance.now();
+
+function toggleCoverPlay() {
+  coverPlaying = !coverPlaying;
+  document.getElementById('btnCoverPlay').textContent = coverPlaying ? '⏸️ Pausa' : '▶ Riproduci';
+}
+function toggleCoverSlow() {
+  coverSlow = !coverSlow;
+  document.getElementById('btnCoverSlow').classList.toggle('active', coverSlow);
+}
+function restartCoverAnim() {
+  coverPhase = 0;
+  coverT = 0;
+  coverPlaying = true;
+  document.getElementById('btnCoverPlay').textContent = '⏸️ Pausa';
+}
+function jumpCoverTo2715() {
+  coverPhase = 2;
+  coverT = 0;
+  coverPlaying = false;
+  document.getElementById('btnCoverPlay').textContent = '▶ Riproduci';
+  renderCoverFrame(27.15, "🎯 Misura reale bloccata a 27,15 mm (27 mm + 3ª tacca ,15 mm)");
 }
 
+function easeInOutCubic(x) {
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+
+function updateCoverAnimation(now) {
+  const dt = (now - lastCoverTime) / 1000;
+  lastCoverTime = now;
+
+  if (currentSlide === 0 && coverPlaying) {
+    const speedMult = coverSlow ? 0.45 : 1.0;
+    coverT += dt * speedMult;
+
+    // Fasi:
+    // Fase 0: Chiuso a 0,00 mm per 2.2s
+    // Fase 1: Apertura lenta da 0 a 27,15 mm (4.2s)
+    // Fase 2: Bloccato a 27,15 mm con spiegazione (4.6s)
+    // Fase 3: Chiusura lenta da 27,15 a 0 mm (3.0s)
+    if (coverPhase === 0) {
+      renderCoverFrame(0.00, "📏 Calibro chiuso a riposo: 0,00 mm — I becchi si toccano, lo 0 del nonio coincide perfettamente con lo 0 della scala.");
+      if (coverT >= 2.2) { coverPhase = 1; coverT = 0; }
+    } else if (coverPhase === 1) {
+      const dur = 4.2;
+      const progress = Math.min(1, coverT / dur);
+      const eased = easeInOutCubic(progress);
+      const curMm = Math.round((eased * 27.15) * 20) / 20;
+      renderCoverFrame(curMm, `🔓 Apertura graduale del corsoio per accogliere il pezzo meccanico... (${fmtMM(curMm)} mm)`);
+      if (coverT >= dur) { coverPhase = 2; coverT = 0; }
+    } else if (coverPhase === 2) {
+      renderCoverFrame(27.15, "🎯 Misura bloccata: 27,15 mm — 1° Passo: 27 mm interi + 2° Passo: +0,15 mm (3ª tacca allineata).");
+      if (coverT >= 4.6) { coverPhase = 3; coverT = 0; }
+    } else if (coverPhase === 3) {
+      const dur = 3.0;
+      const progress = Math.min(1, coverT / dur);
+      const eased = easeInOutCubic(progress);
+      const curMm = Math.round(((1 - eased) * 27.15) * 20) / 20;
+      renderCoverFrame(curMm, `🔒 Ritorno dolce alla posizione iniziale di zero... (${fmtMM(curMm)} mm)`);
+      if (coverT >= dur) { coverPhase = 0; coverT = 0; }
+    }
+  }
+
+  requestAnimationFrame(updateCoverAnimation);
+}
+
+function renderCoverFrame(mm = 27.15, statusText = null) {
+  const isAligned = (mm === 27.15 || mm === 0);
+  document.getElementById('coverStage').innerHTML = renderFimecSVG({
+    mm, viewBox: "30 45 1260 410", maxMm: 75, showPiece: (mm > 0.5), hlAligned: isAligned, hlZero: (mm === 27.15)
+  });
+  if (statusText) {
+    document.getElementById('coverNarration').innerHTML = statusText;
+  }
+}
+
+/* =========================================================================
+   4. SLIDE 2: RIGHELLO VS NONIO (INGRANDIMENTO)
+   ========================================================================= */
 let s2Zoomed = false;
 function renderSlide2() {
   const vbRuler = s2Zoomed ? "730 185 260 140" : "240 160 760 175";
-  const vbVern  = s2Zoomed ? "750 168 480 165" : "240 155 960 185";
+  const vbVern  = s2Zoomed ? "740 140 500 220" : "240 155 960 185";
   document.getElementById('s2RulerStage').innerHTML = renderFimecSVG({ mm: 27.15, viewBox: vbRuler, maxMm: 55, rulerOnly: true });
   document.getElementById('s2VernierStage').innerHTML = renderFimecSVG({ mm: 27.15, viewBox: vbVern, maxMm: 65, hlAligned: true });
 }
 function toggleRulerZoom() {
   s2Zoomed = !s2Zoomed;
-  document.getElementById('btnRulerZoom').textContent = s2Zoomed ? "🔎 Torna alla vista ampia" : "🔍 Ingrandisci il dettaglio a 27,15 mm";
+  document.getElementById('btnRulerZoom').textContent = s2Zoomed ? "🔎 Vista Ampia" : "🔍 Ingrandisci a 27,15 mm";
   renderSlide2();
 }
 
 /* =========================================================================
-   4. SLIDE 3: ANATOMIA INTERATTIVA DEL CALIBRO FIMEC
+   5. SLIDE 3: ANATOMIA DEL CALIBRO FIMEC
    ========================================================================= */
 const hotspotsData = [
-  { id: 1, name: "Becchi per Esterni", desc: "Stringono l'esterno di bulloni, cilindri, spessori o piastre. Hanno le estremità smussate per entrare anche in gole strette." },
-  { id: 2, name: "Becchi a Coltello per Interni", desc: "Si inseriscono dentro fori, tubi o cave interne: aprendoli fino a toccare le pareti si misura il diametro interno!" },
-  { id: 3, name: "Asta di Profondità", desc: "Scorre insieme al corsoio ed esce dal fondo dell'asta fissa per misurare la profondità di fori ciechi e gradini." },
-  { id: 4, name: "Asta Fissa (0–18 cm)", desc: "Acciaio INOX tarato a 20°C. ATTENZIONE: i numeri 1, 2, 3... indicano i centimetri (10, 20, 30 mm) e sono incisi A SINISTRA della rispettiva tacca lunga!" },
-  { id: 5, name: "Nonio Ventesimale (1/20 mm)", desc: "20 divisioni lunghe complessivamente 19 mm. Permette di leggere i ventesimi di millimetro (0,05 mm). Numerato solo sui pari: 0 2 4 6 8 10." },
-  { id: 6, name: "Leva di Bloccaggio a Molla", desc: "Tipica del calibro da officina FIMEC: premi col pollice per sbloccare e far scorrere il corsoio; rilascia il pollice per bloccare istantaneamente la misura!" },
-  { id: 7, name: "Scala Superiore in Pollici", desc: "Scala anglosassone (0–7 inch) con nonio superiore da 1/128 di pollice. Nelle misure metriche guardiamo sempre e solo la scala INFERIORE!" }
+  { id: 1, name: "Becchi per Esterni", desc: "Stringono l'esterno di bulloni, cilindri, piastre o tubi. La battuta fissa è allineata allo zero; la battuta mobile scorre col corsoio." },
+  { id: 2, name: "Becchi a Coltello per Interni", desc: "Si inseriscono all'interno di fori, scanalature e forometrie. A calibro chiuso toccano dorso a dorso a 0,00 mm." },
+  { id: 3, name: "Asta di Profondità", desc: "Fuoriesce dal fondo dell'asta fissa di una lunghezza esattamente identica all'apertura dei becchi, perfetta per misurare gole cieche." },
+  { id: 4, name: "Asta Fissa (0–18 cm)", desc: "Guida graduata in acciaio inox temprato con scala millimetrica inferiore e scala in pollici (1/16\") superiore." },
+  { id: 5, name: "Nonio Ventesimale (1/20 mm)", desc: "20 divisioni lunghe complessivamente 19 mm. Permette di leggere con precisione i 0,05 mm. Numerato: 0 2 4 6 8 10." },
+  { id: 6, name: "Leva di Bloccaggio a Molla", desc: "Frena costantemente il corsoio per evitare spostamenti accidentali. Si preme col pollice per farlo scorrere." },
+  { id: 7, name: "Scala Superiore in Pollici", desc: "Nonio superiore frazionario diviso in 1/128 di pollice per misure anglosassoni." }
 ];
-let activeHs = 5;
 
+let curHotspot = 1;
 function initAnatomy() {
-  const wrap = document.getElementById('hsButtons');
-  wrap.innerHTML = hotspotsData.map(h => `
-    <button class="hs-btn ${h.id === activeHs ? 'active' : ''}" id="hsBtn_${h.id}" onclick="selectHotspot(${h.id})">
-      <span class="hs-num">${h.id}</span> <span>${h.name}</span>
-    </button>
-  `).join('');
-  selectHotspot(5);
+  const container = document.getElementById('hsButtons');
+  container.innerHTML = '';
+  hotspotsData.forEach(h => {
+    const b = document.createElement('button');
+    b.className = `hs-btn ${h.id === curHotspot ? 'active' : ''}`;
+    b.id = `hsBtn_${h.id}`;
+    b.innerHTML = `<span class="hs-num">${h.id}</span><span>${h.name}</span>`;
+    b.onclick = () => selectHotspot(h.id);
+    container.appendChild(b);
+  });
+  selectHotspot(curHotspot);
 }
 
 function selectHotspot(id) {
-  activeHs = id;
-  const info = hotspotsData.find(x => x.id === id);
-  document.getElementById('hsTitle').textContent = `${info.id}. ${info.name}`;
-  document.getElementById('hsDesc').textContent = info.desc;
+  curHotspot = id;
+  const item = hotspotsData.find(h => h.id === id);
+  if (!item) return;
+  document.getElementById('hsTitle').textContent = `${item.id}. ${item.name}`;
+  document.getElementById('hsDesc').textContent = item.desc;
   document.querySelectorAll('.hs-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('hsBtn_' + id);
-  if (btn) btn.classList.add('active');
+  const activeBtn = document.getElementById(`hsBtn_${id}`);
+  if (activeBtn) activeBtn.classList.add('active');
   document.getElementById('anatomyStage').innerHTML = renderFimecSVG({
-    mm: 27.15, viewBox: "20 40 2450 420", maxMm: 100, hsActive: id
+    mm: 27.15, viewBox: "20 35 1550 430", maxMm: 180, hsActive: id
   });
 }
 
 /* =========================================================================
-   5. SLIDE 4: ANIMAZIONE DEL PRINCIPIO 19 mm / 20 PARTI = 0,95 mm
+   6. SLIDE 4: IL PRINCIPIO MATEMATICO (19 mm / 20)
    ========================================================================= */
-let prinStep = 0; // 0..20 scatti da 0,05 mm
-let prinTimer = null;
+let pStep = 0;
+let pTimer = null;
+const pStepsData = [
+  { mm: 0.00, title: "Passo 1: A calibro chiuso (0,00 mm)", desc: "Le 20 tacche del nonio misurano complessivamente <strong>19 mm</strong>. Ciascuna divisione vale <strong>0,95 mm</strong>. Lo 0 coincide con lo 0 e il 10 coincide col 19 mm." },
+  { mm: 0.05, title: "Passo 2: Spostamento di appena +0,05 mm", desc: "Il corsoio avanza di un ventesimo di millimetro. Lo zero non coincide più, ma la <strong>1ª tacca del nonio</strong> si allinea perfettamente col millimetro 1!" },
+  { mm: 0.10, title: "Passo 3: Spostamento a +0,10 mm", desc: "Il corsoio avanza di un altro ventesimo. Ora tocca alla <strong>2ª tacca (tacca '1' sul nonio)</strong> allinearsi perfettamente col millimetro 2." },
+  { mm: 0.15, title: "Passo 4: Spostamento a +0,15 mm (come nelle foto!)", desc: "Alla terza frazione di 0,05 mm, è la <strong>3ª tacca del nonio</strong> che si allinea col millimetro 3 della riga superiore!" }
+];
 
 function setPrincipleStep(st) {
-  prinStep = ((st % 21) + 21) % 21;
-  const mmVal = prinStep * 0.05;
-  document.getElementById('principleStage').innerHTML = renderFimecSVG({
-    mm: mmVal, viewBox: "245 92 520 250", maxMm: 35, hlAligned: true, showLabels: true
-  });
-  const banner = document.getElementById('principleBanner');
-  if (prinStep === 0) {
-    banner.innerHTML = `<div>Calibro chiuso a <strong>0,00 mm</strong>: lo <strong>0</strong> coincide con <code>0 mm</code> e il <strong>10</strong> del nonio cade esattamente su <strong>19 mm</strong>!</div>`;
-  } else if (prinStep === 20) {
-    banner.innerHTML = `<div>Dopo 20 scatti da 0,05 mm siamo a <strong>1,00 mm intero</strong>: lo <strong>0</strong> del nonio ha raggiunto la tacca <code>1 mm</code>!</div>`;
-  } else {
-    banner.innerHTML = `<div>Apertura = <strong>${fmtMM(mmVal)} mm</strong> (${prinStep} × 0,05 mm) ➔ Si allinea esattamente la <strong>${prinStep}ª tacca del nonio</strong> col <code>${prinStep} mm</code> fisso!</div>`;
+  pStep = st % pStepsData.length;
+  const d = pStepsData[pStep];
+  document.getElementById('pStepTitle').innerHTML = d.title;
+  document.getElementById('pStepDesc').innerHTML = d.desc;
+  for (let i = 0; i < 4; i++) {
+    const tab = document.getElementById('pTab' + i);
+    if (tab) tab.classList.toggle('active-pill', i === pStep);
   }
+  document.getElementById('principleStage').innerHTML = renderFimecSVG({
+    mm: d.mm, viewBox: "260 145 520 200", maxMm: 30, hlZero: true, hlAligned: true
+  });
 }
-function stepPrinciple(d) { setPrincipleStep(prinStep + d); }
+function stepPrinciple(delta) { setPrincipleStep(pStep + delta); }
 function togglePrincipleAuto() {
-  const btn = document.getElementById('btnPrinAuto');
-  if (prinTimer) {
-    clearInterval(prinTimer); prinTimer = null;
-    btn.textContent = "▶ Auto-Scatti";
+  const btn = document.getElementById('btnPrincipleAuto');
+  if (pTimer) {
+    clearInterval(pTimer); pTimer = null;
+    btn.textContent = '▶ Avvio Auto';
+    btn.classList.remove('active-pill');
   } else {
-    btn.textContent = "⏸ Pausa";
-    prinTimer = setInterval(() => stepPrinciple(1), 1050);
+    btn.textContent = '⏸ Pausa Auto';
+    btn.classList.add('active-pill');
+    pTimer = setInterval(() => stepPrinciple(1), 2200);
   }
 }
 
 /* =========================================================================
-   6. SLIDE 5: MAPPA INTERATTIVA DELLE 21 TACCHE DEL NONIO FIMEC
+   7. SLIDE 5: MAPPA DEI 20 CENTESIMI
    ========================================================================= */
 let mapFilter = 'all';
-let selectedMapTick = 3; // +0,15 mm di default
-
 function setMapFilter(f) {
   mapFilter = f;
-  ['all', 'even', 'odd10', 'half'].forEach(k => {
-    document.getElementById('mf-' + k).classList.toggle('active-pill', k === f);
+  ['All', 'Even', 'Odd', 'Quarters'].forEach(k => {
+    const b = document.getElementById('mf' + k);
+    if (b) b.classList.toggle('active-pill', k.toLowerCase() === f.toLowerCase() || (k === 'Odd' && f === 'odd10'));
   });
   renderVernierMap();
 }
 
 function inspectVernierTick(i) {
-  selectedMapTick = i;
-  const valStr = `+ 0,${String(i * 5).padStart(2, '0')} mm`;
-  document.getElementById('mapVal').textContent = (i === 20) ? "+ 1,00 mm (fine scala = 0)" : valStr;
-  let exp = "";
-  if (i === 0) exp = "<strong>Tacca ZERO (lunghissima):</strong> indica misura intera esatta (<code>,00 mm</code>) e comanda la lettura dei mm interi sopra!";
-  else if (i === 10) exp = "<strong>10ª tacca (lunghissima centrale = ,50 mm):</strong> rappresenta mezzo millimetro esatto (5 decimi, tra il 4 e il 6)!";
-  else if (i === 20) exp = "<strong>20ª tacca (10 = fine nonio):</strong> coincide insieme allo 0 quando la misura è intera esatta (<code>,00 mm</code>).";
-  else if (i % 4 === 0) exp = `<strong>${i}ª tacca (media con numero ${i/2}):</strong> vale ${i/2} decimi interi = <strong>0,${i*5} mm</strong> (NON 0,0${i/2}!).`;
-  else if (i % 2 === 0) exp = `<strong>${i}ª tacca (media SENZA numero):</strong> è il decimo dispari <strong>${i/2}</strong> posto tra ${i/2 - 1} e ${i/2 + 1} ➔ vale <strong>0,${i*5} mm</strong>!`;
-  else exp = `<strong>${i}ª tacca (corta = mezzo decimo):</strong> sta a metà tra <code>0,${String((i-1)*5).padStart(2,'0')}</code> e <code>0,${String((i+1)*5).padStart(2,'0')}</code> ➔ vale <strong>0,${String(i*5).padStart(2,'0')} mm</strong>!`;
+  const val = (i * 5);
+  const mmStr = `0,${String(val).padStart(2, '0')}`;
+  let exp = `Tacca <strong>#${i}</strong> sul nonio = <strong>${mmStr} mm</strong>. `;
+  if (i % 4 === 0) exp += `Incisa sul FIMEC col numero <strong>${i / 2}</strong> (indica ${i/2} decimi = ${mmStr} mm).`;
+  else if (i % 2 === 0) exp += `Tacca intermedia pari di decimo (vale ,${i*5}).`;
+  else exp += `Tacca corta dispari: aggiunge esattamente <strong>0,05 mm</strong> alla tacca precedente!`;
   document.getElementById('mapDesc').innerHTML = exp;
-  renderVernierMap();
+  renderVernierMap(i);
 }
 
-function renderVernierMap() {
+function renderVernierMap(activeI = null) {
   let svg = `<svg viewBox="0 0 1120 265" preserveAspectRatio="xMidYMid meet">
     <rect x="40" y="32" width="1040" height="82" rx="6" fill="#dec68b" stroke="#6b5a42" stroke-width="2"/>
     <rect x="40" y="114" width="1040" height="68" rx="4" fill="#75644e" stroke="#524432" stroke-width="2"/>`;
@@ -1417,76 +1654,86 @@ function renderVernierMap() {
     const isLong = (i === 0 || i === 10 || i === 20);
     const isEvenNum = (i % 4 === 0);
     const isOdd10 = (i % 2 === 0 && !isEvenNum);
-    const isHalf = (i % 2 === 1);
 
     let show = true;
     if (mapFilter === 'even' && !isEvenNum) show = false;
-    if (mapFilter === 'odd10' && !isOdd10) show = false;
-    if (mapFilter === 'half' && !isHalf) show = false;
+    if (mapFilter === 'odd10' && i % 2 !== 1) show = false;
+    if (mapFilter === 'quarters' && i % 5 !== 0) show = false;
 
-    const h = isLong ? 80 : (i % 2 === 0 ? 56 : 34);
-    const col = isLong ? '#d97706' : (i % 2 === 0 ? '#0284c7' : '#059669');
-    const op = show ? 1 : 0.16;
-    const isSel = (i === selectedMapTick);
+    let col = show ? '#241b11' : '#b5a484';
+    let sw = isLong ? 3 : 2;
+    let h = isLong ? 50 : (i % 2 === 0 ? 36 : 22);
 
-    svg += `<g style="cursor:pointer" opacity="${op}" onclick="inspectVernierTick(${i})" onpointerenter="inspectVernierTick(${i})">
-      <rect x="${x - 20}" y="20" width="40" height="230" fill="transparent" />
-      ${isSel ? `<rect x="${x - 17}" y="26" width="34" height="162" rx="7" fill="rgba(251,191,36,0.28)" stroke="#fbbf24" stroke-width="2.5"/>` : ''}
-      <line x1="${x}" y1="32" x2="${x}" y2="${32 + h}" stroke="${isSel ? '#111827' : '#231c14'}" stroke-width="${isSel ? 5 : 3.2}" />
-      ${isEvenNum ? `<text x="${x}" y="158" text-anchor="middle" font-size="30" font-weight="900" fill="#f8fafc" font-family="Consolas,monospace">${i / 2}</text>` : ''}
-      ${isOdd10 ? `<text x="${x}" y="155" text-anchor="middle" font-size="21" font-weight="800" fill="#bae6fd" font-family="Consolas,monospace">(${i / 2})</text>` : ''}
-      <rect x="${x - 19}" y="${i % 2 === 0 ? 194 : 222}" width="38" height="24" rx="5" fill="${col}" />
-      <text x="${x}" y="${i % 2 === 0 ? 211 : 239}" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" font-family="Consolas,monospace">,${i === 20 ? '00' : String(i * 5).padStart(2, '0')}</text>
-    </g>`;
+    if (activeI === i) { col = '#10b981'; sw = 4; }
+
+    svg += `<g style="cursor:pointer" onclick="inspectVernierTick(${i})">
+      <line x1="${x}" y1="114" x2="${x}" y2="${114 - h}" stroke="${col}" stroke-width="${sw}" />`;
+
+    if (isEvenNum) {
+      svg += `<text x="${x}" y="156" text-anchor="middle" font-size="24" font-weight="900" fill="${activeI === i ? '#34d399' : '#fff'}" font-family="Consolas,monospace">${i/2}</text>`;
+    }
+
+    if (show) {
+      const centVal = `,${String(i * 5).padStart(2, '0')}`;
+      svg += `<text x="${x}" y="215" text-anchor="middle" font-size="14" font-weight="800" fill="${activeI === i ? '#34d399' : (isEvenNum ? '#fbbf24' : '#38bdf8')}" font-family="Consolas,monospace">${centVal}</text>`;
+    }
+    svg += `</g>`;
   }
-  svg += `<text x="1025" y="156" font-size="20" font-weight="800" fill="#e7dfcc" font-family="Consolas,monospace">1/20</text></svg>`;
+  svg += `<text x="1005" y="154" font-size="19" font-weight="800" fill="#f1ebd9" font-family="Consolas,monospace">1/20 mm</text></svg>`;
   document.getElementById('mapStage').innerHTML = svg;
 }
 
 /* =========================================================================
-   7. SLIDE 6: ⭐ MOTORE CENTRALE DI ANIMAZIONE PASSO-PASSO + CAMERA 60FPS
+   8. SLIDE 6: METODO INFALLIBILE DI LETTURA (STEP-BY-STEP)
    ========================================================================= */
 let targetMeasure = 27.15;
-let animStep = 0; // 0..5
-let curVB = [25, 40, 1550, 415];
-let vbAnimFrame = null;
+let animStep = 0;
+let curVB = [25, 42, 1650, 410];
+let targetVB = [25, 42, 1650, 410];
+let camAnimId = null;
 let scanInterval = null;
-let autoStepTimer = null;
+let autoPlayTimer = null;
 
-function animateCameraTo(destVB, renderOpts) {
-  if (vbAnimFrame) cancelAnimationFrame(vbAnimFrame);
-  const startVB = [...curVB];
-  const t0 = performance.now();
-  const dur = 580;
+function animateCameraTo(destVB, onDone) {
+  if (camAnimId) cancelAnimationFrame(camAnimId);
+  targetVB = destVB.slice();
+  const startVB = curVB.slice();
+  const startTime = performance.now();
+  const duration = 600;
 
   function tick(now) {
-    const p = Math.min(1, (now - t0) / dur);
-    const ease = 1 - Math.pow(1 - p, 3);
-    curVB = startVB.map((s, idx) => s + (destVB[idx] - s) * ease);
-    const vbStr = curVB.map(v => v.toFixed(1)).join(' ');
-    document.getElementById('stepMainMount').innerHTML = renderFimecSVG({
-      ...renderOpts,
-      viewBox: vbStr
-    });
-    if (p < 1) vbAnimFrame = requestAnimationFrame(tick);
+    const elapsed = now - startTime;
+    const p = Math.min(1, elapsed / duration);
+    const ease = easeInOutCubic(p);
+    for (let i = 0; i < 4; i++) {
+      curVB[i] = startVB[i] + (targetVB[i] - startVB[i]) * ease;
+    }
+    const mount = document.getElementById('stepMainMount');
+    if (mount) {
+      mount.innerHTML = renderFimecSVG({
+        ...window.lastStepOpts,
+        viewBox: curVB.map(v => v.toFixed(1)).join(' ')
+      });
+    }
+    if (p < 1) camAnimId = requestAnimationFrame(tick);
+    else { camAnimId = null; if (onDone) onDone(); }
   }
-  vbAnimFrame = requestAnimationFrame(tick);
+  camAnimId = requestAnimationFrame(tick);
 }
 
-function loadStepPreset(val, btnEl) {
+function loadStepPreset(mm, btn) {
   stopAllStepTimers();
-  targetMeasure = val;
-  if (btnEl) {
-    document.querySelectorAll('#presetBar .btn').forEach(b => b.classList.remove('active-pill'));
-    btnEl.classList.add('active-pill');
-  }
+  targetMeasure = mm;
+  document.querySelectorAll('#presetBar .btn').forEach(b => b.classList.remove('active-pill'));
+  if (btn) btn.classList.add('active-pill');
   goToAnimStep(0);
 }
 
 function stopAllStepTimers() {
   if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
-  if (autoStepTimer) { clearTimeout(autoStepTimer); autoStepTimer = null; }
-  document.getElementById('btnAutoSteps').textContent = "▶ Riproduci Tutto";
+  if (autoPlayTimer) { clearTimeout(autoPlayTimer); autoPlayTimer = null; }
+  document.getElementById('btnAutoPlaySteps').textContent = '▶ Auto';
+  document.getElementById('btnAutoPlaySteps').classList.remove('active-pill');
 }
 
 function goToAnimStep(st) {
@@ -1494,26 +1741,26 @@ function goToAnimStep(st) {
   animStep = Math.max(0, Math.min(5, st));
   renderCurrentAnimStep(false);
 }
-
-function nextAnimStep() { goToAnimStep((animStep + 1) % 6); }
-function prevAnimStep() { goToAnimStep(Math.max(0, animStep - 1)); }
+function nextAnimStep() { goToAnimStep(animStep + 1); }
+function prevAnimStep() { goToAnimStep(animStep - 1); }
 
 function toggleAutoPlaySteps() {
-  if (autoStepTimer) {
+  const btn = document.getElementById('btnAutoPlaySteps');
+  if (autoPlayTimer) {
     stopAllStepTimers();
-    return;
+  } else {
+    btn.textContent = '⏸ Pausa Auto';
+    btn.classList.add('active-pill');
+    scheduleNextAuto();
   }
-  document.getElementById('btnAutoSteps').textContent = "⏸ Ferma Auto";
-  goToAnimStep(0);
-  scheduleNextAuto();
 }
 
 function scheduleNextAuto() {
-  const delay = (animStep === 3) ? 3400 : 2900;
-  autoStepTimer = setTimeout(() => {
+  if (autoPlayTimer) clearTimeout(autoPlayTimer);
+  const delay = (animStep === 3) ? 3800 : 3000;
+  autoPlayTimer = setTimeout(() => {
     if (animStep < 5) {
-      animStep++;
-      renderCurrentAnimStep(false);
+      nextAnimStep();
       scheduleNextAuto();
     } else {
       stopAllStepTimers();
@@ -1554,23 +1801,22 @@ function renderCurrentAnimStep(instant) {
 
   if (animStep === 0) {
     loupe.classList.remove('show');
-    destVB = [25, 42, Math.max(1500, xZeroSvg + 620), 410];
-    nar.innerHTML = `<strong>Stato 0 — Vista Generale:</strong> Il calibro stringe il pezzo e la leva a molla blocca il corsoio. Premiamo <strong>"Passo Succ. ▶"</strong> per leggerlo senza dare nulla per scontato!`;
+    destVB = [25, 42, Math.max(1450, xZeroSvg + 580), 410];
+    nar.innerHTML = `<strong>Stato 0 — Vista Generale:</strong> Il calibro serra il pezzo da misurare. Premiamo <strong>"Passo Succ. ▶"</strong> per effettuare la lettura guidata senza fare errori!`;
   }
   else if (animStep === 1) {
     loupe.classList.remove('show');
     destVB = [Math.max(40, xZeroSvg - 380), 75, 720, 275];
     opts.hlZero = true;
     opts.warnEdge = true;
-    nar.innerHTML = `<strong>Passo 1 — Cerca la tacca dello ZERO (0):</strong> Ignora sempre il bordo sinistro metallico del corsoio! Punta gli occhi esclusivamente sulla <strong>tacca incisa dello 0 del nonio</strong>.`;
+    nar.innerHTML = `<strong>Passo 1 — Cerca la tacca dello ZERO (0):</strong> Ignora il bordo sinistro del corsoio metallico! Punta gli occhi esclusivamente sulla <strong>tacca incisa dello 0 del nonio</strong>.`;
   }
   else if (animStep === 2) {
     loupe.classList.remove('show');
     destVB = [Math.max(60, xZeroSvg - 280), 125, 540, 200];
     opts.hlZero = true;
     opts.countWhole = true;
-    const cmFloor = Math.floor(whole / 10);
-    nar.innerHTML = `<strong>Passo 2 — Millimetri interi PRIMA dello 0:</strong> Contiamo sulla scala fissa prima dello <code>0</code>: passiamo <code>${cmFloor} cm (${cmFloor*10} mm)</code> fino all'ultima tacca superata = <strong style="color:var(--cyan)">${whole} mm</strong>!`;
+    nar.innerHTML = `<strong>Passo 2 — Millimetri interi PRIMA dello 0:</strong> Contiamo sulla scala fissa l'ultimo millimetro superato dallo 0 del nonio. Qui è chiaramente <code>${whole} mm</code>!`;
   }
   else if (animStep === 3) {
     destVB = [xZeroSvg - 70, 82, 540, 255];
@@ -1585,10 +1831,10 @@ function renderCurrentAnimStep(instant) {
     const maxScan = (vIdx === 0) ? 0 : vIdx;
     if (maxScan === 0) {
       opts.hlAligned = true;
-      nar.innerHTML = `<strong>Passo 3 — Coincidenza immediata:</strong> Lo <strong>0</strong> (e anche il <strong>10</strong> finale) sono già perfettamente allineati! Non c'è nessuna frazione extra.`;
+      nar.innerHTML = `<strong>Passo 3 — Coincidenza immediata:</strong> Lo <strong>0</strong> coincide già con una tacca! La parte decimale è <strong>,00 mm</strong>.`;
     } else {
       opts.scanIdx = 0;
-      nar.innerHTML = `<strong>Passo 3 — Scanner delle Coincidenze:</strong> Scorriamo il nonio da sinistra a destra cercando l'unica tacca che forma una <strong>linea dritta continua</strong> con una tacca superiore...`;
+      nar.innerHTML = `<strong>Passo 3 — Scanner dell'Allineamento:</strong> Scorriamo il nonio verso destra cercando l'unica tacca che forma una <strong>linea continua netta</strong> con la scala fissa...`;
       scanInterval = setInterval(() => {
         s++;
         if (s >= maxScan) {
@@ -1596,7 +1842,7 @@ function renderCurrentAnimStep(instant) {
           document.getElementById('stepMainMount').innerHTML = renderFimecSVG({
             ...opts, scanIdx: null, hlAligned: true, viewBox: curVB.map(v => v.toFixed(1)).join(' ')
           });
-          nar.innerHTML = `<strong>🎯 Trovata!</strong> Guarda anche nella <strong>Lente 4×</strong> in alto a destra: la <strong>${vIdx}ª tacca dopo lo zero</strong> forma un'unica linea perfetta col <code>${whole + vIdx} mm</code>!`;
+          nar.innerHTML = `<strong>🎯 Trovata!</strong> Guarda nella <strong>Lente 4×</strong>: la <strong>${vIdx}ª tacca del nonio</strong> forma un'unica linea perfetta col <code>${whole + vIdx} mm</code> superiore!`;
         } else {
           document.getElementById('stepMainMount').innerHTML = renderFimecSVG({
             ...opts, scanIdx: s, viewBox: curVB.map(v => v.toFixed(1)).join(' ')
@@ -1614,207 +1860,371 @@ function renderCurrentAnimStep(instant) {
       mm: targetMeasure, viewBox: `${winX - 58} ${YSPLIT - 58} 116 116`, maxMm: whole + 30, hlAligned: true
     });
     loupe.classList.add('show');
-    nar.innerHTML = `<strong>Passo 4 — Quanto vale quella tacca?</strong> Ogni divisione vale <code>0,05 mm</code>: ${vIdx} tacche × 0,05 = <strong style="color:var(--green-bright)">+${decStr} mm</strong> ${vIdx % 2 === 1 ? `(tacca corta tra ,${String((vIdx-1)*5).padStart(2,'0')} e ,${String((vIdx+1)*5).padStart(2,'0')})` : `(decimo intero)`}!`;
+    nar.innerHTML = `<strong>Passo 4 — Valore della tacca allineata:</strong> Ogni tacca vale <code>0,05 mm</code>: ${vIdx} tacche × 0,05 = <strong style="color:var(--green-bright)">+${decStr} mm</strong>!`;
   }
   else if (animStep === 5) {
     loupe.classList.remove('show');
-    destVB = [25, 42, Math.max(1500, xZeroSvg + 620), 410];
-    opts.countWhole = true;
+    destVB = [Math.max(25, xZeroSvg - 480), 65, 880, 310];
     opts.hlAligned = true;
-    nar.innerHTML = `<strong>Passo 5 — Somma Finale Completata ✅:</strong> Uniamo parte intera e parte decimale: <strong style="color:var(--cyan)">${whole} mm</strong> + <strong style="color:var(--green-bright)">${decStr} mm</strong> = <strong style="font-size:1.3rem;">${totStr} mm</strong>!`;
+    nar.innerHTML = `<strong>Passo 5 — Somma Finale:</strong> Millimetri interi (${whole} mm) + Frazione decimale (${decStr} mm) = <strong style="color:var(--amber); font-size:1.15rem;">${totStr} mm</strong>!`;
   }
 
+  window.lastStepOpts = opts;
   if (instant) {
-    curVB = [...destVB];
-    document.getElementById('stepMainMount').innerHTML = renderFimecSVG({ ...opts, viewBox: curVB.join(' ') });
+    curVB = destVB.slice();
+    document.getElementById('stepMainMount').innerHTML = renderFimecSVG({
+      ...opts, viewBox: curVB.map(v => v.toFixed(1)).join(' ')
+    });
   } else {
-    animateCameraTo(destVB, opts);
+    animateCameraTo(destVB);
   }
 }
 
 /* =========================================================================
-   8. SLIDE 7: SIMULATORE ERRORE DI PARALLASSE
+   9. SLIDE 7: SIMULATORE ERRORE DI PARALLASSE
    ========================================================================= */
-function updateParallax(degVal) {
-  const d = Number(degVal);
-  const fakeIdxShift = Math.round(-d / 10);
-  const perceivedSteps = 543 + fakeIdxShift;
-  const pStr = fmtMM(perceivedSteps / 20);
+function updateParallax(deg) {
+  deg = parseFloat(deg) || 0;
+  const lbl = document.getElementById('parAngleLabel');
+  if (deg === 0) lbl.textContent = "Angolo: 0° (Occhio Perpendicolare ✅)";
+  else if (deg < 0) lbl.textContent = `Angolo: ${deg}° (Sguardo da Sinistra ❌ errore)`;
+  else lbl.textContent = `Angolo: +${deg}° (Sguardo da Destra ❌ errore)`;
 
   document.getElementById('parallaxStage').innerHTML = renderFimecSVG({
-    mm: 27.15, viewBox: "765 162 490 170", maxMm: 65, parallaxDeg: d, hlAligned: (d === 0)
+    mm: 27.15, viewBox: "770 145 420 180", maxMm: 60, hlAligned: true, parallaxDeg: deg
   });
-
-  const badge = document.getElementById('parBadge');
-  const txt = document.getElementById('parText');
-  if (Math.abs(d) <= 4) {
-    badge.textContent = `Angolo vista: ${d}° (Perpendicolare ✅)`;
-    badge.style.color = '#34d399';
-    txt.textContent = `Lettura percepita: 27,15 mm (Esatta!)`;
-    txt.style.color = '#34d399';
-  } else {
-    badge.textContent = `Angolo vista: ${d > 0 ? '+' : ''}${d}° (Di sbieco ⚠️)`;
-    badge.style.color = '#fb7185';
-    txt.textContent = `Errore ottico di parallasse! Sembra quasi ${pStr} mm invece di 27,15 mm!`;
-    txt.style.color = '#fb7185';
-  }
 }
 
 /* =========================================================================
-   9. SLIDE 8: LABORATORIO VIRTUALE TRASCINABILE SULLA LIM
+   10. SLIDE 8: LABORATORIO VIRTUALE LIM (DRAG TOUCH & MOUSE)
    ========================================================================= */
-let labSteps = 543; // 27,15 mm
+let labSteps = 543; // 543 / 20 = 27.15 mm
 let labMystery = false;
-let isDraggingLab = false;
-let dragStartX = 0;
-let dragStartSteps = 543;
 
 function setLabSteps(st) {
-  labSteps = Math.max(0, Math.min(2800, Math.round(st)));
-  const mm = labSteps / 20;
-  const w = Math.floor(labSteps / 20);
-  const dec = (labSteps % 20) * 5;
-
-  document.getElementById('labVal').textContent = labMystery ? "??,?? mm" : `${fmtMM(mm)} mm`;
-  document.getElementById('labSub').textContent = labMystery ? "(Nascosta)" : `(${w} + 0,${String(dec).padStart(2, '0')})`;
-
-  document.getElementById('labFullStage').innerHTML = renderFimecSVG({
-    mm, viewBox: "20 42 3250 415", maxMm: 150, showPiece: true, hlAligned: !labMystery
-  });
-  const zx = X0 + mm * PX - 85;
-  document.getElementById('labZoomStage').innerHTML = renderFimecSVG({
-    mm, viewBox: `${zx} 118 570 210`, maxMm: 170, hlZero: !labMystery, hlAligned: !labMystery, showLabels: !labMystery
-  });
+  labSteps = Math.max(0, Math.min(3600, st));
+  renderLab();
 }
-
 function nudgeLab(d) { setLabSteps(labSteps + d); }
-function randomLab() { setLabSteps(Math.floor(Math.random() * 1400) + 60); }
+function randomLab() { setLabSteps(Math.floor(Math.random() * 1200) + 40); }
 function toggleLabMystery() {
   labMystery = !labMystery;
-  document.getElementById('btnLabHide').textContent = labMystery ? "👁 Mostra Misura e Guide" : "👁 Nascondi Misura (Interroga la classe)";
-  setLabSteps(labSteps);
+  document.getElementById('btnLabHide').textContent = labMystery ? "👁 Mostra Misura" : "👁 Nascondi Misura (Interroga la classe)";
+  renderLab();
 }
 function sendLabToExplainer() {
-  document.querySelectorAll('#presetBar .btn').forEach(b => b.classList.remove('active-pill'));
-  targetMeasure = labSteps / 20;
+  const mm = labSteps / 20;
+  loadStepPreset(mm);
   goToSlide(5);
-  goToAnimStep(1);
 }
 
-const labEl = document.getElementById('labFullStage');
-labEl.addEventListener('pointerdown', e => {
-  isDraggingLab = true;
-  dragStartX = e.clientX;
-  dragStartSteps = labSteps;
-  labEl.setPointerCapture(e.pointerId);
-});
-labEl.addEventListener('pointermove', e => {
-  if (!isDraggingLab) return;
-  const rect = labEl.getBoundingClientRect();
-  const mmPerScreenPx = (3250 / rect.width) / PX;
-  const deltaMm = (e.clientX - dragStartX) * mmPerScreenPx;
-  setLabSteps(dragStartSteps + Math.round(deltaMm * 20));
-});
-labEl.addEventListener('pointerup', () => { isDraggingLab = false; });
+function renderLab() {
+  const mm = labSteps / 20;
+  const whole = Math.floor(labSteps / 20);
+  const frac = (labSteps % 20) * 5;
+  const fracStr = `0,${String(frac).padStart(2, '0')}`;
 
-/* =========================================================================
-   10. SLIDE 9: SFIDA INTERATTIVA ALLA CLASSE (QUIZ CON NUMPAD TOUCH)
-   ========================================================================= */
-let quizSteps = 367;
-let quizInput = "";
-let quizHintOn = false;
-let quizRight = 0;
-let quizTotal = 0;
-let quizSolved = false;
+  if (labMystery) {
+    document.getElementById('labVal').textContent = "??,?? mm";
+    document.getElementById('labSub').textContent = "(Interrogazione)";
+  } else {
+    document.getElementById('labVal').textContent = `${fmtMM(mm)} mm`;
+    document.getElementById('labSub').textContent = `(${whole} + ${fracStr})`;
+  }
 
-function renderQuizStage(reveal = false) {
-  const mm = quizSteps / 20;
+  // 1. Calibro panoramico superiore
+  document.getElementById('labFullStage').innerHTML = renderFimecSVG({
+    mm, viewBox: "20 40 1550 420", maxMm: 180, showPiece: true, hlAligned: !labMystery
+  });
+
+  // 2. Calibro zoom inferiore: spazio abbondante per non tagliare etichette o numeri
   const zx = X0 + mm * PX - 85;
-  document.getElementById('quizStage').innerHTML = renderFimecSVG({
-    mm,
-    viewBox: `${zx} 118 570 215`,
-    maxMm: 140,
-    hlZero: quizHintOn || reveal,
-    hlAligned: reveal,
-    showLabels: reveal
+  document.getElementById('labZoomStage').innerHTML = renderFimecSVG({
+    mm, viewBox: `${zx} 90 660 285`, maxMm: 175, hlZero: !labMystery, hlAligned: !labMystery, showLabels: !labMystery
   });
 }
 
+// Dragging del calibro con touch e mouse
+let isDraggingLab = false;
+let startDragX = 0;
+let startDragSteps = 0;
+
+function setupLabDrag() {
+  const s = document.getElementById('labFullStage');
+  const z = document.getElementById('labZoomStage');
+  [s, z].forEach(el => {
+    el.addEventListener('pointerdown', e => {
+      isDraggingLab = true;
+      startDragX = e.clientX;
+      startDragSteps = labSteps;
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', e => {
+      if (!isDraggingLab) return;
+      const dxPx = e.clientX - startDragX;
+      // Sensibilità adatta a schermi LIM grandi
+      const sensitivity = (el === z) ? 0.45 : 0.9;
+      const stepDelta = Math.round(dxPx * sensitivity);
+      setLabSteps(startDragSteps + stepDelta);
+    });
+    el.addEventListener('pointerup', e => { isDraggingLab = false; });
+    el.addEventListener('pointercancel', e => { isDraggingLab = false; });
+  });
+}
+
+/* =========================================================================
+   11. SLIDE 9: SFIDA LIM / QUIZ
+   ========================================================================= */
+let quizTargetMm = 27.15;
+let quizInput = "";
+
 function newQuiz() {
-  quizSteps = Math.floor(Math.random() * 1100) + 45;
+  const steps = Math.floor(Math.random() * 700) + 40;
+  quizTargetMm = steps / 20;
   quizInput = "";
-  quizHintOn = false;
-  quizSolved = false;
   updateQuizDisplay();
-  document.getElementById('quizMsg').innerHTML = `🧐 Nuova misura! Conta i mm interi prima dello <strong>0</strong>, poi cerca la tacca del nonio allineata.`;
-  renderQuizStage(false);
+  document.getElementById('quizFeedback').innerHTML = "";
+  document.getElementById('quizHintBox').style.display = 'none';
+
+  const zx = X0 + quizTargetMm * PX - 75;
+  document.getElementById('quizStage').innerHTML = renderFimecSVG({
+    mm: quizTargetMm, viewBox: `${zx} 105 600 240`, maxMm: 120, hlZero: false, hlAligned: false
+  });
 }
 
 function updateQuizDisplay() {
-  const d = document.getElementById('quizDisplay');
-  d.innerHTML = quizInput ? quizInput : `<span style="color:var(--dim);">__,__</span>`;
+  const el = document.getElementById('quizDisplay');
+  el.textContent = quizInput ? `${quizInput} mm` : "--,-- mm";
+  el.style.color = 'var(--amber)';
 }
 
 function quizKey(k) {
-  if (k === 'CLR') quizInput = "";
-  else if (k === 'DEL') quizInput = quizInput.slice(0, -1);
+  if (k === 'C') quizInput = "";
+  else if (k === 'BK') quizInput = quizInput.slice(0, -1);
   else if (k === ',') { if (!quizInput.includes(',')) quizInput += (quizInput ? ',' : '0,'); }
-  else if (k === ',00' || k === ',50') {
-    if (!quizInput.includes(',')) quizInput += k;
-  } else {
-    if (quizInput.length < 6) quizInput += k;
-  }
+  else { if (quizInput.length < 6) quizInput += k; }
   updateQuizDisplay();
 }
 
 function toggleQuizHint() {
-  quizHintOn = !quizHintOn;
-  const w = Math.floor(quizSteps / 20);
-  if (quizHintOn) {
-    document.getElementById('quizMsg').innerHTML = `💡 <strong>Aiuto:</strong> Lo <code>0</code> ha appena superato <strong>${w} mm</strong>! Ora trova i centesimi sul nonio.`;
-  }
-  renderQuizStage(false);
+  const whole = Math.floor(quizTargetMm);
+  const alignedIdx = Math.round(quizTargetMm * 20) % 20;
+  const box = document.getElementById('quizHintBox');
+  box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  box.innerHTML = `💡 <strong>Aiuto:</strong> Lo zero ha superato <strong>${whole} mm</strong>. Guarda tra le tacche ${Math.max(0, alignedIdx - 1)} e ${Math.min(20, alignedIdx + 1)} del nonio per trovare quella allineata!`;
 }
 
 function checkQuiz() {
-  if (!quizInput) return;
-  const normalized = parseFloat(quizInput.replace(',', '.'));
-  const userSteps = Math.round(normalized * 20);
-  const exactStr = fmtMM(quizSteps / 20);
+  const norm = quizInput.replace(',', '.');
+  const userVal = parseFloat(norm);
+  const fb = document.getElementById('quizFeedback');
+  const d = document.getElementById('quizDisplay');
 
-  if (!quizSolved) quizTotal++;
-  if (userSteps === quizSteps) {
-    if (!quizSolved) quizRight++;
-    quizSolved = true;
-    document.getElementById('quizMsg').innerHTML = `🎉 <strong>ESATTO! ${exactStr} mm!</strong> Ottimo occhio metrologico!`;
-    renderQuizStage(true);
-  } else {
-    const diffMm = ((userSteps - quizSteps) * 0.05).toFixed(2).replace('.', ',');
-    document.getElementById('quizMsg').innerHTML = `❌ Hai scritto <code>${quizInput} mm</code> (scarto ${diffMm} mm). Riprova oppure clicca <strong>"🔍 Spiega"</strong>!`;
+  if (isNaN(userVal)) {
+    fb.innerHTML = `<span style="color:var(--rose);">Inserisci un valore prima di verificare!</span>`;
+    return;
   }
-  document.getElementById('quizScore').textContent = `${quizRight} / ${quizTotal}`;
+
+  const diff = Math.abs(userVal - quizTargetMm);
+  if (diff < 0.001) {
+    d.style.color = 'var(--green-bright)';
+    fb.innerHTML = `<span style="color:var(--green-bright); font-size:1.15rem;">🎉 BRAVISSIMO! Risposta esatta: ${fmtMM(quizTargetMm)} mm!</span>`;
+  } else {
+    d.style.color = 'var(--rose)';
+    fb.innerHTML = `<span style="color:var(--rose);">❌ Non coincide. Riprova o premi "Suggerimento"!</span>`;
+  }
 }
 
 function sendQuizToExplainer() {
-  document.querySelectorAll('#presetBar .btn').forEach(b => b.classList.remove('active-pill'));
-  targetMeasure = quizSteps / 20;
+  loadStepPreset(quizTargetMm);
   goToSlide(5);
-  goToAnimStep(1);
 }
 
 /* =========================================================================
-   AVVIO INIZIALE DI TUTTE LE VISTE
+   12. SISTEMA MODALITÀ SCRITTURA LIM (CANVAS OVERLAY FLUIDO)
+   ========================================================================= */
+let limActive = false;
+let limPassThrough = false;
+let limTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+let limColor = '#fde047';
+let limSize = 6;
+let limStrokes = [];
+let currentStroke = null;
+
+const limCanvas = document.getElementById('limCanvas');
+const limCtx = limCanvas.getContext('2d');
+
+function resizeLimCanvas() {
+  limCanvas.width = window.innerWidth;
+  limCanvas.height = window.innerHeight;
+  redrawLimCanvas();
+}
+window.addEventListener('resize', resizeLimCanvas);
+
+function toggleLimMode() {
+  limActive = !limActive;
+  document.getElementById('limToolbar').classList.toggle('show', limActive);
+  limCanvas.classList.toggle('active', limActive);
+
+  if (limActive) {
+    limPassThrough = false;
+    limCanvas.classList.remove('pass-through');
+    document.getElementById('btnLimPass').textContent = "👆 Interagisci";
+    document.getElementById('btnLimPass').classList.remove('active');
+    resizeLimCanvas();
+  }
+}
+
+function toggleLimPassThrough() {
+  limPassThrough = !limPassThrough;
+  limCanvas.classList.toggle('pass-through', limPassThrough);
+  const b = document.getElementById('btnLimPass');
+  b.textContent = limPassThrough ? "✏️ Torna a Scrivere" : "👆 Interagisci";
+  b.classList.toggle('active', limPassThrough);
+}
+
+function setLimTool(tool) {
+  limTool = tool;
+  document.getElementById('btnLimPen').classList.toggle('active', tool === 'pen');
+  document.getElementById('btnLimHighlighter').classList.toggle('active', tool === 'highlighter');
+  document.getElementById('btnLimEraser').classList.toggle('active', tool === 'eraser');
+}
+
+function setLimColor(color, el) {
+  limColor = color;
+  document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (limTool === 'eraser') setLimTool('pen');
+}
+
+function setLimSize(sz) {
+  limSize = sz;
+  document.getElementById('btnLimSizeMed').classList.toggle('active', sz === 6);
+}
+
+function clearLimCanvas() {
+  limStrokes = [];
+  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
+}
+
+function undoLimStroke() {
+  limStrokes.pop();
+  redrawLimCanvas();
+}
+
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function redrawLimCanvas() {
+  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
+  limStrokes.forEach(s => drawStroke(s));
+}
+
+function drawStroke(s) {
+  if (!s.points || s.points.length === 0) return;
+  limCtx.save();
+  limCtx.lineCap = 'round';
+  limCtx.lineJoin = 'round';
+
+  if (s.tool === 'eraser') {
+    limCtx.globalCompositeOperation = 'destination-out';
+    limCtx.lineWidth = s.size * 3.5;
+    limCtx.strokeStyle = 'rgba(0,0,0,1)';
+  } else if (s.tool === 'highlighter') {
+    limCtx.globalCompositeOperation = 'source-over';
+    limCtx.lineWidth = s.size * 3.2;
+    limCtx.strokeStyle = hexToRgba(s.color, 0.38);
+  } else {
+    limCtx.globalCompositeOperation = 'source-over';
+    limCtx.lineWidth = s.size;
+    limCtx.strokeStyle = s.color;
+  }
+
+  limCtx.beginPath();
+  limCtx.moveTo(s.points[0].x, s.points[0].y);
+
+  if (s.points.length === 1) {
+    limCtx.lineTo(s.points[0].x + 0.5, s.points[0].y + 0.5);
+  } else {
+    for (let i = 1; i < s.points.length - 1; i++) {
+      const xc = (s.points[i].x + s.points[i + 1].x) / 2;
+      const yc = (s.points[i].y + s.points[i + 1].y) / 2;
+      limCtx.quadraticCurveTo(s.points[i].x, s.points[i].y, xc, yc);
+    }
+    const last = s.points[s.points.length - 1];
+    limCtx.lineTo(last.x, last.y);
+  }
+
+  limCtx.stroke();
+  limCtx.restore();
+}
+
+// Eventi Pointer per il disegno
+limCanvas.addEventListener('pointerdown', e => {
+  if (!limActive || limPassThrough) return;
+  e.preventDefault();
+  currentStroke = {
+    tool: limTool,
+    color: limColor,
+    size: limSize,
+    points: [{ x: e.clientX, y: e.clientY }]
+  };
+  limStrokes.push(currentStroke);
+  drawStroke(currentStroke);
+});
+
+limCanvas.addEventListener('pointermove', e => {
+  if (!currentStroke) return;
+  e.preventDefault();
+  currentStroke.points.push({ x: e.clientX, y: e.clientY });
+  redrawLimCanvas();
+});
+
+window.addEventListener('pointerup', () => { currentStroke = null; });
+window.addEventListener('pointercancel', () => { currentStroke = null; });
+
+// Barra fluttuante trascinabile
+(function makeLimToolbarDraggable() {
+  const tb = document.getElementById('limToolbar');
+  const handle = tb.querySelector('.lim-drag-handle');
+  let isDragging = false;
+  let startX, startY, origLeft, origTop;
+
+  handle.addEventListener('pointerdown', e => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = tb.getBoundingClientRect();
+    origLeft = rect.left;
+    origTop = rect.top;
+    tb.style.bottom = 'auto';
+    tb.style.transform = 'none';
+    tb.style.left = origLeft + 'px';
+    tb.style.top = origTop + 'px';
+    handle.setPointerCapture(e.pointerId);
+  });
+  handle.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    tb.style.left = Math.max(10, Math.min(window.innerWidth - tb.offsetWidth - 10, origLeft + dx)) + 'px';
+    tb.style.top = Math.max(10, Math.min(window.innerHeight - tb.offsetHeight - 10, origTop + dy)) + 'px';
+  });
+  handle.addEventListener('pointerup', () => { isDragging = false; });
+})();
+
+/* =========================================================================
+   13. INIZIALIZZAZIONE GLOBALE ALL'AVVIO
    ========================================================================= */
 window.addEventListener('DOMContentLoaded', () => {
-  animateCover();
-  renderSlide2();
-  initAnatomy();
-  setPrincipleStep(0);
-  inspectVernierTick(3);
-  renderCurrentAnimStep(true);
-  updateParallax(0);
-  setLabSteps(543);
-  newQuiz();
+  initDeck();
+  setupLabDrag();
+  goToSlide(0);
+  requestAnimationFrame(updateCoverAnimation);
 });
 </script>
 </body>
