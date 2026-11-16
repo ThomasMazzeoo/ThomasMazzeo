@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lezione 2: Storytelling ESG, Catalogo B2B & Lead Generation con Google Sites — AFM & RIM</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+  :root {
+    --bg-deep: #070c18;
+    --bg-panel: #0d1629;
+    --bg-card: #14223a;
+    --bg-hover: #1c2e4d;
+    --border: rgba(148, 163, 184, 0.25);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #94a3b8;
+    --cyan: #38bdf8;
+    --emerald: #34d399;
+    --amber: #fbbf24;
+    --rose: #fb7185;
+    --purple: #c084fc;
+    --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+    --font-mono: 'Consolas', 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 0%, #152342 0%, var(--bg-deep) 75%);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: clamp(17px, 1.22vw, 23px);
+    line-height: 1.4;
+  }
+
+  /* Puntatore Laser LIM */
+  #laser-dot {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 14%, #ff1744 48%, rgba(255,23,68,0) 72%);
+    box-shadow: 0 0 28px 10px rgba(255, 23, 68, 0.85);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  body.laser-on { cursor: crosshair; }
+  body.laser-on #laser-dot { display: block; }
+
+  /* Canvas Disegno LIM Overlay */
+  #limCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2500;
+    pointer-events: none;
+    display: none;
+    touch-action: none;
+  }
+  #limCanvas.active { display: block; pointer-events: auto; cursor: crosshair; }
+  #limCanvas.pass-through { pointer-events: none !important; }
+
+  .lim-toolbar {
+    position: fixed;
+    bottom: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 19, 38, 0.98);
+    border: 2px solid var(--amber);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.85), 0 0 20px rgba(251,191,36,0.3);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    z-index: 3000;
+    backdrop-filter: blur(12px);
+    flex-wrap: wrap;
+    max-width: 96vw;
+  }
+  .lim-toolbar.show { display: flex; }
+  .lim-drag-handle { cursor: grab; color: var(--amber); font-size: 1.1rem; padding: 2px 6px; }
+  .tool-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .tool-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--cyan); }
+  .tool-btn.active { background: var(--cyan); color: #040914; border-color: var(--cyan); }
+  .color-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .color-dot:hover { transform: scale(1.15); }
+  .color-dot.active { transform: scale(1.25); box-shadow: 0 0 10px #fff; }
+
+  /* Barra Superiore */
+  header.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    background: rgba(13, 22, 41, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.2rem;
+    z-index: 1000;
+  }
+  .top-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .back-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 750;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    transition: all 0.15s ease;
+  }
+  .back-link:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: var(--cyan);
+  }
+  .lesson-tag {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--emerald);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .timer-pill {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .timer-pill:hover { border-color: var(--amber); }
+
+  /* Barra di Avanzamento */
+  .progress-container {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    z-index: 1001;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 11.11%;
+    background: linear-gradient(90deg, var(--cyan), var(--emerald));
+    transition: width 0.25s ease;
+  }
+
+  /* Deck Slide */
+  main.deck {
+    position: absolute;
+    top: 56px;
+    bottom: 64px;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: clamp(14px, 1.8vh, 26px) clamp(20px, 3.5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(18px);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Header Slide */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: clamp(10px, 1.4vh, 18px);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: clamp(6px, 1vh, 12px);
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .slide-header-left { flex: 1; }
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge--cyan { background: rgba(56, 189, 248, 0.15); color: var(--cyan); border: 1px solid rgba(56, 189, 248, 0.35); }
+  .badge--emerald { background: rgba(52, 211, 153, 0.15); color: var(--emerald); border: 1px solid rgba(52, 211, 153, 0.35); }
+  .badge--amber { background: rgba(251, 191, 36, 0.15); color: var(--amber); border: 1px solid rgba(251, 191, 36, 0.35); }
+  .badge--purple { background: rgba(192, 132, 252, 0.15); color: var(--purple); border: 1px solid rgba(192, 132, 252, 0.35); }
+  .badge--rose { background: rgba(251, 113, 133, 0.15); color: var(--rose); border: 1px solid rgba(251, 113, 133, 0.35); }
+
+  h1.slide-title, h2.slide-title {
+    font-size: clamp(1.4rem, 2.2vw, 2.3rem);
+    font-weight: 850;
+    color: #ffffff;
+    line-height: 1.18;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+  p.slide-subtitle {
+    font-size: clamp(0.85rem, 1.1vw, 1.15rem);
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* Griglie & Card Ottimizzate LIM */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(12px, 1.5vw, 24px); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.3vw, 20px); }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 1.1vw, 16px); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: clamp(12px, 1.5vw, 20px);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .card:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 6px;
+  }
+  .card-title {
+    font-size: clamp(0.95rem, 1.25vw, 1.3rem);
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body {
+    font-size: clamp(0.82rem, 1.05vw, 1.05rem);
+    color: var(--muted);
+    line-height: 1.45;
+    flex: 1;
+  }
+  .card-body strong { color: #ffffff; }
+  .card-body ul { margin-left: 1.2rem; margin-top: 6px; }
+  .card-body li { margin-bottom: 5px; }
+
+  /* Banners di Evidenza LIM */
+  .callout-box {
+    background: rgba(13, 22, 41, 0.85);
+    border-left: 5px solid var(--cyan);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 16px;
+    margin-top: 10px;
+    font-size: clamp(0.82rem, 1.05vw, 1rem);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .callout-box--emerald { border-left-color: var(--emerald); background: rgba(6, 78, 59, 0.2); }
+  .callout-box--amber { border-left-color: var(--amber); background: rgba(120, 53, 15, 0.2); }
+
+  /* Dock Inferiore */
+  footer.dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(7, 12, 24, 0.95);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.2rem;
+    z-index: 1000;
+  }
+  .dock-left, .dock-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dock-center {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-nav {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 750;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .btn-nav:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--cyan);
+    color: #fff;
+  }
+  .btn-nav--primary {
+    background: var(--cyan);
+    color: #040914;
+    border-color: var(--cyan);
+  }
+  .btn-nav--primary:hover {
+    background: #7dd3fc;
+    color: #040914;
+  }
+  .dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 750;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .dot:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+  .dot.active {
+    background: var(--emerald);
+    color: #040914;
+    border-color: var(--emerald);
+    font-weight: 850;
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+  }
+
+  /* Componenti Interattivi Specifici Lezione 2 */
+  /* Funnel Step Card */
+  .funnel-item {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .funnel-item:hover, .funnel-item.active {
+    border-color: var(--cyan);
+    background: var(--bg-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+  }
+  .funnel-step-badge {
+    font-size: 0.72rem;
+    font-weight: 850;
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .funnel-step-title {
+    font-size: 1.15rem;
+    font-weight: 850;
+    color: #fff;
+    margin: 4px 0;
+  }
+  .funnel-preview-box {
+    background: #080e1d;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* Product Interactive Switcher */
+  .product-switcher-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 750;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .product-switcher-tab.active {
+    background: var(--emerald);
+    color: #040914;
+    border-color: var(--emerald);
+  }
+
+  /* Form Simulator */
+  .sim-form-input {
+    width: 100%;
+    background: #0b1326;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 0.88rem;
+    margin-top: 4px;
+  }
+
+  /* Quiz Interactive */
+  .quiz-option {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s ease;
+    text-align: left;
+    width: 100%;
+  }
+  .quiz-option:hover {
+    background: var(--bg-hover);
+    border-color: var(--cyan);
+  }
+  .quiz-option.correct {
+    background: rgba(52, 211, 153, 0.2) !important;
+    border-color: var(--emerald) !important;
+    color: #34d399 !important;
+  }
+  .quiz-option.wrong {
+    background: rgba(251, 113, 133, 0.2) !important;
+    border-color: var(--rose) !important;
+    color: #fb7185 !important;
+  }
+  .quiz-feedback {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  /* Scrollbar custom */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+
+  <!-- PUNTATORE LASER LIM -->
+  <div id="laser-dot"></div>
+
+  <!-- CANVAS LIM DISEGNO A MANO LIBERA -->
+  <canvas id="limCanvas"></canvas>
+
+  <!-- TOOLBAR STRUMENTI LIM -->
+  <div class="lim-toolbar" id="limToolbar">
+    <span class="lim-drag-handle">⠿</span>
+    <button class="tool-btn active" id="btnPen" onclick="setLimTool('pen')">✏️ Penna</button>
+    <button class="tool-btn" id="btnHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
+    <button class="tool-btn" id="btnEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
+    <div style="height:22px; width:1px; background:var(--border);"></div>
+    <span class="color-dot active" style="background:#fbbf24;" onclick="setLimColor('#fbbf24', this)" title="Giallo"></span>
+    <span class="color-dot" style="background:#38bdf8;" onclick="setLimColor('#38bdf8', this)" title="Ciano"></span>
+    <span class="color-dot" style="background:#34d399;" onclick="setLimColor('#34d399', this)" title="Verde"></span>
+    <span class="color-dot" style="background:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosso"></span>
+    <div style="height:22px; width:1px; background:var(--border);"></div>
+    <button class="tool-btn" onclick="clearLimCanvas()">🗑️ Pulisci</button>
+    <button class="tool-btn" onclick="toggleLimPassThrough()" id="btnPassThrough">👆 Interagisci</button>
+    <button class="tool-btn" onclick="toggleLimMode()" style="background:#dc2626; color:#fff;">✕ Chiudi</button>
+  </div>
+
+  <!-- BARRA SUPERIORE -->
+  <header class="top-bar">
+    <div class="top-left">
+      <a href="/#2h-finanza-marketing" class="back-link" id="back-link">◀ Torna al Corso</a>
+      <span class="lesson-tag">LEZIONE 2 &bull; TEORIA LIM (1 ORA)</span>
+    </div>
+    <div class="top-right">
+      <div class="timer-pill" id="timerBtn" onclick="toggleTimer()" title="Clicca per Avviare/Pausa">
+        ⏱️ <span id="timerDisplay">60:00</span>
+      </div>
+      <button class="btn-nav" onclick="toggleLaser()" id="laserBtn" title="Scorciatoia: L">🔴 Laser</button>
+      <button class="btn-nav" onclick="toggleLimMode()" id="penBtn" title="Scorciatoia: P">✏️ Disegna</button>
+      <button class="btn-nav" onclick="toggleFullScreen()" title="Scorciatoia: F">⛶ Schermo Intero</button>
+    </div>
+  </header>
+
+  <!-- BARRA DI AVANZAMENTO -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- DECK PRESENTAZIONE -->
+  <main class="deck">
+
+    <!-- SLIDE 0: COPERTINA & OBIETTIVI (00-05 min) -->
+    <section class="slide active" data-idx="0">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--cyan">Economia Aziendale &amp; Informatica</span>
+            <span class="badge badge--emerald">Indirizzo AFM &bull; RIM</span>
+            <span class="badge badge--amber">Modulo Web Design &amp; Marketing B2B</span>
+          </div>
+          <h1 class="slide-title">Storytelling ESG, Catalogo B2B &amp; Lead Generation</h1>
+          <p class="slide-subtitle">Dalla Home Page alla Conversione: come progettare le pagine interne "Chi Siamo", "Prodotti" e "Contatti"</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top:10px;">
+        <div class="card" style="border-top:4px solid var(--emerald);">
+          <div class="card-header">
+            <span class="card-title">🏢 1. Fiducia &amp; Valori ESG</span>
+            <span class="badge badge--emerald">Chi Siamo</span>
+          </div>
+          <div class="card-body">
+            Nel commercio <strong>B2B</strong> le aziende non comprano da sconosciuti.
+            <ul>
+              <li><strong>Storytelling aziendale:</strong> La nascita e gli anni di presenza sul mercato.</li>
+              <li><strong>Mission &amp; Vision:</strong> Sostenibilità ambientale ed economia circolare.</li>
+              <li><strong>Certificazioni Ufficiali:</strong> ISO 14001 e marchio FSC per azzerare il rischio del compratore.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid var(--cyan);">
+          <div class="card-header">
+            <span class="card-title">📦 2. Catalogo Prodotti B2B</span>
+            <span class="badge badge--cyan">Prodotti / Servizi</span>
+          </div>
+          <div class="card-body">
+            La regola aurea del marketing industriale:
+            <ul>
+              <li><strong>Benefici vs Caratteristiche:</strong> I buyer acquistano risparmio sui trasporti e riduzione dei resi, non solo cartone.</li>
+              <li><strong>Le 3 Soluzioni EcoPack:</strong> EcoBox rinforzato, BioWrap in mais e Nastro Kraft.</li>
+              <li><strong>Call to Action orientata all'azione:</strong> Richiesta schede tecniche e campionature.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid var(--amber);">
+          <div class="card-header">
+            <span class="card-title">📬 3. Lead Generation</span>
+            <span class="badge badge--amber">Contatti &amp; Sede</span>
+          </div>
+          <div class="card-body">
+            Come trasformare un visitatore in un contatto commerciale:
+            <ul>
+              <li><strong>Google Moduli integrato:</strong> Raccolta richieste preventivo ordinata su Google Fogli.</li>
+              <li><strong>Google Maps:</strong> Geolocalizzazione della sede e del polo logistico.</li>
+              <li><strong>Dati societari di legge:</strong> P.IVA, REA e capitale sociale (art. 2250 c.c.).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-box--emerald" style="margin-top:18px;">
+        💡 <strong>Scorciatoie Docente su LIM:</strong> Usa <code>Frecce</code> o <code>Spazio</code> per avanzare, <code>L</code> per il Puntatore Laser, <code>P</code> per la Penna/Evidenziatore su schermo, <code>F</code> per Schermo Intero.
+      </div>
+    </section>
+
+    <!-- SLIDE 1: IL CUSTOMER JOURNEY B2B (05-15 min) -->
+    <section class="slide" data-idx="1">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--purple">Capitolo 5 &bull; Marketing Strategico</span>
+            <span class="badge badge--cyan">Processo Decisionale B2B</span>
+          </div>
+          <h2 class="slide-title">Il Funnel di Navigazione: Dalla Curiosità alla Trattativa</h2>
+          <p class="slide-subtitle">A differenza del B2C (acquisto d'impulso), nel B2B ogni pagina risponde a una precisa domanda del buyer aziendale</p>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-top:8px;">
+        <div class="funnel-item active" onclick="selectFunnel(0, this)">
+          <div>
+            <span class="funnel-step-badge">Fase 1 &bull; Home Page</span>
+            <div class="funnel-step-title">👀 Curiosità</div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--muted); margin-top:6px;">
+            <strong>Domanda del Buyer:</strong><br><em>"Cosa fate esattamente? Siete rilevanti per la mia impresa?"</em>
+          </div>
+        </div>
+
+        <div class="funnel-item" onclick="selectFunnel(1, this)">
+          <div>
+            <span class="funnel-step-badge">Fase 2 &bull; Chi Siamo</span>
+            <div class="funnel-step-title">🛡️ Fiducia</div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--muted); margin-top:6px;">
+            <strong>Domanda del Buyer:</strong><br><em>"Di chi mi sto fidando? Avete le certificazioni necessarie?"</em>
+          </div>
+        </div>
+
+        <div class="funnel-item" onclick="selectFunnel(2, this)">
+          <div>
+            <span class="funnel-step-badge">Fase 3 &bull; Prodotti</span>
+            <div class="funnel-step-title">📊 Valutazione</div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--muted); margin-top:6px;">
+            <strong>Domanda del Buyer:</strong><br><em>"Quali modelli offrite? Risolvono i miei problemi logistici?"</em>
+          </div>
+        </div>
+
+        <div class="funnel-item" onclick="selectFunnel(3, this)">
+          <div>
+            <span class="funnel-step-badge">Fase 4 &bull; Contatti</span>
+            <div class="funnel-step-title">🤝 Conversione</div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--muted); margin-top:6px;">
+            <strong>Domanda del Buyer:</strong><br><em>"Come posso ottenere un preventivo su misura e i campioni?"</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dettaglio Interattivo del Funnel -->
+      <div class="funnel-preview-box" id="funnelDetailBox">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:8px;">
+          <strong style="color:var(--cyan); font-size:1.05rem;" id="funnelDetailTitle">Fase 1: Home Page &bull; La Regola dei 5 Secondi</strong>
+          <span class="badge badge--cyan" id="funnelDetailBadge">Obiettivo: Catturare Attenzione</span>
+        </div>
+        <p id="funnelDetailText" style="color:var(--text); font-size:0.92rem; line-height:1.5;">
+          Il compratore atterra sulla Home. Ha decine di alternative aperte nel browser. La Home Page di EcoPack deve chiarire istantaneamente con un banner nitido e uno slogan ad alto impatto: <em>"Imballaggi Industriali Ecologici al 100% per spedizioni internazionali sicure e sostenibili"</em>. Se non capisce entro 5 secondi, chiude la scheda e passa a un concorrente.
+        </p>
+      </div>
+
+      <div class="callout-box callout-box--amber" style="margin-top:12px;">
+        💡 <strong>Differenza Chiave AFM/RIM:</strong> Nel B2C si punta sulla carta di credito immediata; nel <strong>B2B</strong> il sito web serve a <strong>qualificare l'azienda e aprire una trattativa commerciale con l'ufficio acquisti</strong>.
+      </div>
+    </section>
+
+    <!-- SLIDE 2: PAGINA CHI SIAMO (15-25 min) -->
+    <section class="slide" data-idx="2">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--emerald">Cap. 4 pag. 201 + Cap. 5 pag. 219</span>
+            <span class="badge badge--cyan">Brand Equity &amp; Parametri ESG</span>
+          </div>
+          <h2 class="slide-title">Pagina "Chi Siamo": Lo Storytelling che Genera Fiducia</h2>
+          <p class="slide-subtitle">Nel B2B le commesse valgono decine di migliaia di euro: nessuno firma contratti con aziende anonime o improvvisate</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:8px;">
+        <!-- Colonna Sinistra: I 4 Ingredienti -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="card" style="padding:10px 14px;">
+            <div class="card-title" style="font-size:1rem; color:var(--cyan);">⏳ 1. La Storia d'Impresa (Timeline)</div>
+            <div class="card-body" style="font-size:0.86rem;">
+              Mostra che l'azienda non è nata ieri: <em>"Fondata nel 2004 a Milano, da 20 anni pionieri nella produzione di packaging in cartone riciclato certificato"</em>. Trasmette stabilità e affidabilità finanziaria.
+            </div>
+          </div>
+
+          <div class="card" style="padding:10px 14px;">
+            <div class="card-title" style="font-size:1rem; color:var(--emerald);">🌱 2. Mission &amp; Vision ESG</div>
+            <div class="card-body" style="font-size:0.86rem;">
+              <strong>Mission:</strong> <em>Cosa facciamo ogni giorno</em> &rarr; Produrre imballaggi riciclabili a impatto zero per la logistica europea.<br>
+              <strong>Vision:</strong> <em>Come vogliamo cambiare il mondo</em> &rarr; Guidare l'azzeramento della plastica monouso nell'export manifatturiero.
+            </div>
+          </div>
+
+          <div class="card" style="padding:10px 14px;">
+            <div class="card-title" style="font-size:1rem; color:var(--amber);">🏆 3. Certificazioni Ufficiali (Trust Badges)</div>
+            <div class="card-body" style="font-size:0.86rem;">
+              <strong>ISO 14001:</strong> Certificazione internazionale di gestione ambientale.<br>
+              <strong>Marchio FSC:</strong> Garantisce che la cellulosa proviene da foreste gestite responsabilmente.
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonna Destra: Mockup Visivo Google Sites -->
+        <div class="card" style="background:#0c172d; border:1px solid var(--cyan);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1rem;">📐 Mockup Google Sites: Pagina Chi Siamo</span>
+            <span class="badge badge--cyan">Layout a 3 Colonne</span>
+          </div>
+          <div class="card-body" style="font-size:0.84rem;">
+            <div style="background:#13223f; border-radius:6px; padding:10px; margin-bottom:8px;">
+              <strong style="color:var(--emerald);">Intestazione Pagina:</strong> <em>Chi Siamo &bull; La Nostra Storia e i Valori</em>
+            </div>
+
+            <!-- Griglia dei 3 Valori -->
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; text-align:center; margin-bottom:8px;">
+              <div style="background:#182b4f; padding:8px; border-radius:6px; border:1px solid rgba(52,211,153,0.3);">
+                <div style="font-size:1.4rem;">🌱</div>
+                <strong style="color:#fff; font-size:0.8rem; display:block;">100% Green</strong>
+                <span style="font-size:0.72rem; color:var(--muted);">Zero plastica fossile</span>
+              </div>
+              <div style="background:#182b4f; padding:8px; border-radius:6px; border:1px solid rgba(56,189,248,0.3);">
+                <div style="font-size:1.4rem;">🌍</div>
+                <strong style="color:#fff; font-size:0.8rem; display:block;">Export UE</strong>
+                <span style="font-size:0.72rem; color:var(--muted);">Oltre 20 Paesi</span>
+              </div>
+              <div style="background:#182b4f; padding:8px; border-radius:6px; border:1px solid rgba(251,191,36,0.3);">
+                <div style="font-size:1.4rem;">📜</div>
+                <strong style="color:#fff; font-size:0.8rem; display:block;">ISO 14001</strong>
+                <span style="font-size:0.72rem; color:var(--muted);">Qualità certificata</span>
+              </div>
+            </div>
+
+            <div style="background:#13223f; border-radius:6px; padding:8px; font-size:0.8rem; line-height:1.4;">
+              <strong>Strumento Google Sites:</strong> Utilizziamo il layout a 3 blocchi di contenuto con immagini quadrate in alto e didascalie brevi sotto. Nessun blocco di testo superiore alle 4 righe per massimizzare la leggibilità!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: PAGINA PRODOTTI / SERVIZI (25-35 min) -->
+    <section class="slide" data-idx="3">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--cyan">Capitolo 5 &bull; Copywriting Commerciale</span>
+            <span class="badge badge--amber">Regola Marketing: Beneficio vs Caratteristica</span>
+          </div>
+          <h2 class="slide-title">Il Catalogo Prodotti B2B: Vendere Soluzioni, non Oggetti</h2>
+          <p class="slide-subtitle">I responsabili acquisti non comprano "cartone": comprano la garanzia che le merci arrivino integre risparmiando sui costi</p>
+        </div>
+      </div>
+
+      <!-- Selettore Prodotti Interattivo LIM -->
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <button class="product-switcher-tab active" onclick="switchProduct(0, this)">📦 Prodotto 1: Scatole EcoBox</button>
+        <button class="product-switcher-tab" onclick="switchProduct(1, this)">🌿 Prodotto 2: Pellicola BioWrap</button>
+        <button class="product-switcher-tab" onclick="switchProduct(2, this)">📜 Prodotto 3: Nastro Kraft</button>
+      </div>
+
+      <!-- Scheda Dettaglio Prodotto Switchabile -->
+      <div class="card" id="productCard">
+        <div class="card-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="badge badge--emerald" id="prodBadge">Packaging Primario</span>
+            <span class="card-title" id="prodTitle">Scatole Industriali EcoBox a Tripla Onda</span>
+          </div>
+          <span style="font-size:0.85rem; font-weight:800; color:var(--cyan);" id="prodCode">COD: EB-100</span>
+        </div>
+
+        <div class="grid-2" style="margin-top:6px;">
+          <!-- Errore vs Formula Vincente -->
+          <div style="background:rgba(251, 113, 133, 0.1); border:1px solid rgba(251, 113, 133, 0.3); border-radius:8px; padding:12px;">
+            <div style="color:var(--rose); font-weight:800; font-size:0.9rem; margin-bottom:4px;">
+              ❌ Errore: Solo Caratteristica Tecnica Pura
+            </div>
+            <p id="prodTech" style="font-size:0.86rem; color:var(--text); line-height:1.4;">
+              <em>"Cartone ondulato a 3 onde, spessore 4,5 mm con grammatura 160g/m² e colla vegetale."</em><br>
+              <span style="font-size:0.78rem; color:var(--muted); display:block; margin-top:4px;">
+                ⚠️ Il buyer legge specifiche numeriche ma non percepisce perché dovrebbe spendere il 5% in più rispetto a un concorrente standard.
+              </span>
+            </p>
+          </div>
+
+          <div style="background:rgba(52, 211, 153, 0.12); border:1px solid rgba(52, 211, 153, 0.4); border-radius:8px; padding:12px;">
+            <div style="color:var(--emerald); font-weight:800; font-size:0.9rem; margin-bottom:4px;">
+              ✓ Formula Vincente: Beneficio Economico Diretto
+            </div>
+            <p id="prodBenefit" style="font-size:0.86rem; color:var(--text); line-height:1.4;">
+              <strong>"Resiste fino a 60 kg di carico verticale su pallet. Azzera i resi per scatole schiacciate nei trasporti internazionali e protegge il valore delle tue merci."</strong><br>
+              <span style="font-size:0.78rem; color:var(--emerald); display:block; margin-top:4px;">
+                🎯 Parla al conto economico del cliente: meno resi = più margine e clienti felici!
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#0c172d; padding:8px 14px; border-radius:6px; margin-top:12px; font-size:0.85rem;">
+          <div><strong>Call-to-Action Pulsante:</strong> <code style="color:var(--cyan); font-family:var(--font-mono);">[ Richiedi Scheda Tecnica &amp; Campione Gratuito ]</code></div>
+          <span class="badge badge--cyan">Link diretto alla pagina Contatti</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: ECOSISTEMA GOOGLE SITES & WORKSPACE (35-45 min) -->
+    <section class="slide" data-idx="4">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--cyan">Cap. 4 pag. 204–205</span>
+            <span class="badge badge--emerald">Google Workspace &amp; No-Code</span>
+          </div>
+          <h2 class="slide-title">L'Ecosistema Google Workspace: Integrazione Senza Codice</h2>
+          <p class="slide-subtitle">La vera forza di Google Sites rispetto ad altri CMS: collegare in 1 clic moduli, mappe, fogli e drive in tempo reale</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:8px;">
+        <!-- Sinistra: Screenshot Reale Strumenti -->
+        <div class="card" style="padding:10px;">
+          <div class="card-header">
+            <span class="card-title" style="font-size:0.95rem;">📸 Dal Nostro Editor: Pannello Inserisci</span>
+            <span class="badge badge--cyan">Componenti Workspace</span>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <img src="img/hd_lezione2_workspace_tools.png" alt="Pannello componenti Google Sites con Moduli, Mappe, Documenti e Fogli" style="max-height:220px; border-radius:6px; border:1px solid var(--border); box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+            <div style="font-size:0.82rem; color:var(--muted); line-height:1.45;">
+              <strong style="color:#fff;">Gli strumenti integrati a disposizione:</strong>
+              <ul style="margin-left:14px; margin-top:4px;">
+                <li><strong style="color:var(--cyan);">Moduli:</strong> Form per lead generation e richieste preventivo.</li>
+                <li><strong style="color:var(--emerald);">Mappe:</strong> Geolocalizzazione sede e magazzini.</li>
+                <li><strong style="color:var(--amber);">Documenti/PDF:</strong> Cataloghi e certificazioni sfogliabili.</li>
+                <li><strong style="color:var(--purple);">Fogli:</strong> Tabelle prezzi e listini aggiornabili live.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: Flusso Dati B2B -->
+        <div class="card" style="border:1px solid var(--emerald); background:#0b192e;">
+          <div class="card-header">
+            <span class="card-title" style="font-size:0.95rem;">⚡ Il Flusso Operativo del Dato Aziendale</span>
+            <span class="badge badge--emerald">Zero Dispersione</span>
+          </div>
+          <div class="card-body" style="font-size:0.85rem;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="background:#132644; padding:8px 12px; border-radius:6px; border-left:4px solid var(--cyan);">
+                <strong>1. Il Buyer compila il Google Modulo sul sito:</strong> inserisce nome azienda, tipologia scatole e quantità stimata.
+              </div>
+              <div style="text-align:center; color:var(--emerald); font-weight:800; font-size:1rem;">↓ salvataggio cloud istantaneo</div>
+              <div style="background:#132644; padding:8px 12px; border-radius:6px; border-left:4px solid var(--emerald);">
+                <strong>2. Google Fogli riceve la riga in tempo reale:</strong> l'ufficio commerciale ha già la lista ordini aggiornata senza dover copiare email a mano!
+              </div>
+              <div style="text-align:center; color:var(--emerald); font-weight:800; font-size:1rem;">↓ notifica automatica</div>
+              <div style="background:#132644; padding:8px 12px; border-radius:6px; border-left:4px solid var(--amber);">
+                <strong>3. Risposta al cliente in 2 ore:</strong> l'azienda invia il preventivo prima dei concorrenti, chiudendo la vendita.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: PAGINA CONTATTI & LEAD GENERATION (45-52 min) -->
+    <section class="slide" data-idx="5">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--purple">Capitolo 5 &bull; Tappa 2 dell'E-Commerce</span>
+            <span class="badge badge--emerald">Lead Generation &amp; Diritto Societario</span>
+          </div>
+          <h2 class="slide-title">Pagina "Contatti": Il Modulo che Converte i Visitatori</h2>
+          <p class="slide-subtitle">Perché scrivere solo una mail genera attrito e come un Google Modulo ben profilato moltiplica i contatti</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:8px;">
+        <!-- Sinistra: La Formula del Form B2B -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1rem;">📋 La Formula del Modulo Perfetto</span>
+            <span class="badge badge--cyan">Basso Attrito</span>
+          </div>
+          <div class="card-body" style="font-size:0.86rem;">
+            Se chiedi troppi dati (15 campi), il 90% degli utenti abbandona.<br>
+            Se chiedi solo l'email, ricevi richieste vaghe.<br>
+            <strong>I 5 campi essenziali per EcoPack:</strong>
+            <ol style="margin-left:1.2rem; margin-top:6px; line-height:1.45;">
+              <li><strong>Nome e Cognome:</strong> del responsabile acquisti/logistica.</li>
+              <li><strong>Ragione Sociale Azienda:</strong> per verificare la partita IVA.</li>
+              <li><strong>Email Aziendale:</strong> (no mail anonime tipo hotmail/yahoo).</li>
+              <li><strong>Soluzione Richiesta:</strong> Menu a discesa (EcoBox / BioWrap / Nastro).</li>
+              <li><strong>Volume Annuo Stimato:</strong> Scelta rapida (&lt;1.000 / 1.000-10.000 / &gt;10.000).</li>
+            </ol>
+
+            <div style="background:rgba(251, 191, 36, 0.12); border:1px solid rgba(251, 191, 36, 0.3); border-radius:6px; padding:8px 10px; margin-top:10px; font-size:0.8rem;">
+              ⚖️ <strong>Diritto Societario (art. 2250 c.c. - AFM/RIM):</strong> Obbligatorio indicare nel footer/contatti: Partita IVA, Sede Legale, Ufficio Registro Imprese (REA) e Capitale Sociale.
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: Simulatore Form Interattivo LIM -->
+        <div class="card" style="background:#0b152b; border:1px solid var(--emerald);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1rem;">📝 Simulatore Modulo Contatti EcoPack</span>
+            <span class="badge badge--emerald">Interattivo LIM</span>
+          </div>
+          <div class="card-body" style="font-size:0.84rem;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div>
+                <label style="font-size:0.75rem; color:var(--muted);">Nome e Cognome Referente:</label>
+                <input type="text" class="sim-form-input" id="simName" value="Ing. Marco Ferrari" placeholder="Nome referente">
+              </div>
+              <div>
+                <label style="font-size:0.75rem; color:var(--muted);">Azienda Compratrice:</label>
+                <input type="text" class="sim-form-input" id="simCompany" value="Pastificio Lombardo S.p.A." placeholder="Nome azienda">
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div>
+                  <label style="font-size:0.75rem; color:var(--muted);">Packaging Richiesto:</label>
+                  <select class="sim-form-input" id="simProduct">
+                    <option>Scatole EcoBox Tripla Onda</option>
+                    <option>Pellicola BioWrap Mais</option>
+                    <option>Nastro Adesivo Kraft</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.75rem; color:var(--muted);">Quantità Annua:</label>
+                  <select class="sim-form-input" id="simQty">
+                    <option>10.000 - 50.000 scatole</option>
+                    <option>&gt; 50.000 scatole (Fornitura Continua)</option>
+                    <option>&lt; 10.000 scatole</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-nav btn-nav--primary" onclick="simulateLeadSubmit()" style="margin-top:6px; justify-content:center; padding:8px;">
+                🚀 Invia Richiesta Preventivo &amp; Campionatura
+              </button>
+              <div id="simFeedback" style="display:none; background:#064e3b; border:1px solid #34d399; padding:8px 10px; border-radius:6px; font-size:0.8rem; color:#a7f3d0; margin-top:4px;">
+                ✓ <strong>Richiesta registrata!</strong> Dati inviati automaticamente a Google Fogli (Foglio Commerciale EcoPack).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: CHECKLIST DI QUALITÀ, UX & TRUST (52-58 min) -->
+    <section class="slide" data-idx="6">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--cyan">User Experience (UX)</span>
+            <span class="badge badge--amber">Trust Design &amp; Autorevolezza</span>
+          </div>
+          <h2 class="slide-title">Checklist di Qualità: Come Farsi Scegliere al Primo Sguardo</h2>
+          <p class="slide-subtitle">La differenza tra un sito "fatto da studenti" e un vero portale aziendale risiede nei dettagli di affidabilità</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">🎯 1. Riprova Sociale</span>
+          </div>
+          <div class="card-body">
+            I buyer guardano chi altri si rifornisce da te:
+            <ul>
+              <li><strong>Numeri Chiave:</strong> <em>"Oltre 500.000 spedizioni protette ogni anno in 20 Paesi europei"</em>.</li>
+              <li><strong>Testimonianze B2B:</strong> Citazioni reali di direttori acquisti e responsabili logistica.</li>
+              <li><strong>Loghi Partner:</strong> Clienti industriali serviti (o settori di riferimento).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">📱 2. Coerenza Mobile</span>
+          </div>
+          <div class="card-body">
+            Oltre il 70% dei buyer e manager naviga da smartphone tra una riunione e l'altra:
+            <ul>
+              <li><strong>Nessun testo minuscolo:</strong> I caratteri devono leggersi senza dover fare zoom con le dita.</li>
+              <li><strong>Pulsanti touch-friendly:</strong> Bottoni alti almeno 48px, facili da premere col pollice.</li>
+              <li><strong>Menu Hamburger pulito:</strong> Tutte e 4 le pagine accessibili con un tocco.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">⚖️ 3. Trasparenza &amp; Privacy</span>
+          </div>
+          <div class="card-body">
+            Requisiti normativi indispensabili in Europa:
+            <ul>
+              <li><strong>Informativa Privacy GDPR:</strong> Spiegare che i dati del form sono usati solo per il preventivo.</li>
+              <li><strong>Dati di Contatto Verificabili:</strong> Numero di telefono fisso con prefisso geografico, indirizzo sede su Google Maps.</li>
+              <li><strong>Lucchetto HTTPS:</strong> Crittografia nativa garantita da Google Cloud.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-box--emerald" style="margin-top:14px;">
+        💡 <strong>Regola Visiva:</strong> Un layout pulito a 2 o 3 colonne con ampi spazi bianchi comunica lusso, precisione e controllo. Un sito affollato e caotico comunica disorganizzazione aziendale!
+      </div>
+    </section>
+
+    <!-- SLIDE 7: CHECKPOINT INTERATTIVO QUIZ LIM (58-65 min) -->
+    <section class="slide" data-idx="7">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--rose">Verifica Formativa Rapida</span>
+            <span class="badge badge--amber">Votazione Rapida alla LIM</span>
+          </div>
+          <h2 class="slide-title">Checkpoint in Classe: 3 Domande Flash di Marketing &amp; Web Design</h2>
+          <p class="slide-subtitle">Tocca l'opzione corretta sulla LIM o premi il tasto corrispondente per verificare l'apprendimento</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top:8px;">
+        <!-- Domanda 1 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:0.95rem; color:var(--cyan);">Domanda 1 &bull; Pagina Chi Siamo</span>
+          </div>
+          <div style="font-size:0.85rem; color:#fff; margin-bottom:10px;">
+            Perché un'azienda B2B come EcoPack deve evidenziare certificazioni come ISO 14001 e FSC?
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q1')">A) Solo per abbellire la pagina con loghi colorati</button>
+            <button class="quiz-option" onclick="checkQuiz(this, true, 'q1')">B) Riducono il rischio percepito dal buyer e garantiscono la conformità ESG europea</button>
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q1')">C) Perché senza certificazioni Google blocca il sito</button>
+          </div>
+          <div class="quiz-feedback" id="q1Feedback"></div>
+        </div>
+
+        <!-- Domanda 2 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:0.95rem; color:var(--emerald);">Domanda 2 &bull; Copywriting B2B</span>
+          </div>
+          <div style="font-size:0.85rem; color:#fff; margin-bottom:10px;">
+            Quale frase segue la regola marketing "Beneficio economico prima della caratteristica"?
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q2')">A) "Scatola marrone in cartone ondulato spessore 4,5 mm"</button>
+            <button class="quiz-option" onclick="checkQuiz(this, true, 'q2')">B) "Resiste a 60kg su pallet: protegge le tue merci azzerando i costi dei resi per danni"</button>
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q2')">C) "Cartone prodotto con colla ecologica a base vegetale"</button>
+          </div>
+          <div class="quiz-feedback" id="q2Feedback"></div>
+        </div>
+
+        <!-- Domanda 3 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="font-size:0.95rem; color:var(--amber);">Domanda 3 &bull; Lead Generation</span>
+          </div>
+          <div style="font-size:0.85rem; color:#fff; margin-bottom:10px;">
+            Qual è il vantaggio strategico di integrare Google Moduli rispetto a scrivere una mail testuale?
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="quiz-option" onclick="checkQuiz(this, true, 'q3')">A) Raccoglie dati strutturati e li salva automaticamente in tempo reale su Google Fogli</button>
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q3')">B) Rende il sito più difficile da caricare per non farsi scoprire dai concorrenti</button>
+            <button class="quiz-option" onclick="checkQuiz(this, false, 'q3')">C) Non ha nessun vantaggio, serve solo per fare sondaggi scolastici</button>
+          </div>
+          <div class="quiz-feedback" id="q3Feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: BRIEFING LABORATORIO 2 (Chiusura) -->
+    <section class="slide" data-idx="8">
+      <div class="slide-header">
+        <div class="slide-header-left">
+          <div class="badge-row">
+            <span class="badge badge--emerald">Prossima Tappa Operativa</span>
+            <span class="badge badge--cyan">Dalla Teoria alla Pratica al PC</span>
+          </div>
+          <h2 class="slide-title">Pronti per il Laboratorio 2: La Nostra Roadmap Operativa</h2>
+          <p class="slide-subtitle">Appena il docente darà il via, ci sposteremo ai computer per costruire le pagine interne di EcoPack S.p.A.</p>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-top:10px;">
+        <div class="card" style="border-top:4px solid var(--cyan);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">Step 1</span>
+            <span class="badge badge--cyan">Chi Siamo</span>
+          </div>
+          <div class="card-body">
+            Allestire la pagina <strong>Chi Siamo</strong> inserendo la timeline aziendale a 3 tappe, la Mission ESG e il riquadro con la certificazione ISO 14001.
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid var(--emerald);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">Step 2</span>
+            <span class="badge badge--emerald">Catalogo B2B</span>
+          </div>
+          <div class="card-body">
+            Creare il catalogo <strong>Prodotti / Servizi</strong> con il layout a 3 colonne per EcoBox, BioWrap e Nastro Kraft orientato ai benefici commerciali.
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid var(--amber);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">Step 3</span>
+            <span class="badge badge--amber">Lead &amp; Mappa</span>
+          </div>
+          <div class="card-body">
+            Incorporare il <strong>Google Modulo</strong> per la richiesta preventivo e la mappa interattiva <strong>Google Maps</strong> nella pagina Contatti &amp; Sede.
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid var(--purple);">
+          <div class="card-header">
+            <span class="card-title" style="font-size:1.05rem;">Step 4</span>
+            <span class="badge badge--purple">Collaudo Finale</span>
+          </div>
+          <div class="card-body">
+            Verificare tutti i pulsanti Call-to-Action, testare la navigazione fluida su smartphone e preparare la consegna su Google Classroom.
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-box--amber" style="margin-top:20px; font-size:1.05rem;">
+        🏁 <strong>Fine Parte Teorica (1ª Ora):</strong> Congratulazioni! Ora avete tutte le competenze di marketing e architettura web per realizzare un portale aziendale professionale. Attendere il via del docente per iniziare la parte pratica!
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DOCK INFERIORE -->
+  <footer class="dock">
+    <div class="dock-left">
+      <button class="btn-nav" onclick="prevSlide()" id="prevBtn">◀ Precedente</button>
+    </div>
+
+    <div class="dock-center" id="dockDots">
+      <!-- Generati via JS -->
+    </div>
+
+    <div class="dock-right">
+      <button class="btn-nav btn-nav--primary" onclick="nextSlide()" id="nextBtn">Successiva ▶</button>
+    </div>
+  </footer>
+
+  <script>
+    // Stato Presentazione
+    let curSlide = 0;
+    const totalSlides = 9;
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const dotsContainer = document.getElementById('dockDots');
+
+    // Genera i pallini nel dock
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.textContent = i + 1;
+      d.title = `Vai a slide ${i + 1}`;
+      d.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(d);
+    });
+
+    function updateDeck() {
+      slides.forEach((s, i) => {
+        s.classList.toggle('active', i === curSlide);
+      });
+      document.querySelectorAll('#dockDots .dot').forEach((d, i) => {
+        d.classList.toggle('active', i === curSlide);
+      });
+      if (progressBar) {
+        progressBar.style.width = `${((curSlide + 1) / totalSlides) * 100}%`;
+      }
+      // Aggiorna stato pulsanti
+      document.getElementById('prevBtn').disabled = curSlide === 0;
+      document.getElementById('nextBtn').disabled = curSlide === totalSlides - 1;
+    }
+
+    function nextSlide() {
+      if (curSlide < totalSlides - 1) {
+        curSlide++;
+        updateDeck();
+      }
+    }
+
+    function prevSlide() {
+      if (curSlide > 0) {
+        curSlide--;
+        updateDeck();
+      }
+    }
+
+    function goToSlide(n) {
+      if (n >= 0 && n < totalSlides) {
+        curSlide = n;
+        updateDeck();
+      }
+    }
+
+    // Navigazione da Tastiera
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(totalSlides - 1);
+      } else if (e.key === 'l' || e.key === 'L') {
+        toggleLaser();
+      } else if (e.key === 'p' || e.key === 'P' || e.key === 'w' || e.key === 'W') {
+        toggleLimMode();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (!isNaN(parseInt(e.key)) && parseInt(e.key) >= 1 && parseInt(e.key) <= 9) {
+        goToSlide(parseInt(e.key) - 1);
+      }
+    });
+
+    // Supporto Touch Swipe per LIM
+    let touchStartX = 0;
+    let touchEndX = 0;
+    window.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+    window.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) nextSlide();
+      if (touchEndX > touchStartX + 50) prevSlide();
+    }, false);
+
+    // Puntatore Laser LIM
+    let laserActive = false;
+    const laserDot = document.getElementById('laser-dot');
+    function toggleLaser() {
+      laserActive = !laserActive;
+      document.body.classList.toggle('laser-on', laserActive);
+      const btn = document.getElementById('laserBtn');
+      if (btn) btn.style.background = laserActive ? '#ff1744' : '';
+    }
+    window.addEventListener('mousemove', (e) => {
+      if (laserActive && laserDot) {
+        laserDot.style.left = e.clientX + 'px';
+        laserDot.style.top = e.clientY + 'px';
+      }
+    });
+
+    // LIM Drawing Canvas Overlay
+    const canvas = document.getElementById('limCanvas');
+    const ctx = canvas.getContext('2d');
+    const toolbar = document.getElementById('limToolbar');
+    let limDrawing = false;
+    let limTool = 'pen';
+    let limColor = '#fbbf24';
+    let isLimActive = false;
+    let isPassThrough = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function toggleLimMode() {
+      isLimActive = !isLimActive;
+      canvas.classList.toggle('active', isLimActive);
+      toolbar.classList.toggle('show', isLimActive);
+      const btn = document.getElementById('penBtn');
+      if (btn) btn.style.background = isLimActive ? 'var(--cyan)' : '';
+      if (btn) btn.style.color = isLimActive ? '#040914' : '';
+    }
+
+    function setLimTool(tool) {
+      limTool = tool;
+      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+      if (tool === 'pen') document.getElementById('btnPen').classList.add('active');
+      if (tool === 'highlighter') document.getElementById('btnHighlighter').classList.add('active');
+      if (tool === 'eraser') document.getElementById('btnEraser').classList.add('active');
+    }
+
+    function setLimColor(c, el) {
+      limColor = c;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      if (el) el.classList.add('active');
+      if (limTool === 'eraser') setLimTool('pen');
+    }
+
+    function clearLimCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function toggleLimPassThrough() {
+      isPassThrough = !isPassThrough;
+      canvas.classList.toggle('pass-through', isPassThrough);
+      const btn = document.getElementById('btnPassThrough');
+      if (btn) btn.classList.toggle('active', isPassThrough);
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+
+    canvas.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startDraw({ clientX: touch.clientX, clientY: touch.clientY });
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      draw({ clientX: touch.clientX, clientY: touch.clientY });
+    });
+    canvas.addEventListener('touchend', endDraw);
+
+    function startDraw(e) {
+      if (!isLimActive || isPassThrough) return;
+      limDrawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX, e.clientY);
+    }
+
+    function draw(e) {
+      if (!limDrawing || !isLimActive || isPassThrough) return;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (limTool === 'pen') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = limColor;
+        ctx.lineWidth = 4;
+      } else if (limTool === 'highlighter') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = limColor + '66'; // Trasparente
+        ctx.lineWidth = 18;
+      } else if (limTool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 28;
+      }
+      ctx.lineTo(e.clientX, e.clientY);
+      ctx.stroke();
+    }
+
+    function endDraw() {
+      limDrawing = false;
+    }
+
+    // Timer Countdown 60 min
+    let timerSeconds = 60 * 60;
+    let timerInterval = null;
+    function updateTimerDisplay() {
+      const m = Math.floor(timerSeconds / 60);
+      const s = timerSeconds % 60;
+      document.getElementById('timerDisplay').textContent = 
+        `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+    function toggleTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      } else {
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+        }, 1000);
+      }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // INTERAZIONE SLIDE 1: Funnel Selector
+    const funnelData = [
+      {
+        title: "Fase 1: Home Page &bull; La Regola dei 5 Secondi",
+        badge: "Obiettivo: Catturare Attenzione",
+        text: "Il compratore atterra sulla Home. Ha decine di alternative aperte nel browser. La Home Page di EcoPack deve chiarire istantaneamente con un banner nitido e uno slogan ad alto impatto: 'Imballaggi Industriali Ecologici al 100% per spedizioni internazionali sicure e sostenibili'. Se non capisce entro 5 secondi, chiude la scheda e passa a un concorrente."
+      },
+      {
+        title: "Fase 2: Pagina Chi Siamo &bull; L'Iniezione di Fiducia",
+        badge: "Obiettivo: Rassicurare il Buyer",
+        text: "Prima di chiedere un preventivo da 20.000 €, il responsabile acquisti apre 'Chi Siamo'. Vuole verificare chi c'è dietro: 20 anni di attività, certificazione ISO 14001, sede fisica italiana e trasparenza ESG. Senza questo passaggio, nessun acquirente professionale inoltra una richiesta commerciale."
+      },
+      {
+        title: "Fase 3: Pagina Prodotti &bull; La Valutazione Tecnica",
+        badge: "Obiettivo: Risolvere il Problema",
+        text: "Il catalogo B2B non deve essere un noioso elenco di codici, ma spiegare concretamente i benefici: 'EcoBox regge 60kg e azzera i resi da merce schiacciata', 'BioWrap elimina le tasse europee sulla plastica'. Ogni prodotto deve avere il suo pulsante d'azione dedicato."
+      },
+      {
+        title: "Fase 4: Pagina Contatti &bull; La Conversione in Lead",
+        badge: "Obiettivo: Generare la Trattativa",
+        text: "Il visitatore è convinto: ora vuole i prezzi e una campionatura di test. Trova un modulo snello (5 campi essenziali) con menu a discesa per indicare i volumi, la mappa Google Maps per verificare la sede e i dati fiscali completi (P.IVA e REA) a norma di legge."
+      }
+    ];
+
+    function selectFunnel(idx, el) {
+      document.querySelectorAll('.funnel-item').forEach(f => f.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('funnelDetailTitle').innerHTML = funnelData[idx].title;
+      document.getElementById('funnelDetailBadge').textContent = funnelData[idx].badge;
+      document.getElementById('funnelDetailText').innerHTML = funnelData[idx].text;
+    }
+
+    // INTERAZIONE SLIDE 3: Product Switcher
+    const productsData = [
+      {
+        title: "Scatole Industriali EcoBox a Tripla Onda",
+        badge: "Packaging Primario",
+        code: "COD: EB-100",
+        tech: "'Cartone ondulato a 3 onde, spessore 4,5 mm con grammatura 160g/m² e colla vegetale.'",
+        benefit: "'Resiste fino a 60 kg di carico verticale su pallet. Azzera i resi per scatole schiacciate nei trasporti internazionali e protegge il valore delle tue merci.'"
+      },
+      {
+        title: "Pellicola Estensibile Biodegradabile BioWrap",
+        badge: "Protezione Pallet",
+        code: "COD: BW-500",
+        tech: "'Film estensibile in polimero a base di amido di mais certificato compostabile EN 13432.'",
+        benefit: "'Azzeri le tasse europee sulla plastica monouso (Plastic Tax) e migliori il bilancio di sostenibilità ESG dei tuoi clienti aziendali.'"
+      },
+      {
+        title: "Nastro Adesivo Ecologico Rinforzato Kraft",
+        badge: "Sigillo di Sicurezza",
+        code: "COD: NT-Kraft",
+        tech: "'Nastro in carta avana da 60g con colla a base di gomma naturale priva di solventi.'",
+        benefit: "'Sigillo antieffrazione inviolabile: la scatola è riciclabile al 100% insieme al cartone, senza dover staccare lo scotch negli impianti di riciclo!'"
+      }
+    ];
+
+    function switchProduct(idx, el) {
+      document.querySelectorAll('.product-switcher-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      const p = productsData[idx];
+      document.getElementById('prodTitle').textContent = p.title;
+      document.getElementById('prodBadge').textContent = p.badge;
+      document.getElementById('prodCode').textContent = p.code;
+      document.getElementById('prodTech').innerHTML = `<em>${p.tech}</em><br><span style="font-size:0.78rem; color:var(--muted); display:block; margin-top:4px;">⚠️ Il buyer legge specifiche numeriche ma non percepisce il vantaggio economico.</span>`;
+      document.getElementById('prodBenefit').innerHTML = `<strong>${p.benefit}</strong><br><span style="font-size:0.78rem; color:var(--emerald); display:block; margin-top:4px;">🎯 Parla al conto economico del cliente: meno resi = più margine e clienti felici!</span>`;
+    }
+
+    // INTERAZIONE SLIDE 5: Simulatore Lead
+    function simulateLeadSubmit() {
+      const name = document.getElementById('simName').value;
+      const comp = document.getElementById('simCompany').value;
+      const prod = document.getElementById('simProduct').value;
+      const fb = document.getElementById('simFeedback');
+      fb.style.display = 'block';
+      fb.innerHTML = `✓ <strong>Lead Acquisito con Successo!</strong> Richiesta di <em>${name}</em> (${comp}) per <em>${prod}</em> registrata su Google Fogli. Email di preventivo inviata in automatico.`;
+    }
+
+    // INTERAZIONE SLIDE 7: Quiz Feedback
+    function checkQuiz(btn, isCorrect, qId) {
+      const container = btn.parentElement;
+      const buttons = container.querySelectorAll('.quiz-option');
+      buttons.forEach(b => {
+        b.disabled = true;
+        b.style.opacity = '0.7';
+      });
+      btn.style.opacity = '1';
+
+      const fb = document.getElementById(qId + 'Feedback');
+      fb.style.display = 'block';
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        fb.style.background = 'rgba(52, 211, 153, 0.2)';
+        fb.style.border = '1px solid #34d399';
+        fb.style.color = '#34d399';
+        fb.innerHTML = '✓ <strong>Risposta Esatta!</strong> Nel B2B e nel web design aziendale la credibilità e la gestione strutturata del dato sono i veri fattori di successo commerciale.';
+      } else {
+        btn.classList.add('wrong');
+        fb.style.background = 'rgba(251, 113, 133, 0.2)';
+        fb.style.border = '1px solid #fb7185';
+        fb.style.color = '#fb7185';
+        fb.innerHTML = '❌ <strong>Non è corretto.</strong> Ricorda la regola cardine: il sito web è un asset economico. Le risposte devono sempre mirare a ridurre il rischio e convertire il visitatore.';
+      }
+    }
+
+    // Gestione Parametro Classe per Back-Link
+    (function initBackLinks() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const classe = urlParams.get('classe');
+      const backLink = document.getElementById('back-link');
+
+      if (classe && backLink) {
+        if (classe === '3l') {
+          backLink.href = '/#3l-relazioni-internazionali';
+          backLink.textContent = '◀ Torna a 3°L RIM';
+        } else if (classe === '2h') {
+          backLink.href = '/#2h-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2H AFM';
+        } else if (classe === '2g') {
+          backLink.href = '/#2g-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2G AFM';
+        }
+      }
+    })();
+
+    // Inizializzazione iniziale
+    updateDeck();
+    updateTimerDisplay();
+  </script>
+</body>
+</html>

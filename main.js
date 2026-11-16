@@ -321,6 +321,11 @@ const MATERIE = [
                 title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
                 desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
                 url: "/informatica/web/laboratorio-1-google-sites.html?classe=3l"
+              },
+              {
+                title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
+                desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
+                url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=3l"
               }
             ]
           }
@@ -574,6 +579,11 @@ const MATERIE = [
                 title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
                 desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
                 url: "/informatica/web/laboratorio-1-google-sites.html?classe=2h"
+              },
+              {
+                title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
+                desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
+                url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=2h"
               }
             ]
           }
@@ -827,6 +837,11 @@ const MATERIE = [
                 title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
                 desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
                 url: "/informatica/web/laboratorio-1-google-sites.html?classe=2g"
+              },
+              {
+                title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
+                desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
+                url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=2g"
               }
             ]
           }
