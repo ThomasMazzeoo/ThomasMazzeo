@@ -1878,26 +1878,6 @@ const MATERIE = [
 
 
 
-              },
-
-
-
-              {
-
-
-
-                title: "Laboratorio: l'equilibrio sul piano inclinato",
-
-
-
-                desc: "Lezione di controllo e correzione guidata per LIM della relazione di laboratorio: richiamo teorico, metrologia strumenti, tabella SI, semidispersione, grafico cartesiano e rubrica di valutazione.",
-
-
-
-                url: "/fisica/archimede/seconda-elettronica/piano-inclinato-relazione.html"
-
-
-
               }
 
 
