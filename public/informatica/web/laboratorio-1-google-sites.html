@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 1: Progettazione e Creazione Sito con Google Sites | IIS Archimede</title>
+  <meta name="description" content="Guida operativa passo-passo per il primo laboratorio al PC con Google Sites per classi AFM e RIM: caso studio EcoPack S.p.A., alberatura a 4 pagine, layout e consegna su Classroom.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-deep: #070c18;
+      --bg-panel: #0d1629;
+      --bg-card: #14223a;
+      --bg-card-hover: #1c2e4d;
+      --border: rgba(148, 163, 184, 0.22);
+      --border-accent: rgba(56, 189, 248, 0.45);
+      --text: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --cyan: #38bdf8;
+      --emerald: #34d399;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+      --purple: #c084fc;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #152445 0%, var(--bg-deep) 65%);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Sticky Header */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 12, 24, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .top-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--cyan);
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan);
+      transform: translateX(-2px);
+    }
+
+    .breadcrumb {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+    .breadcrumb strong { color: #fff; }
+
+    /* Progress Widget */
+    .progress-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 12px;
+    }
+    .progress-bar-bg {
+      width: 140px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--emerald));
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--emerald);
+      font-family: var(--font-mono);
+      min-width: 48px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(14, 23, 42, 0.96), rgba(20, 34, 58, 0.9));
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(24px, 3.5vw, 40px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(56, 189, 248, 0.16);
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .badge.emerald { background: rgba(52, 211, 153, 0.16); color: var(--emerald); border-color: rgba(52, 211, 153, 0.4); }
+    .badge.amber { background: rgba(251, 191, 36, 0.16); color: var(--amber); border-color: rgba(251, 191, 36, 0.4); }
+    .badge.purple { background: rgba(192, 132, 252, 0.16); color: var(--purple); border-color: rgba(192, 132, 252, 0.4); }
+
+    h1.hero-title {
+      font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.2;
+      margin-top: 12px;
+      letter-spacing: -0.03em;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.3vw, 1.2rem);
+      color: var(--text-muted);
+      margin-top: 10px;
+      max-width: 900px;
+      line-height: 1.55;
+    }
+
+    /* Quick Jump Nav */
+    .quick-steps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .quick-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 750;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quick-pill:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--cyan);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Dossier Azienda Card */
+    .dossier-card {
+      background: linear-gradient(135deg, rgba(16, 28, 51, 0.95), rgba(11, 20, 38, 0.95));
+      border: 2px solid rgba(52, 211, 153, 0.4);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .dossier-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .dossier-item-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--emerald);
+    }
+    .dossier-item-val {
+      font-size: 1rem;
+      font-weight: 750;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    /* Step Card */
+    .step-section {
+      background: var(--bg-panel);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: clamp(20px, 2.5vw, 32px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      scroll-margin-top: 90px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .step-section.active-border {
+      border-color: var(--cyan);
+    }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+    .step-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+    }
+    .step-title {
+      font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+      font-weight: 850;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .step-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Instructions Column */
+    .instructions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .inst-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+    .inst-bullet {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--cyan);
+      min-width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Copy Box */
+    .copy-box {
+      background: rgba(4, 7, 17, 0.75);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .copy-text {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      color: var(--cyan);
+      word-break: break-all;
+    }
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .btn-copy:hover {
+      background: var(--cyan);
+      color: #070c18;
+      border-color: var(--cyan);
+    }
+
+    /* Screenshot Card */
+    .screen-card {
+      background: rgba(4, 7, 17, 0.85);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: sticky;
+      top: 90px;
+    }
+    .screen-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .screen-img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: block;
+      background: #000;
+    }
+    .screen-caption {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    /* Checklist Section */
+    .checklist-wrap {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .check-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: var(--text);
+      user-select: none;
+    }
+    .check-label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--emerald);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .check-label.checked {
+      color: var(--emerald);
+      text-decoration: line-through;
+      opacity: 0.75;
+    }
+
+    /* Classroom Delivery Card */
+    .delivery-card {
+      background: linear-gradient(135deg, rgba(16, 28, 51, 0.98), rgba(9, 16, 32, 0.98));
+      border: 2px solid var(--emerald);
+      border-radius: 20px;
+      padding: clamp(24px, 3vw, 36px);
+      box-shadow: 0 16px 45px rgba(16, 185, 129, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .delivery-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .del-step {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .del-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(52, 211, 153, 0.2);
+      color: var(--emerald);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    /* Link Validator Tool */
+    .validator-box {
+      background: rgba(4, 7, 17, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .validator-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .validator-input:focus {
+      border-color: var(--cyan);
+    }
+    .validator-result {
+      font-size: 0.92rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: none;
+      line-height: 1.45;
+    }
+
+    /* Report Generation Card */
+    .report-card {
+      background: var(--bg-panel);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 750;
+      color: var(--text-muted);
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--emerald);
+    }
+
+    .btn-submit {
+      align-self: flex-start;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: 1.5px solid var(--emerald);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 12px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Scheda Riepilogo Stampabile / Modale */
+    #reportReceipt {
+      display: none;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      background: rgba(7, 12, 24, 0.98);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <a id="back-link" href="/#informatica" class="btn-back">◀ Torna alla Classe</a>
+      <a id="theory-link" href="/informatica/web/lezione-1-google-sites-marketing.html" class="btn-back" style="color:var(--amber); border-color:rgba(251,191,36,0.4);">📖 Vai alla Teoria LIM</a>
+      <div class="breadcrumb">
+        Informatica &bull; <strong>Laboratorio 1: Google Sites</strong>
+      </div>
+    </div>
+
+    <div class="progress-box">
+      <span style="font-size:0.85rem; color:var(--text-dim);">Avanzamento:</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-text" id="progressPct">0%</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Hero Banner Didattico -->
+    <section class="hero-card">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="badge cyan">Laboratorio Operativo al PC</span>
+        <span class="badge emerald">Durata: 60 Minuti</span>
+        <span class="badge amber">Indirizzo: AFM &amp; RIM</span>
+      </div>
+
+      <h1 class="hero-title">
+        Costruisci il Tuo Primo Sito Aziendale su <span style="color:var(--cyan);">Google Sites</span>
+      </h1>
+      <p class="hero-sub">
+        Guida operativa passo-passo per realizzare il portale ufficiale a 4 pagine di <strong>EcoPack S.p.A.</strong> (Packaging Sostenibile per l'Industria e l'Export) applicando le regole di <strong>alberatura canonica, copywriting B2B e responsive design</strong> viste nella 1ª ora di teoria.
+      </p>
+
+      <div class="quick-steps">
+        <a href="#step1" class="quick-pill"><strong>1.</strong> Accesso &amp; Setup</a>
+        <a href="#step2" class="quick-pill"><strong>2.</strong> Tema &amp; Colori</a>
+        <a href="#step3" class="quick-pill"><strong>3.</strong> Alberatura (4 Pagine)</a>
+        <a href="#step4" class="quick-pill"><strong>4.</strong> Home &amp; Copywriting</a>
+        <a href="#step5" class="quick-pill"><strong>5.</strong> Link &amp; Mobile</a>
+        <a href="#consegna" class="quick-pill" style="border-color:var(--emerald); color:var(--emerald);"><strong>📬</strong> Consegna Classroom (Drive)</a>
+      </div>
+    </section>
+
+    <!-- Dossier Aziendale: EcoPack S.p.A. -->
+    <section class="dossier-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span class="badge emerald">Dossier Aziendale Assegnato</span>
+          <h2 style="font-size:1.45rem; font-weight:900; margin-top:6px; color:#fff;">
+            Caso Studio: EcoPack S.p.A.
+          </h2>
+        </div>
+        <button class="btn-copy" onclick="copyAllDossier()" style="background:rgba(52,211,153,0.18); border-color:var(--emerald); color:#fff; font-size:0.88rem; padding:8px 16px;">
+          📋 Copia Tutto il Kit Testi
+        </button>
+      </div>
+
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-top:8px;">
+        Tutti gli studenti lavorano sulla stessa impresa industriale per focalizzarsi sulla padronanza dello strumento e sulle regole di marketing digitale:
+      </p>
+
+      <div class="dossier-grid">
+        <div class="dossier-item">
+          <div class="dossier-item-label">Settore &amp; Mercato</div>
+          <div class="dossier-item-val">Packaging Industriale B2B per Export</div>
+          <div style="font-size:0.82rem; color:var(--text-dim); margin-top:4px;">Vendita ad aziende alimentari e manifatturiere europee.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">Proposta di Valore (Home)</div>
+          <div class="dossier-item-val">Imballaggi Ecologici al 100%</div>
+          <div style="font-size:0.82rem; color:var(--text-dim); margin-top:4px;">Rispetta la regola dei 5 secondi del buyer.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">Reputazione &amp; Certificazioni</div>
+          <div class="dossier-item-val">ISO 14001 &bull; 20 Anni di Export</div>
+          <div style="font-size:0.82rem; color:var(--text-dim); margin-top:4px;">Elemento cardine per la fiducia nei contratti B2B.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">I 3 Prodotti Chiave</div>
+          <div class="dossier-item-val">EcoBox, BioWrap, Nastri Kraft</div>
+          <div style="font-size:0.82rem; color:var(--text-dim); margin-top:4px;">Catalogo suddiviso con specifiche tecniche.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STEP 1: ACCESSO & CREAZIONE SITO
+         ======================================================== -->
+    <section class="step-section" id="step1">
+      <div class="step-head">
+        <div class="step-title-wrap">
+          <div class="step-num">1</div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--cyan); font-weight:800; text-transform:uppercase;">Riferimento Libro: Cap. 4, pag. 200 (Step 1–4)</div>
+            <h2 class="step-title">Accesso a Google Sites &amp; Creazione Sito Vuoto</h2>
+          </div>
+        </div>
+        <span class="badge cyan">Tempo stimato: 8 min</span>
+      </div>
+
+      <div class="step-grid">
+        <!-- Istruzioni -->
+        <div>
+          <div class="instructions-list">
+            <div class="inst-item">
+              <span class="inst-bullet">1</span>
+              <div>
+                Apri una nuova scheda del browser e digita: <a href="https://sites.google.com" target="_blank" style="color:var(--cyan); font-weight:750;">sites.google.com</a>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">2</span>
+              <div>
+                <strong>Verifica Account:</strong> controlla in alto a destra che l'icona del profilo appartenga al tuo <strong>account scolastico Google Workspace</strong>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">3</span>
+              <div>
+                Nella schermata iniziale, sotto la voce <em>Crea un nuovo sito</em>, clicca sul riquadro con il <strong>grande pulsante "+" colorato (Vuoto)</strong>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">4</span>
+              <div>
+                Assegna la denominazione ufficiale del sito aziendale in due punti distinti:
+                <div class="copy-box">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">In alto a sinistra (Nome file Drive):</div>
+                    <span class="copy-text" id="t-sitefile">EcoPack S.p.A. - [Tuo Cognome]</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-sitefile')">Copia</button>
+                </div>
+
+                <div class="copy-box" style="margin-top:8px;">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">Nel titolo dell'intestazione (Banner Home):</div>
+                    <span class="copy-text" id="t-sitehero">EcoPack S.p.A.</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-sitehero')">Copia</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-wrap">
+            <div style="font-weight:800; font-size:0.88rem; color:var(--emerald);">✓ Checklist di Autovalutazione Step 1:</div>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Accesso effettuato con account istituzionale scolastico
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Creato nuovo sito vuoto con il pulsante "+"
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Inserito "EcoPack S.p.A. - [Cognome]" in alto a sinistra e nel banner
+            </label>
+          </div>
+        </div>
+
+        <!-- Screenshot Libro -->
+        <div>
+          <div class="screen-card">
+            <div class="screen-tag">
+              <span>📖 Dal Libro: Pagina 200</span>
+              <span>Step 1, 2, 3</span>
+            </div>
+            <img src="img/step1_crea_sito.png" alt="Schermata creazione Google Sites" class="screen-img">
+            <img src="img/step1_libro_dettaglio.png" alt="Dettaglio passaggi libro" class="screen-img" style="margin-top:6px;">
+            <div class="screen-caption">
+              Figura: Clicca sul riquadro Vuoto (+) per avviare l'editor WYSIWYG di Google Sites.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STEP 2: SCELTA DEL TEMA VISIVO & COLORI
+         ======================================================== -->
+    <section class="step-section" id="step2">
+      <div class="step-head">
+        <div class="step-title-wrap">
+          <div class="step-num">2</div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--amber); font-weight:800; text-transform:uppercase;">Riferimento Libro: Cap. 4, pag. 200 (Barra laterale Temi)</div>
+            <h2 class="step-title">Scelta del Tema Grafico &amp; Palette Colori</h2>
+          </div>
+        </div>
+        <span class="badge amber">Tempo stimato: 6 min</span>
+      </div>
+
+      <div class="step-grid">
+        <!-- Istruzioni -->
+        <div>
+          <div class="instructions-list">
+            <div class="inst-item">
+              <span class="inst-bullet">1</span>
+              <div>
+                Guarda il <strong>pannello laterale destro</strong> dello schermo.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">2</span>
+              <div>
+                Clicca sulla terza scheda in alto: <strong>Temi</strong> 🎨.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">3</span>
+              <div>
+                Scorri tra i temi predefiniti e seleziona il tema <strong>Vision</strong> (oppure <strong>Aristotle</strong>).
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">4</span>
+              <div>
+                <strong>Palette Aziendale Ecologica:</strong> sotto il nome del tema, clicca sul cerchietto colore e seleziona il colore <strong>Verde / Smeraldo</strong>.
+                <div style="font-size:0.88rem; color:var(--text-dim); margin-top:4px;">
+                  💡 <em>Regola di Brand Identity:</em> EcoPack produce packaging sostenibile: il verde trasmette immediatamente rispetto dell'ambiente e conformità ESG.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-wrap">
+            <div style="font-weight:800; font-size:0.88rem; color:var(--emerald);">✓ Checklist di Autovalutazione Step 2:</div>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Aperta la scheda "Temi" nella colonna destra
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Applicato il tema *Vision* (o *Aristotle*)
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Impostato il colore verde smeraldo aziendale
+            </label>
+          </div>
+        </div>
+
+        <!-- Screenshot Libro -->
+        <div>
+          <div class="screen-card">
+            <div class="screen-tag">
+              <span>📖 Dal Libro: Pagina 200</span>
+              <span>Scheda Temi</span>
+            </div>
+            <img src="img/step2_pannello_temi.png" alt="Pannello Temi Google Sites" class="screen-img">
+            <div class="screen-caption">
+              Figura: La scheda Temi applica istantaneamente caratteri e accenti di colore coordinati a tutte le pagine.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STEP 3: ALBERATURA A 4 PAGINE (SITEMAP)
+         ======================================================== -->
+    <section class="step-section" id="step3">
+      <div class="step-head">
+        <div class="step-title-wrap">
+          <div class="step-num">3</div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--emerald); font-weight:800; text-transform:uppercase;">Riferimento Libro: Cap. 4, pag. 201 (Step 5–7)</div>
+            <h2 class="step-title">Costruzione dell'Alberatura a 4 Pagine</h2>
+          </div>
+        </div>
+        <span class="badge emerald">Tempo stimato: 12 min</span>
+      </div>
+
+      <div class="step-grid">
+        <!-- Istruzioni -->
+        <div>
+          <div class="instructions-list">
+            <div class="inst-item">
+              <span class="inst-bullet">1</span>
+              <div>
+                Nel pannello laterale destro, clicca sulla seconda scheda: <strong>Pagine</strong> 📑. Noterai che è già presente la sola pagina <em>Home</em>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">2</span>
+              <div>
+                In basso a destra, posiziona il mouse sul pulsante circolare <strong>"+"</strong> e seleziona <strong>Nuova pagina</strong>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">3</span>
+              <div>
+                Crea in sequenza le 3 pagine mancanti dell'alberatura canonica:
+                
+                <div class="copy-box">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--emerald); font-weight:800;">Pagina 2:</div>
+                    <span class="copy-text" id="t-p2">Chi Siamo</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-p2')">Copia</button>
+                </div>
+
+                <div class="copy-box" style="margin-top:6px;">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--amber); font-weight:800;">Pagina 3:</div>
+                    <span class="copy-text" id="t-p3">Prodotti / Servizi</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-p3')">Copia</button>
+                </div>
+
+                <div class="copy-box" style="margin-top:6px;">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--purple); font-weight:800;">Pagina 4:</div>
+                    <span class="copy-text" id="t-p4">Contatti &amp; Sede</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-p4')">Copia</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">4</span>
+              <div>
+                <strong>Verifica Navbar Automatica:</strong> osserva l'angolo in alto a destra del sito. Come spiegato a pag. 201 (Step 7), Google Sites ha aggiornato automaticamente la barra di navigazione con tutti i 4 collegamenti!
+              </div>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-wrap">
+            <div style="font-weight:800; font-size:0.88rem; color:var(--emerald);">✓ Checklist di Autovalutazione Step 3:</div>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Aggiunta la pagina "Chi Siamo"
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Aggiunta la pagina "Prodotti / Servizi"
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Aggiunta la pagina "Contatti &amp; Sede"
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Verificato che il menu in alto contenga tutte e 4 le voci
+            </label>
+          </div>
+        </div>
+
+        <!-- Screenshot Libro -->
+        <div>
+          <div class="screen-card">
+            <div class="screen-tag">
+              <span>📖 Dal Libro: Pagina 201</span>
+              <span>Step 5, 6, 7</span>
+            </div>
+            <img src="img/step3_crea_pagine.png" alt="Creazione pagine su Google Sites" class="screen-img">
+            <div class="screen-caption">
+              Figura: Dal pulsante "+" in basso si creano le nuove pagine. L'ordine può essere modificato trascinando le voci col mouse.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STEP 4: LAYOUT & COPYWRITING HOME PAGE
+         ======================================================== -->
+    <section class="step-section" id="step4">
+      <div class="step-head">
+        <div class="step-title-wrap">
+          <div class="step-num">4</div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--cyan); font-weight:800; text-transform:uppercase;">Riferimento Libro: Cap. 4, pag. 202 (Step 8–10)</div>
+            <h2 class="step-title">Impaginazione della Home con Blocco di Layout</h2>
+          </div>
+        </div>
+        <span class="badge cyan">Tempo stimato: 16 min</span>
+      </div>
+
+      <div class="step-grid">
+        <!-- Istruzioni -->
+        <div>
+          <div class="instructions-list">
+            <div class="inst-item">
+              <span class="inst-bullet">1</span>
+              <div>
+                Torna sulla pagina <strong>Home</strong> (cliccando sul suo nome nella scheda <em>Pagine</em> o direttamente nel menu in alto).
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">2</span>
+              <div>
+                Nella colonna destra apri la scheda <strong>Inserisci</strong> 📥.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">3</span>
+              <div>
+                Sotto la voce <strong>Blocchi di layout</strong>, clicca sul <strong>primo modello</strong> (quello con 1 grande immagine a sinistra e casella di testo a destra).
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">4</span>
+              <div>
+                <strong>Copywriting Commerciale B2B (AFM/RIM):</strong> clicca sul testo predefinito a destra e inserisci i contenuti ufficiali di EcoPack:
+                
+                <div class="copy-box">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--cyan); font-weight:800;">Titolo Principale (Value Proposition):</div>
+                    <span class="copy-text" id="t-h1">Soluzioni di Packaging per l'Industria &amp; l'Export</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-h1')">Copia</button>
+                </div>
+
+                <div class="copy-box" style="margin-top:6px;">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); font-weight:800;">Descrizione Aziendale:</div>
+                    <span class="copy-text" id="t-pdesc" style="font-size:0.85rem;">Produciamo imballaggi ecologici, scatole isotermiche e film biodegradabili certificati ISO 14001 per aziende alimentari e manifatturiere europee.</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-pdesc')">Copia</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">5</span>
+              <div>
+                <strong>Inserimento Immagine Nitida (No foto sgranate!):</strong> clicca sul cerchio col `+` all'interno della casella immagine $
+ightarrow$ seleziona <em>Seleziona immagine</em> $
+ightarrow$ scheda <em>Ricerca immagini Google</em> $
+ightarrow$ cerca <code>sustainable packaging</code> o <code>scatole cartone industriale</code> e clicca su <strong>Inserisci</strong>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-wrap">
+            <div style="font-weight:800; font-size:0.88rem; color:var(--emerald);">✓ Checklist di Autovalutazione Step 4:</div>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Inserito il Blocco di Layout (foto + testo) nella Home
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Incollato lo slogan commerciale e la descrizione di EcoPack
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Caricata una foto ad alta risoluzione attinente al settore
+            </label>
+          </div>
+        </div>
+
+        <!-- Screenshot Libro -->
+        <div>
+          <div class="screen-card">
+            <div class="screen-tag">
+              <span>📖 Dal Libro: Pagina 202</span>
+              <span>Step 8, 9, 10</span>
+            </div>
+            <img src="img/step4_blocchi_layout.png" alt="Blocchi di layout Google Sites" class="screen-img">
+            <div class="screen-caption">
+              Figura: I blocchi di layout allineano automaticamente immagini e testi garantendo una perfetta resa responsive su tutti i dispositivi.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STEP 5: LINK INTERNO & TEST SMARTPHONE
+         ======================================================== -->
+    <section class="step-section" id="step5">
+      <div class="step-head">
+        <div class="step-title-wrap">
+          <div class="step-num">5</div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--purple); font-weight:800; text-transform:uppercase;">Riferimento Libro: Cap. 4, pag. 203 (Step 11)</div>
+            <h2 class="step-title">Link Ipertestuale Interno &amp; Collaudo Mobile</h2>
+          </div>
+        </div>
+        <span class="badge purple">Tempo stimato: 10 min</span>
+      </div>
+
+      <div class="step-grid">
+        <!-- Istruzioni -->
+        <div>
+          <div class="instructions-list">
+            <div class="inst-item">
+              <span class="inst-bullet">1</span>
+              <div>
+                <strong>Creazione Pulsante di Azione (Call to Action):</strong> nella colonna destra (scheda <em>Inserisci</em>), scorri in basso e clicca su <strong>Pulsante</strong>.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">2</span>
+              <div>
+                Nel popup di configurazione inserisci:
+                <div class="copy-box">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">Nome Pulsante:</div>
+                    <span class="copy-text" id="t-btnname">Scopri i Nostri Prodotti ▶</span>
+                  </div>
+                  <button class="btn-copy" onclick="copyText('t-btnname')">Copia</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">3</span>
+              <div>
+                <strong>Collegamento Interno:</strong> nel campo <em>Collegamento</em>, clicca sulla casella: Google Sites aprirà un menu a tendina con le pagine del tuo sito. Seleziona la pagina <strong>Prodotti / Servizi</strong> e premi <strong>Inserisci</strong>. Trascina il pulsante sotto la descrizione della Home.
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">4</span>
+              <div>
+                <strong>Collaudo Mobile-First:</strong> nella barra degli strumenti in alto, clicca sull'icona <strong>Anteprima</strong> (lo schermo con lo smartphone).
+              </div>
+            </div>
+
+            <div class="inst-item">
+              <span class="inst-bullet">5</span>
+              <div>
+                Nella barra dell'anteprima in basso a destra, clicca sull'icona <strong>Telefono</strong> 📱. Verifica che:
+                <ul style="font-size:0.92rem; color:var(--text-muted); padding-left:18px; margin-top:4px;">
+                  <li>I testi siano nitidi e non tagliati;</li>
+                  <li>L'hamburger menu (☰) in alto apra le 4 pagine;</li>
+                  <li>Il pulsante porti direttamente alla pagina Prodotti!</li>
+                </ul>
+                Premi la <strong>X</strong> azzurra per tornare alla modifica.
+              </div>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-wrap">
+            <div style="font-weight:800; font-size:0.88rem; color:var(--emerald);">✓ Checklist di Autovalutazione Step 5:</div>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Inserito il pulsante con link interno a "Prodotti / Servizi"
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Aperta la modalità Anteprima ed eseguito il test Smartphone
+            </label>
+            <label class="check-label">
+              <input type="checkbox" onchange="updateProgress(this)">
+              Verificato il funzionamento del menu a scomparsa (☰)
+            </label>
+          </div>
+        </div>
+
+        <!-- Screenshot Libro -->
+        <div>
+          <div class="screen-card">
+            <div class="screen-tag">
+              <span>📖 Dal Libro: Pagina 203</span>
+              <span>Step 11: Link Interni</span>
+            </div>
+            <img src="img/step5_crea_link.png" alt="Collegamento ipertestuale Google Sites" class="screen-img">
+            <img src="img/step5_link_popup.png" alt="Popup link interno" class="screen-img" style="margin-top:6px;">
+            <div class="screen-caption">
+              Figura: La finestra Collegamento riconosce in automatico le pagine create nell'alberatura.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         CONSEGNA SU GOOGLE CLASSROOM (METODO A: GOOGLE DRIVE)
+         ======================================================== -->
+    <section class="delivery-card" id="consegna">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span class="badge emerald" style="background:#059669; color:#fff;">Metodo Ufficiale di Consegna</span>
+          <h2 style="font-size:1.6rem; font-weight:900; margin-top:8px; color:#fff;">
+            📬 Come Consegnare su Google Classroom (Metodo A: Google Drive)
+          </h2>
+        </div>
+        <span class="badge amber" style="font-size:0.9rem;">Tempo: 10 Secondi &bull; Zero Errori</span>
+      </div>
+
+      <div style="background:rgba(52,211,153,0.12); border-left:5px solid var(--emerald); border-radius:12px; padding:14px 18px; font-size:0.96rem; color:#a7f3d0; line-height:1.5;">
+        💡 <strong>Perché consegniamo da Google Drive?</strong> Google Sites salva automaticamente ogni modifica all'interno del tuo Google Drive della scuola. Consegnando direttamente il file da Drive, <strong>Classroom assegna in automatico tutti i permessi di lettura al docente</strong>: non c'è bisogno di pubblicare il sito e non si rischia di inviare link errati o bloccati!
+      </div>
+
+      <!-- I 4 Passi Classroom -->
+      <div class="delivery-steps">
+        <div class="del-step">
+          <div class="del-num">1</div>
+          <div style="font-weight:800; font-size:1rem; color:#fff;">Apri il Compito</div>
+          <div style="font-size:0.88rem; color:var(--text-muted); line-height:1.45;">
+            Vai su Google Classroom, apri il compito <em>"Laboratorio 1: Google Sites EcoPack"</em>.
+          </div>
+        </div>
+
+        <div class="del-step">
+          <div class="del-num">2</div>
+          <div style="font-weight:800; font-size:1rem; color:#fff;">"+ Aggiungi o crea"</div>
+          <div style="font-size:0.88rem; color:var(--text-muted); line-height:1.45;">
+            Nel riquadro <em>Il tuo lavoro</em> a destra, clicca su <strong>+ Aggiungi o crea</strong> e seleziona <strong>Google Drive 📁</strong>.
+          </div>
+        </div>
+
+        <div class="del-step">
+          <div class="del-num">3</div>
+          <div style="font-weight:800; font-size:1rem; color:#fff;">Seleziona da Recenti</div>
+          <div style="font-size:0.88rem; color:var(--text-muted); line-height:1.45;">
+            Nella scheda <em>Recenti</em>, clicca sul file <strong>EcoPack S.p.A. - [Cognome]</strong> (icona blu) e fai <strong>Aggiungi</strong>.
+          </div>
+        </div>
+
+        <div class="del-step">
+          <div class="del-num">4</div>
+          <div style="font-weight:800; font-size:1rem; color:#fff;">Premi Consegna!</div>
+          <div style="font-size:0.88rem; color:var(--text-muted); line-height:1.45;">
+            Verifica che il file sia allegato correttamente e clicca sul pulsante grande <strong>Consegna</strong>. Fatto! 🎉
+          </div>
+        </div>
+      </div>
+
+      <!-- Verificatore di Sicurezza Link (opzionale per chi usa il link) -->
+      <div class="validator-box" style="margin-top:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:800; font-size:0.92rem; color:var(--cyan);">🛡️ Strumento di Controllo: Vuoi comunque verificare il tuo Link?</span>
+          <span class="badge cyan" style="font-size:0.75rem;">Anti-Errore /edit</span>
+        </div>
+        <div style="font-size:0.85rem; color:var(--text-dim);">
+          Incolla qui sotto il link del tuo sito prima di inviarlo, per assicurarti che non sia il link di bozza non accessibile:
+        </div>
+        <div style="display:flex; gap:10px;">
+          <input type="text" id="linkToCheck" class="validator-input" placeholder="Incolla qui l'URL del tuo sito Google Sites...">
+          <button class="btn-copy" onclick="checkStudentLink()" style="background:var(--cyan); color:#070c18; padding:0 20px; font-weight:800;">Verifica Link</button>
+        </div>
+        <div id="linkResult" class="validator-result"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCHEDA DI RIEPILOGO & VALUTAZIONE (PDF / STAMPA)
+         ======================================================== -->
+    <section class="report-card">
+      <div>
+        <span class="badge amber">Conferma Operativa</span>
+        <h2 style="font-size:1.4rem; font-weight:900; margin-top:6px; color:#fff;">
+          Generatore Scheda di Fine Laboratorio
+        </h2>
+        <p style="font-size:0.92rem; color:var(--text-muted); margin-top:4px;">
+          Inserisci i tuoi dati per generare il resoconto del lavoro svolto da mostrare al docente alla tua postazione:
+        </p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cognome e Nome dello Studente:</label>
+          <input type="text" id="studName" class="form-control" placeholder="es. Rossi Mario">
+        </div>
+
+        <div class="form-group">
+          <label>Classe:</label>
+          <select id="studClass" class="form-control">
+            <option value="2H AFM">2H Finanza &amp; Marketing</option>
+            <option value="2G AFM">2G Finanza &amp; Marketing</option>
+            <option value="3L RIM">3L Relazioni Internazionali</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Postazione PC n°:</label>
+          <input type="text" id="studPC" class="form-control" placeholder="es. PC-14">
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="generateReport()">
+        📄 Genera Scheda di Laboratorio
+      </button>
+
+      <!-- Ricevuta Generata -->
+      <div id="reportReceipt">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0f172a; padding-bottom:12px;">
+          <div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0284c7; text-transform:uppercase;">IIS Archimede &bull; Dipartimento di Informatica</div>
+            <h3 style="font-size:1.5rem; font-weight:900; color:#0f172a; margin-top:2px;">Scheda di Completamento Laboratorio 1</h3>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.85rem; font-weight:800; color:#059669;" id="receiptDate">Data: --</div>
+            <div style="font-size:0.85rem; color:#64748b;" id="receiptScore">Punteggio: 100%</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:16px; background:#f8fafc; padding:14px; border-radius:10px;">
+          <div><strong>Studente:</strong> <span id="rName">--</span></div>
+          <div><strong>Classe:</strong> <span id="rClass">--</span></div>
+          <div><strong>Postazione:</strong> <span id="rPC">--</span></div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h4 style="font-size:1rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Verifica Requisiti Completati:</h4>
+          <ul style="font-size:0.9rem; color:#334155; line-height:1.6; padding-left:20px;" id="rCheckList">
+            <li>✓ Accesso Google Workspace e creazione file con denominazione corretta</li>
+            <li>✓ Scelta del tema visivo e coordinamento cromatico ecologico</li>
+            <li>✓ Alberatura canonica a 4 pagine (Home, Chi Siamo, Prodotti, Contatti)</li>
+            <li>✓ Impaginazione Home con blocco layout, proposta di valore e foto</li>
+            <li>✓ Link interno funzionante e superamento collaudo responsive smartphone</li>
+            <li>✓ Consegna effettuata su Google Classroom tramite Google Drive (Metodo A)</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:14px;">
+          <div style="font-size:0.85rem; color:#64748b;">Firmato digitalmente per verifica docente alla postazione PC.</div>
+          <button onclick="window.print()" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:8px; font-weight:750; cursor:pointer;">
+            🖨️ Stampa / Salva in PDF
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    IIS Archimede &bull; Laboratorio di Informatica &bull; Docente: Prof. Thomas Mazzeo &bull; Modulo Google Sites &amp; Marketing Digitale
+  </footer>
+
+  <script>
+    // Checklist Progress Manager
+    function updateProgress() {
+      const allChecks = document.querySelectorAll('.check-label input[type="checkbox"]');
+      let checkedCount = 0;
+      allChecks.forEach(c => {
+        c.parentElement.classList.toggle('checked', c.checked);
+        if (c.checked) checkedCount++;
+      });
+      const pct = Math.round((checkedCount / allChecks.length) * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressPct').textContent = pct + '%';
+    }
+
+    // Copy Helper
+    function copyText(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copiato negli appunti: ' + text);
+      }).catch(() => {
+        prompt('Copia manualmente:', text);
+      });
+    }
+
+    function copyAllDossier() {
+      const kit = `AZIENDA: EcoPack S.p.A.
+SETTORE: Packaging Industriale Sostenibile per l'Industria & l'Export (B2B)
+SLOGAN HOME: Soluzioni di Packaging per l'Industria & l'Export
+DESCRIZIONE HOME: Produciamo imballaggi ecologici, scatole isotermiche e film biodegradabili certificati ISO 14001 per aziende alimentari e manifatturiere europee.
+PAGINE: Home | Chi Siamo | Prodotti / Servizi | Contatti & Sede
+PRODOTTI: 1. EcoBox Termiche | 2. BioWrap Estensibile | 3. Nastri Kraft
+CONTATTI: Sede Milano - Tel. +39 02 889911 - preventivi@ecopack.it - P.IVA 01234567890`;
+      navigator.clipboard.writeText(kit).then(() => {
+        alert('Tutto il kit testi aziendale è stato copiato negli appunti!');
+      }).catch(() => {
+        prompt('Copia manualmente il kit:', kit);
+      });
+    }
+
+    // Link Checker Anti-Edit
+    function checkStudentLink() {
+      const input = document.getElementById('linkToCheck').value.trim();
+      const res = document.getElementById('linkResult');
+      res.style.display = 'block';
+
+      if (!input) {
+        res.style.background = 'rgba(251, 113, 133, 0.15)';
+        res.style.border = '1px solid var(--rose)';
+        res.style.color = '#fecdd3';
+        res.innerHTML = '⚠️ Incolla un indirizzo prima di cliccare su Verifica!';
+        return;
+      }
+
+      if (input.includes('/edit')) {
+        res.style.background = 'rgba(251, 113, 133, 0.2)';
+        res.style.border = '1.5px solid var(--rose)';
+        res.style.color = '#fecdd3';
+        res.innerHTML = `❌ <strong>ATTENZIONE! Link Errato (/edit):</strong> Hai copiato l'indirizzo della schermata di modifica! Gli altri utenti riceveranno l'errore <em>"Richiedi accesso"</em>.<br>
+👉 <strong>Cosa fare:</strong> Usa il <strong>Metodo A (Google Drive in Classroom)</strong> senza incollare link, oppure su Google Sites premi <em>Pubblica</em> e poi l'icona della catenella <em>Copia link del sito pubblicato</em>.`;
+      } else if (input.includes('sites.google.com/')) {
+        res.style.background = 'rgba(52, 211, 153, 0.2)';
+        res.style.border = '1.5px solid var(--emerald)';
+        res.style.color = '#a7f3d0';
+        res.innerHTML = `✓ <strong>Ottimo! Il link è corretto e pubblico:</strong> L'indirizzo rimanda al sito visualizzabile e non alla modalità di modifica bozza. Puoi consegnarlo con sicurezza!`;
+      } else {
+        res.style.background = 'rgba(251, 191, 36, 0.2)';
+        res.style.border = '1.5px solid var(--amber)';
+        res.style.color = '#fef08a';
+        res.innerHTML = `⚠️ L'indirizzo non sembra un URL tipico di Google Sites. Verifica di aver copiato correttamente l'indirizzo.`;
+      }
+    }
+
+    // Report Generation
+    function generateReport() {
+      const name = document.getElementById('studName').value.trim();
+      const sClass = document.getElementById('studClass').value;
+      const pc = document.getElementById('studPC').value.trim();
+
+      if (!name) {
+        alert('Inserisci il tuo Nome e Cognome!');
+        return;
+      }
+
+      document.getElementById('rName').textContent = name;
+      document.getElementById('rClass').textContent = sClass;
+      document.getElementById('rPC').textContent = pc || 'PC-Lab';
+      document.getElementById('receiptDate').textContent = 'Data: ' + new Date().toLocaleDateString('it-IT');
+      document.getElementById('reportReceipt').style.display = 'block';
+
+      // Scroll to receipt
+      document.getElementById('reportReceipt').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Gestione Parametro Classe per Back-Link
+    (function initBackLinks() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const classe = urlParams.get('classe');
+      const backLink = document.getElementById('back-link');
+      const theoryLink = document.getElementById('theory-link');
+      const studClass = document.getElementById('studClass');
+
+      if (classe) {
+        if (classe === '3l') {
+          backLink.href = '/#3l-relazioni-internazionali';
+          backLink.textContent = '◀ Torna a 3°L RIM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-1-google-sites-marketing.html?classe=3l';
+          if (studClass) studClass.value = '3L RIM';
+        } else if (classe === '2h') {
+          backLink.href = '/#2h-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2H AFM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-1-google-sites-marketing.html?classe=2h';
+          if (studClass) studClass.value = '2H AFM';
+        } else if (classe === '2g') {
+          backLink.href = '/#2g-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2G AFM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-1-google-sites-marketing.html?classe=2g';
+          if (studClass) studClass.value = '2G AFM';
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

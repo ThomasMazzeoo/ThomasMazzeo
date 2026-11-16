@@ -316,6 +316,11 @@ const MATERIE = [
                 title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
                 desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
                 url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=3l"
+              },
+              {
+                title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-1-google-sites.html?classe=3l"
               }
             ]
           }
@@ -564,6 +569,11 @@ const MATERIE = [
                 title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
                 desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
                 url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=2h"
+              },
+              {
+                title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-1-google-sites.html?classe=2h"
               }
             ]
           }
@@ -812,6 +822,11 @@ const MATERIE = [
                 title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
                 desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
                 url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=2g"
+              },
+              {
+                title: "🧪 Laboratorio 1: Costruzione Sito Aziendale — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione guidata a 5 step del sito aziendale (Home, Chi Siamo, Prodotti, Contatti), tema coordinato, blocchi di layout, link interni, test mobile e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-1-google-sites.html?classe=2g"
               }
             ]
           }
