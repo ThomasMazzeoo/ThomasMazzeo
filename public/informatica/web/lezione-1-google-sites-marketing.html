@@ -1468,6 +1468,7 @@ let limDrawHistory = []; // per Undo
 function resizeLimCanvas() {
   limCanvas.width = window.innerWidth;
   limCanvas.height = window.innerHeight;
+  if (typeof redrawLimCanvas === 'function') redrawLimCanvas();
 }
 window.addEventListener('resize', resizeLimCanvas);
 resizeLimCanvas();
@@ -1489,6 +1490,7 @@ function setLimTool(tool) {
   document.getElementById('btnToolPen').classList.toggle('active', tool === 'pen');
   document.getElementById('btnToolHighlighter').classList.toggle('active', tool === 'highlighter');
   document.getElementById('btnToolEraser').classList.toggle('active', tool === 'eraser');
+  if (limPassThrough) toggleLimPassThrough();
 }
 
 function setLimColor(color, el) {
@@ -1496,6 +1498,7 @@ function setLimColor(color, el) {
   document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
   if (el) el.classList.add('active');
   if (limTool === 'eraser') setLimTool('pen');
+  if (limPassThrough) toggleLimPassThrough();
 }
 
 function toggleLimPassThrough() {
@@ -1504,6 +1507,14 @@ function toggleLimPassThrough() {
   const b = document.getElementById('btnLimPassThrough');
   b.classList.toggle('active', limPassThrough);
   b.textContent = limPassThrough ? "✏️ Torna a Scrivere" : "👆 Interagisci";
+}
+
+function getLimCanvasPos(clientX, clientY) {
+  const rect = limCanvas.getBoundingClientRect();
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top
+  };
 }
 
 let curStroke = [];
@@ -1595,48 +1606,75 @@ function clearLimCanvas() {
 }
 
 // Supporto Touch Screen per LIM e Mouse
-limCanvas.addEventListener('mousedown', (e) => startLimDraw(e.clientX, e.clientY));
-limCanvas.addEventListener('mousemove', (e) => moveLimDraw(e.clientX, e.clientY));
+limCanvas.addEventListener('mousedown', (e) => {
+  const pos = getLimCanvasPos(e.clientX, e.clientY);
+  startLimDraw(pos.x, pos.y);
+});
+limCanvas.addEventListener('mousemove', (e) => {
+  const pos = getLimCanvasPos(e.clientX, e.clientY);
+  moveLimDraw(pos.x, pos.y);
+});
 window.addEventListener('mouseup', stopLimDraw);
 
 limCanvas.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     const t = e.touches[0];
-    startLimDraw(t.clientX, t.clientY);
+    const pos = getLimCanvasPos(t.clientX, t.clientY);
+    startLimDraw(pos.x, pos.y);
   }
 }, { passive: false });
 
 limCanvas.addEventListener('touchmove', (e) => {
   if (e.touches.length === 1) {
     const t = e.touches[0];
-    moveLimDraw(t.clientX, t.clientY);
+    const pos = getLimCanvasPos(t.clientX, t.clientY);
+    moveLimDraw(pos.x, pos.y);
     e.preventDefault();
   }
 }, { passive: false });
 
 limCanvas.addEventListener('touchend', stopLimDraw);
 
-// Toolbar Draggable
+// Toolbar Draggable con Pointer Events
 let isDraggingToolbar = false;
-let tbOffsetX = 0, tbOffsetY = 0;
+let tbStartX = 0, tbStartY = 0, tbInitLeft = 0, tbInitTop = 0;
 const dragHandle = document.querySelector('.lim-drag-handle');
 
-dragHandle.addEventListener('mousedown', (e) => {
-  isDraggingToolbar = true;
-  const rect = limToolbar.getBoundingClientRect();
-  tbOffsetX = e.clientX - rect.left;
-  tbOffsetY = e.clientY - rect.top;
-});
-
-window.addEventListener('mousemove', (e) => {
-  if (isDraggingToolbar) {
-    limToolbar.style.left = `${e.clientX - tbOffsetX + limToolbar.offsetWidth/2}px`;
+if (dragHandle) {
+  dragHandle.addEventListener('pointerdown', (e) => {
+    isDraggingToolbar = true;
+    try { dragHandle.setPointerCapture(e.pointerId); } catch (_) {}
+    const rect = limToolbar.getBoundingClientRect();
+    limToolbar.style.transform = 'none';
+    limToolbar.style.left = rect.left + 'px';
+    limToolbar.style.top = rect.top + 'px';
     limToolbar.style.bottom = 'auto';
-    limToolbar.style.top = `${e.clientY - tbOffsetY}px`;
-  }
-});
+    tbStartX = e.clientX;
+    tbStartY = e.clientY;
+    tbInitLeft = rect.left;
+    tbInitTop = rect.top;
+    e.preventDefault();
+  });
 
-window.addEventListener('mouseup', () => { isDraggingToolbar = false; });
+  window.addEventListener('pointermove', (e) => {
+    if (!isDraggingToolbar) return;
+    const dx = e.clientX - tbStartX;
+    const dy = e.clientY - tbStartY;
+    const maxLeft = window.innerWidth - limToolbar.offsetWidth - 10;
+    const maxTop = window.innerHeight - limToolbar.offsetHeight - 10;
+    limToolbar.style.left = Math.max(10, Math.min(maxLeft, tbInitLeft + dx)) + 'px';
+    limToolbar.style.top = Math.max(10, Math.min(maxTop, tbInitTop + dy)) + 'px';
+  });
+
+  window.addEventListener('pointerup', (e) => {
+    if (isDraggingToolbar) {
+      isDraggingToolbar = false;
+      if (e && e.pointerId) {
+        try { dragHandle.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+    }
+  });
+}
 
 // Gestione dinamica classe per link di ritorno al portale
 (function initClasseBackLinks() {

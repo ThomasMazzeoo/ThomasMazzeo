@@ -80,14 +80,29 @@
     padding: 8px 16px;
     display: none;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     z-index: 3000;
     backdrop-filter: blur(12px);
     flex-wrap: wrap;
     max-width: 96vw;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .lim-toolbar.show { display: flex; }
-  .lim-drag-handle { cursor: grab; color: var(--amber); font-size: 1.1rem; padding: 2px 6px; }
+  .lim-drag-handle {
+    cursor: grab;
+    color: var(--amber);
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    background: rgba(251, 191, 36, 0.12);
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    touch-action: none;
+  }
+  .lim-drag-handle:active { cursor: grabbing; }
   .tool-btn {
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--border);
@@ -101,19 +116,22 @@
     align-items: center;
     gap: 6px;
     transition: all 0.15s ease;
+    touch-action: manipulation;
   }
   .tool-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--cyan); }
   .tool-btn.active { background: var(--cyan); color: #040914; border-color: var(--cyan); }
   .color-dot {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    border: 2px solid #fff;
+    border: 2px solid rgba(255,255,255,0.6);
     cursor: pointer;
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    display: inline-block;
+    touch-action: manipulation;
   }
-  .color-dot:hover { transform: scale(1.15); }
-  .color-dot.active { transform: scale(1.25); box-shadow: 0 0 10px #fff; }
+  .color-dot:hover { transform: scale(1.18); border-color: #fff; }
+  .color-dot.active { transform: scale(1.25); border-color: #fff; box-shadow: 0 0 10px #fff; }
 
   /* Barra Superiore */
   header.top-bar {
@@ -164,22 +182,8 @@
   .top-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
-  .timer-pill {
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--amber);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .timer-pill:hover { border-color: var(--amber); }
 
   /* Barra di Avanzamento */
   .progress-container {
@@ -331,14 +335,29 @@
     border-radius: 0 8px 8px 0;
     padding: 10px 16px;
     margin-top: 10px;
-    font-size: clamp(0.82rem, 1.05vw, 1rem);
+    font-size: clamp(0.85rem, 1.05vw, 1.02rem);
     color: var(--text);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
+    line-height: 1.55;
   }
   .callout-box--emerald { border-left-color: var(--emerald); background: rgba(6, 78, 59, 0.2); }
   .callout-box--amber { border-left-color: var(--amber); background: rgba(120, 53, 15, 0.2); }
+  .callout-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    line-height: 1.2;
+    padding-top: 2px;
+  }
+  .callout-text {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.55;
+  }
+  .callout-text strong {
+    color: #ffffff;
+  }
 
   /* Dock Inferiore */
   footer.dock {
@@ -548,19 +567,21 @@
 
   <!-- TOOLBAR STRUMENTI LIM -->
   <div class="lim-toolbar" id="limToolbar">
-    <span class="lim-drag-handle">⠿</span>
+    <span class="lim-drag-handle" id="limDragHandle" title="Trascina la barra degli strumenti per spostarla sulla LIM">⠿ LIM</span>
     <button class="tool-btn active" id="btnPen" onclick="setLimTool('pen')">✏️ Penna</button>
     <button class="tool-btn" id="btnHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
     <button class="tool-btn" id="btnEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
     <div style="height:22px; width:1px; background:var(--border);"></div>
-    <span class="color-dot active" style="background:#fbbf24;" onclick="setLimColor('#fbbf24', this)" title="Giallo"></span>
+    <span class="color-dot active" style="background:#fbbf24;" onclick="setLimColor('#fbbf24', this)" title="Giallo Evidenza"></span>
     <span class="color-dot" style="background:#38bdf8;" onclick="setLimColor('#38bdf8', this)" title="Ciano"></span>
-    <span class="color-dot" style="background:#34d399;" onclick="setLimColor('#34d399', this)" title="Verde"></span>
-    <span class="color-dot" style="background:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosso"></span>
+    <span class="color-dot" style="background:#34d399;" onclick="setLimColor('#34d399', this)" title="Verde Smeraldo"></span>
+    <span class="color-dot" style="background:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosso Corallo"></span>
+    <span class="color-dot" style="background:#ffffff;" onclick="setLimColor('#ffffff', this)" title="Bianco"></span>
     <div style="height:22px; width:1px; background:var(--border);"></div>
-    <button class="tool-btn" onclick="clearLimCanvas()">🗑️ Pulisci</button>
-    <button class="tool-btn" onclick="toggleLimPassThrough()" id="btnPassThrough">👆 Interagisci</button>
-    <button class="tool-btn" onclick="toggleLimMode()" style="background:#dc2626; color:#fff;">✕ Chiudi</button>
+    <button class="tool-btn" onclick="undoLimDraw()" title="Annulla ultimo tratto (Ctrl+Z)">↩️ Annulla</button>
+    <button class="tool-btn" onclick="clearLimCanvas()" title="Cancella tutto">🗑️ Pulisci</button>
+    <button class="tool-btn" onclick="toggleLimPassThrough()" id="btnPassThrough" title="Interagisci con le slide senza cancellare i tratti">👆 Interagisci</button>
+    <button class="tool-btn" onclick="toggleLimMode()" style="background:#dc2626; color:#fff;" title="Chiudi modalità disegno">✕ Chiudi</button>
   </div>
 
   <!-- BARRA SUPERIORE -->
@@ -570,9 +591,6 @@
       <span class="lesson-tag">LEZIONE 2 &bull; TEORIA LIM (1 ORA)</span>
     </div>
     <div class="top-right">
-      <div class="timer-pill" id="timerBtn" onclick="toggleTimer()" title="Clicca per Avviare/Pausa">
-        ⏱️ <span id="timerDisplay">60:00</span>
-      </div>
       <button class="btn-nav" onclick="toggleLaser()" id="laserBtn" title="Scorciatoia: L">🔴 Laser</button>
       <button class="btn-nav" onclick="toggleLimMode()" id="penBtn" title="Scorciatoia: P">✏️ Disegna</button>
       <button class="btn-nav" onclick="toggleFullScreen()" title="Scorciatoia: F">⛶ Schermo Intero</button>
@@ -649,7 +667,10 @@
       </div>
 
       <div class="callout-box callout-box--emerald" style="margin-top:18px;">
-        💡 <strong>Scorciatoie Docente su LIM:</strong> Usa <code>Frecce</code> o <code>Spazio</code> per avanzare, <code>L</code> per il Puntatore Laser, <code>P</code> per la Penna/Evidenziatore su schermo, <code>F</code> per Schermo Intero.
+        <span class="callout-icon">💡</span>
+        <div class="callout-text">
+          <strong>Scorciatoie Docente su LIM:</strong> Usa <code>Frecce</code> o <code>Spazio</code> per avanzare, <code>L</code> per il Puntatore Laser, <code>P</code> per la Penna/Evidenziatore su schermo, <code>F</code> per Schermo Intero.
+        </div>
       </div>
     </section>
 
@@ -720,7 +741,10 @@
       </div>
 
       <div class="callout-box callout-box--amber" style="margin-top:12px;">
-        💡 <strong>Differenza Chiave AFM/RIM:</strong> Nel B2C si punta sulla carta di credito immediata; nel <strong>B2B</strong> il sito web serve a <strong>qualificare l'azienda e aprire una trattativa commerciale con l'ufficio acquisti</strong>.
+        <span class="callout-icon">💡</span>
+        <div class="callout-text">
+          <strong>Differenza Chiave AFM/RIM:</strong> Nel B2C si punta sulla carta di credito immediata; nel <strong>B2B</strong> il sito web serve a <strong>qualificare l'azienda e aprire una trattativa commerciale con l'ufficio acquisti</strong>.
+        </div>
       </div>
     </section>
 
@@ -1067,7 +1091,10 @@
       </div>
 
       <div class="callout-box callout-box--emerald" style="margin-top:14px;">
-        💡 <strong>Regola Visiva:</strong> Un layout pulito a 2 o 3 colonne con ampi spazi bianchi comunica lusso, precisione e controllo. Un sito affollato e caotico comunica disorganizzazione aziendale!
+        <span class="callout-icon">💡</span>
+        <div class="callout-text">
+          <strong>Regola Visiva:</strong> Un layout pulito a 2 o 3 colonne con ampi spazi bianchi comunica lusso, precisione e controllo. Un sito affollato e caotico comunica disorganizzazione aziendale!
+        </div>
       </div>
     </section>
 
@@ -1191,7 +1218,10 @@
       </div>
 
       <div class="callout-box callout-box--amber" style="margin-top:16px; font-size:0.95rem;">
-        🏁 <strong>Fine Parte Teorica (1ª Ora):</strong> Congratulazioni! Ora avete tutte le competenze per realizzare le pagine interne del sito aziendale. Passiamo al lavoro operativo al computer!
+        <span class="callout-icon">🏁</span>
+        <div class="callout-text">
+          <strong>Fine Parte Teorica (1ª Ora):</strong> Congratulazioni! Ora avete tutte le competenze per realizzare le pagine interne del sito aziendale. Passiamo al lavoro operativo al computer!
+        </div>
       </div>
 
       <div style="display:flex; justify-content:center; margin-top:14px;">
@@ -1275,7 +1305,22 @@
     // Navigazione da Tastiera
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+
+      // Scorciatoie modalità disegno
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+        if (isLimActive) {
+          e.preventDefault();
+          undoLimDraw();
+          return;
+        }
+      }
+      if (e.key === 'Escape') {
+        if (isLimActive) toggleLimMode();
+        if (laserActive) toggleLaser();
+        return;
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || (!isLimActive && e.key === ' ')) {
         e.preventDefault();
         nextSlide();
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -1298,16 +1343,18 @@
       }
     });
 
-    // Supporto Touch Swipe per LIM
+    // Supporto Touch Swipe per LIM (disabilitato quando si disegna)
     let touchStartX = 0;
     let touchEndX = 0;
     window.addEventListener('touchstart', e => {
+      if (isLimActive) return;
       touchStartX = e.changedTouches[0].screenX;
     }, false);
     window.addEventListener('touchend', e => {
+      if (isLimActive) return;
       touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX < touchStartX - 50) nextSlide();
-      if (touchEndX > touchStartX + 50) prevSlide();
+      if (touchEndX < touchStartX - 60) nextSlide();
+      if (touchEndX > touchStartX + 60) prevSlide();
     }, false);
 
     // Puntatore Laser LIM
@@ -1326,19 +1373,24 @@
       }
     });
 
-    // LIM Drawing Canvas Overlay
+    // LIM Drawing Canvas Overlay & Draggable Toolbar
     const canvas = document.getElementById('limCanvas');
     const ctx = canvas.getContext('2d');
     const toolbar = document.getElementById('limToolbar');
+    const dragHandle = document.getElementById('limDragHandle');
+
     let limDrawing = false;
-    let limTool = 'pen';
+    let limTool = 'pen'; // 'pen', 'highlighter', 'eraser'
     let limColor = '#fbbf24';
     let isLimActive = false;
     let isPassThrough = false;
+    let limDrawHistory = [];
+    let curStroke = null;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      redrawLimCanvas();
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -1348,8 +1400,13 @@
       canvas.classList.toggle('active', isLimActive);
       toolbar.classList.toggle('show', isLimActive);
       const btn = document.getElementById('penBtn');
-      if (btn) btn.style.background = isLimActive ? 'var(--cyan)' : '';
-      if (btn) btn.style.color = isLimActive ? '#040914' : '';
+      if (btn) {
+        btn.style.background = isLimActive ? 'var(--cyan)' : '';
+        btn.style.color = isLimActive ? '#040914' : '';
+      }
+      if (isLimActive) {
+        resizeCanvas();
+      }
     }
 
     function setLimTool(tool) {
@@ -1358,6 +1415,7 @@
       if (tool === 'pen') document.getElementById('btnPen').classList.add('active');
       if (tool === 'highlighter') document.getElementById('btnHighlighter').classList.add('active');
       if (tool === 'eraser') document.getElementById('btnEraser').classList.add('active');
+      if (isPassThrough) toggleLimPassThrough();
     }
 
     function setLimColor(c, el) {
@@ -1365,90 +1423,164 @@
       document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
       if (el) el.classList.add('active');
       if (limTool === 'eraser') setLimTool('pen');
-    }
-
-    function clearLimCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (isPassThrough) toggleLimPassThrough();
     }
 
     function toggleLimPassThrough() {
       isPassThrough = !isPassThrough;
       canvas.classList.toggle('pass-through', isPassThrough);
       const btn = document.getElementById('btnPassThrough');
-      if (btn) btn.classList.toggle('active', isPassThrough);
+      if (btn) {
+        btn.classList.toggle('active', isPassThrough);
+        btn.textContent = isPassThrough ? "✏️ Torna a Scrivere" : "👆 Interagisci";
+      }
     }
 
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDraw);
-    canvas.addEventListener('mouseleave', endDraw);
-
-    canvas.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      startDraw({ clientX: touch.clientX, clientY: touch.clientY });
-    });
-    canvas.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      draw({ clientX: touch.clientX, clientY: touch.clientY });
-    });
-    canvas.addEventListener('touchend', endDraw);
-
-    function startDraw(e) {
-      if (!isLimActive || isPassThrough) return;
-      limDrawing = true;
-      ctx.beginPath();
-      ctx.moveTo(e.clientX, e.clientY);
+    function getCanvasPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
     }
 
-    function draw(e) {
-      if (!limDrawing || !isLimActive || isPassThrough) return;
+    function drawSegment(p1, p2, stroke) {
+      ctx.save();
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-
-      if (limTool === 'pen') {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = limColor;
-        ctx.lineWidth = 4;
-      } else if (limTool === 'highlighter') {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = limColor + '66'; // Trasparente
-        ctx.lineWidth = 18;
-      } else if (limTool === 'eraser') {
+      if (stroke.tool === 'eraser') {
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = 28;
-      }
-      ctx.lineTo(e.clientX, e.clientY);
-      ctx.stroke();
-    }
-
-    function endDraw() {
-      limDrawing = false;
-    }
-
-    // Timer Countdown 60 min
-    let timerSeconds = 60 * 60;
-    let timerInterval = null;
-    function updateTimerDisplay() {
-      const m = Math.floor(timerSeconds / 60);
-      const s = timerSeconds % 60;
-      document.getElementById('timerDisplay').textContent = 
-        `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    }
-    function toggleTimer() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+        ctx.lineWidth = stroke.width;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      } else if (stroke.tool === 'highlighter') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.width;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
       } else {
-        timerInterval = setInterval(() => {
-          if (timerSeconds > 0) {
-            timerSeconds--;
-            updateTimerDisplay();
-          } else {
-            clearInterval(timerInterval);
-            timerInterval = null;
-          }
-        }, 1000);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1.0;
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.width;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
       }
+      ctx.restore();
+    }
+
+    function redrawLimCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const stroke of limDrawHistory) {
+        if (!stroke.points || stroke.points.length === 0) continue;
+        if (stroke.points.length === 1) {
+          drawSegment(stroke.points[0], stroke.points[0], stroke);
+        } else {
+          for (let i = 1; i < stroke.points.length; i++) {
+            drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+          }
+        }
+      }
+    }
+
+    function undoLimDraw() {
+      if (limDrawHistory.length > 0) {
+        limDrawHistory.pop();
+        redrawLimCanvas();
+      }
+    }
+
+    function clearLimCanvas() {
+      limDrawHistory = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Disegno su Canvas con Pointer Events (Mouse, Penna LIM e Touch)
+    canvas.addEventListener('pointerdown', (e) => {
+      if (!isLimActive || isPassThrough) return;
+      e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      limDrawing = true;
+      const pt = getCanvasPos(e);
+      curStroke = {
+        tool: limTool,
+        color: limColor,
+        width: limTool === 'highlighter' ? 24 : (limTool === 'eraser' ? 36 : 4),
+        points: [pt]
+      };
+      drawSegment(pt, pt, curStroke);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!limDrawing || !curStroke || isPassThrough) return;
+      e.preventDefault();
+      const pt = getCanvasPos(e);
+      const lastPt = curStroke.points[curStroke.points.length - 1];
+      curStroke.points.push(pt);
+      drawSegment(lastPt, pt, curStroke);
+    });
+
+    function endStroke(e) {
+      if (!limDrawing) return;
+      limDrawing = false;
+      if (e && e.pointerId) {
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      if (curStroke && curStroke.points.length > 0) {
+        limDrawHistory.push(curStroke);
+      }
+      curStroke = null;
+    }
+
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+
+    // Draggable Toolbar con Pointer Events e Bounding Box
+    let isDraggingToolbar = false;
+    let tbStartX = 0, tbStartY = 0, tbInitLeft = 0, tbInitTop = 0;
+
+    if (dragHandle) {
+      dragHandle.addEventListener('pointerdown', (e) => {
+        isDraggingToolbar = true;
+        try { dragHandle.setPointerCapture(e.pointerId); } catch (_) {}
+        const rect = toolbar.getBoundingClientRect();
+        toolbar.style.transform = 'none';
+        toolbar.style.left = rect.left + 'px';
+        toolbar.style.top = rect.top + 'px';
+        toolbar.style.bottom = 'auto';
+        tbStartX = e.clientX;
+        tbStartY = e.clientY;
+        tbInitLeft = rect.left;
+        tbInitTop = rect.top;
+        e.preventDefault();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDraggingToolbar) return;
+        const dx = e.clientX - tbStartX;
+        const dy = e.clientY - tbStartY;
+        const maxLeft = window.innerWidth - toolbar.offsetWidth - 10;
+        const maxTop = window.innerHeight - toolbar.offsetHeight - 10;
+        toolbar.style.left = Math.max(10, Math.min(maxLeft, tbInitLeft + dx)) + 'px';
+        toolbar.style.top = Math.max(10, Math.min(maxTop, tbInitTop + dy)) + 'px';
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (isDraggingToolbar) {
+          isDraggingToolbar = false;
+          if (e && e.pointerId) {
+            try { dragHandle.releasePointerCapture(e.pointerId); } catch (_) {}
+          }
+        }
+      });
     }
 
     function toggleFullScreen() {
@@ -1597,7 +1729,6 @@
 
     // Inizializzazione iniziale
     updateDeck();
-    updateTimerDisplay();
   </script>
 </body>
 </html>
