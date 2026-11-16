@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione di Controllo LIM: L'Equilibrio sul Piano Inclinato — Fisica Classe 2ª</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    /* =========================================================
+       DESIGN SYSTEM LIM: SFONDO BIANCO/CARTA MILLIMETRATA,
+       MASSIMA LEGGIBILITÀ, ZERO SCROLL (100vh), TOOLBAR DISEGNO
+       ========================================================= */
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #334155;
+      --primary: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #93c5fd;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --emerald-border: #a7f3d0;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+      --rose-border: #fecdd3;
+      --cyan: #0284c7;
+      --cyan-light: #f0f9ff;
+      --border: #cbd5e1;
+      --border-dark: #94a3b8;
+      --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Griglia millimetrata scientifica di sfondo */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(203, 213, 225, 0.45) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(203, 213, 225, 0.45) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Layout Principale */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header Compatto (48px) */
+    header.lim-header {
+      height: 48px;
+      background: #ffffff;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--primary-light);
+      border: 1.5px solid var(--primary-border);
+      border-radius: 6px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.84rem;
+      transition: all 0.15s;
+    }
+    .btn-back:hover { background: #dbeafe; border-color: var(--primary); }
+
+    .header-title-badge {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-tag {
+      background: #e2e8f0;
+      color: #1e293b;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slide-counter-pill {
+      background: var(--primary-light);
+      border: 1.5px solid var(--primary-border);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+    }
+
+    .lim-mode-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--amber);
+      color: var(--amber);
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .lim-mode-btn:hover { background: var(--amber-light); }
+    .lim-mode-btn.active { background: var(--amber); color: #fff; }
+
+    /* Barra di Avanzamento */
+    .progress-bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      width: 12.5%;
+      transition: width 0.25s ease;
+    }
+
+    /* Palcoscenico Slide (Centrale, No Scroll) */
+    main.slide-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 16px;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      height: 100%;
+      flex-direction: column;
+      animation: fadeInSlide 0.2s ease-out;
+    }
+    .slide.active { display: flex; }
+
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Intestazione Slide */
+    .slide-meta {
+      flex-shrink: 0;
+      margin-bottom: 8px;
+    }
+    .slide-topic-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .slide-topic-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+    }
+    .slide-page-ref {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .slide-heading {
+      font-size: clamp(1.15rem, 1.7vw, 1.55rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slide-subheading {
+      font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Griglie e Card delle Slide */
+    .slide-grid-2 {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .slide-grid-3 {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .slide-grid-equal {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .content-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .content-card--primary { border-top: 4px solid var(--primary); }
+    .content-card--emerald { border-top: 4px solid var(--emerald); }
+    .content-card--amber { border-top: 4px solid var(--amber); }
+    .content-card--rose { border-top: 4px solid var(--rose); }
+
+    .card-title {
+      font-size: clamp(0.92rem, 1.15vw, 1.05rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .concept-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 7px;
+      font-size: clamp(0.82rem, 1vw, 0.92rem);
+      line-height: 1.45;
+    }
+    .concept-item--why {
+      border-left-color: var(--amber);
+      background: var(--amber-light);
+    }
+    .concept-item--error {
+      border-left-color: var(--rose);
+      background: var(--rose-light);
+    }
+    .concept-item--success {
+      border-left-color: var(--emerald);
+      background: var(--emerald-light);
+    }
+
+    
+    /* Frazioni e Simboli Matematici LIM */
+    .math-expr {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      vertical-align: middle;
+    }
+    .math-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 8px 0;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 0.9em;
+      line-height: 1.1;
+      padding: 0 4px;
+    }
+    .frac > .num {
+      border-bottom: 1.5px solid currentColor;
+      padding-bottom: 2px;
+    }
+    .frac > .den {
+      padding-top: 2px;
+    }
+
+    /* Formule Matematiche in Evidenza */
+    .formula-pill {
+      font-family: var(--font-mono);
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+      font-weight: 700;
+      display: inline-block;
+      margin: 4px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* Tabelle Scientifiche LIM */
+    .lim-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.75rem, 0.95vw, 0.88rem);
+      margin-top: 4px;
+    }
+    .lim-table th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 6px 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+    .lim-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+    .lim-table tr:nth-child(even) { background: #f8fafc; }
+    .lim-table tr.highlight { background: #fef08a !important; font-weight: 800; color: #854d0e; }
+
+    /* Canvas Grafico e Simulatore */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      min-height: 180px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas.sim-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Slider Interattivo */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    /* Dock Inferiore di Navigazione (52px) */
+    footer.lim-dock {
+      height: 52px;
+      background: #ffffff;
+      border-top: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.03);
+    }
+
+    .nav-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--border-dark);
+      color: var(--text);
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 6px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      touch-action: manipulation;
+    }
+    .nav-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .nav-btn--primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .nav-btn--primary:hover:not(:disabled) {
+      background: #1e40af;
+      border-color: #1e40af;
+      color: #ffffff;
+    }
+
+    .slide-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.active {
+      background: var(--primary);
+      transform: scale(1.3);
+    }
+
+    /* =========================================================
+       TOOLBAR STRUMENTI LIM (PENNA, EVIDENZIATORE, GOMMA, COLORI)
+       ========================================================= */
+    canvas.lim-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2500;
+      pointer-events: none;
+      display: none;
+    }
+    canvas.lim-canvas.active {
+      display: block;
+      pointer-events: auto;
+      cursor: crosshair;
+    }
+    canvas.lim-canvas.pass-through {
+      pointer-events: none !important;
+      cursor: default;
+    }
+
+    .lim-toolbar {
+      position: fixed;
+      bottom: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.96);
+      border: 2px solid var(--amber);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.4), 0 0 16px rgba(217, 119, 6, 0.3);
+      border-radius: 18px;
+      padding: 6px 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 3000;
+      backdrop-filter: blur(10px);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .lim-toolbar.show { display: flex; }
+
+    .lim-drag-handle {
+      cursor: grab;
+      color: var(--amber);
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 4px 8px;
+      background: rgba(251, 191, 36, 0.15);
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      touch-action: none;
+    }
+    .lim-drag-handle:active { cursor: grabbing; }
+
+    .tool-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #f8fafc;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .tool-btn:hover { background: rgba(255,255,255,0.2); border-color: var(--cyan); }
+    .tool-btn.active { background: var(--cyan); color: #0f172a; border-color: var(--cyan); }
+
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      display: inline-block;
+      touch-action: manipulation;
+    }
+    .color-dot:hover { transform: scale(1.15); border-color: #fff; }
+    .color-dot.active { transform: scale(1.25); border-color: #fff; box-shadow: 0 0 8px #fff; }
+
+    /* Rubrica Checkbox */
+    .rubric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+    }
+    .rubric-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas di Disegno LIM (Sovrapposto a Tutto Schermo) -->
+  <canvas id="limCanvas" class="lim-canvas"></canvas>
+
+  <!-- Toolbar Disegno LIM Mobile -->
+  <div class="lim-toolbar" id="limToolbar">
+    <span class="lim-drag-handle" id="limDragHandle" title="Trascina la barra degli strumenti sulla LIM">⠿ LIM</span>
+    <button class="tool-btn active" id="btnPen" onclick="setLimTool('pen')">✏️ Penna</button>
+    <button class="tool-btn" id="btnHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
+    <button class="tool-btn" id="btnEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
+    <div style="height:20px; width:1px; background:rgba(255,255,255,0.2);"></div>
+    <span class="color-dot active" style="background:#e11d48;" onclick="setLimColor('#e11d48', this)" title="Rosso Correzione"></span>
+    <span class="color-dot" style="background:#1d4ed8;" onclick="setLimColor('#1d4ed8', this)" title="Blu Note"></span>
+    <span class="color-dot" style="background:#059669;" onclick="setLimColor('#059669', this)" title="Verde Ok"></span>
+    <span class="color-dot" style="background:#d97706;" onclick="setLimColor('#d97706', this)" title="Giallo/Ambra"></span>
+    <div style="height:20px; width:1px; background:rgba(255,255,255,0.2);"></div>
+    <button class="tool-btn" onclick="undoLimDraw()" title="Annulla ultimo tratto">↩️ Undo</button>
+    <button class="tool-btn" onclick="clearLimCanvas()" title="Cancella tutti i tratti sulla lavagna">🗑️ Pulisci</button>
+    <button class="tool-btn" id="btnPassThrough" onclick="togglePassThrough()" title="Interagisci con i bottoni della slide senza chiudere il disegno">👆 Touch Slide</button>
+    <button class="tool-btn" onclick="toggleLimDrawMode()" style="color:#f87171;" title="Chiudi modalità disegno">✖</button>
+  </div>
+
+  <div class="app-container">
+    <!-- Top Header (48px) -->
+    <header class="lim-header">
+      <div class="header-left">
+        <a href="/#corsi-fisica" class="btn-back">◀ Torna a Fisica</a>
+        <div class="header-title-badge">
+          <span class="badge-tag">CLASSE 2ª • FISICA</span>
+          <span>L'Equilibrio sul Piano Inclinato — Lezione di Controllo &amp; Revisione Relazione</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="lim-mode-btn" id="btnToggleLim" onclick="toggleLimDrawMode()">
+          ✏️ Modalità Disegno LIM
+        </button>
+        <button class="lim-mode-btn" onclick="toggleFullScreen()" title="Schermo intero LIM">
+          ⛶ Fullscreen
+        </button>
+        <span class="slide-counter-pill" id="slideCounter">Slide 1 / 8</span>
+      </div>
+    </header>
+
+    <!-- Barra di avanzamento -->
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Main Stage -->
+    <main class="slide-stage">
+
+      <!-- SLIDE 0: QUADRO METODOLOGICO -->
+      <section class="slide active" data-slide="0">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Introduzione Didattica</span>
+            <span class="slide-page-ref">Obiettivo: Autovalutazione Scientifica Collegiale</span>
+          </div>
+          <h1 class="slide-heading">🎯 Come e Perché Redigere la Relazione di Laboratorio</h1>
+          <p class="slide-subheading">Non basta aver eseguito l'esperimento: la scienza vive di documentazione rigorosa, trasparenza metrologica e rigore matematico.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📖 Perché Facciamo questa Lezione di Controllo alla LIM?</div>
+            <div class="concept-item">
+              <strong>1. Autocorrezione Guidata:</strong> Ogni studente confronta riga per riga la propria relazione cartacea con il modello scientifico prima della valutazione.
+            </div>
+            <div class="concept-item">
+              <strong>2. Capire il "PERCHÉ" delle Cose:</strong> Perché si converte in metri? Perché il dinamometro deve stare parallelo? Perché la retta passa per l'origine?
+            </div>
+            <div class="concept-item">
+              <strong>3. La Struttura Standard del Metodo Scientifico:</strong>
+              <ul style="margin-left:1.2rem; margin-top:4px;">
+                <li><em>Premessa &amp; Setup:</em> Obiettivo, richiamo teorico, metrologia degli strumenti.</li>
+                <li><em>Fase Sperimentale:</em> Tabulazione dati e rispetto del Sistema Internazionale (SI).</li>
+                <li><em>Elaborazione Dati:</em> Valor medio, semidispersione e cifre significative corrette.</li>
+                <li><em>Conclusioni &amp; Validazione:</em> Confronto teorico ed errore percentuale relativo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Colonna Destra -->
+          <div class="content-card content-card--emerald">
+            <div class="card-title">🏆 I 5 Errori Tipici da Penna Rossa (Da Evitare Assolutamente)</div>
+            <div class="concept-item concept-item--error">
+              <strong>❌ Errore 1: Dimenticare le Unità di Misura</strong><br>
+              Scrivere solo numeri (es. <em>h = 5</em> oppure <em>k = 2,12</em>) invalida il calcolo. I numeri senza unità sono privi di significato fisico!
+            </div>
+            <div class="concept-item concept-item--error">
+              <strong>❌ Errore 2: Usare i Centimetri nei Calcoli di <em>k</em></strong><br>
+              Se calcoli <em>k</em> = <em>F</em> / <em>h</em> con <em>h</em> in cm, ottieni 0,021 N/cm. Non potrai mai confrontarlo con <em>k</em><sub>teo</sub> = 2,11 N/m!
+            </div>
+            <div class="concept-item concept-item--error">
+              <strong>❌ Errore 3: Troppe o Troppo Pochi Decimali</strong><br>
+              Scrivere <em>k</em> = 2,125 ± 0,05: se l'incertezza è ai centesimi, anche il valore medio DEVE fermarsi ai centesimi (2,12)!
+            </div>
+            <div class="concept-item concept-item--error">
+              <strong>❌ Errore 4: Tracciare il Grafico Unendo i Punti a "Zig-Zag"</strong><br>
+              In fisica NON si gioca a "unisci i puntini"! Si traccia la <strong>retta di miglior adattamento (best fit)</strong>.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 1: SETUP SPERIMENTALE & METROLOGIA -->
+      <section class="slide" data-slide="1">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Pagina 1 della Scheda</span>
+            <span class="slide-page-ref">Setup, Descrizione Prova &amp; Metrologia Strumenti</span>
+          </div>
+          <h2 class="slide-heading">🔬 Strumenti di Misura, Portata &amp; Sensibilità</h2>
+          <p class="slide-subheading">La metrologia è il fondamento della misura: senza conoscere la sensibilità dello strumento, ogni dato è inaffidabile.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Tabella Strumenti -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📋 Tabella Strumenti di Misura (Come va compilata)</div>
+            <table class="lim-table">
+              <thead>
+                <tr>
+                  <th>Strumento</th>
+                  <th>Tipologia</th>
+                  <th>Portata (Max)</th>
+                  <th>Sensibilità (Min)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Riga metrica / Asta</strong></td>
+                  <td>Analogico</td>
+                  <td>200 cm (2,0 m)</td>
+                  <td style="color:var(--primary); font-weight:700;">1 mm (0,001 m)</td>
+                </tr>
+                <tr>
+                  <td><strong>Bilancia tecnica</strong></td>
+                  <td>Digitale</td>
+                  <td>3000 g (3,0 kg)</td>
+                  <td style="color:var(--primary); font-weight:700;">0,1 g (0,0001 kg)</td>
+                </tr>
+                <tr>
+                  <td><strong>Dinamometro lineare</strong></td>
+                  <td>Analogico</td>
+                  <td>1,0 N (o 2,0 N)</td>
+                  <td style="color:var(--primary); font-weight:700;">0,01 N</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:10px;">
+              <div class="concept-item">
+                <strong>Materiale non di misura:</strong> Rotaia in alluminio con fori d'aria, compressore a mandata d'aria, carrello metallico calibrato, spessori/blocchetti di rialzo.
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Il Perché Fisico -->
+          <div class="content-card content-card--amber">
+            <div class="card-title">💡 Il "PERCHÉ" Scientifico di questo Setup</div>
+            
+            <div class="concept-item concept-item--why">
+              <strong>1. Perché si usa la rotaia a cuscino d'aria?</strong><br>
+              In un piano reale con attrito (<em>μ</em><sub>s</sub>), il carrello rimarrebbe fermo in un ampio intervallo di forze. Il cuscino d'aria elimina l'attrito radente, permettendoci di verificare la condizione di <strong>piano inclinato ideale senza attrito</strong>.
+            </div>
+
+            <div class="concept-item concept-item--why">
+              <strong>2. Perché il dinamometro DEVE essere rigorosamente parallelo alla rotaia?</strong><br>
+              Se il filo tirasse inclinato di un angolo <em>β</em>, misureremmo solo <em>F</em><sub>mis</sub> · cos <em>β</em> ≠ <em>F</em><sub>∥</sub>, e la componente <em>F</em><sub>mis</sub> · sin <em>β</em> altererebbe la reazione vincolare normale <em>F</em><sub>v</sub>, falsando completamente le letture!
+            </div>
+
+            <div class="concept-item concept-item--error">
+              <strong>⚠️ Errore Comune:</strong> Confondere <em>portata</em> (valore massimo misurabile) con <em>sensibilità</em> (minima variazione apprezzabile sulla scala graduata).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: MODELLO TEORICO & SCOMPOSIZIONE VETTORIALE -->
+      <section class="slide" data-slide="2">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Fisica Teorica</span>
+            <span class="slide-page-ref">Equilibrio Statico • Vettori Forze &amp; Similitudine</span>
+          </div>
+          <h2 class="slide-heading">📐 La Scomposizione Vettoriale della Forza-Peso</h2>
+          <p class="slide-subheading">Dimostrazione geometrica: perché la forza equilibrante vale <em>F</em><sub>eq</sub> = (<em>m</em> · <em>g</em> / <em>l</em>) · <em>h</em>?</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Dimostrazione -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">⚖️ Dimostrazione per Similitudine di Triangoli</div>
+            <p style="font-size:0.86rem; line-height:1.45; color:var(--text-muted);">
+              La forza-peso <strong><em>F&#8407;</em><sub>p</sub> = <em>m</em> · <em>g&#8407;</em></strong> agisce sempre verticalmente verso il basso. Sul piano inclinato si scompone in due componenti perpendicolari:
+            </p>
+            <div style="margin:6px 0;">
+              <span class="formula-pill">F<sub>⊥</sub> = F<sub>p</sub> · cos α &nbsp;(bilanciata dalla reazione vincolare F<sub>v</sub>)</span><br>
+              <span class="formula-pill">F<sub>∥</sub> = F<sub>p</sub> · sin α &nbsp;(tende a far scivolare il carrello)</span>
+            </div>
+            
+            <div class="concept-item concept-item--why" style="margin-top:8px;">
+              <strong>La Similitudine Geometrica Fondamentale:</strong><br>
+              Il triangolo rettangolo delle forze (cateti <em>F</em><sub>∥</sub>, <em>F</em><sub>⊥</sub> e ipotenusa <em>F</em><sub>p</sub>) ha gli stessi angoli del triangolo del piano inclinato (altezza <em>h</em>, base <em>b</em> e ipotenusa <em>l</em>). Quindi:
+              <div style="text-align:center; margin:4px 0; font-weight:800; color:var(--primary); font-size:1.05rem;">
+                <div class="math-block">
+                <span class="frac"><span class="num">F<sub>∥</sub></span><span class="den">F<sub>p</sub></span></span>
+                <span>=</span>
+                <span class="frac"><span class="num">h</span><span class="den">l</span></span>
+                <span>⇒</span>
+                <span>F<sub>∥</sub> = F<sub>p</sub> · <span class="frac"><span class="num">h</span><span class="den">l</span></span> = <span class="bracket">(</span><span class="frac"><span class="num">m · g</span><span class="den">l</span></span><span class="bracket">)</span> · h</span>
+              </div>
+              </div>
+            </div>
+
+            <div class="concept-item concept-item--success">
+              <strong>Condizione di Equilibrio:</strong> Per tenere fermo il carrello, la forza equilibrante applicata dal dinamometro deve essere uguale e contraria a <em>F</em><sub>&parallel;</sub>:
+              <div style="text-align:center; font-weight:800; font-size:1rem; color:var(--emerald);">
+                <div class="math-block" style="color:var(--emerald);">
+                <span>F<sub>eq</sub> = F<sub>∥</sub> = k<sub>teo</sub> · h &nbsp; con &nbsp; k<sub>teo</sub> = <span class="frac"><span class="num">F<sub>p</sub></span><span class="den">l</span></span> = <span class="frac"><span class="num">m · g</span><span class="den">l</span></span></span>
+              </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Simulatore Interattivo Vettori -->
+          <div class="content-card content-card--cyan">
+            <div class="card-title">🎛️ Simulatore Vettoriale Interattivo (Piano Inclinato)</div>
+            <div class="canvas-container">
+              <canvas id="simCanvas" class="sim-canvas"></canvas>
+            </div>
+            
+            <div class="slider-row">
+              <span>Regola Altezza <em>h</em>:</span>
+              <input type="range" id="simSliderH" min="0" max="30" value="15" step="1" oninput="updateSim()">
+              <span id="simValH" style="font-family:var(--font-mono); color:var(--primary); min-width:65px;">15,0 cm</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-top:4px; font-family:var(--font-mono);">
+              <span>F_p = 4,01 N</span>
+              <span id="simValFpar" style="color:#e11d48; font-weight:700;">F|| = 0,32 N</span>
+              <span id="simValFeq" style="color:#059669; font-weight:700;">F_eq = 0,32 N</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: TABELLA DATI & SISTEMA INTERNAZIONALE -->
+      <section class="slide" data-slide="3">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Pagina 2 della Scheda</span>
+            <span class="slide-page-ref">Raccolta Dati Sperimentali • 6 Prove + Controllo Zero</span>
+          </div>
+          <h2 class="slide-heading">📊 La Tabella delle Misure: Controllo dei Valori</h2>
+          <p class="slide-subheading">I dati sperimentali reali: analisi dell'omogeneità dimensionale e del rapporto di proporzionalità <em>k</em>.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Tabella Dati Reale -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📝 Tabella dei Dati Raccolti (<em>m</em> = 0,409 kg, <em>l</em> = 1,900 m)</div>
+            <table class="lim-table">
+              <thead>
+                <tr>
+                  <th>n°</th>
+                  <th>h (cm)</th>
+                  <th>h (m)</th>
+                  <th>h / l = sin α</th>
+                  <th>F_eq (N)</th>
+                  <th>k = F_eq / h (N/m)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#f1f5f9; color:#64748b;">
+                  <td>0</td>
+                  <td>0,0</td>
+                  <td>0,000</td>
+                  <td>0,000</td>
+                  <td>0,00</td>
+                  <td>— (Zero)</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>5,0</td>
+                  <td>0,050</td>
+                  <td>0,026</td>
+                  <td>0,11</td>
+                  <td style="font-weight:700; color:var(--primary);">2,20</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>10,0</td>
+                  <td>0,100</td>
+                  <td>0,053</td>
+                  <td>0,21</td>
+                  <td style="font-weight:700; color:var(--primary);">2,10</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>15,0</td>
+                  <td>0,150</td>
+                  <td>0,079</td>
+                  <td>0,32</td>
+                  <td style="font-weight:700; color:var(--primary);">2,13</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>20,0</td>
+                  <td>0,200</td>
+                  <td>0,105</td>
+                  <td>0,42</td>
+                  <td style="font-weight:700; color:var(--primary);">2,10</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>25,0</td>
+                  <td>0,250</td>
+                  <td>0,132</td>
+                  <td>0,53</td>
+                  <td style="font-weight:700; color:var(--primary);">2,12</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>30,0</td>
+                  <td>0,300</td>
+                  <td>0,158</td>
+                  <td>0,63</td>
+                  <td style="font-weight:700; color:var(--primary);">2,10</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Colonna Destra: Domande di Controllo per la Classe -->
+          <div class="content-card content-card--amber">
+            <div class="card-title">🔍 Perché la Tabella va Costruita Così?</div>
+            
+            <div class="concept-item concept-item--why">
+              <strong>1. Perché convertire <em>h</em> da cm a metri?</strong><br>
+              La lunghezza della rotaia è <em>l</em> = 1,90 m. Se calcoliamo <em>k</em> con <em>h</em> in cm, otterremmo <em>k</em> ≈ 0,021 N/cm. Non potremmo mai confrontarlo con <em>k</em><sub>teo</sub> = (<em>m</em> · <em>g</em>) / <em>l</em> = 2,11 N/m! Il Sistema Internazionale impone coerenza dimensionale.
+            </div>
+
+            <div class="concept-item concept-item--why">
+              <strong>2. Perché la prova <em>n</em> = 0 (<em>h</em> = 0) è fondamentale ma non ha <em>k</em>?</strong><br>
+              A piano orizzontale il rapporto <em>k</em> = 0 / 0 è una forma indeterminata. Ma fisicamente prova che <strong>l'intercetta sull'asse Y è zero</strong>: senza dislivello non serve alcuna forza equilibrante (<em>F</em><sub>eq</sub> = 0,00 N).
+            </div>
+
+            <div class="concept-item concept-item--success">
+              <strong>3. Perché i valori di <em>k</em> oscillano tra 2,10 e 2,20 N/m?</strong><br>
+              Dimostrano la legge empirica: il rapporto <em>F</em><sub>eq</sub> / <em>h</em> si mantiene costante entro l'incertezza strumentale del dinamometro $(\pm 0,01\text{ N})$!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: ELABORAZIONE DEI CALCOLI STATISTICI -->
+      <section class="slide" data-slide="4">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Sezione Calcoli</span>
+            <span class="slide-page-ref">Statistica della Misura: Valore Medio &amp; Semidispersione</span>
+          </div>
+          <h2 class="slide-heading">🔢 Calcolo del Valor Medio, Incertezza &amp; Cifre</h2>
+          <p class="slide-subheading">I 3 passaggi matematici che non devono mai mancare sul foglio della relazione.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: I Calcoli Svolti -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📐 I 3 Calcoli Obbligatori Svolti Passo Passo</div>
+            
+            <div class="concept-item">
+              <strong>1. Calcolo del Valore Teorico Atteso:</strong><br>
+              Forza-peso: <em>F</em><sub>p</sub> = <em>m</em> · <em>g</em> = 0,409 kg · 9,8 N/kg = <strong>4,01 N</strong><br>
+              Costante teorica: <em>k</em><sub>teo</sub> = <span class="frac"><span class="num">F<sub>p</sub></span><span class="den">l</span></span> = <span class="frac"><span class="num">4,01 N</span><span class="den">1,90 m</span></span> = <strong>2,11 N/m</strong>
+            </div>
+
+            <div class="concept-item">
+              <strong>2. Calcolo del Valor Medio Sperimentale <em>k</em><sub>m</sub>:</strong><br>
+              <div class="math-block">
+                <span>k<sub>m</sub> = <span class="frac"><span class="num">∑ k<sub>i</sub></span><span class="den">6</span></span> = <span class="frac"><span class="num">12,75</span><span class="den">6</span></span> = 2,125 N/m ⇒ <strong>2,12 N/m</strong></span>
+              </div>
+            </div>
+
+            <div class="concept-item">
+              <strong>3. Calcolo dell'Incertezza Assoluta &Delta;<em>k</em> (Semidispersione Massima):</strong><br>
+              <div class="math-block">
+                <span>Δk = <span class="frac"><span class="num">k<sub>max</sub> − k<sub>min</sub></span><span class="den">2</span></span> = <span class="frac"><span class="num">2,20 − 2,10</span><span class="den">2</span></span> = <span class="frac"><span class="num">0,10</span><span class="den">2</span></span> = <strong>0,05 N/m</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Regola delle Cifre e Notazione Finale -->
+          <div class="content-card content-card--emerald">
+            <div class="card-title">🎯 La Regola delle Cifre Significative (Perché 2,12 e non 2,125?)</div>
+            
+            <div class="concept-item concept-item--why">
+              <strong>La Regola Aurea della Metrologia:</strong><br>
+              L'incertezza assoluta <strong>Δ<em>k</em> = 0,05 N/m</strong> ha una sola cifra significativa che cade al livello dei <strong>centesimi</strong>. Di conseguenza, il valor medio <em>k</em><sub>m</sub> = 2,125 NON può avere i millesimi e va arrotondato ai centesimi: <strong>2,12 N/m</strong>!
+            </div>
+
+            <div style="background:#0f172a; color:#f8fafc; padding:12px; border-radius:8px; text-align:center; margin-top:8px;">
+              <span style="font-size:0.85rem; color:#94a3b8; display:block; margin-bottom:4px;">SCRITTURA SCIENTIFICA FINALE DEL RISULTATO:</span>
+              <span style="font-size:1.35rem; font-weight:800; color:#38bdf8; font-family:var(--font-mono);">
+                k = ( 2,12 ± 0,05 ) N/m
+              </span>
+            </div>
+
+            <div class="concept-item concept-item--error" style="margin-top:10px;">
+              <strong>Errori Gravi di Scrittura:</strong><br>
+              ❌ <em>k</em> = 2,125 ± 0,05 N/m (decimali non allineati)<br>
+              ❌ <em>k</em> = 2,12 ± 0,05 N/m (senza parentesi sembra che N/m valga solo per 0,05)<br>
+              ❌ <em>k</em> = 2,12 (dimenticata l'incertezza e l'unità di misura)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: GRAFICO CARTESIANO & ANALISI LINEARE -->
+      <section class="slide" data-slide="5">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Grafico Cartesiano</span>
+            <span class="slide-page-ref">Rappresentazione <em>F</em><sub>eq</sub> in funzione di <em>h</em></span>
+          </div>
+          <h2 class="slide-heading">📈 Analisi Grafica: Perché una Retta Passante per l'Origine?</h2>
+          <p class="slide-subheading">La pendenza geometrica della retta rappresenta fisicamente la costante di proporzionalità <em>k</em>.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Canvas Grafico Interattivo -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📊 Grafico Cartesiano <em>F</em><sub>eq</sub> (N) vs <em>h</em> (m)</div>
+            <div class="canvas-container">
+              <canvas id="plotCanvas" class="sim-canvas"></canvas>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:0.8rem;">
+              <span style="color:#2563eb; font-weight:700;">● Punti Sperimentali con barre d'errore (±0,01 N)</span>
+              <span style="color:#dc2626; font-weight:700;">— Retta di Best-Fit: y = 2,11x</span>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Significato Fisico del Grafico -->
+          <div class="content-card content-card--amber">
+            <div class="card-title">💡 Le 3 Domande Chiave sul Grafico alla LIM</div>
+            
+            <div class="concept-item concept-item--why">
+              <strong>1. Che tipo di curva passa per i punti?</strong><br>
+              I punti si allineano con eccellente approssimazione lungo una <strong>linea retta</strong>. Questo dimostra visivamente che la relazione è lineare: <em>y</em> = <em>m</em> · <em>x</em>.
+            </div>
+
+            <div class="concept-item concept-item--why">
+              <strong>2. La retta passa per l'origine degli assi (0, 0)?</strong><br>
+              Sì, l'intercetta <em>q</em> = 0. Fisicamente significa che se <em>h</em> = 0 (piano perfettamente orizzontale), non c'è inclinazione e la forza equilibrante necessaria è esattamente <em>F</em><sub>eq</sub> = 0,00 N.
+            </div>
+
+            <div class="concept-item concept-item--success">
+              <strong>3. Cosa rappresenta geometricamente la pendenza della retta?</strong><br>
+              La pendenza Δ<em>F</em><sub>eq</sub> / Δ<em>h</em> corrisponde esattamente alla costante <em>k</em>:
+              <div style="text-align:center; font-weight:800; font-family:var(--font-mono); margin-top:4px; color:var(--primary);">
+                Pendenza = k = F_p / l ≈ 2,12 N/m
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: CONCLUSIONI SCIENTIFICHE & VALIDAZIONE -->
+      <section class="slide" data-slide="6">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Conclusioni Scientifiche</span>
+            <span class="slide-page-ref">Confronto Teoria vs Esperimento &amp; Validazione</span>
+          </div>
+          <h2 class="slide-heading">🏆 Come Rispondere alle 4 Domande Conclusive</h2>
+          <p class="slide-subheading">La conclusione scientifica non è un parere personale: è un'argomentazione rigorosa basata sui dati.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Le 4 Risposte Corrette -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">📝 Risposte Modello alla Scheda (Pagina 2)</div>
+            
+            <div class="concept-item">
+              <strong>Domanda 1: Scrivi <em>k</em> con l'incertezza</strong><br>
+              Risposta corretta: <em>"Il valore sperimentale ottenuto per la costante di proporzionalità tra altezza e forza equilibrante è <strong>k = (2,12 ± 0,05) N/m</strong>."</em>
+            </div>
+
+            <div class="concept-item">
+              <strong>Domanda 2: Tipo di curva e passaggio per l'origine</strong><br>
+              Risposta corretta: <em>"I punti sperimentali si allineano con ottima accuratezza lungo una linea retta passante per l'origine (0, 0). Ciò conferma che a piano orizzontale la forza equilibrante è nulla (<em>F</em><sub>eq</sub> = 0,00 N)."</em>
+            </div>
+
+            <div class="concept-item">
+              <strong>Domanda 3: Significato fisico e confronto con la teoria</strong><br>
+              Risposta corretta: <em>"Il coefficiente <em>k</em> rappresenta fisicamente il rapporto <em>F</em><sub>p</sub> / <em>l</em> = (<em>m</em> · <em>g</em>) / <em>l</em>. Il valore teorico calcolato è <em>k</em><sub>teo</sub> = 2,11 N/m, perfettamente compatibile con <em>k</em><sub>m</sub> = 2,12 N/m."</em>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Compatibilità ed Errore Percentuale -->
+          <div class="content-card content-card--emerald">
+            <div class="card-title">🔍 Criterio di Compatibilità &amp; Errore Percentuale</div>
+            
+            <div class="concept-item concept-item--why">
+              <strong>L'Intervallo di Compatibilità Sperimentale:</strong><br>
+              Il nostro risultato definisce un intervallo di fiducia:
+              <div class="math-block">
+                <span>[k<sub>m</sub> − Δk; &nbsp; k<sub>m</sub> + Δk] = [2,12 − 0,05; &nbsp; 2,12 + 0,05] = <strong>[2,07; &nbsp; 2,17] N/m</strong></span>
+              </div>
+              Poiché il valore teorico atteso <em>k</em><sub>teo</sub> = 2,11 N/m cade <strong>all'interno</strong> dell'intervallo, le due misure sono compatibili al 100%!
+            </div>
+
+            <div class="concept-item concept-item--success">
+              <strong>Domanda 4: Calcolo dell'Errore Relativo Percentuale:</strong><br>
+              <div class="math-block">
+                <span>e% = <span class="frac"><span class="num">|k<sub>m</sub> − k<sub>teo</sub>|</span><span class="den">k<sub>teo</sub></span></span> · 100% = <span class="frac"><span class="num">|2,12 − 2,11|</span><span class="den">2,11</span></span> · 100% = <span class="frac"><span class="num">0,01</span><span class="den">2,11</span></span> · 100% ≈ <strong>0,47%</strong></span>
+              </div>
+              Essendo <em>e</em>% &lt; 1%, l'obiettivo sperimentale è pienamente verificato con altissima accuratezza scientifica!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: RUBRICA DI AUTOVALUTAZIONE -->
+      <section class="slide" data-slide="7">
+        <div class="slide-meta">
+          <div class="slide-topic-row">
+            <span class="slide-topic-badge">Autovalutazione Finale</span>
+            <span class="slide-page-ref">Griglia di Controllo Prima di Consegnare la Scheda</span>
+          </div>
+          <h2 class="slide-heading">📋 Rubrica di Valutazione per la Relazione (10/10)</h2>
+          <p class="slide-subheading">Controlla la tua relazione con questa checklist interattiva alla LIM e calcola il tuo punteggio stimato.</p>
+        </div>
+
+        <div class="slide-grid-2">
+          <!-- Colonna Sinistra: Checklist Criteri -->
+          <div class="content-card content-card--primary">
+            <div class="card-title">☑️ Criteri di Valutazione (Clicca per verificare)</div>
+            
+            <div class="rubric-row">
+              <div>
+                <strong>1. Intestazione &amp; Setup (1,0 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Nome, classe, data, obiettivo chiaro e materiali non di misura completi.</span>
+              </div>
+              <input type="checkbox" id="rb1" checked onchange="updateRubric()">
+            </div>
+
+            <div class="rubric-row">
+              <div>
+                <strong>2. Metrologia degli Strumenti (1,5 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Portata e sensibilità corrette per riga, bilancia e dinamometro con unità.</span>
+              </div>
+              <input type="checkbox" id="rb2" checked onchange="updateRubric()">
+            </div>
+
+            <div class="rubric-row">
+              <div>
+                <strong>3. Tabella Dati &amp; Conversioni (2,0 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);"><em>h</em> convertito in metri (0,05 &hellip; 0,30), prova zero indicata, colonna <em>k</em> calcolata.</span>
+              </div>
+              <input type="checkbox" id="rb3" checked onchange="updateRubric()">
+            </div>
+
+            <div class="rubric-row">
+              <div>
+                <strong>4. Calcoli, Cifre &amp; Incertezza (2,0 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Formule esplicite per <em>F</em><sub>p</sub>, <em>k</em><sub>teo</sub>, <em>k</em><sub>m</sub>, &Delta;<em>k</em> e scrittura formale (2,12 ± 0,05) N/m.</span>
+              </div>
+              <input type="checkbox" id="rb4" checked onchange="updateRubric()">
+            </div>
+
+            <div class="rubric-row">
+              <div>
+                <strong>5. Grafico Cartesiano (2,0 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Assi orientati con grandezze e unità, scala regolare, punti tracciati e retta passante per (0, 0).</span>
+              </div>
+              <input type="checkbox" id="rb5" checked onchange="updateRubric()">
+            </div>
+
+            <div class="rubric-row">
+              <div>
+                <strong>6. Conclusioni &amp; Errore % (1,5 pt)</strong><br>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Compatibilità con la teoria dimostrata, significato fisico di <em>k</em> e calcolo <em>e</em>% ≈ 0,47%.</span>
+              </div>
+              <input type="checkbox" id="rb6" checked onchange="updateRubric()">
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Feedback e Punteggio -->
+          <div class="content-card content-card--emerald" style="justify-content:center; align-items:center; text-align:center;">
+            <div style="font-size:0.9rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">
+              Punteggio Stimato Relazione
+            </div>
+            <div style="font-size:3.5rem; font-weight:800; color:var(--emerald); font-family:var(--font-mono); margin:8px 0;" id="rubricScore">
+              10 / 10
+            </div>
+            <div id="rubricFeedback" style="font-size:0.95rem; font-weight:700; color:var(--emerald); max-width:420px; line-height:1.45;">
+              🌟 Eccellente! La relazione rispetta tutti i canoni del metodo scientifico sperimentale: rigore metrologico, coerenza dimensionale SI e validazione formale.
+            </div>
+
+            <div style="margin-top:16px; border-top:1px solid #e2e8f0; padding-top:12px; width:100%;">
+              <button class="nav-btn nav-btn--primary" onclick="goToSlide(0)" style="width:100%; justify-content:center; padding:10px;">
+                🔄 Ricomincia la Presentazione dalla Slide 1
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Dock Inferiore (52px) -->
+    <footer class="lim-dock">
+      <button class="nav-btn" id="btnPrev" onclick="changeSlide(-1)">
+        ◀ Precedente
+      </button>
+
+      <div class="slide-dots" id="slideDots"></div>
+
+      <button class="nav-btn nav-btn--primary" id="btnNext" onclick="changeSlide(1)">
+        Successiva ▶
+      </button>
+    </footer>
+  </div>
+
+  <script>
+    // ==========================================
+    // STATO SLIDE PRESENTAZIONE
+    // ==========================================
+    const totalSlides = 8;
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('slideDots');
+    const counterEl = document.getElementById('slideCounter');
+    const fillEl = document.getElementById('progressFill');
+    const prevBtn = document.getElementById('btnPrev');
+    const nextBtn = document.getElementById('btnNext');
+
+    // Costruzione indicatori a pallini
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 0 ? 'active' : ''}`;
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateDeck() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      document.querySelectorAll('.dot').forEach((d, idx) => {
+        d.classList.toggle('active', idx === currentSlide);
+      });
+      counterEl.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      fillEl.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+
+      // Render simulator o plot se attivi
+      if (currentSlide === 2) {
+        setTimeout(drawSim, 50);
+      } else if (currentSlide === 5) {
+        setTimeout(drawPlot, 50);
+      }
+    }
+
+    function changeSlide(direction) {
+      currentSlide = Math.max(0, Math.min(totalSlides - 1, currentSlide + direction));
+      updateDeck();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateDeck();
+    }
+
+    // Tasti freccia da tastiera o telecomando LIM
+    window.addEventListener('keydown', (e) => {
+      if (isLimActive && !isPassThrough) return; // Se si disegna, non cambiare slide
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        changeSlide(-1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      }
+    });
+
+    // ==========================================
+    // SIMULATORE PIANO INCLINATO (CANVAS)
+    // ==========================================
+    const simCanvas = document.getElementById('simCanvas');
+    const simCtx = simCanvas ? simCanvas.getContext('2d') : null;
+
+    function resizeCanvas(c) {
+      if (!c) return;
+      const rect = c.parentElement.getBoundingClientRect();
+      c.width = rect.width * window.devicePixelRatio;
+      c.height = rect.height * window.devicePixelRatio;
+    }
+
+    function drawSim() {
+      if (!simCanvas || !simCtx) return;
+      resizeCanvas(simCanvas);
+      const w = simCanvas.width;
+      const h = simCanvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      simCtx.clearRect(0, 0, w, h);
+
+      const hVal = parseFloat(document.getElementById('simSliderH').value); // cm
+      const hMeter = hVal / 100;
+      const lMeter = 1.90;
+      const sinAlpha = hMeter / lMeter;
+      const angleRad = Math.asin(Math.min(1, sinAlpha));
+
+      // Coordinate del piano
+      const padX = 40 * dpr;
+      const padY = 30 * dpr;
+      const x0 = padX;
+      const y0 = h - padY;
+      const rampLen = (w - padX * 2);
+      const x1 = x0 + rampLen * Math.cos(angleRad);
+      const y1 = y0 - rampLen * Math.sin(angleRad);
+
+      // Disegna base orizzontale
+      simCtx.strokeStyle = '#94a3b8';
+      simCtx.lineWidth = 2 * dpr;
+      simCtx.beginPath();
+      simCtx.moveTo(x0, y0);
+      simCtx.lineTo(x1, y0);
+      simCtx.stroke();
+
+      // Disegna altezza h
+      simCtx.strokeStyle = '#d97706';
+      simCtx.lineWidth = 3 * dpr;
+      simCtx.beginPath();
+      simCtx.moveTo(x1, y0);
+      simCtx.lineTo(x1, y1);
+      simCtx.stroke();
+
+      // Disegna rotaia inclinata (grigia in alluminio)
+      simCtx.strokeStyle = '#1e293b';
+      simCtx.lineWidth = 6 * dpr;
+      simCtx.beginPath();
+      simCtx.moveTo(x0, y0);
+      simCtx.lineTo(x1, y1);
+      simCtx.stroke();
+
+      // Disegna carrello sul piano (a metà rampa)
+      const t = 0.5;
+      const cx = x0 + (x1 - x0) * t;
+      const cy = y0 + (y1 - y0) * t;
+
+      simCtx.save();
+      simCtx.translate(cx, cy);
+      simCtx.rotate(-angleRad);
+
+      // Corpo carrello
+      simCtx.fillStyle = '#2563eb';
+      simCtx.fillRect(-25 * dpr, -18 * dpr, 50 * dpr, 14 * dpr);
+
+      // Ruotine/supporti
+      simCtx.fillStyle = '#0f172a';
+      simCtx.beginPath();
+      simCtx.arc(-16 * dpr, -2 * dpr, 3 * dpr, 0, Math.PI * 2);
+      simCtx.arc(16 * dpr, -2 * dpr, 3 * dpr, 0, Math.PI * 2);
+      simCtx.fill();
+
+      // Dinamometro agganciato
+      simCtx.strokeStyle = '#059669';
+      simCtx.lineWidth = 2.5 * dpr;
+      simCtx.beginPath();
+      simCtx.moveTo(25 * dpr, -11 * dpr);
+      simCtx.lineTo(65 * dpr, -11 * dpr);
+      simCtx.stroke();
+
+      simCtx.fillStyle = '#059669';
+      simCtx.fillRect(65 * dpr, -15 * dpr, 30 * dpr, 8 * dpr);
+
+      simCtx.restore();
+
+      // Vettori Forze dal centro del carrello
+      const Fp_len = 70 * dpr; // 4,01 N proporzionato
+      const Fpar_len = Fp_len * Math.sin(angleRad);
+      const Fperp_len = Fp_len * Math.cos(angleRad);
+
+      // Vettore Fp (Rosso verticale in giù)
+      drawArrow(simCtx, cx, cy, cx, cy + Fp_len, '#dc2626', 3 * dpr, 'Fp (4,01 N)');
+
+      // Vettore F_parallel (Blu lungo il piano verso il basso)
+      const vx_par = -Math.cos(angleRad) * Fpar_len;
+      const vy_par = Math.sin(angleRad) * Fpar_len;
+      drawArrow(simCtx, cx, cy, cx + vx_par, cy + vy_par, '#2563eb', 3 * dpr, 'F||');
+
+      // Vettore F_eq (Verde lungo il piano verso l'alto)
+      drawArrow(simCtx, cx, cy, cx - vx_par, cy - vy_par, '#059669', 3 * dpr, 'Feq');
+
+      // Vettore F_perp (Viola normale al piano in giù)
+      const vx_perp = Math.sin(angleRad) * Fperp_len;
+      const vy_perp = Math.cos(angleRad) * Fperp_len;
+      drawArrow(simCtx, cx, cy, cx + vx_perp, cy + vy_perp, '#7c3aed', 2 * dpr, 'F⟂');
+
+      // Reazione Vincolare F_v (Arancione normale in su)
+      drawArrow(simCtx, cx, cy, cx - vx_perp, cy - vy_perp, '#d97706', 2 * dpr, 'Fv');
+    }
+
+    function drawArrow(ctx, fromx, fromy, tox, toy, color, width, label) {
+      const dpr = window.devicePixelRatio || 1;
+      const headlen = 8 * dpr;
+      const angle = Math.atan2(toy - fromy, tox - fromx);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+
+      ctx.beginPath();
+      ctx.moveTo(fromx, fromy);
+      ctx.lineTo(tox, toy);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(tox, toy);
+      ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+      ctx.fill();
+
+      if (label) {
+        ctx.font = `bold ${10 * dpr}px sans-serif`;
+        ctx.fillText(label, tox + 6 * dpr, toy + 4 * dpr);
+      }
+      ctx.restore();
+    }
+
+    function updateSim() {
+      const hVal = parseFloat(document.getElementById('simSliderH').value);
+      document.getElementById('simValH').textContent = `${hVal.toFixed(1)} cm`;
+      const Feq = (4.01 / 1.90) * (hVal / 100);
+      document.getElementById('simValFpar').textContent = `F|| = ${Feq.toFixed(2)} N`;
+      document.getElementById('simValFeq').textContent = `F_eq = ${Feq.toFixed(2)} N`;
+      drawSim();
+    }
+
+    // ==========================================
+    // GRAFICO CARTESIANO INTERATTIVO (PLOT)
+    // ==========================================
+    const plotCanvas = document.getElementById('plotCanvas');
+    const plotCtx = plotCanvas ? plotCanvas.getContext('2d') : null;
+
+    const dataPoints = [
+      { h: 0.00, F: 0.00 },
+      { h: 0.05, F: 0.11 },
+      { h: 0.10, F: 0.21 },
+      { h: 0.15, F: 0.32 },
+      { h: 0.20, F: 0.42 },
+      { h: 0.25, F: 0.53 },
+      { h: 0.30, F: 0.63 }
+    ];
+
+    function drawPlot() {
+      if (!plotCanvas || !plotCtx) return;
+      resizeCanvas(plotCanvas);
+      const w = plotCanvas.width;
+      const h = plotCanvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      plotCtx.clearRect(0, 0, w, h);
+
+      const padLeft = 55 * dpr;
+      const padBottom = 35 * dpr;
+      const padTop = 20 * dpr;
+      const padRight = 30 * dpr;
+
+      const plotW = w - padLeft - padRight;
+      const plotH = h - padTop - padBottom;
+
+      const maxH = 0.35; // metri
+      const maxF = 0.75; // Newton
+
+      // Griglia quadrettata
+      plotCtx.strokeStyle = '#e2e8f0';
+      plotCtx.lineWidth = 1 * dpr;
+
+      // Linee verticali
+      for (let xStep = 0.05; xStep <= maxH; xStep += 0.05) {
+        const xPos = padLeft + (xStep / maxH) * plotW;
+        plotCtx.beginPath();
+        plotCtx.moveTo(xPos, padTop);
+        plotCtx.lineTo(xPos, h - padBottom);
+        plotCtx.stroke();
+
+        plotCtx.fillStyle = '#64748b';
+        plotCtx.font = `${9 * dpr}px sans-serif`;
+        plotCtx.textAlign = 'center';
+        plotCtx.fillText(xStep.toFixed(2), xPos, h - padBottom + 14 * dpr);
+      }
+
+      // Linee orizzontali
+      for (let yStep = 0.10; yStep <= maxF; yStep += 0.10) {
+        const yPos = (h - padBottom) - (yStep / maxF) * plotH;
+        plotCtx.beginPath();
+        plotCtx.moveTo(padLeft, yPos);
+        plotCtx.lineTo(w - padRight, yPos);
+        plotCtx.stroke();
+
+        plotCtx.fillStyle = '#64748b';
+        plotCtx.font = `${9 * dpr}px sans-serif`;
+        plotCtx.textAlign = 'right';
+        plotCtx.fillText(yStep.toFixed(2), padLeft - 6 * dpr, yPos + 3 * dpr);
+      }
+
+      // Assi Cartesiani Principali
+      plotCtx.strokeStyle = '#0f172a';
+      plotCtx.lineWidth = 2 * dpr;
+      plotCtx.beginPath();
+      // Asse Y
+      plotCtx.moveTo(padLeft, padTop - 5 * dpr);
+      plotCtx.lineTo(padLeft, h - padBottom);
+      // Asse X
+      plotCtx.lineTo(w - padRight + 15 * dpr, h - padBottom);
+      plotCtx.stroke();
+
+      // Etichette Assi
+      plotCtx.fillStyle = '#0f172a';
+      plotCtx.font = `bold ${10 * dpr}px sans-serif`;
+      plotCtx.textAlign = 'right';
+      plotCtx.fillText('F_eq (N) ↑', padLeft - 6 * dpr, padTop - 4 * dpr);
+      plotCtx.textAlign = 'right';
+      plotCtx.fillText('h (m) →', w - padRight + 15 * dpr, h - padBottom - 6 * dpr);
+
+      // Retta di regressione teorica: y = 2.11 * x
+      plotCtx.strokeStyle = '#dc2626';
+      plotCtx.lineWidth = 2.5 * dpr;
+      plotCtx.beginPath();
+      plotCtx.moveTo(padLeft, h - padBottom); // (0,0)
+      const xEnd = maxH;
+      const yEnd = 2.11 * xEnd;
+      const pxEnd = padLeft + (xEnd / maxH) * plotW;
+      const pyEnd = (h - padBottom) - (yEnd / maxF) * plotH;
+      plotCtx.lineTo(pxEnd, pyEnd);
+      plotCtx.stroke();
+
+      // Tracciamento dei punti con barre d'errore (±0.01 N)
+      dataPoints.forEach((pt) => {
+        const px = padLeft + (pt.h / maxH) * plotW;
+        const py = (h - padBottom) - (pt.F / maxF) * plotH;
+
+        // Barra d'errore verticale
+        const errPx = (0.01 / maxF) * plotH;
+        plotCtx.strokeStyle = '#2563eb';
+        plotCtx.lineWidth = 1.5 * dpr;
+        plotCtx.beginPath();
+        plotCtx.moveTo(px, py - errPx);
+        plotCtx.lineTo(px, py + errPx);
+        plotCtx.moveTo(px - 3 * dpr, py - errPx);
+        plotCtx.lineTo(px + 3 * dpr, py - errPx);
+        plotCtx.moveTo(px - 3 * dpr, py + errPx);
+        plotCtx.lineTo(px + 3 * dpr, py + errPx);
+        plotCtx.stroke();
+
+        // Punto circolare pieno
+        plotCtx.fillStyle = '#2563eb';
+        plotCtx.beginPath();
+        plotCtx.arc(px, py, 4 * dpr, 0, Math.PI * 2);
+        plotCtx.fill();
+        plotCtx.strokeStyle = '#ffffff';
+        plotCtx.lineWidth = 1.5 * dpr;
+        plotCtx.stroke();
+      });
+    }
+
+    // ==========================================
+    // RUBRICA AUTOVALUTAZIONE
+    // ==========================================
+    const rubricWeights = [1.0, 1.5, 2.0, 2.0, 2.0, 1.5];
+
+    function updateRubric() {
+      let score = 0;
+      for (let i = 1; i <= 6; i++) {
+        if (document.getElementById(`rb${i}`).checked) {
+          score += rubricWeights[i - 1];
+        }
+      }
+      const scoreEl = document.getElementById('rubricScore');
+      const fbEl = document.getElementById('rubricFeedback');
+      scoreEl.textContent = `${score.toFixed(1)} / 10`;
+
+      if (score >= 9.5) {
+        scoreEl.style.color = '#059669';
+        fbEl.innerHTML = '🌟 <strong>Eccellente!</strong> La relazione rispetta tutti i canoni del metodo scientifico: rigore metrologico, coerenza dimensionale SI e validazione formale.';
+      } else if (score >= 7.5) {
+        scoreEl.style.color = '#2563eb';
+        fbEl.innerHTML = '👍 <strong>Buon lavoro!</strong> Struttura solida. Verifica i punti non spuntati (spesso cifre significative o spiegazione fisica del passaggio per l\'origine).';
+      } else if (score >= 6.0) {
+        scoreEl.style.color = '#d97706';
+        fbEl.innerHTML = '⚠️ <strong>Sufficiente con riserva:</strong> Mancano elementi chiave di metrologia o il confronto teorico. Rivedi la formula di semidispersione!';
+      } else {
+        scoreEl.style.color = '#dc2626';
+        fbEl.innerHTML = '❌ <strong>Incompleto:</strong> Diversi calcoli o conversioni mancano. Segui le istruzioni delle slide precedenti prima di consegnare!';
+      }
+    }
+
+    // ==========================================
+    // ENGINE DISEGNO LIM INTEGRATO
+    // ==========================================
+    const canvas = document.getElementById('limCanvas');
+    const ctx = canvas.getContext('2d');
+    const toolbar = document.getElementById('limToolbar');
+    const dragHandle = document.getElementById('limDragHandle');
+
+    let isLimActive = false;
+    let isPassThrough = false;
+    let limDrawing = false;
+    let limTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+    let limColor = '#e11d48'; // Rosso correzione
+    let limDrawHistory = [];
+    let curStroke = null;
+
+    function resizeLimCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      redrawLimCanvas();
+    }
+    window.addEventListener('resize', () => {
+      resizeLimCanvas();
+      if (currentSlide === 2) drawSim();
+      if (currentSlide === 5) drawPlot();
+    });
+
+    function toggleLimDrawMode() {
+      isLimActive = !isLimActive;
+      const btn = document.getElementById('btnToggleLim');
+      if (isLimActive) {
+        btn.classList.add('active');
+        canvas.classList.add('active');
+        toolbar.classList.add('show');
+        resizeLimCanvas();
+      } else {
+        btn.classList.remove('active');
+        canvas.classList.remove('active');
+        toolbar.classList.remove('show');
+        limDrawing = false;
+        curStroke = null;
+      }
+    }
+
+    function togglePassThrough() {
+      isPassThrough = !isPassThrough;
+      const btn = document.getElementById('btnPassThrough');
+      if (isPassThrough) {
+        canvas.classList.add('pass-through');
+        btn.classList.add('active');
+      } else {
+        canvas.classList.remove('pass-through');
+        btn.classList.remove('active');
+      }
+    }
+
+    function setLimTool(tool) {
+      limTool = tool;
+      ['btnPen', 'btnHighlighter', 'btnEraser'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      if (tool === 'pen') document.getElementById('btnPen').classList.add('active');
+      if (tool === 'highlighter') document.getElementById('btnHighlighter').classList.add('active');
+      if (tool === 'eraser') document.getElementById('btnEraser').classList.add('active');
+    }
+
+    function setLimColor(color, el) {
+      limColor = color;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      if (limTool === 'eraser') setLimTool('pen');
+    }
+
+    function getCanvasPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    function drawSegment(p1, p2, stroke) {
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (stroke.tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = stroke.width || 36;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      } else if (stroke.tool === 'highlighter') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.width || 24;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1.0;
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.width || 4;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function redrawLimCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const stroke of limDrawHistory) {
+        if (!stroke.points || stroke.points.length === 0) continue;
+        if (stroke.points.length === 1) {
+          drawSegment(stroke.points[0], stroke.points[0], stroke);
+        } else {
+          for (let i = 1; i < stroke.points.length; i++) {
+            drawSegment(stroke.points[i - 1], stroke.points[i], stroke);
+          }
+        }
+      }
+    }
+
+    function undoLimDraw() {
+      if (limDrawHistory.length > 0) {
+        limDrawHistory.pop();
+        redrawLimCanvas();
+      }
+    }
+
+    function clearLimCanvas() {
+      limDrawHistory = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Pointer Events per Disegno Touch LIM
+    canvas.addEventListener('pointerdown', (e) => {
+      if (!isLimActive || isPassThrough) return;
+      e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      limDrawing = true;
+      const pt = getCanvasPos(e);
+      curStroke = {
+        tool: limTool,
+        color: limColor,
+        width: limTool === 'highlighter' ? 24 : (limTool === 'eraser' ? 36 : 4),
+        points: [pt]
+      };
+      drawSegment(pt, pt, curStroke);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!limDrawing || !curStroke || isPassThrough) return;
+      e.preventDefault();
+      const pt = getCanvasPos(e);
+      const lastPt = curStroke.points[curStroke.points.length - 1];
+      curStroke.points.push(pt);
+      drawSegment(lastPt, pt, curStroke);
+    });
+
+    function endStroke(e) {
+      if (!limDrawing) return;
+      limDrawing = false;
+      if (e && e.pointerId) {
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      if (curStroke && curStroke.points.length > 0) {
+        limDrawHistory.push(curStroke);
+      }
+      curStroke = null;
+    }
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+
+    // Barra Trascinabile LIM
+    let isDraggingToolbar = false;
+    let tbStartX = 0, tbStartY = 0, tbInitLeft = 0, tbInitTop = 0;
+
+    if (dragHandle) {
+      dragHandle.addEventListener('pointerdown', (e) => {
+        isDraggingToolbar = true;
+        try { dragHandle.setPointerCapture(e.pointerId); } catch (_) {}
+        const rect = toolbar.getBoundingClientRect();
+        toolbar.style.transform = 'none';
+        toolbar.style.left = rect.left + 'px';
+        toolbar.style.top = rect.top + 'px';
+        toolbar.style.bottom = 'auto';
+        tbStartX = e.clientX;
+        tbStartY = e.clientY;
+        tbInitLeft = rect.left;
+        tbInitTop = rect.top;
+        e.preventDefault();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDraggingToolbar) return;
+        const dx = e.clientX - tbStartX;
+        const dy = e.clientY - tbStartY;
+        const maxLeft = window.innerWidth - toolbar.offsetWidth - 10;
+        const maxTop = window.innerHeight - toolbar.offsetHeight - 10;
+        toolbar.style.left = Math.max(10, Math.min(maxLeft, tbInitLeft + dx)) + 'px';
+        toolbar.style.top = Math.max(10, Math.min(maxTop, tbInitTop + dy)) + 'px';
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (isDraggingToolbar) {
+          isDraggingToolbar = false;
+          if (e && e.pointerId) {
+            try { dragHandle.releasePointerCapture(e.pointerId); } catch (_) {}
+          }
+        }
+      });
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn(`Errore schermo intero: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // Inizializzazione
+    updateDeck();
+  </script>
+</body>
+</html>
