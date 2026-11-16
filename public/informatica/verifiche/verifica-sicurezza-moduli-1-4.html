@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifica di Informatica — Sicurezza Digitale (Moduli 1-4)</title>
+<style>
+  /* ═══════════════════════════════════════════════════════════════════
+     RESET & PRINT SETUP — SINGOLA FACCIATA A4 ESATTA (PAGINA UNICA)
+     ═══════════════════════════════════════════════════════════════════ */
+  @page {
+    size: A4 portrait;
+    margin: 4mm 7mm 4mm 7mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 8.1pt;
+    line-height: 1.25;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Toolbar a schermo (nascosta in stampa) */
+  .no-print-toolbar {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  .no-print-toolbar a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .version-tag {
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .version-switch-link {
+    color: #cbd5e1 !important;
+    font-size: 0.78rem !important;
+    text-decoration: underline !important;
+    font-weight: 500 !important;
+    transition: color 0.15s;
+  }
+  .version-switch-link:hover {
+    color: #38bdf8 !important;
+  }
+  .no-print-toolbar button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .no-print-toolbar button:hover {
+    background: #0369a1;
+  }
+
+  /* Contenitore foglio A4 - Singola Facciata */
+  .exam-page {
+    width: 210mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 10px auto;
+    background: #ffffff;
+    padding: 4.5mm 7mm 4mm 7mm;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body {
+      background: #ffffff !important;
+    }
+    .no-print-toolbar {
+      display: none !important;
+    }
+    .exam-page {
+      margin: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 288mm !important;
+      max-height: 289mm !important;
+      page-break-inside: avoid !important;
+      page-break-after: avoid !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HEADER: INTESTAZIONE ISTITUTO & DATI ALUNNO
+     ═══════════════════════════════════════════════════════════════════ */
+  .inst-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 3px;
+    margin-bottom: 3px;
+  }
+  .inst-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .inst-school {
+    font-size: 8.4pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.6px;
+  }
+  .inst-exam-name {
+    font-size: 11.6pt;
+    font-weight: 900;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 1px;
+  }
+  .inst-sub {
+    font-size: 7.6pt;
+    color: #334155;
+    font-weight: 600;
+  }
+  .inst-meta-box {
+    text-align: right;
+    font-size: 7.4pt;
+    color: #334155;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2.5px 7px;
+    line-height: 1.25;
+  }
+
+  /* Campi Nome, Cognome, Classe, Data */
+  .student-fields-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1.8fr 0.9fr 1fr;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1.2px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 3.5px 8px;
+    margin-top: 3.5px;
+    font-size: 8.0pt;
+  }
+  .field-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .field-label {
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .field-line {
+    flex-grow: 1;
+    border-bottom: 1px dotted #64748b;
+    height: 11px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     AVVISO MODALITÀ FOGLIO A PARTE + RISORSE UTILI
+     ═══════════════════════════════════════════════════════════════════ */
+  .exam-notice-box {
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+    border-radius: 0 4px 4px 0;
+    padding: 2.5px 7px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    font-size: 7.4pt;
+    color: #1e3a8a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .exam-notice-box strong {
+    color: #1d4ed8;
+  }
+
+  .resources-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 4px 4px 0;
+    padding: 3px 7px;
+    margin-bottom: 3.5px;
+    font-size: 7.2pt;
+  }
+  .resources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 800;
+    color: #92400e;
+    text-transform: uppercase;
+    font-size: 7.0pt;
+    margin-bottom: 2px;
+  }
+  .resources-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 5px;
+  }
+  .res-badge {
+    background: #ffffff;
+    border: 1px solid #fcd34d;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #78350f;
+    font-weight: 700;
+    font-size: 7.0pt;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SEZIONI: BANNER & STRUTTURA
+     ═══════════════════════════════════════════════════════════════════ */
+  .section-banner {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 2.5px 7px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 800;
+    font-size: 7.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+  }
+  .section-banner .badge {
+    background: #38bdf8;
+    color: #0f172a;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 6.9pt;
+    font-weight: 900;
+  }
+
+  .section-banner-b {
+    background: #064e3b;
+    color: #ffffff;
+    padding: 2.5px 7px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 800;
+    font-size: 7.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+    margin-bottom: 3px;
+  }
+  .section-banner-b .badge {
+    background: #34d399;
+    color: #064e3b;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 6.9pt;
+    font-weight: 900;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SEZIONE A: ESERCIZI APERTI (3 ESERCIZI: CAP 2, CAP 3, CAP 4)
+     ═══════════════════════════════════════════════════════════════════ */
+  .open-exercises-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5px;
+  }
+
+  .exercise-card {
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #0284c7;
+    background: #ffffff;
+    border-radius: 0 4px 4px 0;
+    padding: 3.5px 7px;
+  }
+  .exercise-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  .exercise-num-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 800;
+    font-size: 8.0pt;
+    color: #0f172a;
+  }
+  .chapter-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 800;
+    font-size: 6.8pt;
+    padding: 1px 4.5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+  .ex-num-badge {
+    background: #0f172a;
+    color: #ffffff;
+    width: 15px;
+    height: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 6.9pt;
+    font-weight: 900;
+  }
+  .ex-points {
+    font-weight: 800;
+    color: #0284c7;
+    font-size: 7.3pt;
+    background: #f0f9ff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #bae6fd;
+  }
+  .ex-intro {
+    font-size: 7.5pt;
+    color: #334155;
+    margin-bottom: 2.5px;
+    line-height: 1.25;
+  }
+
+  /* Box Email Terroristica Reale */
+  .mail-incident-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 3px solid #ef4444;
+    border-radius: 0 3px 3px 0;
+    padding: 3px 6px;
+    margin: 2px 0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 7.1pt;
+    line-height: 1.22;
+    color: #1e293b;
+  }
+  .mail-header-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 2px;
+  }
+  .mail-meta strong {
+    color: #0f172a;
+  }
+  .mail-sender-highlight {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0 3px;
+    border-radius: 2px;
+    font-weight: bold;
+  }
+  .mail-body-quote {
+    font-style: italic;
+    color: #334155;
+  }
+
+  .sub-question {
+    margin-top: 2px;
+    font-size: 7.5pt;
+    color: #0f172a;
+    line-height: 1.25;
+  }
+  .sub-question strong {
+    color: #0369a1;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SEZIONE B: CROCETTE (5 QUESITI COMPATTI)
+     ═══════════════════════════════════════════════════════════════════ */
+  .mc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 6px;
+  }
+  .mc-grid .mc-item-full {
+    grid-column: span 2;
+  }
+
+  .mc-item {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 2.5px 6px;
+    font-size: 7.3pt;
+    line-height: 1.20;
+  }
+  .mc-item:hover {
+    background: #f1f5f9;
+  }
+  .mc-q-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2px;
+    display: flex;
+    gap: 3px;
+    align-items: flex-start;
+    font-size: 7.4pt;
+  }
+  .mc-q-num {
+    background: #064e3b;
+    color: #ffffff;
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    font-size: 6.8pt;
+    font-weight: 900;
+  }
+  .mc-chapter-tag {
+    background: #dcfce7;
+    color: #166534;
+    font-weight: 800;
+    font-size: 6.5pt;
+    padding: 0 3px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .mc-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+  }
+  .mc-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .mc-bubble {
+    width: 9.5px;
+    height: 9.5px;
+    min-width: 9.5px;
+    border: 1.1px solid #475569;
+    border-radius: 50%;
+    margin-top: 1.5px;
+    display: inline-block;
+  }
+  .mc-opt-key {
+    font-weight: 800;
+    color: #0f172a;
+    margin-right: 2px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     FOOTER: TABELLA VOTO E FIRMA
+     ═══════════════════════════════════════════════════════════════════ */
+  .footer-rubric-wrap {
+    margin-top: 3.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1.5px solid #0f172a;
+    padding-top: 2.5px;
+  }
+  .rubric-table {
+    border-collapse: collapse;
+    font-size: 7.2pt;
+  }
+  .rubric-table th, .rubric-table td {
+    border: 1px solid #94a3b8;
+    padding: 1.5px 7px;
+    text-align: center;
+  }
+  .rubric-table th {
+    background: #f1f5f9;
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 6.9pt;
+    text-transform: uppercase;
+  }
+  .rubric-table td {
+    font-weight: 700;
+    color: #334155;
+    background: #ffffff;
+  }
+  .final-score-col {
+    background: #fef08a !important;
+    font-weight: 900 !important;
+    color: #854d0e !important;
+  }
+  .signature-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 7.6pt;
+    font-weight: 700;
+    color: #334155;
+  }
+  .sig-line {
+    width: 48mm;
+    border-bottom: 1px dotted #475569;
+    height: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR A SCHERMO (NON VISIBILE IN STAMPA) -->
+<div class="no-print-toolbar">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span style="font-weight: 800; color: #38bdf8;">IIS ARCHIMEDE · VERIFICA DI SICUREZZA DIGITALE</span>
+    <span class="version-tag">Versione Moduli 1-4</span>
+    <span style="color: #94a3b8; font-size: 0.82rem;">(Senza Capitolo 5 · Singola Facciata A4)</span>
+  </div>
+  <div style="display: flex; gap: 14px; align-items: center;">
+    <a href="/informatica/verifiche/verifica-sicurezza-moduli-1-5.html" class="version-switch-link">➔ Apri Versione Moduli 1-5</a>
+    <a href="/informatica/verifiche/Verifica_Sicurezza_Informatica_Moduli_1-4.pdf" target="_blank" download style="color: #38bdf8; font-weight: 700;">Scarica PDF</a>
+    <button onclick="window.print()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Stampa Scheda A4
+    </button>
+  </div>
+</div>
+
+<!-- PAGINA UNICA (SINGOLA FACCIATA A4) -->
+<div class="exam-page">
+
+  <!-- INTESTAZIONE SCUOLA E DATI ALUNNO -->
+  <div>
+    <header class="inst-header">
+      <div class="inst-title-row">
+        <div>
+          <div class="inst-school">Istituto d'Istruzione Superiore "Archimede"</div>
+          <h1 class="inst-exam-name">Verifica Scritta: Sicurezza Digitale &amp; Cyber Defense</h1>
+          <div class="inst-sub">Prova teorica e casi studio operativi sui Moduli 1, 2, 3 e 4 — Classe Seconda Superiore</div>
+        </div>
+        <div class="inst-meta-box">
+          <div><strong>Anno Scolastico:</strong> 2026/2027</div>
+          <div><strong>Tempo Assegnato:</strong> 2 ore</div>
+          <div><strong>Punteggio Max:</strong> 10 / 10</div>
+        </div>
+      </div>
+
+      <div class="student-fields-grid">
+        <div class="field-item">
+          <span class="field-label">Cognome:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-item">
+          <span class="field-label">Nome:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-item">
+          <span class="field-label">Classe:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-item">
+          <span class="field-label">Data:</span>
+          <div class="field-line"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- AVVISO MODALITÀ FOGLIO A PARTE -->
+    <div class="exam-notice-box">
+      <div>✍️ <strong>Istruzioni di svolgimento:</strong> Le risposte della <strong>Sezione A</strong> vanno argomentate sul <strong>foglio a parte</strong> (foglio protocollo). Le crocette della <strong>Sezione B</strong> si anneriscono direttamente su questo foglio.</div>
+      <div><strong>Livello Base (2ª Sup.)</strong></div>
+    </div>
+
+    <!-- RISORSE UTILI (PAROLE CHIAVE GUIDA - MODULI 1-4) -->
+    <div class="resources-box">
+      <div class="resources-header">
+        <span>💡 Risorse Utili (Parole Chiave Tecniche Guida — Moduli 1, 2, 3 e 4)</span>
+        <span style="font-weight: 600; text-transform: none; color: #b45309;">Orientano il ragionamento formale</span>
+      </div>
+      <div class="resources-tags">
+        <span class="res-badge">Autenticazione a Due Fattori (2FA)</span>
+        <span class="res-badge">Password Robusta &amp; Password Manager</span>
+        <span class="res-badge">Phishing &amp; Ingegneria Sociale</span>
+        <span class="res-badge">Email Spoofing &amp; Mittente Falso</span>
+        <span class="res-badge">Dispositivi Smart &amp; Rete IoT</span>
+        <span class="res-badge">Permessi Applicazioni &amp; Spyware</span>
+        <span class="res-badge">Rete Wi-Fi Aperta &amp; Evil Twin</span>
+        <span class="res-badge">Cifratura Dati &amp; Protocollo HTTPS</span>
+      </div>
+    </div>
+
+    <!-- SEZIONE A: DOMANDE APERTE E CASI STUDIO REALI (70% - 7 PUNTI: 3 ESERCIZI) -->
+    <div class="section-banner">
+      <span>SEZIONE A — Domande Aperte e Analisi di Casi Studio Reali</span>
+      <span class="badge">70% del Voto (7,0 Punti) · Svolgimento sul foglio a parte</span>
+    </div>
+
+    <div class="open-exercises-grid">
+
+      <!-- ESERCIZIO 1: CAPITOLO 2 (3,0 PUNTI) -->
+      <div class="exercise-card">
+        <div class="exercise-head">
+          <div class="exercise-num-title">
+            <span class="ex-num-badge">1</span>
+            <span class="chapter-tag">[CAP. 2]</span>
+            <span>Analisi di un Caso Reale: Email di Minaccia e Allarme</span>
+          </div>
+          <span class="ex-points">Punti: 3,0 / 7,0</span>
+        </div>
+        <p class="ex-intro">
+          Tre giorni fa diverse istituzioni e scuole italiane hanno ricevuto nella propria casella di posta istituzionale l'email riportata nel riquadro sottostante:
+        </p>
+        <div class="mail-incident-box">
+          <div class="mail-header-row">
+            <div class="mail-meta"><strong>Da:</strong> <span class="mail-sender-highlight">numero_matricola_studentessa_universitaria@cloud.dyu.edu.tw</span></div>
+            <div class="mail-meta"><strong>Oggetto:</strong> Avviso di pericolo</div>
+            <div class="mail-meta"><strong>Data ricezione:</strong> 11/11/2026 10:00:55</div>
+          </div>
+          <div class="mail-body-quote">
+            «Questo è Mikhail Andropov, leader del Vilayat di Misoginistan. Siamo venuti per annientarvi. Metteremo in atto un genocidio contro gli italiani. Mi sono preparato a lungo per questo: ho appena lasciato nel vostro edificio, all'interno di un sacchetto di plastica, un potente ordigno esplosivo con innesco a distanza... Di voi rimarrà solo poltiglia. Inoltre abbiamo piazzato una bomba nell'auto del vostro primo ministro...»
+          </div>
+        </div>
+        <div class="sub-question">
+          <strong>a) [1,0 pt]</strong> La persona che ha inviato questo messaggio è davvero la studentessa universitaria proprietaria dell'indirizzo email oppure no? Perché? Come si chiama la tecnica informatica utilizzata per falsificare il mittente?
+        </div>
+        <div class="sub-question">
+          <strong>b) [1,0 pt]</strong> Qual è il vero scopo di questo messaggio e che tipo di reazione emotiva e comportamentale cerca di scatenare nelle persone che lo leggono attraverso l'ingegneria sociale?
+        </div>
+        <div class="sub-question">
+          <strong>c) [1,0 pt]</strong> Se ti fossi trovato tu a gestire questa situazione a scuola o al lavoro, quali sono le procedure corrette che avresti dovuto attuare in questo contesto operativo?
+        </div>
+      </div>
+
+      <!-- ESERCIZIO 2: CAPITOLO 3 (2,0 PUNTI) -->
+      <div class="exercise-card">
+        <div class="exercise-head">
+          <div class="exercise-num-title">
+            <span class="ex-num-badge">2</span>
+            <span class="chapter-tag">[CAP. 3]</span>
+            <span>Il Caso dei Frigoriferi Connessi Violati (Dispositivi IoT)</span>
+          </div>
+          <span class="ex-points">Punti: 2,0 / 7,0</span>
+        </div>
+        <p class="ex-intro">
+          In una recente indagine di sicurezza, decine di migliaia di frigoriferi intelligenti, termostati e telecamere domestiche connesse a Internet sono stati violati da remoto e utilizzati dai criminali per sferrare attacchi informatici massivi (Botnet). Si è scoperto che i dispositivi <em>mantenevano le impostazioni e le password di fabbrica predefinite</em> e non erano configurati in sicurezza.
+        </p>
+        <div class="sub-question">
+          <strong>a) [1,0 pt]</strong> Quale grave errore è stato commesso nella configurazione di questi elettrodomestici intelligenti? Perché lasciare le credenziali di fabbrica (es. admin/admin) rende i dispositivi un bersaglio elementare per gli scanner automatizzati dei criminali?
+        </div>
+        <div class="sub-question">
+          <strong>b) [1,0 pt]</strong> Perché un dispositivo smart apparentemente innocuo (come un frigorifero o una lampadina Wi-Fi), se violato, può diventare una pericolosa "porta d'accesso" per attaccare tutti gli altri computer e smartphone collegati alla stessa rete locale?
+        </div>
+      </div>
+
+      <!-- ESERCIZIO 3: CAPITOLO 4 (2,0 PUNTI) -->
+      <div class="exercise-card">
+        <div class="exercise-head">
+          <div class="exercise-num-title">
+            <span class="ex-num-badge">3</span>
+            <span class="chapter-tag">[CAP. 4]</span>
+            <span>La Rete Wi-Fi Trappola della Stazione (Evil Twin)</span>
+          </div>
+          <span class="ex-points">Punti: 2,0 / 7,0</span>
+        </div>
+        <p class="ex-intro">
+          Mentre ti trovi in una stazione ferroviaria o in un aeroporto, noti tra le reti disponibili un Access Point Wi-Fi aperto (senza alcuna chiave di protezione) denominato <code>"Wi-Fi_Stazione_Free"</code>, identico per nome a quello ufficiale delle Ferrovie.
+        </p>
+        <div class="sub-question">
+          <strong>a) [1,0 pt]</strong> Descrivi quale tipo di attacco o trappola informatica potrebbe nascondersi dietro questo collegamento gratuito (es. rete civetta / Evil Twin / Man-in-the-Middle) e spiega come agisce l'attaccante.
+        </div>
+        <div class="sub-question">
+          <strong>b) [1,0 pt]</strong> Perché una persona malintenzionata crea una rete aperta con un nome credibile? Quali dati e comunicazioni personali rischia di farsi intercettare un utente che vi si connette senza usare una VPN o connessioni cifrate?
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEZIONE B: RISPOSTA MULTIPLA (30% - 3 PUNTI: 5 QUESITI X 0,6 PT) -->
+    <div class="section-banner-b">
+      <span>SEZIONE B — Quesiti a Risposta Multipla (Moduli 1, 2, 3 e 4)</span>
+      <span class="badge">30% del Voto (5 quesiti · 0,6 pt cad. = 3,0 Punti)</span>
+    </div>
+
+    <div class="mc-grid">
+
+      <!-- QUESITO 1: CAPITOLO 1 -->
+      <div class="mc-item">
+        <div class="mc-q-title">
+          <span class="mc-q-num">1</span>
+          <span class="mc-chapter-tag">[CAP. 1]</span>
+          <span>Quale tra le seguenti opzioni rappresenta un tipico e corretto esempio reale di Autenticazione a Due Fattori (2FA)?</span>
+        </div>
+        <div class="mc-options">
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[A]</span> Inserire la password dell'account e poi confermare con un codice temporaneo inviato sul cellulare (o app)</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[B]</span> Usare la stessa password per tutti gli account social e per la casella di posta</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[C]</span> Scrivere la password su un foglietto adesivo attaccato vicino allo schermo</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[D]</span> Cambiare la propria password una volta ogni dieci anni</span></div>
+        </div>
+      </div>
+
+      <!-- QUESITO 2: CAPITOLO 2 -->
+      <div class="mc-item">
+        <div class="mc-q-title">
+          <span class="mc-q-num">2</span>
+          <span class="mc-chapter-tag">[CAP. 2]</span>
+          <span>Inquadri un QR-code adesivo trovato in pubblico e vieni indirizzato a un sito che chiede subito la tua carta o password. Questo sito è sicuro?</span>
+        </div>
+        <div class="mc-options">
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[A]</span> No, è chiaramente un sito malevolo/trappola (Quishing) per rubare dati e non bisogna inserire alcuna informazione</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[B]</span> Sì, è sicuro al 100% perché i codici QR non possono mai essere falsificati o contraffatti</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[C]</span> Sì, purché la grafica e i loghi della pagina web assomiglino a quelli ufficiali</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[D]</span> È sicuro solo se lo smartphone non emette un segnale sonoro di allarme</span></div>
+        </div>
+      </div>
+
+      <!-- QUESITO 3: CAPITOLO 3 -->
+      <div class="mc-item">
+        <div class="mc-q-title">
+          <span class="mc-q-num">3</span>
+          <span class="mc-chapter-tag">[CAP. 3]</span>
+          <span>Un'app per smartphone per fare la semplice "Calcolatrice" richiede l'accesso a Microfono, Contatti e Posizione GPS. Come va giudicata?</span>
+        </div>
+        <div class="mc-options">
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[A]</span> Grave abuso di permessi (possibile spyware che viola la privacy): i permessi non vanno concessi</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[B]</span> Richiesta normale e indispensabile per poter svolgere i calcoli matematici</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[C]</span> Dimostra che l'applicazione è certificata e più sicura delle altre calcolatrici</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[D]</span> Non comporta alcun rischio per i dati se il telefono cellulare ha già un codice PIN</span></div>
+        </div>
+      </div>
+
+      <!-- QUESITO 4: CAPITOLO 4 -->
+      <div class="mc-item">
+        <div class="mc-q-title">
+          <span class="mc-q-num">4</span>
+          <span class="mc-chapter-tag">[CAP. 4]</span>
+          <span>Cosa garantisce la presenza del simbolo del lucchetto e del prefisso "https://" nella barra degli indirizzi di un sito web?</span>
+        </div>
+        <div class="mc-options">
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[A]</span> Che la connessione tra il tuo computer e il sito è cifrata e protetta da intercettazioni lungo la rete</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[B]</span> Che chi gestisce il sito web è una persona onesta e non cercherà mai di truffare nessuno</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[C]</span> Che qualsiasi file scaricato da quella pagina web è garantito come privo di virus</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[D]</span> Che il computer non ha più alcun bisogno di avere antivirus o firewall installati</span></div>
+        </div>
+      </div>
+
+      <!-- QUESITO 5: CAPITOLO 1 (GESTIONE PASSWORD E CREDENZIALI) -->
+      <div class="mc-item mc-item-full">
+        <div class="mc-q-title">
+          <span class="mc-q-num">5</span>
+          <span class="mc-chapter-tag">[CAP. 1]</span>
+          <span>Quale tra le seguenti opzioni descrive la pratica più sicura ed efficace per gestire le proprie credenziali di accesso online?</span>
+        </div>
+        <div class="mc-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px;">
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[A]</span> Utilizzare un Password Manager per creare e memorizzare password lunghe, uniche e casuali per ogni account</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[B]</span> Usare la stessa password complessa per tutti i servizi così da non dimenticarla mai</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[C]</span> Salvare le password in un file di testo non protetto chiamato "password.txt" sul desktop</span></div>
+          <div class="mc-option"><span class="mc-bubble"></span><span><span class="mc-opt-key">[D]</span> Condividere le proprie credenziali via chat con amici fidati per avere sempre un backup</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- GRIGLIA DI VALUTAZIONE E FIRMA DOCENTE -->
+  <footer class="footer-rubric-wrap">
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Sezione A (Aperte sul foglio)</th>
+          <th>Sezione B (Crocette su scheda)</th>
+          <th>Crediti Bonus (+)</th>
+          <th class="final-score-col">VOTO FINALE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>_____ / 7,0 punti</td>
+          <td>_____ / 3,0 punti</td>
+          <td>+ _____ punti</td>
+          <td class="final-score-col">_______ / 10</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="signature-box">
+      <span>Firma del Docente:</span>
+      <div class="sig-line"></div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
