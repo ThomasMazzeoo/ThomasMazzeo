@@ -564,14 +564,78 @@
     .book-fig-img {
       max-width: 100%;
       height: auto;
-      max-height: 220px;
+      max-height: 240px;
       display: block;
       background: #ffffff;
       border-radius: 4px;
       border: 1px solid var(--border);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       object-fit: contain;
+      cursor: zoom-in;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .book-fig-img:hover {
+      transform: scale(1.015);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    /* Lightbox Modal */
+    .lab-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lab-lightbox.open { display: flex; animation: fadeIn 0.15s ease-out; }
+    .lab-lightbox-content {
+      max-width: 94vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: default;
+    }
+    .lab-lightbox-img {
+      max-width: 92vw;
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      background: #0f172a;
+    }
+    .lab-lightbox-caption {
+      color: #f8fafc;
+      font-size: 0.95rem;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .lab-lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lab-lightbox-close:hover { background: rgba(239, 68, 68, 0.8); }
     .book-fig-caption {
       padding: 7px 12px;
       font-size: 0.76rem;
@@ -1677,6 +1741,53 @@
           if (studClass) studClass.value = '2G AFM';
         }
       }
+    })();
+  </script>
+
+  <!-- Lightbox Modal Container -->
+  <div class="lab-lightbox" id="labLightbox" aria-modal="true" role="dialog">
+    <button class="lab-lightbox-close" id="labLightboxClose" aria-label="Chiudi anteprima">&times;</button>
+    <div class="lab-lightbox-content">
+      <img class="lab-lightbox-img" id="labLightboxImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Anteprima ingrandita">
+      <div class="lab-lightbox-caption" id="labLightboxCap"></div>
+    </div>
+  </div>
+
+  <script>
+    // Inizializzazione Lightbox per tutte le immagini del laboratorio
+    (function initLightbox() {
+      const lb = document.getElementById('labLightbox');
+      const lbImg = document.getElementById('labLightboxImg');
+      const lbCap = document.getElementById('labLightboxCap');
+      const closeBtn = document.getElementById('labLightboxClose');
+
+      document.querySelectorAll('.book-fig-img').forEach(img => {
+        img.addEventListener('click', () => {
+          if (!lb || !lbImg) return;
+          lbImg.src = img.src;
+          lbImg.alt = img.alt;
+          const figBox = img.closest('.book-fig-box');
+          const cap = figBox ? figBox.querySelector('.book-fig-caption') : null;
+          if (lbCap) lbCap.innerHTML = cap ? cap.innerHTML : img.alt;
+          lb.classList.add('open');
+        });
+      });
+
+      function closeLightbox() {
+        if (lb) lb.classList.remove('open');
+      }
+
+      if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+      if (lb) {
+        lb.addEventListener('click', (e) => {
+          if (e.target === lb || e.target === closeBtn) closeLightbox();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb && lb.classList.contains('open')) {
+          closeLightbox();
+        }
+      });
     })();
   </script>
 </body>

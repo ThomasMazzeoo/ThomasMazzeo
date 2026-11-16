@@ -448,12 +448,76 @@
     .book-fig-img {
       max-width: 100%;
       height: auto;
-      max-height: 240px;
+      max-height: 280px;
       object-fit: contain;
       border-radius: 4px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       display: block;
+      cursor: zoom-in;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .book-fig-img:hover {
+      transform: scale(1.015);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    /* Lightbox Modal */
+    .lab-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lab-lightbox.open { display: flex; animation: fadeIn 0.15s ease-out; }
+    .lab-lightbox-content {
+      max-width: 94vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: default;
+    }
+    .lab-lightbox-img {
+      max-width: 92vw;
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      background: #0f172a;
+    }
+    .lab-lightbox-caption {
+      color: #f8fafc;
+      font-size: 0.95rem;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .lab-lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lab-lightbox-close:hover { background: rgba(239, 68, 68, 0.8); }
     .book-fig-caption {
       padding: 8px 10px;
       font-size: 0.78rem;
@@ -862,14 +926,14 @@
         <div class="visual-column">
           <div class="book-fig-box">
             <div class="book-fig-header">
-              <span>📐 LAYOUT CONSIGLIATO &bull; PAGINA CHI SIAMO</span>
-              <span>STRUTTURA A 3 COLONNE</span>
+              <span>📸 SCHERMATA REALE SITES &bull; PAGINA CHI SIAMO</span>
+              <span>3 COLONNE FOTO &amp; STORYTELLING ESG</span>
             </div>
             <div class="book-fig-body">
-              <img src="img/lab2_step1_chisiamo_layout.png" alt="Layout a 3 colonne della pagina Chi Siamo con storia, mission e certificazione ISO 14001" class="book-fig-img">
+              <img src="img/lab2_step1_chisiamo_real.png" alt="Schermata reale Google Sites con layout a 3 colonne compilato per la pagina Chi Siamo" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
             </div>
             <div class="book-fig-caption">
-              <strong>Struttura Chi Siamo:</strong> Titolo introduttivo chiaro e 3 colonne simmetriche con icone/foto quadrate e brevi testi informativi.
+              <strong>Risultato Chi Siamo:</strong> Titolo introduttivo con le 3 colonne complete di immagini quadrate e testi aziendali: <em>20 Anni di storia</em>, <em>Mission &amp; Vision ESG</em> e <em>Certificazione ISO 14001</em> (clicca sull'immagine per ingrandire).
             </div>
           </div>
         </div>
@@ -936,12 +1000,13 @@
           <div class="inst-item">
             <div class="inst-num">4</div>
             <div>
-              <strong>Inserisci i 3 Pulsanti di Conversione:</strong> nella scheda <em>Inserisci</em> scorri fino allo strumento <strong>Pulsante</strong>. Crea 3 pulsanti distinti:
-              <ul style="margin:4px 0 4px 18px; font-size:0.85rem;">
-                <li>Nome: <code>Richiedi Preventivo</code></li>
-                <li>Link: seleziona dalla tendina la pagina <strong>Contatti &amp; Sede</strong></li>
+              <strong>Inserisci i 3 Pulsanti di Conversione (Richiedi Preventivo):</strong> nella scheda <em>Inserisci</em> scorri fino allo strumento <strong>Pulsante</strong>. Nella finestra popup (vedi foto a lato):
+              <ul style="margin:4px 0 6px 18px; font-size:0.88rem; line-height:1.5;">
+                <li><strong>Nome:</strong> digita <code>Richiedi Preventivo</code></li>
+                <li><strong>Link:</strong> clicca sul campo per aprire la tendina e seleziona <strong>Contatti &amp; Sede</strong></li>
+                <li>Premi il pulsante blu <strong>Inserisci</strong></li>
               </ul>
-              Trascina ciascun pulsante verde sotto la rispettiva colonna prodotto sulla griglia!
+              Trascina il primo pulsante verde sotto la prima colonna prodotto. Duplicalo con l'icona copia (o creane altri due identici) e allineali sotto la seconda e terza colonna!
             </div>
           </div>
 
@@ -969,14 +1034,27 @@
         <div class="visual-column">
           <div class="book-fig-box">
             <div class="book-fig-header">
-              <span>📐 LAYOUT CONSIGLIATO &bull; CATALOGO PRODOTTI</span>
-              <span>3 SCHEDE CON PULSANTI CTA</span>
+              <span>🎯 POPUP REALE &bull; INSERISCI PULSANTE</span>
+              <span>COLLEGAMENTO A CONTATTI &amp; SEDE</span>
             </div>
             <div class="book-fig-body">
-              <img src="img/lab2_step2_catalogo_layout.png" alt="Layout catalogo prodotti con 3 colonne e pulsanti verdi Richiedi Preventivo" class="book-fig-img">
+              <img src="img/lab2_step2_popup_pulsante_real.png" alt="Finestra popup Inserisci pulsante con nome Richiedi Preventivo e selezione pagina Contatti e Sede" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
             </div>
             <div class="book-fig-caption">
-              <strong>Struttura Catalogo B2B:</strong> Ogni scheda prodotto ha foto descrittiva, titolo in evidenza, spiegazione dei benefici logistici e pulsante d'azione verso la pagina preventivi.
+              <strong>Popup Inserisci Pulsante:</strong> Nel campo <em>Nome</em> digita <code>Richiedi Preventivo</code>, quindi nel menu a tendina <em>Link</em> seleziona la pagina interna <strong>Contatti &amp; Sede</strong> e premi <strong>Inserisci</strong> (clicca sull'immagine per ingrandire).
+            </div>
+          </div>
+
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📐 SCHERMATA REALE SITES &bull; PRODOTTI B2B</span>
+              <span>3 SCHEDE CON PULSANTI CTA ALLINEATI</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step2_catalogo_3col_real.png" alt="Schermata reale catalogo prodotti con i 3 pulsanti verdi Richiedi Preventivo allineati sotto le schede" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
+            </div>
+            <div class="book-fig-caption">
+              <strong>Allineamento Pulsanti CTA:</strong> Trascina ciascun pulsante verde sotto la rispettiva colonna prodotto, così ogni buyer ha l'azione immediata sotto gli occhi (clicca sull'immagine per ingrandire).
             </div>
           </div>
         </div>
@@ -1130,17 +1208,15 @@
                   📋 Metodo C &bull; Vero Google Moduli (Perché "Moduli" dice "La cartella è vuota"?):
                 </div>
                 <div style="font-size:0.88rem; line-height:1.55; color:#78350f;">
-                  In Google Sites il pulsante <em>Moduli</em> cerca esclusivamente file di Google Forms <strong>già creati in precedenza nel tuo Google Drive</strong>. Se non ne hai ancora creato uno, la cartella risulta vuota.<br>
-                  <strong>Per incorporare un vero modulo Google Moduli:</strong>
+                  In Google Sites il pulsante <em>Moduli</em> nel pannello laterale cerca esclusivamente file di Google Forms <strong>già salvati nel tuo Google Drive</strong>. Se non ne hai ancora creato uno, la cartella risulta vuota:
+                  <div style="margin:8px 0; border:1px solid #fcd34d; border-radius:6px; overflow:hidden; background:#fff; max-width:460px;">
+                    <img src="img/lab2_step3_moduli_empty_tip.png" alt="Schermata del cassetto Moduli in Google Sites con avviso La cartella è vuota e casella Cerca in Drive o incolla l'URL" style="width:100%; height:auto; display:block;">
+                  </div>
+                  <strong>Come procedere in 3 mosse senza alcun blocco:</strong>
                   <ol style="margin:6px 0 4px 18px; line-height:1.55;">
-                    <li>Apri una nuova scheda su <strong>forms.google.com</strong> (oppure su Google Drive fai <em>Nuovo ➔ Moduli Google</em>).</li>
-                    <li>Crea un modulo intitolato <em>"Richiesta Preventivo EcoPack S.p.A."</em> e inserisci le 4 domande indicate sopra.</li>
-                    <li>Torna sulla scheda di Google Sites:
-                      <ul style="margin:2px 0 2px 14px;">
-                        <li>Puoi cliccare su <strong>Moduli</strong> a destra e selezionarlo dall'elenco;</li>
-                        <li>Oppure cliccare su <strong>&lt;&gt; Incorpora ➔ Tramite URL</strong> e incollare semplicemente il link di condivisione del form!</li>
-                      </ul>
-                    </li>
+                    <li>Apri una nuova scheda e vai su <strong>forms.new</strong> per creare il modulo con le 4 domande della tabella.</li>
+                    <li>In alto a destra clicca su <strong>Invia</strong> &gt; icona del <strong>Link 🔗</strong> &gt; <strong>Copia</strong> (vedi foto a lato).</li>
+                    <li>Torna su Google Sites: usa <strong>Incorpora &gt; Tramite URL</strong> (oppure incolla il link nella casella <em>"Cerca in Drive o incolla l'URL"</em> del pannello Moduli). Il modulo viene agganciato istantaneamente!</li>
                   </ol>
                 </div>
               </div>
@@ -1151,7 +1227,7 @@
             <div class="inst-num">4</div>
             <div>
               <strong>Dati Societari Obbligatori per Legge (art. 2250 Codice Civile):</strong>
-              in fondo alla pagina (o nel piè di pagina), inserisci una casella di testo con i dati societari formali (testo normale, non monospace):
+              in fondo alla pagina (sotto le due colonne Mappa-Modulo), inserisci una casella di testo a tutta larghezza con i dati societari formali:
               <div class="text-sample-card" style="margin-top:6px;">
                 <span class="sample-body" style="font-weight:500; font-size:0.90rem;">EcoPack S.p.A. &bull; Sede Legale: Via dell'Industria 45, 20100 Milano (MI) &bull; P.IVA: 01234567890 &bull; REA: MI-987654 &bull; Cap. Soc. € 500.000 i.v. &bull; PEC: ecopack@pec.it</span>
               </div>
@@ -1182,14 +1258,66 @@
         <div class="visual-column">
           <div class="book-fig-box">
             <div class="book-fig-header">
-              <span>📐 STRUTTURA CONTATTI &bull; MAPPA &amp; MODULO</span>
-              <span>CONVERSIONE &amp; GEOLOCALIZZAZIONE</span>
+              <span>📍 1. INSERISCI MAPPA &bull; GOOGLE MAPS</span>
+              <span>SELEZIONE POSIZIONE SEDE</span>
             </div>
             <div class="book-fig-body">
-              <img src="img/lab2_step3_contatti_layout.png" alt="Layout pagina contatti con modulo preventivo a sinistra e Google Maps a destra" class="book-fig-img">
+              <img src="img/lab2_step3_mappa_dialog_real.png" alt="Finestra popup Seleziona una posizione di Google Maps in Google Sites" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
             </div>
             <div class="book-fig-caption">
-              <strong>Struttura Contatti Efficace:</strong> Il form di contatto per catturare richieste a sinistra, la mappa Google Maps navigabile a destra e i dati legali in calce.
+              <strong>1. Inserisci Mappa:</strong> Dal menu Inserisci clicca su <em>Mappe</em>, cerca la sede aziendale (es. <em>Milano, Hub Logistico</em>) e premi il pulsante blu <strong>Seleziona</strong> in basso a destra (clicca sull'immagine per ingrandire).
+            </div>
+          </div>
+
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📝 2. GOOGLE MODULI &bull; FORMS.NEW</span>
+              <span>4 CAMPI LEAD GENERATION &amp; LINK</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step3_form_builder_real.png" alt="Schermata Google Moduli con le domande create e la finestra Copia link di compilazione" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
+            </div>
+            <div class="book-fig-caption">
+              <strong>2. Creazione &amp; Copia Link:</strong> Su Google Moduli crea i 4 campi standard, poi premi il pulsante <em>Invia</em> in alto a destra, seleziona l'icona del Link 🔗 e clicca <strong>Copia</strong> (clicca sull'immagine per ingrandire).
+            </div>
+          </div>
+
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>🔗 3. GOOGLE SITES &bull; INCORPORA TRAMITE URL</span>
+              <span>ANTEPRIMA MODULO &amp; INSERISCI</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step3_embed_url_real.png" alt="Finestra Incorpora dal Web tramite URL con anteprima modulo e pulsante Inserisci" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
+            </div>
+            <div class="book-fig-caption">
+              <strong>3. Incorpora nel Sito:</strong> In Google Sites clicca su <em>Incorpora &gt; Tramite URL</em>, incolla il link copiato da Moduli, attendi il riquadro di anteprima e premi <strong>Inserisci</strong> (clicca sull'immagine per ingrandire).
+            </div>
+          </div>
+
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📐 4. LAYOUT 2 COLONNE &bull; CONTATTI &amp; SEDE</span>
+              <span>MODULO A SINISTRA &bull; MAPPA A DESTRA</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step3_contatti_2col_real.png" alt="Schermata reale Google Sites con layout a due colonne affiancate modulo di preventivo e mappa" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
+            </div>
+            <div class="book-fig-caption">
+              <strong>4. Layout a 2 Colonne:</strong> Trascina il modulo a sinistra e la mappa a destra sulla stessa riga fino alla linea guida blu verticale per un layout bilanciato al 50% (clicca sull'immagine per ingrandire).
+            </div>
+          </div>
+
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>🏢 5. CALCE PAGINA &bull; DATI SOCIETARI</span>
+              <span>TRASPARENZA LEGALE ART. 2250 C.C.</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step3_contatti_legal_real.png" alt="Schermata reale con pulsante Invia del modulo e dati societari completi in calce" class="book-fig-img" title="Clicca per ingrandire lo screenshot">
+            </div>
+            <div class="book-fig-caption">
+              <strong>5. Dati Societari Legali:</strong> Subito sotto le due colonne inserisci una casella di testo a tutta larghezza con Ragione sociale, P.IVA, REA, Capitale sociale e PEC (clicca sull'immagine per ingrandire).
             </div>
           </div>
         </div>
@@ -1469,6 +1597,53 @@
           if (theoryLink) theoryLink.href = '/informatica/web/lezione-2-google-sites-marketing.html?classe=2g';
         }
       }
+    })();
+  </script>
+
+  <!-- Lightbox Modal Container -->
+  <div class="lab-lightbox" id="labLightbox" aria-modal="true" role="dialog">
+    <button class="lab-lightbox-close" id="labLightboxClose" aria-label="Chiudi anteprima">&times;</button>
+    <div class="lab-lightbox-content">
+      <img class="lab-lightbox-img" id="labLightboxImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Anteprima ingrandita">
+      <div class="lab-lightbox-caption" id="labLightboxCap"></div>
+    </div>
+  </div>
+
+  <script>
+    // Inizializzazione Lightbox per tutte le immagini del laboratorio
+    (function initLightbox() {
+      const lb = document.getElementById('labLightbox');
+      const lbImg = document.getElementById('labLightboxImg');
+      const lbCap = document.getElementById('labLightboxCap');
+      const closeBtn = document.getElementById('labLightboxClose');
+
+      document.querySelectorAll('.book-fig-img').forEach(img => {
+        img.addEventListener('click', () => {
+          if (!lb || !lbImg) return;
+          lbImg.src = img.src;
+          lbImg.alt = img.alt;
+          const figBox = img.closest('.book-fig-box');
+          const cap = figBox ? figBox.querySelector('.book-fig-caption') : null;
+          if (lbCap) lbCap.innerHTML = cap ? cap.innerHTML : img.alt;
+          lb.classList.add('open');
+        });
+      });
+
+      function closeLightbox() {
+        if (lb) lb.classList.remove('open');
+      }
+
+      if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+      if (lb) {
+        lb.addEventListener('click', (e) => {
+          if (e.target === lb || e.target === closeBtn) closeLightbox();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb && lb.classList.contains('open')) {
+          closeLightbox();
+        }
+      });
     })();
   </script>
 </body>
