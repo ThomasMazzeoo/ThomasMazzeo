@@ -308,6 +308,16 @@ const MATERIE = [
 
 
 
+          },
+          {
+            title: "Web Design & Digital Marketing (Google Sites)",
+            topics: [
+              {
+                title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
+                desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
+                url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=3l"
+              }
+            ]
           }
 
 
@@ -546,6 +556,16 @@ const MATERIE = [
 
 
 
+          },
+          {
+            title: "Web Design & Digital Marketing (Google Sites)",
+            topics: [
+              {
+                title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
+                desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
+                url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=2h"
+              }
+            ]
           }
 
 
@@ -784,6 +804,16 @@ const MATERIE = [
 
 
 
+          },
+          {
+            title: "Web Design & Digital Marketing (Google Sites)",
+            topics: [
+              {
+                title: "🌐 Lezione 1: Teoria & Strategia — Dalla Presenza Online a Google Sites",
+                desc: "1ª Ora Teoria LIM: Obiettivi di business, le 4 tappe evolutive dell'E-Commerce, B2B vs B2C, hosting e cloud SaaS 'sotto il cofano', e alberatura logica (sitemap a 4 pagine). Con lavagna LIM e checkpoint quiz.",
+                url: "/informatica/web/lezione-1-google-sites-marketing.html?classe=2g"
+              }
+            ]
           }
 
 
