@@ -8,10 +8,10 @@
 <style>
   :root {
     --bg-deep: #070c18;
-    --bg-panel: #0e172a;
-    --bg-card: #152238;
-    --bg-hover: #1e304f;
-    --border: rgba(148, 163, 184, 0.22);
+    --bg-panel: #0d1629;
+    --bg-card: #14223a;
+    --bg-hover: #1c2e4d;
+    --border: rgba(148, 163, 184, 0.25);
     --text: #f8fafc;
     --muted: #cbd5e1;
     --dim: #94a3b8;
@@ -33,18 +33,18 @@
     background: radial-gradient(circle at 50% 0%, #152342 0%, var(--bg-deep) 75%);
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: clamp(14px, 1.05vw, 19px);
-    line-height: 1.35;
+    font-size: clamp(17px, 1.25vw, 24px);
+    line-height: 1.4;
   }
 
   /* Puntatore Laser LIM */
   #laser-dot {
     position: fixed;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: radial-gradient(circle, #fff 14%, #ff1744 48%, rgba(255,23,68,0) 72%);
-    box-shadow: 0 0 24px 8px rgba(255, 23, 68, 0.8);
+    box-shadow: 0 0 28px 10px rgba(255, 23, 68, 0.85);
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
@@ -70,72 +70,72 @@
 
   .lim-toolbar {
     position: fixed;
-    bottom: 70px;
+    bottom: 74px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(11, 19, 38, 0.96);
+    background: rgba(11, 19, 38, 0.98);
     border: 2px solid var(--amber);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.85), 0 0 20px rgba(251,191,36,0.25);
-    border-radius: 18px;
-    padding: 8px 14px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.85), 0 0 20px rgba(251,191,36,0.3);
+    border-radius: 20px;
+    padding: 8px 16px;
     display: none;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     z-index: 3000;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     flex-wrap: wrap;
     max-width: 96vw;
   }
   .lim-toolbar.show { display: flex; }
-  .lim-drag-handle { cursor: grab; color: var(--amber); padding: 2px 6px; font-size: 1.1rem; font-weight: 900; }
+  .lim-drag-handle { cursor: grab; color: var(--amber); padding: 2px 8px; font-size: 1.2rem; font-weight: 900; }
   .lim-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    height: 36px; padding: 0 12px; border-radius: 9px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2);
-    color: #fff; font-size: 0.82rem; font-weight: 750; cursor: pointer; transition: all 0.15s ease;
+    height: 40px; padding: 0 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: all 0.15s ease;
   }
-  .lim-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.4); }
-  .lim-btn.active { background: rgba(251, 191, 36, 0.25); border-color: var(--amber); color: var(--amber); }
+  .lim-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.5); }
+  .lim-btn.active { background: rgba(251, 191, 36, 0.3); border-color: var(--amber); color: var(--amber); }
   .lim-color-dot {
-    width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
-    border: 2px solid rgba(255,255,255,0.4); transition: transform 0.15s ease;
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    border: 2.5px solid rgba(255,255,255,0.4); transition: transform 0.15s ease;
   }
-  .lim-color-dot:hover { transform: scale(1.15); }
-  .lim-color-dot.active { border-color: #fff; transform: scale(1.25); box-shadow: 0 0 10px currentColor; }
+  .lim-color-dot:hover { transform: scale(1.18); }
+  .lim-color-dot.active { border-color: #fff; transform: scale(1.28); box-shadow: 0 0 12px currentColor; }
 
   /* App Shell */
   .app { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
-  .progress-wrap { height: 4px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
+  .progress-wrap { height: 5px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
   .progress-bar { height: 100%; width: 11.1%; background: linear-gradient(90deg, var(--cyan), var(--emerald), var(--amber)); transition: width 0.3s ease; }
 
   .deck { flex: 1; position: relative; overflow: hidden; min-height: 0; }
   .slide {
     position: absolute; inset: 0;
-    padding: clamp(10px, 1.4vh, 20px) clamp(16px, 2.2vw, 40px);
-    display: flex; flex-direction: column; gap: clamp(6px, 1.2vh, 14px);
+    padding: clamp(10px, 1.5vh, 22px) clamp(16px, 2.4vw, 42px);
+    display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 16px);
     opacity: 0; pointer-events: none;
-    transform: translateX(25px) scale(0.99);
+    transform: translateX(30px) scale(0.99);
     transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.2, 1, 0.3, 1);
     overflow-y: auto;
   }
   .slide.active { opacity: 1; pointer-events: auto; transform: translateX(0) scale(1); z-index: 2; }
 
   .slide-head {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-wrap: wrap; border-bottom: 1.5px solid var(--border); padding-bottom: 8px; flex-shrink: 0;
   }
 
   .badge {
-    display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px;
-    border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
-    background: rgba(56, 189, 248, 0.15); color: var(--cyan); border: 1px solid rgba(56, 189, 248, 0.35);
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px;
+    border-radius: 999px; font-size: 0.85rem; font-weight: 850; letter-spacing: 0.05em; text-transform: uppercase;
+    background: rgba(56, 189, 248, 0.18); color: var(--cyan); border: 1.5px solid rgba(56, 189, 248, 0.45);
   }
-  .badge.amber { background: rgba(251, 191, 36, 0.15); color: var(--amber); border-color: rgba(251, 191, 36, 0.4); }
-  .badge.emerald { background: rgba(52, 211, 153, 0.15); color: var(--emerald); border-color: rgba(52, 211, 153, 0.4); }
-  .badge.purple { background: rgba(192, 132, 252, 0.15); color: var(--purple); border-color: rgba(192, 132, 252, 0.4); }
-  .badge.rose { background: rgba(251, 113, 133, 0.15); color: var(--rose); border-color: rgba(251, 113, 133, 0.4); }
+  .badge.amber { background: rgba(251, 191, 36, 0.18); color: var(--amber); border-color: rgba(251, 191, 36, 0.5); }
+  .badge.emerald { background: rgba(52, 211, 153, 0.18); color: var(--emerald); border-color: rgba(52, 211, 153, 0.5); }
+  .badge.purple { background: rgba(192, 132, 252, 0.18); color: var(--purple); border-color: rgba(192, 132, 252, 0.5); }
+  .badge.rose { background: rgba(251, 113, 133, 0.18); color: var(--rose); border-color: rgba(251, 113, 133, 0.5); }
 
-  h2.title { font-size: clamp(1.18rem, 1.85vw, 1.95rem); font-weight: 850; color: #fff; letter-spacing: -0.02em; }
+  h2.title { font-size: clamp(1.35rem, 2.1vw, 2.3rem); font-weight: 900; color: #fff; letter-spacing: -0.02em; }
   .hl-cyan { color: var(--cyan); }
   .hl-emerald { color: var(--emerald); }
   .hl-amber { color: var(--amber); }
@@ -143,90 +143,90 @@
   .hl-rose { color: var(--rose); }
 
   .panel {
-    background: rgba(14, 23, 42, 0.92);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: clamp(8px, 1.1vw, 15px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    background: rgba(13, 22, 41, 0.94);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(12px, 1.8vh, 22px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.4vw, 20px); flex: 1; min-height: 0; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.2vw, 18px); flex: 1; min-height: 0; }
-  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 1.1vw, 16px); flex: 1; min-height: 0; }
-  .grid-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 1vw, 14px); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 24px); flex: 1; min-height: 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 1.4vw, 20px); flex: 1; min-height: 0; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.2vw, 18px); flex: 1; min-height: 0; }
+  .grid-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.2vw, 16px); }
 
   .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    min-height: 40px; padding: 6px 15px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.18); background: var(--bg-card);
-    color: var(--text); font-family: var(--font-sans); font-size: 0.88rem; font-weight: 750;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 44px; padding: 8px 18px; border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.22); background: var(--bg-card);
+    color: var(--text); font-family: var(--font-sans); font-size: 0.98rem; font-weight: 800;
     cursor: pointer; transition: all 0.15s ease;
   }
-  .btn:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.38); transform: translateY(-1px); }
+  .btn:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.45); transform: translateY(-1px); }
   .btn:active { transform: translateY(1px); }
-  .btn-sm { min-height: 34px; padding: 4px 11px; font-size: 0.82rem; border-radius: 8px; }
+  .btn-sm { min-height: 38px; padding: 6px 14px; font-size: 0.9rem; border-radius: 10px; }
   .btn-primary { background: linear-gradient(135deg, #0284c7, #0ea5e9); border-color: var(--cyan); color: #fff; }
   .btn-emerald { background: linear-gradient(135deg, #059669, #10b981); border-color: var(--emerald); color: #fff; }
   .btn-amber { background: linear-gradient(135deg, #d97706, #fbbf24); border-color: #fde68a; color: #090e1a; }
-  .btn.active-pill { background: rgba(56, 189, 248, 0.22); border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 0 2px rgba(56,189,248,0.28); }
+  .btn.active-pill { background: rgba(56, 189, 248, 0.25); border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 0 2px rgba(56,189,248,0.35); }
 
   .banner {
-    background: linear-gradient(90deg, rgba(14,165,233,0.14), rgba(52,211,153,0.1));
-    border-left: 5px solid var(--cyan); border-radius: 11px;
-    padding: 8px 14px; font-size: clamp(0.88rem, 1.1vw, 1.12rem);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0;
+    background: linear-gradient(90deg, rgba(14,165,233,0.16), rgba(52,211,153,0.12));
+    border-left: 6px solid var(--cyan); border-radius: 14px;
+    padding: 12px 18px; font-size: clamp(1rem, 1.25vw, 1.25rem);
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0;
   }
 
   /* Dock Inferiore */
   .dock {
-    height: 54px; background: rgba(7, 11, 22, 0.96); border-top: 1px solid var(--border);
-    padding: 0 16px; display: flex; align-items: center; justify-content: space-between;
-    gap: 8px; flex-shrink: 0; z-index: 40;
+    height: 58px; background: rgba(7, 11, 22, 0.98); border-top: 1.5px solid var(--border);
+    padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; flex-shrink: 0; z-index: 40;
   }
-  .dots { display: flex; gap: 4px; overflow-x: auto; }
+  .dots { display: flex; gap: 6px; overflow-x: auto; }
   .dot {
-    min-width: 32px; height: 32px; padding: 0 8px; border-radius: 7px;
-    border: 1px solid var(--border); background: rgba(255,255,255,0.04);
-    color: var(--dim); font-weight: 800; font-size: 0.78rem; cursor: pointer;
+    min-width: 36px; height: 36px; padding: 0 10px; border-radius: 9px;
+    border: 1.5px solid var(--border); background: rgba(255,255,255,0.06);
+    color: var(--dim); font-weight: 850; font-size: 0.88rem; cursor: pointer;
   }
   .dot.active { background: var(--cyan); color: #090e1a; border-color: var(--cyan); }
 
-  /* Schede Interattive */
+  /* Schede Interattive Timeline */
   .interactive-card {
-    background: rgba(255,255,255,0.03);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .interactive-card:hover {
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.09);
     border-color: var(--cyan);
     transform: translateY(-2px);
   }
   .interactive-card.selected {
-    background: rgba(56, 189, 248, 0.12);
+    background: rgba(56, 189, 248, 0.16);
     border-color: var(--cyan);
-    box-shadow: 0 0 18px rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 22px rgba(56, 189, 248, 0.28);
   }
 
   /* Quiz Widget */
   .quiz-opt {
-    padding: 11px 15px; border-radius: 10px; border: 1.5px solid var(--border);
-    background: rgba(255,255,255,0.04); color: var(--text); font-size: 0.92rem;
-    font-weight: 700; cursor: pointer; text-align: left; transition: all 0.15s ease;
+    padding: 16px 20px; border-radius: 12px; border: 2px solid var(--border);
+    background: rgba(255,255,255,0.05); color: var(--text); font-size: 1.12rem;
+    font-weight: 750; cursor: pointer; text-align: left; transition: all 0.15s ease;
   }
-  .quiz-opt:hover { background: rgba(255,255,255,0.1); border-color: var(--cyan); }
-  .quiz-opt.correct { background: rgba(52, 211, 153, 0.2); border-color: var(--emerald); color: var(--emerald); }
-  .quiz-opt.wrong { background: rgba(251, 113, 133, 0.2); border-color: var(--rose); color: var(--rose); }
+  .quiz-opt:hover { background: rgba(255,255,255,0.12); border-color: var(--cyan); transform: translateX(3px); }
+  .quiz-opt.correct { background: rgba(52, 211, 153, 0.22); border-color: var(--emerald); color: #a7f3d0; }
+  .quiz-opt.wrong { background: rgba(251, 113, 133, 0.22); border-color: var(--rose); color: #fecdd3; }
 
-  @media (max-height: 800px) {
-    .slide { padding: 8px 16px; gap: 6px; }
-    .dock { height: 48px; }
-    .btn { min-height: 35px; padding: 4px 11px; font-size: 0.82rem; }
-    .btn-sm { min-height: 29px; padding: 3px 8px; font-size: 0.76rem; }
-    .banner { padding: 6px 10px; font-size: 0.85rem; }
+  @media (max-height: 820px) {
+    .slide { padding: 8px 18px; gap: 8px; }
+    .dock { height: 50px; }
+    .btn { min-height: 38px; padding: 6px 14px; font-size: 0.9rem; }
+    .btn-sm { min-height: 32px; padding: 4px 10px; font-size: 0.85rem; }
+    .banner { padding: 8px 12px; font-size: 0.95rem; }
   }
 </style>
 </head>
@@ -239,128 +239,127 @@
 
 <!-- FLOATING TOOLBAR MODALITÀ LIM -->
 <div class="lim-toolbar" id="limToolbar">
-  <span class="lim-drag-handle" title="Trascina la barra dove vuoi sulla LIM">✥ Sposta</span>
-  <div style="display:flex; gap:5px;">
-    <button class="lim-btn active" id="btnLimPen" onclick="setLimTool('pen')">🖊️ Penna</button>
-    <button class="lim-btn" id="btnLimHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
-    <button class="lim-btn" id="btnLimEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
-  </div>
-  <div style="height:22px; width:1px; background:rgba(255,255,255,0.2);"></div>
-  <div style="display:flex; gap:6px; align-items:center;">
-    <div class="lim-color-dot active" style="background:#fde047; color:#fde047;" onclick="setLimColor('#fde047', this)" title="Giallo"></div>
-    <div class="lim-color-dot" style="background:#4ade80; color:#4ade80;" onclick="setLimColor('#4ade80', this)" title="Verde"></div>
+  <span class="lim-drag-handle" title="Trascina">⠿ LIM</span>
+  <button class="lim-btn active" id="btnToolPen" onclick="setLimTool('pen')">✏️ Penna</button>
+  <button class="lim-btn" id="btnToolHighlighter" onclick="setLimTool('highlighter')">🖍️ Evidenziatore</button>
+  <button class="lim-btn" id="btnToolEraser" onclick="setLimTool('eraser')">🧹 Gomma</button>
+  
+  <div style="display:flex; gap:8px; margin:0 4px;">
+    <div class="lim-color-dot active" style="background:#fbbf24; color:#fbbf24;" onclick="setLimColor('#fbbf24', this)" title="Giallo"></div>
     <div class="lim-color-dot" style="background:#38bdf8; color:#38bdf8;" onclick="setLimColor('#38bdf8', this)" title="Ciano"></div>
-    <div class="lim-color-dot" style="background:#fb7185; color:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#34d399; color:#34d399;" onclick="setLimColor('#34d399', this)" title="Smeraldo"></div>
+    <div class="lim-color-dot" style="background:#fb7185; color:#fb7185;" onclick="setLimColor('#fb7185', this)" title="Rosa"></div>
     <div class="lim-color-dot" style="background:#ffffff; color:#ffffff;" onclick="setLimColor('#ffffff', this)" title="Bianco"></div>
   </div>
-  <div style="height:22px; width:1px; background:rgba(255,255,255,0.2);"></div>
-  <div style="display:flex; gap:4px;">
-    <button class="lim-btn" style="padding:0 7px;" onclick="setLimSize(3)">S</button>
-    <button class="lim-btn active" style="padding:0 7px;" id="btnLimSizeMed" onclick="setLimSize(6)">M</button>
-    <button class="lim-btn" style="padding:0 7px;" onclick="setLimSize(12)">L</button>
-  </div>
-  <div style="height:22px; width:1px; background:rgba(255,255,255,0.2);"></div>
-  <div style="display:flex; gap:5px;">
-    <button class="lim-btn" onclick="undoLimStroke()" title="Annulla ultimo tratto">↩️ Annulla</button>
-    <button class="lim-btn" onclick="clearLimCanvas()" title="Cancella tutto">🗑️ Pulisci</button>
-    <button class="lim-btn" id="btnLimPass" onclick="toggleLimPassThrough()" title="Interagisci con le slide senza perdere i disegni">👆 Interagisci</button>
-    <button class="lim-btn" style="background:rgba(239,68,68,0.25); border-color:#ef4444; color:#fca5a5;" onclick="toggleLimMode()">✖ Chiudi</button>
-  </div>
+
+  <button class="lim-btn" onclick="undoLimDraw()" title="Annulla ultimo tratto">↩️ Undo</button>
+  <button class="lim-btn" onclick="clearLimCanvas()" title="Cancella tutto">🗑️ Pulisci</button>
+  <button class="lim-btn" id="btnLimPassThrough" onclick="toggleLimPassThrough()" title="Interagisci con i pulsanti sotto">👆 Interagisci</button>
+  <button class="lim-btn" style="background:rgba(251,113,133,0.3); border-color:var(--rose);" onclick="toggleLimMode()">✖ Chiudi</button>
 </div>
 
 <div class="app">
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <!-- Progress Bar Superiore -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
 
-  <main class="deck" id="deck">
+  <div class="deck">
 
     <!-- SLIDE 1: TITOLO & OBIETTIVI (ORA 1 TEORIA) -->
     <section class="slide active" data-idx="0">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <a id="back-to-index-top" href="/#informatica" class="btn btn-sm" style="text-decoration:none; color:var(--cyan); border-color:rgba(56,189,248,0.4);">← Torna all'Indice</a>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <a id="back-to-index-top" href="/#informatica" class="btn btn-sm" style="text-decoration:none; color:var(--cyan); border-color:rgba(56,189,248,0.5);">← Torna all'Indice</a>
           <span class="badge cyan">Informatica &amp; Marketing • AFM &amp; RIM</span>
-          <span class="badge amber">Lezione 1 • Ora 1: Teoria</span>
+          <span class="badge amber">Lezione 1 • Ora 1: Teoria (60 min)</span>
         </div>
         <button class="btn btn-sm btn-amber" onclick="toggleLimMode()">🖍️ Scrivi sulla LIM</button>
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
-        <h1 style="font-size:clamp(1.75rem, 2.9vw, 2.9rem); font-weight:900; line-height:1.1; letter-spacing:-0.03em;">
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:2px;">
+        <h1 style="font-size:clamp(1.9rem, 3.1vw, 3.2rem); font-weight:900; line-height:1.15; letter-spacing:-0.03em;">
           La Progettazione Web &amp; il <span class="hl-cyan">Marketing Digitale</span>
         </h1>
-        <p style="font-size:clamp(0.92rem, 1.2vw, 1.2rem); color:var(--muted); max-width:1150px;">
-          Dalla presenza online dell'azienda alla pubblicazione con <strong>Google Sites</strong>: come si progetta un sito web professionale senza codice per gli indirizzi <strong>Amministrazione, Finanza &amp; Marketing</strong> e <strong>Relazioni Internazionali</strong>.
+        <p style="font-size:clamp(1.05rem, 1.35vw, 1.35rem); color:var(--muted); max-width:1250px;">
+          Dalla presenza online d'impresa alla pubblicazione su <strong>Google Sites</strong>: come si progetta una piattaforma web professionale per <strong>Amministrazione, Finanza &amp; Marketing</strong> e <strong>Relazioni Internazionali</strong>.
         </p>
       </div>
 
-      <div class="grid-3" style="margin-top:6px; flex:1; min-height:0;">
-        <div class="panel" style="border-top:5px solid var(--cyan); display:flex; flex-direction:column; gap:10px; padding:clamp(12px, 1.6vh, 22px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:2.4rem;">🎯</span>
-            <span class="badge cyan">Cap. 5 • pag. 218–221</span>
+      <div class="grid-3" style="margin-top:4px; flex:1; min-height:0;">
+        <div class="panel" style="border-top:6px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(14px, 2vh, 26px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.8rem;">🎯</span>
+              <span class="badge cyan">Cap. 5 • pag. 218–221</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--cyan); margin-top:8px;">1. Obiettivo Economico</div>
+            <div style="font-size:1.05rem; color:var(--text); line-height:1.5; margin-top:6px;">
+              Perché un'azienda fa un sito? Il principio della <strong>Raggiungibilità globale</strong> e il valore della proprietà privata rispetto ai social network.
+            </div>
+            <ul style="font-size:0.96rem; color:var(--muted); line-height:1.6; padding-left:20px; margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+              <li><strong>Raggio d'azione:</strong> superare i limiti geografici del negozio fisico</li>
+              <li><strong>Sito vs Social:</strong> il sito è la sede legale e commerciale di tua proprietà</li>
+              <li><strong>Target:</strong> mercati B2B (razionali) vs mercati B2C (emozionali)</li>
+            </ul>
           </div>
-          <div style="font-size:1.25rem; font-weight:900; color:var(--cyan);">1. Strategia &amp; Valore Economico</div>
-          <div style="font-size:0.96rem; color:var(--muted); line-height:1.5;">
-            Perché un'azienda deve possedere un proprio sito web e non limitarsi ai social network?
-          </div>
-          <ul style="font-size:0.88rem; color:var(--dim); line-height:1.5; padding-left:18px; margin-top:4px; display:flex; flex-direction:column; gap:6px;">
-            <li><strong>Principio di Raggiungibilità:</strong> posizionamento globale a costo zero</li>
-            <li><strong>Proprietà vs Affitto:</strong> il sito è la sede legale e commerciale digitale</li>
-            <li><strong>Target Differenziato:</strong> mercati B2B (razionali) vs B2C (emozionali)</li>
-          </ul>
-          <div style="font-size:0.82rem; color:var(--cyan); margin-top:auto; font-weight:750; background:rgba(56,189,248,0.1); padding:6px 10px; border-radius:8px;">
-            ✦ Focus AFM/RIM: Economia d'Impresa &amp; Marketing
-          </div>
-        </div>
-
-        <div class="panel" style="border-top:5px solid var(--emerald); display:flex; flex-direction:column; gap:10px; padding:clamp(12px, 1.6vh, 22px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:2.4rem;">☁️</span>
-            <span class="badge emerald">Cap. 4 • pag. 199–200</span>
-          </div>
-          <div style="font-size:1.25rem; font-weight:900; color:var(--emerald);">2. Motore Tecnologico &amp; Cloud</div>
-          <div style="font-size:0.96rem; color:var(--muted); line-height:1.5;">
-            Cosa succede esattamente "sotto il cofano" quando un cliente apre una pagina web?
-          </div>
-          <ul style="font-size:0.88rem; color:var(--dim); line-height:1.5; padding-left:18px; margin-top:4px; display:flex; flex-direction:column; gap:6px;">
-            <li><strong>Client &amp; Browser:</strong> richiesta HTTP e rendering grafico</li>
-            <li><strong>Server &amp; Hosting SaaS:</strong> archiviazione cloud Google Drive continua</li>
-            <li><strong>Sicurezza SSL/HTTPS:</strong> crittografia nativa e lucchetto verde automatico</li>
-          </ul>
-          <div style="font-size:0.82rem; color:var(--emerald); margin-top:auto; font-weight:750; background:rgba(52,211,153,0.1); padding:6px 10px; border-radius:8px;">
-            ✦ Focus Tecnologico: Zero costi di hosting &amp; Manutenzione
+          <div style="font-size:0.88rem; color:var(--cyan); font-weight:800; background:rgba(56,189,248,0.12); padding:8px 12px; border-radius:10px;">
+            ✦ Competenze AFM/RIM: Economia d'Impresa &amp; Web Marketing
           </div>
         </div>
 
-        <div class="panel" style="border-top:5px solid var(--amber); display:flex; flex-direction:column; gap:10px; padding:clamp(12px, 1.6vh, 22px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:2.4rem;">🗺️</span>
-            <span class="badge amber">Cap. 4 • pag. 201–203</span>
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(14px, 2vh, 26px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.8rem;">☁️</span>
+              <span class="badge emerald">Cap. 4 • pag. 199–200</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--emerald); margin-top:8px;">2. Motore Tecnologico &amp; Cloud</div>
+            <div style="font-size:1.05rem; color:var(--text); line-height:1.5; margin-top:6px;">
+              Cosa succede "sotto il cofano": <strong>Server</strong>, <strong>Hosting SaaS</strong>, <strong>Dominio e DNS</strong> e crittografia di sicurezza <strong>HTTPS/SSL</strong>.
+            </div>
+            <ul style="font-size:0.96rem; color:var(--muted); line-height:1.6; padding-left:20px; margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+              <li><strong>Client &amp; Browser:</strong> richiesta del documento via Internet</li>
+              <li><strong>Hosting Gratuito:</strong> archiviazione continua su Google Drive</li>
+              <li><strong>Lucchetto Verde:</strong> certificati di sicurezza preconfigurati da Google</li>
+            </ul>
           </div>
-          <div style="font-size:1.25rem; font-weight:900; color:var(--amber);">3. Alberatura &amp; Progettazione</div>
-          <div style="font-size:0.96rem; color:var(--muted); line-height:1.5;">
-            La regola d'oro del web designer: <em>prima la carta e la logica, poi il mouse!</em>
+          <div style="font-size:0.88rem; color:var(--emerald); font-weight:800; background:rgba(52,211,153,0.12); padding:8px 12px; border-radius:10px;">
+            ✦ Vantaggio Operativo: Zero canoni annui &amp; Zero manutenzione server
           </div>
-          <ul style="font-size:0.88rem; color:var(--dim); line-height:1.5; padding-left:18px; margin-top:4px; display:flex; flex-direction:column; gap:6px;">
-            <li><strong>Sitemap Canonica a 4 Pagine:</strong> Home, Chi Siamo, Prodotti, Contatti</li>
-            <li><strong>User Experience (UX):</strong> gerarchia visiva e call-to-action immediata</li>
-            <li><strong>Regola dei 5 Secondi:</strong> rispondere subito ai bisogni del visitatore</li>
-          </ul>
-          <div style="font-size:0.82rem; color:var(--amber); margin-top:auto; font-weight:750; background:rgba(251,191,36,0.1); padding:6px 10px; border-radius:8px;">
-            ✦ Focus Operativo: Preparazione al Laboratorio (Ora 2)
+        </div>
+
+        <div class="panel" style="border-top:6px solid var(--amber); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(14px, 2vh, 26px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.8rem;">🗺️</span>
+              <span class="badge amber">Cap. 4 • pag. 201–203</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--amber); margin-top:8px;">3. Alberatura &amp; Progettazione</div>
+            <div style="font-size:1.05rem; color:var(--text); line-height:1.5; margin-top:6px;">
+              La regola d'oro del designer commerciale: <em>prima la carta e l'architettura logica, poi il mouse!</em>
+            </div>
+            <ul style="font-size:0.96rem; color:var(--muted); line-height:1.6; padding-left:20px; margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+              <li><strong>Sitemap a 4 Pagine:</strong> Home, Chi Siamo, Prodotti, Contatti</li>
+              <li><strong>Regola dei 5 Secondi:</strong> chiarire subito l'offerta al visitatore</li>
+              <li><strong>WYSIWYG:</strong> impaginazione visuale immediata senza scrivere codice</li>
+            </ul>
+          </div>
+          <div style="font-size:0.88rem; color:var(--amber); font-weight:800; background:rgba(251,191,36,0.12); padding:8px 12px; border-radius:10px;">
+            ✦ Obiettivo Finale: Preparazione guidata al Laboratorio PC (Ora 2)
           </div>
         </div>
       </div>
 
-      <div class="banner" style="padding:12px 18px;">
+      <div class="banner">
         <div style="display:flex; align-items:center; gap:14px;">
-          <span style="font-size:1.5rem;">⏱️</span>
+          <span style="font-size:1.8rem;">⏱️</span>
           <div>
-            <strong>Articolazione della Lezione (Modulo da 2 Ore):</strong>
-            <span style="color:var(--muted); margin-left:6px;">60 min Teoria Interattiva alla LIM (Valore economico, Cloud &amp; Sitemap) → Poi 60 min Laboratorio pratico su Google Sites al PC!</span>
+            <strong>Articolazione Didattica:</strong>
+            <span style="color:var(--muted); margin-left:6px;">60 min Teoria Interattiva alla LIM (Economia, Cloud &amp; Alberatura) → Poi 60 min Laboratorio pratico su Google Sites al PC!</span>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="nextSlide()" style="font-size:0.95rem; padding:8px 20px;">Iniziamo la Lezione ▶</button>
+        <button class="btn btn-primary" onclick="nextSlide()" style="font-size:1.05rem; padding:10px 24px;">Iniziamo la Lezione ▶</button>
       </div>
     </section>
 
@@ -368,59 +367,69 @@
     <section class="slide" data-idx="1">
       <div class="slide-head">
         <div>
-          <span class="badge cyan">Cap. 5 • Pag. 218–220</span>
-          <h2 class="title">Perché un'azienda moderna DEVE avere un proprio sito web?</h2>
+          <span class="badge cyan">Cap. 5 • pag. 218–220</span>
+          <h2 class="title">Perché un'azienda moderna <span class="hl-cyan">DEVE</span> avere un proprio sito web?</h2>
         </div>
         <span class="badge amber">Il Concetto di Raggiungibilità</span>
       </div>
 
       <div class="grid-2">
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="panel" style="border-left:4px solid var(--cyan); padding:10px 14px;">
-            <div style="font-size:1.1rem; font-weight:900; color:var(--cyan);">1. Il Principio della "Raggiungibilità"</div>
-            <div style="font-size:0.92rem; color:var(--muted); margin-top:4px; line-height:1.45;">
-              Nel commercio tradizionale conta la posizione fisica (la via del centro). Nel mercato digitale la posizione fisica scompare: <strong>un'azienda esiste solo se è raggiungibile con un click</strong>. Se un cliente cerca un servizio su Google e non trova il sito ufficiale, l'ordine andrà al concorrente.
-            </div>
+        <!-- Colonna Sinistra: I 3 Principi Economici -->
+        <div style="display:flex; flex-direction:column; gap:12px; justify-content:space-between;">
+          <div class="panel" style="border-left:6px solid var(--cyan); flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:1.25rem; font-weight:900; color:var(--cyan);">1. Il Principio della "Raggiungibilità Globale"</div>
+            <p style="font-size:1.02rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              Nel commercio tradizionale conta la posizione fisica (la via del centro). Nel mercato digitale la posizione fisica scompare: un'azienda esiste solo se è <strong>raggiungibile con un click</strong>. Se un cliente cerca un fornitore su Google e non trova il sito ufficiale, l'ordine andrà al concorrente.
+            </p>
           </div>
 
-          <div class="panel" style="border-left:4px solid var(--amber); padding:10px 14px;">
-            <div style="font-size:1.1rem; font-weight:900; color:var(--amber);">2. Sito Web vs Social Network (La Proprietà Privata)</div>
-            <div style="font-size:0.92rem; color:var(--muted); margin-top:4px; line-height:1.45;">
-              I profili Instagram o TikTok sono come <em>stand in affitto in piazza</em>: l'algoritmo cambia, il profilo può essere bloccato e i dati non sono tuoi. Il sito web aziendale è la <strong>sede legale e commerciale di proprietà dell'azienda</strong>, dove il cliente trova informazioni ufficiali, listini e contatti diretti.
-            </div>
+          <div class="panel" style="border-left:6px solid var(--amber); flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:1.25rem; font-weight:900; color:var(--amber);">2. Sito Web vs Social Network (La Proprietà Privata)</div>
+            <p style="font-size:1.02rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              I profili Instagram o TikTok sono come <em>stand in affitto in una fiera altrui</em>: l'algoritmo cambia, il profilo può essere bloccato e i dati non sono tuoi. Il sito web aziendale è la <strong>sede legale e commerciale di proprietà dell'azienda</strong>, dove il cliente trova listini ufficiali e contatti diretti.
+            </p>
           </div>
 
-          <div class="panel" style="border-left:4px solid var(--emerald); padding:10px 14px;">
-            <div style="font-size:1.1rem; font-weight:900; color:var(--emerald);">3. Credibilità Istituzionale &amp; Fiducia</div>
-            <div style="font-size:0.92rem; color:var(--muted); margin-top:4px; line-height:1.45;">
-              Nessuna banca, fornitore internazionale o cliente B2B chiuderebbe un contratto milionario parlando solo via messaggio Instagram. Il sito web trasmette <strong>solidità, trasparenza e conformità normativa</strong> (Partita IVA, sede, certificazioni).
-            </div>
+          <div class="panel" style="border-left:6px solid var(--emerald); flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:1.25rem; font-weight:900; color:var(--emerald);">3. Credibilità Istituzionale &amp; Fiducia B2B</div>
+            <p style="font-size:1.02rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              Nessuna banca, fornitore estero o cliente aziendale B2B chiuderebbe contratti commerciali importanti parlando solo tramite messaggi Instagram. Il sito web trasmette <strong>solidità patrimoniale, trasparenza e conformità normativa</strong> (Partita IVA, sede legale, certificazioni).
+            </p>
           </div>
         </div>
 
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; background:rgba(9,16,33,0.95); border-color:rgba(56,189,248,0.35);">
+        <!-- Colonna Destra: La Regola dei 5 Secondi del Cliente -->
+        <div class="panel" style="border-top:6px solid var(--rose); display:flex; flex-direction:column; justify-content:space-between; gap:14px; padding:clamp(16px, 2.2vh, 26px);">
           <div>
-            <span class="hud-lbl" style="font-size:0.75rem; color:var(--cyan); font-weight:800; letter-spacing:0.06em;">CONFRONTO DI BUSINESS (AFM &amp; RIM)</span>
-            <h3 style="font-size:1.25rem; margin-top:4px;">Cosa cerca il cliente in 5 secondi?</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge rose">Psicologia del Cliente (AFM &amp; RIM)</span>
+              <span style="font-size:1.8rem;">⏱️</span>
+            </div>
+            <h3 style="font-size:1.4rem; font-weight:900; margin-top:8px; color:#fff;">Cosa cerca il cliente nei primi 5 secondi?</h3>
+            <p style="font-size:1rem; color:var(--muted); margin-top:4px;">
+              Quando un utente atterra sulla pagina, compie un giudizio istantaneo. Il sito deve rispondere immediatamente a 3 domande:
+            </p>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:10px; margin:12px 0;">
-            <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:10px 14px; border:1px solid var(--border);">
-              <div style="color:var(--amber); font-weight:800; font-size:0.95rem;">❓ Chi siete esattamente?</div>
-              <div style="font-size:0.86rem; color:var(--dim); margin-top:2px;">Logo chiaro, nome dell'azienda e una frase sintetica che spiega la <em>proposta di valore</em>.</div>
+          <div style="display:flex; flex-direction:column; gap:12px; flex:1; justify-content:space-around;">
+            <div style="background:rgba(255,255,255,0.04); border-left:5px solid var(--cyan); border-radius:12px; padding:14px 18px;">
+              <div style="font-weight:900; color:var(--cyan); font-size:1.15rem;">❓ 1. Chi siete esattamente?</div>
+              <div style="font-size:0.98rem; color:var(--muted); margin-top:4px; line-height:1.45;">Logo chiaro, nome dell'azienda e una frase sintetica che spiega la proposta di valore.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:10px 14px; border:1px solid var(--border);">
-              <div style="color:var(--cyan); font-weight:800; font-size:0.95rem;">💼 Cosa risolvete per me?</div>
-              <div style="font-size:0.86rem; color:var(--dim); margin-top:2px;">Prodotti o servizi spiegati chiaramente con foto, dettagli o listini senza ambiguità.</div>
+
+            <div style="background:rgba(255,255,255,0.04); border-left:5px solid var(--amber); border-radius:12px; padding:14px 18px;">
+              <div style="font-weight:900; color:var(--amber); font-size:1.15rem;">💼 2. Cosa risolvete per me?</div>
+              <div style="font-size:0.98rem; color:var(--muted); margin-top:4px; line-height:1.45;">Prodotti o servizi spiegati chiaramente con foto professionali, dettagli e listini senza ambiguità.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:10px 14px; border:1px solid var(--border);">
-              <div style="color:var(--emerald); font-weight:800; font-size:0.95rem;">📞 Come posso contattarvi adesso?</div>
-              <div style="font-size:0.86rem; color:var(--dim); margin-top:2px;">Modulo rapido, telefono, indirizzo fisico su Google Maps e orari di apertura.</div>
+
+            <div style="background:rgba(255,255,255,0.04); border-left:5px solid var(--emerald); border-radius:12px; padding:14px 18px;">
+              <div style="font-weight:900; color:var(--emerald); font-size:1.15rem;">📞 3. Come posso contattarvi adesso?</div>
+              <div style="font-size:0.98rem; color:var(--muted); margin-top:4px; line-height:1.45;">Modulo rapido, telefono, indirizzo fisico su Google Maps e orari di apertura ben visibili.</div>
             </div>
           </div>
 
-          <div style="background:rgba(56,189,248,0.1); border-radius:10px; padding:8px 12px; font-size:0.85rem; color:var(--cyan); border:1px dashed rgba(56,189,248,0.4);">
-            💡 <strong>Regola dei 5 Secondi:</strong> Se un visitatore non capisce cosa fa l'azienda entro 5 secondi dal suo arrivo sul sito, premerà "Indietro" e andrà dalla concorrenza.
+          <div style="background:rgba(251,113,133,0.14); border:1.5px solid var(--rose); border-radius:12px; padding:12px 16px; font-size:0.96rem; color:#fecdd3; line-height:1.45;">
+            ⚠️ <strong>Regola del Tasso di Rimbalzo (Bounce Rate):</strong> Se il visitatore non trova queste 3 risposte entro 5 secondi, preme <em>"Indietro"</em> e andrà a comprare sul sito della concorrenza!
           </div>
         </div>
       </div>
@@ -430,77 +439,81 @@
     <section class="slide" data-idx="2">
       <div class="slide-head">
         <div>
-          <span class="badge amber">Cap. 5 • Pag. 219</span>
-          <h2 class="title">Le 4 Tappe Evolutive dell'E-Commerce &amp; Google Sites</h2>
+          <span class="badge amber">Cap. 5 • pag. 219</span>
+          <h2 class="title">Le 4 Tappe Evolutive dell'E-Commerce &amp; <span class="hl-cyan">Google Sites</span></h2>
         </div>
-        <span class="badge emerald">Dalla Vetrina all'Integrazione ERP</span>
+        <span class="badge cyan">Dalla Vetrina all'Integrazione ERP</span>
       </div>
 
-      <div class="panel" style="padding:10px 14px;">
-        <div style="font-size:0.92rem; color:var(--muted);">
-          Nel manuale (pag. 219) si spiega come il commercio sul web sia nato negli anni '90 e si sia evoluto in <strong>4 tappe successive</strong>. Tocca ciascuna tappa per capire dove si posiziona il nostro lavoro con Google Sites:
-        </div>
+      <div style="font-size:1.05rem; color:var(--muted);">
+        Nel manuale (pag. 219) si spiega come il commercio sul web sia nato negli anni '90 e si sia evoluto in <strong>4 tappe successive</strong>. Tocca ciascuna tappa sulla LIM per scoprirne l'impatto economico:
       </div>
 
+      <!-- Le 4 Tappe Orizzontali Cliccabili -->
       <div class="grid-timeline" style="margin-top:4px;" id="timelineCards">
-        <!-- Tappa 1 -->
-        <div class="interactive-card selected" onclick="selectTimelineStep(1)" id="tlCard1">
+        <div class="interactive-card selected" onclick="selectTimelineStage(0)" id="tStage-0">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="badge cyan">Tappa 1</span>
-            <span style="font-size:0.78rem; color:var(--dim);">Anni '90</span>
+            <span style="font-size:0.85rem; color:var(--dim); font-weight:750;">Anni '90</span>
           </div>
-          <div style="font-size:1.15rem; font-weight:900; color:var(--cyan); margin-top:6px;">1. Pubblicazione</div>
-          <div style="font-size:0.84rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-            Pagine HTML statiche. Solo brochure aziendale online per far conoscere l'attività. Nessuna interazione.
-          </div>
-          <div style="margin-top:8px; font-size:0.75rem; color:var(--emerald); font-weight:800;">✓ Coperto da Google Sites</div>
+          <div style="font-size:1.25rem; font-weight:900; margin-top:8px; color:var(--cyan);">1. Pubblicazione</div>
+          <div style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.45;">Pagine HTML statiche. Solo brochure aziendale online. Nessuna interazione.</div>
+          <div style="font-size:0.88rem; color:var(--emerald); font-weight:800; margin-top:8px;">✓ Coperto da Google Sites</div>
         </div>
 
-        <!-- Tappa 2 -->
-        <div class="interactive-card" onclick="selectTimelineStep(2)" id="tlCard2">
+        <div class="interactive-card" onclick="selectTimelineStage(1)" id="tStage-1">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="badge emerald">Tappa 2</span>
-            <span style="font-size:0.78rem; color:var(--dim);">Anni 2000</span>
+            <span style="font-size:0.85rem; color:var(--dim); font-weight:750;">Anni 2000</span>
           </div>
-          <div style="font-size:1.15rem; font-weight:900; color:var(--emerald); margin-top:6px;">2. Interattività</div>
-          <div style="font-size:0.84rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-            Scambio bidirezionale: form di contatto, preventivi, moduli Google integrati, mappe dinamiche e cataloghi.
-          </div>
-          <div style="margin-top:8px; font-size:0.75rem; color:var(--emerald); font-weight:800;">✓ Coperto da Google Sites</div>
+          <div style="font-size:1.25rem; font-weight:900; margin-top:8px; color:var(--emerald);">2. Interattività</div>
+          <div style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.45;">Scambio bidirezionale: form di contatto, preventivi, moduli Google, cataloghi.</div>
+          <div style="font-size:0.88rem; color:var(--emerald); font-weight:800; margin-top:8px;">✓ Coperto da Google Sites</div>
         </div>
 
-        <!-- Tappa 3 -->
-        <div class="interactive-card" onclick="selectTimelineStep(3)" id="tlCard3">
+        <div class="interactive-card" onclick="selectTimelineStage(2)" id="tStage-2">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="badge amber">Tappa 3</span>
-            <span style="font-size:0.78rem; color:var(--dim);">Anni 2010</span>
+            <span style="font-size:0.85rem; color:var(--dim); font-weight:750;">Anni 2010</span>
           </div>
-          <div style="font-size:1.15rem; font-weight:900; color:var(--amber); margin-top:6px;">3. Transazione</div>
-          <div style="font-size:0.84rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-            Carrello della spesa, gateway di pagamento bancario protetto (carta, PayPal, bonifico) e ordine online.
-          </div>
-          <div style="margin-top:8px; font-size:0.75rem; color:var(--dim);">Richiede E-Commerce dedicato</div>
+          <div style="font-size:1.25rem; font-weight:900; margin-top:8px; color:var(--amber);">3. Transazione</div>
+          <div style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.45;">Carrello della spesa, gateway di pagamento bancario protetto (carta, PayPal).</div>
+          <div style="font-size:0.88rem; color:var(--amber); font-weight:800; margin-top:8px;">Richiede E-Commerce dedicato</div>
         </div>
 
-        <!-- Tappa 4 -->
-        <div class="interactive-card" onclick="selectTimelineStep(4)" id="tlCard4">
+        <div class="interactive-card" onclick="selectTimelineStage(3)" id="tStage-3">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="badge purple">Tappa 4</span>
-            <span style="font-size:0.78rem; color:var(--dim);">Oggi</span>
+            <span style="font-size:0.85rem; color:var(--dim); font-weight:750;">Oggi</span>
           </div>
-          <div style="font-size:1.15rem; font-weight:900; color:var(--purple); margin-top:6px;">4. Integrazione</div>
-          <div style="font-size:0.84rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-            Processo 100% automatizzato collegato all'ERP aziendale, fatturazione automatica e robotica di magazzino.
-          </div>
-          <div style="margin-top:8px; font-size:0.75rem; color:var(--dim);">Sistemi Enterprise (SAP, Oracle)</div>
+          <div style="font-size:1.25rem; font-weight:900; margin-top:8px; color:var(--purple);">4. Integrazione</div>
+          <div style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.45;">Processo automatizzato collegato all'ERP aziendale, magazzino e fatturazione.</div>
+          <div style="font-size:0.88rem; color:var(--purple); font-weight:800; margin-top:8px;">Sistemi Enterprise (SAP, Oracle)</div>
         </div>
       </div>
 
-      <!-- Dettaglio Tappa Selezionata -->
-      <div class="panel" style="border-left:5px solid var(--cyan); padding:10px 16px; min-height:85px;" id="tlDetailBox">
-        <div style="font-weight:900; color:var(--cyan); font-size:1.05rem;" id="tlDetailTitle">Tappa 1: La Nascita del Web Istituzionale (Pubblicazione)</div>
-        <div style="font-size:0.92rem; color:var(--muted); margin-top:4px; line-height:1.45;" id="tlDetailDesc">
-          Le prime aziende comparse su Internet (come Olivetti con <em>Cybermercato</em> nel 1996 o Cisco) usavano il sito web per mostrare chi erano e cosa producevano. Con <strong>Google Sites</strong> impariamo a padroneggiare alla perfezione questa tappa fondamentale, curando la comunicazione e la reputazione del brand.
+      <!-- Dettaglio Dinamico della Tappa Selezionata -->
+      <div class="panel" style="margin-top:10px; border-left:6px solid var(--cyan); flex:1; min-height:0; display:flex; flex-direction:column; justify-content:space-between; padding:clamp(16px, 2.2vh, 26px); gap:14px;" id="timelineDetailBox">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-size:1.45rem; font-weight:900; color:var(--cyan);" id="tdTitle">
+              Tappa 1: La Nascita del Web Istituzionale (Pubblicazione)
+            </h3>
+            <span class="badge cyan" id="tdBadge">Anni '90 &bull; Web 1.0</span>
+          </div>
+          <p style="font-size:1.08rem; color:var(--text); line-height:1.6; margin-top:10px;" id="tdDesc">
+            Le prime aziende comparse su Internet (come Olivetti con <em>Cybermercato</em> nel 1996 o Cisco Systems) usavano il sito web per mostrare chi erano e cosa producevano. Era l'equivalente di una brochure stampata consultabile via modem a 56k. Con <strong>Google Sites</strong> impariamo a padroneggiare alla perfezione questa tappa fondamentale, curando la comunicazione e la reputazione del marchio.
+          </p>
+        </div>
+
+        <div style="background:rgba(52,211,153,0.12); border:1.5px solid var(--emerald); border-radius:12px; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+          <div>
+            <strong style="color:var(--emerald); font-size:1.05rem;">🎯 Il Posizionamento Strategico di Google Sites per le Scuole e le PMI:</strong>
+            <div style="font-size:0.96rem; color:var(--muted); margin-top:4px;">
+              Google Sites copre al 100% le <strong>Tappe 1 (Pubblicazione)</strong> e <strong>2 (Interattività con Google Moduli e mappe)</strong> a costo zero (€0), senza bisogno di programmatori!
+            </div>
+          </div>
+          <span style="font-size:2.2rem;">🚀</span>
         </div>
       </div>
     </section>
@@ -509,61 +522,82 @@
     <section class="slide" data-idx="3">
       <div class="slide-head">
         <div>
-          <span class="badge emerald">Cap. 5 • Pag. 220–222</span>
-          <h2 class="title">A chi parla il sito? <span class="hl-emerald">B2B (Aziende)</span> vs <span class="hl-amber">B2C (Consumatori)</span></h2>
+          <span class="badge cyan">Cap. 5 • pag. 220–222</span>
+          <h2 class="title">A chi parla il sito? <span class="hl-cyan">B2B (Aziende)</span> vs <span class="hl-emerald">B2C (Consumatori)</span></h2>
         </div>
-        <div style="display:flex; gap:6px;">
-          <button class="btn btn-sm active-pill" id="btnSwitchB2B" onclick="switchMarketSegment('B2B')">Modello B2B</button>
-          <button class="btn btn-sm" id="btnSwitchB2C" onclick="switchMarketSegment('B2C')">Modello B2C</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-sm active-pill" id="btnToggleB2B" onclick="setB2BMode(true)">Modello B2B</button>
+          <button class="btn btn-sm" id="btnToggleB2C" onclick="setB2BMode(false)">Modello B2C</button>
         </div>
       </div>
 
       <div class="grid-2">
-        <!-- Pannello Sinistro: Teoria Economica -->
-        <div class="panel" style="display:flex; flex-direction:column; gap:10px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span class="badge" id="segBadge">Segmento: B2B (Business-to-Business)</span>
-            <span style="font-size:0.85rem; color:var(--dim);" id="segSub">Transazioni commerciali tra imprese</span>
+        <!-- Colonna Sinistra: Analisi di Marketing -->
+        <div class="panel" style="border-top:6px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:14px; padding:clamp(16px, 2.2vh, 26px);" id="b2bAnalysisPanel">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge cyan" id="b2bBadge">Segmento: B2B (Business-to-Business)</span>
+              <span style="font-size:0.95rem; color:var(--dim); font-weight:750;" id="b2bSubTitle">Transazioni tra imprese</span>
+            </div>
+            <h3 style="font-size:1.35rem; font-weight:900; margin-top:8px; color:var(--cyan);" id="b2bMainTitle">
+              La Psicologia d'Acquisto Razionale del Buyer
+            </h3>
+            <p style="font-size:1.05rem; color:var(--muted); line-height:1.55; margin-top:6px;" id="b2bDesc">
+              Nel B2B (es. produttore di imballaggi industriali o software gestionale) il compratore è un dirigente aziendale o un responsabile acquisti. Non compra d'impulso: cerca <strong>affidabilità, schede tecniche, volumi di fornitura, certificazioni ISO e preventivi personalizzati</strong>.
+            </p>
           </div>
 
-          <div style="font-size:0.92rem; color:var(--muted); line-height:1.5;" id="segConcept">
-            Nel <strong>B2B</strong> (es. un produttore di imballaggi industriali o una società di consulenza fiscale) il compratore è un dirigente o un responsabile acquisti aziendale. 
-            Non compra d'impulso: cerca <strong>affidabilità, schede tecniche, volumi di fornitura, certificazioni di qualità e preventivi personalizzati</strong>.
-          </div>
-
-          <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px 14px; border:1px solid var(--border);" id="segCharacteristics">
-            <div style="font-weight:800; color:var(--cyan); font-size:0.95rem;">Elementi Chiave da inserire nel sito:</div>
-            <ul style="margin-left:18px; margin-top:4px; font-size:0.88rem; color:var(--muted); line-height:1.45;">
-              <li>Catalogo dettagliato con specifiche e certificazioni ISO</li>
-              <li>Pulsante ben visibile: <strong>"Richiedi un Preventivo B2B"</strong></li>
-              <li>Sezione <em>Chi Siamo</em> con organigramma e solidità aziendale</li>
-              <li>Modulo di contatto dedicato a distributori e grossisti</li>
+          <div style="background:rgba(255,255,255,0.03); border:1.5px solid var(--border); border-radius:12px; padding:14px 18px;">
+            <div style="font-weight:900; color:var(--text); font-size:1.05rem;" id="b2bKeyElementsTitle">Elementi Chiave da Inserire nel Sito B2B:</div>
+            <ul style="font-size:0.98rem; color:var(--muted); line-height:1.6; margin-top:8px; padding-left:20px; display:flex; flex-direction:column; gap:6px;" id="b2bKeyList">
+              <li>Catalogo dettagliato con specifiche tecniche scaricabili (PDF)</li>
+              <li>Pulsante ben visibile: <em>"Richiedi un Preventivo Personalizzato B2B"</em></li>
+              <li>Sezione <em>Chi Siamo</em> con organigramma aziendale e certificazioni</li>
+              <li>Modulo di contatto dedicato a distributori e grossisti con Partita IVA</li>
             </ul>
+          </div>
+
+          <div style="font-size:0.95rem; color:var(--dim); background:rgba(0,0,0,0.25); padding:10px 14px; border-radius:10px;" id="b2bCopyNote">
+            👉 <strong>Tono di Voce (Copywriting):</strong> Tecnico, sobrio e orientato al ROI (ritorno sull'investimento) e all'efficienza operativa.
           </div>
         </div>
 
-        <!-- Pannello Destro: Simulatore di Layout del Sito -->
-        <div class="panel" style="display:flex; flex-direction:column; background:#070f22; border-color:var(--border);">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px solid var(--border);">
-            <div style="font-family:var(--font-mono); font-size:0.82rem; color:var(--dim);">Anteprima Layout Sito Web</div>
-            <span class="badge amber" id="segTargetPill">Target: Manager &amp; Buyer</span>
+        <!-- Colonna Destra: Mockup Live del Sito Web -->
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(16px, 2.2vh, 26px);" id="b2bPreviewPanel">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.92rem; font-weight:800; color:var(--dim);">Simulatore Homepage Live alla LIM</span>
+            <span class="badge amber" id="b2bTargetBadge">Target: Manager &amp; Buyer Aziendali</span>
           </div>
 
-          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px; padding:10px 0;">
-            <!-- Simulata Hero Section del Sito -->
-            <div style="background:#0f1d38; border-radius:10px; padding:12px; border:1px solid rgba(56,189,248,0.3);" id="mockHero">
-              <div style="font-size:0.75rem; text-transform:uppercase; color:var(--cyan); font-weight:800;" id="mockTagline">FORNITURE INDUSTRIALI CERTIFICATE</div>
-              <div style="font-size:1.15rem; font-weight:900; color:#fff; margin-top:2px;" id="mockTitle">Componenti di precisione per l'industria 4.0</div>
-              <div style="font-size:0.82rem; color:var(--muted); margin-top:4px;" id="mockDesc">Ottimizza la tua supply chain con consegne garantite in 24h e tracciabilità totale dei lotti.</div>
-              <div style="margin-top:10px;">
-                <button class="btn btn-sm btn-primary" id="mockBtn">Richiedi Catalogo &amp; Preventivo ▶</button>
+          <!-- Browser Frame Realistico -->
+          <div style="background:#040711; border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:14px; flex:1; justify-content:center;">
+            <div style="display:flex; align-items:center; gap:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+              <span style="width:12px; height:12px; border-radius:50%; background:#ef4444;"></span>
+              <span style="width:12px; height:12px; border-radius:50%; background:#f59e0b;"></span>
+              <span style="width:12px; height:12px; border-radius:50%; background:#10b981;"></span>
+              <div style="background:rgba(255,255,255,0.08); border-radius:6px; padding:3px 12px; font-family:var(--font-mono); font-size:0.85rem; color:var(--dim); margin-left:8px; flex:1;" id="mockUrl">
+                https://www.industrial-pack.it
               </div>
             </div>
 
-            <!-- Box Note per la classe -->
-            <div style="font-size:0.84rem; color:var(--muted); line-height:1.4;" id="mockNote">
-              👉 <strong>Osserva il linguaggio (Copywriting):</strong> Nel B2B si usano parole come <em>efficienza, certificazione, fornitura, partner</em>. Nel B2C si punterà invece su <em>stile, convenienza, esclusività, felicità</em>!
+            <div>
+              <div style="font-size:0.82rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase; color:var(--cyan);" id="mockCategory">
+                Forniture Industriali Certificate ISO 9001
+              </div>
+              <h4 style="font-size:1.6rem; font-weight:900; margin-top:6px; line-height:1.25; color:#fff;" id="mockHero">
+                Soluzioni di Precisione per l'Industria 4.0
+              </h4>
+              <p style="font-size:1rem; color:var(--muted); margin-top:8px; line-height:1.5;" id="mockText">
+                Ottimizza la tua supply chain con consegne garantite in 24 ore e tracciabilità completa dei lotti di produzione.
+              </p>
+              <div style="margin-top:16px;">
+                <button class="btn btn-primary" id="mockBtn" style="font-size:1.02rem; padding:10px 22px;">Richiedi Catalogo &amp; Preventivo ▶</button>
+              </div>
             </div>
+          </div>
+
+          <div style="font-size:0.95rem; color:var(--muted); line-height:1.45;">
+            👉 <strong>Confronto in Classe:</strong> Guarda come cambiano i colori, le parole chiave e il pulsante d'azione cliccando sui pulsanti in alto a destra!
           </div>
         </div>
       </div>
@@ -580,88 +614,108 @@
       </div>
 
       <!-- Diagramma di Flusso a 4 Fasi -->
-      <div class="grid-4" style="margin-top:4px;">
-        <div class="panel" style="border-top:4px solid var(--cyan); display:flex; flex-direction:column; gap:8px;">
-          <div style="font-size:2rem;">💻</div>
-          <div style="font-size:1.05rem; font-weight:800; color:var(--cyan);">1. Il Client (Utente)</div>
-          <div style="font-size:0.88rem; color:var(--muted); line-height:1.45;">
-            È il computer, smartphone o tablet del visitatore. Tramite un <strong>Browser</strong> (Chrome, Safari, Edge) digita l'URL per richiedere la pagina.
+      <div class="grid-4" style="margin-top:2px;">
+        <div class="panel" style="border-top:6px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(14px, 2vh, 22px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.6rem;">💻</span>
+              <span class="badge cyan">Passo 1</span>
+            </div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--cyan); margin-top:6px;">1. Il Client (Utente)</div>
+            <div style="font-size:1rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              È il computer, tablet o smartphone del visitatore. Tramite un <strong>Browser</strong> (Chrome, Safari, Edge) digita l'URL per richiedere la pagina.
+            </div>
           </div>
-          <div style="font-size:0.78rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; margin-top:auto;">
+          <div style="font-size:0.88rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:8px;">
             Es: digita sites.google.com/...
           </div>
         </div>
 
-        <div class="panel" style="border-top:4px solid var(--amber); display:flex; flex-direction:column; gap:8px;">
-          <div style="font-size:2rem;">🏷️</div>
-          <div style="font-size:1.05rem; font-weight:800; color:var(--amber);">2. Il Dominio &amp; DNS</div>
-          <div style="font-size:0.88rem; color:var(--muted); line-height:1.45;">
-            Il <strong>Dominio</strong> è l'insegna col nome dell'azienda. I computer comunicano con numeri IP: il <strong>DNS</strong> traduce istantaneamente il nome testuale nell'indirizzo esatto del server.
+        <div class="panel" style="border-top:6px solid var(--amber); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(14px, 2vh, 22px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.6rem;">🏷️</span>
+              <span class="badge amber">Passo 2</span>
+            </div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--amber); margin-top:6px;">2. Dominio &amp; DNS</div>
+            <div style="font-size:1rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              Il <strong>Dominio</strong> è il nome commerciale. I computer usano numeri IP: il <strong>DNS</strong> traduce all'istante il nome nell'indirizzo esatto del server.
+            </div>
           </div>
-          <div style="font-size:0.78rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; margin-top:auto;">
+          <div style="font-size:0.88rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:8px;">
             Es: miosito.it → 142.250.180.14
           </div>
         </div>
 
-        <div class="panel" style="border-top:4px solid var(--emerald); display:flex; flex-direction:column; gap:8px;">
-          <div style="font-size:2rem;">🏢</div>
-          <div style="font-size:1.05rem; font-weight:800; color:var(--emerald);">3. Server &amp; Hosting</div>
-          <div style="font-size:0.88rem; color:var(--muted); line-height:1.45;">
-            L'<strong>Hosting</strong> è il computer sempre acceso e connesso a Internet h24 che <em>ospita</em> (host) i file del sito e li invia al client quando riceve una richiesta.
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(14px, 2vh, 22px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.6rem;">🏢</span>
+              <span class="badge emerald">Passo 3</span>
+            </div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--emerald); margin-top:6px;">3. Server &amp; Hosting</div>
+            <div style="font-size:1rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              L'<strong>Hosting</strong> è il computer connesso a Internet h24 che <em>ospita</em> (host) i file del sito e li invia al client alla velocità della luce.
+            </div>
           </div>
-          <div style="font-size:0.78rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; margin-top:auto;">
-            Google Cloud Infrastructure
+          <div style="font-size:0.88rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:8px;">
+            Infrastruttura Google Cloud
           </div>
         </div>
 
-        <div class="panel" style="border-top:4px solid var(--purple); display:flex; flex-direction:column; gap:8px;">
-          <div style="font-size:2rem;">📁</div>
-          <div style="font-size:1.05rem; font-weight:800; color:var(--purple);">4. Google Drive (Storage)</div>
-          <div style="font-size:0.88rem; color:var(--muted); line-height:1.45;">
-            Con Google Sites, tutti i file, i testi, le immagini e le modifiche vengono salvati automaticamente dentro il vostro <strong>Google Drive</strong> personale o d'istituto.
+        <div class="panel" style="border-top:6px solid var(--purple); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(14px, 2vh, 22px);">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:2.6rem;">📁</span>
+              <span class="badge purple">Passo 4</span>
+            </div>
+            <div style="font-size:1.25rem; font-weight:900; color:var(--purple); margin-top:6px;">4. Google Drive Cloud</div>
+            <div style="font-size:1rem; color:var(--muted); line-height:1.5; margin-top:6px;">
+              Con Google Sites, testi, immagini e modifiche vengono salvati automaticamente dentro il vostro <strong>Google Drive</strong> personale o della scuola.
+            </div>
           </div>
-          <div style="font-size:0.78rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; margin-top:auto;">
+          <div style="font-size:0.88rem; color:var(--dim); font-family:var(--font-mono); background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:8px;">
             Salvataggio continuo in cloud
           </div>
         </div>
       </div>
 
       <!-- Tabella Comparativa di Business: Hosting Tradizionale vs Google Sites -->
-      <div class="panel" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(12px, 1.8vh, 20px);">
+      <div class="panel" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(14px, 2vh, 24px);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-weight:900; font-size:1.05rem; color:var(--emerald);">✦ Vantaggi Economici &amp; Operativi di Google Sites per PMI e Scuole</span>
-          <span class="badge emerald">Hosting Gratuito &amp; Sicuro H24</span>
+          <span style="font-weight:900; font-size:1.25rem; color:var(--emerald);">✦ Vantaggi Economici &amp; Operativi di Google Sites per PMI e Scuole</span>
+          <span class="badge emerald" style="font-size:0.92rem;">Hosting Gratuito &amp; Sicuro H24</span>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:4px;">
-          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px;">
-            <div style="font-weight:800; color:var(--amber); font-size:0.92rem;">💰 Zero Canone Annuo</div>
-            <div style="font-size:0.82rem; color:var(--muted); margin-top:4px; line-height:1.4;">
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-top:4px; flex:1;">
+          <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="font-weight:900; color:var(--amber); font-size:1.15rem;">💰 Zero Canone Annuo</div>
+            <div style="font-size:0.95rem; color:var(--muted); margin-top:6px; line-height:1.45;">
               Un hosting aziendale tradizionale costa tra <strong>60 € e 250 € all'anno</strong>. Google Sites include l'hosting illimitato a costo <strong>0 €</strong>.
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px;">
-            <div style="font-weight:800; color:var(--cyan); font-size:0.92rem;">🔒 Lucchetto SSL/HTTPS</div>
-            <div style="font-size:0.82rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-              I certificati di crittografia per la privacy e la sicurezza delle connessioni sono <strong>nativi, pre-installati e rinnovati da Google</strong>.
+          <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="font-weight:900; color:var(--cyan); font-size:1.15rem;">🔒 Lucchetto SSL/HTTPS</div>
+            <div style="font-size:0.95rem; color:var(--muted); margin-top:6px; line-height:1.45;">
+              I certificati di crittografia per la privacy delle connessioni sono <strong>nativi, pre-installati e rinnovati gratis da Google</strong>.
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px;">
-            <div style="font-weight:800; color:var(--emerald); font-size:0.92rem;">⚡ Affidabilità Google Cloud</div>
-            <div style="font-size:0.82rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-              Nessun rischio di crash del server per troppi visitatori: sfrutta la stessa CDN globale usata per Google Search e YouTube.
+          <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="font-weight:900; color:var(--emerald); font-size:1.15rem;">⚡ Affidabilità Globale</div>
+            <div style="font-size:0.95rem; color:var(--muted); margin-top:6px; line-height:1.45;">
+              Nessun rischio di crash del server per troppi visitatori: sfrutta la stessa rete globale utilizzata per Google Search e YouTube.
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px;">
-            <div style="font-weight:800; color:var(--purple); font-size:0.92rem;">👥 Lavoro Collaborativo</div>
-            <div style="font-size:0.82rem; color:var(--muted); margin-top:4px; line-height:1.4;">
-              Più studenti o colleghi di lavoro possono modificare contemporaneamente lo stesso sito in tempo reale, esattamente come su Google Documenti.
+          <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="font-weight:900; color:var(--purple); font-size:1.15rem;">👥 Lavoro Collaborativo</div>
+            <div style="font-size:0.95rem; color:var(--muted); margin-top:6px; line-height:1.45;">
+              Più studenti o colleghi di marketing possono lavorare simultaneamente sullo stesso sito in tempo reale come su Google Documenti.
             </div>
           </div>
         </div>
 
-        <div style="font-size:0.85rem; color:var(--dim); background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:8px;">
-          💡 <strong>Nota per AFM/RIM:</strong> Se l'azienda possiede già un dominio proprietario (es. <code>www.pastificio-rossi.it</code>), può collegarlo facilmente a Google Sites mantenendo il proprio marchio ufficiale!
+        <div style="font-size:0.95rem; color:var(--dim); background:rgba(0,0,0,0.3); padding:10px 14px; border-radius:10px;">
+          💡 <strong>Nota Strategica per AFM/RIM:</strong> Se l'azienda possiede già un dominio proprietario (es. <code>www.pastificio-rossi.it</code>), può collegarlo a Google Sites mantenendo il proprio marchio ufficiale!
         </div>
       </div>
     </section>
@@ -676,26 +730,26 @@
         <span class="badge emerald">La Rivoluzione WYSIWYG</span>
       </div>
 
-      <div class="grid-2" style="flex:1; min-height:0;">
+      <div class="grid-2" style="flex:1; min-height:0; margin-top:2px;">
         <!-- Colonna Sinistra: Metodo Tradizionale a Codice -->
-        <div class="panel" style="border-top:5px solid var(--rose); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(16px, 2.2vh, 26px);">
+        <div class="panel" style="border-top:6px solid var(--rose); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(12px, 1.6vh, 20px);">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="badge rose">Metodo Tradizionale</span>
-              <span style="font-size:0.85rem; font-family:var(--font-mono); color:var(--dim);">HTML5 + CSS3 + JS</span>
+              <span style="font-size:0.88rem; font-family:var(--font-mono); color:var(--dim);">HTML5 + CSS3 + JS</span>
             </div>
-            <h3 style="font-size:1.4rem; font-weight:900; margin-top:8px; color:var(--rose);">Scrittura del Codice a Mano</h3>
-            <p style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.5;">
+            <h3 style="font-size:1.35rem; font-weight:900; margin-top:6px; color:var(--rose);">Scrittura del Codice a Mano</h3>
+            <p style="font-size:0.95rem; color:var(--muted); margin-top:2px; line-height:1.45;">
               Lo sviluppatore web deve scrivere manualmente ogni singolo elemento, tag e stile in file sorgente:
             </p>
 
             <!-- Editor di Codice Sintetico -->
-            <div style="margin-top:12px; background:#040711; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:16px 20px; font-family:var(--font-mono); font-size:0.88rem; line-height:1.6; color:#e2e8f0;">
-              <div style="display:flex; gap:6px; margin-bottom:10px; align-items:center;">
-                <span style="width:12px; height:12px; border-radius:50%; background:#ef4444;"></span>
-                <span style="width:12px; height:12px; border-radius:50%; background:#f59e0b;"></span>
-                <span style="width:12px; height:12px; border-radius:50%; background:#10b981;"></span>
-                <span style="color:var(--dim); font-size:0.8rem; margin-left:10px;">index.html &bull; VS Code Editor</span>
+            <div style="margin-top:10px; background:#040711; border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:12px 16px; font-family:var(--font-mono); font-size:0.86rem; line-height:1.55; color:#e2e8f0;">
+              <div style="display:flex; gap:6px; margin-bottom:8px; align-items:center;">
+                <span style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></span>
+                <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></span>
+                <span style="width:10px; height:10px; border-radius:50%; background:#10b981;"></span>
+                <span style="color:var(--dim); font-size:0.8rem; margin-left:8px;">index.html &bull; VS Code Editor</span>
               </div>
               <span style="color:#7dd3fc;">&lt;!DOCTYPE html&gt;</span><br>
               <span style="color:#38bdf8;">&lt;header</span> <span style="color:#fde047;">class</span>=<span style="color:#a7f3d0;">"navbar"</span><span style="color:#38bdf8;">&gt;</span><br>
@@ -707,66 +761,66 @@
               &nbsp;&nbsp;<span style="color:#38bdf8;">&lt;p&gt;</span>Packaging ecologico certificato ISO 14001 per l'export.<span style="color:#38bdf8;">&lt;/p&gt;</span><br>
               &nbsp;&nbsp;<span style="color:#38bdf8;">&lt;button</span> <span style="color:#fde047;">onclick</span>=<span style="color:#a7f3d0;">"inviaPreventivo()"</span><span style="color:#38bdf8;">&gt;</span>Richiedi Preventivo B2B<span style="color:#38bdf8;">&lt;/button&gt;</span><br>
               <span style="color:#38bdf8;">&lt;/section&gt;</span><br>
-              <span style="color:#c084fc;">/* Per ogni elemento servono decine di regole CSS di posizionamento e colori! */</span>
+              <span style="color:#c084fc;">/* Per ogni elemento servono decine di regole CSS di posizionamento! */</span>
             </div>
           </div>
 
-          <div style="background:rgba(251,113,133,0.1); border:1px solid rgba(251,113,133,0.3); border-radius:12px; padding:14px 18px; font-size:0.92rem; color:#fecdd3; line-height:1.5;">
-            ⚠️ <strong>Criticità per il Management AFM/RIM:</strong> Richiede mesi di apprendimento tecnico specialistico. Per ogni modifica a testi, prezzi o foto serve assumere un programmatore esterno a pagamento!
+          <div style="background:rgba(251,113,133,0.12); border:1.5px solid rgba(251,113,133,0.35); border-radius:12px; padding:12px 16px; font-size:0.92rem; color:#fecdd3; line-height:1.45;">
+            ⚠️ <strong>Criticità per il Management AFM/RIM:</strong> Richiede mesi di studio tecnico specialistico. Per ogni modifica a testi, prezzi o foto serve assumere un programmatore esterno a pagamento!
           </div>
         </div>
 
         <!-- Colonna Destra: Website Builder WYSIWYG (Google Sites) -->
-        <div class="panel" style="border-top:5px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:clamp(16px, 2.2vh, 26px);">
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(12px, 1.6vh, 20px);">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="badge emerald">Website Builder Moderno</span>
-              <span style="font-size:0.85rem; font-family:var(--font-mono); color:var(--emerald);">Google Sites (No-Code WYSIWYG)</span>
+              <span style="font-size:0.88rem; font-family:var(--font-mono); color:var(--emerald);">Google Sites (No-Code WYSIWYG)</span>
             </div>
-            <h3 style="font-size:1.4rem; font-weight:900; margin-top:8px; color:var(--emerald);">La Logica Drag &amp; Drop &bull; WYSIWYG</h3>
-            <p style="font-size:0.95rem; color:var(--muted); margin-top:4px; line-height:1.5;">
-              <strong>WYSIWYG</strong> (<em>What You See Is What You Get</em>): ciò che vedi sullo schermo mentre disegni è esattamente ciò che il cliente vedrà online, senza scrivere codice.
+            <h3 style="font-size:1.35rem; font-weight:900; margin-top:6px; color:var(--emerald);">La Logica Drag &amp; Drop &bull; WYSIWYG</h3>
+            <p style="font-size:0.95rem; color:var(--muted); margin-top:2px; line-height:1.45;">
+              <strong>WYSIWYG</strong> (<em>What You See Is What You Get</em>): ciò che vedi sullo schermo mentre disegni è esattamente ciò che il cliente vedrà online, senza codice.
             </p>
 
             <!-- I 3 Pannelli di Google Sites (Cap. 4 pag. 200) -->
-            <div style="margin-top:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px;">
+            <div style="margin-top:10px; background:rgba(255,255,255,0.03); border:1.5px solid var(--border); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
               <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:6px;">
-                <span style="font-size:0.88rem; font-weight:800; color:var(--cyan);">I 3 Strumenti della Barra Laterale (Libro pag. 200)</span>
-                <span class="badge amber" style="font-size:0.75rem;">Sidebar Destra</span>
+                <span style="font-size:0.92rem; font-weight:900; color:var(--cyan);">I 3 Strumenti della Barra Laterale (Libro pag. 200)</span>
+                <span class="badge amber" style="font-size:0.75rem; padding:2px 8px;">Sidebar Destra</span>
               </div>
               <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; text-align:center;">
-                <div style="background:rgba(56,189,248,0.1); border:1.5px solid rgba(56,189,248,0.3); border-radius:10px; padding:12px 10px;">
-                  <div style="font-size:1.6rem;">📥</div>
-                  <div style="font-weight:900; color:var(--cyan); font-size:1rem; margin-top:4px;">1. Inserisci</div>
-                  <div style="font-size:0.8rem; color:var(--muted); margin-top:4px; line-height:1.4;">Caselle di testo, Immagini, Blocchi di layout, Drive</div>
+                <div style="background:rgba(56,189,248,0.12); border:1.5px solid rgba(56,189,248,0.35); border-radius:10px; padding:10px 8px;">
+                  <div style="font-size:1.8rem;">📥</div>
+                  <div style="font-weight:900; color:var(--cyan); font-size:1.02rem; margin-top:2px;">1. Inserisci</div>
+                  <div style="font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.35;">Testi, Foto, Blocchi di layout, Drive</div>
                 </div>
-                <div style="background:rgba(52,211,153,0.1); border:1.5px solid rgba(52,211,153,0.3); border-radius:10px; padding:12px 10px;">
-                  <div style="font-size:1.6rem;">📑</div>
-                  <div style="font-weight:900; color:var(--emerald); font-size:1rem; margin-top:4px;">2. Pagine</div>
-                  <div style="font-size:0.8rem; color:var(--muted); margin-top:4px; line-height:1.4;">Alberatura del sito: aggiungi, riordina e crea sottomenu</div>
+                <div style="background:rgba(52,211,153,0.12); border:1.5px solid rgba(52,211,153,0.35); border-radius:10px; padding:10px 8px;">
+                  <div style="font-size:1.8rem;">📑</div>
+                  <div style="font-weight:900; color:var(--emerald); font-size:1.02rem; margin-top:2px;">2. Pagine</div>
+                  <div style="font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.35;">Alberatura del sito: aggiungi e ordina</div>
                 </div>
-                <div style="background:rgba(251,191,36,0.1); border:1.5px solid rgba(251,191,36,0.3); border-radius:10px; padding:12px 10px;">
-                  <div style="font-size:1.6rem;">🎨</div>
-                  <div style="font-weight:900; color:var(--amber); font-size:1rem; margin-top:4px;">3. Temi</div>
-                  <div style="font-size:0.8rem; color:var(--muted); margin-top:4px; line-height:1.4;">Stile coordinato: caratteri (font), colori e accenti aziendali</div>
+                <div style="background:rgba(251,191,36,0.12); border:1.5px solid rgba(251,191,36,0.35); border-radius:10px; padding:10px 8px;">
+                  <div style="font-size:1.8rem;">🎨</div>
+                  <div style="font-weight:900; color:var(--amber); font-size:1.02rem; margin-top:2px;">3. Temi</div>
+                  <div style="font-size:0.82rem; color:var(--muted); margin-top:2px; line-height:1.35;">Font coordinati, colori e accenti aziendali</div>
                 </div>
               </div>
             </div>
 
             <!-- Anteprima Blocchi di Layout (Cap. 4 pag. 202) -->
-            <div style="margin-top:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:14px;">
+            <div style="margin-top:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
               <div style="display:flex; align-items:center; gap:12px;">
                 <span style="font-size:1.8rem;">🧱</span>
-                <div style="font-size:0.88rem; color:var(--muted); line-height:1.45;">
-                  <strong>Blocchi di Layout Rapidi (Step 8, pag. 202):</strong> Permettono di impaginare foto + titolo + testo con un solo clic del mouse, garantendo un allineamento perfetto.
+                <div style="font-size:0.9rem; color:var(--muted); line-height:1.4;">
+                  <strong>Blocchi di Layout Rapidi (Step 8, pag. 202):</strong> Impaginano foto + titolo + testo con un solo clic, garantendo allineamento perfetto.
                 </div>
               </div>
-              <span class="badge cyan" style="flex-shrink:0;">Responsive 100%</span>
+              <span class="badge cyan" style="flex-shrink:0;">Responsive</span>
             </div>
           </div>
 
-          <div style="background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.3); border-radius:12px; padding:14px 18px; font-size:0.92rem; color:#a7f3d0; line-height:1.5;">
-            💡 <strong>Il Superpotere per AFM &amp; RIM:</strong> Permette al futuro manager commerciale di concentrarsi al 100% su <strong>strategia di vendita, persuasione e psicologia del cliente</strong>, senza perdere ore a combattere con la sintassi del codice!
+          <div style="background:rgba(52,211,153,0.12); border:1.5px solid rgba(52,211,153,0.35); border-radius:12px; padding:12px 16px; font-size:0.92rem; color:#a7f3d0; line-height:1.45;">
+            💡 <strong>Il Superpotere per AFM &amp; RIM:</strong> Permette al team commerciale di focalizzarsi su <strong>strategia di vendita, persuasione e psicologia del cliente</strong>, senza perdere ore a combattere con la sintassi del codice!
           </div>
         </div>
       </div>
@@ -782,110 +836,137 @@
         <span class="badge cyan">Prima la Carta, poi il Computer!</span>
       </div>
 
-      <div style="font-size:0.92rem; color:var(--muted);">
-        Nel libro (pag. 201, Step 1) si spiega che prima di aprire Google Sites bisogna definire la <strong>mappa delle pagine</strong>. Ecco l'alberatura canonica a 4 pagine essenziali per qualsiasi azienda o progetto AFM/RIM:
+      <div style="font-size:0.95rem; color:var(--muted); line-height:1.35;">
+        Nel libro (pag. 201, Step 1) si spiega che prima di aprire Google Sites bisogna definire l'<strong>alberatura delle pagine</strong>. Ecco la struttura canonica a 4 pagine essenziali per qualsiasi impresa AFM/RIM:
       </div>
 
-      <div class="grid-4" style="flex:1; min-height:0; margin-top:4px;">
+      <!-- 4 Colonne Ricche e Perfettamente Proporzionate -->
+      <div class="grid-4" style="flex:1; min-height:0; margin-top:2px;">
+        
         <!-- Pagina 1: Home Page -->
-        <div class="panel" style="border-top:5px solid var(--cyan); display:flex; flex-direction:column; gap:8px; padding:clamp(10px, 1.5vh, 18px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="badge cyan">Pagina 1</span>
-            <span style="font-size:1.8rem;">🏠</span>
+        <div class="panel" style="border-top:6px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:8px; padding:12px 14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge cyan" style="font-size:0.82rem; padding:3px 10px;">Pagina 1</span>
+              <span style="font-size:2.2rem;">🏠</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--cyan); margin-top:2px;">Home Page</div>
+            <div style="font-size:0.88rem; color:var(--amber); font-weight:800;">Obiettivo: Prima Impressione (5s)</div>
           </div>
-          <div style="font-size:1.2rem; font-weight:900; color:var(--cyan);">Home Page</div>
-          <div style="font-size:0.85rem; color:var(--amber); font-weight:750;">Obiettivo: Prima Impressione (5s)</div>
-          
-          <div style="font-size:0.85rem; color:var(--muted); line-height:1.45; margin-top:4px;">
-            La vetrina d'ingresso. Deve chiarire all'istante l'identità dell'azienda e cosa offre:
-          </div>
-          <ul style="font-size:0.82rem; color:var(--dim); line-height:1.45; padding-left:16px; display:flex; flex-direction:column; gap:4px;">
-            <li><strong>Banner d'impatto:</strong> Foto nitida e logo ufficiale</li>
-            <li><strong>Value Proposition:</strong> Slogan in 1 frase chiara</li>
-            <li><strong>Pulsante Call-to-Action:</strong> "Scopri i Servizi"</li>
-            <li><strong>Sintesi sezioni:</strong> Anteprima dei contenuti</li>
-          </ul>
 
-          <div style="font-size:0.78rem; color:var(--cyan); background:rgba(56,189,248,0.1); padding:6px 8px; border-radius:6px; margin-top:auto;">
-            💼 <em>Esempio: "Consulenza e Gestione Fiscale per PMI"</em>
+          <!-- Cosa deve contenere -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-weight:900; color:var(--text); font-size:0.92rem;">Contenuti Chiave:</div>
+            <div style="font-size:0.86rem; color:var(--muted); line-height:1.45;">
+              🏷️ <strong>Banner d'impatto:</strong> Foto nitida e logo aziendale<br>
+              💬 <strong>Value Proposition:</strong> Slogan in 1 frase chiara<br>
+              🔘 <strong>Call-to-Action:</strong> Pulsante "Scopri i Servizi"<br>
+              📋 <strong>Anteprima:</strong> Sintesi delle sezioni interne
+            </div>
+          </div>
+
+          <!-- Esempio reale e Strategia AFM -->
+          <div style="background:rgba(56,189,248,0.1); border:1.5px solid rgba(56,189,248,0.3); border-radius:10px; padding:10px 12px; font-size:0.86rem; line-height:1.4;">
+            <div style="font-weight:800; color:var(--cyan);">💼 Esempio NovaPack S.p.A. (AFM):</div>
+            <div style="color:var(--text); margin-top:2px;"><em>"Packaging Sostenibile per l'Industria Alimentare"</em></div>
+            <div style="color:var(--dim); font-size:0.8rem; margin-top:3px;">💡 Chiudi in 5s o il cliente andrà dalla concorrenza.</div>
           </div>
         </div>
 
         <!-- Pagina 2: Chi Siamo -->
-        <div class="panel" style="border-top:5px solid var(--emerald); display:flex; flex-direction:column; gap:8px; padding:clamp(10px, 1.5vh, 18px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="badge emerald">Pagina 2</span>
-            <span style="font-size:1.8rem;">👥</span>
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:8px; padding:12px 14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge emerald" style="font-size:0.82rem; padding:3px 10px;">Pagina 2</span>
+              <span style="font-size:2.2rem;">👥</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--emerald); margin-top:2px;">Chi Siamo</div>
+            <div style="font-size:0.88rem; color:var(--emerald); font-weight:800;">Obiettivo: Fiducia &amp; Reputazione</div>
           </div>
-          <div style="font-size:1.2rem; font-weight:900; color:var(--emerald);">Chi Siamo</div>
-          <div style="font-size:0.85rem; color:var(--emerald); font-weight:750;">Obiettivo: Fiducia &amp; Reputazione</div>
-          
-          <div style="font-size:0.85rem; color:var(--muted); line-height:1.45; margin-top:4px;">
-            Fondamentale nel B2B per dimostrare solidità, competenza e serietà:
-          </div>
-          <ul style="font-size:0.82rem; color:var(--dim); line-height:1.45; padding-left:16px; display:flex; flex-direction:column; gap:4px;">
-            <li><strong>Storia d'impresa:</strong> Da dove nasce il progetto</li>
-            <li><strong>Mission &amp; Vision:</strong> Valori etici e sostenibilità ESG</li>
-            <li><strong>Il Team di lavoro:</strong> Foto e ruoli aziendali</li>
-            <li><strong>Certificazioni:</strong> ISO, premi o partner bancari</li>
-          </ul>
 
-          <div style="font-size:0.78rem; color:var(--emerald); background:rgba(52,211,153,0.1); padding:6px 8px; border-radius:6px; margin-top:auto;">
-            💼 <em>Esempio: "Oltre 25 anni al fianco delle imprese lombarde"</em>
+          <!-- Cosa deve contenere -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-weight:900; color:var(--text); font-size:0.92rem;">Contenuti Chiave:</div>
+            <div style="font-size:0.86rem; color:var(--muted); line-height:1.45;">
+              📜 <strong>Storia d'impresa:</strong> Radici e anni di attività<br>
+              🎯 <strong>Mission &amp; Vision:</strong> Valori etici e sostenibilità ESG<br>
+              👨‍💼 <strong>Il Team di lavoro:</strong> Foto soci e ruoli chiari<br>
+              🏆 <strong>Certificazioni:</strong> ISO 9001 e partner bancari
+            </div>
+          </div>
+
+          <!-- Esempio reale e Strategia RIM -->
+          <div style="background:rgba(52,211,153,0.1); border:1.5px solid rgba(52,211,153,0.3); border-radius:10px; padding:10px 12px; font-size:0.86rem; line-height:1.4;">
+            <div style="font-weight:800; color:var(--emerald);">💼 Esempio NovaPack Export (RIM):</div>
+            <div style="color:var(--text); margin-top:2px;"><em>"Oltre 25 anni di esperienza nell'export europeo"</em></div>
+            <div style="color:var(--dim); font-size:0.8rem; margin-top:3px;">💡 Nel B2B nessun buyer firma senza trasparenza.</div>
           </div>
         </div>
 
         <!-- Pagina 3: Prodotti / Servizi -->
-        <div class="panel" style="border-top:5px solid var(--amber); display:flex; flex-direction:column; gap:8px; padding:clamp(10px, 1.5vh, 18px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="badge amber">Pagina 3</span>
-            <span style="font-size:1.8rem;">📦</span>
+        <div class="panel" style="border-top:6px solid var(--amber); display:flex; flex-direction:column; justify-content:space-between; gap:8px; padding:12px 14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge amber" style="font-size:0.82rem; padding:3px 10px;">Pagina 3</span>
+              <span style="font-size:2.2rem;">📦</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--amber); margin-top:2px;">Prodotti / Servizi</div>
+            <div style="font-size:0.88rem; color:var(--amber); font-weight:800;">Obiettivo: Presentare l'Offerta</div>
           </div>
-          <div style="font-size:1.2rem; font-weight:900; color:var(--amber);">Prodotti / Servizi</div>
-          <div style="font-size:0.85rem; color:var(--amber); font-weight:750;">Obiettivo: Presentare l'Offerta</div>
-          
-          <div style="font-size:0.85rem; color:var(--muted); line-height:1.45; margin-top:4px;">
-            Il nucleo commerciale del sito. Mostra soluzioni concrete senza ambiguità:
-          </div>
-          <ul style="font-size:0.82rem; color:var(--dim); line-height:1.45; padding-left:16px; display:flex; flex-direction:column; gap:4px;">
-            <li><strong>Catalogo suddiviso:</strong> Categorie chiare e ordinate</li>
-            <li><strong>Schede dettagliate:</strong> Benefici e specifiche tecniche</li>
-            <li><strong>Piani o Listini:</strong> Prezzi B2C o "Preventivo B2B"</li>
-            <li><strong>Pulsante dedicato:</strong> "Richiedi Scheda Tecnica"</li>
-          </ul>
 
-          <div style="font-size:0.78rem; color:var(--amber); background:rgba(251,191,36,0.1); padding:6px 8px; border-radius:6px; margin-top:auto;">
-            💼 <em>Esempio: "3 Piani di Gestione Fiscale: Base, Pro, Enterprise"</em>
+          <!-- Cosa deve contenere -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-weight:900; color:var(--text); font-size:0.92rem;">Contenuti Chiave:</div>
+            <div style="font-size:0.86rem; color:var(--muted); line-height:1.45;">
+              🗂️ <strong>Catalogo suddiviso:</strong> Categorie chiare e ordinate<br>
+              📋 <strong>Schede dettagliate:</strong> Benefici e specifiche tecniche<br>
+              📊 <strong>Piani o Listini:</strong> Prezzi B2C o preventivi B2B<br>
+              🔘 <strong>Pulsante dedicato:</strong> "Richiedi Scheda Tecnica"
+            </div>
+          </div>
+
+          <!-- Esempio reale e Strategia Commerciale -->
+          <div style="background:rgba(251,191,36,0.1); border:1.5px solid rgba(251,191,36,0.3); border-radius:10px; padding:10px 12px; font-size:0.86rem; line-height:1.4;">
+            <div style="font-weight:800; color:var(--amber);">💼 Esempio Offerta Commerciale:</div>
+            <div style="color:var(--text); margin-top:2px;"><em>"3 Linee: Imballaggi Termici, Film Bio, Nastri"</em></div>
+            <div style="color:var(--dim); font-size:0.8rem; margin-top:3px;">💡 Schede chiare aumentano le richieste di preventivo.</div>
           </div>
         </div>
 
         <!-- Pagina 4: Contatti -->
-        <div class="panel" style="border-top:5px solid var(--purple); display:flex; flex-direction:column; gap:8px; padding:clamp(10px, 1.5vh, 18px);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="badge purple">Pagina 4</span>
-            <span style="font-size:1.8rem;">📍</span>
+        <div class="panel" style="border-top:6px solid var(--purple); display:flex; flex-direction:column; justify-content:space-between; gap:8px; padding:12px 14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge purple" style="font-size:0.82rem; padding:3px 10px;">Pagina 4</span>
+              <span style="font-size:2.2rem;">📍</span>
+            </div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--purple); margin-top:2px;">Contatti &amp; Sede</div>
+            <div style="font-size:0.88rem; color:var(--purple); font-weight:800;">Obiettivo: Convertire il Visitatore</div>
           </div>
-          <div style="font-size:1.2rem; font-weight:900; color:var(--purple);">Contatti &amp; Sede</div>
-          <div style="font-size:0.85rem; color:var(--purple); font-weight:750;">Obiettivo: Convertire il Visitatore</div>
-          
-          <div style="font-size:0.85rem; color:var(--muted); line-height:1.45; margin-top:4px;">
-            Rende l'azienda raggiungibile eliminando qualsiasi barriera di contatto:
-          </div>
-          <ul style="font-size:0.82rem; color:var(--dim); line-height:1.45; padding-left:16px; display:flex; flex-direction:column; gap:4px;">
-            <li><strong>Modulo interattivo:</strong> Form integrato (Google Moduli)</li>
-            <li><strong>Mappa navigabile:</strong> Widget Google Maps della sede</li>
-            <li><strong>Recapiti diretti:</strong> Email istituzionale e telefono</li>
-            <li><strong>Dati legali:</strong> Partita IVA e PEC (obbligatorie)</li>
-          </ul>
 
-          <div style="font-size:0.78rem; color:var(--purple); background:rgba(192,132,252,0.1); padding:6px 8px; border-radius:6px; margin-top:auto;">
-            💼 <em>Esempio: "Prenota una consulenza gratuita in sede o su Meet"</em>
+          <!-- Cosa deve contenere -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-weight:900; color:var(--text); font-size:0.92rem;">Contenuti Chiave:</div>
+            <div style="font-size:0.86rem; color:var(--muted); line-height:1.45;">
+              📝 <strong>Modulo interattivo:</strong> Google Moduli integrato<br>
+              🗺️ <strong>Mappa navigabile:</strong> Widget Google Maps della sede<br>
+              ✉️ <strong>Recapiti diretti:</strong> Email aziendale e telefono<br>
+              🏛️ <strong>Dati fiscali:</strong> Partita IVA e PEC (obbligatorie)
+            </div>
+          </div>
+
+          <!-- Esempio reale e Strategia di Conversione -->
+          <div style="background:rgba(192,132,252,0.1); border:1.5px solid rgba(192,132,252,0.3); border-radius:10px; padding:10px 12px; font-size:0.86rem; line-height:1.4;">
+            <div style="font-weight:800; color:var(--purple);">💼 Esempio Dati &amp; Contatti:</div>
+            <div style="color:var(--text); margin-top:2px;"><em>"Sede Milano &bull; P.IVA 01234567890 &bull; preventivi@..."</em></div>
+            <div style="color:var(--dim); font-size:0.8rem; margin-top:3px;">💡 Zero barriere: un click per chiamare o scrivere.</div>
           </div>
         </div>
+
       </div>
 
-      <div class="banner" style="padding:10px 16px;">
-        <div>💡 <strong>Il vantaggio integrato di Google Sites:</strong> Quando crei una nuova pagina nella scheda <em>Pagine</em>, Google Sites aggiorna automaticamente il menu di navigazione in alto in tutte le pagine del sito!</div>
+      <div class="banner" style="padding:8px 16px; margin-top:2px; font-size:0.95rem;">
+        <div>💡 <strong>Il superpotere integrato di Google Sites:</strong> Quando crei una nuova pagina nella scheda <em>Pagine</em>, Google Sites aggiorna automaticamente la barra di navigazione in alto in tutte le pagine del sito!</div>
       </div>
     </section>
 
@@ -896,26 +977,29 @@
           <span class="badge emerald">Verifica Interattiva alla LIM</span>
           <h2 class="title">Checkpoint: <span class="hl-emerald">Mettiamoci alla Prova in Classe!</span></h2>
         </div>
-        <span class="badge amber" id="quizCounterBadge">Domanda 1 di 4</span>
+        <span class="badge amber" id="quizCounterBadge" style="font-size:0.95rem;">Domanda 1 di 4</span>
       </div>
 
       <div class="grid-2">
         <!-- Riquadro Domanda -->
-        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:16px; padding:clamp(16px, 2.4vh, 28px);">
           <div>
-            <div style="font-size:0.85rem; color:var(--cyan); font-weight:800; text-transform:uppercase;" id="quizCat">Economia &amp; Mercati</div>
-            <h3 style="font-size:1.35rem; font-weight:900; line-height:1.3; margin-top:6px;" id="quizQuestion">
-              Cosa differenzia principalmente un sito web B2B da un sito web B2C?
+            <div style="font-size:1rem; color:var(--cyan); font-weight:900; text-transform:uppercase; letter-spacing:0.05em;" id="quizCat">
+              Economia &amp; Mercati (Cap. 5)
+            </div>
+            <h3 style="font-size:1.65rem; font-weight:900; line-height:1.35; margin-top:10px; color:#fff;" id="quizQuestion">
+              Cosa caratterizza principalmente un sito web orientato al B2B (Business-to-Business)?
             </h3>
           </div>
 
-          <div id="quizHintPrompt" style="background:rgba(255,255,255,0.03); border:1.5px dashed rgba(56,189,248,0.3); border-radius:12px; padding:14px; display:flex; align-items:center; gap:12px;">
-            <span style="font-size:1.8rem;">🙋‍♂️</span>
-            <div style="font-size:0.92rem; color:var(--muted); line-height:1.4;">
+          <div id="quizHintPrompt" style="background:rgba(255,255,255,0.03); border:2px dashed rgba(56,189,248,0.35); border-radius:14px; padding:18px; display:flex; align-items:center; gap:16px;">
+            <span style="font-size:2.4rem;">🙋‍♂️</span>
+            <div style="font-size:1.05rem; color:var(--muted); line-height:1.45;">
               <strong style="color:var(--cyan);">Attività alla LIM:</strong> Chiedi a uno studente di salire alla lavagna, confrontarsi con la classe e toccare col dito l'opzione corretta!
             </div>
           </div>
-          <div id="quizFeedbackBox" style="font-size:0.92rem; line-height:1.4; padding:10px 14px; border-radius:10px; display:none;"></div>
+
+          <div id="quizFeedbackBox" style="font-size:1.12rem; line-height:1.55; padding:16px 20px; border-radius:14px; display:none;"></div>
 
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn btn-sm" onclick="prevQuizQuestion()">◀ Domanda Prec.</button>
@@ -924,7 +1008,7 @@
         </div>
 
         <!-- 4 Opzioni di Risposta Cliccabili -->
-        <div style="display:flex; flex-direction:column; gap:8px;" id="quizOptionsBox"></div>
+        <div style="display:flex; flex-direction:column; gap:12px; justify-content:center;" id="quizOptionsBox"></div>
       </div>
     </section>
 
@@ -938,44 +1022,44 @@
         <span class="badge emerald">Dalla Teoria alla Pratica</span>
       </div>
 
-      <div class="grid-2" style="flex:1; min-height:0;">
+      <div class="grid-2" style="flex:1; min-height:0; margin-top:2px;">
         <!-- Colonna Sinistra: Roadmap Operativa a 4 Fasi -->
-        <div class="panel" style="border-top:5px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:14px; padding:clamp(16px, 2.2vh, 26px);">
+        <div class="panel" style="border-top:6px solid var(--cyan); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(12px, 1.6vh, 20px);">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="badge cyan">Roadmap Operativa PC</span>
-              <span style="font-size:0.88rem; color:var(--dim); font-weight:750;">Tempo Assegnato: 60 minuti</span>
+              <span style="font-size:0.88rem; color:var(--dim); font-weight:800;">Tempo: 60 minuti</span>
             </div>
-            <h3 style="font-size:1.35rem; font-weight:900; margin-top:8px; color:var(--cyan);">I 4 Passi che Completerai al Computer</h3>
+            <h3 style="font-size:1.35rem; font-weight:900; margin-top:6px; color:var(--cyan);">I 4 Passi che Completerai al Computer</h3>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:12px; flex:1; justify-content:space-around;">
-            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:16px;">
-              <span style="font-size:1.5rem; background:rgba(56,189,248,0.15); min-width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--cyan); font-weight:900;">1</span>
+          <div style="display:flex; flex-direction:column; gap:10px; flex:1; justify-content:space-around;">
+            <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.4rem; background:rgba(56,189,248,0.18); min-width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--cyan); font-weight:900;">1</span>
               <div>
                 <strong style="color:var(--text); font-size:1rem;">Accesso &amp; Creazione Sito (pag. 200, Step 1–4):</strong>
-                <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Apri <code>sites.google.com</code> con account d'istituto, clicca sul "+" vuoto e inserisci il nome dell'azienda.</div>
+                <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Apri <code>sites.google.com</code> con account scolastico, clicca sul "+" vuoto e assegna il titolo dell'azienda.</div>
               </div>
             </div>
 
-            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:16px;">
-              <span style="font-size:1.5rem; background:rgba(52,211,153,0.15); min-width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--emerald); font-weight:900;">2</span>
+            <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.4rem; background:rgba(52,211,153,0.18); min-width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--emerald); font-weight:900;">2</span>
               <div>
                 <strong style="color:var(--text); font-size:1rem;">Creazione Alberatura a 4 Pagine (pag. 201, Step 5–7):</strong>
                 <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Nella scheda <em>Pagine</em> aggiungi: <strong>Home, Chi Siamo, Prodotti/Servizi, Contatti</strong>. Controlla il menu in alto!</div>
               </div>
             </div>
 
-            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:16px;">
-              <span style="font-size:1.5rem; background:rgba(251,191,36,0.15); min-width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--amber); font-weight:900;">3</span>
+            <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.4rem; background:rgba(251,191,36,0.18); min-width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--amber); font-weight:900;">3</span>
               <div>
                 <strong style="color:var(--text); font-size:1rem;">Impaginazione &amp; Copywriting (pag. 202, Step 8–10):</strong>
-                <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Trascina un blocco di layout nella Home. Inserisci lo slogan commerciale e una foto nitida ad alta risoluzione.</div>
+                <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Trascina un blocco di layout nella Home. Inserisci slogan commerciale e una foto nitida ad alta risoluzione.</div>
               </div>
             </div>
 
-            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:16px;">
-              <span style="font-size:1.5rem; background:rgba(192,132,252,0.15); min-width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--purple); font-weight:900;">4</span>
+            <div style="background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.4rem; background:rgba(192,132,252,0.18); min-width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--purple); font-weight:900;">4</span>
               <div>
                 <strong style="color:var(--text); font-size:1rem;">Link Interni &amp; Test Smartphone (pag. 203, Step 11):</strong>
                 <div style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Collega un pulsante dalla Home alla pagina Servizi e prova l'anteprima schermo intero per cellulare.</div>
@@ -983,46 +1067,46 @@
             </div>
           </div>
 
-          <div style="font-size:0.88rem; color:var(--dim); background:rgba(0,0,0,0.3); padding:10px 14px; border-radius:10px;">
+          <div style="font-size:0.88rem; color:var(--dim); background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:8px;">
             📖 <em>Tutti i passaggi operativi sono guidati sul libro: Capitolo 4, pag. 200–203.</em>
           </div>
         </div>
 
         <!-- Colonna Destra: Criteri di Qualità e Avvio -->
-        <div class="panel" style="border-top:5px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:14px; padding:clamp(16px, 2.2vh, 26px);">
+        <div class="panel" style="border-top:6px solid var(--emerald); display:flex; flex-direction:column; justify-content:space-between; gap:10px; padding:clamp(12px, 1.6vh, 20px);">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="badge emerald">Criteri di Qualità</span>
               <span class="badge amber">Valutazione AFM / RIM</span>
             </div>
-            <h3 style="font-size:1.35rem; font-weight:900; margin-top:8px; color:var(--emerald);">Cosa Rende un Sito Professionale?</h3>
+            <h3 style="font-size:1.35rem; font-weight:900; margin-top:6px; color:var(--emerald);">Cosa Rende un Sito Professionale?</h3>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:12px; flex:1; justify-content:space-around;">
-            <div style="background:rgba(251,113,133,0.1); border-left:5px solid var(--rose); border-radius:12px; padding:12px 16px;">
-              <div style="font-weight:900; color:var(--rose); font-size:0.96rem;">❌ No Immagini Sgranate o Deformate</div>
-              <div style="font-size:0.88rem; color:var(--muted); margin-top:4px; line-height:1.45;">Usa foto nitide in alta risoluzione pertinenti al settore merceologico dell'azienda (Unsplash / Google).</div>
+          <div style="display:flex; flex-direction:column; gap:10px; flex:1; justify-content:space-around;">
+            <div style="background:rgba(251,113,133,0.12); border-left:5px solid var(--rose); border-radius:10px; padding:10px 14px;">
+              <div style="font-weight:900; color:var(--rose); font-size:1rem;">❌ No Immagini Sgranate o Deformate</div>
+              <div style="font-size:0.88rem; color:var(--muted); margin-top:2px; line-height:1.4;">Usa foto nitide in alta risoluzione pertinenti al settore merceologico dell'azienda (Unsplash / Google).</div>
             </div>
 
-            <div style="background:rgba(251,113,133,0.1); border-left:5px solid var(--rose); border-radius:12px; padding:12px 16px;">
-              <div style="font-weight:900; color:var(--rose); font-size:0.96rem;">❌ No Testo Finto o Incompleto</div>
-              <div style="font-size:0.88rem; color:var(--muted); margin-top:4px; line-height:1.45;">Evita 'Lorem Ipsum' o testi casuali: formula frasi reali orientate al cliente (B2B o B2C) con chiara proposta di valore.</div>
+            <div style="background:rgba(251,113,133,0.12); border-left:5px solid var(--rose); border-radius:10px; padding:10px 14px;">
+              <div style="font-weight:900; color:var(--rose); font-size:1rem;">❌ No Testo Finto o Incompleto</div>
+              <div style="font-size:0.88rem; color:var(--muted); margin-top:2px; line-height:1.4;">Evita 'Lorem Ipsum' o testi casuali: formula frasi reali orientate al cliente (B2B o B2C) con chiara proposta di valore.</div>
             </div>
 
-            <div style="background:rgba(52,211,153,0.1); border-left:5px solid var(--emerald); border-radius:12px; padding:12px 16px;">
-              <div style="font-weight:900; color:var(--emerald); font-size:0.96rem;">✓ Coerenza Grafica e Temi Aziendali</div>
-              <div style="font-size:0.88rem; color:var(--muted); margin-top:4px; line-height:1.45;">Scegli una palette colori sobria che rispecchi l'identità d'impresa e mantienila uniforme in tutte le 4 pagine.</div>
+            <div style="background:rgba(52,211,153,0.12); border-left:5px solid var(--emerald); border-radius:10px; padding:10px 14px;">
+              <div style="font-weight:900; color:var(--emerald); font-size:1rem;">✓ Coerenza Grafica e Temi Aziendali</div>
+              <div style="font-size:0.88rem; color:var(--muted); margin-top:2px; line-height:1.4;">Scegli una palette colori sobria che rispecchi l'identità d'impresa e mantienila uniforme in tutte le 4 pagine.</div>
             </div>
 
-            <div style="background:rgba(56,189,248,0.1); border-left:5px solid var(--cyan); border-radius:12px; padding:12px 16px;">
-              <div style="font-weight:900; color:var(--cyan); font-size:0.96rem;">✓ Collaudo Mobile-First</div>
-              <div style="font-size:0.88rem; color:var(--muted); margin-top:4px; line-height:1.45;">Oltre il 70% degli utenti naviga da smartphone: controlla che titoli, menu e pulsanti siano comodamente leggibili.</div>
+            <div style="background:rgba(56,189,248,0.12); border-left:5px solid var(--cyan); border-radius:10px; padding:10px 14px;">
+              <div style="font-weight:900; color:var(--cyan); font-size:1rem;">✓ Collaudo Mobile-First</div>
+              <div style="font-size:0.88rem; color:var(--muted); margin-top:2px; line-height:1.4;">Oltre il 70% degli utenti naviga da smartphone: controlla che titoli, menu e pulsanti siano comodamente leggibili.</div>
             </div>
           </div>
 
-          <div style="background:linear-gradient(135deg, rgba(14,165,233,0.2), rgba(52,211,153,0.2)); border:1.5px solid var(--cyan); border-radius:14px; padding:18px; text-align:center;">
-            <div style="font-size:1.2rem; font-weight:900; color:#fff;">Siete pronti ad aprire Google Sites?</div>
-            <div style="font-size:0.92rem; color:var(--muted); margin-top:4px;">Accendiamo i monitor, apriamo il browser e iniziamo a costruire la nostra presenza sul Web!</div>
+          <div style="background:linear-gradient(135deg, rgba(14,165,233,0.2), rgba(52,211,153,0.2)); border:2px solid var(--cyan); border-radius:14px; padding:14px; text-align:center;">
+            <div style="font-size:1.15rem; font-weight:900; color:#fff;">Siete pronti ad aprire Google Sites?</div>
+            <div style="font-size:0.9rem; color:var(--muted); margin-top:2px;">Accendiamo i monitor, apriamo il browser e iniziamo a costruire la nostra presenza sul Web!</div>
           </div>
         </div>
       </div>
@@ -1032,69 +1116,112 @@
 
   <footer class="dock">
 
-
-
-    <div style="display:flex; align-items:center; gap:6px;">
+    <div style="display:flex; align-items:center; gap:8px;">
       <a id="back-to-index-dock" href="/#informatica" class="btn btn-sm" style="text-decoration:none; color:var(--cyan);" title="Torna al Portale">🏠 Indice</a>
-      <button class="btn btn-sm" onclick="prevSlide()">◀ Indietro</button>
-      <button class="btn btn-sm btn-primary" onclick="nextSlide()">Avanti ▶</button>
+      <button class="btn btn-sm" onclick="prevSlide()" title="Slide precedente (Freccia Sinistra)">◀ Indietro</button>
+      <button class="btn btn-sm btn-primary" onclick="nextSlide()" title="Slide successiva (Spazio o Freccia Destra)">Avanti ▶</button>
     </div>
 
     <div class="dots" id="dockDots"></div>
 
-    <div style="display:flex; align-items:center; gap:6px;">
-      <button class="btn btn-sm btn-amber" onclick="toggleLimMode()" title="Disegna o scrivi sulla LIM">🖍️ Lavagna LIM</button>
-      <button class="btn btn-sm" id="btnLaser" onclick="toggleLaser()" title="Puntatore Laser LIM">🔴 Laser</button>
-      <button class="btn btn-sm" onclick="toggleFullScreen()" title="Schermo Intero F11">⛶ Schermo Intero</button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="btn btn-sm btn-amber" onclick="toggleLimMode()" title="Attiva modalità lavagna / disegno LIM (Tasto W o D)">✏️ Lavagna LIM</button>
+      <button class="btn btn-sm" id="btnLaserToggle" onclick="toggleLaser()" title="Puntatore laser LIM (Tasto L)">🔴 Laser</button>
+      <button class="btn btn-sm" onclick="toggleFullScreen()" title="Schermo intero (F11)">⛶ Schermo Intero</button>
     </div>
   </footer>
 </div>
 
 <script>
-/* =========================================================================
-   1. GESTIONE PRESENTAZIONE A 9 SLIDE
-   ========================================================================= */
+// Stato Presentazione
+let curSlide = 0;
 const totalSlides = 9;
-let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const progressBar = document.getElementById('progressBar');
+const dotsContainer = document.getElementById('dockDots');
 
-function initDeck() {
-  const dotsContainer = document.getElementById('dockDots');
-  dotsContainer.innerHTML = '';
-  const labels = ['1. Intro', '2. Marketing', '3. E-Commerce', '4. B2B vs B2C', '5. Architettura', '6. WYSIWYG', '7. Sitemap', '8. Checkpoint', '9. Lab'];
-  for (let i = 0; i < totalSlides; i++) {
-    const b = document.createElement('button');
-    b.className = `dot ${i === 0 ? 'active' : ''}`;
-    b.textContent = (i + 1);
-    b.title = labels[i];
-    b.onclick = () => goToSlide(i);
-    dotsContainer.appendChild(b);
+// Genera i pallini nel dock
+slides.forEach((_, i) => {
+  const d = document.createElement('button');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.textContent = i + 1;
+  d.title = `Vai a slide ${i + 1}`;
+  d.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(d);
+});
+
+function updateDeck() {
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === curSlide);
+  });
+  document.querySelectorAll('#dockDots .dot').forEach((d, i) => {
+    d.classList.toggle('active', i === curSlide);
+  });
+  if (progressBar) {
+    progressBar.style.width = `${((curSlide + 1) / totalSlides) * 100}%`;
   }
 }
 
-function goToSlide(idx) {
-  if (idx < 0 || idx >= totalSlides) return;
-  currentSlide = idx;
-  document.querySelectorAll('.slide').forEach((el, i) => {
-    el.classList.toggle('active', i === idx);
-  });
-  document.querySelectorAll('#dockDots .dot').forEach((d, i) => {
-    d.classList.toggle('active', i === idx);
-  });
-  document.getElementById('progressBar').style.width = `${((idx + 1) / totalSlides) * 100}%`;
+function nextSlide() {
+  if (curSlide < totalSlides - 1) {
+    curSlide++;
+    updateDeck();
+  }
 }
 
-function nextSlide() { goToSlide(currentSlide + 1); }
-function prevSlide() { goToSlide(currentSlide - 1); }
+function prevSlide() {
+  if (curSlide > 0) {
+    curSlide--;
+    updateDeck();
+  }
+}
 
+function goToSlide(n) {
+  if (n >= 0 && n < totalSlides) {
+    curSlide = n;
+    updateDeck();
+  }
+}
+
+// Navigazione da Tastiera
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault();
+    nextSlide();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    prevSlide();
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    goToSlide(0);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    goToSlide(totalSlides - 1);
+  } else if (e.key === 'l' || e.key === 'L') {
+    toggleLaser();
+  } else if (e.key === 'w' || e.key === 'W' || e.key === 'd' || e.key === 'D') {
+    toggleLimMode();
+  } else if (!isNaN(parseInt(e.key)) && parseInt(e.key) >= 1 && parseInt(e.key) <= 9) {
+    goToSlide(parseInt(e.key) - 1);
+  }
+});
+
+// Puntatore Laser LIM
+let laserActive = false;
+const laserDot = document.getElementById('laser-dot');
 function toggleLaser() {
-  document.body.classList.toggle('laser-on');
-  document.getElementById('btnLaser').classList.toggle('active-pill', document.body.classList.contains('laser-on'));
+  laserActive = !laserActive;
+  document.body.classList.toggle('laser-on', laserActive);
+  const btn = document.getElementById('btnLaserToggle');
+  if (btn) btn.classList.toggle('active-pill', laserActive);
 }
 
-window.addEventListener('pointermove', e => {
-  const dot = document.getElementById('laser-dot');
-  dot.style.left = e.clientX + 'px';
-  dot.style.top = e.clientY + 'px';
+window.addEventListener('mousemove', (e) => {
+  if (laserActive && laserDot) {
+    laserDot.style.left = e.clientX + 'px';
+    laserDot.style.top = e.clientY + 'px';
+  }
 });
 
 function toggleFullScreen() {
@@ -1105,116 +1232,114 @@ function toggleFullScreen() {
   }
 }
 
-window.addEventListener('keydown', e => {
-  if (e.key === 'w' || e.key === 'W' || e.key === 'd' || e.key === 'D') {
-    toggleLimMode();
-    return;
-  }
-  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-    nextSlide();
-  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-    prevSlide();
-  } else if (e.key === 'Home') {
-    goToSlide(0);
-  } else if (e.key === 'End') {
-    goToSlide(totalSlides - 1);
-  } else if (e.key === 'l' || e.key === 'L') {
-    toggleLaser();
-  }
-});
-
-/* =========================================================================
-   2. SLIDE 3: TIMELINE DELLE 4 TAPPE DELL'E-COMMERCE
-   ========================================================================= */
-const timelineData = {
-  1: {
+// SLIDE 3: Tappe Timeline
+const stageDetails = [
+  {
     title: "Tappa 1: La Nascita del Web Istituzionale (Pubblicazione)",
-    desc: "Negli anni '90 le prime aziende usavano pagine HTML statiche come brochure digitali. Nessun carrello, solo contatti telefonici e presentazione prodotti. <strong>Google Sites padroneggia alla perfezione questa tappa</strong>, permettendo di curare la credibilità aziendale.",
-    color: "var(--cyan)"
+    badge: "Anni '90 • Web 1.0",
+    desc: "Le prime aziende comparse su Internet (come Olivetti con Cybermercato nel 1996 o Cisco Systems) usavano il sito web per mostrare chi erano e cosa producevano. Era l'equivalente di una brochure stampata consultabile via modem a 56k. Con Google Sites impariamo a padroneggiare alla perfezione questa tappa fondamentale, curando la comunicazione e la reputazione del marchio."
   },
-  2: {
-    title: "Tappa 2: L'Avvento dell'Interattività e della Raccolta Dati",
-    desc: "Negli anni 2000 i siti web diventano bidirezionali: arrivano i <strong>moduli di contatto (form)</strong>, la richiesta preventivi, l'iscrizione a newsletter e le mappe interattive. Con Google Sites possiamo integrare moduli Google, fogli di calcolo e mappe con un semplice clic!",
-    color: "var(--emerald)"
+  {
+    title: "Tappa 2: L'Apertura al Dialogo col Cliente (Interattività)",
+    badge: "Anni 2000 • Web 2.0",
+    desc: "Il sito smette di essere un monologo: il cliente può richiedere preventivi, compilare moduli d'ordine e visualizzare cataloghi sfogliabili. Google Sites eccelle in questa tappa: integrando Google Moduli, Google Maps e video YouTube, permette di raccogliere contatti qualificati (lead generation) a costo zero."
   },
-  3: {
-    title: "Tappa 3: La Transazione Online (Il Vero E-Commerce)",
-    desc: "Il cliente sceglie il prodotto, lo mette nel carrello e <strong>paga direttamente online</strong> tramite carta di credito o PayPal. Questa fase richiede piattaforme dedicate con database e gateway bancari complessi.",
-    color: "var(--amber)"
+  {
+    title: "Tappa 3: La Nascita del Carrello Virtuale (Transazione)",
+    badge: "Anni 2010 • E-Commerce",
+    desc: "Il cliente sceglie il prodotto, lo mette nel carrello ed effettua la transazione monetaria direttamente sul web con carta di credito, bonifico o PayPal. Richiede piattaforme e-commerce dedicate con database transazionali (es. Shopify, WooCommerce) e rigorosa conformità di sicurezza bancaria PCI-DSS."
   },
-  4: {
-    title: "Tappa 4: L'Integrazione Totale con i Sistemi Aziendali (ERP)",
-    desc: "Oggi l'ordine sul sito web parla direttamente con il magazzino robotizzato, genera la fattura elettronica automatica e programma la spedizione col corriere tramite software gestionali come SAP o Zucchetti.",
-    color: "var(--purple)"
+  {
+    title: "Tappa 4: L'Impresa Digitale Connessa (Integrazione ERP)",
+    badge: "Oggi • Impresa 4.0",
+    desc: "Il click dell'utente sul sito fa partire l'ordine nel software ERP aziendale (SAP, Oracle), emette la fattura elettronica automatica e aziona i robot logistici in magazzino. È il traguardo dell'automazione aziendale studiato nel programma AFM."
   }
-};
+];
 
-function selectTimelineStep(st) {
-  for (let i = 1; i <= 4; i++) {
-    const card = document.getElementById('tlCard' + i);
-    if (card) card.classList.toggle('selected', i === st);
-  }
-  const d = timelineData[st];
-  const box = document.getElementById('tlDetailBox');
-  box.style.borderLeftColor = d.color;
-  document.getElementById('tlDetailTitle').innerHTML = d.title;
-  document.getElementById('tlDetailTitle').style.color = d.color;
-  document.getElementById('tlDetailDesc').innerHTML = d.desc;
+function selectTimelineStage(idx) {
+  document.querySelectorAll('#timelineCards .interactive-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+  const data = stageDetails[idx];
+  document.getElementById('tdTitle').textContent = data.title;
+  document.getElementById('tdBadge').textContent = data.badge;
+  document.getElementById('tdDesc').innerHTML = data.desc;
 }
 
-/* =========================================================================
-   3. SLIDE 4: SWITCHER B2B vs B2C
-   ========================================================================= */
-function switchMarketSegment(type) {
-  const btnB2B = document.getElementById('btnSwitchB2B');
-  const btnB2C = document.getElementById('btnSwitchB2C');
-  btnB2B.classList.toggle('active-pill', type === 'B2B');
-  btnB2C.classList.toggle('active-pill', type === 'B2C');
+// SLIDE 4: B2B vs B2C Switcher
+function setB2BMode(isB2B) {
+  const btnB2B = document.getElementById('btnToggleB2B');
+  const btnB2C = document.getElementById('btnToggleB2C');
+  btnB2B.classList.toggle('active-pill', isB2B);
+  btnB2C.classList.toggle('active-pill', !isB2B);
 
-  if (type === 'B2B') {
-    document.getElementById('segBadge').textContent = "Segmento: B2B (Business-to-Business)";
-    document.getElementById('segSub').textContent = "Transazioni commerciali tra imprese";
-    document.getElementById('segConcept').innerHTML = `Nel <strong>B2B</strong> il compratore è un manager o un responsabile acquisti. Cerca <strong>affidabilità, schede tecniche, volumi di fornitura, certificazioni e preventivi personalizzati</strong>.`;
-    document.getElementById('segCharacteristics').innerHTML = `
-      <div style="font-weight:800; color:var(--cyan); font-size:0.95rem;">Elementi Chiave da inserire nel sito B2B:</div>
-      <ul style="margin-left:18px; margin-top:4px; font-size:0.88rem; color:var(--muted); line-height:1.45;">
-        <li>Catalogo dettagliato con specifiche e certificazioni ISO</li>
-        <li>Pulsante ben visibile: <strong>"Richiedi un Preventivo B2B"</strong></li>
-        <li>Sezione <em>Chi Siamo</em> con organigramma e solidità aziendale</li>
-        <li>Modulo di contatto dedicato a distributori e grossisti</li>
-      </ul>
+  const badge = document.getElementById('b2bBadge');
+  const sub = document.getElementById('b2bSubTitle');
+  const title = document.getElementById('b2bMainTitle');
+  const desc = document.getElementById('b2bDesc');
+  const listTitle = document.getElementById('b2bKeyElementsTitle');
+  const list = document.getElementById('b2bKeyList');
+  const copyNote = document.getElementById('b2bCopyNote');
+  const targetBadge = document.getElementById('b2bTargetBadge');
+
+  const mockUrl = document.getElementById('mockUrl');
+  const mockCat = document.getElementById('mockCategory');
+  const mockHero = document.getElementById('mockHero');
+  const mockText = document.getElementById('mockText');
+  const mockBtn = document.getElementById('mockBtn');
+
+  if (isB2B) {
+    badge.className = 'badge cyan';
+    badge.textContent = 'Segmento: B2B (Business-to-Business)';
+    sub.textContent = 'Transazioni tra imprese';
+    title.textContent = "La Psicologia d'Acquisto Razionale del Buyer";
+    desc.innerHTML = "Nel B2B (es. produttore di packaging industriale o software gestionale) il compratore è un dirigente aziendale o responsabile acquisti. Non compra d'impulso: cerca <strong>affidabilità, schede tecniche, volumi di fornitura, certificazioni ISO e preventivi personalizzati</strong>.";
+    listTitle.textContent = "Elementi Chiave da Inserire nel Sito B2B:";
+    list.innerHTML = `
+      <li>Catalogo dettagliato con specifiche tecniche scaricabili (PDF)</li>
+      <li>Pulsante ben visibile: <em>"Richiedi un Preventivo Personalizzato B2B"</em></li>
+      <li>Sezione <em>Chi Siamo</em> con organigramma aziendale e certificazioni</li>
+      <li>Modulo di contatto dedicato a distributori e grossisti con Partita IVA</li>
     `;
-    document.getElementById('segTargetPill').textContent = "Target: Manager & Buyer";
-    document.getElementById('mockTagline').textContent = "FORNITURE INDUSTRIALI CERTIFICATE";
-    document.getElementById('mockTitle').textContent = "Componenti di precisione per l'industria 4.0";
-    document.getElementById('mockDesc').textContent = "Ottimizza la tua supply chain con consegne garantite in 24h e tracciabilità totale dei lotti.";
-    document.getElementById('mockBtn').textContent = "Richiedi Catalogo & Preventivo ▶";
-    document.getElementById('mockBtn').className = "btn btn-sm btn-primary";
+    copyNote.innerHTML = "👉 <strong>Tono di Voce (Copywriting):</strong> Tecnico, sobrio e orientato al ROI (ritorno sull'investimento) e all'efficienza operativa.";
+    targetBadge.textContent = 'Target: Manager & Buyer Aziendali';
+    targetBadge.className = 'badge amber';
+
+    mockUrl.textContent = 'https://www.industrial-pack.it';
+    mockCat.textContent = 'Forniture Industriali Certificate ISO 9001';
+    mockCat.style.color = 'var(--cyan)';
+    mockHero.textContent = "Soluzioni di Precisione per l'Industria 4.0";
+    mockText.textContent = "Ottimizza la tua supply chain con consegne garantite in 24 ore e tracciabilità totale dei lotti.";
+    mockBtn.textContent = 'Richiedi Catalogo & Preventivo ▶';
+    mockBtn.className = 'btn btn-primary';
   } else {
-    document.getElementById('segBadge').textContent = "Segmento: B2C (Business-to-Consumer)";
-    document.getElementById('segSub').textContent = "Vendita diretta al cliente finale";
-    document.getElementById('segConcept').innerHTML = `Nel <strong>B2C</strong> il compratore è il singolo cittadino. Compra spesso per emozione o bisogno immediato: cerca <strong>bellezza estetica, prezzo chiaro, recensioni di altri clienti e facilità d'uso</strong>.`;
-    document.getElementById('segCharacteristics').innerHTML = `
-      <div style="font-weight:800; color:var(--amber); font-size:0.95rem;">Elementi Chiave da inserire nel sito B2C:</div>
-      <ul style="margin-left:18px; margin-top:4px; font-size:0.88rem; color:var(--muted); line-height:1.45;">
-        <li>Fotografie accattivanti e ambientate ad alta definizione</li>
-        <li>Prezzi chiari con indicazione di sconti o offerte speciali</li>
-        <li>Social Proof: recensioni e valutazioni a 5 stelle</li>
-        <li>Pulsante d'azione immediata: <strong>"Ordina Ora / Prenota"</strong></li>
-      </ul>
+    badge.className = 'badge emerald';
+    badge.textContent = 'Segmento: B2C (Business-to-Consumer)';
+    sub.textContent = 'Vendita al consumatore finale';
+    title.textContent = "La Psicologia d'Acquisto Emozionale del Consumatore";
+    desc.innerHTML = "Nel B2C (es. negozio di abbigliamento, pasticceria artigianale o libreria) il cliente compra per sé o per la famiglia. La decisione d'acquisto è guidata da <strong>emozioni, estetica visiva, semplicità d'uso, prezzi chiari e recensioni social di altri clienti</strong>.";
+    listTitle.textContent = "Elementi Chiave da Inserire nel Sito B2C:";
+    list.innerHTML = `
+      <li>Fotografie emozionali ad alta risoluzione del prodotto o locale</li>
+      <li>Pulsanti d'acquisto o prenotazione immediata: <em>"Ordina Ora"</em> o <em>"Prenota un Tavolo"</em></li>
+      <li>Prezzi IVA inclusa esposti con massima trasparenza</li>
+      <li>Recensioni con stelle, link social Instagram/TikTok e mappa GPS della sede</li>
     `;
-    document.getElementById('segTargetPill').textContent = "Target: Consumatore Finale";
-    document.getElementById('mockTagline').textContent = "MODA SOSTENIBILE & DESIGN ITALIANO";
-    document.getElementById('mockTitle').textContent = "Vesti il tuo stile senza pesare sul pianeta";
-    document.getElementById('mockDesc').textContent = "Capi in cotone 100% biologico certificato. Spedizione gratuita e reso facile entro 30 giorni.";
-    document.getElementById('mockBtn').textContent = "Scopri la Nuova Collezione ▶";
-    document.getElementById('mockBtn').className = "btn btn-sm btn-amber";
+    copyNote.innerHTML = "👉 <strong>Tono di Voce (Copywriting):</strong> Caloroso, coinvolgente, persuasivo ed empatico, focalizzato sullo stile di vita.";
+    targetBadge.textContent = 'Target: Cittadino & Consumatore Finale';
+    targetBadge.className = 'badge emerald';
+
+    mockUrl.textContent = 'https://www.dolce-vita-bakery.it';
+    mockCat.textContent = 'Pasticceria Artigianale & Caffè Biologico';
+    mockCat.style.color = 'var(--emerald)';
+    mockHero.textContent = "Gusto Autentico, Fatto a Mano Ogni Mattina";
+    mockText.textContent = "Scopri le nostre creazioni dolciarie con ingredienti 100% biologici a km zero. Prenota online la tua torta personalizzata!";
+    mockBtn.textContent = 'Scopri il Menu & Ordina Subito ▶';
+    mockBtn.className = 'btn btn-emerald';
   }
 }
 
-/* =========================================================================
-   4. SLIDE 8: CHECKPOINT DI COMPRENSIONE (QUIZ INTERATTIVO)
-   ========================================================================= */
+// SLIDE 8: Quiz Interattivo LIM
 const quizQuestions = [
   {
     cat: "Economia & Mercati (Cap. 5)",
@@ -1225,44 +1350,45 @@ const quizQuestions = [
       { t: "Vende esclusivamente beni usati tra consumatori privati (C2C)", c: false },
       { t: "Non ha bisogno di alcuna pagina di contatto o Partita IVA", c: false }
     ],
-    exp: "Esatto! Nel B2B i clienti sono imprese e responsabili acquisti: cercano affidabilità tecnica, listini all'ingrosso e preventivi formali."
+    exp: "Nel B2B il cliente è un'azienda: le decisioni d'acquisto sono razionali, basate su specifiche tecniche, volumi di fornitura, certificazioni e preventivi dedicati."
   },
   {
-    cat: "Tecnologia Web (Cap. 4)",
-    q: "Qual è la differenza fondamentale tra Dominio e Hosting?",
+    cat: "Infrastruttura Web (Cap. 4)",
+    q: "Qual è il ruolo del server web e dell'hosting quando un utente digita l'indirizzo del sito?",
     options: [
-      { t: "Il Dominio è il server fisico, l'Hosting è il nome della pagina", c: false },
-      { t: "Sono sinonimi esatti e indicano la medesima cosa", c: false },
-      { t: "Il Dominio è l'indirizzo/nome del sito (URL), l'Hosting è lo spazio server che conserva i file", c: true },
-      { t: "L'Hosting serve solo per i siti a pagamento, il Dominio solo per quelli gratuiti", c: false }
+      { t: "È il computer sempre connesso che conserva i file del sito e li invia al browser", c: true },
+      { t: "Serve unicamente a spegnere il computer del visitatore", c: false },
+      { t: "È il browser (Chrome, Edge) installato sullo smartphone", c: false },
+      { t: "È un cavo sottomarino che collega due continenti", c: false }
     ],
-    exp: "Perfetto! Il Dominio è l'insegna con l'indirizzo (es. miosito.it), mentre l'Hosting è il locale/server sempre acceso che ospita i file."
+    exp: "L'hosting è il servizio di alloggiamento (host) su un server sempre acceso che invia i file HTML, CSS e le immagini a chiunque ne faccia richiesta via browser."
   },
   {
-    cat: "Evoluzione Web (Cap. 5)",
-    q: "Quali delle 4 tappe evolutive dell'e-commerce sono coperte nativamente da Google Sites a costo zero?",
+    cat: "Evoluzione E-Commerce (Cap. 5)",
+    q: "In quale tappa evolutiva dell'E-Commerce si colloca nativamente un sito aziendale Google Sites?",
     options: [
-      { t: "Tappa 1 (Pubblicazione istituzionale) e Tappa 2 (Interattività con form e mappe)", c: true },
-      { t: "Tappa 3 (Carrello e gateway di pagamento bancario)", c: false },
-      { t: "Tappa 4 (Integrazione robotica con gestionali SAP/ERP)", c: false },
-      { t: "Nessuna, Google Sites serve solo per creare documenti di testo", c: false }
+      { t: "Esclusivamente nella Tappa 4 (con integrazione robotica di magazzino SAP)", c: false },
+      { t: "Nelle Tappe 1 (Pubblicazione brochure) e 2 (Interattività con moduli e contatti)", c: true },
+      { t: "Solo per siti di streaming di videogiochi multiplayer", c: false },
+      { t: "In nessuna tappa, perché non si può visualizzare su internet", c: false }
     ],
-    exp: "Bravissimi! Google Sites permette di creare siti vetrina impeccabili (Tappa 1) e moduli interattivi di lead generation (Tappa 2)."
+    exp: "Google Sites domina le Tappe 1 e 2: permette la pubblicazione di vetrine istituzionali e l'interazione diretta (form Google Moduli, video, cataloghi) a costo zero."
   },
   {
-    cat: "Metodologia di Lavoro (Cap. 4)",
-    q: "Qual è il primissimo passo da compiere prima di aprire Google Sites al computer?",
+    cat: "Website Builder (Cap. 4)",
+    q: "Cosa significa l'acronimo WYSIWYG e perché è rivoluzionario per un manager di marketing?",
     options: [
-      { t: "Scrivere subito 50 pagine di codice HTML a mano", c: false },
-      { t: "Disegnare su carta l'alberatura (Sitemap) con la struttura logica delle pagine", c: true },
-      { t: "Pagare subito un canone di abbonamento per l'hosting", c: false },
-      { t: "Compilare immediatamente il modulo della dichiarazione dei redditi", c: false }
+      { t: "'What You See Is What You Get': ciò che vedi mentre progetti è ciò che apparirà online", c: true },
+      { t: "'Why You Should Install Windows': una regola per formattare i computer", c: false },
+      { t: "Un linguaggio di programmazione a basso livello per processori", c: false },
+      { t: "Un tipo speciale di cavo di rete per collegare la LIM al modem", c: false }
     ],
-    exp: "Esatto! La regola aurea del marketing è progettare la mappa e il percorso del cliente prima di toccare qualsiasi strumento digitale."
+    exp: "WYSIWYG permette a chiunque si occupi di marketing o economia di creare e aggiornare pagine web visivamente, concentrandosi sulla strategia di vendita invece che sul codice."
   }
 ];
 
 let curQIdx = 0;
+
 function renderQuiz() {
   const q = quizQuestions[curQIdx];
   document.getElementById('quizCounterBadge').textContent = `Domanda ${curQIdx + 1} di ${quizQuestions.length}`;
@@ -1298,16 +1424,16 @@ function checkQuizOpt(opt, btn, exp) {
 
   if (opt.c) {
     btn.classList.add('correct');
-    fb.style.background = 'rgba(52, 211, 153, 0.15)';
-    fb.style.border = '1px solid var(--emerald)';
+    fb.style.background = 'rgba(52, 211, 153, 0.18)';
+    fb.style.border = '2px solid var(--emerald)';
     fb.style.color = '#a7f3d0';
     fb.innerHTML = `🎉 <strong>Risposta Corretta!</strong> ${exp}`;
   } else {
     btn.classList.add('wrong');
-    fb.style.background = 'rgba(251, 113, 133, 0.15)';
-    fb.style.border = '1px solid var(--rose)';
+    fb.style.background = 'rgba(251, 113, 133, 0.18)';
+    fb.style.border = '2px solid var(--rose)';
     fb.style.color = '#fecdd3';
-    fb.innerHTML = `❌ <strong>Non esattamente.</strong> Riprova a riflettere sul concetto visto prima!`;
+    fb.innerHTML = `❌ <strong>Non esattamente.</strong> Riprova a riflettere sul concetto visto prima! Spiegazione: ${exp}`;
   }
 }
 
@@ -1315,58 +1441,51 @@ function nextQuizQuestion() {
   curQIdx = (curQIdx + 1) % quizQuestions.length;
   renderQuiz();
 }
+
 function prevQuizQuestion() {
   curQIdx = (curQIdx - 1 + quizQuestions.length) % quizQuestions.length;
   renderQuiz();
 }
 
-/* =========================================================================
-   5. SISTEMA MODALITÀ LAVAGNA / SCRITTURA LIM
-   ========================================================================= */
-let limActive = false;
-let limPassThrough = false;
-let limTool = 'pen';
-let limColor = '#fde047';
-let limSize = 6;
-let limStrokes = [];
-let currentStroke = null;
+renderQuiz();
 
+// ==========================================
+// MODALITÀ SCRITTURA E DISEGNO LIM
+// ==========================================
 const limCanvas = document.getElementById('limCanvas');
 const limCtx = limCanvas.getContext('2d');
+const limToolbar = document.getElementById('limToolbar');
+let limActive = false;
+let limPassThrough = false;
+let limDrawing = false;
+let limTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+let limColor = '#fbbf24';
+let limDrawHistory = []; // per Undo
 
 function resizeLimCanvas() {
   limCanvas.width = window.innerWidth;
   limCanvas.height = window.innerHeight;
-  redrawLimCanvas();
 }
 window.addEventListener('resize', resizeLimCanvas);
+resizeLimCanvas();
 
 function toggleLimMode() {
   limActive = !limActive;
-  document.getElementById('limToolbar').classList.toggle('show', limActive);
-  limCanvas.classList.toggle('active', limActive);
   if (limActive) {
-    limPassThrough = false;
-    limCanvas.classList.remove('pass-through');
-    document.getElementById('btnLimPass').textContent = "👆 Interagisci";
-    document.getElementById('btnLimPass').classList.remove('active');
+    limCanvas.classList.add('active');
+    limToolbar.classList.add('show');
     resizeLimCanvas();
+  } else {
+    limCanvas.classList.remove('active');
+    limToolbar.classList.remove('show');
   }
-}
-
-function toggleLimPassThrough() {
-  limPassThrough = !limPassThrough;
-  limCanvas.classList.toggle('pass-through', limPassThrough);
-  const b = document.getElementById('btnLimPass');
-  b.textContent = limPassThrough ? "✏️ Torna a Scrivere" : "👆 Interagisci";
-  b.classList.toggle('active', limPassThrough);
 }
 
 function setLimTool(tool) {
   limTool = tool;
-  document.getElementById('btnLimPen').classList.toggle('active', tool === 'pen');
-  document.getElementById('btnLimHighlighter').classList.toggle('active', tool === 'highlighter');
-  document.getElementById('btnLimEraser').classList.toggle('active', tool === 'eraser');
+  document.getElementById('btnToolPen').classList.toggle('active', tool === 'pen');
+  document.getElementById('btnToolHighlighter').classList.toggle('active', tool === 'highlighter');
+  document.getElementById('btnToolEraser').classList.toggle('active', tool === 'eraser');
 }
 
 function setLimColor(color, el) {
@@ -1376,158 +1495,169 @@ function setLimColor(color, el) {
   if (limTool === 'eraser') setLimTool('pen');
 }
 
-function setLimSize(sz) {
-  limSize = sz;
-  document.getElementById('btnLimSizeMed').classList.toggle('active', sz === 6);
+function toggleLimPassThrough() {
+  limPassThrough = !limPassThrough;
+  limCanvas.classList.toggle('pass-through', limPassThrough);
+  const b = document.getElementById('btnLimPassThrough');
+  b.classList.toggle('active', limPassThrough);
+  b.textContent = limPassThrough ? "✏️ Torna a Scrivere" : "👆 Interagisci";
 }
 
-function clearLimCanvas() {
-  limStrokes = [];
-  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
+let curStroke = [];
+
+function startLimDraw(x, y) {
+  if (limPassThrough) return;
+  limDrawing = true;
+  curStroke = [{
+    x, y,
+    tool: limTool,
+    color: limColor,
+    width: limTool === 'highlighter' ? 22 : (limTool === 'eraser' ? 36 : 4)
+  }];
+  drawLimSegment(x, y, x, y, curStroke[0]);
 }
 
-function undoLimStroke() {
-  limStrokes.pop();
-  redrawLimCanvas();
+function moveLimDraw(x, y) {
+  if (!limDrawing || limPassThrough) return;
+  const lastPt = curStroke[curStroke.length - 1];
+  const pt = {
+    x, y,
+    tool: limTool,
+    color: limColor,
+    width: limTool === 'highlighter' ? 22 : (limTool === 'eraser' ? 36 : 4)
+  };
+  curStroke.push(pt);
+  drawLimSegment(lastPt.x, lastPt.y, x, y, pt);
 }
 
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+function stopLimDraw() {
+  if (limDrawing && curStroke.length > 0) {
+    limDrawHistory.push([...curStroke]);
+  }
+  limDrawing = false;
+  curStroke = [];
 }
 
-function redrawLimCanvas() {
-  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
-  limStrokes.forEach(s => drawStroke(s));
-}
-
-function drawStroke(s) {
-  if (!s.points || s.points.length === 0) return;
+function drawLimSegment(x1, y1, x2, y2, style) {
   limCtx.save();
   limCtx.lineCap = 'round';
   limCtx.lineJoin = 'round';
 
-  if (s.tool === 'eraser') {
+  if (style.tool === 'eraser') {
     limCtx.globalCompositeOperation = 'destination-out';
-    limCtx.lineWidth = s.size * 3.5;
-    limCtx.strokeStyle = 'rgba(0,0,0,1)';
-  } else if (s.tool === 'highlighter') {
+    limCtx.lineWidth = style.width;
+    limCtx.beginPath();
+    limCtx.moveTo(x1, y1);
+    limCtx.lineTo(x2, y2);
+    limCtx.stroke();
+  } else if (style.tool === 'highlighter') {
     limCtx.globalCompositeOperation = 'source-over';
-    limCtx.lineWidth = s.size * 3.2;
-    limCtx.strokeStyle = hexToRgba(s.color, 0.4);
+    limCtx.lineWidth = style.width;
+    limCtx.strokeStyle = style.color + '66'; // 40% trasparenza
+    limCtx.beginPath();
+    limCtx.moveTo(x1, y1);
+    limCtx.lineTo(x2, y2);
+    limCtx.stroke();
   } else {
     limCtx.globalCompositeOperation = 'source-over';
-    limCtx.lineWidth = s.size;
-    limCtx.strokeStyle = s.color;
+    limCtx.lineWidth = style.width;
+    limCtx.strokeStyle = style.color;
+    limCtx.beginPath();
+    limCtx.moveTo(x1, y1);
+    limCtx.lineTo(x2, y2);
+    limCtx.stroke();
   }
-
-  limCtx.beginPath();
-  limCtx.moveTo(s.points[0].x, s.points[0].y);
-
-  if (s.points.length === 1) {
-    limCtx.lineTo(s.points[0].x + 0.5, s.points[0].y + 0.5);
-  } else {
-    for (let i = 1; i < s.points.length - 1; i++) {
-      const xc = (s.points[i].x + s.points[i + 1].x) / 2;
-      const yc = (s.points[i].y + s.points[i + 1].y) / 2;
-      limCtx.quadraticCurveTo(s.points[i].x, s.points[i].y, xc, yc);
-    }
-    const last = s.points[s.points.length - 1];
-    limCtx.lineTo(last.x, last.y);
-  }
-
-  limCtx.stroke();
   limCtx.restore();
 }
 
-limCanvas.addEventListener('pointerdown', e => {
-  if (!limActive || limPassThrough) return;
-  e.preventDefault();
-  currentStroke = {
-    tool: limTool,
-    color: limColor,
-    size: limSize,
-    points: [{ x: e.clientX, y: e.clientY }]
-  };
-  limStrokes.push(currentStroke);
-  drawStroke(currentStroke);
-});
-
-limCanvas.addEventListener('pointermove', e => {
-  if (!currentStroke) return;
-  e.preventDefault();
-  currentStroke.points.push({ x: e.clientX, y: e.clientY });
-  redrawLimCanvas();
-});
-
-window.addEventListener('pointerup', () => { currentStroke = null; });
-window.addEventListener('pointercancel', () => { currentStroke = null; });
-
-// Barra fluttuante trascinabile
-(function makeLimToolbarDraggable() {
-  const tb = document.getElementById('limToolbar');
-  const handle = tb.querySelector('.lim-drag-handle');
-  let isDragging = false;
-  let startX, startY, origLeft, origTop;
-
-  handle.addEventListener('pointerdown', e => {
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    const rect = tb.getBoundingClientRect();
-    origLeft = rect.left;
-    origTop = rect.top;
-    tb.style.bottom = 'auto';
-    tb.style.transform = 'none';
-    tb.style.left = origLeft + 'px';
-    tb.style.top = origTop + 'px';
-    handle.setPointerCapture(e.pointerId);
-  });
-  handle.addEventListener('pointermove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    tb.style.left = Math.max(10, Math.min(window.innerWidth - tb.offsetWidth - 10, origLeft + dx)) + 'px';
-    tb.style.top = Math.max(10, Math.min(window.innerHeight - tb.offsetHeight - 10, origTop + dy)) + 'px';
-  });
-  handle.addEventListener('pointerup', () => { isDragging = false; });
-})();
-
-/* =========================================================================
-   6. AVVIO GLOBALE
-   ========================================================================= */
-window.addEventListener('DOMContentLoaded', () => {
-  initDeck();
-  renderQuiz();
-  goToSlide(0);
-});
-
-  // Gestione dinamica classe per link di ritorno al portale
-  (function initClasseBackLinks() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const classe = urlParams.get('classe');
-    const topBack = document.getElementById('back-to-index-top');
-    const dockBack = document.getElementById('back-to-index-dock');
-    if (classe) {
-      let target = '/#informatica';
-      let label = '← Torna alla Classe';
-      if (classe === '3l') {
-        target = '/#3l-relazioni-internazionali';
-        label = '← Torna a 3°L RIM';
-      } else if (classe === '2h') {
-        target = '/#2h-finanza-marketing';
-        label = '← Torna a 2H AFM';
-      } else if (classe === '2g') {
-        target = '/#2g-finanza-marketing';
-        label = '← Torna a 2G AFM';
-      }
-      if (topBack) { topBack.href = target; topBack.textContent = label; }
-      if (dockBack) { dockBack.href = target; }
+function redrawLimCanvas() {
+  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
+  for (const stroke of limDrawHistory) {
+    for (let i = 1; i < stroke.length; i++) {
+      drawLimSegment(stroke[i-1].x, stroke[i-1].y, stroke[i].x, stroke[i].y, stroke[i]);
     }
-  })();
+  }
+}
 
+function undoLimDraw() {
+  if (limDrawHistory.length > 0) {
+    limDrawHistory.pop();
+    redrawLimCanvas();
+  }
+}
+
+function clearLimCanvas() {
+  limDrawHistory = [];
+  limCtx.clearRect(0, 0, limCanvas.width, limCanvas.height);
+}
+
+// Supporto Touch Screen per LIM e Mouse
+limCanvas.addEventListener('mousedown', (e) => startLimDraw(e.clientX, e.clientY));
+limCanvas.addEventListener('mousemove', (e) => moveLimDraw(e.clientX, e.clientY));
+window.addEventListener('mouseup', stopLimDraw);
+
+limCanvas.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    startLimDraw(t.clientX, t.clientY);
+  }
+}, { passive: false });
+
+limCanvas.addEventListener('touchmove', (e) => {
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    moveLimDraw(t.clientX, t.clientY);
+    e.preventDefault();
+  }
+}, { passive: false });
+
+limCanvas.addEventListener('touchend', stopLimDraw);
+
+// Toolbar Draggable
+let isDraggingToolbar = false;
+let tbOffsetX = 0, tbOffsetY = 0;
+const dragHandle = document.querySelector('.lim-drag-handle');
+
+dragHandle.addEventListener('mousedown', (e) => {
+  isDraggingToolbar = true;
+  const rect = limToolbar.getBoundingClientRect();
+  tbOffsetX = e.clientX - rect.left;
+  tbOffsetY = e.clientY - rect.top;
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (isDraggingToolbar) {
+    limToolbar.style.left = `${e.clientX - tbOffsetX + limToolbar.offsetWidth/2}px`;
+    limToolbar.style.bottom = 'auto';
+    limToolbar.style.top = `${e.clientY - tbOffsetY}px`;
+  }
+});
+
+window.addEventListener('mouseup', () => { isDraggingToolbar = false; });
+
+// Gestione dinamica classe per link di ritorno al portale
+(function initClasseBackLinks() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const classe = urlParams.get('classe');
+  const topBack = document.getElementById('back-to-index-top');
+  const dockBack = document.getElementById('back-to-index-dock');
+  if (classe) {
+    let target = '/#informatica';
+    let label = '← Torna alla Classe';
+    if (classe === '3l') {
+      target = '/#3l-relazioni-internazionali';
+      label = '← Torna a 3°L RIM';
+    } else if (classe === '2h') {
+      target = '/#2h-finanza-marketing';
+      label = '← Torna a 2H AFM';
+    } else if (classe === '2g') {
+      target = '/#2g-finanza-marketing';
+      label = '← Torna a 2G AFM';
+    }
+    if (topBack) { topBack.href = target; topBack.textContent = label; }
+    if (dockBack) { dockBack.href = target; }
+  }
+})();
 </script>
 </body>
 </html>
