@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio 2: Pagine Interne, Catalogo B2B & Lead Generation | IIS Archimede</title>
+  <meta name="description" content="Guida operativa passo-passo per il secondo laboratorio al PC con Google Sites per classi AFM e RIM: allestimento pagine interne Chi Siamo, Prodotti B2B, Contatti con Google Moduli e Mappe.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       LIGHT THEME & CLEAN DESIGN SYSTEM (COERENTE CON LABORATORIO 1)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --text-dark: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      --accent-navy: #1e293b;
+      --success: #16a34a;
+      --success-dark: #15803d;
+      --success-light: #dcfce7;
+      --success-border: #bbf7d0;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --warning-border: #fde68a;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --danger-border: #fecaca;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Sticky Header */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: #bae6fd;
+      color: var(--primary-dark);
+    }
+
+    .header-breadcrumb {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .header-breadcrumb strong {
+      color: var(--text-dark);
+    }
+
+    /* Barra di Avanzamento Fissa */
+    .progress-bar-container {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      height: 10px;
+      width: 180px;
+      overflow: hidden;
+      display: flex;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      width: 0%;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg-page) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2.25rem 1.5rem 1.75rem;
+      text-align: center;
+    }
+    .hero-container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .badge--blue { background: var(--primary-light); color: var(--primary-dark); border: 1px solid var(--primary-border); }
+    .badge--green { background: var(--success-light); color: var(--success-dark); border: 1px solid var(--success-border); }
+    .badge--amber { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning-border); }
+
+    .hero-title {
+      font-size: 1.85rem;
+      font-weight: 850;
+      color: var(--text-dark);
+      margin: 0.75rem 0 0.5rem;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--text-body);
+      max-width: 760px;
+      margin: 0 auto 1.25rem;
+      line-height: 1.6;
+    }
+
+    /* Quick Nav Pills */
+    .quick-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .quick-pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-body);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .quick-pill:hover {
+      background: var(--surface-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Container Principale */
+    .main-container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+      width: 100%;
+    }
+
+    /* Dossier Aziendale */
+    .dossier-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--success);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .dossier-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .dossier-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    .dossier-item {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+    }
+    .dossier-item-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .dossier-item-val {
+      font-size: 0.92rem;
+      font-weight: 750;
+      color: var(--text-dark);
+      margin: 2px 0;
+    }
+    .dossier-item-desc {
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.35;
+    }
+
+    /* Scheda Step Operativo */
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .step-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-dark);
+    }
+    .step-header {
+      padding: 1rem 1.5rem;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .step-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .step-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+    .step-title-wrap h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.01em;
+    }
+    .step-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .step-body-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+    @media (max-width: 860px) {
+      .step-body-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    }
+
+    /* Lista Istruzioni a Sinistra */
+    .instructions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .inst-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .inst-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+      color: var(--text-dark);
+      font-size: 0.78rem;
+      font-weight: 750;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Monospace Reference Box (Senza Tasto Copia) */
+    .copy-chip {
+      display: inline-block;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      margin-top: 4px;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    /* Colonna Visuale a Destra */
+    .visual-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .book-fig-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+    .book-fig-header {
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      font-weight: 750;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .book-fig-body {
+      padding: 10px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      min-height: 90px;
+    }
+    .book-fig-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: block;
+    }
+    .book-fig-caption {
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.4;
+      background: #ffffff;
+    }
+
+    /* Checklist di Autovalutazione */
+    .checklist-card {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+    .checklist-title {
+      font-size: 0.84rem;
+      font-weight: 750;
+      color: var(--text-dark);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--text-body);
+      margin-bottom: 0.4rem;
+      cursor: pointer;
+    }
+    .check-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--success);
+      cursor: pointer;
+    }
+
+    /* Sezione Consegna su Classroom */
+    .delivery-card {
+      background: #ffffff;
+      border: 2px solid var(--success-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .delivery-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .delivery-title {
+      font-size: 1.3rem;
+      font-weight: 850;
+      color: var(--text-dark);
+      margin-top: 0.25rem;
+    }
+    .delivery-why-box {
+      background: var(--success-light);
+      border: 1px solid var(--success-border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.86rem;
+      color: var(--success-dark);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+    .del-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .del-step-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .del-step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    .del-step-title {
+      font-size: 0.9rem;
+      font-weight: 750;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    .del-step-text {
+      font-size: 0.8rem;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+
+    /* Tendina Espandibile Pubblicazione (Chiusa di default) */
+    details.publish-accordion {
+      margin-top: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    details.publish-accordion:hover {
+      border-color: #cbd5e1;
+    }
+    summary.publish-accordion-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+    summary.publish-accordion-summary::-webkit-details-marker {
+      display: none;
+    }
+    summary.publish-accordion-summary:hover {
+      background: #e2e8f0;
+    }
+    details.publish-accordion[open] summary.publish-accordion-summary {
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-toggle-pill {
+      font-size: 0.78rem;
+      font-weight: 750;
+      color: var(--primary);
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .accordion-toggle-pill .toggle-arrow {
+      transition: transform 0.2s ease;
+      font-size: 0.7rem;
+    }
+    details.publish-accordion[open] .toggle-arrow {
+      transform: rotate(180deg);
+    }
+    .publish-accordion-body {
+      padding: 14px;
+      background: #ffffff;
+    }
+    .publish-why-banner {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 0.84rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* Validator Box */
+    .validator-box {
+      margin-top: 1.25rem;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+    .validator-input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .validator-input {
+      flex: 1;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.88rem;
+      font-family: var(--font-mono);
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+    }
+    .btn--primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn--primary:hover {
+      background: var(--primary-dark);
+    }
+    .validator-result {
+      margin-top: 0.6rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP STICKY HEADER -->
+  <header class="top-header">
+    <div class="top-header-left">
+      <a href="/#2h-finanza-marketing" class="back-btn" id="back-link">
+        ◀ Torna al Corso
+      </a>
+      <div class="header-breadcrumb">
+        <span>Informatica</span> &bull; 
+        <span>Google Sites &amp; Marketing B2B</span> &bull;
+        <strong>Laboratorio 2 (Pagine Interne)</strong>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:0.85rem;">
+      <a href="/informatica/web/lezione-2-google-sites-marketing.html" class="back-btn" style="background:#f1f5f9; color:var(--text-dark); border-color:var(--border);" id="theory-link">
+        📖 Slide Teoria 2
+      </a>
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progFill"></div>
+        </div>
+        <span class="progress-text" id="progText">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap;">
+        <span class="badge badge--green">Laboratorio 2 &bull; 1 Ora al PC</span>
+        <span class="badge badge--blue">Caso EcoPack S.p.A.</span>
+        <span class="badge badge--amber">AFM &bull; RIM</span>
+      </div>
+
+      <h1 class="hero-title">
+        Laboratorio 2: Pagine Interne, Catalogo B2B &amp; Lead Generation
+      </h1>
+
+      <p class="hero-desc">
+        Guida operativa passo-passo per allestire le 3 pagine interne del sito aziendale: storytelling e sostenibilità ESG nella pagina <em>Chi Siamo</em>, schede prodotto orientate ai benefici nel <em>Catalogo</em>, modulo di richiesta preventivo e geolocalizzazione Google Maps nella pagina <em>Contatti</em>.
+      </p>
+
+      <div class="quick-nav">
+        <a href="#dossier" class="quick-pill">🏢 Dossier EcoPack</a>
+        <a href="#step1" class="quick-pill"><strong>1️⃣</strong> Chi Siamo (ESG)</a>
+        <a href="#step2" class="quick-pill"><strong>2️⃣</strong> Catalogo Prodotti</a>
+        <a href="#step3" class="quick-pill"><strong>3️⃣</strong> Contatti &amp; Maps</a>
+        <a href="#step4" class="quick-pill"><strong>4️⃣</strong> Collaudo &amp; Test</a>
+        <a href="#consegna" class="quick-pill">📬 Consegna Drive</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="main-container">
+
+    <!-- DOSSIER AZIENDALE ECOPACK S.P.A. -->
+    <section class="dossier-card" id="dossier">
+      <div class="dossier-header">
+        <div class="dossier-title">
+          🏢 Caso Studio Assegnato: EcoPack S.p.A. &bull; Completamento Pagine
+        </div>
+        <span class="badge badge--blue">Packaging Ecologico B2B</span>
+      </div>
+
+      <p style="font-size:0.88rem; color:var(--text-body); margin-bottom:0.75rem;">
+        In questo secondo laboratorio continuerai a sviluppare individualmente alla tua postazione il sito per l'impresa industriale di riferimento, <strong>EcoPack S.p.A.</strong>: completerai le tre pagine interne dell'alberatura canonica valorizzando i contenuti di marketing e le integrazioni Google Workspace:
+      </p>
+
+      <div class="dossier-grid">
+        <div class="dossier-item">
+          <div class="dossier-item-label">Pagina 2: Chi Siamo</div>
+          <div class="dossier-item-val">Fiducia &amp; Valori ESG</div>
+          <div class="dossier-item-desc">Timeline 20 anni, Mission &amp; Vision ecologica e certificazione ufficiale ISO 14001.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">Pagina 3: Prodotti / Servizi</div>
+          <div class="dossier-item-val">Catalogo 3 Soluzioni B2B</div>
+          <div class="dossier-item-desc">EcoBox, BioWrap e Nastro Kraft con testi orientati ai benefici economici e pulsante preventivo.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">Pagina 4: Contatti &amp; Sede</div>
+          <div class="dossier-item-val">Lead Generation &amp; Mappa</div>
+          <div class="dossier-item-desc">Integrazione Google Moduli per richieste preventivo, mappa Google Maps e dati legali art. 2250 c.c.</div>
+        </div>
+
+        <div class="dossier-item">
+          <div class="dossier-item-label">Collaudo Finale</div>
+          <div class="dossier-item-val">Navigazione &amp; Responsive</div>
+          <div class="dossier-item-desc">Verifica dei pulsanti d'azione (CTA), collaudo mobile smartphone e sincronizzazione Drive.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 1: ALLESTIMENTO PAGINA CHI SIAMO (STORYTELLING & ESG) -->
+    <section class="step-card" id="step1">
+      <div class="step-header">
+        <div class="step-header-left">
+          <div class="step-badge">1</div>
+          <div class="step-title-wrap">
+            <div class="step-subtitle">Cap. 4, pag. 201–202 &bull; Scheda Pagine &amp; Layout a 3 Colonne</div>
+            <h2>Allestimento Pagina "Chi Siamo": Storytelling, Mission &amp; Valori ESG</h2>
+          </div>
+        </div>
+        <span class="badge badge--blue">Tempo Stimato: 12 min</span>
+      </div>
+
+      <div class="step-body-grid">
+        <div class="instructions-list">
+          <div class="inst-item">
+            <div class="inst-num">1</div>
+            <div>
+              Nel pannello laterale destro dell'editor, clicca sulla scheda centrale <strong>Pagine 📄</strong> e seleziona <strong>Chi Siamo</strong> per aprirla nella schermata di modifica.
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">2</div>
+            <div>
+              Passa alla scheda <strong>Inserisci</strong>. Nella sezione <em>Blocchi di contenuto</em>, clicca sul <strong>layout a 3 colonne</strong> (tre riquadri quadrati per immagini affiancati con titoli e descrizioni sotto).
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">3</div>
+            <div>
+              Compila le 3 colonne con lo storytelling aziendale di EcoPack:
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Colonna 1 (Storia d'Impresa):</span>
+                <span class="copy-chip">20 Anni di Storia</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Fondata a Milano nel 2004, EcoPack è partner fidato di oltre 300 imprese manifatturiere ed esportatrici in Europa.</span>
+              </div>
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Colonna 2 (Mission &amp; Vision ESG):</span>
+                <span class="copy-chip">Mission &amp; Vision ESG</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Produciamo imballaggi in cartone riciclato certificato FSC e inchiostri vegetali, azzerando la plastica fossile nella logistica.</span>
+              </div>
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Colonna 3 (Garanzia e Certificazioni):</span>
+                <span class="copy-chip">Certificazione ISO 14001</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Sistema di gestione ambientale certificato a livello internazionale per garantire la conformità agli standard europei di sostenibilità.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">4</div>
+            <div>
+              <strong>Inserisci le Immagini nei 3 Riquadri:</strong> clicca sul cerchietto <code>+</code> di ciascuna colonna e scegli <em>Seleziona immagine</em> (cerca: "industria sostenibile", "foglia verde" e "certificato qualità").
+            </div>
+          </div>
+
+          <div class="checklist-card">
+            <div class="checklist-title">✓ Checklist Autovalutazione Step 1</div>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Aperta la pagina "Chi Siamo" dal pannello Pagine
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inserito il layout a 3 colonne per lo storytelling
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Compilati i 3 blocchi: 20 Anni di Storia, Mission ESG e ISO 14001
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inserite le 3 foto coerenti nei riquadri
+            </label>
+          </div>
+        </div>
+
+        <div class="visual-column">
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📐 LAYOUT CONSIGLIATO &bull; PAGINA CHI SIAMO</span>
+              <span>STRUTTURA A 3 COLONNE</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step1_chisiamo_layout.png" alt="Layout a 3 colonne della pagina Chi Siamo con storia, mission e certificazione ISO 14001" class="book-fig-img">
+            </div>
+            <div class="book-fig-caption">
+              <strong>Struttura Chi Siamo:</strong> Titolo introduttivo chiaro e 3 colonne simmetriche con icone/foto quadrate e brevi testi informativi.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: COSTRUZIONE DEL CATALOGO PRODOTTI B2B -->
+    <section class="step-card" id="step2">
+      <div class="step-header">
+        <div class="step-header-left">
+          <div class="step-badge">2</div>
+          <div class="step-title-wrap">
+            <div class="step-subtitle">Cap. 4, pag. 201–204 &bull; Schede Prodotto &amp; Pulsanti Call to Action</div>
+            <h2>Costruzione Catalogo "Prodotti / Servizi": 3 Soluzioni B2B</h2>
+          </div>
+        </div>
+        <span class="badge badge--blue">Tempo Stimato: 14 min</span>
+      </div>
+
+      <div class="step-body-grid">
+        <div class="instructions-list">
+          <div class="inst-item">
+            <div class="inst-num">1</div>
+            <div>
+              Dalla scheda <em>Pagine</em> a destra, fai doppio clic su <strong>Prodotti / Servizi</strong> per visualizzare la pagina del catalogo.
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">2</div>
+            <div>
+              Dalla scheda <em>Inserisci</em>, seleziona nuovamente il <strong>layout a 3 colonne</strong> per presentare le tre linee di packaging EcoPack.
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">3</div>
+            <div>
+              Compila le schede prodotto applicando la regola: <strong>beneficio economico prima della caratteristica tecnica</strong>:
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Prodotto 1 (Scatole Industriali):</span>
+                <span class="copy-chip">Scatole EcoBox Tripla Onda</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Resiste fino a 60 kg di carico verticale su pallet. Azzera i resi per scatole schiacciate nei trasporti internazionali e protegge il valore delle tue merci.</span>
+              </div>
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Prodotto 2 (Pellicola Biodegradabile):</span>
+                <span class="copy-chip">Pellicola BioWrap Mais</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Film estensibile 100% biodegradabile in amido di mais. Azzeri le tasse europee sulla plastica monouso (Plastic Tax) e migliori il bilancio di sostenibilità ESG.</span>
+              </div>
+              <div style="margin-top:6px;">
+                <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Prodotto 3 (Nastro Ecologico):</span>
+                <span class="copy-chip">Nastro Adesivo Kraft</span>
+                <span class="copy-chip" style="font-size:0.8rem; display:block; margin-top:2px;">Carta ecologica con colla naturale a base d'acqua. Sigillo antieffrazione inviolabile e scatola riciclabile al 100% senza dover rimuovere il nastro.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">4</div>
+            <div>
+              <strong>Inserisci i 3 Pulsanti di Conversione:</strong> nella scheda <em>Inserisci</em> scorri fino allo strumento <strong>Pulsante</strong>. Crea 3 pulsanti distinti:
+              <ul style="margin:4px 0 4px 18px; font-size:0.85rem;">
+                <li>Nome: <code>Richiedi Preventivo</code></li>
+                <li>Link: seleziona dalla tendina la pagina <strong>Contatti &amp; Sede</strong></li>
+              </ul>
+              Trascina ciascun pulsante verde sotto la rispettiva colonna prodotto sulla griglia!
+            </div>
+          </div>
+
+          <div class="checklist-card">
+            <div class="checklist-title">✓ Checklist Autovalutazione Step 2</div>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Aperta la pagina "Prodotti / Servizi" nell'editor
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inserito il layout a 3 colonne per le 3 soluzioni
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inseriti testi orientati ai benefici (EcoBox, BioWrap, Nastro Kraft)
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Creati e agganciati i 3 pulsanti "Richiedi Preventivo" collegati a Contatti
+            </label>
+          </div>
+        </div>
+
+        <div class="visual-column">
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📐 LAYOUT CONSIGLIATO &bull; CATALOGO PRODOTTI</span>
+              <span>3 SCHEDE CON PULSANTI CTA</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step2_catalogo_layout.png" alt="Layout catalogo prodotti con 3 colonne e pulsanti verdi Richiedi Preventivo" class="book-fig-img">
+            </div>
+            <div class="book-fig-caption">
+              <strong>Struttura Catalogo B2B:</strong> Ogni scheda prodotto ha foto descrittiva, titolo in evidenza, spiegazione dei benefici logistici e pulsante d'azione verso la pagina preventivi.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: PAGINA CONTATTI & SEDE (GOOGLE MODULI & MAPPE) -->
+    <section class="step-card" id="step3">
+      <div class="step-header">
+        <div class="step-header-left">
+          <div class="step-badge">3</div>
+          <div class="step-title-wrap">
+            <div class="step-subtitle">Cap. 4, pag. 204–205 &bull; Integrazione Mappe, Moduli &amp; Dati Societari</div>
+            <h2>Pagina "Contatti &amp; Sede": Lead Generation, Mappa &amp; Trasparenza Legale</h2>
+          </div>
+        </div>
+        <span class="badge badge--blue">Tempo Stimato: 14 min</span>
+      </div>
+
+      <div class="step-body-grid">
+        <div class="instructions-list">
+          <div class="inst-item">
+            <div class="inst-num">1</div>
+            <div>
+              Dalla scheda <em>Pagine</em> a destra, apri la pagina <strong>Contatti &amp; Sede</strong>.
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">2</div>
+            <div>
+              <strong>Integrazione Google Maps 📍:</strong>
+              nel pannello <em>Inserisci</em> a destra, scorri verso il basso e clicca sullo strumento <strong>Mappe</strong>.
+              Nella casella di ricerca digita: <code>Milano, Hub Logistico</code> (oppure posiziona un indicatore sulla città) e clicca sul pulsante blu <strong>Seleziona</strong>. La mappa interattiva verrà inserita nella pagina!
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">3</div>
+            <div>
+              <strong>Integrazione Modulo Contatti / Moduli 📋:</strong>
+              nel pannello <em>Inserisci</em>, scorri fino a <strong>Moduli</strong> (o inserisci una sezione di testo formattato) per consentire ai buyer di richiedere una quotazione B2B. I campi fondamentali sono:
+              <div style="margin-top:4px;">
+                <span class="copy-chip">Nome e Cognome Referente</span>
+                <span class="copy-chip">Azienda e Partita IVA</span>
+                <span class="copy-chip">Tipologia Packaging (Scatole / Pellicola / Nastro)</span>
+                <span class="copy-chip">Quantitativo Annuo Stimato</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">4</div>
+            <div>
+              <strong>Dati Societari Obbligatori per Legge (art. 2250 Codice Civile):</strong>
+              in fondo alla pagina (o nel piè di pagina), inserisci una casella di testo con i dati formali dell'impresa:
+              <div style="margin-top:4px;">
+                <span class="copy-chip">EcoPack S.p.A. &bull; Sede Legale: Via dell'Industria 45, 20100 Milano (MI) &bull; P.IVA: 01234567890 &bull; REA: MI-987654 &bull; Cap. Soc. € 500.000 i.v. &bull; PEC: ecopack@pec.it</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="checklist-card">
+            <div class="checklist-title">✓ Checklist Autovalutazione Step 3</div>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Aperta la pagina "Contatti &amp; Sede" nell'editor
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inserita la mappa interattiva Google Maps con la sede aziendale
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inserita la sezione form per la richiesta preventivo B2B
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Inseriti i dati societari di legge completi (P.IVA, REA, Cap. Sociale, PEC)
+            </label>
+          </div>
+        </div>
+
+        <div class="visual-column">
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📐 STRUTTURA CONTATTI &bull; MAPPA &amp; MODULO</span>
+              <span>CONVERSIONE &amp; GEOLOCALIZZAZIONE</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/lab2_step3_contatti_layout.png" alt="Layout pagina contatti con modulo preventivo a sinistra e Google Maps a destra" class="book-fig-img">
+            </div>
+            <div class="book-fig-caption">
+              <strong>Struttura Contatti Efficace:</strong> Il form di contatto per catturare richieste a sinistra, la mappa Google Maps navigabile a destra e i dati legali in calce.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4: COLLAUDO FUNZIONALE & TEST RESPONSIVE -->
+    <section class="step-card" id="step4">
+      <div class="step-header">
+        <div class="step-header-left">
+          <div class="step-badge">4</div>
+          <div class="step-title-wrap">
+            <div class="step-subtitle">Cap. 4, pag. 203 &bull; Modalità Anteprima Multi-Device</div>
+            <h2>Collaudo Funzionale dei Collegamenti &amp; Test Responsive Smartphone</h2>
+          </div>
+        </div>
+        <span class="badge badge--blue">Tempo Stimato: 10 min</span>
+      </div>
+
+      <div class="step-body-grid">
+        <div class="instructions-list">
+          <div class="inst-item">
+            <div class="inst-num">1</div>
+            <div>
+              Nella barra grigia in alto a destra dell'editor, clicca sul pulsante dell'<strong>Anteprima 👁️</strong> (icona a forma di computer/schermo).
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">2</div>
+            <div>
+              <strong>Collaudo della Navigazione (Desktop):</strong>
+              testa il percorso completo che un cliente compie sul tuo sito:
+              <ul style="margin:4px 0 4px 18px; font-size:0.85rem;">
+                <li>Dalla Home, clicca su <em>Scopri il Nostro Catalogo Prodotti</em> &rarr; deve aprirsi la pagina <em>Prodotti / Servizi</em>.</li>
+                <li>Nel Catalogo, clicca sul pulsante <em>Richiedi Preventivo</em> di uno dei 3 prodotti &rarr; deve reindirizzarti a <em>Contatti &amp; Sede</em>.</li>
+                <li>Nel menu superiore verifica che tutti e 4 i link (Home, Chi Siamo, Prodotti, Contatti) siano attivi.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="inst-item">
+            <div class="inst-num">3</div>
+            <div>
+              <strong>Collaudo Responsive Smartphone 📱:</strong>
+              nella barra mobile grigia in basso a destra dello schermo, clicca sull'icona dello <strong>Smartphone</strong>:
+              <ul style="margin:4px 0 4px 18px; font-size:0.85rem;">
+                <li>Verifica che il menu superiore diventi l'icona a 3 linee orizzontali (menu hamburger) e che si apra correttamente al tocco.</li>
+                <li>Verifica che le 3 colonne di "Chi Siamo" e le 3 colonne di "Prodotti" si siano incolonnate verticalmente in modo fluido.</li>
+                <li>Controlla che i testi siano grandi e leggibili senza dover pizzicare lo schermo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="checklist-card">
+            <div class="checklist-title">✓ Checklist Autovalutazione Step 4</div>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Avviata la modalità Anteprima da computer
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Verificato il funzionamento di tutti i pulsanti Call to Action
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Eseguito il collaudo da smartphone con menu hamburger
+            </label>
+            <label class="check-item">
+              <input type="checkbox" onchange="updateProgress()">
+              Chiusa l'anteprima cliccando sulla "X" blu in basso a destra
+            </label>
+          </div>
+        </div>
+
+        <div class="visual-column">
+          <div class="book-fig-box">
+            <div class="book-fig-header">
+              <span>📱 COLLAUDO RESPONSIVE &bull; TEST MOBILE</span>
+              <span>MENU HAMBURGER &amp; FLUIDITÀ</span>
+            </div>
+            <div class="book-fig-body">
+              <img src="img/hd_delivery_preview_mobile.png" alt="Anteprima smartphone del sito EcoPack con menu hamburger e layout a colonna singola" class="book-fig-img">
+            </div>
+            <div class="book-fig-caption">
+              <strong>Verifica Mobile:</strong> Sul telefono le 3 colonne si incolonnano ordinatamente una sotto l'altra, garantendo la massima facilità di lettura e tocco dei pulsanti.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONSEGNA SU GOOGLE CLASSROOM (METODO A: GOOGLE DRIVE) -->
+    <section class="delivery-card" id="consegna">
+      <div class="delivery-header">
+        <span class="badge badge--green">Metodo Ufficiale di Consegna Didattica</span>
+        <h2 class="delivery-title">
+          📬 Come Verificare e Consegnare su Google Classroom (Metodo A: Google Drive)
+        </h2>
+        <span style="font-size:0.8rem; font-weight:750; color:var(--text-muted);">
+          SINCRONIZZAZIONE AUTOMATICA IN CLOUD &bull; ZERO RISCHI DI PERMESSI BLOCCATI
+        </span>
+      </div>
+
+      <div class="delivery-why-box">
+        💡 <strong>Perché non serve ricopiare link?</strong> Google Sites salva ogni modifica in tempo reale sul tuo file all'interno di Google Drive. Se hai già effettuato la consegna nel Laboratorio 1, il docente vede già il tuo lavoro aggiornato! Se invece devi effettuare la prima consegna, segui i 4 semplici passaggi:
+      </div>
+
+      <div class="del-steps-grid">
+        <div class="del-step-box">
+          <div class="del-step-num">1</div>
+          <div class="del-step-title">Apri Classroom</div>
+          <div class="del-step-text">
+            Accedi a Google Classroom con l'account istituzionale e apri il compito <em>"Laboratorio 2: Google Sites EcoPack (Pagine Interne)"</em>.
+          </div>
+        </div>
+
+        <div class="del-step-box">
+          <div class="del-step-num">2</div>
+          <div class="del-step-title">+ Aggiungi o crea</div>
+          <div class="del-step-text">
+            Nel riquadro <em>Il tuo lavoro</em> in alto a destra, clicca sul pulsante <strong>+ Aggiungi o crea</strong> e seleziona <strong>Google Drive 📁</strong>.
+          </div>
+        </div>
+
+        <div class="del-step-box">
+          <div class="del-step-num">3</div>
+          <div class="del-step-title">Seleziona il File</div>
+          <div class="del-step-text">
+            Nella scheda <em>Recenti</em>, clicca sul file con l'icona blu denominato <code>EcoPack S.p.A. - [Tuo Cognome]</code> e premi <strong>Aggiungi</strong>.
+          </div>
+        </div>
+
+        <div class="del-step-box">
+          <div class="del-step-num">4</div>
+          <div class="del-step-title">Conferma Consegna!</div>
+          <div class="del-step-text">
+            Verifica che il file sia visibile nel riquadro, quindi clicca sul pulsante grande blu <strong>Consegna</strong>. Lavoro completato con successo!
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROFONDIMENTO FACOLTATIVO ESPANDIBILE: PUBBLICAZIONE WEB & ANTEPRIMA (PAG. 205) -->
+      <details class="publish-accordion">
+        <summary class="publish-accordion-summary">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="badge badge--blue">Approfondimento Opzionale &bull; Pag. 205</span>
+            <span style="font-weight:750; font-size:0.92rem; color:var(--text-dark);">
+              🔍 Come Funziona la Pubblicazione sul Web &amp; Collaudo Anteprima
+            </span>
+          </div>
+          <span class="accordion-toggle-pill">
+            <span class="toggle-text">Clicca per espandere</span>
+            <span class="toggle-arrow">▼</span>
+          </span>
+        </summary>
+
+        <div class="publish-accordion-body">
+          <div class="publish-why-banner">
+            💡 <strong>Nota Bene:</strong> Questo approfondimento <strong>non è obbligatorio per la consegna</strong> (che si conclude al 100% con il Metodo A via Google Drive spiegato sopra). Espandilo solo se vuoi verificare come appare il sito online o collaudare l'anteprima su schermi desktop e smartphone.
+          </div>
+
+          <div class="del-steps-grid" style="margin-top:12px;">
+            <div class="book-fig-box">
+              <div class="book-fig-header">
+                <span>📸 ANTEPRIMA DESKTOP</span>
+                <span>SITO COMPLETO</span>
+              </div>
+              <div class="book-fig-body">
+                <img src="img/hd_delivery_preview_desktop.png" alt="Anteprima Desktop a tutto schermo del sito EcoPack S.p.A." class="book-fig-img">
+              </div>
+              <div class="book-fig-caption">
+                <strong>Modalità Desktop:</strong> Mostra esattamente come appare il sito su un computer, con menu orizzontale e pulsanti CTA visibili.
+              </div>
+            </div>
+
+            <div class="book-fig-box">
+              <div class="book-fig-header">
+                <span>📖 FIGURA 19 &bull; PAG. 205</span>
+                <span>FINESTRA "PUBBLICA"</span>
+              </div>
+              <div class="book-fig-body">
+                <img src="img/hd_delivery_pubblica_modal.png" alt="Finestra Pubblica sul Web con indirizzo e opzioni" class="book-fig-img">
+              </div>
+              <div class="book-fig-caption">
+                <strong>Dal Libro:</strong> Scegliamo l'indirizzo web pubblico del sito (es. <em>ecopack-cognome</em>) prima di premere il pulsante blu <em>Pubblica</em>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Strumento di Controllo Link (Opzionale) -->
+      <div class="validator-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+          <span style="font-weight:750; font-size:0.86rem; color:var(--text-dark);">
+            🛡️ Strumento di Controllo: Vuoi comunque verificare il tuo Link?
+          </span>
+          <span class="badge badge--blue" style="font-size:0.7rem;">Anti-Errore /edit</span>
+        </div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">
+          Se decidi di pubblicare il sito e condividere il link pubblico, incollalo qui per verificare che non sia l'indirizzo di modifica bozza:
+        </div>
+        <div class="validator-input-row">
+          <input type="text" id="linkToCheck" class="validator-input" placeholder="Incolla l'indirizzo del tuo sito Google Sites...">
+          <button class="btn btn--primary" onclick="checkStudentLink()">Verifica Link</button>
+        </div>
+        <div id="linkResult" class="validator-result"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Interactive Checklist Progress
+    function updateProgress() {
+      const cbs = document.querySelectorAll('.check-item input[type="checkbox"]');
+      let checked = 0;
+      cbs.forEach(cb => { if (cb.checked) checked++; });
+      const pct = Math.round((checked / cbs.length) * 100);
+      document.getElementById('progFill').style.width = pct + '%';
+      document.getElementById('progText').textContent = 'Progresso: ' + pct + '%';
+    }
+
+    // Link checker
+    function checkStudentLink() {
+      const input = document.getElementById('linkToCheck').value.trim();
+      const res = document.getElementById('linkResult');
+      res.style.display = 'block';
+
+      if (!input) {
+        res.style.background = '#fef2f2';
+        res.style.border = '1px solid #fecaca';
+        res.style.color = '#991b1b';
+        res.innerHTML = '⚠️ Incolla un indirizzo prima di cliccare su Verifica!';
+        return;
+      }
+
+      if (input.includes('/edit')) {
+        res.style.background = '#fee2e2';
+        res.style.border = '1px solid #f87171';
+        res.style.color = '#991b1b';
+        res.innerHTML = `❌ <strong>ATTENZIONE! Link Errato (/edit):</strong> Hai copiato l'indirizzo della schermata di modifica! Gli altri utenti riceveranno l'errore <em>"Richiedi accesso"</em>.<br>
+👉 <strong>Cosa fare:</strong> Usa il <strong>Metodo A (Google Drive in Classroom)</strong> senza incollare link!`;
+      } else if (input.includes('sites.google.com/')) {
+        res.style.background = '#dcfce7';
+        res.style.border = '1px solid #86efac';
+        res.style.color = '#166534';
+        res.innerHTML = `✓ <strong>Ottimo! Il link è corretto e pubblico:</strong> L'indirizzo rimanda al sito visualizzabile e non alla modalità di modifica bozza.`;
+      } else {
+        res.style.background = '#fef3c7';
+        res.style.border = '1px solid #fde68a';
+        res.style.color = '#92400e';
+        res.innerHTML = `⚠️ L'indirizzo non sembra un URL tipico di Google Sites. Verifica di aver copiato l'indirizzo esatto.`;
+      }
+    }
+
+    // Gestione Parametro Classe per Back-Link
+    (function initBackLinks() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const classe = urlParams.get('classe');
+      const backLink = document.getElementById('back-link');
+      const theoryLink = document.getElementById('theory-link');
+
+      if (classe) {
+        if (classe === '3l') {
+          backLink.href = '/#3l-relazioni-internazionali';
+          backLink.textContent = '◀ Torna a 3°L RIM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-2-google-sites-marketing.html?classe=3l';
+        } else if (classe === '2h') {
+          backLink.href = '/#2h-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2H AFM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-2-google-sites-marketing.html?classe=2h';
+        } else if (classe === '2g') {
+          backLink.href = '/#2g-finanza-marketing';
+          backLink.textContent = '◀ Torna a 2G AFM';
+          if (theoryLink) theoryLink.href = '/informatica/web/lezione-2-google-sites-marketing.html?classe=2g';
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

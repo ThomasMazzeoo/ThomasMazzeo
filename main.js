@@ -326,6 +326,11 @@ const MATERIE = [
                 title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
                 desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
                 url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=3l"
+              },
+              {
+                title: "🧪 Laboratorio 2: Costruzione Pagine Interne — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione delle 3 pagine interne (Chi Siamo ESG, Catalogo Prodotti B2B, Contatti con Google Moduli e Maps), verifica dei collegamenti interni e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-2-google-sites.html?classe=3l"
               }
             ]
           }
@@ -584,6 +589,11 @@ const MATERIE = [
                 title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
                 desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
                 url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=2h"
+              },
+              {
+                title: "🧪 Laboratorio 2: Costruzione Pagine Interne — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione delle 3 pagine interne (Chi Siamo ESG, Catalogo Prodotti B2B, Contatti con Google Moduli e Maps), verifica dei collegamenti interni e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-2-google-sites.html?classe=2h"
               }
             ]
           }
@@ -842,6 +852,11 @@ const MATERIE = [
                 title: "🌐 Lezione 2: Teoria LIM — Storytelling ESG, Catalogo B2B & Lead Generation",
                 desc: "1ª Ora Teoria LIM: Strutturare le pagine interne 'Chi Siamo' (Mission, ESG, ISO 14001), catalogo prodotti orientato ai benefici commerciali, integrazione Google Moduli & Maps per la lead generation aziendale.",
                 url: "/informatica/web/lezione-2-google-sites-marketing.html?classe=2g"
+              },
+              {
+                title: "🧪 Laboratorio 2: Costruzione Pagine Interne — Caso EcoPack S.p.A.",
+                desc: "2ª Ora Laboratorio al PC: Creazione delle 3 pagine interne (Chi Siamo ESG, Catalogo Prodotti B2B, Contatti con Google Moduli e Maps), verifica dei collegamenti interni e consegna Google Drive su Classroom.",
+                url: "/informatica/web/laboratorio-2-google-sites.html?classe=2g"
               }
             ]
           }
