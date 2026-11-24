@@ -967,8 +967,8 @@ const MATERIE = [
                     url: "/fisica/giordano-bruno/misure-lineari.html"
                   },
                   {
-                    title: "📟 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro",
-                    desc: "Scheda dati digitale compilabile al PC con calibro digitale interattivo (0,01 mm) e nonio 1/20 (0,05 mm): 20 quote reali (esterni, interni, profondità), misure ripetute con istogramma, export CSV e PDF A4.",
+                    title: "📏 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro (Nonio 1/20 mm)",
+                    desc: "Scheda dati digitale compilabile al PC con simulatore interattivo del calibro a nonio ventesimale (1/20 mm, ± 0,05 mm) e lente di ingrandimento: 20 quote reali (esterni, interni, profondità), misure ripetute con istogramma, export CSV e PDF A4.",
                     url: "/fisica/archimede/prime/scheda-calibro-20-misure.html?scuola=gb"
                   }
 
@@ -1870,8 +1870,8 @@ const MATERIE = [
                 url: "/fisica/archimede/prime/calibro-nonio.html"
               },
               {
-                title: "📟 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro",
-                desc: "Scheda dati digitale compilabile al computer con calibro digitale interattivo (0,01 mm) e nonio 1/20 (0,05 mm): 20 esercizi tra esterni, interni e profondità, analisi statistica, export CSV e PDF A4.",
+                title: "📏 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro (Nonio 1/20 mm)",
+                desc: "Scheda dati digitale compilabile al computer con calibro a nonio ventesimale interattivo (1/20 mm, ± 0,05 mm) e lente di ingrandimento: 20 esercizi tra esterni, interni e profondità, analisi statistica, export CSV e PDF A4.",
                 url: "/fisica/archimede/prime/scheda-calibro-20-misure.html?scuola=archimede"
               }
             ]
