@@ -1805,6 +1805,26 @@ const MATERIE = [
 
                     ]
 
+                  },
+
+                  {
+
+                    title: "💥 Quantità di Moto e Urti — Lezione & Problemi Guidati (Cap. 12, Pag. 379 & 391)",
+
+                    topics: [
+
+                      {
+
+                        title: "💥 Lezione Passo-Passo LIM: Gli Urti & Problemi 29 e 30 (Pag. 391)",
+
+                        desc: "Presentazione zero-scroll 100vh per LIM: conservazione di p = m·v, confronto urto elastico vs completamente anelastico, regola dei segni, animazione Problema 29 (pattinatori, v_f = 0,67 m/s), Problema 30 (vagoni, 0,25 e 0,40 m/s) e Sandbox interattiva.",
+
+                        url: "/fisica/giordano-bruno/lezione-urti-quantita-moto.html"
+
+                      }
+
+                    ]
+
                   }
 
                 ]

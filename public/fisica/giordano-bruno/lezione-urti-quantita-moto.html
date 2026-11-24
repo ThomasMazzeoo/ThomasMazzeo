@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lezione Guidata LIM — Gli Urti e la Quantità di Moto (Cap. 12, Pag. 379 &amp; 391) — ISS Giordano Bruno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   ARCHITETTURA ZERO-SCROLL 100VH OTTIMIZZATA PER LIM PROMETHEAN
+   - Tutto visibile in una singola schermata (zero scroll verticale su PC/LIM)
+   - Area grafica fluida che si adatta allo spazio disponibile
+   - Pannello destro con scroll interno di sicurezza solo se si ingrandisce A+
+   - Penna LIM globale sovrapposta all'intera finestra per annotare ovunque
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-page: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-canvas: #ffffff;
+  --bg-subtle: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-ui: #cbd5e1;
+  --border-light: #e2e8f0;
+
+  --c-p1: #2563eb;       /* Blu: Corpo 1 (Lui / Vagone 1) */
+  --c-p2: #ea580c;       /* Arancio/Corallo: Corpo 2 (Lei / Vagone 2) */
+  --c-ptot: #16a34a;     /* Verde: Risultante / Conservazione p */
+  --c-kin: #7c3aed;      /* Viola: Energia Cinetica K */
+  --c-warn: #dc2626;     /* Rosso: Attenzione segni / Perdita K */
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-tech: 'Share Tech Mono', monospace;
+}
+
+body.dark-mode {
+  --bg-page: #090d16;
+  --bg-panel: #111827;
+  --bg-canvas: #0f172a;
+  --bg-subtle: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-ui: #334155;
+  --border-light: #1f2937;
+
+  --c-p1: #60a5fa;
+  --c-p2: #fb923c;
+  --c-ptot: #4ade80;
+  --c-kin: #a78bfa;
+  --c-warn: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fallback per schermi piccoli / tablet verticali */
+@media (max-width: 980px), (max-height: 580px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+/* ──────────────── HEADER COMPATTO LIM ──────────────── */
+.app-header {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-ui);
+  padding: 6px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.btn-back-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border-radius: 7px;
+  text-decoration: none;
+  border: 1px solid #bae6fd;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.btn-back-course:hover {
+  background: #bae6fd;
+}
+body.dark-mode .btn-back-course {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+.school-tag {
+  font-family: var(--font-tech);
+  font-size: 0.74rem;
+  letter-spacing: 0.8px;
+  color: var(--c-p1);
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37, 99, 235, 0.1);
+  padding: 3px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  white-space: nowrap;
+}
+
+.title-container {
+  min-width: 0;
+}
+.title-container h1 {
+  font-size: clamp(0.95rem, 1.35vw, 1.18rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.title-container p {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-tool {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-ui);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.btn-tool:hover {
+  border-color: var(--c-p1);
+  color: var(--text-primary);
+}
+.btn-tool.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+/* ──────────────── MAIN SPLIT WORKSPACE (ZERO-SCROLL) ──────────────── */
+.main-container {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 10px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 1860px;
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+}
+
+/* ──────────────── COLONNA SINISTRA: SIMULAZIONE & CONTROLLI ──────────────── */
+.simulation-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.canvas-card {
+  flex: 1;
+  min-height: 260px;
+  background: var(--bg-canvas);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.canvas-toolbar {
+  padding: 5px 12px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.mode-badge {
+  font-weight: 700;
+  color: var(--c-p1);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  width: 100%;
+  background: var(--bg-canvas);
+}
+
+canvas#simCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Controlli compatti sotto al canvas */
+.sim-controls-card {
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 7px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sim-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-sim {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 7px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.12s ease;
+}
+.btn-sim:hover {
+  border-color: var(--c-p1);
+}
+.btn-sim.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+body.dark-mode .btn-sim.active {
+  background: #38bdf8;
+  color: #0f172a;
+}
+.btn-sim-primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+.btn-sim-primary:hover {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.sim-phase-tags {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.phase-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  transition: all 0.12s ease;
+}
+.phase-btn:hover {
+  border-color: var(--c-p1);
+  color: var(--c-p1);
+}
+.phase-btn.active {
+  background: var(--c-ptot);
+  border-color: var(--c-ptot);
+  color: #ffffff;
+}
+
+/* ──────────────── COLONNA DESTRA: SPIEGAZIONE PASSO-PASSO ──────────────── */
+.steps-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.step-card {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ui);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+/* Scrollbar sottile */
+.step-card::-webkit-scrollbar { width: 6px; }
+.step-card::-webkit-scrollbar-thumb { background: var(--border-ui); border-radius: 4px; }
+
+.step-header {
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.step-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.step-badge {
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-p1);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.book-ref-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border-light);
+}
+
+.step-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+/* Scala testo per LIM */
+.step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+body.scale-lg .step-body { font-size: 1.04rem; line-height: 1.52; }
+body.scale-xl .step-body { font-size: 1.15rem; line-height: 1.54; }
+
+.problem-quote {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-ui);
+  border-left: 4px solid var(--c-p1);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  font-size: 0.94em;
+  color: var(--text-primary);
+}
+.problem-quote .result-chip {
+  display: inline-block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--c-ptot);
+  font-weight: 700;
+}
+
+.callout-box {
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.92em;
+  border-left: 4px solid;
+}
+.callout-green {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #166534;
+}
+body.dark-mode .callout-green { background: rgba(22, 163, 74, 0.14); color: #86efac; }
+
+.callout-warn {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+body.dark-mode .callout-warn { background: rgba(220, 38, 38, 0.14); color: #fca5a5; }
+
+.callout-blue {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1e40af;
+}
+body.dark-mode .callout-blue { background: rgba(37, 99, 235, 0.14); color: #bfdbfe; }
+
+.callout-amber {
+  background: #fffbeb;
+  border-color: #d97706;
+  color: #92400e;
+}
+body.dark-mode .callout-amber { background: rgba(217, 119, 6, 0.14); color: #fcd34d; }
+
+.math-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 8px 12px;
+  overflow-x: auto;
+  color: var(--text-primary);
+}
+.math-card .katex-display {
+  margin: 0.35em 0 !important;
+}
+
+/* Passaggi rivelabili cliccabili alla LIM */
+.reveal-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reveal-step {
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-subtle);
+}
+.reveal-btn {
+  width: 100%;
+  text-align: left;
+  padding: 7px 11px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.92em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.reveal-btn:hover {
+  background: rgba(37, 99, 235, 0.06);
+}
+.reveal-content {
+  padding: 6px 11px 9px;
+  border-top: 1px dashed var(--border-ui);
+  background: var(--bg-panel);
+  display: none;
+}
+.reveal-step.open .reveal-content {
+  display: block;
+}
+.reveal-step.open .reveal-chevron {
+  transform: rotate(180deg);
+}
+.reveal-chevron {
+  transition: transform 0.2s ease;
+  font-size: 0.8em;
+  color: var(--c-p1);
+}
+
+/* Grid dati compatta */
+.data-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.data-pill {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-subtle);
+  font-size: 0.88em;
+}
+.data-pill.p1 { border-left: 4px solid var(--c-p1); }
+.data-pill.p2 { border-left: 4px solid var(--c-p2); }
+
+/* Sliders Sandbox */
+.sandbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.slider-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+.slider-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82em;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.slider-box input[type="range"] {
+  width: 100%;
+  accent-color: var(--c-p1);
+  cursor: pointer;
+}
+
+/* Quiz Rapido LIM */
+.quiz-box {
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--bg-subtle);
+}
+.quiz-q {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  font-size: 0.92em;
+}
+.quiz-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.quiz-opt {
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  font-size: 0.88em;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.quiz-opt:hover { border-color: var(--c-p1); }
+.quiz-opt.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+.quiz-opt.wrong { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+body.dark-mode .quiz-opt.correct { background: rgba(22, 163, 74, 0.25); color: #86efac; }
+body.dark-mode .quiz-opt.wrong { background: rgba(220, 38, 38, 0.25); color: #fca5a5; }
+
+/* ──────────────── FOOTER NAVIGAZIONE PASSI ──────────────── */
+.steps-footer-nav {
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-ui);
+  padding: 7px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 35;
+}
+
+.step-pills-list {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.step-pill {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-ui);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+.step-pill:hover {
+  border-color: var(--c-p1);
+  color: var(--c-p1);
+}
+.step-pill.active {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+
+.btn-nav-step {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-ui);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.btn-nav-step:hover:not(:disabled) {
+  border-color: var(--c-p1);
+}
+.btn-nav-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────── LAYER PENNA LIM GLOBALE + TOOLBAR FLOTTANTE ──────────────── */
+canvas#globalPenCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 800;
+  pointer-events: none;
+  touch-action: none;
+}
+canvas#globalPenCanvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.lim-floating-bar {
+  position: fixed;
+  top: 64px;
+  right: 20px;
+  background: var(--bg-panel);
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 900;
+  user-select: none;
+  touch-action: none;
+}
+.lim-floating-bar.show {
+  display: flex;
+}
+.lim-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.74rem;
+  font-family: var(--font-tech);
+  font-weight: 800;
+  color: #0369a1;
+}
+body.dark-mode .lim-drag-handle {
+  background: #1e293b;
+  color: #38bdf8;
+}
+.lim-colors-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.lim-color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.1s;
+}
+.lim-color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.lim-tools-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+.btn-lim-action {
+  padding: 5px 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.btn-lim-action.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER COMPATTO LIM ════════════════ -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="btn-back-course">← Indice</a>
+    <span class="school-tag">Cap. 12 • Pag. 379 &amp; 391</span>
+    <div class="title-container">
+      <h1>💥 Gli Urti &amp; Conservazione della Quantità di Moto</h1>
+      <p>Conservazione di \(\vec{p}_{\text{tot}}\) negli Urti · Problemi Guidati 29 e 30</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-tool" id="btnScaleFont" title="Cicla dimensione testo (Normale / Grande / Extra)">A+ Testo</button>
+    <button class="btn-tool" id="btnToggleDark" title="Tema Chiaro/Scuro">🌙 Tema</button>
+    <button class="btn-tool" id="btnTogglePen" title="Scrivi con la penna su tutta la LIM (P)">✏️ Penna LIM</button>
+    <button class="btn-tool" id="btnFullscreen" title="Schermo Intero LIM (F)">⛶ Schermo Intero</button>
+  </div>
+</header>
+
+<!-- ════════════════ AREA DI LAVORO PRINCIPALE (ZERO-SCROLL 100VH) ════════════════ -->
+<main class="main-container">
+
+  <!-- SINISTRA: SIMULAZIONE DINAMICA SU CANVAS -->
+  <section class="simulation-pane">
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span class="mode-badge" id="modeBadge">TEORIA • SISTEMA ISOLATO</span>
+        <span id="liveTelemetry">\(p_{\text{tot}} = +80\text{ kg}\cdot\text{m/s}\)</span>
+      </div>
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="simCanvas"></canvas>
+      </div>
+    </div>
+
+    <div class="sim-controls-card">
+      <div class="sim-buttons-group">
+        <button class="btn-sim btn-sim-primary" id="btnPlayPause">▶ Avvia Urto</button>
+        <button class="btn-sim" id="btnResetSim">↺ Riparti</button>
+        <button class="btn-sim" id="btnSlowMo">🐢 0.4× Lento</button>
+      </div>
+
+      <div class="sim-phase-tags">
+        <button class="phase-btn active" id="btnPhaseBefore">Prima</button>
+        <button class="phase-btn" id="btnPhaseImpact">Impatto!</button>
+        <button class="phase-btn" id="btnPhaseAfter">Dopo l'Urto</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTRA: PASSO-PASSO DIDATTICO -->
+  <section class="steps-pane">
+    <div class="step-card" id="stepCard">
+      <!-- Contenuto iniettato da JS -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════ FOOTER NAVIGAZIONE PASSI ════════════════ -->
+<footer class="steps-footer-nav">
+  <button class="btn-nav-step" id="btnPrevStep">← Indietro</button>
+
+  <div class="step-pills-list" id="stepPillsList">
+    <button class="step-pill active" data-step="1">1 · Teoria p</button>
+    <button class="step-pill" data-step="2">2 · Tipi Urti</button>
+    <button class="step-pill" data-step="3">3 · Formula &amp; Segni</button>
+    <button class="step-pill" data-step="4">4 · Es. 29 Pattinatori</button>
+    <button class="step-pill" data-step="5">5 · Es. 30a Vagone Fermo</button>
+    <button class="step-pill" data-step="6">6 · Es. 30b Inseguimento</button>
+    <button class="step-pill" data-step="7">7 · Lab &amp; Quiz LIM</button>
+  </div>
+
+  <button class="btn-nav-step" id="btnNextStep">Avanti →</button>
+</footer>
+
+<!-- ════════════════ PENNA LIM GLOBALE (SU TUTTO LO SCHERMO) ════════════════ -->
+<canvas id="globalPenCanvas"></canvas>
+
+<div class="lim-floating-bar" id="limFloatingBar">
+  <div class="lim-drag-handle" id="limDragHandle">
+    <span>✏️ PENNA LIM GLOBALE</span>
+    <span>⠿</span>
+  </div>
+  <div class="lim-colors-row">
+    <div class="lim-color-dot active" style="background:#dc2626;" data-color="#dc2626" title="Rosso"></div>
+    <div class="lim-color-dot" style="background:#2563eb;" data-color="#2563eb" title="Blu"></div>
+    <div class="lim-color-dot" style="background:#16a34a;" data-color="#16a34a" title="Verde"></div>
+    <div class="lim-color-dot" style="background:#eab308;" data-color="#eab308" title="Evidenziatore Giallo"></div>
+    <div class="lim-color-dot" style="background:#0f172a;" data-color="#0f172a" title="Nero"></div>
+  </div>
+  <div class="lim-tools-row">
+    <button class="btn-lim-action" id="btnLimHighlighter" title="Tratto Evidenziatore semitrasparente">🖍️ Evid.</button>
+    <button class="btn-lim-action" id="btnLimEraser" title="Gomma">🧹 Gomma</button>
+    <button class="btn-lim-action" id="btnLimUndo" title="Annulla ultimo tratto">↩️</button>
+    <button class="btn-lim-action" id="btnLimClear" title="Pulisci tutto">🗑️</button>
+    <button class="btn-lim-action" id="btnLimClose" title="Chiudi Penna">✖</button>
+  </div>
+</div>
+
+<!-- ════════════════ MOTORE FISICO & INTERATTIVO ════════════════ -->
+<script>
+/* ──────────────── CONFIGURAZIONE SCENARI & STATO FISICO ──────────────── */
+const SCENARIOS = {
+  theory1: {
+    label: "TEORIA • SISTEMA ISOLATO",
+    kind: "carts",
+    m1: 3.0, v1: 4.0,
+    m2: 2.0, v2: -1.0,
+    elastic: false,
+    name1: "Corpo 1", name2: "Corpo 2",
+    unitScale: 1
+  },
+  elasticCompare: {
+    label: "CONFRONTO • ELASTICO vs ANELASTICO",
+    kind: "carts",
+    m1: 2.0, v1: 4.0,
+    m2: 2.0, v2: 0.0,
+    elastic: true,
+    name1: "A", name2: "B",
+    unitScale: 1
+  },
+  signsRule: {
+    label: "REGOLA DEI SEGNI • VERSI OPPOSTI",
+    kind: "carts",
+    m1: 4.0, v1: 3.0,
+    m2: 2.0, v2: -3.0,
+    elastic: false,
+    name1: "Corpo 1 (+)", name2: "Corpo 2 (−)",
+    unitScale: 1
+  },
+  prob29: {
+    label: "PROBLEMA 29 • PATTINATORI (PAG. 391)",
+    kind: "skaters",
+    m1: 70, v1: 4.0,
+    m2: 50, v2: -4.0,
+    elastic: false,
+    name1: "Lui (70 kg)", name2: "Lei (50 kg)",
+    unitScale: 1
+  },
+  prob30a: {
+    label: "PROBLEMA 30a • VAGONE FERMO (PAG. 391)",
+    kind: "trains",
+    m1: 1400, v1: 0.50,
+    m2: 1400, v2: 0.00,
+    elastic: false,
+    name1: "Vagone 1", name2: "Vagone 2 (fermo)",
+    unitScale: 6.5 // Scala visiva velocità per i trenini lenti
+  },
+  prob30b: {
+    label: "PROBLEMA 30b • STESSO VERSO (PAG. 391)",
+    kind: "trains",
+    m1: 1400, v1: 0.50,
+    m2: 1400, v2: 0.30,
+    elastic: false,
+    name1: "Vagone 1", name2: "Vagone 2",
+    unitScale: 6.5
+  },
+  sandbox: {
+    label: "SANDBOX INTERATTIVA • ESPERIMENTO LIBERO",
+    kind: "carts",
+    m1: 70, v1: 4.0,
+    m2: 50, v2: -4.0,
+    elastic: false,
+    name1: "Corpo 1", name2: "Corpo 2",
+    unitScale: 1
+  }
+};
+
+const STATE = {
+  activeStep: 1,
+  scenarioKey: "theory1",
+  m1: 3.0, v1: 4.0,
+  m2: 2.0, v2: -1.0,
+  elastic: false,
+  kind: "carts",
+  name1: "Corpo 1",
+  name2: "Corpo 2",
+  unitScale: 1,
+
+  // Cinematica animazione (-1..0 = prima dell'urto, 0 = istante urto, 0..+1 = dopo urto)
+  // Usiamo simTime normalizzato: tImpact = 2.0 s, tEnd = 4.5 s
+  t: 0.0,
+  tImpact: 2.0,
+  tMax: 4.4,
+  isPlaying: false,
+  isSlowMo: false,
+  fontScaleIdx: 0
+};
+
+/* ──────────────── CALCOLI FISICI IN TEMPO REALE ──────────────── */
+function getPhysics() {
+  const { m1, v1, m2, v2, elastic } = STATE;
+  const p1_i = m1 * v1;
+  const p2_i = m2 * v2;
+  const pTot = p1_i + p2_i;
+
+  const K_i = 0.5 * m1 * v1 * v1 + 0.5 * m2 * v2 * v2;
+
+  let v1_f, v2_f;
+  if (elastic) {
+    v1_f = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
+    v2_f = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
+  } else {
+    const vf = pTot / (m1 + m2);
+    v1_f = vf;
+    v2_f = vf;
+  }
+
+  const p1_f = m1 * v1_f;
+  const p2_f = m2 * v2_f;
+  const K_f = 0.5 * m1 * v1_f * v1_f + 0.5 * m2 * v2_f * v2_f;
+  const dK = K_f - K_i; // <= 0
+
+  // Verifica se avviene realmente un urto (v1 > v2 partendo da sinistra a destra)
+  const canCollide = (v1 - v2) > 0.001;
+
+  return {
+    p1_i, p2_i, pTot,
+    v1_f, v2_f, p1_f, p2_f,
+    K_i, K_f, dK,
+    canCollide
+  };
+}
+
+function loadScenario(key) {
+  const sc = SCENARIOS[key];
+  STATE.scenarioKey = key;
+  STATE.m1 = sc.m1;
+  STATE.v1 = sc.v1;
+  STATE.m2 = sc.m2;
+  STATE.v2 = sc.v2;
+  STATE.elastic = sc.elastic;
+  STATE.kind = sc.kind;
+  STATE.name1 = sc.name1;
+  STATE.name2 = sc.name2;
+  STATE.unitScale = sc.unitScale;
+  STATE.t = 0;
+  STATE.isPlaying = false;
+  updatePlayButton();
+  updatePhaseButtons();
+  updateTelemetry();
+  document.getElementById('modeBadge').textContent = sc.label;
+}
+
+/* ──────────────── DEFINIZIONE DEI 7 PASSI DIDATTICI ──────────────── */
+const STEPS = {
+  1: {
+    scenario: "theory1",
+    badge: "PASSO 1 DI 7 • TEORIA BASE",
+    bookRef: "Teoria Pag. 379",
+    title: "Che cos'è la Quantità di Moto e Perché si Conserva negli Urti?",
+    html: () => `
+      <p>Quando due oggetti si scontrano (un <strong>urto</strong>), interagiscono con forze intensissime per un tempo brevissimo. Per prevedere come si muoveranno dopo l'impatto usiamo la <strong>quantità di moto</strong> $\\vec{p}$:</p>
+
+      <div class="math-card">
+        $$\\vec{p} = m \\cdot \\vec{v} \\qquad \\left[\\text{unità S.I.: } \\text{kg}\\cdot\\text{m/s}\\right]$$
+      </div>
+
+      <div class="callout-box callout-blue">
+        📐 <strong>È una grandezza VETTORIALE!</strong><br>
+        Non basta il valore numerico: conta il <strong>verso</strong>! Lungo una retta fissiamo un verso positivo ($\\rightarrow +$); chi va nel verso opposto ($\\leftarrow$) avrà quantità di moto <strong>negativa ($-$)</strong>.
+      </div>
+
+      <div class="callout-box callout-green">
+        🛡️ <strong>Perché $\\vec{p}_{\\text{tot}}$ si conserva sempre negli urti?</strong><br>
+        Per il <strong>3° Principio di Newton</strong>, le forze interne che i due corpi si scambiano nell'urto sono uguali e opposte ($\\vec{F}_{1\\to 2} = -\\vec{F}_{2\\to 1}$), quindi si annullano a vicenda.<br>
+        <strong>Risultato:</strong> $\\vec{p}_{\\text{tot, prima}} = \\vec{p}_{\\text{tot, dopo}}$ (anche se i corpi si deformano!).
+      </div>
+    `
+  },
+
+  2: {
+    scenario: "elasticCompare",
+    badge: "PASSO 2 DI 7 • CLASSIFICAZIONE",
+    bookRef: "Teoria Pag. 379",
+    title: "Urto Elastico vs Urto Completamente Anelastico",
+    html: () => `
+      <p>In tutti gli urti tra corpi isolati si conserva $\\vec{p}_{\\text{tot}}$, ma non sempre si conserva l'energia cinetica $K$. Premi i pulsanti qui sotto per vedere la differenza sul grafico delle barre in alto a destra!</p>
+
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sim ${STATE.elastic ? 'btn-sim-primary' : ''}" id="btnCompareElastic" style="flex:1; justify-content:center;">🟢 Urto Elastico (Rimbalzano)</button>
+        <button class="btn-sim ${!STATE.elastic ? 'btn-sim-primary' : ''}" id="btnCompareInelastic" style="flex:1; justify-content:center;">🟠 Completamente Anelastico (Uniti)</button>
+      </div>
+
+      <div class="data-grid-2">
+        <div class="data-pill p1">
+          <strong>Urto Elastico</strong><br>
+          • I corpi rimbalzano separati<br>
+          • $\\vec{p}_{\\text{tot}}$: <strong style="color:var(--c-ptot);">SI CONSERVA</strong><br>
+          • $K_{\\text{tot}}$: <strong style="color:var(--c-ptot);">SI CONSERVA</strong><br>
+          <em>Es: palle da biliardo</em>
+        </div>
+        <div class="data-pill p2">
+          <strong>Completamente Anelastico</strong><br>
+          • I corpi <strong>restano uniti</strong> ($v_f$ comune)<br>
+          • $\\vec{p}_{\\text{tot}}$: <strong style="color:var(--c-ptot);">SI CONSERVA</strong><br>
+          • $K_{\\text{tot}}$: <strong style="color:var(--c-warn);">DIMINUISCE</strong> (calore/deformazione)<br>
+          <em>Es: pattinatori, vagoni agganciati</em>
+        </div>
+      </div>
+
+      <div class="callout-box callout-amber">
+        👀 <strong>Osserva le barre sul grafico!</strong> Nell'urto completamente anelastico la barra verde ($p_{\\text{tot}}$) resta identica, mentre la barra viola ($K_{\\text{tot}}$) scende a metà!
+      </div>
+    `,
+    onMount: () => {
+      document.getElementById('btnCompareElastic').onclick = () => {
+        STATE.elastic = true;
+        STATE.t = 0;
+        STATE.isPlaying = true;
+        renderStep();
+        updatePlayButton();
+      };
+      document.getElementById('btnCompareInelastic').onclick = () => {
+        STATE.elastic = false;
+        STATE.t = 0;
+        STATE.isPlaying = true;
+        renderStep();
+        updatePlayButton();
+      };
+    }
+  },
+
+  3: {
+    scenario: "signsRule",
+    badge: "PASSO 3 DI 7 • IL METODO UNIVERSALE",
+    bookRef: "Metodo Risolutivo",
+    title: "La Formula Unica e la Regola d'Oro dei Segni",
+    html: () => `
+      <p>Quando due corpi restano uniti dopo l'urto (<strong>urto completamente anelastico</strong>), dopo l'impatto formano un unico blocco di massa $(m_1 + m_2)$ che si muove alla stessa velocità $v_f$:</p>
+
+      <div class="math-card">
+        $$m_1 v_1 + m_2 v_2 = (m_1 + m_2) \\cdot v_f$$
+        $$\\boxed{v_f = \\frac{m_1 v_1 + m_2 v_2}{m_1 + m_2}}$$
+      </div>
+
+      <div class="callout-box callout-warn">
+        ⚠️ <strong>ATTENZIONE AI SEGNI! (Errore più comune in verifica)</strong><br>
+        1. Disegna sempre l'asse $x$ orientato verso destra ($\\rightarrow +$).<br>
+        2. Se il Corpo 2 va nello <strong>stesso verso</strong> ($\\rightarrow$), allora $v_2 > 0$ ($+$).<br>
+        3. Se il Corpo 2 va <strong>incontro</strong> ($\\leftarrow$), allora $v_2 < 0$ ($-$)!
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sim ${STATE.v2 < 0 ? 'btn-sim-primary' : ''}" id="btnSignOpposite" style="flex:1; justify-content:center;">⬅️ Verso Opposto ($v_2 = -3$)</button>
+        <button class="btn-sim ${STATE.v2 > 0 ? 'btn-sim-primary' : ''}" id="btnSignSame" style="flex:1; justify-content:center;">➡️ Stesso Verso ($v_2 = +1$)</button>
+      </div>
+    `,
+    onMount: () => {
+      document.getElementById('btnSignOpposite').onclick = () => {
+        STATE.v2 = -3.0; STATE.t = 0; STATE.isPlaying = true;
+        renderStep(); updatePlayButton(); updateTelemetry();
+      };
+      document.getElementById('btnSignSame').onclick = () => {
+        STATE.v2 = 1.0; STATE.t = 0; STATE.isPlaying = true;
+        renderStep(); updatePlayButton(); updateTelemetry();
+      };
+    }
+  },
+
+  4: {
+    scenario: "prob29",
+    badge: "PASSO 4 DI 7 • PROBLEMA 29 (PAG. 391)",
+    bookRef: "Esercizio 29 • Zanichelli",
+    title: "I Due Pattinatori sul Ghiaccio che si Sollevano",
+    html: () => `
+      <div class="problem-quote">
+        «In una gara di pattinaggio artistico, due ballerini di massa $70\\text{ kg}$ (lui) e $50\\text{ kg}$ (lei), si muovono <strong>incontro</strong> con la stessa velocità di $4{,}0\\text{ m/s}$ rispetto al suolo. Quando si incontrano, lui solleva lei dal suolo. Con quale velocità proseguono il moto insieme?»
+        <div class="result-chip">Risultato atteso: [0,67 m/s nel verso iniziale di lui]</div>
+      </div>
+
+      <div class="reveal-group">
+        <div class="reveal-step open">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>1️⃣ Dati e Scelta del Verso Positivo ($\\rightarrow +$)</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            <div class="data-grid-2">
+              <div class="data-pill p1"><strong>Lui (1):</strong> $m_1 = 70\\text{ kg}$<br>$v_1 = +4{,}0\\text{ m/s}$ ($\\rightarrow$)</div>
+              <div class="data-pill p2"><strong>Lei (2):</strong> $m_2 = 50\\text{ kg}$<br>$v_2 = -4{,}0\\text{ m/s}$ ($\\leftarrow$ <em>incontro!</em>)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal-step">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>2️⃣ Quantità di Moto Iniziale ($p_{\\text{tot},i}$)</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            $$p_1 = 70 \\cdot (+4{,}0) = +280\\text{ kg}\\cdot\\text{m/s}$$
+            $$p_2 = 50 \\cdot (-4{,}0) = -200\\text{ kg}\\cdot\\text{m/s}$$
+            $$p_{\\text{tot},i} = 280 - 200 = \\mathbf{+80\\text{ kg}\\cdot\\text{m/s}}$$
+          </div>
+        </div>
+
+        <div class="reveal-step">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>3️⃣ Calcolo Velocità Finale Comune ($v_f$)</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            $$v_f = \\frac{p_{\\text{tot},i}}{m_1 + m_2} = \\frac{+80\\text{ kg}\\cdot\\text{m/s}}{70\\text{ kg} + 50\\text{ kg}} = \\frac{+80}{120} = \\mathbf{+0{,}67\\text{ m/s}}$$
+            <div style="margin-top:4px; font-size:0.88em; color:var(--c-ptot); font-weight:700;">
+              ✓ Il segno $+$ indica che si muovono nel verso iniziale di lui!
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  5: {
+    scenario: "prob30a",
+    badge: "PASSO 5 DI 7 • PROBLEMA 30 (PARTE 1)",
+    bookRef: "Esercizio 30a • Pag. 391",
+    title: "Il Vagone Urta un Secondo Vagone Identico Fermo",
+    html: () => `
+      <div class="problem-quote">
+        «Un vagone di massa $1{,}4 \\times 10^3\\text{ kg}$ si muove lungo un binario con velocità pari a $0{,}50\\text{ m/s}$, quando urta un secondo vagone <strong>identico fermo</strong>, a cui resta agganciato. Calcola la velocità dei due vagoni quando si muovono insieme.»
+        <div class="result-chip">Risultato atteso: [0,25 m/s]</div>
+      </div>
+
+      <div class="reveal-group">
+        <div class="reveal-step open">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>1️⃣ Dati del Problema (Masse Identiche!)</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            <div class="data-grid-2">
+              <div class="data-pill p1"><strong>Vagone 1:</strong> $m_1 = m = 1{,}4\\cdot 10^3\\text{ kg}$<br>$v_1 = +0{,}50\\text{ m/s}$</div>
+              <div class="data-pill p2"><strong>Vagone 2:</strong> $m_2 = m = 1{,}4\\cdot 10^3\\text{ kg}$<br>$v_2 = 0\\text{ m/s}$ (<em>fermo!</em>)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal-step">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>2️⃣ Semplificazione Elegante + Calcolo Esplicito</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            <p style="font-size:0.9em; margin-bottom:4px;">Poiché le masse sono uguali ($m_1 = m_2 = m$), possiamo semplificare $m$:</p>
+            $$m \\cdot v_1 + m \\cdot 0 = (m + m) \\cdot v_f \\implies \\cancel{m} v_1 = 2\\cancel{m} v_f$$
+            $$v_f = \\frac{v_1}{2} = \\frac{0{,}50\\text{ m/s}}{2} = \\mathbf{0{,}25\\text{ m/s}}$$
+            <div style="font-size:0.84em; color:var(--text-muted); margin-top:4px;">
+              (Con i numeri: $p_{\\text{tot}} = 1400 \\cdot 0{,}50 = 700\\text{ kg}\\cdot\\text{m/s}$, diviso $2800\\text{ kg} = 0{,}25\\text{ m/s}$).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-blue">
+        💡 <strong>Intuizione Fisica:</strong> La quantità di moto resta la stessa, ma la massa che viaggia <strong>raddoppia</strong> ($2m$): perciò la velocità deve esattamente <strong>dimezzarsi</strong>!
+      </div>
+    `
+  },
+
+  6: {
+    scenario: "prob30b",
+    badge: "PASSO 6 DI 7 • PROBLEMA 30 (PARTE 2)",
+    bookRef: "Esercizio 30b • Pag. 391",
+    title: "Secondo Vagone Già in Moto nello Stesso Verso",
+    html: () => `
+      <div class="problem-quote">
+        «Immagina ora che il secondo vagone, prima di essere agganciato, sia in moto <strong>nello stesso verso</strong> del primo, a velocità $0{,}30\\text{ m/s}$. Calcola la nuova velocità dei due vagoni quando si muovono insieme.»
+        <div class="result-chip">Risultato atteso: [0,40 m/s]</div>
+      </div>
+
+      <div class="reveal-group">
+        <div class="reveal-step open">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>1️⃣ Cosa Cambia nei Dati? (Segni Concordi $+$)</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            <div class="data-grid-2">
+              <div class="data-pill p1"><strong>Vagone 1 (dietro):</strong><br>$v_1 = +0{,}50\\text{ m/s}$ ($\\rightarrow$)</div>
+              <div class="data-pill p2"><strong>Vagone 2 (davanti):</strong><br>$v_2 = +0{,}30\\text{ m/s}$ ($\\rightarrow$)</div>
+            </div>
+            <p style="font-size:0.88em; margin-top:5px;">Il Vagone 1 è più veloce ($0{,}50 > 0{,}30$), quindi raggiunge il Vagone 2 e si aggancia!</p>
+          </div>
+        </div>
+
+        <div class="reveal-step">
+          <button class="reveal-btn" onclick="this.parentElement.classList.toggle('open')">
+            <span>2️⃣ Calcolo Finale: Media delle Velocità!</span>
+            <span class="reveal-chevron">▼</span>
+          </button>
+          <div class="reveal-content">
+            $$m v_1 + m v_2 = 2m \\cdot v_f \\implies v_f = \\frac{v_1 + v_2}{2}$$
+            $$v_f = \\frac{0{,}50 + 0{,}30}{2} = \\frac{0{,}80}{2} = \\mathbf{0{,}40\\text{ m/s}}$$
+            <div style="font-size:0.84em; color:var(--text-muted); margin-top:4px;">
+              (Con le masse: $\\frac{700 + 420}{2800} = \\frac{1120}{2800} = 0{,}40\\text{ m/s}$).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-green">
+        🎯 <strong>Regola Speciale (Masse Uguali):</strong> Quando due corpi identici ($m_1 = m_2$) si fondono, la velocità finale è sempre la <strong>media aritmetica</strong> delle velocità iniziali: tra $0{,}50$ e $0{,}30$ c'è esattamente $0{,}40$!
+      </div>
+    `
+  },
+
+  7: {
+    scenario: "sandbox",
+    badge: "PASSO 7 DI 7 • LAB LIBERO & QUIZ LIM",
+    bookRef: "Sperimentazione Classe",
+    title: "Simulatore Libero \"Cosa Succede Se...\" & Verifica LIM",
+    html: () => `
+      <div class="sandbox-grid">
+        <div class="slider-box">
+          <div class="slider-head"><span style="color:var(--c-p1);">Massa 1 ($m_1$)</span><span id="lblM1">${STATE.m1} kg</span></div>
+          <input type="range" id="slM1" min="10" max="150" step="5" value="${STATE.m1}">
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span style="color:var(--c-p1);">Velocità 1 ($v_1$)</span><span id="lblV1">${STATE.v1 > 0 ? '+' : ''}${STATE.v1.toFixed(1)} m/s</span></div>
+          <input type="range" id="slV1" min="-6" max="6" step="0.5" value="${STATE.v1}">
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span style="color:var(--c-p2);">Massa 2 ($m_2$)</span><span id="lblM2">${STATE.m2} kg</span></div>
+          <input type="range" id="slM2" min="10" max="150" step="5" value="${STATE.m2}">
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span style="color:var(--c-p2);">Velocità 2 ($v_2$)</span><span id="lblV2">${STATE.v2 > 0 ? '+' : ''}${STATE.v2.toFixed(1)} m/s</span></div>
+          <input type="range" id="slV2" min="-6" max="6" step="0.5" value="${STATE.v2}">
+        </div>
+      </div>
+
+      <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+        <label style="font-size:0.84em; font-weight:700; display:flex; align-items:center; gap:5px; cursor:pointer;">
+          <input type="checkbox" id="chkElastic" ${STATE.elastic ? 'checked' : ''}> Urto Elastico (rimbalzo)
+        </label>
+        <button class="btn-sim" id="btnPreset29" style="font-size:0.76rem; padding:4px 8px;">↺ Es. 29 (70 vs 50 kg)</button>
+        <button class="btn-sim" id="btnPresetEqual" style="font-size:0.76rem; padding:4px 8px;">⚖️ Masse Uguali Opposte</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">⚡ Quiz LIM: Nel Problema 29, se lei avesse avuto la stessa massa di lui ($70\\text{ kg}$ ciascuno a $\\pm 4{,}0\\text{ m/s}$), quanto sarebbe stata $v_f$?</div>
+        <div class="quiz-opts" id="quizOpts">
+          <button class="quiz-opt" data-ok="true">[A] $0\\text{ m/s}$ — si fermano sul posto perché $\\vec{p}_1 + \\vec{p}_2 = 0$</button>
+          <button class="quiz-opt" data-ok="false">[B] $4{,}0\\text{ m/s}$ — mantengono la velocità iniziale</button>
+          <button class="quiz-opt" data-ok="false">[C] $8{,}0\\text{ m/s}$ — le velocità si sommano</button>
+        </div>
+      </div>
+    `,
+    onMount: () => {
+      const bindSlider = (id, lblId, prop, fmt) => {
+        const el = document.getElementById(id);
+        el.oninput = () => {
+          STATE[prop] = parseFloat(el.value);
+          document.getElementById(lblId).textContent = fmt(STATE[prop]);
+          STATE.t = 0; STATE.isPlaying = false;
+          updatePlayButton(); updatePhaseButtons(); updateTelemetry();
+        };
+      };
+      bindSlider('slM1', 'lblM1', 'm1', v => `${v} kg`);
+      bindSlider('slV1', 'lblV1', 'v1', v => `${v > 0 ? '+' : ''}${v.toFixed(1)} m/s`);
+      bindSlider('slM2', 'lblM2', 'm2', v => `${v} kg`);
+      bindSlider('slV2', 'lblV2', 'v2', v => `${v > 0 ? '+' : ''}${v.toFixed(1)} m/s`);
+
+      document.getElementById('chkElastic').onchange = (e) => {
+        STATE.elastic = e.target.checked;
+        STATE.t = 0; STATE.isPlaying = false;
+        updatePlayButton(); updateTelemetry();
+      };
+      document.getElementById('btnPreset29').onclick = () => {
+        STATE.m1 = 70; STATE.v1 = 4.0; STATE.m2 = 50; STATE.v2 = -4.0; STATE.elastic = false;
+        STATE.t = 0; STATE.isPlaying = true;
+        renderStep(); updatePlayButton(); updateTelemetry();
+      };
+      document.getElementById('btnPresetEqual').onclick = () => {
+        STATE.m1 = 70; STATE.v1 = 4.0; STATE.m2 = 70; STATE.v2 = -4.0; STATE.elastic = false;
+        STATE.t = 0; STATE.isPlaying = true;
+        renderStep(); updatePlayButton(); updateTelemetry();
+      };
+      document.querySelectorAll('#quizOpts .quiz-opt').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('#quizOpts .quiz-opt').forEach(b => b.classList.remove('correct', 'wrong'));
+          btn.classList.add(btn.dataset.ok === 'true' ? 'correct' : 'wrong');
+        };
+      });
+    }
+  }
+};
+
+/* ──────────────── RENDER PASSO E KATEX ──────────────── */
+function renderKaTeX(el) {
+  if (window.renderMathInElement) {
+    renderMathInElement(el, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "$", right: "$", display: false }
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+function goToStep(stepNum) {
+  STATE.activeStep = Math.max(1, Math.min(7, stepNum));
+  const step = STEPS[STATE.activeStep];
+  loadScenario(step.scenario);
+  renderStep();
+
+  document.querySelectorAll('.step-pill').forEach(p => {
+    p.classList.toggle('active', parseInt(p.dataset.step) === STATE.activeStep);
+  });
+  document.getElementById('btnPrevStep').disabled = (STATE.activeStep === 1);
+  document.getElementById('btnNextStep').disabled = (STATE.activeStep === 7);
+}
+
+function renderStep() {
+  const step = STEPS[STATE.activeStep];
+  const card = document.getElementById('stepCard');
+  card.innerHTML = `
+    <div class="step-header">
+      <div class="step-meta-row">
+        <span class="step-badge">${step.badge}</span>
+        <span class="book-ref-tag">${step.bookRef}</span>
+      </div>
+      <h2 class="step-title">${step.title}</h2>
+    </div>
+    <div class="step-body">${step.html()}</div>
+  `;
+  renderKaTeX(card);
+  if (step.onMount) step.onMount();
+}
+
+function updateTelemetry() {
+  const phys = getPhysics();
+  const el = document.getElementById('liveTelemetry');
+  const pTxt = `${phys.pTot >= 0 ? '+' : ''}${phys.pTot.toFixed(0)}`;
+  if (!STATE.elastic) {
+    el.innerHTML = `p_tot = ${pTxt} kg·m/s &nbsp;|&nbsp; v_f = ${phys.v1_f >= 0 ? '+' : ''}${phys.v1_f.toFixed(2)} m/s`;
+  } else {
+    el.innerHTML = `p_tot = ${pTxt} kg·m/s &nbsp;|&nbsp; v₁' = ${phys.v1_f.toFixed(2)} · v₂' = ${phys.v2_f.toFixed(2)} m/s`;
+  }
+}
+
+function updatePlayButton() {
+  const btn = document.getElementById('btnPlayPause');
+  btn.textContent = STATE.isPlaying ? '⏸ Pausa' : (STATE.t >= STATE.tMax - 0.05 ? '↺ Rivedi Urto' : '▶ Avvia Urto');
+}
+
+function updatePhaseButtons() {
+  const bBefore = document.getElementById('btnPhaseBefore');
+  const bImpact = document.getElementById('btnPhaseImpact');
+  const bAfter = document.getElementById('btnPhaseAfter');
+  bBefore.classList.toggle('active', STATE.t < STATE.tImpact - 0.15);
+  bImpact.classList.toggle('active', Math.abs(STATE.t - STATE.tImpact) <= 0.15);
+  bAfter.classList.toggle('active', STATE.t > STATE.tImpact + 0.15);
+}
+
+/* ──────────────── MOTORE GRAFICO CANVAS HIGH-DPI ──────────────── */
+const simCanvas = document.getElementById('simCanvas');
+const ctx = simCanvas.getContext('2d');
+
+function resizeSimCanvas() {
+  const wrap = document.getElementById('canvasWrapper');
+  const dpr = window.devicePixelRatio || 1;
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  if (w > 0 && h > 0) {
+    simCanvas.width = Math.round(w * dpr);
+    simCanvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+}
+new ResizeObserver(resizeSimCanvas).observe(document.getElementById('canvasWrapper'));
+
+function drawArrow(x1, y1, x2, y2, color, width = 3, label = "") {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const len = Math.hypot(dx, dy);
+  if (len < 3) return;
+  const angle = Math.atan2(dy, dx);
+  const head = Math.min(11, Math.max(7, len * 0.25));
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - head * Math.cos(angle - Math.PI / 6), y2 - head * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(x2 - head * Math.cos(angle + Math.PI / 6), y2 - head * Math.sin(angle + Math.PI / 6));
+  ctx.closePath();
+  ctx.fill();
+
+  if (label) {
+    ctx.font = "700 12px 'IBM Plex Mono', monospace";
+    ctx.textAlign = "center";
+    const lx = (x1 + x2) / 2;
+    const ly = y1 - 8;
+    ctx.fillText(label, lx, ly);
+  }
+  ctx.restore();
+}
+
+function drawSkater(x, y, color, label, isFemale, liftedOffset = 0, labelBottom = false) {
+  ctx.save();
+  ctx.translate(x, y - liftedOffset);
+
+  // Ombra sul ghiaccio
+  ctx.fillStyle = "rgba(0,0,0,0.12)";
+  ctx.beginPath();
+  ctx.ellipse(0, 32 + liftedOffset, 18, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pattini
+  ctx.strokeStyle = "#475569";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(-10, 30); ctx.lineTo(-2, 30);
+  ctx.moveTo(2, 30); ctx.lineTo(10, 30);
+  ctx.stroke();
+
+  // Corpo stilizzato elegante
+  ctx.fillStyle = color;
+  if (isFemale) {
+    // Gonna pattinaggio
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.lineTo(-14, 16);
+    ctx.lineTo(14, 16);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.roundRect(-10, -10, 20, 26, 6);
+    ctx.fill();
+  }
+
+  // Gambe
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-5, 16); ctx.lineTo(-6, 29);
+  ctx.moveTo(5, 16); ctx.lineTo(6, 29);
+  ctx.stroke();
+
+  // Testa
+  ctx.fillStyle = "#fde68a";
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, -19, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Etichetta
+  ctx.fillStyle = color;
+  ctx.font = "800 12px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(label, 0, labelBottom ? 50 + liftedOffset : -34);
+
+  ctx.restore();
+}
+
+function drawTrainCar(x, y, w, h, color, label, coupled = false) {
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Scocca vagone
+  ctx.fillStyle = color;
+  ctx.strokeStyle = "#0f172a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(-w / 2, -h, w, h - 10, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  // Finestrini / striscia tecnica
+  ctx.fillStyle = "rgba(255,255,255,0.22)";
+  ctx.fillRect(-w / 2 + 8, -h + 8, w - 16, 10);
+
+  // Ruote ferroviarie
+  ctx.fillStyle = "#334155";
+  [-w / 3, w / 3].forEach(wx => {
+    ctx.beginPath();
+    ctx.arc(wx, -6, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#94a3b8";
+    ctx.beginPath();
+    ctx.arc(wx, -6, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#334155";
+  });
+
+  // Etichetta massa
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 12px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(label, 0, -h / 2 + 4);
+
+  ctx.restore();
+}
+
+function drawCart(x, y, w, h, color, label) {
+  ctx.save();
+  ctx.translate(x, y);
+
+  ctx.fillStyle = color;
+  ctx.strokeStyle = "#0f172a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(-w / 2, -h, w, h - 8, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  // Ruote
+  ctx.fillStyle = "#1e293b";
+  [-w / 3, w / 3].forEach(wx => {
+    ctx.beginPath();
+    ctx.arc(wx, -5, 6, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 12px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(label, 0, -h / 2 + 2);
+
+  ctx.restore();
+}
+
+function drawHUDBars(w, h, phys, afterImpact, isDark) {
+  const boxW = Math.min(270, w * 0.44);
+  const boxH = 82;
+  const x0 = w - boxW - 14;
+  const y0 = 12;
+
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = isDark ? "rgba(15, 23, 42, 0.88)" : "rgba(248, 250, 252, 0.92)";
+  ctx.strokeStyle = isDark ? "#334155" : "#cbd5e1";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(x0, y0, boxW, boxH, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = "800 11px 'Share Tech Mono', monospace";
+  ctx.fillStyle = isDark ? "#e2e8f0" : "#0f172a";
+  ctx.fillText("BILANCIO LIVE: p vs ENERGIA K", x0 + 10, y0 + 17);
+
+  // Barra 1: p_tot (sempre 100% costante!)
+  const maxBarW = boxW - 20;
+  const cGreen = isDark ? "#4ade80" : "#16a34a";
+  const cPurple = isDark ? "#a78bfa" : "#7c3aed";
+
+  ctx.font = "700 10.5px 'IBM Plex Mono', monospace";
+  ctx.fillStyle = cGreen;
+  ctx.fillText(`p_tot = ${phys.pTot >= 0 ? '+' : ''}${phys.pTot.toFixed(0)} kg·m/s (COSTANTE!)`, x0 + 10, y0 + 34);
+
+  ctx.fillStyle = isDark ? "#1e293b" : "#e2e8f0";
+  ctx.fillRect(x0 + 10, y0 + 38, maxBarW, 9);
+  ctx.fillStyle = cGreen;
+  const pRatio = Math.abs(phys.pTot) > 0.01 ? 0.85 : 0.04;
+  ctx.fillRect(x0 + 10, y0 + 38, maxBarW * pRatio, 9);
+
+  // Barra 2: K_tot (cala nell'anelastico!)
+  const curK = afterImpact ? phys.K_f : phys.K_i;
+  const kRatio = phys.K_i > 0.001 ? Math.max(0.03, curK / phys.K_i) : 0;
+  ctx.fillStyle = cPurple;
+  const kPerc = phys.K_i > 0.001 ? Math.round((curK / phys.K_i) * 100) : 100;
+  ctx.fillText(`K_tot = ${curK.toFixed(0)} J (${kPerc}% iniziale)`, x0 + 10, y0 + 62);
+
+  ctx.fillStyle = isDark ? "#1e293b" : "#e2e8f0";
+  ctx.fillRect(x0 + 10, y0 + 66, maxBarW, 9);
+  ctx.fillStyle = cPurple;
+  ctx.fillRect(x0 + 10, y0 + 66, maxBarW * kRatio, 9);
+
+  ctx.restore();
+}
+
+function drawFrame() {
+  const wrap = document.getElementById('canvasWrapper');
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  if (w === 0 || h === 0) return;
+
+  const isDark = document.body.classList.contains('dark-mode');
+  const c1 = isDark ? "#60a5fa" : "#2563eb";
+  const c2 = isDark ? "#fb923c" : "#ea580c";
+  const cTot = isDark ? "#4ade80" : "#16a34a";
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Griglia leggera cartesiana
+  ctx.strokeStyle = isDark ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.04)";
+  ctx.lineWidth = 1;
+  for (let gx = 0; gx < w; gx += 40) {
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+  }
+  for (let gy = 0; gy < h; gy += 40) {
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+  }
+
+  const phys = getPhysics();
+  const trackY = h * 0.65;
+
+  // Pista / Binario / Ghiaccio
+  ctx.strokeStyle = isDark ? "#475569" : "#94a3b8";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(20, trackY + 32);
+  ctx.lineTo(w - 20, trackY + 32);
+  ctx.stroke();
+
+  if (STATE.kind === "trains") {
+    // Traversine ferroviarie
+    ctx.strokeStyle = isDark ? "#334155" : "#cbd5e1";
+    ctx.lineWidth = 3;
+    for (let tx = 28; tx < w - 24; tx += 22) {
+      ctx.beginPath();
+      ctx.moveTo(tx, trackY + 32);
+      ctx.lineTo(tx, trackY + 39);
+      ctx.stroke();
+    }
+  } else if (STATE.kind === "skaters") {
+    // Riflesso azzurro pista ghiaccio
+    ctx.fillStyle = isDark ? "rgba(56, 189, 248, 0.08)" : "rgba(186, 230, 253, 0.35)";
+    ctx.fillRect(20, trackY + 32, w - 40, 12);
+  }
+
+  // Asse orientato in basso
+  drawArrow(w * 0.08, trackY + 58, w * 0.25, trackY + 58, isDark ? "#94a3b8" : "#475569", 2, "+x (verso positivo)");
+
+  // Calcolo posizioni in pixel
+  const centerX = w * 0.50;
+  const bodyW = STATE.kind === "skaters" ? 36 : 84;
+  const bodyH = STATE.kind === "skaters" ? 45 : 44;
+  const pxPerMeter = (w * 0.052) * STATE.unitScale;
+
+  // Calcoliamo lo spostamento in base al tempo rispetto a tImpact
+  const dtImpact = STATE.t - STATE.tImpact;
+  const afterImpact = dtImpact >= 0 && phys.canCollide;
+
+  let x1, x2, curV1, curV2, lifted = 0;
+
+  if (!phys.canCollide) {
+    // Nessun urto possibile (v1 <= v2)
+    x1 = centerX - 90 + STATE.v1 * pxPerMeter * (STATE.t - 1.0);
+    x2 = centerX + 90 + STATE.v2 * pxPerMeter * (STATE.t - 1.0);
+    curV1 = STATE.v1;
+    curV2 = STATE.v2;
+  } else if (!afterImpact) {
+    // Prima dell'urto: convergono esattamente a centerX a t = tImpact
+    const timeToHit = STATE.tImpact - STATE.t;
+    x1 = (centerX - bodyW / 2) - STATE.v1 * pxPerMeter * timeToHit;
+    x2 = (centerX + bodyW / 2) - STATE.v2 * pxPerMeter * timeToHit;
+    curV1 = STATE.v1;
+    curV2 = STATE.v2;
+  } else {
+    // Dopo l'urto
+    if (STATE.elastic) {
+      x1 = (centerX - bodyW / 2) + phys.v1_f * pxPerMeter * dtImpact;
+      x2 = (centerX + bodyW / 2) + phys.v2_f * pxPerMeter * dtImpact;
+    } else {
+      const commonX = centerX + phys.v1_f * pxPerMeter * dtImpact;
+      if (STATE.kind === "skaters") {
+        // Lui solleva lei!
+        const liftProgress = Math.min(1, dtImpact / 0.45);
+        lifted = 36 * liftProgress;
+        x1 = commonX;
+        x2 = commonX + 8 * (1 - liftProgress);
+      } else {
+        x1 = commonX - bodyW / 2;
+        x2 = commonX + bodyW / 2;
+      }
+    }
+    curV1 = phys.v1_f;
+    curV2 = phys.v2_f;
+  }
+
+  // Clamp visivo morbido dentro l'area
+  const clampX = x => Math.max(46, Math.min(w - 46, x));
+  const dx1 = clampX(x1);
+  const dx2 = clampX(x2);
+
+  // Disegno corpi
+  if (STATE.kind === "skaters") {
+    drawSkater(dx1, trackY, c1, `Lui: ${STATE.m1}kg`, false, 0, lifted > 4);
+    drawSkater(dx2, trackY, c2, `Lei: ${STATE.m2}kg`, true, lifted, false);
+  } else if (STATE.kind === "trains") {
+    drawTrainCar(dx1, trackY + 32, bodyW, bodyH, c1, `${(STATE.m1/1000).toFixed(1)}t`);
+    drawTrainCar(dx2, trackY + 32, bodyW, bodyH, c2, `${(STATE.m2/1000).toFixed(1)}t`);
+  } else {
+    drawCart(dx1, trackY + 32, bodyW, bodyH, c1, `${STATE.m1} kg`);
+    drawCart(dx2, trackY + 32, bodyW, bodyH, c2, `${STATE.m2} kg`);
+  }
+
+  // Effetto flash all'impatto
+  if (phys.canCollide && Math.abs(dtImpact) < 0.18) {
+    ctx.save();
+    ctx.strokeStyle = "#f59e0b";
+    ctx.lineWidth = 3;
+    const r = 18 + (0.18 - Math.abs(dtImpact)) * 80;
+    ctx.beginPath();
+    ctx.arc(centerX, trackY, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "#f59e0b";
+    ctx.font = "900 13px 'Inter', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(STATE.elastic ? "RIMBALZO!" : "AGGANCIO / URTO!", centerX, trackY - 46);
+    ctx.restore();
+  }
+
+  // Frecce Velocità sopra ai corpi
+  const vecScale = 14 * STATE.unitScale;
+  if (!afterImpact || STATE.elastic || !phys.canCollide) {
+    if (Math.abs(curV1) > 0.01) {
+      drawArrow(dx1, trackY - 58, dx1 + curV1 * vecScale, trackY - 58, c1, 3.5, `v₁ = ${curV1 >= 0 ? '+' : ''}${curV1.toFixed(2)} m/s`);
+    } else {
+      ctx.save();
+      ctx.fillStyle = c1; ctx.font = "700 11px 'IBM Plex Mono'"; ctx.textAlign = "center";
+      ctx.fillText("v₁ = 0 m/s", dx1, trackY - 58);
+      ctx.restore();
+    }
+
+    if (Math.abs(curV2) > 0.01) {
+      drawArrow(dx2, trackY - 82, dx2 + curV2 * vecScale, trackY - 82, c2, 3.5, `v₂ = ${curV2 >= 0 ? '+' : ''}${curV2.toFixed(2)} m/s`);
+    } else {
+      ctx.save();
+      ctx.fillStyle = c2; ctx.font = "700 11px 'IBM Plex Mono'"; ctx.textAlign = "center";
+      ctx.fillText("v₂ = 0 (fermo)", dx2, trackY - 82);
+      ctx.restore();
+    }
+  } else {
+    // Velocità comune finale
+    const midX = (dx1 + dx2) / 2;
+    const arrowY = STATE.kind === "skaters" ? trackY - 102 : trackY - 72;
+    if (Math.abs(curV1) > 0.01) {
+      drawArrow(midX, arrowY, midX + curV1 * vecScale * 1.4, arrowY, cTot, 4, `v_f = ${curV1 >= 0 ? '+' : ''}${curV1.toFixed(2)} m/s (uniti)`);
+    } else {
+      ctx.save();
+      ctx.fillStyle = cTot; ctx.font = "800 12px 'IBM Plex Mono'"; ctx.textAlign = "center";
+      ctx.fillText("v_f = 0 m/s (fermi!)", midX, arrowY);
+      ctx.restore();
+    }
+  }
+
+  // Box riepilogo p_1, p_2, p_tot in alto a sinistra
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = isDark ? "rgba(15, 23, 42, 0.88)" : "rgba(248, 250, 252, 0.92)";
+  ctx.strokeStyle = isDark ? "#334155" : "#cbd5e1";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(14, 12, Math.min(255, w * 0.44), 82, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = "800 11px 'Share Tech Mono', monospace";
+  ctx.fillStyle = isDark ? "#e2e8f0" : "#0f172a";
+  ctx.fillText(afterImpact ? "STATO: DOPO L'URTO" : "STATO: PRIMA DELL'URTO", 24, 29);
+
+  ctx.font = "700 11px 'IBM Plex Mono', monospace";
+  const p1Show = afterImpact ? phys.p1_f : phys.p1_i;
+  const p2Show = afterImpact ? phys.p2_f : phys.p2_i;
+
+  ctx.fillStyle = c1;
+  ctx.fillText(`p₁ = ${p1Show >= 0 ? '+' : ''}${p1Show.toFixed(0)} kg·m/s`, 24, 48);
+  ctx.fillStyle = c2;
+  ctx.fillText(`p₂ = ${p2Show >= 0 ? '+' : ''}${p2Show.toFixed(0)} kg·m/s`, 24, 65);
+  ctx.fillStyle = cTot;
+  ctx.fillText(`p_tot = ${phys.pTot >= 0 ? '+' : ''}${phys.pTot.toFixed(0)} kg·m/s`, 24, 83);
+  ctx.restore();
+
+  // HUD Barre a destra
+  drawHUDBars(w, h, phys, afterImpact, isDark);
+
+  if (!phys.canCollide) {
+    ctx.fillStyle = "#dc2626";
+    ctx.font = "800 13px 'Inter', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("⚠️ I due corpi si allontanano (v₁ ≤ v₂): non avviene alcun urto!", w / 2, h * 0.3);
+  }
+}
+
+/* ──────────────── LOOP ANIMAZIONE ──────────────── */
+let lastTs = performance.now();
+function animLoop(now) {
+  const dt = Math.min(0.05, (now - lastTs) / 1000);
+  lastTs = now;
+
+  if (STATE.isPlaying) {
+    const speed = STATE.isSlowMo ? 0.4 : 1.0;
+    STATE.t += dt * speed;
+    if (STATE.t >= STATE.tMax) {
+      STATE.t = STATE.tMax;
+      STATE.isPlaying = false;
+      updatePlayButton();
+    }
+    updatePhaseButtons();
+  }
+
+  drawFrame();
+  requestAnimationFrame(animLoop);
+}
+
+/* ──────────────── CONTROLLI SIMULAZIONE & NAVIGAZIONE ──────────────── */
+document.getElementById('btnPlayPause').onclick = () => {
+  if (STATE.t >= STATE.tMax - 0.05) STATE.t = 0;
+  STATE.isPlaying = !STATE.isPlaying;
+  updatePlayButton();
+};
+document.getElementById('btnResetSim').onclick = () => {
+  STATE.t = 0;
+  STATE.isPlaying = false;
+  updatePlayButton();
+  updatePhaseButtons();
+};
+document.getElementById('btnSlowMo').onclick = (e) => {
+  STATE.isSlowMo = !STATE.isSlowMo;
+  e.target.classList.toggle('active', STATE.isSlowMo);
+};
+
+document.getElementById('btnPhaseBefore').onclick = () => {
+  STATE.isPlaying = false; STATE.t = 0.4;
+  updatePlayButton(); updatePhaseButtons();
+};
+document.getElementById('btnPhaseImpact').onclick = () => {
+  STATE.isPlaying = false; STATE.t = STATE.tImpact;
+  updatePlayButton(); updatePhaseButtons();
+};
+document.getElementById('btnPhaseAfter').onclick = () => {
+  STATE.isPlaying = false; STATE.t = STATE.tImpact + 1.2;
+  updatePlayButton(); updatePhaseButtons();
+};
+
+document.getElementById('btnPrevStep').onclick = () => goToStep(STATE.activeStep - 1);
+document.getElementById('btnNextStep').onclick = () => goToStep(STATE.activeStep + 1);
+document.querySelectorAll('.step-pill').forEach(btn => {
+  btn.onclick = () => goToStep(parseInt(btn.dataset.step));
+});
+
+/* ──────────────── STRUMENTI LIM: TESTO, TEMA, FULLSCREEN, PENNA GLOBALE ──────────────── */
+document.getElementById('btnScaleFont').onclick = (e) => {
+  STATE.fontScaleIdx = (STATE.fontScaleIdx + 1) % 3;
+  document.body.classList.remove('scale-lg', 'scale-xl');
+  if (STATE.fontScaleIdx === 1) document.body.classList.add('scale-lg');
+  if (STATE.fontScaleIdx === 2) document.body.classList.add('scale-xl');
+  e.target.textContent = ['A+ Testo', 'A++ Grande', 'A↺ Normale'][STATE.fontScaleIdx];
+};
+
+document.getElementById('btnToggleDark').onclick = (e) => {
+  document.body.classList.toggle('dark-mode');
+  e.target.textContent = document.body.classList.contains('dark-mode') ? '☀️ Chiaro' : '🌙 Tema';
+};
+
+document.getElementById('btnFullscreen').onclick = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+};
+
+/* Motore Penna LIM Globale su tutto lo schermo */
+const penCanvas = document.getElementById('globalPenCanvas');
+const penCtx = penCanvas.getContext('2d');
+let penActive = false;
+let penDrawing = false;
+let penMode = 'pen'; // 'pen' | 'highlighter' | 'eraser'
+let penColor = '#dc2626';
+let strokes = [];
+let currentStroke = null;
+
+function resizePenCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  penCanvas.width = window.innerWidth * dpr;
+  penCanvas.height = window.innerHeight * dpr;
+  penCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  redrawAllStrokes();
+}
+window.addEventListener('resize', resizePenCanvas);
+
+function redrawAllStrokes() {
+  penCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  for (const s of strokes) {
+    if (s.points.length < 2) continue;
+    penCtx.save();
+    penCtx.lineCap = 'round';
+    penCtx.lineJoin = 'round';
+    if (s.mode === 'eraser') {
+      penCtx.globalCompositeOperation = 'destination-out';
+      penCtx.lineWidth = 24;
+    } else if (s.mode === 'highlighter') {
+      penCtx.globalAlpha = 0.35;
+      penCtx.strokeStyle = s.color;
+      penCtx.lineWidth = 18;
+    } else {
+      penCtx.strokeStyle = s.color;
+      penCtx.lineWidth = 3.5;
+    }
+    penCtx.beginPath();
+    penCtx.moveTo(s.points[0].x, s.points[0].y);
+    for (let i = 1; i < s.points.length; i++) {
+      penCtx.lineTo(s.points[i].x, s.points[i].y);
+    }
+    penCtx.stroke();
+    penCtx.restore();
+  }
+}
+
+penCanvas.addEventListener('pointerdown', (e) => {
+  if (!penActive) return;
+  penDrawing = true;
+  penCanvas.setPointerCapture(e.pointerId);
+  currentStroke = { mode: penMode, color: penColor, points: [{ x: e.clientX, y: e.clientY }] };
+  strokes.push(currentStroke);
+});
+
+penCanvas.addEventListener('pointermove', (e) => {
+  if (!penDrawing || !currentStroke) return;
+  currentStroke.points.push({ x: e.clientX, y: e.clientY });
+  redrawAllStrokes();
+});
+
+penCanvas.addEventListener('pointerup', () => {
+  penDrawing = false;
+  currentStroke = null;
+});
+
+function togglePen() {
+  penActive = !penActive;
+  penCanvas.classList.toggle('active', penActive);
+  document.getElementById('btnTogglePen').classList.toggle('active', penActive);
+  document.getElementById('limFloatingBar').classList.toggle('show', penActive);
+}
+document.getElementById('btnTogglePen').onclick = togglePen;
+document.getElementById('btnLimClose').onclick = togglePen;
+
+document.querySelectorAll('.lim-color-dot').forEach(dot => {
+  dot.onclick = () => {
+    document.querySelectorAll('.lim-color-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+    penColor = dot.dataset.color;
+    if (penMode === 'eraser') {
+      penMode = 'pen';
+      document.getElementById('btnLimEraser').classList.remove('active');
+    }
+  };
+});
+
+document.getElementById('btnLimHighlighter').onclick = (e) => {
+  penMode = (penMode === 'highlighter') ? 'pen' : 'highlighter';
+  e.target.classList.toggle('active', penMode === 'highlighter');
+  document.getElementById('btnLimEraser').classList.remove('active');
+};
+document.getElementById('btnLimEraser').onclick = (e) => {
+  penMode = (penMode === 'eraser') ? 'pen' : 'eraser';
+  e.target.classList.toggle('active', penMode === 'eraser');
+  document.getElementById('btnLimHighlighter').classList.remove('active');
+};
+document.getElementById('btnLimUndo').onclick = () => {
+  strokes.pop();
+  redrawAllStrokes();
+};
+document.getElementById('btnLimClear').onclick = () => {
+  strokes = [];
+  redrawAllStrokes();
+};
+
+// Drag barra flottante penna
+const bar = document.getElementById('limFloatingBar');
+const handle = document.getElementById('limDragHandle');
+let dragOff = null;
+handle.addEventListener('pointerdown', (e) => {
+  handle.setPointerCapture(e.pointerId);
+  const r = bar.getBoundingClientRect();
+  dragOff = { x: e.clientX - r.left, y: e.clientY - r.top };
+});
+handle.addEventListener('pointermove', (e) => {
+  if (!dragOff) return;
+  bar.style.right = 'auto';
+  bar.style.left = `${Math.max(5, Math.min(window.innerWidth - 180, e.clientX - dragOff.x))}px`;
+  bar.style.top = `${Math.max(5, Math.min(window.innerHeight - 100, e.clientY - dragOff.y))}px`;
+});
+handle.addEventListener('pointerup', () => { dragOff = null; });
+
+// Scorciatoie tastiera LIM
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') goToStep(STATE.activeStep + 1);
+  if (e.key === 'ArrowLeft') goToStep(STATE.activeStep - 1);
+  if (e.key.toLowerCase() === 'p') togglePen();
+  if (e.key.toLowerCase() === 'f') document.getElementById('btnFullscreen').click();
+  if (e.key === ' ') { e.preventDefault(); document.getElementById('btnPlayPause').click(); }
+});
+
+/* ──────────────── AVVIO INIZIALE ──────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderKaTeX(document.querySelector('.app-header'));
+  resizeSimCanvas();
+  resizePenCanvas();
+  goToStep(1);
+  requestAnimationFrame(animLoop);
+});
+</script>
+
+</body>
+</html>
