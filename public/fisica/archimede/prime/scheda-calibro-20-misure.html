@@ -80,69 +80,70 @@ body {
   backdrop-filter: blur(8px);
   border-bottom: 1.5px solid var(--border);
   box-shadow: var(--shadow-sm);
-  padding: 10px 20px;
+  padding: 8px 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
 }
 
 .brand-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .back-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   background: var(--primary-bg);
   border: 1.5px solid var(--primary-border);
   color: var(--primary-dark);
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.85rem;
-  min-height: 40px;
+  font-size: 0.8rem;
+  min-height: 36px;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 .back-btn:hover { background: #dbeafe; border-color: var(--primary); }
 .back-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
 .brand-titles h1 {
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.2;
 }
 .brand-titles p {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.35px;
 }
 
 .topbar-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 40px;
-  padding: 8px 14px;
+  gap: 5px;
+  min-height: 36px;
+  padding: 6px 11px;
   border-radius: 8px;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   border: 1.5px solid var(--border);
@@ -439,7 +440,7 @@ legend.fieldset-legend {
 
 .caliper-svg-box {
   width: 100%;
-  aspect-ratio: 1650 / 410;
+  aspect-ratio: 1920 / 385;
   max-height: 360px;
   cursor: ew-resize;
   touch-action: pan-y;
@@ -1301,12 +1302,12 @@ function initDefaultRows(randomize = false) {
 /* =========================================================================
    2. MOTORE SVG CALIBRO DIGITALE & NONIO (ESTERNI, INTERNI, PROFONDITÀ)
    ========================================================================= */
-const PX = 14;         // 14 px SVG = 1 mm (0..90 mm = 1260 px)
+const PX = 14;         // 14 px SVG = 1 mm
 const X0 = 260;        // Zero della scala fissa
 const XJAW = 140;      // Battuta fissa esterna
 const YTOP = 145;      // Bordo superiore asta fissa
 const YSPLIT = 235;    // Linea separazione asta fissa / corsoio
-const BEAM_MAX_MM = 92;
+const BEAM_MAX_MM = 112;
 const BEAM_END = X0 + BEAM_MAX_MM * PX + 40;
 
 let activeIndex = 0;
@@ -1321,6 +1322,9 @@ function renderCaliperSVG() {
   const targetMm = row ? row.targetMm : 25;
   const targetDx = targetMm * PX;
   const objType = row ? row.type : "ext";
+  const gap = (objType === "ext") ? (mm - targetMm) : (targetMm - mm);
+  const isColliding = showObject && (gap < -0.025);
+  const isContact = showObject && (Math.abs(gap) <= 0.025);
 
   // Main scale ticks (mm)
   let mainTicks = "";
@@ -1350,11 +1354,12 @@ function renderCaliperSVG() {
     if (objType === "ext") {
       // Clamped between external lower jaws: XJAW .. XJAW + targetDx
       const lblInside = targetDx >= 84;
+      const strokeCol = isColliding ? "#fb7185" : (isContact ? "#34d399" : "#38bdf8");
       specimenSvg = `
         <g>
-          <rect x="${XJAW}" y="288" width="${targetDx}" height="74" rx="3" fill="url(#pieceGrad)" stroke="#38bdf8" stroke-width="2" />
-          <line x1="${XJAW}" y1="288" x2="${XJAW}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
-          <line x1="${XJAW + targetDx}" y1="288" x2="${XJAW + targetDx}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
+          <rect x="${XJAW}" y="288" width="${targetDx}" height="74" rx="3" fill="url(#pieceGrad)" stroke="${strokeCol}" stroke-width="${isColliding || isContact ? 3 : 2}" />
+          <line x1="${XJAW}" y1="288" x2="${XJAW}" y2="362" stroke="${strokeCol}" stroke-width="2.5" />
+          <line x1="${XJAW + targetDx}" y1="288" x2="${XJAW + targetDx}" y2="362" stroke="${strokeCol}" stroke-width="2.5" />
           ${lblInside
             ? `<text x="${XJAW + targetDx / 2}" y="330" text-anchor="middle" font-size="14" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">PEZZO #${state.activeIndex + 1}</text>`
             : `<text x="${XJAW + targetDx / 2}" y="382" text-anchor="middle" font-size="12" font-weight="800" fill="#38bdf8" font-family="JetBrains Mono, monospace">#${state.activeIndex + 1}</text>`
@@ -1362,31 +1367,33 @@ function renderCaliperSVG() {
         </g>
       `;
     } else if (objType === "int") {
-      // Cross-sectioned ring/bore sitting over the upper knife jaws: inner gap XJAW .. XJAW + targetDx
+      // Cross-sectioned ring/bore sitting cleanly on upper knife jaws (y = 20..82, above jaw shoulder y = 86)
       const wall = 34;
+      const strokeCol = isColliding ? "#fb7185" : (isContact ? "#34d399" : "#fbbf24");
       specimenSvg = `
         <g>
           <!-- Left wall -->
-          <rect x="${XJAW - wall}" y="38" width="${wall}" height="52" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
+          <rect x="${XJAW - wall}" y="36" width="${wall}" height="46" rx="3" fill="url(#pieceAmber)" stroke="${strokeCol}" stroke-width="${isColliding || isContact ? 3 : 2}" />
           <!-- Right wall -->
-          <rect x="${XJAW + targetDx}" y="38" width="${wall}" height="52" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
+          <rect x="${XJAW + targetDx}" y="36" width="${wall}" height="46" rx="3" fill="url(#pieceAmber)" stroke="${strokeCol}" stroke-width="${isColliding || isContact ? 3 : 2}" />
           <!-- Top connecting bridge -->
-          <rect x="${XJAW - wall}" y="22" width="${targetDx + wall * 2}" height="18" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
-          <text x="${XJAW + targetDx / 2}" y="35" text-anchor="middle" font-size="11.5" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">FORO #${state.activeIndex + 1}</text>
+          <rect x="${XJAW - wall}" y="20" width="${targetDx + wall * 2}" height="18" rx="3" fill="url(#pieceAmber)" stroke="${strokeCol}" stroke-width="2" />
+          <text x="${XJAW + targetDx / 2}" y="33" text-anchor="middle" font-size="11.5" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">FORO #${state.activeIndex + 1}</text>
         </g>
       `;
     } else if (objType === "dep") {
       // Blind hole block at the right end of the beam: reference face at BEAM_END, hole bottom at BEAM_END + targetDx
       const blockW = Math.max(targetDx + 90, 180);
+      const strokeCol = isColliding ? "#fb7185" : (isContact ? "#34d399" : "#c4b5fd");
       specimenSvg = `
         <g>
           <!-- Upper wall of blind hole block -->
-          <rect x="${BEAM_END}" y="156" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
+          <rect x="${BEAM_END}" y="156" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="${strokeCol}" stroke-width="1.8" />
           <!-- Lower wall of blind hole block -->
-          <rect x="${BEAM_END}" y="198" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
+          <rect x="${BEAM_END}" y="198" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="${strokeCol}" stroke-width="1.8" />
           <!-- Bottom backstop wall -->
-          <rect x="${BEAM_END + targetDx}" y="156" width="${blockW - targetDx}" height="68" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
-          <line x1="${BEAM_END + targetDx}" y1="180" x2="${BEAM_END + targetDx}" y2="200" stroke="#fde047" stroke-width="3" />
+          <rect x="${BEAM_END + targetDx}" y="156" width="${blockW - targetDx}" height="68" fill="url(#pieceViolet)" stroke="${strokeCol}" stroke-width="${isColliding || isContact ? 3 : 1.8}" />
+          <line x1="${BEAM_END + targetDx}" y1="180" x2="${BEAM_END + targetDx}" y2="200" stroke="${isColliding ? "#fb7185" : "#fde047"}" stroke-width="3" />
           <text x="${BEAM_END + targetDx + 44}" y="194" text-anchor="middle" font-size="12" font-weight="800" fill="#f5f3ff" font-family="JetBrains Mono, monospace">FONDO</text>
         </g>
       `;
@@ -1442,8 +1449,8 @@ function renderCaliperSVG() {
   `;
 
   const vbWidthSvg = (showObject && objType === "dep")
-    ? Math.max(1650, BEAM_END + Math.max(targetDx, dx) + 120)
-    : 1650;
+    ? Math.max(1920, BEAM_END + Math.max(targetDx, dx) + 120)
+    : 1920;
 
   return `
     <svg viewBox="0 15 ${vbWidthSvg.toFixed(0)} 385" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Simulatore calibro a nonio ventesimale aperto a ${mm.toFixed(2)} millimetri">
@@ -1619,7 +1626,16 @@ function updateWorkbenchUI() {
    ========================================================================= */
 function setCaliperMm(val) {
   const step = getStep();
-  const clamped = Math.max(0, Math.min(90, roundToStep(val, step)));
+  let clamped = Math.max(0, Math.min(90, roundToStep(val, step)));
+  const row = state.rows[state.activeIndex];
+  if (row && state.exerciseMode !== "real" && !state.preClamp) {
+    // Arresto fisico realistico sul pezzo con margine massimo di sforzo ±0,40 mm
+    if (row.type === "ext") {
+      clamped = Math.max(Math.max(0, row.targetMm - 0.40), clamped);
+    } else {
+      clamped = Math.min(Math.min(90, row.targetMm + 0.40), clamped);
+    }
+  }
   state.currentMm = Number(clamped.toFixed(2));
   updateWorkbenchUI();
 }
@@ -1698,7 +1714,7 @@ function confirmQuickInput() {
     if (!dragging) return;
     const dxPx = e.clientX - startX;
     const rect = stage.getBoundingClientRect();
-    const scale = 1650 / Math.max(300, rect.width);
+    const scale = 1920 / Math.max(300, rect.width);
     const deltaMm = (dxPx * scale) / PX;
     setCaliperMm(startMm + deltaMm);
   });
