@@ -902,6 +902,56 @@ table.data-table tr.active-row th {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* =========================================================
+   MODAL DIALOG (Sblocco Aiuto Lettura Docente)
+   ========================================================= */
+dialog#hintAuthDialog:modal {
+  overscroll-behavior: contain;
+  margin: auto;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  max-width: 400px;
+  width: calc(100vw - 32px);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 25px 50px rgba(15, 23, 42, 0.35);
+}
+dialog#hintAuthDialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(4px);
+}
+.dialog-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.dialog-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.dialog-err {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--rose);
+  min-height: 20px;
+  margin-top: 6px;
+  visibility: hidden;
+}
+.dialog-err.show {
+  visibility: visible;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* =========================================================
    PRINT / PDF A4 STYLESHEET
    ========================================================= */
 .print-only-header { display: none; }
@@ -1061,8 +1111,7 @@ table.data-table tr.active-row th {
           <span>Banco di Misura Interattivo — Calibro a Nonio Ventesimale (1/20 mm)</span>
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-          <button type="button" class="btn btn-sm" id="btnToggleHint" onclick="toggleReadingHint()">💡 Aiuto Lettura: OFF</button>
-          <button type="button" class="btn btn-sm" id="btnToggleLock" onclick="togglePreClamp()">🖐️ Modalità: Sposta Corsoio</button>
+          <button type="button" class="btn btn-sm" id="btnToggleHint" onclick="toggleReadingHint()">🔒 Aiuto Lettura (Docente)</button>
         </div>
       </div>
 
@@ -1248,6 +1297,23 @@ table.data-table tr.active-row th {
   </form>
 </main>
 
+<!-- DIALOG AUTENTICAZIONE DOCENTE PER AIUTO LETTURA -->
+<dialog id="hintAuthDialog" aria-labelledby="hintDialogTitle">
+  <h1 id="hintDialogTitle" class="dialog-title">🔒 Funzione Riservata al Docente</h1>
+  <p class="dialog-desc">L'<strong>Aiuto Lettura</strong> evidenzia lo zero e la tacca allineata sul nonio. Inserisci la password docente per abilitarlo:</p>
+  <form id="hintAuthForm" method="dialog" novalidate>
+    <div class="field">
+      <label for="hintPwdInput">Password Docente</label>
+      <input type="password" id="hintPwdInput" name="hintPwdInput" class="input-ctrl" autocomplete="off" placeholder="Inserisci password..." autofocus>
+    </div>
+    <div id="hintPwdError" class="dialog-err" role="alert">❌ Password errata. Riprova.</div>
+    <div class="dialog-actions">
+      <button type="submit" value="cancel" class="btn btn-sm">Annulla</button>
+      <button type="submit" value="unlock" class="btn btn-sm btn-primary">🔓 Sblocca Aiuto</button>
+    </div>
+  </form>
+</dialog>
+
 <script>
 /* =========================================================================
    1. DATABASE DEI 20 OGGETTI / QUOTE DI LABORATORIO
@@ -1282,7 +1348,7 @@ const STORAGE_KEY = "mazzeo_scheda_calibro_nonio_20_v2";
 const state = {
   exerciseMode: "diverse", // 'diverse' | 'repeated' | 'real'
   showHint: false,
-  preClamp: false,
+  hintUnlocked: false,
   currentMm: 35.00,
   activeIndex: 0,
   rows: []
@@ -1742,7 +1808,7 @@ function setCaliperMm(val) {
   const step = getStep();
   let clamped = Math.max(0, Math.min(90, roundToStep(val, step)));
   const row = state.rows[state.activeIndex];
-  if (row && state.exerciseMode !== "real" && !state.preClamp) {
+  if (row && state.exerciseMode !== "real") {
     // Arresto fisico realistico sul pezzo con margine massimo di sforzo ±0,40 mm
     if (row.type === "ext") {
       clamped = Math.max(Math.max(0, row.targetMm - 0.40), clamped);
@@ -1766,21 +1832,60 @@ function nudgeFine(sign) {
   nudgeCaliper(sign * getStep());
 }
 
+function updateHintButtonUI() {
+  const btn = document.getElementById("btnToggleHint");
+  if (!btn) return;
+  if (!state.hintUnlocked) {
+    btn.textContent = "🔒 Aiuto Lettura (Docente)";
+  } else {
+    btn.textContent = state.showHint ? "💡 Aiuto Lettura: ON" : "💡 Aiuto Lettura: OFF";
+  }
+}
+
 function toggleReadingHint() {
+  if (!state.hintUnlocked) {
+    const dlg = document.getElementById("hintAuthDialog");
+    const inp = document.getElementById("hintPwdInput");
+    const err = document.getElementById("hintPwdError");
+    inp.value = "";
+    err.classList.remove("show");
+    dlg.showModal();
+    return;
+  }
   state.showHint = !state.showHint;
-  document.getElementById("btnToggleHint").textContent = state.showHint ? "💡 Aiuto Lettura: ON" : "💡 Aiuto Lettura: OFF";
+  updateHintButtonUI();
   updateWorkbenchUI();
 }
 
-function togglePreClamp() {
-  state.preClamp = !state.preClamp;
-  document.getElementById("btnToggleLock").textContent = state.preClamp ? "🔒 Modalità: Pezzo Già Serrato" : "🖐️ Modalità: Sposta Corsoio";
-  if (state.preClamp && state.rows[state.activeIndex]) {
-    setCaliperMm(state.rows[state.activeIndex].targetMm);
-  } else {
-    updateWorkbenchUI();
-  }
-}
+(function setupHintAuthDialog() {
+  const dlg = document.getElementById("hintAuthDialog");
+  const form = document.getElementById("hintAuthForm");
+  const inp = document.getElementById("hintPwdInput");
+  const err = document.getElementById("hintPwdError");
+  if (!dlg || !form) return;
+
+  form.addEventListener("submit", e => {
+    const action = e.submitter ? e.submitter.value : "unlock";
+    if (action === "cancel") return; // method="dialog" chiude automaticamente
+    if (inp.value.trim() === "Thomas") {
+      state.hintUnlocked = true;
+      state.showHint = true;
+      err.classList.remove("show");
+      updateHintButtonUI();
+      updateWorkbenchUI();
+      showToast("🔓 Aiuto Lettura abilitato!");
+    } else {
+      e.preventDefault();
+      err.classList.add("show");
+      inp.focus();
+      inp.select();
+    }
+  });
+
+  dlg.addEventListener("close", () => {
+    dlg.returnValue = "";
+  });
+})();
 
 function syncFromQuickInput(val) {
   const idx = state.activeIndex;
@@ -1936,9 +2041,7 @@ function selectRow(idx, moveCal = true, scrollUp = false) {
 
   if (moveCal) {
     const row = state.rows[idx];
-    if (state.preClamp) {
-      state.currentMm = row.targetMm;
-    } else if (row.type === "ext") {
+    if (row.type === "ext") {
       // Esterni: parti leggermente più largo del pezzo
       state.currentMm = Number(Math.min(88, Math.max(5, row.targetMm + 12.40)).toFixed(2));
     } else if (row.type === "int") {
