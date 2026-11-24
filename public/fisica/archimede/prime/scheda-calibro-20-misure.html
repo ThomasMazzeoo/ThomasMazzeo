@@ -207,6 +207,7 @@ body {
   border-radius: 14px;
   box-shadow: var(--shadow-md);
   padding: 20px 24px;
+  scroll-margin-top: 74px;
 }
 
 .card-header {
@@ -1348,12 +1349,16 @@ function renderCaliperSVG() {
   if (showObject && targetMm > 0) {
     if (objType === "ext") {
       // Clamped between external lower jaws: XJAW .. XJAW + targetDx
+      const lblInside = targetDx >= 84;
       specimenSvg = `
         <g>
-          <rect x="${XJAW}" y="288" width="${targetDx}" height="74" rx="4" fill="url(#pieceGrad)" stroke="#38bdf8" stroke-width="2" />
+          <rect x="${XJAW}" y="288" width="${targetDx}" height="74" rx="3" fill="url(#pieceGrad)" stroke="#38bdf8" stroke-width="2" />
           <line x1="${XJAW}" y1="288" x2="${XJAW}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
           <line x1="${XJAW + targetDx}" y1="288" x2="${XJAW + targetDx}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
-          <text x="${XJAW + targetDx / 2}" y="330" text-anchor="middle" font-size="14" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">PEZZO #${state.activeIndex + 1}</text>
+          ${lblInside
+            ? `<text x="${XJAW + targetDx / 2}" y="330" text-anchor="middle" font-size="14" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">PEZZO #${state.activeIndex + 1}</text>`
+            : `<text x="${XJAW + targetDx / 2}" y="382" text-anchor="middle" font-size="12" font-weight="800" fill="#38bdf8" font-family="JetBrains Mono, monospace">#${state.activeIndex + 1}</text>`
+          }
         </g>
       `;
     } else if (objType === "int") {
@@ -1372,7 +1377,7 @@ function renderCaliperSVG() {
       `;
     } else if (objType === "dep") {
       // Blind hole block at the right end of the beam: reference face at BEAM_END, hole bottom at BEAM_END + targetDx
-      const blockW = Math.max(targetDx + 40, 120);
+      const blockW = Math.max(targetDx + 90, 180);
       specimenSvg = `
         <g>
           <!-- Upper wall of blind hole block -->
@@ -1382,7 +1387,7 @@ function renderCaliperSVG() {
           <!-- Bottom backstop wall -->
           <rect x="${BEAM_END + targetDx}" y="156" width="${blockW - targetDx}" height="68" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
           <line x1="${BEAM_END + targetDx}" y1="180" x2="${BEAM_END + targetDx}" y2="200" stroke="#fde047" stroke-width="3" />
-          <text x="${BEAM_END + targetDx + 38}" y="194" text-anchor="middle" font-size="11" font-weight="800" fill="#f5f3ff" font-family="JetBrains Mono, monospace">FONDO</text>
+          <text x="${BEAM_END + targetDx + 44}" y="194" text-anchor="middle" font-size="12" font-weight="800" fill="#f5f3ff" font-family="JetBrains Mono, monospace">FONDO</text>
         </g>
       `;
     }
@@ -1436,8 +1441,12 @@ function renderCaliperSVG() {
     </g>
   `;
 
+  const vbWidthSvg = (showObject && objType === "dep")
+    ? Math.max(1650, BEAM_END + Math.max(targetDx, dx) + 120)
+    : 1650;
+
   return `
-    <svg viewBox="0 15 1650 385" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Simulatore calibro di precisione aperto a ${mm.toFixed(2)} millimetri">
+    <svg viewBox="0 15 ${vbWidthSvg.toFixed(0)} 385" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Simulatore calibro a nonio ventesimale aperto a ${mm.toFixed(2)} millimetri">
       <defs>
         <linearGradient id="steelGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#e2e8f0" />
@@ -1579,19 +1588,28 @@ function updateWorkbenchUI() {
   if (state.exerciseMode === "real") {
     msgEl.textContent = "Modalità Raccolta Dati Reali attiva: usa il calibro virtuale come supporto o compila direttamente la tabella.";
   } else {
-    const diff = state.currentMm - row.targetMm;
+    // gap > 0: spazio residuo prima del contatto; gap < 0: collisione oltre il pezzo
+    const gap = (row.type === "ext") ? (state.currentMm - row.targetMm) : (row.targetMm - state.currentMm);
     const tol = 0.025;
-    if (Math.abs(diff) <= tol) {
+    if (Math.abs(gap) <= tol) {
       statusEl.classList.add("ok");
       msgEl.textContent = "✅ CONTATTO PERFETTO! Ora leggi il valore sul nonio 1/20 ingrandito e scrivilo qui sopra o in tabella.";
-    } else if (diff < -tol) {
+    } else if (gap < -tol) {
       statusEl.classList.add("warn");
-      msgEl.textContent = "⚠️ COLLISIONE / SFORZO! I becchi stanno schiacciando il pezzo: apri leggermente il corsoio.";
-    } else if (diff <= 1.2) {
+      msgEl.textContent = row.type === "ext"
+        ? "⚠️ COLLISIONE / SFORZO! I becchi stanno schiacciando il pezzo: apri leggermente il corsoio."
+        : "⚠️ COLLISIONE / SFORZO! Hai spinto oltre la parete/fondo: rientra leggermente col corsoio.";
+    } else if (gap <= 1.2) {
       statusEl.classList.add("near");
-      msgEl.textContent = "🟡 QUASI A CONTATTO! Usa i tasti fini (-0,20 / -0,05) per appoggiarti senza forzare.";
+      msgEl.textContent = row.type === "ext"
+        ? "🟡 QUASI A CONTATTO! Usa i tasti fini (-0,20 / -0,05) per appoggiarti senza forzare."
+        : "🟡 QUASI A CONTATTO! Usa i tasti fini (+0,20 / +0,05) per appoggiarti senza forzare.";
     } else {
-      msgEl.textContent = "🔓 Corsoio aperto: trascina o usa i pulsanti per avvicinare il calibro al pezzo.";
+      msgEl.textContent = row.type === "ext"
+        ? "🔓 Corsoio aperto: avvicina i becchi inferiori fino a sfiorare il pezzo."
+        : (row.type === "int"
+          ? "🔓 Becchi interni nel foro: allarga il corsoio verso destra fino a toccare le pareti del foro."
+          : "🔓 Asta di profondità nel foro: spingi il corsoio verso destra fino a toccare il fondo.");
     }
   }
 }
@@ -1761,7 +1779,7 @@ function renderDataTable() {
         <td data-label="Err. %" class="mono-cell" id="ep_${idx}">${errPct}</td>
         <td data-label="Esito" id="st_${idx}">${statusHtml}</td>
         <td data-label="Calibro" class="action-col">
-          <button type="button" class="btn btn-sm" onclick="selectRow(${idx}, true)" title="Carica questo pezzo sul calibro">📏 Misura</button>
+          <button type="button" class="btn btn-sm" onclick="selectRow(${idx}, true, true)" title="Carica questo pezzo sul calibro">📏 Misura</button>
         </td>
       </tr>
     `;
@@ -1778,7 +1796,7 @@ function escapeHtml(s) {
     .replace(/>/g, "&gt;");
 }
 
-function selectRow(idx, moveCal = true) {
+function selectRow(idx, moveCal = true, scrollUp = false) {
   if (idx < 0 || idx >= state.rows.length) return;
   const prevTr = document.getElementById(`rowTr_${state.activeIndex}`);
   if (prevTr) prevTr.classList.remove("active-row");
@@ -1787,14 +1805,25 @@ function selectRow(idx, moveCal = true) {
   if (nextTr) nextTr.classList.add("active-row");
 
   if (moveCal) {
+    const row = state.rows[idx];
     if (state.preClamp) {
-      state.currentMm = state.rows[idx].targetMm;
+      state.currentMm = row.targetMm;
+    } else if (row.type === "ext") {
+      // Esterni: parti leggermente più largo del pezzo
+      state.currentMm = Number(Math.min(88, Math.max(5, row.targetMm + 12.40)).toFixed(2));
+    } else if (row.type === "int") {
+      // Interni: parti più chiuso rispetto al foro, dentro le pareti
+      state.currentMm = Number(Math.max(1.00, row.targetMm - 5.20).toFixed(2));
     } else {
-      // Posiziona il corsoio vicino ma aperto (~ +12 mm oltre il pezzo) per stimolare la misura manuale
-      state.currentMm = Number(Math.min(88, Math.max(5, state.rows[idx].targetMm + 12.40)).toFixed(2));
+      // Profondità: parti più corto rispetto al fondo
+      state.currentMm = Number(Math.max(1.00, row.targetMm - 7.40).toFixed(2));
     }
   }
   updateWorkbenchUI();
+  if (scrollUp) {
+    const wb = document.getElementById("workbenchSection");
+    if (wb) wb.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function updateRowName(idx, val) {
@@ -2051,6 +2080,7 @@ function resetSheet() {
   initDefaultRows(false);
   document.getElementById("q1Answer").value = "";
   document.getElementById("q2Answer").value = "";
+  document.getElementById("quickInput").value = "";
   selectRow(0, true);
   renderDataTable();
   showToast("🗑️ Scheda azzerata.");
