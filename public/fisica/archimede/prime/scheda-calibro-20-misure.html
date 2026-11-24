@@ -926,6 +926,7 @@ table.data-table tr.active-row th {
     break-inside: avoid;
   }
   .table-wrapper {
+    container-type: normal !important;
     max-block-size: none !important;
     overflow: visible !important;
     border: 1px solid #000 !important;
@@ -2276,30 +2277,237 @@ function validateStudentMetaForExport() {
   return true;
 }
 
+function buildCleanPdfNode() {
+  const unc = getStep();
+  const school = document.getElementById("schoolSelect").value;
+  const studentName = document.getElementById("studentName").value.trim();
+  const studentClass = document.getElementById("studentClass").value.trim();
+  const studentStation = document.getElementById("studentStation").value.trim() || "—";
+  const q1 = document.getElementById("q1Answer").value.trim() || "—";
+  const q2 = document.getElementById("q2Answer").value.trim() || "—";
+
+  const modeLabels = {
+    diverse: "20 Quote Diverse (Esterni / Interni / Profondità)",
+    repeated: "20 Misure Ripetute + Analisi Statistica",
+    real: "Raccolta Dati Reali al Banco"
+  };
+  const typeText = { ext: "Esterno", int: "Interno", dep: "Profondità" };
+  const tol = unc + 0.005;
+
+  const validEntries = state.rows
+    .map((r, i) => ({ val: r.userMm, idx: i }))
+    .filter(x => x.val !== null && x.val > 0);
+  const count = validEntries.length;
+  const exactCount = state.rows.filter(r => r.checked && r.userMm !== null && Math.abs(r.userMm - r.targetMm) <= tol).length;
+
+  let minStr = "—", maxStr = "—", avgStr = "—", spreadStr = "—", percStr = "—", finalRepStr = "";
+  if (count > 0) {
+    const vals = validEntries.map(x => x.val);
+    const minV = Math.min(...vals);
+    const maxV = Math.max(...vals);
+    const avg = vals.reduce((a, b) => a + b, 0) / count;
+    const semi = (maxV - minV) / 2;
+    minStr = `${fmtIt(minV)} mm`;
+    maxStr = `${fmtIt(maxV)} mm`;
+    avgStr = `${avg.toFixed(3).replace(".", ",")} mm`;
+    spreadStr = `&plusmn; ${semi.toFixed(3).replace(".", ",")} mm`;
+    if (state.exerciseMode === "repeated") {
+      const fUnc = Math.max(unc, semi);
+      percStr = `${((fUnc / avg) * 100).toFixed(2).replace(".", ",")}%`;
+      finalRepStr = `x = (${avg.toFixed(2).replace(".", ",")} &plusmn; ${fUnc.toFixed(2).replace(".", ",")}) mm`;
+    } else {
+      const maxPct = Math.max(...vals.map(v => (unc / v) * 100));
+      percStr = `${maxPct.toFixed(2).replace(".", ",")}% max`;
+    }
+  }
+
+  const rowsHtml = state.rows.map((r, i) => {
+    const num = String(i + 1).padStart(2, "0");
+    const okNum = r.userMm !== null && !isNaN(r.userMm) && r.userMm > 0;
+    const valStr = okNum ? `${fmtIt(r.userMm)} mm` : "—";
+    const cmStr = okNum ? `${(r.userMm / 10).toFixed(3).replace(".", ",")} cm` : "—";
+    const epStr = okNum ? `${((unc / r.userMm) * 100).toFixed(2).replace(".", ",")}%` : "—";
+
+    let esitoStr = "Da misurare";
+    let esitoColor = "#64748b";
+    if (okNum) {
+      if (state.exerciseMode === "real") {
+        esitoStr = "Registrata";
+        esitoColor = "#1d4ed8";
+      } else if (r.checked) {
+        if (Math.abs(r.userMm - r.targetMm) <= tol) {
+          esitoStr = "Esatta";
+          esitoColor = "#047857";
+        } else {
+          esitoStr = "Rileggi";
+          esitoColor = "#b91c1c";
+        }
+      } else {
+        esitoStr = "Compilata";
+        esitoColor = "#1d4ed8";
+      }
+    }
+
+    const bg = i % 2 === 1 ? "#f8fafc" : "#ffffff";
+    return `
+      <tr style="background:${bg}; page-break-inside:avoid;">
+        <td style="border:1px solid #94a3b8; padding:3.5px 5px; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:700; color:#1e3a8a;">${num}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 6px; text-align:left; font-weight:600; color:#0f172a;">${escapeHtml(r.name)}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 5px; text-align:center; font-size:9px; font-weight:700; color:#334155;">${typeText[r.type] || "Esterno"}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 6px; text-align:right; font-family:'JetBrains Mono',monospace; font-weight:800; color:#0f172a;">${valStr}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 5px; text-align:center; font-family:'JetBrains Mono',monospace; color:#334155;">&plusmn; ${fmtIt(unc)}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 6px; text-align:right; font-family:'JetBrains Mono',monospace; color:#334155;">${cmStr}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 6px; text-align:right; font-family:'JetBrains Mono',monospace; color:#334155;">${epStr}</td>
+        <td style="border:1px solid #94a3b8; padding:3.5px 5px; text-align:center; font-weight:800; color:${esitoColor};">${esitoStr}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const histSvg = (state.exerciseMode === "repeated" && count > 0)
+    ? `<div style="margin-top:8px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; page-break-inside:avoid;">
+         <div style="font-size:10px; font-weight:800; color:#0f172a; margin-bottom:4px;">DISTRIBUZIONE 20 MISURE RIPETUTE &bull; RISULTATO: <span style="color:#1d4ed8; font-family:'JetBrains Mono',monospace;">${finalRepStr}</span></div>
+         ${document.getElementById("histogramSvgMount").innerHTML}
+       </div>`
+    : "";
+
+  const wrapper = document.createElement("div");
+  wrapper.id = "pdfExportCleanRoot";
+  wrapper.style.cssText = "width:700px; box-sizing:border-box; background:#ffffff; color:#0f172a; font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:10px; line-height:1.32; padding:2px 4px;";
+
+  wrapper.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2.5px solid #0f172a; padding-bottom:8px; margin-bottom:10px;">
+      <div>
+        <div style="font-size:13px; font-weight:800; color:#0f172a; text-transform:uppercase;">${escapeHtml(school)}</div>
+        <div style="font-size:10px; font-weight:700; color:#2563eb; text-transform:uppercase;">Laboratorio di Fisica &bull; Scheda Digitale Dati Raccolti</div>
+        <div style="font-size:15px; font-weight:800; color:#0f172a; margin-top:2px;">ESERCITAZIONE: 20 MISURAZIONI AL CALIBRO A NONIO (1/20 mm)</div>
+      </div>
+      <div style="text-align:right; font-family:'JetBrains Mono',monospace; font-size:9.5px; border:1.5px solid #1d4ed8; border-radius:6px; padding:5px 9px; background:#eff6ff; color:#1e3a8a; font-weight:800;">
+        SENSIBILITÀ: &plusmn; 0,05 mm<br>
+        ${state.exerciseMode === "real" ? `COMPILATE: ${count}/20` : `ESATTE: ${exactCount}/20`}
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:2fr 1fr 1.3fr; gap:8px; background:#f8fafc; border:1px solid #94a3b8; border-radius:6px; padding:7px 10px; margin-bottom:10px;">
+      <div><span style="font-size:8.5px; font-weight:800; color:#475569; text-transform:uppercase;">Allievo:</span><br><strong style="font-size:11.5px;">${escapeHtml(studentName)}</strong></div>
+      <div><span style="font-size:8.5px; font-weight:800; color:#475569; text-transform:uppercase;">Classe:</span><br><strong style="font-size:11.5px;">${escapeHtml(studentClass)}</strong></div>
+      <div><span style="font-size:8.5px; font-weight:800; color:#475569; text-transform:uppercase;">Data &amp; Postazione:</span><br><strong style="font-size:10.5px;">${escapeHtml(studentStation)}</strong></div>
+      <div style="grid-column:1 / -1; border-top:1px dashed #cbd5e1; padding-top:4px; font-size:9.5px; color:#334155;">
+        <strong>Strumento:</strong> Calibro a corsoio con nonio ventesimale 1/20 mm (&Delta;x = &plusmn; 0,05 mm) &nbsp;|&nbsp;
+        <strong>Modalità:</strong> ${modeLabels[state.exerciseMode] || ""}
+      </div>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; font-size:9.8px; margin-bottom:10px;">
+      <thead>
+        <tr style="background:#e2e8f0; color:#0f172a;">
+          <th style="border:1px solid #64748b; padding:5px 4px; width:28px; text-align:center;">#</th>
+          <th style="border:1px solid #64748b; padding:5px 6px; text-align:left;">Oggetto / Quota Misurata</th>
+          <th style="border:1px solid #64748b; padding:5px 4px; width:62px; text-align:center;">Tipo</th>
+          <th style="border:1px solid #64748b; padding:5px 6px; width:74px; text-align:right;">Misura [mm]</th>
+          <th style="border:1px solid #64748b; padding:5px 4px; width:56px; text-align:center;">&Delta;x [mm]</th>
+          <th style="border:1px solid #64748b; padding:5px 6px; width:68px; text-align:right;">Equiv. [cm]</th>
+          <th style="border:1px solid #64748b; padding:5px 6px; width:52px; text-align:right;">Err. %</th>
+          <th style="border:1px solid #64748b; padding:5px 4px; width:66px; text-align:center;">Esito</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+
+    <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:10px; page-break-inside:avoid;">
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Raccolte</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${count} / 20</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Minimo</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${minStr}</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Massimo</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${maxStr}</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Media</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${avgStr}</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Semidisp.</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${spreadStr}</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:5px; padding:5px 6px; background:#f8fafc;">
+        <div style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase;">Errore %</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;">${percStr}</div>
+      </div>
+    </div>
+
+    ${histSvg}
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; page-break-inside:avoid;">
+      <div style="border:1px solid #94a3b8; border-radius:6px; padding:6px 8px;">
+        <div style="font-size:8.5px; font-weight:800; color:#334155; text-transform:uppercase; margin-bottom:3px;">1. Errore Percentuale e Dimensioni</div>
+        <div style="font-size:9.5px; color:#0f172a; white-space:pre-wrap; min-height:28px;">${escapeHtml(q1)}</div>
+      </div>
+      <div style="border:1px solid #94a3b8; border-radius:6px; padding:6px 8px;">
+        <div style="font-size:8.5px; font-weight:800; color:#334155; text-transform:uppercase; margin-bottom:3px;">2. Corretto Uso del Calibro a Nonio</div>
+        <div style="font-size:9.5px; color:#0f172a; white-space:pre-wrap; min-height:28px;">${escapeHtml(q2)}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:6px; border-top:1px dashed #94a3b8; font-size:9px; color:#475569; page-break-inside:avoid;">
+      <span>Scheda Digitale di Laboratorio &bull; Calibro a Nonio 1/20 mm</span>
+      <span>Valutazione Docente: _________ / 10 &nbsp;&nbsp;&nbsp; Firma: ____________________</span>
+    </div>
+  `;
+  return wrapper;
+}
+
 function exportPDF() {
   if (!validateStudentMetaForExport()) return;
   const name = document.getElementById("studentName").value.trim().replace(/[^a-zA-Z0-9]/g, "_");
   const cls = document.getElementById("studentClass").value.trim().replace(/[^a-zA-Z0-9]/g, "_");
-  showToast("⏳ Generazione PDF A4 in corso...");
+  showToast("⏳ Generazione PDF A4 pulito in corso...");
 
-  const target = document.getElementById("reportRoot");
+  // Crea un container A4 dedicato posizionato a (0,0) durante la cattura per evitare offset di html2canvas
+  const prevScrollY = window.scrollY;
+  window.scrollTo(0, 0);
+
+  const backdrop = document.createElement("div");
+  backdrop.style.cssText = "position:fixed; inset:0; z-index:99998; background:#ffffff; overflow:auto; padding:0; margin:0;";
+  const cleanNode = buildCleanPdfNode();
+  backdrop.appendChild(cleanNode);
+  document.body.appendChild(backdrop);
+
   const opt = {
-    margin: [8, 8, 8, 8],
+    margin: [7, 7, 7, 7],
     filename: `Scheda_20_Misurazioni_Calibro_${name}_${cls}.pdf`,
-    image: { type: "jpeg", quality: 0.96 },
+    image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
       scale: 2,
       useCORS: true,
-      ignoreElements: el => el.classList && el.classList.contains("no-print")
+      scrollX: 0,
+      scrollY: 0
     },
+    pagebreak: { mode: ["avoid-all", "css", "legacy"] },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
 
+  const cleanup = () => {
+    if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+    window.scrollTo(0, prevScrollY);
+  };
+
   if (window.html2pdf) {
-    window.html2pdf().set(opt).from(target).save().then(() => {
-      showToast("✓ PDF scaricato con successo!");
-    }).catch(() => window.print());
+    setTimeout(() => {
+      window.html2pdf().set(opt).from(cleanNode).save().then(() => {
+        cleanup();
+        showToast("✓ PDF A4 scaricato con successo!");
+      }).catch(() => {
+        cleanup();
+        window.print();
+      });
+    }, 80);
   } else {
+    cleanup();
     window.print();
   }
 }
