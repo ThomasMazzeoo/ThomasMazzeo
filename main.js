@@ -962,13 +962,14 @@ const MATERIE = [
                 topics: [
 
                   {
-
                     title: "Lezione Interattiva LIM: Metro, Calibro e Micrometro (1h)",
-
                     desc: "Presentazione animata per LIM: confronto metrologico, simulatore interattivo del calibro con nonio ventesimale (0.05 mm), simulatore del micrometro Palmer (0.01 mm), calcolo errore percentuale e sfida finale a quiz.",
-
                     url: "/fisica/giordano-bruno/misure-lineari.html"
-
+                  },
+                  {
+                    title: "📟 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro",
+                    desc: "Scheda dati digitale compilabile al PC con calibro digitale interattivo (0,01 mm) e nonio 1/20 (0,05 mm): 20 quote reali (esterni, interni, profondità), misure ripetute con istogramma, export CSV e PDF A4.",
+                    url: "/fisica/archimede/prime/scheda-calibro-20-misure.html?scuola=gb"
                   }
 
                 ]
@@ -1867,6 +1868,11 @@ const MATERIE = [
                 title: "Come Leggere il Nonio 1/20 mm (FIMEC METRICA) — Presentazione Interattiva LIM",
                 desc: "Presentazione interattiva per LIM a 9 slide con simulatore 60 FPS del calibro FIMEC METRICA INOX 20°C: principio 19 mm/20 div (0,05 mm), analisi passo-passo della misura reale 27,15 mm con lente 4x, errori di parallasse, laboratorio virtuale touch e quiz.",
                 url: "/fisica/archimede/prime/calibro-nonio.html"
+              },
+              {
+                title: "📟 Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro",
+                desc: "Scheda dati digitale compilabile al computer con calibro digitale interattivo (0,01 mm) e nonio 1/20 (0,05 mm): 20 esercizi tra esterni, interni e profondità, analisi statistica, export CSV e PDF A4.",
+                url: "/fisica/archimede/prime/scheda-calibro-20-misure.html?scuola=archimede"
               }
             ]
           },

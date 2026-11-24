@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro — Fisica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-bg: #eff6ff;
+  --primary-border: #93c5fd;
+  --emerald: #059669;
+  --emerald-bg: #ecfdf5;
+  --emerald-border: #6ee7b7;
+  --amber: #d97706;
+  --amber-bg: #fffbeb;
+  --amber-border: #fcd34d;
+  --rose: #dc2626;
+  --rose-bg: #fef2f2;
+  --rose-border: #fca5a5;
+  --border: #cbd5e1;
+  --border-light: #e2e8f0;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visually hidden for screen-reader live region */
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* =========================================================
+   TOP NAVIGATION BAR
+   ========================================================= */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: var(--primary-bg);
+  border: 1.5px solid var(--primary-border);
+  color: var(--primary-dark);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-height: 40px;
+  transition: all 0.15s ease;
+}
+.back-btn:hover { background: #dbeafe; border-color: var(--primary); }
+.back-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+.brand-titles h1 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.brand-titles p {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--surface-alt); border-color: #94a3b8; }
+.btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+.btn-primary:hover { background: var(--primary-dark); border-color: #1e40af; }
+
+.btn-emerald {
+  background: var(--emerald);
+  border-color: #047857;
+  color: #ffffff;
+}
+.btn-emerald:hover { background: #047857; }
+
+.btn-amber {
+  background: var(--amber-bg);
+  border-color: var(--amber-border);
+  color: #92400e;
+}
+.btn-amber:hover { background: #fef3c7; }
+
+.btn-danger {
+  background: var(--rose-bg);
+  border-color: var(--rose-border);
+  color: var(--rose);
+}
+.btn-danger:hover { background: #fee2e2; }
+
+.btn-sm {
+  min-height: 34px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+}
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+.page-shell {
+  max-width: 1280px;
+  margin: 20px auto 48px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  padding: 20px 24px;
+}
+
+.card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1.5px solid var(--border-light);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.step-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   SEMANTIC FORM & INPUTS (Modern Web Guidance compliant)
+   ========================================================= */
+fieldset.clean-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+legend.fieldset-legend {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.input-ctrl, .select-ctrl, .textarea-ctrl {
+  font: inherit;
+  font-size: max(1rem, 0.95rem);
+  padding: 8px 12px;
+  min-height: 42px;
+  border-radius: 8px;
+  border: 1.5px solid #94a3b8;
+  background: #ffffff;
+  color: var(--text);
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+.textarea-ctrl {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.input-ctrl:focus-visible, .select-ctrl:focus-visible, .textarea-ctrl:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+
+/* Validation after interaction only */
+:is(.input-ctrl, .select-ctrl, .textarea-ctrl):is(:user-invalid, .user-invalid-fallback) {
+  border-color: var(--rose);
+  background-color: var(--rose-bg);
+}
+
+:is(.input-ctrl, .select-ctrl, .textarea-ctrl):user-valid {
+  border-color: var(--emerald);
+}
+
+.error-msg {
+  display: none;
+  color: var(--rose);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+:is(.input-ctrl, .select-ctrl):is(:user-invalid, .user-invalid-fallback) + .error-msg {
+  display: block;
+}
+
+/* Mode selector pills */
+.mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.segmented-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--surface-alt);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+}
+
+.seg-btn {
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.seg-btn:hover { color: var(--text); background: rgba(255,255,255,0.6); }
+.seg-btn[aria-pressed="true"], .seg-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+/* =========================================================
+   INTERACTIVE DIGITAL CALIPER WORKBENCH
+   ========================================================= */
+.workbench-card {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  color: #f8fafc;
+  border: 2px solid #334155;
+}
+.workbench-card .card-header {
+  border-bottom-color: rgba(148, 163, 184, 0.25);
+}
+.workbench-card .section-title {
+  color: #f8fafc;
+}
+
+.task-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.task-pill {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: #0284c7;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.task-info h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fde68a;
+}
+.task-info p {
+  font-size: 0.84rem;
+  color: #cbd5e1;
+}
+
+.task-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.caliper-stage-wrap {
+  position: relative;
+  background: radial-gradient(circle at 50% 35%, #1e293b 0%, #090e1a 100%);
+  border: 1.5px solid #475569;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.caliper-svg-box {
+  width: 100%;
+  aspect-ratio: 1650 / 410;
+  max-height: 360px;
+  cursor: ew-resize;
+  touch-action: pan-y;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.caliper-svg-box svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.vernier-loupe {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 240px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 2px solid #38bdf8;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  display: none;
+}
+.vernier-loupe.show { display: block; }
+.vernier-loupe-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.vernier-loupe svg { width: 100%; height: 92px; display: block; }
+
+.caliper-controls-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.slider-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.range-slider {
+  flex: 1 1 220px;
+  height: 10px;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+.nudge-btn {
+  min-height: 36px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #1e293b;
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.nudge-btn:hover { background: #334155; border-color: #38bdf8; }
+.nudge-btn:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
+
+.contact-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #475569;
+}
+.contact-status.ok {
+  background: rgba(6, 78, 59, 0.85);
+  border-color: #34d399;
+  color: #d1fae5;
+}
+.contact-status.warn {
+  background: rgba(127, 29, 29, 0.85);
+  border-color: #fb7185;
+  color: #ffe4e6;
+}
+.contact-status.near {
+  background: rgba(120, 53, 15, 0.85);
+  border-color: #fbbf24;
+  color: #fef3c7;
+}
+
+/* =========================================================
+   RESPONSIVE DATA TABLE (20 MEASUREMENTS)
+   ========================================================= */
+.progress-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+}
+
+.progress-meter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 250px;
+}
+progress.lab-progress {
+  width: 180px;
+  height: 12px;
+  accent-color: var(--emerald);
+}
+
+.table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  max-block-size: min(640px, 72vh);
+  container-type: inline-size;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.88rem;
+}
+
+table.data-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+
+table.data-table thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 5;
+}
+
+table.data-table th {
+  background: #e2e8f0;
+  color: var(--text);
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 10px 8px;
+  border-bottom: 2px solid var(--border);
+  border-right: 1px solid var(--border-light);
+  text-align: center;
+  white-space: nowrap;
+}
+
+table.data-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+  text-align: center;
+  vertical-align: middle;
+  background: #ffffff;
+}
+
+table.data-table tbody th {
+  background: #f8fafc;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--primary-dark);
+  border-right: 1.5px solid var(--border);
+  width: 50px;
+}
+
+table.data-table tr.active-row td,
+table.data-table tr.active-row th {
+  background: #eff6ff;
+}
+
+.row-obj-input {
+  width: 100%;
+  min-width: 245px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+}
+.row-obj-input:hover { border-color: var(--border); background: #ffffff; }
+.row-obj-input:focus-visible { outline: 2px solid var(--primary); background: #ffffff; }
+
+.row-type-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.type-ext { background: #dbeafe; color: #1e40af; }
+.type-int { background: #fef3c7; color: #92400e; }
+.type-dep { background: #ede9fe; color: #5b21b6; }
+
+.meas-input {
+  width: 112px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1.5px solid #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text);
+  background: #ffffff;
+}
+.meas-input:focus-visible {
+  outline: 2.5px solid var(--primary);
+  border-color: var(--primary);
+}
+.meas-input:is(:user-invalid, .user-invalid-fallback) {
+  border-color: var(--rose);
+  background: var(--rose-bg);
+}
+.meas-input.state-correct {
+  border-color: var(--emerald);
+  background: var(--emerald-bg);
+  color: #065f46;
+}
+.meas-input.state-wrong {
+  border-color: var(--rose);
+  background: var(--rose-bg);
+  color: #991b1b;
+}
+
+.mono-cell {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.st-empty { background: #f1f5f9; color: #64748b; }
+.st-ok { background: var(--emerald-bg); color: #065f46; border: 1px solid var(--emerald-border); }
+.st-err { background: var(--rose-bg); color: #991b1b; border: 1px solid var(--rose-border); }
+.st-saved { background: var(--primary-bg); color: var(--primary-dark); border: 1px solid var(--primary-border); }
+
+@container (width < 700px) {
+  table.data-table,
+  table.data-table thead,
+  table.data-table tbody,
+  table.data-table tr,
+  table.data-table th,
+  table.data-table td {
+    display: block;
+  }
+  table.data-table thead { display: none; }
+  table.data-table tr {
+    margin: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table.data-table tbody th {
+    position: sticky;
+    inset-block-start: 0;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  table.data-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 8px 12px;
+    border-right: none;
+  }
+  table.data-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-right: 12px;
+    text-align: left;
+  }
+  .row-obj-input { text-align: right; min-width: 140px; }
+}
+
+/* =========================================================
+   STATS & HISTOGRAM
+   ========================================================= */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 12px;
+}
+
+.stat-box {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.stat-label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 4px;
+}
+.stat-sub {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.histogram-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  display: none;
+}
+.histogram-box.show { display: block; }
+
+/* =========================================================
+   QUESTIONS & RUBRIC
+   ========================================================= */
+.questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 9999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* =========================================================
+   PRINT / PDF A4 STYLESHEET
+   ========================================================= */
+.print-only-header { display: none; }
+
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  .no-print, .topbar, .workbench-card, .toast, .action-col { display: none !important; }
+  .print-only-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .page-shell { max-width: 100%; margin: 0; padding: 0; gap: 10px; }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+    border-radius: 4px !important;
+    padding: 10px 12px !important;
+    break-inside: avoid;
+  }
+  .table-wrapper {
+    max-block-size: none !important;
+    overflow: visible !important;
+    border: 1px solid #000 !important;
+  }
+  table.data-table thead { position: static !important; }
+  table.data-table tbody th { position: static !important; background: #f1f5f9 !important; }
+  table.data-table th, table.data-table td {
+    padding: 3px 5px !important;
+    font-size: 0.76rem !important;
+    border-color: #475569 !important;
+  }
+  .meas-input {
+    border: none !important;
+    background: transparent !important;
+    min-height: 20px !important;
+    padding: 1px 4px !important;
+    font-size: 0.78rem !important;
+    width: 78px !important;
+  }
+  .row-obj-input { border: none !important; padding: 1px 4px !important; font-size: 0.76rem !important; }
+  .input-ctrl, .select-ctrl, .textarea-ctrl {
+    border: 1px solid #64748b !important;
+    min-height: 28px !important;
+    padding: 4px 6px !important;
+    font-size: 0.82rem !important;
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+}
+</style>
+</head>
+<body>
+
+<div id="liveAnnouncer" class="visually-hidden" aria-live="polite"></div>
+<div id="appToast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- TOP NAVIGATION -->
+<header class="topbar no-print">
+  <div class="brand-wrap">
+    <a href="/fisica/archimede/prime/calibro-nonio.html" id="backLink" class="back-btn">← Lezione Calibro</a>
+    <div class="brand-titles">
+      <h1 id="topTitle">Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro</h1>
+      <p id="topSubtitle">Fisica &bull; Metrologia &bull; Raccolta Dati al Computer</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button type="button" class="btn btn-amber" onclick="randomizeObjects()" title="Genera nuove dimensioni casuali per ogni postazione">🎲 Nuovi Pezzi</button>
+    <button type="button" class="btn" onclick="exportCSV()" title="Scarica i 20 dati raccolti in formato Excel/CSV">📊 Esporta CSV</button>
+    <button type="button" class="btn" onclick="window.print()" title="Stampa la scheda su foglio A4">🖨️ Stampa A4</button>
+    <button type="button" class="btn btn-primary" onclick="exportPDF()" title="Verifica anagrafica e scarica PDF ufficiale">📥 Scarica PDF</button>
+  </div>
+</header>
+
+<main class="page-shell" id="reportRoot">
+
+  <!-- PRINT HEADER -->
+  <div class="print-only-header">
+    <div>
+      <strong style="font-size:1.1rem;" id="printSchoolTitle">I.S.S. ARCHIMEDE — LABORATORIO DI FISICA</strong><br>
+      <span style="font-size:0.85rem;">Scheda Digitale Raccolta Dati &bull; Esercitazione: 20 Misurazioni al Calibro</span>
+    </div>
+    <div style="font-family:var(--font-mono); font-size:0.8rem; text-align:right;">
+      Risoluzione: <span id="printResLabel">&plusmn; 0,01 mm</span>
+    </div>
+  </div>
+
+  <!-- FORM UNIFICATO DELLA SCHEDA DIGITALE -->
+  <form id="labSheetForm" aria-labelledby="formHeading" novalidate>
+    <h2 id="formHeading" class="visually-hidden">Scheda Digitale di Laboratorio: 20 Misurazioni al Calibro</h2>
+
+    <!-- SEZIONE 1: ANAGRAFICA E CONFIGURAZIONE STRUMENTO -->
+    <section class="card" aria-labelledby="sec1Title">
+      <div class="card-header">
+        <div class="section-title" id="sec1Title">
+          <span class="step-badge">1</span>
+          <span>Dati Allievo &amp; Configurazione Strumento Digitale</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger no-print" onclick="resetSheet()">🗑️ Azzera Scheda</button>
+      </div>
+
+      <fieldset class="clean-fieldset">
+        <legend class="fieldset-legend">Identificazione Postazione di Laboratorio</legend>
+        <div class="student-grid">
+          <div class="field">
+            <label for="studentName">Cognome e Nome <span aria-hidden="true">*</span></label>
+            <input type="text" id="studentName" name="studentName" class="input-ctrl" required autocomplete="name" placeholder="Es. Rossi Mario" data-error="errName">
+            <span id="errName" class="error-msg"><span role="img" aria-label="Errore">❌</span> Inserisci Cognome e Nome prima della consegna.</span>
+          </div>
+          <div class="field">
+            <label for="studentClass">Classe <span aria-hidden="true">*</span></label>
+            <input type="text" id="studentClass" name="studentClass" class="input-ctrl" required placeholder="Es. 1ª A" data-error="errClass">
+            <span id="errClass" class="error-msg"><span role="img" aria-label="Errore">❌</span> Inserisci la tua classe.</span>
+          </div>
+          <div class="field">
+            <label for="studentStation">Data e Postazione PC</label>
+            <input type="text" id="studentStation" name="studentStation" class="input-ctrl" placeholder="Es. 24/11/2026 • PC 07">
+          </div>
+          <div class="field">
+            <label for="schoolSelect">Istituto / Indirizzo</label>
+            <select id="schoolSelect" name="schoolSelect" class="select-ctrl" onchange="updateSchoolHeader()">
+              <option value="ISS Archimede — Classi Prime">ISS Archimede — Classi Prime</option>
+              <option value="ITIS Giordano Bruno — Classi Prime">ITIS Giordano Bruno — Classi Prime</option>
+              <option value="Laboratorio di Fisica">Laboratorio di Fisica (Generico)</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="mode-bar no-print">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+          <span style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Strumento:</span>
+          <div class="segmented-group" role="group" aria-label="Tipo di calibro">
+            <button type="button" class="seg-btn active" id="btnModeDigital" aria-pressed="true" onclick="setCaliperType('digital')">📟 Calibro Digitale LCD (&plusmn; 0,01 mm)</button>
+            <button type="button" class="seg-btn" id="btnModeVernier" aria-pressed="false" onclick="setCaliperType('vernier')">📏 Calibro a Nonio 1/20 (&plusmn; 0,05 mm)</button>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+          <span style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Esercitazione:</span>
+          <div class="segmented-group" role="group" aria-label="Modalità esercitazione">
+            <button type="button" class="seg-btn active" id="btnExDiverse" aria-pressed="true" onclick="setExerciseMode('diverse')">🔩 20 Quote Diverse</button>
+            <button type="button" class="seg-btn" id="btnExRepeated" aria-pressed="false" onclick="setExerciseMode('repeated')">📈 20 Misure Ripetute</button>
+            <button type="button" class="seg-btn" id="btnExReal" aria-pressed="false" onclick="setExerciseMode('real')">🛠️ Solo Raccolta Dati Reali</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 2: CALIBRO DIGITALE INTERATTIVO AL COMPUTER -->
+    <section class="card workbench-card no-print" id="workbenchSection" aria-labelledby="sec2Title">
+      <div class="card-header">
+        <div class="section-title" id="sec2Title">
+          <span class="step-badge" style="background:#0284c7;">2</span>
+          <span>Banco di Misura Interattivo — Calibro Digitale al Computer</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <button type="button" class="btn btn-sm" id="btnToggleLcd" onclick="toggleLcdDisplay()">👁️ Display LCD: VISIBILE</button>
+          <button type="button" class="btn btn-sm" id="btnToggleUnit" onclick="toggleUnit()">⇄ Unità LCD: mm</button>
+          <button type="button" class="btn btn-sm" id="btnToggleLock" onclick="togglePreClamp()">🖐️ Modalità: Sposta Corsoio</button>
+        </div>
+      </div>
+
+      <!-- Barra del pezzo corrente -->
+      <div class="task-banner">
+        <div class="task-pill" id="activeTaskBadge">MISURA #01 / 20</div>
+        <div class="task-info">
+          <h3 id="activeTaskTitle">Moneta da 1 Euro — Diametro esterno</h3>
+          <p id="activeTaskDesc">Sposta il corsoio fino a stringere delicatamente la moneta tra i becchi inferiori per esterni, leggi il calibro e trascrivi la misura in tabella.</p>
+        </div>
+        <div class="task-nav">
+          <button type="button" class="nudge-btn" onclick="selectRow(activeIndex - 1)">◀ Prec.</button>
+          <button type="button" class="nudge-btn" onclick="selectRow(activeIndex + 1)">Succ. ▶</button>
+        </div>
+      </div>
+
+      <!-- Area Calibro SVG -->
+      <div class="caliper-stage-wrap">
+        <div class="caliper-svg-box" id="caliperStage" title="Trascina orizzontalmente per aprire o chiudere il calibro, oppure usa la rotella del mouse"></div>
+        <div class="vernier-loupe" id="vernierLoupe">
+          <div class="vernier-loupe-label">🔎 LENTE NONIO 1/20 mm</div>
+          <div id="vernierLoupeMount"></div>
+        </div>
+      </div>
+
+      <!-- Controlli micrometrici e tastini realistici -->
+      <div class="caliper-controls-bar">
+        <div class="slider-row">
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(-5)">-5 mm</button>
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(-1)">-1 mm</button>
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(-0.1)">-0,10</button>
+          <button type="button" class="nudge-btn" id="btnFineMinus" onclick="nudgeFine(-1)">-0,01</button>
+          <input type="range" id="caliperRange" class="range-slider" min="0" max="90" step="0.01" value="35" aria-label="Apertura del calibro in millimetri" oninput="setCaliperFromSlider(this.value)">
+          <button type="button" class="nudge-btn" id="btnFinePlus" onclick="nudgeFine(1)">+0,01</button>
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(0.1)">+0,10</button>
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(1)">+1 mm</button>
+          <button type="button" class="nudge-btn" onclick="nudgeCaliper(5)">+5 mm</button>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" onclick="zeroCaliper()" title="Azzera (ZERO/ABS) nella posizione attuale">ZERO/ABS</button>
+          <button type="button" class="btn btn-sm" id="btnHold" onclick="toggleHold()">HOLD</button>
+          <button type="button" class="btn btn-sm btn-emerald" onclick="copyDisplayToActiveRow()" title="Registra la lettura corrente nella riga attiva della scheda">📥 Registra in Riga #<span id="btnCopyRowNum">01</span></button>
+        </div>
+      </div>
+
+      <div class="contact-status" id="contactStatus">
+        <span id="contactMsg">Trascina il corsoio per mettere a contatto i becchi con il pezzo da misurare.</span>
+        <span style="font-family:var(--font-mono); font-size:0.82rem; color:#94a3b8;">Zero offset: <strong id="zeroOffsetLbl">0,00 mm</strong></span>
+      </div>
+    </section>
+
+    <!-- SEZIONE 3: SCHEDA DIGITALE DEI DATI RACCOLTI (20 MISURAZIONI) -->
+    <section class="card" aria-labelledby="sec3Title">
+      <div class="card-header">
+        <div class="section-title" id="sec3Title">
+          <span class="step-badge">3</span>
+          <span>Scheda Digitale dei Dati Raccolti (20 Misurazioni)</span>
+        </div>
+        <div class="no-print" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" onclick="checkAllRows()">✅ Verifica Tutte le Misure</button>
+        </div>
+      </div>
+
+      <div class="progress-summary-bar">
+        <div class="progress-meter-wrap">
+          <label for="completionProgress" style="font-weight:800; font-size:0.84rem;">Avanzamento raccolta dati:</label>
+          <progress id="completionProgress" class="lab-progress" max="20" value="0"></progress>
+          <span id="completionText" style="font-family:var(--font-mono); font-weight:800; font-size:0.86rem;">0 / 20</span>
+        </div>
+        <div style="display:flex; gap:14px; flex-wrap:wrap; font-size:0.84rem; font-weight:700;">
+          <span id="scoreWrap">Esatte: <strong id="scoreText" style="color:var(--emerald); font-family:var(--font-mono);">0 / 20</strong></span>
+          <span>Incertezza strumento: <strong id="uncertaintyBadge" style="color:var(--primary); font-family:var(--font-mono);">&plusmn; 0,01 mm</strong></span>
+        </div>
+      </div>
+
+      <div tabindex="0" role="region" aria-labelledby="tableCaption" class="table-wrapper">
+        <table class="data-table">
+          <caption id="tableCaption">Tabella sperimentale delle 20 misurazioni lineari rilevate al calibro (unità base: mm)</caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Oggetto / Quota Misurata</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Misura Letta x [mm]</th>
+              <th scope="col">&Delta;x [mm]</th>
+              <th scope="col">Equiv. [cm]</th>
+              <th scope="col">Err. % (e<sub>%</sub>)</th>
+              <th scope="col">Esito</th>
+              <th scope="col" class="action-col">Calibro</th>
+            </tr>
+          </thead>
+          <tbody id="dataTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SEZIONE 4: ANALISI STATISTICA & ELABORAZIONE -->
+    <section class="card" aria-labelledby="sec4Title">
+      <div class="card-header">
+        <div class="section-title" id="sec4Title">
+          <span class="step-badge">4</span>
+          <span id="statsHeadingText">Elaborazione Automatica dei Dati Raccolti</span>
+        </div>
+      </div>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-box">
+          <div class="stat-label">Misure Raccolte</div>
+          <div class="stat-val" id="stCount">0 / 20</div>
+          <div class="stat-sub">Completezza campione</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Valore Minimo (x<sub>min</sub>)</div>
+          <div class="stat-val" id="stMin">—</div>
+          <div class="stat-sub" id="stMinSub">Quota più piccola</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Valore Massimo (x<sub>max</sub>)</div>
+          <div class="stat-val" id="stMax">—</div>
+          <div class="stat-sub" id="stMaxSub">Quota più grande</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="stAvgLabel">Media Aritmetica (x&#772;)</div>
+          <div class="stat-val" id="stAvg">—</div>
+          <div class="stat-sub" id="stAvgSub">Media delle 20 letture</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="stSpreadLabel">Semidispersione (e<sub>max</sub>)</div>
+          <div class="stat-val" id="stSpread">—</div>
+          <div class="stat-sub" id="stSpreadSub">(x<sub>max</sub> - x<sub>min</sub>) / 2</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="stPrecLabel">Errore % Massimo / Medio</div>
+          <div class="stat-val" id="stPerc">—</div>
+          <div class="stat-sub" id="stPercSub">Incertezza relativa percentuale</div>
+        </div>
+      </div>
+
+      <div class="histogram-box" id="histogramBox">
+        <div style="font-size:0.82rem; font-weight:800; color:var(--text-muted); margin-bottom:8px;">
+          📊 DISTRIBUZIONE DELLE 20 MISURE RIPETUTE &amp; RISULTATO FINALE: <span id="repeatedFinalResult" style="color:var(--primary); font-family:var(--font-mono);">—</span>
+        </div>
+        <div id="histogramSvgMount"></div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 5: DOMANDE DI RIFLESSIONE & CONCLUSIONI -->
+    <section class="card" aria-labelledby="sec5Title">
+      <div class="card-header">
+        <div class="section-title" id="sec5Title">
+          <span class="step-badge">5</span>
+          <span>Osservazioni Sperimentali &amp; Conclusioni dell'Allievo</span>
+        </div>
+      </div>
+
+      <div class="questions-grid">
+        <div class="field">
+          <label for="q1Answer">1. Errore Percentuale e Dimensioni</label>
+          <span class="field-hint">Tra le 20 misure raccolte, quale ha l'errore percentuale più grande e perché?</span>
+          <textarea id="q1Answer" name="q1Answer" class="textarea-ctrl" placeholder="Scrivi la tua risposta osservando la colonna Err. % della tabella..."></textarea>
+        </div>
+        <div class="field">
+          <label for="q2Answer">2. Corretto Uso del Calibro Digitale</label>
+          <span class="field-hint">Quali accorgimenti hai adottato per evitare errori (azzeramento, forza sui becchi, perpendicolarità)?</span>
+          <textarea id="q2Answer" name="q2Answer" class="textarea-ctrl" placeholder="Descrivi la procedura corretta di misura su esterni, interni e profondità..."></textarea>
+        </div>
+      </div>
+    </section>
+
+  </form>
+</main>
+
+<script>
+/* =========================================================================
+   1. DATABASE DEI 20 OGGETTI / QUOTE DI LABORATORIO
+   ========================================================================= */
+const BASE_OBJECTS = [
+  { name: "Moneta da 1 Euro (diametro)", type: "ext", baseMm: 23.25 },
+  { name: "Dado esagonale M10 (chiave esterna)", type: "ext", baseMm: 16.90 },
+  { name: "Dado esagonale M10 (foro interno)", type: "int", baseMm: 8.55 },
+  { name: "Vite M8 (diametro gambo)", type: "ext", baseMm: 7.95 },
+  { name: "Vite M8 (altezza testa)", type: "ext", baseMm: 8.05 },
+  { name: "Rondella piana in acciaio (spessore)", type: "ext", baseMm: 2.15 },
+  { name: "Rondella piana (diametro foro)", type: "int", baseMm: 10.50 },
+  { name: "Cilindro ottone (diametro base)", type: "ext", baseMm: 24.50 },
+  { name: "Cilindro ottone (altezza)", type: "ext", baseMm: 54.20 },
+  { name: "Blocchetto alluminio (lunghezza a)", type: "ext", baseMm: 48.35 },
+  { name: "Blocchetto alluminio (larghezza b)", type: "ext", baseMm: 26.40 },
+  { name: "Blocchetto alluminio (altezza c)", type: "ext", baseMm: 14.75 },
+  { name: "Tubo in rame (diametro esterno)", type: "ext", baseMm: 32.10 },
+  { name: "Tubo in rame (diametro interno)", type: "int", baseMm: 26.85 },
+  { name: "Cuscinetto 608 (foro anello interno)", type: "int", baseMm: 8.00 },
+  { name: "Cuscinetto 608 (diametro esterno)", type: "ext", baseMm: 22.05 },
+  { name: "Flangia forata (profondità foro cieco)", type: "dep", baseMm: 18.65 },
+  { name: "Sede chiavetta (profondità cava)", type: "dep", baseMm: 11.40 },
+  { name: "Tappo in teflon (profondità interna)", type: "dep", baseMm: 29.55 },
+  { name: "Spina cilindrica calibrata (lunghezza)", type: "ext", baseMm: 63.80 }
+];
+
+const REPEATED_BASE_MM = 27.18;
+
+const STORAGE_KEY = "mazzeo_scheda_calibro_20_v1";
+
+const state = {
+  caliperType: "digital", // 'digital' (0.01 mm) | 'vernier' (0.05 mm)
+  exerciseMode: "diverse", // 'diverse' | 'repeated' | 'real'
+  showLcd: true,
+  unit: "mm", // 'mm' | 'inch'
+  preClamp: false,
+  hold: false,
+  heldMm: null,
+  zeroOffsetMm: 0,
+  currentMm: 35.00,
+  activeIndex: 0,
+  rows: []
+};
+
+function roundToStep(val, step) {
+  return Math.round(val / step) * step;
+}
+
+function getStep() {
+  return state.caliperType === "digital" ? 0.01 : 0.05;
+}
+
+function fmtIt(num, decimals = 2) {
+  if (num === null || num === undefined || isNaN(num)) return "—";
+  return Number(num).toFixed(decimals).replace(".", ",");
+}
+
+function parseItNumber(str) {
+  if (typeof str !== "string") return NaN;
+  const cleaned = str.trim().replace(",", ".");
+  if (!/^\d+(\.\d+)?$/.test(cleaned)) return NaN;
+  return parseFloat(cleaned);
+}
+
+function initDefaultRows(randomize = false) {
+  const step = getStep();
+  state.rows = BASE_OBJECTS.map((obj, idx) => {
+    let target = obj.baseMm;
+    if (state.exerciseMode === "repeated") {
+      // Piccola dispersione sperimentale realistica (+/- 0.04 mm) attorno al campione
+      const jitter = ((idx * 7) % 5 - 2) * step;
+      target = REPEATED_BASE_MM + jitter;
+    } else if (randomize) {
+      const delta = (Math.random() - 0.5) * 4.0;
+      target = Math.max(2.0, Math.min(82.0, obj.baseMm + delta));
+    } else if (state.caliperType === "digital") {
+      // Micro-variazione centesimale deterministica per calibro digitale
+      const centOffset = (((idx * 3) % 9) - 4) * 0.01;
+      target = obj.baseMm + centOffset;
+    }
+    target = Number(roundToStep(target, step).toFixed(2));
+    const repeatedName = `Cilindro campione — Ripetizione #${String(idx + 1).padStart(2, "0")}`;
+    return {
+      index: idx,
+      name: state.exerciseMode === "repeated" ? repeatedName : obj.name,
+      type: state.exerciseMode === "repeated" ? "ext" : obj.type,
+      targetMm: target,
+      userValStr: "",
+      userMm: null,
+      checked: false
+    };
+  });
+}
+
+/* =========================================================================
+   2. MOTORE SVG CALIBRO DIGITALE & NONIO (ESTERNI, INTERNI, PROFONDITÀ)
+   ========================================================================= */
+const PX = 14;         // 14 px SVG = 1 mm (0..90 mm = 1260 px)
+const X0 = 260;        // Zero della scala fissa
+const XJAW = 140;      // Battuta fissa esterna
+const YTOP = 145;      // Bordo superiore asta fissa
+const YSPLIT = 235;    // Linea separazione asta fissa / corsoio
+const BEAM_MAX_MM = 92;
+const BEAM_END = X0 + BEAM_MAX_MM * PX + 40;
+
+let activeIndex = 0;
+
+function renderCaliperSVG() {
+  const row = state.rows[state.activeIndex] || state.rows[0];
+  const mm = state.currentMm;
+  const dx = mm * PX;
+  const sxLeft = XJAW + dx;
+  const xZeroVern = X0 + dx;
+  const showObject = state.exerciseMode !== "real";
+  const targetMm = row ? row.targetMm : 25;
+  const targetDx = targetMm * PX;
+  const objType = row ? row.type : "ext";
+
+  // Main scale ticks (mm)
+  let mainTicks = "";
+  for (let m = 0; m <= BEAM_MAX_MM; m++) {
+    const x = X0 + m * PX;
+    let h = 15, sw = 1.4;
+    if (m === 0) { h = 44; sw = 2.1; }
+    else if (m % 10 === 0) { h = 32; sw = 2.0; }
+    else if (m % 5 === 0) { h = 22; sw = 1.6; }
+
+    mainTicks += `<line x1="${x}" y1="${YSPLIT}" x2="${x}" y2="${YSPLIT - h}" stroke="#1e293b" stroke-width="${sw}" />`;
+    if (m % 10 === 0) {
+      mainTicks += `<text x="${x}" y="${YSPLIT - 37}" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a" font-family="JetBrains Mono, monospace">${m}</text>`;
+    }
+  }
+  mainTicks += `<text x="${X0 + BEAM_MAX_MM * PX + 24}" y="${YSPLIT - 36}" font-size="13" font-weight="800" fill="#334155" font-family="JetBrains Mono, monospace">mm</text>`;
+
+  // Depth rod protruding to the right of beamEnd
+  const rodOut = Math.max(0, dx);
+  const depthRod = `
+    <rect x="${BEAM_END - 16}" y="185" width="${rodOut + 24}" height="10" rx="1.5" fill="url(#steelGrad)" stroke="#475569" stroke-width="1.3" />
+  `;
+
+  // Target specimen positioned appropriately for External / Internal / Depth
+  let specimenSvg = "";
+  if (showObject && targetMm > 0) {
+    if (objType === "ext") {
+      // Clamped between external lower jaws: XJAW .. XJAW + targetDx
+      specimenSvg = `
+        <g>
+          <rect x="${XJAW}" y="288" width="${targetDx}" height="74" rx="4" fill="url(#pieceGrad)" stroke="#38bdf8" stroke-width="2" />
+          <line x1="${XJAW}" y1="288" x2="${XJAW}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
+          <line x1="${XJAW + targetDx}" y1="288" x2="${XJAW + targetDx}" y2="362" stroke="#bae6fd" stroke-width="2.5" />
+          <text x="${XJAW + targetDx / 2}" y="330" text-anchor="middle" font-size="14" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">PEZZO #${state.activeIndex + 1}</text>
+        </g>
+      `;
+    } else if (objType === "int") {
+      // Cross-sectioned ring/bore sitting over the upper knife jaws: inner gap XJAW .. XJAW + targetDx
+      const wall = 34;
+      specimenSvg = `
+        <g>
+          <!-- Left wall -->
+          <rect x="${XJAW - wall}" y="38" width="${wall}" height="52" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
+          <!-- Right wall -->
+          <rect x="${XJAW + targetDx}" y="38" width="${wall}" height="52" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
+          <!-- Top connecting bridge -->
+          <rect x="${XJAW - wall}" y="22" width="${targetDx + wall * 2}" height="18" rx="3" fill="url(#pieceAmber)" stroke="#fbbf24" stroke-width="2" />
+          <text x="${XJAW + targetDx / 2}" y="35" text-anchor="middle" font-size="11.5" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">FORO #${state.activeIndex + 1}</text>
+        </g>
+      `;
+    } else if (objType === "dep") {
+      // Blind hole block at the right end of the beam: reference face at BEAM_END, hole bottom at BEAM_END + targetDx
+      const blockW = Math.max(targetDx + 40, 120);
+      specimenSvg = `
+        <g>
+          <!-- Upper wall of blind hole block -->
+          <rect x="${BEAM_END}" y="156" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
+          <!-- Lower wall of blind hole block -->
+          <rect x="${BEAM_END}" y="198" width="${blockW}" height="26" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
+          <!-- Bottom backstop wall -->
+          <rect x="${BEAM_END + targetDx}" y="156" width="${blockW - targetDx}" height="68" fill="url(#pieceViolet)" stroke="#c4b5fd" stroke-width="1.8" />
+          <line x1="${BEAM_END + targetDx}" y1="180" x2="${BEAM_END + targetDx}" y2="200" stroke="#fde047" stroke-width="3" />
+          <text x="${BEAM_END + targetDx + 38}" y="194" text-anchor="middle" font-size="11" font-weight="800" fill="#f5f3ff" font-family="JetBrains Mono, monospace">FONDO</text>
+        </g>
+      `;
+    }
+  }
+
+  // Fixed caliper body
+  const fixedBody = `
+    <!-- Fixed upper internal jaw (knife edge left face at XJAW) -->
+    <path d="M ${XJAW} 52 L ${XJAW + 3} 52 L ${XJAW + 3} 86 L ${XJAW - 22} 145 L ${XJAW - 28} 145 L ${XJAW - 28} 96 Z" fill="url(#steelGrad)" stroke="#475569" stroke-width="1.8" />
+    <!-- Fixed beam + lower external jaw -->
+    <path d="M 48 145 L ${BEAM_END} 145 L ${BEAM_END} 235 L ${XJAW} 235 L ${XJAW} 382 L ${XJAW - 18} 382 L ${XJAW - 36} 322 L 48 235 Z" fill="url(#steelGrad)" stroke="#475569" stroke-width="2" />
+    <!-- Engraved brand -->
+    <rect x="58" y="172" width="68" height="22" rx="3" fill="none" stroke="#334155" stroke-width="1.5" />
+    <text x="92" y="188" text-anchor="middle" font-size="12" font-weight="900" fill="#1e293b" font-family="JetBrains Mono, monospace">METRICA</text>
+    <text x="92" y="208" text-anchor="middle" font-size="10" font-weight="800" fill="#334155" font-family="JetBrains Mono, monospace">INOX 0-150</text>
+  `;
+
+  // Movable slider: Digital Electronic Housing OR Mechanical Vernier 1/20
+  let sliderModule = "";
+  if (state.caliperType === "digital") {
+    const shownMm = state.hold && state.heldMm !== null ? state.heldMm : (mm - state.zeroOffsetMm);
+    let lcdText = state.showLcd
+      ? (state.unit === "mm" ? `${shownMm.toFixed(2)}` : `${(shownMm / 25.4).toFixed(4)}`)
+      : "--.--";
+    const unitLbl = state.unit === "mm" ? "mm" : "in";
+    const holdBadge = state.hold ? `<text x="${sxLeft + 88}" y="198" font-size="10" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">HOLD</text>` : "";
+    const zeroBadge = Math.abs(state.zeroOffsetMm) > 0.001 ? `<text x="${sxLeft + 148}" y="198" font-size="10" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">ABS/0</text>` : "";
+
+    sliderModule = `
+      <!-- Electronic Digital Caliper Housing -->
+      <rect x="${sxLeft + 46}" y="138" width="236" height="132" rx="12" fill="url(#housingGrad)" stroke="#0f172a" stroke-width="2.2" />
+      <rect x="${sxLeft + 58}" y="149" width="212" height="16" rx="4" fill="#1e293b" />
+      <text x="${sxLeft + 164}" y="161" text-anchor="middle" font-size="10" font-weight="800" fill="#38bdf8" font-family="JetBrains Mono, monospace">DIGITAL CALIPER 0.01 mm</text>
+      <!-- LCD Screen -->
+      <rect x="${sxLeft + 62}" y="171" width="204" height="58" rx="6" fill="#cbd5c0" stroke="#334155" stroke-width="2" />
+      <text x="${sxLeft + 225}" y="213" text-anchor="end" font-size="33" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">${lcdText}</text>
+      <text x="${sxLeft + 258}" y="213" text-anchor="end" font-size="14" font-weight="900" fill="#1e293b" font-family="JetBrains Mono, monospace">${unitLbl}</text>
+      ${holdBadge}
+      ${zeroBadge}
+      <!-- Housing buttons visual -->
+      <rect x="${sxLeft + 66}" y="238" width="54" height="20" rx="5" fill="#0284c7" />
+      <text x="${sxLeft + 93}" y="252" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff" font-family="JetBrains Mono, monospace">mm/in</text>
+      <rect x="${sxLeft + 132}" y="238" width="58" height="20" rx="5" fill="#eab308" />
+      <text x="${sxLeft + 161}" y="252" text-anchor="middle" font-size="9.5" font-weight="900" fill="#0f172a" font-family="JetBrains Mono, monospace">ZERO</text>
+      <rect x="${sxLeft + 202}" y="238" width="56" height="20" rx="5" fill="#334155" />
+      <text x="${sxLeft + 230}" y="252" text-anchor="middle" font-size="9.5" font-weight="800" fill="#e2e8f0" font-family="JetBrains Mono, monospace">HOLD</text>
+      <!-- Thumb wheel -->
+      <rect x="${sxLeft + 245}" y="274" width="38" height="16" rx="4" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+    `;
+  } else {
+    // Vernier 1/20 mm scale (20 divisions across 19 mm -> 0.95 * PX each)
+    let vernierTicks = "";
+    const steps = Math.round(mm * 20);
+    const alignedIdx = steps % 20;
+    for (let i = 0; i <= 20; i++) {
+      const vx = xZeroVern + i * 0.95 * PX;
+      const vh = (i === 0 || i === 10 || i === 20) ? 24 : (i % 2 === 0 ? 18 : 11);
+      const isWin = state.preClamp ? false : (i === alignedIdx);
+      const col = isWin ? "#10b981" : "#0f172a";
+      const sw = isWin ? 2.6 : 1.5;
+      vernierTicks += `<line x1="${vx}" y1="${YSPLIT}" x2="${vx}" y2="${YSPLIT + vh}" stroke="${col}" stroke-width="${sw}" />`;
+      if (i % 4 === 0) {
+        vernierTicks += `<text x="${vx}" y="${YSPLIT + 41}" text-anchor="middle" font-size="14" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">${i / 2}</text>`;
+      }
+    }
+    sliderModule = `
+      <!-- Vernier Bevel Plate -->
+      <rect x="${sxLeft}" y="${YSPLIT}" width="420" height="25" fill="url(#steelGrad)" stroke="#475569" stroke-width="1.5" />
+      <rect x="${sxLeft}" y="${YSPLIT + 25}" width="420" height="26" fill="#334155" stroke="#1e293b" stroke-width="1.5" />
+      <text x="${sxLeft + 382}" y="${YSPLIT + 42}" font-size="11" font-weight="800" fill="#94a3b8" font-family="JetBrains Mono, monospace">1/20 mm</text>
+      ${vernierTicks}
+    `;
+  }
+
+  const movableBody = `
+    <g>
+      <!-- Movable upper internal jaw (right measuring edge at sxLeft) -->
+      <path d="M ${sxLeft} 52 L ${sxLeft - 3} 52 L ${sxLeft - 3} 86 L ${sxLeft + 22} 145 L ${sxLeft + 65} 145 L ${sxLeft + 65} 125 L ${sxLeft + 28} 125 Z" fill="url(#sliderGrad)" stroke="#475569" stroke-width="1.8" />
+      <!-- Movable lower external jaw (left measuring edge at sxLeft) -->
+      <path d="M ${sxLeft} 235 L ${sxLeft} 382 L ${sxLeft + 18} 382 L ${sxLeft + 52} 295 L ${sxLeft + 90} 265 L ${sxLeft + 90} 235 Z" fill="url(#sliderGrad)" stroke="#475569" stroke-width="2" />
+      <!-- Locking screw on top -->
+      <rect x="${sxLeft + 130}" y="122" width="16" height="23" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+      <rect x="${sxLeft + 124}" y="116" width="28" height="8" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="1.3" />
+      ${sliderModule}
+    </g>
+  `;
+
+  return `
+    <svg viewBox="0 15 1650 385" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Simulatore calibro di precisione aperto a ${mm.toFixed(2)} millimetri">
+      <defs>
+        <linearGradient id="steelGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e2e8f0" />
+          <stop offset="50%" stop-color="#cbd5e1" />
+          <stop offset="100%" stop-color="#94a3b8" />
+        </linearGradient>
+        <linearGradient id="sliderGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f1f5f9" />
+          <stop offset="100%" stop-color="#94a3b8" />
+        </linearGradient>
+        <linearGradient id="housingGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#334155" />
+          <stop offset="100%" stop-color="#0f172a" />
+        </linearGradient>
+        <linearGradient id="pieceGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0284c7" />
+          <stop offset="100%" stop-color="#0369a1" />
+        </linearGradient>
+        <linearGradient id="pieceAmber" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fbbf24" />
+          <stop offset="100%" stop-color="#d97706" />
+        </linearGradient>
+        <linearGradient id="pieceViolet" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#7c3aed" />
+          <stop offset="100%" stop-color="#5b21b6" />
+        </linearGradient>
+      </defs>
+      ${depthRod}
+      ${fixedBody}
+      ${specimenSvg}
+      ${mainTicks}
+      ${movableBody}
+    </svg>
+  `;
+}
+
+function renderVernierLoupe() {
+  const loupe = document.getElementById("vernierLoupe");
+  if (state.caliperType !== "vernier") {
+    loupe.classList.remove("show");
+    return;
+  }
+  loupe.classList.add("show");
+  const mm = state.currentMm;
+  const xZeroVern = X0 + mm * PX;
+  const steps = Math.round(mm * 20);
+  const alignedIdx = steps % 20;
+  const centerX = xZeroVern + alignedIdx * 0.95 * PX;
+  const vb = `${(centerX - 115).toFixed(1)} ${YSPLIT - 58} 230 116`;
+
+  let mainTicks = "";
+  const whole = Math.floor(steps / 20);
+  for (let m = Math.max(0, whole - 5); m <= Math.min(BEAM_MAX_MM, whole + 28); m++) {
+    const x = X0 + m * PX;
+    const h = m % 10 === 0 ? 32 : (m % 5 === 0 ? 22 : 15);
+    mainTicks += `<line x1="${x}" y1="${YSPLIT}" x2="${x}" y2="${YSPLIT - h}" stroke="#0f172a" stroke-width="1.8" />`;
+    if (m % 10 === 0) {
+      mainTicks += `<text x="${x}" y="${YSPLIT - 36}" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a" font-family="JetBrains Mono, monospace">${m}</text>`;
+    }
+  }
+  let vTicks = "";
+  for (let i = 0; i <= 20; i++) {
+    const vx = xZeroVern + i * 0.95 * PX;
+    const vh = (i === 0 || i === 10 || i === 20) ? 24 : (i % 2 === 0 ? 18 : 11);
+    const col = (i === alignedIdx && !state.preClamp) ? "#34d399" : "#0f172a";
+    vTicks += `<line x1="${vx}" y1="${YSPLIT}" x2="${vx}" y2="${YSPLIT + vh}" stroke="${col}" stroke-width="${i === alignedIdx ? 2.8 : 1.6}" />`;
+    if (i % 4 === 0) {
+      vTicks += `<text x="${vx}" y="${YSPLIT + 40}" text-anchor="middle" font-size="13" font-weight="800" fill="#f8fafc" font-family="JetBrains Mono, monospace">${i / 2}</text>`;
+    }
+  }
+
+  document.getElementById("vernierLoupeMount").innerHTML = `
+    <svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet">
+      <rect x="${centerX - 160}" y="${YSPLIT - 70}" width="340" height="70" fill="#cbd5e1" />
+      <rect x="${centerX - 160}" y="${YSPLIT}" width="340" height="25" fill="#e2e8f0" />
+      <rect x="${centerX - 160}" y="${YSPLIT + 25}" width="340" height="30" fill="#334155" />
+      ${mainTicks}
+      ${vTicks}
+    </svg>
+  `;
+}
+
+function updateWorkbenchUI() {
+  const row = state.rows[state.activeIndex];
+  document.getElementById("activeTaskBadge").textContent = `MISURA #${String(state.activeIndex + 1).padStart(2, "0")} / 20`;
+  document.getElementById("btnCopyRowNum").textContent = String(state.activeIndex + 1).padStart(2, "0");
+
+  if (state.exerciseMode === "real") {
+    document.getElementById("activeTaskTitle").textContent = `${row.name} (Modalità Raccolta Dati Reali)`;
+    document.getElementById("activeTaskDesc").textContent = "Inserisci direttamente in tabella i valori rilevati con il tuo calibro reale sul banco.";
+  } else {
+    const typeLabel = row.type === "ext" ? "tra i becchi inferiori (Esterni)" : (row.type === "int" ? "con i becchi a coltello superiori (Interni)" : "con l'asta di profondità a destra (Profondità)");
+    document.getElementById("activeTaskTitle").textContent = row.name;
+    document.getElementById("activeTaskDesc").textContent = `Appoggia il calibro ${typeLabel}, leggi il valore e trascrivilo nella riga #${String(state.activeIndex + 1).padStart(2, "0")}.`;
+  }
+
+  document.getElementById("caliperStage").innerHTML = renderCaliperSVG();
+  renderVernierLoupe();
+
+  const slider = document.getElementById("caliperRange");
+  slider.step = getStep();
+  slider.value = state.currentMm.toFixed(2);
+
+  // Update contact status
+  const statusEl = document.getElementById("contactStatus");
+  const msgEl = document.getElementById("contactMsg");
+  statusEl.className = "contact-status";
+
+  if (state.exerciseMode === "real") {
+    msgEl.textContent = "Modalità Raccolta Dati Reali attiva: usa il calibro virtuale come riferimento o compila la tabella.";
+  } else {
+    const diff = state.currentMm - row.targetMm;
+    const tol = getStep() + 0.005;
+    if (Math.abs(diff) <= tol) {
+      statusEl.classList.add("ok");
+      msgEl.textContent = "✅ CONTATTO PERFETTO! Leggi il valore sullo strumento e trascrivilo nella scheda.";
+    } else if (diff < -tol) {
+      statusEl.classList.add("warn");
+      msgEl.textContent = "⚠️ COLLISIONE / SFORZO! I becchi stanno schiacciando il pezzo: apri leggermente il corsoio.";
+    } else if (diff <= 1.2) {
+      statusEl.classList.add("near");
+      msgEl.textContent = "🟡 QUASI A CONTATTO! Usa i tasti fini (-0,10 / -0,01) per appoggiarti senza forzare.";
+    } else {
+      msgEl.textContent = "🔓 Corsoio aperto: trascina o usa i pulsanti per avvicinare il calibro al pezzo.";
+    }
+  }
+
+  document.getElementById("zeroOffsetLbl").textContent = `${fmtIt(state.zeroOffsetMm)} mm`;
+}
+
+/* =========================================================================
+   3. INTERAZIONI CALIBRO (DRAG, WHEEL, TASTI FINI)
+   ========================================================================= */
+function setCaliperMm(val) {
+  const step = getStep();
+  const clamped = Math.max(0, Math.min(90, roundToStep(val, step)));
+  state.currentMm = Number(clamped.toFixed(2));
+  updateWorkbenchUI();
+}
+
+function setCaliperFromSlider(val) {
+  setCaliperMm(parseFloat(val));
+}
+
+function nudgeCaliper(delta) {
+  setCaliperMm(state.currentMm + delta);
+}
+
+function nudgeFine(sign) {
+  nudgeCaliper(sign * getStep());
+}
+
+function zeroCaliper() {
+  if (Math.abs(state.zeroOffsetMm) > 0.001) {
+    state.zeroOffsetMm = 0;
+    showToast("✓ Azzeramento riportato a 0,00 mm (ABS)");
+  } else {
+    state.zeroOffsetMm = state.currentMm;
+    showToast(`✓ Calibro azzerato a ${fmtIt(state.currentMm)} mm (ZERO relativo)`);
+  }
+  updateWorkbenchUI();
+}
+
+function toggleHold() {
+  state.hold = !state.hold;
+  state.heldMm = state.hold ? (state.currentMm - state.zeroOffsetMm) : null;
+  document.getElementById("btnHold").classList.toggle("btn-amber", state.hold);
+  updateWorkbenchUI();
+}
+
+function toggleLcdDisplay() {
+  state.showLcd = !state.showLcd;
+  document.getElementById("btnToggleLcd").textContent = state.showLcd ? "👁️ Display LCD: VISIBILE" : "🙈 Display LCD: NASCOSTO";
+  updateWorkbenchUI();
+}
+
+function toggleUnit() {
+  state.unit = state.unit === "mm" ? "inch" : "mm";
+  document.getElementById("btnToggleUnit").textContent = `⇄ Unità LCD: ${state.unit}`;
+  updateWorkbenchUI();
+}
+
+function togglePreClamp() {
+  state.preClamp = !state.preClamp;
+  document.getElementById("btnToggleLock").textContent = state.preClamp ? "🔒 Modalità: Pezzo Già Serrato" : "🖐️ Modalità: Sposta Corsoio";
+  if (state.preClamp && state.rows[state.activeIndex]) {
+    setCaliperMm(state.rows[state.activeIndex].targetMm);
+  } else {
+    updateWorkbenchUI();
+  }
+}
+
+function copyDisplayToActiveRow() {
+  const row = state.rows[state.activeIndex];
+  const reading = state.hold && state.heldMm !== null ? state.heldMm : (state.currentMm - state.zeroOffsetMm);
+  const formatted = fmtIt(reading);
+  const inp = document.getElementById(`meas_${state.activeIndex}`);
+  if (inp) {
+    inp.value = formatted;
+    handleRowInput(state.activeIndex, formatted, true);
+    showToast(`✓ Misura ${formatted} mm registrata nella riga #${String(state.activeIndex + 1).padStart(2, "0")}`);
+    if (state.activeIndex < 19) {
+      selectRow(state.activeIndex + 1);
+    }
+  }
+}
+
+(function setupStageDragAndWheel() {
+  const stage = document.getElementById("caliperStage");
+  let dragging = false, startX = 0, startMm = 0;
+
+  stage.addEventListener("pointerdown", e => {
+    dragging = true;
+    startX = e.clientX;
+    startMm = state.currentMm;
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const dxPx = e.clientX - startX;
+    const rect = stage.getBoundingClientRect();
+    const scale = 1650 / Math.max(300, rect.width);
+    const deltaMm = (dxPx * scale) / PX;
+    setCaliperMm(startMm + deltaMm);
+  });
+  stage.addEventListener("pointerup", () => { dragging = false; });
+  stage.addEventListener("pointercancel", () => { dragging = false; });
+
+  stage.addEventListener("wheel", e => {
+    e.preventDefault();
+    const mult = e.shiftKey ? 10 : 1;
+    const dir = e.deltaY < 0 ? 1 : -1;
+    nudgeCaliper(dir * getStep() * mult);
+  }, { passive: false });
+})();
+
+/* =========================================================================
+   4. GESTIONE TABELLA 20 MISURE, CALCOLI E VALIDAZIONE POST-INTERAZIONE
+   ========================================================================= */
+function renderDataTable() {
+  const tbody = document.getElementById("dataTableBody");
+  const unc = getStep();
+  const typeText = { ext: "Esterno", int: "Interno", dep: "Profondità" };
+  const typeCls = { ext: "type-ext", int: "type-int", dep: "type-dep" };
+
+  tbody.innerHTML = state.rows.map((row, idx) => {
+    const numStr = String(idx + 1).padStart(2, "0");
+    const isAct = idx === state.activeIndex;
+    const isValidNum = row.userMm !== null && !isNaN(row.userMm) && row.userMm > 0;
+    const cmStr = isValidNum ? (row.userMm / 10).toFixed(3).replace(".", ",") : "—";
+    const errPct = isValidNum ? ((unc / row.userMm) * 100).toFixed(2).replace(".", ",") + "%" : "—";
+
+    let statusHtml = `<span class="status-pill st-empty">Da misurare</span>`;
+    let inputClass = "meas-input";
+    if (isValidNum) {
+      if (state.exerciseMode === "real") {
+        statusHtml = `<span class="status-pill st-saved">✓ Registrata</span>`;
+      } else if (row.checked) {
+        const tol = unc + 0.005;
+        if (Math.abs(row.userMm - row.targetMm) <= tol) {
+          statusHtml = `<span class="status-pill st-ok">✓ Esatta</span>`;
+          inputClass += " state-correct";
+        } else {
+          statusHtml = `<span class="status-pill st-err">✗ Rileggi</span>`;
+          inputClass += " state-wrong";
+        }
+      } else {
+        statusHtml = `<span class="status-pill st-saved">Compilata</span>`;
+      }
+    }
+
+    return `
+      <tr id="rowTr_${idx}" class="${isAct ? "active-row" : ""}">
+        <th scope="row">${numStr}</th>
+        <td data-label="Oggetto / Quota">
+          <input type="text" class="row-obj-input" aria-label="Oggetto misura ${numStr}" value="${escapeHtml(row.name)}" onchange="updateRowName(${idx}, this.value)">
+        </td>
+        <td data-label="Tipo">
+          <span class="row-type-badge ${typeCls[row.type] || "type-ext"}">${typeText[row.type] || "Esterno"}</span>
+        </td>
+        <td data-label="Misura [mm]">
+          <input
+            type="text"
+            id="meas_${idx}"
+            name="meas_${idx}"
+            class="${inputClass}"
+            inputmode="decimal"
+            pattern="^\\s*\\d+([.,]\\d{1,3})?\\s*$"
+            aria-label="Misura numero ${numStr} in millimetri"
+            aria-invalid="false"
+            placeholder="0,00"
+            value="${escapeHtml(row.userValStr)}"
+            onfocus="if(state.activeIndex!==${idx}) selectRow(${idx}, false)"
+            oninput="handleRowInput(${idx}, this.value, false)"
+            onblur="handleRowBlur(${idx}, this)"
+          >
+        </td>
+        <td data-label="Δx [mm]" class="mono-cell">&plusmn; ${fmtIt(unc)}</td>
+        <td data-label="Equiv. [cm]" class="mono-cell" id="cm_${idx}">${cmStr}</td>
+        <td data-label="Err. %" class="mono-cell" id="ep_${idx}">${errPct}</td>
+        <td data-label="Esito" id="st_${idx}">${statusHtml}</td>
+        <td data-label="Calibro" class="action-col">
+          <button type="button" class="btn btn-sm" onclick="selectRow(${idx}, true)" title="Carica questo pezzo sul calibro">📏 Misura</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  updateStatsAndProgress();
+}
+
+function escapeHtml(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function selectRow(idx, moveCal = true) {
+  if (idx < 0 || idx >= state.rows.length) return;
+  const prevTr = document.getElementById(`rowTr_${state.activeIndex}`);
+  if (prevTr) prevTr.classList.remove("active-row");
+  state.activeIndex = idx;
+  const nextTr = document.getElementById(`rowTr_${idx}`);
+  if (nextTr) nextTr.classList.add("active-row");
+
+  if (moveCal) {
+    if (state.preClamp) {
+      state.currentMm = state.rows[idx].targetMm;
+    } else {
+      // Posiziona il corsoio vicino ma aperto (~ +12 mm oltre il pezzo) per stimolare la misura manuale
+      state.currentMm = Number(Math.min(88, Math.max(5, state.rows[idx].targetMm + 12.40)).toFixed(2));
+    }
+  }
+  updateWorkbenchUI();
+}
+
+function updateRowName(idx, val) {
+  state.rows[idx].name = val.trim() || `Misura #${idx + 1}`;
+  saveToLocalStorage();
+}
+
+function handleRowInput(idx, rawVal, checkNow) {
+  const row = state.rows[idx];
+  row.userValStr = rawVal;
+  const parsed = parseItNumber(rawVal);
+  row.userMm = (!isNaN(parsed) && parsed > 0 && parsed <= 150) ? parsed : null;
+  if (checkNow) row.checked = true;
+
+  // Clear invalid state while typing
+  const inp = document.getElementById(`meas_${idx}`);
+  if (inp) {
+    inp.setCustomValidity("");
+    inp.setAttribute("aria-invalid", "false");
+    inp.classList.remove("user-invalid-fallback");
+  }
+
+  refreshSingleRowCells(idx);
+  updateStatsAndProgress();
+  saveToLocalStorage();
+}
+
+function handleRowBlur(idx, inputEl) {
+  const raw = inputEl.value.trim();
+  if (!raw) {
+    inputEl.setCustomValidity("");
+    inputEl.setAttribute("aria-invalid", "false");
+    inputEl.classList.remove("user-invalid-fallback");
+    state.rows[idx].checked = false;
+    refreshSingleRowCells(idx);
+    updateStatsAndProgress();
+    return;
+  }
+
+  const parsed = parseItNumber(raw);
+  const step = getStep();
+  if (isNaN(parsed) || parsed <= 0 || parsed > 150) {
+    inputEl.setCustomValidity("Inserisci un numero valido tra 0,01 e 150 mm.");
+    inputEl.setAttribute("aria-invalid", "true");
+    inputEl.classList.add("user-invalid-fallback");
+    announcePolite(`Riga ${idx + 1}: inserisci un valore numerico valido in millimetri.`);
+    return;
+  }
+
+  // Avviso gentile se in modalità Nonio 0.05 si inserisce un decimale non multiplo di 0.05
+  if (state.caliperType === "vernier") {
+    const rem = Math.abs(Math.round(parsed * 100) % 5);
+    if (rem !== 0) {
+      inputEl.setCustomValidity("Il calibro a nonio 1/20 legge solo multipli di 0,05 mm (es. ,00 ,05 ,10 ,15).");
+      inputEl.setAttribute("aria-invalid", "true");
+      inputEl.classList.add("user-invalid-fallback");
+      announcePolite(`Riga ${idx + 1}: il calibro ventesimale misura solo a passi di 0,05 millimetri.`);
+      showToast("⚠️ Il nonio 1/20 mm legge solo multipli di 0,05 mm!");
+      return;
+    }
+  }
+
+  inputEl.setCustomValidity("");
+  inputEl.setAttribute("aria-invalid", "false");
+  inputEl.classList.remove("user-invalid-fallback");
+  state.rows[idx].userMm = parsed;
+  state.rows[idx].checked = true;
+  refreshSingleRowCells(idx);
+  updateStatsAndProgress();
+  saveToLocalStorage();
+}
+
+function refreshSingleRowCells(idx) {
+  const row = state.rows[idx];
+  const unc = getStep();
+  const isValidNum = row.userMm !== null && !isNaN(row.userMm) && row.userMm > 0;
+  const cmCell = document.getElementById(`cm_${idx}`);
+  const epCell = document.getElementById(`ep_${idx}`);
+  const stCell = document.getElementById(`st_${idx}`);
+  const inp = document.getElementById(`meas_${idx}`);
+
+  if (cmCell) cmCell.textContent = isValidNum ? (row.userMm / 10).toFixed(3).replace(".", ",") : "—";
+  if (epCell) epCell.textContent = isValidNum ? ((unc / row.userMm) * 100).toFixed(2).replace(".", ",") + "%" : "—";
+
+  if (inp) {
+    inp.classList.remove("state-correct", "state-wrong");
+  }
+
+  if (!stCell) return;
+  if (!isValidNum) {
+    stCell.innerHTML = `<span class="status-pill st-empty">Da misurare</span>`;
+  } else if (state.exerciseMode === "real") {
+    stCell.innerHTML = `<span class="status-pill st-saved">✓ Registrata</span>`;
+  } else if (row.checked) {
+    const tol = unc + 0.005;
+    if (Math.abs(row.userMm - row.targetMm) <= tol) {
+      stCell.innerHTML = `<span class="status-pill st-ok">✓ Esatta</span>`;
+      if (inp) inp.classList.add("state-correct");
+    } else {
+      stCell.innerHTML = `<span class="status-pill st-err">✗ Rileggi</span>`;
+      if (inp) inp.classList.add("state-wrong");
+    }
+  } else {
+    stCell.innerHTML = `<span class="status-pill st-saved">Compilata</span>`;
+  }
+}
+
+function checkAllRows() {
+  if (state.exerciseMode === "real") {
+    showToast("ℹ️ In modalità Raccolta Dati Reali tutte le misure valide sono accettate.");
+    return;
+  }
+  let okCount = 0;
+  let filled = 0;
+  const tol = getStep() + 0.005;
+  state.rows.forEach((r, idx) => {
+    if (r.userMm !== null && r.userMm > 0) {
+      filled++;
+      r.checked = true;
+      if (Math.abs(r.userMm - r.targetMm) <= tol) okCount++;
+      refreshSingleRowCells(idx);
+    }
+  });
+  updateStatsAndProgress();
+  showToast(`✓ Verifica completata: ${okCount} misure esatte su ${filled} compilate!`);
+}
+
+/* =========================================================================
+   5. STATISTICHE AUTOMATICHE & ISTOGRAMMA (20 MISURE RIPETUTE)
+   ========================================================================= */
+function updateStatsAndProgress() {
+  const unc = getStep();
+  const validEntries = state.rows
+    .map((r, i) => ({ val: r.userMm, name: r.name, idx: i }))
+    .filter(x => x.val !== null && x.val > 0);
+
+  const count = validEntries.length;
+  document.getElementById("completionProgress").value = count;
+  document.getElementById("completionText").textContent = `${count} / 20`;
+  document.getElementById("stCount").textContent = `${count} / 20`;
+
+  const tol = unc + 0.005;
+  const exactCount = state.rows.filter(r => r.checked && r.userMm !== null && Math.abs(r.userMm - r.targetMm) <= tol).length;
+  document.getElementById("scoreWrap").style.display = state.exerciseMode === "real" ? "none" : "inline";
+  document.getElementById("scoreText").textContent = `${exactCount} / 20`;
+
+  if (count === 0) {
+    ["stMin", "stMax", "stAvg", "stSpread", "stPerc"].forEach(id => document.getElementById(id).textContent = "—");
+    document.getElementById("histogramBox").classList.remove("show");
+    return;
+  }
+
+  const vals = validEntries.map(x => x.val);
+  const minVal = Math.min(...vals);
+  const maxVal = Math.max(...vals);
+  const avg = vals.reduce((a, b) => a + b, 0) / count;
+  const semiSpread = (maxVal - minVal) / 2;
+
+  const minObj = validEntries.find(x => x.val === minVal);
+  const maxObj = validEntries.find(x => x.val === maxVal);
+
+  document.getElementById("stMin").textContent = `${fmtIt(minVal)} mm`;
+  document.getElementById("stMinSub").textContent = minObj ? `#${minObj.idx + 1} (${minObj.name.slice(0, 22)})` : "Valore minimo";
+
+  document.getElementById("stMax").textContent = `${fmtIt(maxVal)} mm`;
+  document.getElementById("stMaxSub").textContent = maxObj ? `#${maxObj.idx + 1} (${maxObj.name.slice(0, 22)})` : "Valore massimo";
+
+  document.getElementById("stAvg").textContent = `${avg.toFixed(3).replace(".", ",")} mm`;
+  document.getElementById("stSpread").textContent = `\u00B1 ${semiSpread.toFixed(3).replace(".", ",")} mm`;
+
+  if (state.exerciseMode === "repeated") {
+    const finalUnc = Math.max(unc, semiSpread);
+    const errRel = finalUnc / avg;
+    const errPct = errRel * 100;
+    document.getElementById("stPerc").textContent = `${errPct.toFixed(2).replace(".", ",")}%`;
+    document.getElementById("stPercSub").textContent = `e_r = ${errRel.toFixed(4).replace(".", ",")}`;
+    document.getElementById("repeatedFinalResult").textContent = `x = (${avg.toFixed(2).replace(".", ",")} \u00B1 ${finalUnc.toFixed(2).replace(".", ",")}) mm`;
+    renderHistogram(vals, avg);
+  } else {
+    const pcts = vals.map(v => (unc / v) * 100);
+    const maxPct = Math.max(...pcts);
+    const avgPct = pcts.reduce((a, b) => a + b, 0) / count;
+    document.getElementById("stPerc").textContent = `${maxPct.toFixed(2).replace(".", ",")}% max`;
+    document.getElementById("stPercSub").textContent = `Media e%: ${avgPct.toFixed(2).replace(".", ",")}%`;
+    document.getElementById("histogramBox").classList.remove("show");
+  }
+}
+
+function renderHistogram(vals, avg) {
+  const box = document.getElementById("histogramBox");
+  box.classList.add("show");
+  const freq = {};
+  vals.forEach(v => {
+    const k = v.toFixed(2);
+    freq[k] = (freq[k] || 0) + 1;
+  });
+  const keys = Object.keys(freq).sort((a, b) => parseFloat(a) - parseFloat(b));
+  const maxFreq = Math.max(...Object.values(freq), 1);
+  const w = 680, h = 150, padL = 36, padB = 30;
+  const barW = Math.min(60, Math.floor((w - padL - 20) / Math.max(1, keys.length)) - 8);
+
+  let bars = "";
+  keys.forEach((k, i) => {
+    const f = freq[k];
+    const bh = Math.round((f / maxFreq) * (h - padB - 24));
+    const x = padL + 14 + i * (barW + 10);
+    const y = h - padB - bh;
+    bars += `
+      <rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="4" fill="#2563eb" />
+      <text x="${x + barW / 2}" y="${y - 5}" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a" font-family="JetBrains Mono, monospace">${f}</text>
+      <text x="${x + barW / 2}" y="${h - 10}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155" font-family="JetBrains Mono, monospace">${k.replace(".", ",")}</text>
+    `;
+  });
+
+  document.getElementById("histogramSvgMount").innerHTML = `
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%; max-width:720px; height:auto;">
+      <line x1="${padL}" y1="${h - padB}" x2="${w - 10}" y2="${h - padB}" stroke="#94a3b8" stroke-width="1.5" />
+      ${bars}
+    </svg>
+  `;
+}
+
+/* =========================================================================
+   6. CAMBIO MODALITÀ, RANDOMIZZAZIONE, EXPORT CSV & PDF
+   ========================================================================= */
+function setCaliperType(type) {
+  state.caliperType = type;
+  document.getElementById("btnModeDigital").classList.toggle("active", type === "digital");
+  document.getElementById("btnModeDigital").setAttribute("aria-pressed", type === "digital");
+  document.getElementById("btnModeVernier").classList.toggle("active", type === "vernier");
+  document.getElementById("btnModeVernier").setAttribute("aria-pressed", type === "vernier");
+
+  const fineStr = type === "digital" ? "0,01" : "0,05";
+  document.getElementById("btnFineMinus").textContent = `-${fineStr}`;
+  document.getElementById("btnFinePlus").textContent = `+${fineStr}`;
+  document.getElementById("uncertaintyBadge").textContent = `\u00B1 ${fineStr} mm`;
+  document.getElementById("printResLabel").textContent = `\u00B1 ${fineStr} mm`;
+
+  document.getElementById("btnToggleLcd").style.display = type === "digital" ? "inline-flex" : "none";
+  document.getElementById("btnToggleUnit").style.display = type === "digital" ? "inline-flex" : "none";
+
+  // Snap target dimensions to new instrument step
+  const step = getStep();
+  state.rows.forEach(r => {
+    r.targetMm = Number(roundToStep(r.targetMm, step).toFixed(2));
+  });
+  setCaliperMm(state.currentMm);
+  renderDataTable();
+  saveToLocalStorage();
+}
+
+function syncExerciseModeButtons() {
+  const mode = state.exerciseMode;
+  document.getElementById("btnExDiverse").classList.toggle("active", mode === "diverse");
+  document.getElementById("btnExDiverse").setAttribute("aria-pressed", mode === "diverse");
+  document.getElementById("btnExRepeated").classList.toggle("active", mode === "repeated");
+  document.getElementById("btnExRepeated").setAttribute("aria-pressed", mode === "repeated");
+  document.getElementById("btnExReal").classList.toggle("active", mode === "real");
+  document.getElementById("btnExReal").setAttribute("aria-pressed", mode === "real");
+}
+
+function setExerciseMode(mode) {
+  state.exerciseMode = mode;
+  syncExerciseModeButtons();
+  initDefaultRows(false);
+  selectRow(0, true);
+  renderDataTable();
+  saveToLocalStorage();
+}
+
+function randomizeObjects() {
+  initDefaultRows(true);
+  selectRow(0, true);
+  renderDataTable();
+  saveToLocalStorage();
+  showToast("🎲 Nuova batteria di 20 pezzi generata!");
+}
+
+function resetSheet() {
+  if (!confirm("Vuoi azzerare tutte le 20 misurazioni inserite nella scheda?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  initDefaultRows(false);
+  document.getElementById("q1Answer").value = "";
+  document.getElementById("q2Answer").value = "";
+  selectRow(0, true);
+  renderDataTable();
+  showToast("🗑️ Scheda azzerata.");
+}
+
+function updateSchoolHeader() {
+  const school = document.getElementById("schoolSelect").value;
+  document.getElementById("topSubtitle").textContent = `${school} • Raccolta Dati al Computer`;
+  document.getElementById("printSchoolTitle").textContent = `${school.toUpperCase()} — LABORATORIO DI FISICA`;
+  const backLink = document.getElementById("backLink");
+  if (school.includes("Giordano Bruno")) {
+    backLink.href = "/fisica/giordano-bruno/misure-lineari.html";
+  } else {
+    backLink.href = "/fisica/archimede/prime/calibro-nonio.html";
+  }
+  saveToLocalStorage();
+}
+
+function exportCSV() {
+  const unc = getStep();
+  const name = document.getElementById("studentName").value.trim() || "Allievo";
+  const cls = document.getElementById("studentClass").value.trim() || "Classe";
+  const lines = [
+    `Allievo;${name};Classe;${cls};Strumento;${state.caliperType === "digital" ? "Calibro Digitale 0.01 mm" : "Calibro a Nonio 0.05 mm"}`,
+    "N;Oggetto / Quota;Tipo;Misura [mm];Incertezza [mm];Equivalente [cm];Errore %"
+  ];
+  state.rows.forEach((r, i) => {
+    const val = r.userMm !== null ? r.userMm.toFixed(2).replace(".", ",") : "";
+    const cm = r.userMm !== null ? (r.userMm / 10).toFixed(3).replace(".", ",") : "";
+    const ep = r.userMm !== null ? ((unc / r.userMm) * 100).toFixed(2).replace(".", ",") + "%" : "";
+    lines.push(`${i + 1};"${r.name.replace(/"/g, '""')}";${r.type};${val};${unc.toFixed(2).replace(".", ",")};${cm};${ep}`);
+  });
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Scheda_Calibro_20Misure_${name.replace(/[^a-zA-Z0-9]/g, "_")}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("📊 File CSV scaricato!");
+}
+
+function validateStudentMetaForExport() {
+  const nameEl = document.getElementById("studentName");
+  const classEl = document.getElementById("studentClass");
+  let firstInvalid = null;
+
+  [nameEl, classEl].forEach(el => {
+    if (!el.value.trim()) {
+      el.classList.add("user-invalid-fallback");
+      el.setAttribute("aria-invalid", "true");
+      if (!firstInvalid) firstInvalid = el;
+    } else {
+      el.classList.remove("user-invalid-fallback");
+      el.setAttribute("aria-invalid", "false");
+    }
+  });
+
+  if (firstInvalid) {
+    firstInvalid.focus();
+    showToast("⚠️ Inserisci Cognome, Nome e Classe prima di scaricare il PDF!");
+    return false;
+  }
+  return true;
+}
+
+function exportPDF() {
+  if (!validateStudentMetaForExport()) return;
+  const name = document.getElementById("studentName").value.trim().replace(/[^a-zA-Z0-9]/g, "_");
+  const cls = document.getElementById("studentClass").value.trim().replace(/[^a-zA-Z0-9]/g, "_");
+  showToast("⏳ Generazione PDF A4 in corso...");
+
+  const target = document.getElementById("reportRoot");
+  const opt = {
+    margin: [8, 8, 8, 8],
+    filename: `Scheda_20_Misurazioni_Calibro_${name}_${cls}.pdf`,
+    image: { type: "jpeg", quality: 0.96 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      ignoreElements: el => el.classList && el.classList.contains("no-print")
+    },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  };
+
+  if (window.html2pdf) {
+    window.html2pdf().set(opt).from(target).save().then(() => {
+      showToast("✓ PDF scaricato con successo!");
+    }).catch(() => window.print());
+  } else {
+    window.print();
+  }
+}
+
+/* =========================================================================
+   7. PERSISTENZA LOCALE, ACCESSIBILITÀ E AVVIO
+   ========================================================================= */
+function saveToLocalStorage() {
+  try {
+    const payload = {
+      caliperType: state.caliperType,
+      exerciseMode: state.exerciseMode,
+      studentName: document.getElementById("studentName").value,
+      studentClass: document.getElementById("studentClass").value,
+      studentStation: document.getElementById("studentStation").value,
+      schoolSelect: document.getElementById("schoolSelect").value,
+      q1: document.getElementById("q1Answer").value,
+      q2: document.getElementById("q2Answer").value,
+      rows: state.rows
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (_) {}
+}
+
+function loadFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (d.studentName) document.getElementById("studentName").value = d.studentName;
+    if (d.studentClass) document.getElementById("studentClass").value = d.studentClass;
+    if (d.studentStation) document.getElementById("studentStation").value = d.studentStation;
+    if (d.schoolSelect) document.getElementById("schoolSelect").value = d.schoolSelect;
+    if (d.q1) document.getElementById("q1Answer").value = d.q1;
+    if (d.q2) document.getElementById("q2Answer").value = d.q2;
+    if (d.caliperType) state.caliperType = d.caliperType;
+    if (d.exerciseMode) state.exerciseMode = d.exerciseMode;
+    if (Array.isArray(d.rows) && d.rows.length === 20) {
+      state.rows = d.rows;
+      return true;
+    }
+  } catch (_) {}
+  return false;
+}
+
+function showToast(msg) {
+  const t = document.getElementById("appToast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+let announceTimer;
+function announcePolite(msg) {
+  const el = document.getElementById("liveAnnouncer");
+  clearTimeout(announceTimer);
+  el.textContent = "";
+  announceTimer = setTimeout(() => { el.textContent = msg; }, 300);
+}
+
+function linkFieldError(el, shown) {
+  const errorId = el.dataset.error;
+  if (!errorId) return;
+  const ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(id => id && id !== errorId);
+  if (shown) ids.push(errorId);
+  if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+  else el.removeAttribute("aria-describedby");
+}
+
+function setupMetaValidation() {
+  ["studentName", "studentClass", "studentStation", "q1Answer", "q2Answer"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      if (el.hasAttribute("required") && el.value.trim()) {
+        el.classList.remove("user-invalid-fallback");
+        el.setAttribute("aria-invalid", "false");
+        linkFieldError(el, false);
+      }
+      saveToLocalStorage();
+    });
+    el.addEventListener("blur", () => {
+      if (el.hasAttribute("required") && !el.value.trim()) {
+        el.classList.add("user-invalid-fallback");
+        el.setAttribute("aria-invalid", "true");
+        linkFieldError(el, true);
+      }
+      saveToLocalStorage();
+    });
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const schoolParam = urlParams.get("scuola");
+
+  const loaded = loadFromLocalStorage();
+  if (!loaded) {
+    initDefaultRows(false);
+  }
+
+  if (schoolParam === "gb") {
+    document.getElementById("schoolSelect").value = "ITIS Giordano Bruno — Classi Prime";
+  } else if (schoolParam === "archimede") {
+    document.getElementById("schoolSelect").value = "ISS Archimede — Classi Prime";
+  }
+
+  if (!document.getElementById("studentStation").value) {
+    const today = new Date().toLocaleDateString("it-IT");
+    document.getElementById("studentStation").value = `${today} • PC __`;
+  }
+
+  updateSchoolHeader();
+  setupMetaValidation();
+  syncExerciseModeButtons();
+  setCaliperType(state.caliperType);
+  selectRow(0, true);
+});
+</script>
+</body>
+</html>
