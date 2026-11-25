@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Il Gioco dell'Impiccato — Edizione LIM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+:root {
+  --bg-deep: #070d1a;
+  --bg-panel: #0f172a;
+  --bg-card: #16223b;
+  --bg-key: #1e293b;
+  --bg-key-hover: #334155;
+  --border: rgba(148, 163, 184, 0.24);
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --dim: #94a3b8;
+  --cyan: #38bdf8;
+  --amber: #fbbf24;
+  --emerald: #10b981;
+  --emerald-bright: #34d399;
+  --rose: #f43f5e;
+  --rose-bright: #fb7185;
+  --violet: #a78bfa;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg-deep) 78%);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: clamp(14px, 1vw, 18px);
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  padding: 10px 14px;
+  gap: 10px;
+}
+
+/* =========================================================
+   TOP CONTROL BAR (LIM FRIENDLY)
+   ========================================================= */
+.topbar {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 8px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  color: var(--cyan);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.back-btn:hover { background: rgba(56, 189, 248, 0.25); border-color: var(--cyan); }
+.back-btn:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+.game-title {
+  font-size: clamp(1rem, 1.3vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cat-select {
+  min-height: 40px;
+  padding: 4px 12px;
+  border-radius: 10px;
+  background: var(--bg-key);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cat-select:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+.scoreboard-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(7, 13, 26, 0.72);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.team-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.team-a { color: #7dd3fc; background: rgba(56, 189, 248, 0.12); }
+.team-b { color: #fde68a; background: rgba(251, 191, 36, 0.12); }
+.team-badge.active-turn {
+  border-color: currentColor;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.16);
+}
+
+.controls-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.lim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--bg-key);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 750;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.lim-btn:hover { background: var(--bg-key-hover); border-color: #94a3b8; }
+.lim-btn:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+.lim-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+.lim-btn.primary { background: #0284c7; border-color: #38bdf8; color: #ffffff; }
+.lim-btn.primary:hover { background: #0369a1; }
+.lim-btn.amber { background: rgba(251, 191, 36, 0.16); border-color: var(--amber); color: #fde68a; }
+.lim-btn.amber:hover { background: rgba(251, 191, 36, 0.28); }
+.lim-btn.emerald { background: #059669; border-color: #34d399; color: #ffffff; }
+.lim-btn.emerald:hover { background: #047857; }
+.lim-btn.violet { background: rgba(167, 139, 250, 0.18); border-color: var(--violet); color: #ddd6fe; }
+.lim-btn.violet:hover { background: rgba(167, 139, 250, 0.3); }
+
+/* =========================================================
+   MAIN 2-COLUMN LIM WORKSPACE
+   ========================================================= */
+.main-stage {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(300px, 36%) 1fr;
+  gap: 12px;
+}
+
+.panel-card {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  position: relative;
+  overflow: hidden;
+}
+
+/* LEFT: GALLOWS CANVAS */
+.gallows-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.lives-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.life-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--emerald-bright);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.55);
+  transition: background-color 0.2s, transform 0.2s;
+}
+.life-dot.lost {
+  background: var(--rose);
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.55);
+  transform: scale(0.82);
+}
+
+.gallows-svg-wrap {
+  flex: 1;
+  min-height: 0;
+  background: radial-gradient(circle at 50% 45%, #162444 0%, #091020 100%);
+  border: 1.5px solid rgba(148, 163, 184, 0.22);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  position: relative;
+}
+.gallows-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.svg-part {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.svg-part.visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .svg-part.draw-anim {
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    transition: stroke-dashoffset 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+  }
+  .svg-part.draw-anim.visible {
+    stroke-dashoffset: 0;
+  }
+  .gallows-card.shake {
+    animation: gentleShake 0.36s ease;
+  }
+  @keyframes gentleShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-4px); }
+  }
+}
+
+.wrong-letters-bar {
+  margin-top: 10px;
+  background: rgba(7, 13, 26, 0.65);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 42px;
+}
+.wrong-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+.wrong-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(244, 63, 94, 0.2);
+  border: 1px solid rgba(251, 113, 133, 0.55);
+  color: #fecdd3;
+  font-size: 0.9rem;
+}
+
+/* RIGHT: WORD + HINTS + KEYBOARD */
+.word-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.topic-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  color: #bae6fd;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.hint-banner {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1.5px solid rgba(251, 191, 36, 0.45);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: #fef3c7;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.hint-banner.show { display: flex; }
+
+.word-slots-area {
+  flex: 1;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(7, 13, 26, 0.55);
+  border: 1.5px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.word-groups-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 18px 26px;
+  width: 100%;
+}
+
+.word-unit {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: clamp(5px, 0.65vw, 10px);
+}
+
+.letter-tile {
+  width: clamp(32px, 3.6vw, 58px);
+  height: clamp(44px, 4.8vw, 72px);
+  border-radius: 10px;
+  background: rgba(30, 41, 59, 0.72);
+  border-bottom: 4px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 2.5vw, 2.55rem);
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  user-select: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.letter-tile.compact {
+  width: clamp(26px, 2.8vw, 46px);
+  height: clamp(38px, 4vw, 60px);
+  font-size: clamp(1.15rem, 2vw, 2.05rem);
+}
+
+.letter-tile.revealed {
+  background: rgba(16, 185, 129, 0.18);
+  border-bottom-color: var(--emerald-bright);
+  color: #ecfdf5;
+}
+
+.letter-tile.missed {
+  background: rgba(244, 63, 94, 0.22);
+  border-bottom-color: var(--rose-bright);
+  color: #fecdd3;
+}
+
+.letter-tile.punct {
+  width: auto;
+  min-width: 18px;
+  background: transparent;
+  border-bottom: none;
+  color: var(--amber);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .letter-tile.revealed {
+    animation: tilePop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes tilePop {
+    0% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+  }
+}
+
+/* RESULT BANNER */
+.outcome-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 800;
+}
+.outcome-banner.show { display: flex; }
+.outcome-banner.win {
+  background: rgba(6, 78, 59, 0.82);
+  border: 2px solid var(--emerald-bright);
+  color: #d1fae5;
+}
+.outcome-banner.loss {
+  background: rgba(136, 19, 55, 0.82);
+  border: 2px solid var(--rose-bright);
+  color: #ffe4e6;
+}
+
+/* GIANT LIM KEYBOARD */
+.keyboard-panel {
+  background: rgba(7, 13, 26, 0.6);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--dim);
+}
+
+.kb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(5px, 0.55vw, 9px);
+}
+
+.kb-key {
+  flex: 1 1 0;
+  max-width: 68px;
+  min-width: 34px;
+  height: clamp(44px, 5.4vh, 58px);
+  border-radius: 10px;
+  border: 1.5px solid rgba(148, 163, 184, 0.35);
+  background: linear-gradient(180deg, #25344d 0%, #1a263b 100%);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: clamp(1.05rem, 1.4vw, 1.45rem);
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  box-shadow: 0 3px 0 rgba(7, 13, 26, 0.9);
+  transition: background-color 0.12s, border-color 0.12s, transform 0.08s;
+}
+.kb-key:hover:not(:disabled) {
+  background: linear-gradient(180deg, #33486b 0%, #243450 100%);
+  border-color: var(--cyan);
+}
+.kb-key:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 rgba(7, 13, 26, 0.9); }
+.kb-key:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+.kb-key.extra-letter {
+  border-style: dashed;
+  color: #cbd5e1;
+}
+.kb-key.hit {
+  background: #065f46;
+  border-color: var(--emerald-bright);
+  color: #a7f3d0;
+  box-shadow: none;
+  cursor: default;
+}
+.kb-key.miss {
+  background: rgba(136, 19, 55, 0.35);
+  border-color: rgba(251, 113, 133, 0.35);
+  color: rgba(254, 205, 211, 0.4);
+  box-shadow: none;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+/* CONFETTI CANVAS */
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* =========================================================
+   MODALS (<dialog> per modern-web-guidance)
+   ========================================================= */
+dialog:modal {
+  overscroll-behavior: contain;
+  margin: auto;
+  border: 2px solid var(--cyan);
+  border-radius: 16px;
+  padding: 22px 24px;
+  max-width: 460px;
+  width: calc(100vw - 32px);
+  background: #0f172a;
+  color: var(--text);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+}
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(5px);
+}
+.dlg-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.dlg-sub {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.dlg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.dlg-field label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.dlg-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(148, 163, 184, 0.45);
+  background: #1e293b;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.dlg-input:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+.dlg-err {
+  color: var(--rose-bright);
+  font-size: 0.84rem;
+  font-weight: 700;
+  min-height: 20px;
+  visibility: hidden;
+}
+.dlg-err.show { visibility: visible; }
+.dlg-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 900px) {
+  .main-stage { grid-template-columns: 1fr; grid-template-rows: 34% 1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+<div id="liveStatus" class="visually-hidden" aria-live="polite"></div>
+
+<div class="app-shell">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand-group">
+      <a href="/" class="back-btn">← Sito</a>
+      <div class="game-title">🎯 L'Impiccato LIM</div>
+      <select id="categorySelect" class="cat-select" aria-label="Categoria parole" onchange="startNewRound()">
+        <option value="all">📚 Tutte le categorie</option>
+        <option value="informatica">💻 Informatica &amp; Tech</option>
+        <option value="fisica">⚛️ Fisica &amp; Scienze</option>
+        <option value="cultura">🌍 Cultura &amp; Geografia</option>
+        <option value="sport">⚽ Sport &amp; Giochi</option>
+        <option value="oggetti">🍕 Cibo, Animali &amp; Oggetti</option>
+      </select>
+    </div>
+
+    <div class="scoreboard-pill" id="scoreboardPill"></div>
+
+    <div class="controls-group">
+      <button type="button" class="lim-btn" id="btnTeamMode" onclick="toggleTeamMode()">👥 1 / 2 Squadre</button>
+      <button type="button" class="lim-btn violet" onclick="openCustomWordModal()">✍️ Parola Segreta</button>
+      <button type="button" class="lim-btn" id="btnAudio" onclick="toggleAudio()" title="Attiva o disattiva effetti sonori">🔊 Audio</button>
+      <button type="button" class="lim-btn" onclick="toggleFullscreen()" title="Schermo intero per LIM">⛶ LIM</button>
+      <button type="button" class="lim-btn primary" onclick="startNewRound()">🔄 Nuova Parola</button>
+    </div>
+  </header>
+
+  <!-- MAIN 2-COLUMN WORKSPACE -->
+  <main class="main-stage">
+
+    <!-- LEFT: ANIMATED SVG GALLOWS -->
+    <section class="panel-card gallows-card" id="gallowsCard" aria-label="Disegno dell'impiccato">
+      <div class="gallows-header">
+        <span style="font-weight:800; font-size:0.95rem; color:var(--muted);">
+          Vite rimaste: <strong id="livesText" style="color:var(--emerald-bright); font-family:var(--font-mono);">6 / 6</strong>
+        </span>
+        <div class="lives-dots" id="livesDots" aria-hidden="true"></div>
+      </div>
+
+      <div class="gallows-svg-wrap">
+        <svg viewBox="0 0 320 300" role="img" aria-label="Figura dell'impiccato">
+          <defs>
+            <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#92400e" />
+              <stop offset="50%" stop-color="#b45309" />
+              <stop offset="100%" stop-color="#78350f" />
+            </linearGradient>
+          </defs>
+          <!-- Base floor shadow -->
+          <ellipse cx="160" cy="276" rx="125" ry="10" fill="rgba(0,0,0,0.45)" />
+          <!-- Gallows frame -->
+          <rect x="34" y="262" width="145" height="14" rx="5" fill="url(#woodGrad)" stroke="#fde68a" stroke-opacity="0.25" stroke-width="1.5" />
+          <rect x="66" y="32" width="14" height="232" rx="4" fill="url(#woodGrad)" stroke="#fde68a" stroke-opacity="0.25" stroke-width="1.5" />
+          <rect x="64" y="28" width="152" height="14" rx="5" fill="url(#woodGrad)" stroke="#fde68a" stroke-opacity="0.25" stroke-width="1.5" />
+          <polygon points="80,76 116,42 128,42 80,90" fill="#78350f" />
+          <!-- Rope -->
+          <line x1="202" y1="42" x2="202" y2="74" stroke="#eab308" stroke-width="4" stroke-linecap="round" />
+          <circle cx="202" cy="76" r="5" fill="none" stroke="#eab308" stroke-width="3" />
+
+          <!-- Progressive Hangman Figure (6 parts) -->
+          <!-- 1: Head & dynamic face -->
+          <g id="part1" class="svg-part">
+            <circle cx="202" cy="100" r="22" fill="#1e293b" stroke="#f8fafc" stroke-width="4" />
+            <g id="faceCalm">
+              <circle cx="194" cy="96" r="2.6" fill="#f8fafc" />
+              <circle cx="210" cy="96" r="2.6" fill="#f8fafc" />
+              <path d="M 194 108 Q 202 112 210 108" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" />
+            </g>
+            <g id="faceWorried" style="display:none;">
+              <circle cx="194" cy="96" r="2.8" fill="#fde047" />
+              <circle cx="210" cy="96" r="2.8" fill="#fde047" />
+              <line x1="194" y1="109" x2="210" y2="109" stroke="#fde047" stroke-width="2.6" stroke-linecap="round" />
+              <path d="M 220 90 Q 224 96 220 99 Q 216 96 220 90 Z" fill="#38bdf8" />
+            </g>
+            <g id="faceDead" style="display:none;">
+              <path d="M 191 93 L 197 99 M 197 93 L 191 99" stroke="#fb7185" stroke-width="2.6" stroke-linecap="round" />
+              <path d="M 207 93 L 213 99 M 213 93 L 207 99" stroke="#fb7185" stroke-width="2.6" stroke-linecap="round" />
+              <path d="M 194 111 Q 202 105 210 111" fill="none" stroke="#fb7185" stroke-width="2.6" stroke-linecap="round" />
+            </g>
+            <g id="faceWin" style="display:none;">
+              <circle cx="194" cy="95" r="2.8" fill="#34d399" />
+              <circle cx="210" cy="95" r="2.8" fill="#34d399" />
+              <path d="M 193 106 Q 202 115 211 106" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" />
+            </g>
+          </g>
+          <!-- 2: Torso -->
+          <line id="part2" class="svg-part draw-anim" x1="202" y1="122" x2="202" y2="188" stroke="#f8fafc" stroke-width="4.5" stroke-linecap="round" />
+          <!-- 3: Left Arm -->
+          <line id="part3" class="svg-part draw-anim" x1="202" y1="138" x2="168" y2="168" stroke="#f8fafc" stroke-width="4.2" stroke-linecap="round" />
+          <!-- 4: Right Arm -->
+          <line id="part4" class="svg-part draw-anim" x1="202" y1="138" x2="236" y2="168" stroke="#f8fafc" stroke-width="4.2" stroke-linecap="round" />
+          <!-- 5: Left Leg -->
+          <line id="part5" class="svg-part draw-anim" x1="202" y1="188" x2="174" y2="236" stroke="#f8fafc" stroke-width="4.5" stroke-linecap="round" />
+          <!-- 6: Right Leg -->
+          <line id="part6" class="svg-part draw-anim" x1="202" y1="188" x2="230" y2="236" stroke="#f8fafc" stroke-width="4.5" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="wrong-letters-bar">
+        <span style="font-size:0.82rem; font-weight:800; color:var(--dim); white-space:nowrap;">Errori:</span>
+        <div class="wrong-list" id="wrongList">
+          <span style="color:var(--dim); font-size:0.82rem;">Nessuno</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: WORD + HINTS + GIANT KEYBOARD -->
+    <section class="panel-card word-stage" aria-label="Area di gioco parola e tastiera">
+      <div class="topic-action-bar">
+        <div class="cat-badge" id="currentCatBadge">💻 Informatica</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="lim-btn amber" id="btnShowHint" onclick="revealHint()">💡 Mostra Indizio</button>
+          <button type="button" class="lim-btn violet" id="btnJolly" onclick="useJolly()">🃏 Jolly (1 lettera)</button>
+          <button type="button" class="lim-btn" id="btnGuessFull" onclick="openGuessWordModal()">🔍 Tenta Parola</button>
+        </div>
+      </div>
+
+      <div class="hint-banner" id="hintBanner">
+        <span>💡 <strong>Indizio:</strong></span>
+        <span id="hintText"></span>
+      </div>
+
+      <div class="word-slots-area">
+        <div class="word-groups-wrap" id="wordSlots"></div>
+      </div>
+
+      <div class="outcome-banner" id="outcomeBanner" role="status">
+        <span id="outcomeMsg" style="font-size:1.05rem;"></span>
+        <button type="button" class="lim-btn emerald" onclick="startNewRound()">▶ Prossima Parola</button>
+      </div>
+
+      <div class="keyboard-panel">
+        <div class="kb-header">
+          <span>Tocca una lettera sulla LIM o usa la tastiera del PC</span>
+          <button type="button" class="lim-btn" style="min-height:28px; padding:0 10px; font-size:0.74rem;" id="btnKbLayout" onclick="toggleKeyboardLayout()">⌨️ Layout: ABC</button>
+        </div>
+        <div class="kb-rows" id="keyboardContainer"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- DIALOG 1: PAROLA SEGRETA PERSONALIZZATA -->
+<dialog id="customWordDialog" aria-labelledby="customDlgTitle">
+  <h1 id="customDlgTitle" class="dlg-title">✍️ Inserisci Parola Segreta</h1>
+  <p class="dlg-sub">Inserisci una parola o breve frase per la sfida in classe. Il testo resta nascosto mentre digiti.</p>
+  <form id="customWordForm" method="dialog" novalidate>
+    <div class="dlg-field">
+      <label for="customWordInput">Parola o Frase Segreta *</label>
+      <div style="display:flex; gap:6px;">
+        <input type="password" id="customWordInput" class="dlg-input" autocomplete="off" placeholder="Es. SCHEDA MADRE" autofocus>
+        <button type="button" class="lim-btn" id="btnPeekCustom" onclick="togglePeekCustom()" title="Mostra/Nascondi parola">👁️</button>
+      </div>
+    </div>
+    <div class="dlg-field">
+      <label for="customHintInput">Indizio opzionale</label>
+      <input type="text" id="customHintInput" class="dlg-input" autocomplete="off" placeholder="Es. Componente principale dentro al case">
+    </div>
+    <div id="customWordErr" class="dlg-err" role="alert">Inserisci almeno 2 lettere valide (A–Z).</div>
+    <div class="dlg-actions">
+      <button type="submit" value="cancel" class="lim-btn">Annulla</button>
+      <button type="submit" value="start" class="lim-btn primary">🎯 Avvia Sfida</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- DIALOG 2: TENTA LA PAROLA INTERA -->
+<dialog id="guessWordDialog" aria-labelledby="guessDlgTitle">
+  <h1 id="guessDlgTitle" class="dlg-title">🔍 Tenta la Parola Intera</h1>
+  <p class="dlg-sub">Se indovini vinci subito il round! Se sbagli perdi <strong>1 vita</strong>.</p>
+  <form id="guessWordForm" method="dialog" novalidate>
+    <div class="dlg-field">
+      <label for="guessWordInput">La tua risposta</label>
+      <input type="text" id="guessWordInput" class="dlg-input" autocomplete="off" placeholder="Scrivi l'intera parola o frase..." autofocus>
+    </div>
+    <div id="guessWordErr" class="dlg-err" role="alert">Scrivi prima una parola!</div>
+    <div class="dlg-actions">
+      <button type="submit" value="cancel" class="lim-btn">Annulla</button>
+      <button type="submit" value="guess" class="lim-btn emerald">✅ Conferma Risposta</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* =========================================================================
+   1. ARCHIVIO PAROLE DIDATTICHE E DI CULTURA GENERALE (100+ PAROLE)
+   ========================================================================= */
+const WORD_BANK = {
+  informatica: {
+    label: "💻 Informatica & Tech",
+    items: [
+      { word: "ALGORITMO", hint: "Sequenza finita di istruzioni per risolvere un problema" },
+      { word: "PROCESSORE", hint: "Il 'cervello' elettronico del computer (CPU)" },
+      { word: "SCHEDA MADRE", hint: "La piastra principale che collega tutti i componenti interni del PC" },
+      { word: "MEMORIA RAM", hint: "Memoria veloce e volatile attiva mentre i programmi girano" },
+      { word: "FIREWALL", hint: "Barriera digitale che filtra il traffico di rete sospetto" },
+      { word: "PHISHING", hint: "Truffa via email o SMS per rubare password fingendosi un ente affidabile" },
+      { word: "PASSWORD", hint: "Chiave segreta di accesso a un account digitale" },
+      { word: "CRITTOGRAFIA", hint: "Tecnica per cifrare i messaggi rendendoli illeggibili agli estranei" },
+      { word: "DATABASE", hint: "Archivio digitale strutturato per organizzare grandi quantità di dati" },
+      { word: "FOGLIO DI CALCOLO", hint: "Programma a celle con righe e colonne per formule e grafici" },
+      { word: "SISTEMA OPERATIVO", hint: "Software di base come Windows, Linux o macOS" },
+      { word: "COMPILATORE", hint: "Traduce il codice sorgente scritto in C++ in linguaggio macchina" },
+      { word: "INDIRIZZO IP", hint: "Numero identificativo assegnato a un dispositivo in rete" },
+      { word: "PROTOCOLLO HTTPS", hint: "Versione cifrata e sicura per navigare sui siti web" },
+      { word: "CLOUD COMPUTING", hint: "Salvataggio ed elaborazione dati su server remoti via Internet" },
+      { word: "DISCO SOLIDO", hint: "Unità di archiviazione veloce senza parti meccaniche (SSD)" },
+      { word: "PERIFERICA", hint: "Dispositivo collegato al computer, come tastiera, mouse o stampante" },
+      { word: "BACKUP", hint: "Copia di sicurezza dei file importanti per evitare perdite di dati" },
+      { word: "RETE LOCALE", hint: "Collegamento tra computer vicini nella stessa aula o edificio (LAN)" },
+      { word: "BROWSER", hint: "Programma usato per aprire e visualizzare pagine web" }
+    ]
+  },
+  fisica: {
+    label: "⚛️ Fisica & Scienze",
+    items: [
+      { word: "ACCELERAZIONE", hint: "Variazione della velocità nell'unità di tempo (m/s²)" },
+      { word: "CALIBRO A NONIO", hint: "Strumento di misura di precisione con sensibilità fino a 0,05 mm" },
+      { word: "QUANTITA DI MOTO", hint: "Prodotto tra la massa di un corpo e la sua velocità" },
+      { word: "ENERGIA CINETICA", hint: "Energia posseduta da un corpo in movimento" },
+      { word: "PENDOLO SEMPLICE", hint: "Massa appesa a un filo che oscilla sotto l'azione della gravità" },
+      { word: "FORZA DI ATTRITO", hint: "Forza che si oppone allo scivolamento tra due superfici a contatto" },
+      { word: "DINAMOMETRO", hint: "Strumento a molla utilizzato per misurare l'intensità di una forza" },
+      { word: "URTO ANELASTICO", hint: "Collisione in cui i due corpi restano uniti dopo l'impatto" },
+      { word: "DENSITA", hint: "Rapporto tra la massa di una sostanza e il suo volume" },
+      { word: "TRAIETTORIA", hint: "Linea formata dalle posizioni successive di un corpo in movimento" },
+      { word: "TERMOMETRO", hint: "Strumento usato per misurare la temperatura" },
+      { word: "GRAVITAZIONE", hint: "Forza attrattiva universale tra corpi dotati di massa" },
+      { word: "MOTO RETTILINEO", hint: "Movimento lungo una linea retta" },
+      { word: "GRANDEZZA FISICA", hint: "Proprietà misurabile con strumento e unità di misura" },
+      { word: "SISTEMA ISOLATO", hint: "Sistema su cui la risultante delle forze esterne è nulla" },
+      { word: "BARICENTRO", hint: "Punto di applicazione della forza peso di un corpo" },
+      { word: "VETTORIALE", hint: "Grandezza definita da modulo, direzione e verso" },
+      { word: "INCERTEZZA", hint: "Margine di errore associato a ogni misura sperimentale" },
+      { word: "MICROMETRO", hint: "Strumento di precisione centesimale a vite (Palmer)" },
+      { word: "ISOCRONISMO", hint: "Proprietà del pendolo per cui il periodo non dipende dalle piccole ampiezze" }
+    ]
+  },
+  cultura: {
+    label: "🌍 Cultura & Geografia",
+    items: [
+      { word: "MEDITERRANEO", hint: "Il mare racchiuso tra Europa, Africa e Asia" },
+      { word: "RINASCIMENTO", hint: "Grande epoca artistica e culturale nata in Italia nel Quattrocento" },
+      { word: "COSTITUZIONE", hint: "La legge fondamentale dello Stato italiano" },
+      { word: "ARCIPELAGO", hint: "Gruppo di isole vicine tra loro" },
+      { word: "PENISOLA", hint: "Terra circondata dal mare su tre lati, come l'Italia" },
+      { word: "COLOSSEO", hint: "Il celebre anfiteatro romano simbolo di Roma" },
+      { word: "ATMOSFERA", hint: "Involucro di gas che circonda il nostro pianeta" },
+      { word: "MERIDIANO", hint: "Semicirconferenza immaginaria che unisce i due poli terrestri" },
+      { word: "RIVOLUZIONE", hint: "Moto della Terra attorno al Sole in 365 giorni circa" },
+      { word: "VULCANO", hint: "Spaccatura della crosta terrestre da cui fuoriesce magma" },
+      { word: "PIRAMIDE", hint: "Monumentale costruzione funeraria dell'antico Egitto" },
+      { word: "DEMOCRAZIA", hint: "Forma di governo in cui la sovranità appartiene al popolo" },
+      { word: "CARTA GEOGRAFICA", hint: "Rappresentazione ridotta e simbolica della superficie terrestre" },
+      { word: "ECOSISTEMA", hint: "Insieme di esseri viventi e ambiente fisico in equilibrio" },
+      { word: "MONARCHIA", hint: "Forma di Stato guidata da un re o da una regina" }
+    ]
+  },
+  sport: {
+    label: "⚽ Sport & Giochi",
+    items: [
+      { word: "PALLAVOLO", hint: "Sport di squadra diviso da una rete con sei giocatori per campo" },
+      { word: "PALLACANESTRO", hint: "Sport in cui si fa canestro palleggiando con le mani" },
+      { word: "OLIMPIADI", hint: "Competizione sportiva mondiale che si tiene ogni quattro anni" },
+      { word: "MARATONA", hint: "Corsa podistica lunga esattamente 42,195 chilometri" },
+      { word: "ATLETICA LEGGERA", hint: "Insieme di corse, salti e lanci in pista" },
+      { word: "FAIR PLAY", hint: "Comportamento leale e rispettoso verso avversari e arbitro" },
+      { word: "CICLISMO", hint: "Sport su strada o su pista con la bicicletta" },
+      { word: "SCHERMA", hint: "Arte sportiva con fioretto, spada o sciabola" },
+      { word: "TENNISTAVOLO", hint: "Disciplina olimpica nota anche come ping pong" },
+      { word: "STAFFETTA", hint: "Gara a squadre in cui ci si passa il testimone" },
+      { word: "NUOTO SINCRONIZZATO", hint: "Disciplina acquatica a tempo di musica" },
+      { word: "SCACCHIERA", hint: "Tavola da 64 caselle bianche e nere" }
+    ]
+  },
+  oggetti: {
+    label: "🍕 Cibo, Animali & Oggetti",
+    items: [
+      { word: "TELESCOPIO", hint: "Strumento ottico per osservare stelle e pianeti lontani" },
+      { word: "MOZZARELLA", hint: "Latticino fresco tipico campano immancabile sulla pizza" },
+      { word: "COCCODRILLO", hint: "Grande rettile semiacquatico dalle mascelle potentissime" },
+      { word: "BICICLETTA", hint: "Mezzo di trasporto ecologico a due ruote spinto dai pedali" },
+      { word: "CIOCCOLATO", hint: "Dolce amato in tutto il mondo ottenuto dalle fave di cacao" },
+      { word: "CANGURO", hint: "Marsupiale australiano famoso per i lunghi salti" },
+      { word: "CHITARRA", hint: "Strumento musicale a sei corde molto diffuso" },
+      { word: "OROLOGIO", hint: "Strumento che scandisce ore, minuti e secondi" },
+      { word: "OMBRELLO", hint: "Oggetto pieghevole utile nei giorni di pioggia" },
+      { word: "CAMALEONTE", hint: "Rettile capace di cambiare colore per mimetizzarsi" },
+      { word: "ZAINO SCOLASTICO", hint: "Contenitore a spalla per portare libri e quaderni" },
+      { word: "CAFFETTIERA", hint: "Classica moka per preparare l'espresso a casa" }
+    ]
+  }
+};
+
+const MAX_LIVES = 6;
+const EXTRA_LETTERS = new Set(["J", "K", "W", "X", "Y"]);
+const LAYOUT_ABC = [
+  ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
+  ["J", "K", "L", "M", "N", "O", "P", "Q", "R"],
+  ["S", "T", "U", "V", "W", "X", "Y", "Z"]
+];
+const LAYOUT_QWERTY = [
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["Z", "X", "C", "V", "B", "N", "M"]
+];
+
+/* =========================================================================
+   2. STATO DI GIOCO
+   ========================================================================= */
+const state = {
+  secretRaw: "",
+  secretNorm: "",
+  categoryLabel: "",
+  hintText: "",
+  hintShown: false,
+  jollyUsed: false,
+  guessed: new Set(),
+  wrongLetters: [],
+  status: "playing", // 'playing' | 'won' | 'lost'
+  kbLayout: "ABC",
+  audioOn: true,
+  teamMode: false,
+  activeTeam: "A", // 'A' | 'B'
+  scoreA: 0,
+  scoreB: 0,
+  wins: 0,
+  losses: 0,
+  streak: 0,
+  recentWords: []
+};
+
+/* =========================================================================
+   3. WEB AUDIO SYNTH (ZERO FILE ESTERNI)
+   ========================================================================= */
+let audioCtx = null;
+function playTone(type) {
+  if (!state.audioOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    const now = audioCtx.currentTime;
+
+    const beep = (freq, start, dur, wave = "sine", gainVal = 0.14) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = wave;
+      osc.frequency.setValueAtTime(freq, now + start);
+      gain.gain.setValueAtTime(gainVal, now + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + dur);
+    };
+
+    if (type === "hit") {
+      beep(587.33, 0, 0.1, "triangle", 0.15);
+      beep(880, 0.06, 0.14, "triangle", 0.14);
+    } else if (type === "miss") {
+      beep(196, 0, 0.16, "sawtooth", 0.1);
+      beep(155, 0.1, 0.18, "sawtooth", 0.09);
+    } else if (type === "win") {
+      beep(523.25, 0, 0.12, "triangle", 0.16);
+      beep(659.25, 0.1, 0.12, "triangle", 0.16);
+      beep(783.99, 0.2, 0.14, "triangle", 0.16);
+      beep(1046.5, 0.32, 0.35, "triangle", 0.18);
+    } else if (type === "loss") {
+      beep(349.23, 0, 0.18, "sawtooth", 0.11);
+      beep(311.13, 0.18, 0.18, "sawtooth", 0.11);
+      beep(277.18, 0.36, 0.22, "sawtooth", 0.11);
+      beep(233.08, 0.56, 0.42, "sawtooth", 0.11);
+    }
+  } catch (_) {}
+}
+
+/* =========================================================================
+   4. LOGICA PAROLA & NORMALIZZAZIONE ACCENTI
+   ========================================================================= */
+function normalizeText(str) {
+  return String(str || "")
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Z ' -]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isLetterChar(ch) {
+  return /^[A-Z]$/.test(ch);
+}
+
+function pickRandomItem() {
+  const catKey = document.getElementById("categorySelect").value;
+  let pool = [];
+  if (catKey === "all") {
+    Object.values(WORD_BANK).forEach(cat => {
+      cat.items.forEach(item => pool.push({ ...item, catLabel: cat.label }));
+    });
+  } else if (WORD_BANK[catKey]) {
+    const cat = WORD_BANK[catKey];
+    pool = cat.items.map(item => ({ ...item, catLabel: cat.label }));
+  }
+
+  const fresh = pool.filter(p => !state.recentWords.includes(p.word));
+  const candidates = fresh.length ? fresh : pool;
+  const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+
+  state.recentWords.push(chosen.word);
+  if (state.recentWords.length > 25) state.recentWords.shift();
+  return chosen;
+}
+
+function startNewRound(customObj = null) {
+  stopConfetti();
+  let item = customObj;
+  if (!item) {
+    const picked = pickRandomItem();
+    item = { word: picked.word, hint: picked.hint, catLabel: picked.catLabel };
+  }
+
+  state.secretRaw = item.word.toUpperCase().trim();
+  state.secretNorm = normalizeText(state.secretRaw);
+  state.categoryLabel = item.catLabel;
+  state.hintText = item.hint || "";
+  state.hintShown = false;
+  state.jollyUsed = false;
+  state.guessed = new Set();
+  state.wrongLetters = [];
+  state.status = "playing";
+
+  renderAll();
+  announceLive(`Nuova parola pronta. Categoria: ${state.categoryLabel}.`);
+}
+
+function handleGuessLetter(rawLetter) {
+  if (state.status !== "playing") return;
+  const letter = normalizeText(rawLetter);
+  if (!isLetterChar(letter)) return;
+  if (state.guessed.has(letter)) return;
+
+  state.guessed.add(letter);
+
+  if (state.secretNorm.includes(letter)) {
+    playTone("hit");
+    checkVictoryOrLoss();
+  } else {
+    state.wrongLetters.push(letter);
+    playTone("miss");
+    triggerGallowsShake();
+    checkVictoryOrLoss();
+  }
+  renderAll();
+}
+
+function checkVictoryOrLoss() {
+  const lettersNeeded = [...state.secretNorm].filter(isLetterChar);
+  const allFound = lettersNeeded.every(ch => state.guessed.has(ch));
+
+  if (allFound) {
+    state.status = "won";
+    state.wins++;
+    state.streak++;
+    const bonus = (MAX_LIVES - state.wrongLetters.length) * 15;
+    const pts = 100 + bonus;
+    if (state.teamMode) {
+      if (state.activeTeam === "A") state.scoreA += pts;
+      else state.scoreB += pts;
+      state.activeTeam = state.activeTeam === "A" ? "B" : "A";
+    }
+    playTone("win");
+    launchConfetti();
+    announceLive(`Vittoria! Parola indovinata: ${state.secretRaw}.`);
+  } else if (state.wrongLetters.length >= MAX_LIVES) {
+    state.status = "lost";
+    state.losses++;
+    state.streak = 0;
+    if (state.teamMode) {
+      state.activeTeam = state.activeTeam === "A" ? "B" : "A";
+    }
+    playTone("loss");
+    announceLive(`Partita persa. La parola era: ${state.secretRaw}.`);
+  }
+}
+
+function revealHint() {
+  if (!state.hintText) return;
+  state.hintShown = true;
+  renderAll();
+}
+
+function useJolly() {
+  if (state.status !== "playing" || state.jollyUsed) return;
+  const hiddenLetters = [...new Set([...state.secretNorm].filter(ch => isLetterChar(ch) && !state.guessed.has(ch)))];
+  if (!hiddenLetters.length) return;
+  state.jollyUsed = true;
+  const pick = hiddenLetters[Math.floor(Math.random() * hiddenLetters.length)];
+  handleGuessLetter(pick);
+}
+
+/* =========================================================================
+   5. RENDERING UI & SVG PROGRESSIVO
+   ========================================================================= */
+function renderAll() {
+  renderScoreboard();
+  renderGallows();
+  renderWordTiles();
+  renderKeyboard();
+  renderBanners();
+}
+
+function renderScoreboard() {
+  const el = document.getElementById("scoreboardPill");
+  if (state.teamMode) {
+    el.innerHTML = `
+      <span class="team-badge team-a ${state.activeTeam === "A" ? "active-turn" : ""}">🔵 Squadra A: ${state.scoreA} pt</span>
+      <span style="color:var(--dim);">vs</span>
+      <span class="team-badge team-b ${state.activeTeam === "B" ? "active-turn" : ""}">🟡 Squadra B: ${state.scoreB} pt</span>
+    `;
+  } else {
+    el.innerHTML = `
+      <span style="color:var(--emerald-bright);">🏆 Vinte: ${state.wins}</span>
+      <span style="color:var(--dim);">|</span>
+      <span style="color:var(--amber);">🔥 Serie: ${state.streak}</span>
+      <span style="color:var(--dim);">|</span>
+      <span style="color:var(--rose-bright);">💀 Perse: ${state.losses}</span>
+    `;
+  }
+}
+
+function renderGallows() {
+  const errCount = state.wrongLetters.length;
+  const livesLeft = Math.max(0, MAX_LIVES - errCount);
+  const livesEl = document.getElementById("livesText");
+  livesEl.textContent = `${livesLeft} / ${MAX_LIVES}`;
+  livesEl.style.color = livesLeft <= 1 ? "var(--rose-bright)" : (livesLeft <= 3 ? "var(--amber)" : "var(--emerald-bright)");
+
+  const dotsEl = document.getElementById("livesDots");
+  let dotsHtml = "";
+  for (let i = 0; i < MAX_LIVES; i++) {
+    const isLost = i < errCount;
+    dotsHtml += `<span class="life-dot ${isLost ? "lost" : ""}"></span>`;
+  }
+  dotsEl.innerHTML = dotsHtml;
+
+  for (let p = 1; p <= 6; p++) {
+    const node = document.getElementById(`part${p}`);
+    if (node) node.classList.toggle("visible", errCount >= p);
+  }
+
+  // Facial expressions
+  const showFace = id => {
+    ["faceCalm", "faceWorried", "faceDead", "faceWin"].forEach(f => {
+      document.getElementById(f).style.display = (f === id) ? "block" : "none";
+    });
+  };
+  if (state.status === "won") {
+    // Show happy head even if 0 mistakes
+    document.getElementById("part1").classList.add("visible");
+    showFace("faceWin");
+  } else if (state.status === "lost") {
+    showFace("faceDead");
+  } else if (errCount >= 3) {
+    showFace("faceWorried");
+  } else {
+    showFace("faceCalm");
+  }
+
+  const wrongEl = document.getElementById("wrongList");
+  if (!errCount) {
+    wrongEl.innerHTML = `<span style="color:var(--dim); font-size:0.82rem;">Nessuno</span>`;
+  } else {
+    wrongEl.innerHTML = state.wrongLetters.map(l => `<span class="wrong-chip">${l}</span>`).join("");
+  }
+}
+
+function renderWordTiles() {
+  const wrap = document.getElementById("wordSlots");
+  const words = state.secretRaw.split(" ").filter(Boolean);
+  const totalChars = state.secretRaw.length;
+  const compactCls = totalChars > 13 ? "compact" : "";
+
+  wrap.innerHTML = words.map(word => {
+    const tiles = [...word].map(origChar => {
+      const normChar = normalizeText(origChar);
+      if (!isLetterChar(normChar)) {
+        return `<span class="letter-tile punct ${compactCls}">${origChar}</span>`;
+      }
+      const isFound = state.guessed.has(normChar);
+      if (isFound) {
+        return `<span class="letter-tile revealed ${compactCls}">${origChar}</span>`;
+      }
+      if (state.status === "lost") {
+        return `<span class="letter-tile missed ${compactCls}">${origChar}</span>`;
+      }
+      return `<span class="letter-tile ${compactCls}" aria-label="Lettera nascosta"></span>`;
+    }).join("");
+    return `<div class="word-unit">${tiles}</div>`;
+  }).join("");
+}
+
+function renderKeyboard() {
+  const container = document.getElementById("keyboardContainer");
+  const rows = state.kbLayout === "ABC" ? LAYOUT_ABC : LAYOUT_QWERTY;
+
+  container.innerHTML = rows.map(row => {
+    const keys = row.map(letter => {
+      const isTried = state.guessed.has(letter);
+      const isHit = isTried && state.secretNorm.includes(letter);
+      const isMiss = isTried && !isHit;
+      const isExtra = EXTRA_LETTERS.has(letter) ? "extra-letter" : "";
+      const stateCls = isHit ? "hit" : (isMiss ? "miss" : "");
+      const disabled = (isTried || state.status !== "playing") ? "disabled" : "";
+      return `<button type="button" class="kb-key ${isExtra} ${stateCls}" ${disabled} onclick="handleGuessLetter('${letter}')" aria-label="Lettera ${letter}">${letter}</button>`;
+    }).join("");
+    return `<div class="kb-row">${keys}</div>`;
+  }).join("");
+}
+
+function renderBanners() {
+  document.getElementById("currentCatBadge").textContent = state.categoryLabel;
+
+  const hintBtn = document.getElementById("btnShowHint");
+  hintBtn.disabled = !state.hintText || state.hintShown || state.status !== "playing";
+  hintBtn.textContent = state.hintText ? (state.hintShown ? "💡 Indizio Visibile" : "💡 Mostra Indizio") : "💡 Nessun Indizio";
+
+  const hintBanner = document.getElementById("hintBanner");
+  hintBanner.classList.toggle("show", state.hintShown && !!state.hintText);
+  document.getElementById("hintText").textContent = state.hintText;
+
+  const jollyBtn = document.getElementById("btnJolly");
+  jollyBtn.disabled = state.jollyUsed || state.status !== "playing";
+  document.getElementById("btnGuessFull").disabled = (state.status !== "playing");
+
+  const outBanner = document.getElementById("outcomeBanner");
+  const outMsg = document.getElementById("outcomeMsg");
+  outBanner.className = "outcome-banner";
+  if (state.status === "won") {
+    outBanner.classList.add("show", "win");
+    outMsg.textContent = `🎉 BRAVISSIMI! Parola indovinata: "${state.secretRaw}"`;
+  } else if (state.status === "lost") {
+    outBanner.classList.add("show", "loss");
+    outMsg.textContent = `💀 IMPICCATO! La soluzione era: "${state.secretRaw}"`;
+  }
+}
+
+function triggerGallowsShake() {
+  const card = document.getElementById("gallowsCard");
+  card.classList.remove("shake");
+  void card.offsetWidth;
+  card.classList.add("shake");
+}
+
+/* =========================================================================
+   6. CONTROLLI MODALITÀ, AUDIO, TASTIERA E DIALOG
+   ========================================================================= */
+function toggleKeyboardLayout() {
+  state.kbLayout = state.kbLayout === "ABC" ? "QWERTY" : "ABC";
+  document.getElementById("btnKbLayout").textContent = `⌨️ Layout: ${state.kbLayout}`;
+  renderKeyboard();
+}
+
+function toggleAudio() {
+  state.audioOn = !state.audioOn;
+  document.getElementById("btnAudio").textContent = state.audioOn ? "🔊 Audio" : "🔇 Muto";
+}
+
+function toggleTeamMode() {
+  state.teamMode = !state.teamMode;
+  document.getElementById("btnTeamMode").classList.toggle("amber", state.teamMode);
+  document.getElementById("btnTeamMode").textContent = state.teamMode ? "👥 Sfida 2 Squadre: ON" : "👥 1 / 2 Squadre";
+  renderScoreboard();
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+/* DIALOG: PAROLA SEGRETA PERSONALIZZATA */
+function openCustomWordModal() {
+  const dlg = document.getElementById("customWordDialog");
+  const wInp = document.getElementById("customWordInput");
+  const hInp = document.getElementById("customHintInput");
+  const err = document.getElementById("customWordErr");
+  wInp.value = "";
+  wInp.type = "password";
+  hInp.value = "";
+  err.classList.remove("show");
+  dlg.showModal();
+}
+
+function togglePeekCustom() {
+  const inp = document.getElementById("customWordInput");
+  inp.type = inp.type === "password" ? "text" : "password";
+}
+
+(function setupCustomWordDialog() {
+  const dlg = document.getElementById("customWordDialog");
+  const form = document.getElementById("customWordForm");
+  const wInp = document.getElementById("customWordInput");
+  const hInp = document.getElementById("customHintInput");
+  const err = document.getElementById("customWordErr");
+
+  form.addEventListener("submit", e => {
+    const act = e.submitter ? e.submitter.value : "start";
+    if (act === "cancel") return;
+    const raw = wInp.value.trim();
+    const norm = normalizeText(raw);
+    const letterCount = [...norm].filter(isLetterChar).length;
+    if (letterCount < 2) {
+      e.preventDefault();
+      err.classList.add("show");
+      wInp.focus();
+      return;
+    }
+    err.classList.remove("show");
+    startNewRound({
+      word: raw.toUpperCase(),
+      hint: hInp.value.trim(),
+      catLabel: "✍️ Parola Personalizzata"
+    });
+  });
+
+  dlg.addEventListener("close", () => { dlg.returnValue = ""; });
+})();
+
+/* DIALOG: TENTA PAROLA INTERA */
+function openGuessWordModal() {
+  if (state.status !== "playing") return;
+  const dlg = document.getElementById("guessWordDialog");
+  const inp = document.getElementById("guessWordInput");
+  const err = document.getElementById("guessWordErr");
+  inp.value = "";
+  err.classList.remove("show");
+  dlg.showModal();
+}
+
+(function setupGuessWordDialog() {
+  const dlg = document.getElementById("guessWordDialog");
+  const form = document.getElementById("guessWordForm");
+  const inp = document.getElementById("guessWordInput");
+  const err = document.getElementById("guessWordErr");
+
+  form.addEventListener("submit", e => {
+    const act = e.submitter ? e.submitter.value : "guess";
+    if (act === "cancel") return;
+    const attempt = normalizeText(inp.value);
+    if (!attempt) {
+      e.preventDefault();
+      err.classList.add("show");
+      inp.focus();
+      return;
+    }
+    err.classList.remove("show");
+    if (attempt === state.secretNorm) {
+      [...state.secretNorm].filter(isLetterChar).forEach(ch => state.guessed.add(ch));
+      checkVictoryOrLoss();
+    } else {
+      state.wrongLetters.push("✖");
+      playTone("miss");
+      triggerGallowsShake();
+      checkVictoryOrLoss();
+    }
+    renderAll();
+  });
+
+  dlg.addEventListener("close", () => { dlg.returnValue = ""; });
+})();
+
+/* TASTIERA FISICA PC */
+window.addEventListener("keydown", e => {
+  if (document.querySelector("dialog[open]")) return;
+  if (e.target && ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+  if (e.key === "Enter" && state.status !== "playing") {
+    e.preventDefault();
+    startNewRound();
+    return;
+  }
+
+  const ch = normalizeText(e.key);
+  if (ch.length === 1 && isLetterChar(ch)) {
+    handleGuessLetter(ch);
+  }
+});
+
+function announceLive(msg) {
+  const el = document.getElementById("liveStatus");
+  if (el) el.textContent = msg;
+}
+
+/* =========================================================================
+   7. CONFETTI CELEBRAZIONE (RISPETTA PREFERS-REDUCED-MOTION)
+   ========================================================================= */
+let confettiId = null;
+function launchConfetti() {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const canvas = document.getElementById("confettiCanvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ["#38bdf8", "#34d399", "#fbbf24", "#fb7185", "#a78bfa"];
+  const pieces = Array.from({ length: 85 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * 140,
+    vx: (Math.random() - 0.5) * 5,
+    vy: 3 + Math.random() * 4.5,
+    sz: 7 + Math.random() * 7,
+    rot: Math.random() * Math.PI * 2,
+    vrot: (Math.random() - 0.5) * 0.2,
+    col: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  const start = performance.now();
+  function frame(now) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.col;
+      ctx.fillRect(-p.sz / 2, -p.sz / 4, p.sz, p.sz / 2);
+      ctx.restore();
+    });
+    if (now - start < 2800) {
+      confettiId = requestAnimationFrame(frame);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiId = null;
+    }
+  }
+  confettiId = requestAnimationFrame(frame);
+}
+
+function stopConfetti() {
+  if (confettiId) {
+    cancelAnimationFrame(confettiId);
+    confettiId = null;
+  }
+  const canvas = document.getElementById("confettiCanvas");
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  startNewRound();
+});
+</script>
+</body>
+</html>

@@ -3105,6 +3105,25 @@ const MATERIE = [
 
 
       {
+        id: "giochi-lim",
+        title: "Giochi & Attività LIM",
+        icon: "🎮",
+        desc: "Giochi interattivi pensati per la lavagna interattiva (LIM) e sfide di classe.",
+        chapters: [
+          {
+            title: "Giochi Didattici per LIM",
+            topics: [
+              {
+                title: "🎯 Il Gioco dell'Impiccato (Edizione LIM)",
+                desc: "Gioco interattivo 100vh per la LIM con oltre 80 parole divise in 5 categorie (Informatica, Fisica, Cultura, Sport, Oggetti), Parola Segreta personalizzabile, sfida a 2 Squadre, Jolly, indizi, effetti sonori e tastiera gigante A-Z / QWERTY.",
+                url: "/altro/impiccato-lim.html"
+              }
+            ]
+          }
+        ]
+      },
+
+      {
 
 
 
