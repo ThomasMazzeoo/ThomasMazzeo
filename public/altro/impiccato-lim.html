@@ -629,6 +629,41 @@ dialog::backdrop {
   margin-top: 10px;
 }
 
+dialog#customWordDialog:modal {
+  max-width: 560px;
+}
+.mini-kb-wrap {
+  margin-top: 8px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mini-kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+.mini-key {
+  flex: 1 1 0;
+  min-width: 26px;
+  height: 36px;
+  border-radius: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #1e293b;
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mini-key:hover { background: #334155; border-color: var(--cyan); }
+.mini-key:active { transform: translateY(1px); }
+.mini-key.wide { flex: 2.2 1 0; font-size: 0.8rem; background: #27364f; }
+
 .visually-hidden {
   position: absolute !important;
   clip-path: inset(50%) !important;
@@ -664,6 +699,7 @@ dialog::backdrop {
         <option value="cultura">🌍 Cultura &amp; Geografia</option>
         <option value="sport">⚽ Sport &amp; Giochi</option>
         <option value="oggetti">🍕 Cibo, Animali &amp; Oggetti</option>
+        <option value="custom_mode">✍️ Inventano Loro (Parola Segreta)</option>
       </select>
     </div>
 
@@ -794,17 +830,21 @@ dialog::backdrop {
   </main>
 </div>
 
-<!-- DIALOG 1: PAROLA SEGRETA PERSONALIZZATA -->
+<!-- DIALOG 1: PAROLA SEGRETA PERSONALIZZATA (ANCHE TOUCH SU LIM) -->
 <dialog id="customWordDialog" aria-labelledby="customDlgTitle">
-  <h1 id="customDlgTitle" class="dlg-title">✍️ Inserisci Parola Segreta</h1>
-  <p class="dlg-sub">Inserisci una parola o breve frase per la sfida in classe. Il testo resta nascosto mentre digiti.</p>
+  <h1 id="customDlgTitle" class="dlg-title">✍️ Inventate la Parola Segreta</h1>
+  <p id="customDlgSub" class="dlg-sub">Inserisci una parola o breve frase con la tastiera touch o del PC. I caratteri restano nascosti alla classe.</p>
   <form id="customWordForm" method="dialog" novalidate>
     <div class="dlg-field">
-      <label for="customWordInput">Parola o Frase Segreta *</label>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="customWordInput">Parola o Frase Segreta *</label>
+        <span style="font-size:0.78rem; font-family:var(--font-mono); color:var(--amber); font-weight:700;">Lettere: <strong id="customLenCount">0</strong></span>
+      </div>
       <div style="display:flex; gap:6px;">
-        <input type="password" id="customWordInput" class="dlg-input" autocomplete="off" placeholder="Es. SCHEDA MADRE" autofocus>
+        <input type="password" id="customWordInput" class="dlg-input" autocomplete="off" placeholder="Es. SCHEDA MADRE" oninput="updateCustomLenCount()" autofocus>
         <button type="button" class="lim-btn" id="btnPeekCustom" onclick="togglePeekCustom()" title="Mostra/Nascondi parola">👁️</button>
       </div>
+      <div class="mini-kb-wrap" id="customTouchKb" aria-label="Tastiera touch per inserire la parola segreta sulla LIM"></div>
     </div>
     <div class="dlg-field">
       <label for="customHintInput">Indizio opzionale</label>
@@ -1070,6 +1110,11 @@ function startNewRound(customObj = null) {
   stopConfetti();
   let item = customObj;
   if (!item) {
+    const catVal = document.getElementById("categorySelect").value;
+    if (catVal === "custom_mode") {
+      openCustomWordModal();
+      return;
+    }
     const picked = pickRandomItem();
     item = { word: picked.word, hint: picked.hint, catLabel: picked.catLabel };
   }
@@ -1335,15 +1380,67 @@ function toggleFullscreen() {
   }
 }
 
-/* DIALOG: PAROLA SEGRETA PERSONALIZZATA */
+/* DIALOG: PAROLA SEGRETA PERSONALIZZATA (CON TASTIERA TOUCH LIM) */
+function renderCustomTouchKb() {
+  const mount = document.getElementById("customTouchKb");
+  if (!mount || mount.childElementCount > 0) return;
+  const rows = [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Z", "X", "C", "V", "B", "N", "M", "␣", "⌫"]
+  ];
+  mount.innerHTML = rows.map(r => {
+    const btns = r.map(k => {
+      if (k === "␣") return `<button type="button" class="mini-key wide" onclick="tapCustomKey(' ')">Spazio</button>`;
+      if (k === "⌫") return `<button type="button" class="mini-key wide" onclick="tapCustomKey('BK')">⌫ Canc</button>`;
+      return `<button type="button" class="mini-key" onclick="tapCustomKey('${k}')">${k}</button>`;
+    }).join("");
+    return `<div class="mini-kb-row">${btns}</div>`;
+  }).join("");
+}
+
+function tapCustomKey(k) {
+  const inp = document.getElementById("customWordInput");
+  if (!inp) return;
+  if (k === "BK") {
+    inp.value = inp.value.slice(0, -1);
+  } else {
+    inp.value += k;
+  }
+  updateCustomLenCount();
+}
+
+function updateCustomLenCount() {
+  const inp = document.getElementById("customWordInput");
+  const lbl = document.getElementById("customLenCount");
+  if (!inp || !lbl) return;
+  const count = [...normalizeText(inp.value)].filter(isLetterChar).length;
+  lbl.textContent = count;
+}
+
 function openCustomWordModal() {
+  renderCustomTouchKb();
   const dlg = document.getElementById("customWordDialog");
   const wInp = document.getElementById("customWordInput");
   const hInp = document.getElementById("customHintInput");
   const err = document.getElementById("customWordErr");
+  const titleEl = document.getElementById("customDlgTitle");
+  const subEl = document.getElementById("customDlgSub");
+
+  if (state.teamMode) {
+    const inventor = state.activeTeam === "A" ? "🟡 Squadra B" : "🔵 Squadra A";
+    const guesser = state.activeTeam === "A" ? "🔵 Squadra A" : "🟡 Squadra B";
+    titleEl.textContent = `✍️ ${inventor}: inventa la parola!`;
+    subEl.innerHTML = `<strong>${guesser}</strong> non deve guardare! Inserite la parola segreta con la tastiera touch o del PC.`;
+  } else {
+    titleEl.textContent = "✍️ Inventate la Parola Segreta";
+    subEl.textContent = "Inserisci una parola o breve frase con la tastiera touch o del PC. I caratteri restano nascosti alla classe.";
+  }
+
   wInp.value = "";
   wInp.type = "password";
   hInp.value = "";
+  updateCustomLenCount();
   err.classList.remove("show");
   dlg.showModal();
 }
